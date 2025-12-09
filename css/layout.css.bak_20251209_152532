@@ -31,15 +31,3 @@
     padding: 24px 12px 36px;
   }
 }
-
-/* -------- MOBILE: Header not sticky -------- */
-@media (max-width: 900px) {
-  header,
-  nav,
-  .top-bar,
-  .home-hero {
-    position: static !important;
-    top: auto !important;
-    box-shadow: none !important;
-  }
-}
