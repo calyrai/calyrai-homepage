@@ -207,15 +207,3 @@
   opacity: 0;
   pointer-events: none;
 }
-
-/* Tap-to-collapse hero */
-.hero {
-  transition: height 0.45s ease, opacity 0.3s ease;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.hero.hero-half {
-  height: 50vh !important;
-  opacity: 0.9;
-}

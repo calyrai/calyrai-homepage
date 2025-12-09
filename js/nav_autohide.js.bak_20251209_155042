@@ -95,23 +95,3 @@
     collapseHeroOnScroll();
   }
 })();
-
-/* Tap-to-collapse hero (2-state) */
-(function () {
-  "use strict";
-
-  function setupHeroTap() {
-    const hero = document.querySelector(".hero");
-    if (!hero) return;
-
-    hero.addEventListener("click", () => {
-      hero.classList.toggle("hero-half");
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupHeroTap);
-  } else {
-    setupHeroTap();
-  }
-})();
