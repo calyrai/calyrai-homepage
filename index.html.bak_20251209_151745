@@ -121,6 +121,5 @@ async function markAndLogVisitor() {
 
 document.addEventListener("DOMContentLoaded", markAndLogVisitor);
 </script>
-  <script src="js/nav_autohide.js"></script>
 </body>
 </html>

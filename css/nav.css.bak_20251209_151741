@@ -112,23 +112,3 @@
   border-color: rgba(255, 140, 245, 1);
 }
 
-
-/* ================================
-   Mobile auto-hide navigation
-   ================================ */
-
-@media (max-width: 900px) {
-  .site-header,
-  .site-subnav {
-    transition: transform 0.35s ease-out;
-    will-change: transform;
-  }
-
-  .nav-hidden {
-    transform: translateY(-140%);
-  }
-
-  .subnav-hidden {
-    transform: translateY(-140%);
-  }
-}
