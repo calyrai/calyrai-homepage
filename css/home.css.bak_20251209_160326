@@ -3,6 +3,12 @@
    ========================= */
 
 /* Vollbild-Hero mit Globe im Hintergrund */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
 
 /* Globe-Canvas füllt den Hero und bekommt Maus-Events
    (für Rotation, Zoom etc.) */
@@ -191,6 +197,10 @@
 }
 
 /* Collapse full-screen hero on scroll */
+.hero {
+  transition: height 0.5s ease, opacity 0.4s ease;
+  overflow: hidden;
+}
 
 .hero.hero-collapsed {
   height: 0 !important;
@@ -199,33 +209,12 @@
 }
 
 /* Tap-to-collapse hero */
-
-.hero.hero-half {
-  height: 50vh !important;
-  opacity: 0.9;
-}
-
-/* CLEAN HERO RULE (auto-inserted patch) */
 .hero {
-  position: relative;
-  width: 100%;
+  transition: height 0.45s ease, opacity 0.3s ease;
   height: 100vh;
   overflow: hidden;
-  transition: height 0.45s ease, opacity 0.3s ease;
-  pointer-events: auto;
 }
 
-/* Make content clickable */
-.hero-content {
-  pointer-events: auto !important;
-}
-
-/* Prevent globe canvas from blocking interactions */
-#globe-canvas {
-  pointer-events: none !important;
-}
-
-/* Tap collapse */
 .hero.hero-half {
   height: 50vh !important;
   opacity: 0.9;
