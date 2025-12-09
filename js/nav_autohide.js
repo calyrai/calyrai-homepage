@@ -31,3 +31,39 @@
     }
   });
 })();
+
+/* Mobile auto-hide for top hero */
+(function () {
+  "use strict";
+
+  function setupHeroHideOnScroll() {
+    var hero =
+      document.querySelector(".home-hero") ||
+      document.querySelector(".hero") ||
+      document.querySelector(".intro-block") ||
+      document.querySelector(".intro") ||
+      document.querySelector(".hero-section");
+
+    if (!hero) return;
+
+    hero.classList.add("hero-hide-on-scroll");
+
+    var lastHidden = false;
+
+    window.addEventListener("scroll", function () {
+      var y = window.pageYOffset;
+      var hide = y > 80;
+
+      if (hide !== lastHidden) {
+        hero.classList.toggle("hero-hide-on-scroll--hidden", hide);
+        lastHidden = hide;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupHeroHideOnScroll);
+  } else {
+    setupHeroHideOnScroll();
+  }
+})();
