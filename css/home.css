@@ -25,7 +25,7 @@
   pointer-events: auto;
 }
 
-/* Hero content block */
+/* Hero content block (visual layer only) */
 .hero-content {
   position: relative;
   z-index: 1;
@@ -45,10 +45,18 @@
   opacity: 1;
   transition: max-height 0.5s ease, opacity 0.4s ease;
 
+  /* IMPORTANT: let events fall through to the globe */
+  pointer-events: none;
+}
+
+/* Make the button itself clickable again */
+.hero-content a,
+.hero-content button,
+#uncover-btn {
   pointer-events: auto;
 }
 
-/* Collapsed hero-content (used by JS) */
+/* Collapsed hero-content (for tap collapse) */
 .hero-content.collapsed {
   max-height: 0 !important;
   opacity: 0 !important;
@@ -62,7 +70,7 @@
   }
 }
 
-/* Eyebrow text */
+/* Eyebrow */
 .eyebrow {
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -161,7 +169,6 @@
 
 #uncover-btn {
   opacity: 1 !important;
-  pointer-events: auto !important;
   display: inline-flex;
 }
 
