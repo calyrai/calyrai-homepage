@@ -1,0 +1,73 @@
+- id: saxs-multistate
+  title: "SAXS – Multi-State Structural Analysis"
+  subtitle: "Pair-distance distributions and browser-scale structural modes"
+  description: >
+    Pair-distance distributions, free-energy modes, and browser-scale
+    structural analysis based on orthogonal P(r) basis functions and
+    PCA-driven state classification.
+  tags:
+    - SAXS
+    - P(r)
+    - multi-state
+    - PCA
+  link_label: "Open SAXS mode"
+  link_url: "saxs.html"
+
+- id: biosaxs-lab
+  title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
+  subtitle: "Time-resolved, SEC-coupled structural biology"
+  description: >
+    Inline SEC–SAXS workflows for fragile biomolecules, combining
+    scattering, DLS and thermodynamic models into a single analysis
+    story-line.
+  tags:
+    - BioSAXS
+    - SEC-SAXS
+    - thermodynamics
+  link_label: "Explore BioSAXS"
+  link_url: "biosaxs.html"
+
+- id: redhuman-metabolism
+  title: "Redhuman – Metabolic Network Reconstruction"
+  subtitle: "Thermodynamically consistent flux spaces"
+  description: >
+    Metabolic modeling with IUPAC-driven metabolite annotation,
+    pathway-based inference and free-energy consistent flux cones,
+    prepared for ML-based structuralomics.
+  tags:
+    - metabolism
+    - flux analysis
+    - ML
+  link_label: "View model"
+  link_url: "redhuman.html"
+
+- id: saxs_sasview
+  title: "SAXS Engine (sasmodels)"
+  subtitle: "Interactive scattering console powered by the Calyr.ai stack."
+  description: >
+    Interactive SASView-based scattering console for testing analytical
+    models, JSON-driven parameter sets and Calyr.ai workflow integration.
+  tags:
+    - saxs
+    - sasview
+    - scattering
+    - models
+  link_label: "Open SAXS engine"
+  link_url: "projects/saxs_sasview/index.html"
+
+- id: saxs_intro_talk
+  kind: mode
+  title: "SAXS – A small SAXS intro"
+  subtitle: "Short introduction to SAXS, P(r) and experimental design"
+  description: >
+    A compact introduction to Small-Angle X-ray Scattering:
+    perception vs. reality of models, finite q-range, Shannon sampling,
+    complementarity of SAXS / USAXS / WAXS and basic experimental design.
+    Backed by the Calyr.ai slide engine and extendable into a full course module.
+  tags:
+    - SAXS
+    - INTRO
+    - TEACHING
+    - TALK
+  link_label: "Open SAXS intro"
+  link_url: "manual/index.html?deck=saxs_intro"

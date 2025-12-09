@@ -1,0 +1,33 @@
+/* =========================
+   GLOBAL LAYOUT / SECTIONS
+   (für alle Seiten)
+   ========================= */
+
+.section {
+  padding: 40px 16px 60px;
+  background: transparent;
+  color: #e8ecff;
+}
+
+.section-inner {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.section h2 {
+  font-size: 1.9rem;
+  margin-bottom: 8px;
+}
+
+.section-lead {
+  max-width: 40rem;
+  margin-bottom: 20px;
+  color: #c3cadf;
+}
+
+/* Impressum-Block behält seine Breite, Feintuning in impressum.css */
+@media (max-width: 768px) {
+  .section {
+    padding: 24px 12px 36px;
+  }
+}

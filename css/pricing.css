@@ -1,0 +1,157 @@
+/* =========================
+   PRICING PAGE
+   ========================= */
+
+/* Intro-Block leicht hervorgehoben */
+.pricing-hero .section-lead {
+  margin-bottom: 10px;
+}
+
+.pricing-note {
+  font-size: 0.9rem;
+  color: #9fb3d8;
+  margin-top: 4px;
+}
+
+/* Grid: drei Spalten, bricht sauber auf 1–2 Spalten auf kleineren Screens */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Karten-Basis – im Calyr-Glow-Stil */
+.pricing-card {
+  position: relative;
+  padding: 22px 22px 26px;
+  border-radius: 20px;
+  border: 1px solid rgba(80, 200, 255, 0.7);
+  background: radial-gradient(circle at top left,
+              rgba(40, 120, 255, 0.18),
+              rgba(3, 8, 20, 0.96));
+  box-shadow:
+    0 0 12px rgba(36, 243, 255, 0.2),
+    0 0 40px rgba(0, 0, 0, 0.9);
+
+  font-size: 0.94rem;
+  color: #dce8ff;
+  overflow: hidden;
+  transform: translateY(0);
+  transition:
+    transform 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    border-color 0.16s ease-out,
+    background 0.18s ease-out;
+}
+
+.pricing-card h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  color: #f3fbff;
+}
+
+.pricing-tagline {
+  margin: 0 0 14px;
+  color: #a9bedf;
+  font-size: 0.9rem;
+}
+
+/* Badge oben links */
+.pricing-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 230, 255, 0.9);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a9f6ff;
+}
+
+/* Extra Badge für Research-Karte */
+.badge-highlight {
+  border-color: rgba(255, 130, 255, 0.9);
+  color: #ffd7ff;
+}
+
+/* "Most relevant" Chip */
+.pricing-most-popular {
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: #ffddff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+/* Preis */
+.pricing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.pricing-amount {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.pricing-period {
+  font-size: 0.85rem;
+  color: #9fb3d8;
+}
+
+/* Feature-Liste */
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+}
+
+.pricing-features li {
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+  color: #c7d7f5;
+}
+
+/* Hover-Effekt */
+.pricing-card:hover {
+  transform: translateY(-6px);
+  border-color: #ff4df5;
+  box-shadow:
+    0 0 20px rgba(255, 77, 245, 0.5),
+    0 0 52px rgba(0, 0, 0, 1);
+  background: radial-gradient(circle at top left,
+              rgba(255, 90, 220, 0.2),
+              rgba(3, 8, 20, 0.98));
+}
+
+/* Varianten (leicht unterschiedliche Töne) */
+.pricing-card-free {
+  border-color: rgba(90, 220, 255, 0.85);
+}
+
+.pricing-card-academic {
+  border-color: rgba(255, 130, 255, 0.85);
+}
+
+.pricing-card-partner {
+  border-color: rgba(255, 210, 130, 0.85);
+}
+
+/* Responsive: 2 Spalten / 1 Spalte */
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}

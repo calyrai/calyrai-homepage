@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.ai – SAXS Engine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Shared styling -->
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/nav.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+
+  <style>
+    body { background: #020617; color: #e5e7eb; }
+    .glow { box-shadow: 0 0 25px rgba(34,211,238,0.35); }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- HEADER -->
+<header class="site-header border-b border-cyan-500/30 bg-slate-950/80 backdrop-blur">
+  <div class="nav-inner max-w-6xl mx-auto px-4 py-4">
+    <div class="flex flex-wrap gap-3">
+      <a href="../../projects.html"
+         class="nav-pill glow-nav px-6 py-2 rounded-full">
+        GELESNÍG LAB
+      </a>
+      <a href="../../pricing.html"
+         class="nav-pill glow-nav px-6 py-2 rounded-full">
+        PRICING
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-1 max-w-6xl mx-auto px-4 py-10">
+
+  <h1 class="text-3xl font-bold mb-2">SAXS Engine (SasView-powered)</h1>
+
+  <p class="mb-6 text-slate-300">
+    Interactive I(q) explorer using SasView models.  
+    Select a model, choose parameters, and compute I(q). When the backend
+    is offline, the page falls back to a local pseudo-sphere curve.
+  </p>
+
+  <div class="grid gap-6 lg:grid-cols-[320px,1fr]">
+
+    <!-- CONTROL PANEL -->
+    <div class="bg-slate-900/70 p-5 rounded-2xl glow">
+      <h2 class="text-lg font-semibold mb-3">Controls</h2>
+
+      <form id="saxs-form" class="space-y-4">
+
+        <!-- Model selector -->
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Model</label>
+          <select id="model"
+                  class="w-full bg-slate-950 border border-slate-700 px-3 py-2 rounded-md">
+            <option value="sphere">sphere</option>
+            <option value="cylinder">cylinder</option>
+            <option value="core_shell_sphere">core_shell_sphere</option>
+            <option value="vesicle">vesicle</option>
+            <option value="ellipsoid">ellipsoid</option>
+          </select>
+          <p class="mt-1 text-[11px] text-slate-500">
+            All models currently share the same basic parameters (radius, contrast).
+            More detailed parameter panels can be added per model later.
+          </p>
+        </div>
+
+        <!-- Radius -->
+        <div>
+          <label class="block text-xs text-slate-400">Radius [Å]</label>
+          <input id="radius" type="number" value="50"
+                 class="w-full bg-slate-950 border border-slate-700 px-3 py-2 rounded-md" />
+        </div>
+
+        <!-- q range -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400">qmin</label>
+            <input id="qmin" type="number" step="0.0001" value="0.001"
+                   class="w-full bg-slate-950 border border-slate-700 px-3 py-2 rounded-md" />
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400">qmax</label>
+            <input id="qmax" type="number" step="0.0001" value="0.3"
+                   class="w-full bg-slate-950 border border-slate-700 px-3 py-2 rounded-md" />
+          </div>
+        </div>
+
+        <button class="w-full rounded-full py-2 bg-cyan-400 text-slate-900 font-semibold">
+          Compute I(q)
+        </button>
+
+        <p id="status" class="text-xs text-slate-500">
+          Checking backend status…
+        </p>
+
+      </form>
+    </div>
+
+    <!-- PLOT -->
+    <div class="bg-slate-900/70 p-5 rounded-2xl glow">
+      <h2 class="text-lg font-semibold mb-3">I(q) Plot</h2>
+      <canvas id="iq-chart" height="260"></canvas>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer border-t border-slate-800 py-4 mt-10 text-center text-xs text-slate-500">
+  © 2025 Calyr.ai™ — All rights reserved.
+</footer>
+
+<script src="saxs_console.js"></script>
+
+</body>
+</html>

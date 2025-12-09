@@ -1,0 +1,138 @@
+/* =========================
+   PROJECTS PAGE
+   ========================= */
+
+.section {
+  padding: 14px 12px 32px;
+  background: transparent;
+  color: #e8ecff;
+}
+
+.section-inner {
+  max-width: 1024px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* gleiche Breite wie die Cards – wie bei Pricing */
+.section:first-of-type .section-inner {
+  max-width: 1024px;
+}
+
+/* =========================
+   GRID – wie pricing-grid
+   ========================= */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* =========================
+   PROJECT CARD – 1:1 Pricing-Style
+   ========================= */
+
+.project-card {
+  position: relative;
+  padding: 22px 22px 26px;
+  border-radius: 20px;
+  border: 1px solid rgba(80, 200, 255, 0.7);
+  background: radial-gradient(circle at top left,
+              rgba(40, 120, 255, 0.18),
+              rgba(3, 8, 20, 0.96));
+  box-shadow:
+    0 0 12px rgba(36, 243, 255, 0.2),
+    0 0 40px rgba(0, 0, 0, 0.9);
+
+  font-size: 0.94rem;
+  color: #dce8ff;
+  overflow: hidden;
+  transform: translateY(0);
+  transition:
+    transform 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    border-color 0.16s ease-out,
+    background 0.18s ease-out;
+}
+
+/* Hover-Effekt wie Pricing */
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: #ff4df5;
+  box-shadow:
+    0 0 20px rgba(255, 77, 245, 0.5),
+    0 0 52px rgba(0, 0, 0, 1);
+  background: radial-gradient(circle at top left,
+              rgba(255, 90, 220, 0.2),
+              rgba(3, 8, 20, 0.98));
+}
+
+/* kleine farbige Kante oben – bekommt Farbe aus JS inline-style */
+.project-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+}
+
+/* TEXT (leicht an Pricing angelehnt) */
+.project-card-title {
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  margin: 0 0 6px;
+  color: #f3fbff;
+}
+
+.project-card-subtitle {
+  margin: 0 0 14px;
+  color: #a9bedf;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.project-card-body {
+  font-size: 0.94rem;
+  color: #dce8ff;
+  margin-bottom: 18px;
+}
+
+.project-card-body p {
+  margin: 0.35rem 0;
+}
+
+/* BUTTON – wie auf Pricing-Karten */
+.project-card .glow-btn {
+  font-size: 0.9rem;
+  padding: 0.55rem 1.4rem;
+}
+
+/* Optional: leicht verschiedene Border-Töne pro Karte
+   (1 = SAXS, 2 = PCA, 3 = Vaults, 4 = Chrom …) */
+.project-card:nth-child(1) {
+  border-color: rgba(90, 220, 255, 0.85);
+}
+.project-card:nth-child(2) {
+  border-color: rgba(255, 130, 255, 0.85);
+}
+.project-card:nth-child(3) {
+  border-color: rgba(255, 210, 130, 0.85);
+}
+
+/* =========================
+   RESPONSIVE – wie Pricing
+   ========================= */
+
+@media (max-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,24 @@
+/* ========= RESET ========= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========= GLOBAL ========= */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 0% 0%, #16244b 0, #050918 40%, #02030a 85%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #f7f8ff;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+

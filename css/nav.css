@@ -1,0 +1,114 @@
+/* ========= HEADER / NAV (projects.html etc.) ========= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: radial-gradient(circle at top, #0a1024 0, #050815 60%, #03040b 100%);
+  backdrop-filter: blur(10px);
+  padding: 10px 22px;
+  border-bottom: 1px solid rgba(36, 243, 255, 0.2);
+}
+
+.nav-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-left-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nav-logo {
+  color: #f5f7ff;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  font-size: 0.98rem;
+  text-transform: uppercase;
+}
+
+/* base pill in header (cyan outline) */
+.nav-pill {
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(114, 250, 255, 0.5);
+  color: #8df6ff;
+  background: rgba(5, 10, 20, 0.7);
+  box-shadow: 0 0 6px rgba(114, 250, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a {
+  margin-left: 18px;
+}
+
+.glow-nav {
+  position: relative;
+  color: #bdfcff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition:
+    color 0.18s ease,
+    text-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.glow-nav:hover {
+  color: #ff9bf7;
+  text-shadow: 0 0 8px rgba(255, 113, 245, 0.9);
+  background: rgba(255, 113, 245, 0.12);
+  border-color: rgba(255, 113, 245, 0.7);
+  box-shadow:
+    0 0 8px rgba(255, 113, 245, 0.45),
+    0 0 16px rgba(0, 0, 0, 1);
+}
+
+/* Optional magenta pill variant in header */
+.nav-pill.magenta {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 105, 230, 0.9) 0%,
+    rgba(255, 60, 210, 0.75) 40%,
+    rgba(180, 30, 160, 0.65) 100%
+  );
+  color: #1b0016;
+  box-shadow:
+    0 0 10px rgba(255, 105, 230, 0.9),
+    0 0 25px rgba(255, 60, 210, 0.6),
+    inset 0 0 12px rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 50, 220, 0.7);
+}
+
+.nav-pill.magenta:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 130, 240, 1) 0%,
+    rgba(255, 70, 220, 0.95) 40%,
+    rgba(190, 40, 170, 0.75) 100%
+  );
+  color: #ffffff;
+  box-shadow:
+    0 0 16px rgba(255, 125, 245, 1),
+    0 0 40px rgba(255, 80, 225, 0.9),
+    inset 0 0 18px rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 140, 245, 1);
+}
+

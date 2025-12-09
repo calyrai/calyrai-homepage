@@ -1,0 +1,219 @@
+/* ========= SECTIONS / PROJECTS ========= */
+
+.section {
+  padding: 32px 16px 48px;
+  background: transparent;
+  color: #e8ecff;
+}
+
+.section-inner {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.section h2 {
+  font-size: 1.9rem;
+  margin-bottom: 12px;
+}
+
+.section-lead {
+  max-width: 40rem;
+  margin-bottom: 24px;
+  color: #c3cadf;
+}
+
+/* Grid layout for tiles */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Minimal “wireframe” tiles */
+.project-tile {
+  position: relative;
+  padding: 18px 18px 20px;
+  min-height: 170px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(180, 240, 255, 0.7); /* thin line */
+  background: rgba(0, 5, 16, 0.2);             /* very light */
+
+  color: #c9f4ff;
+  font-size: 0.95rem;
+  overflow: hidden;
+
+  box-shadow:
+    0 0 6px rgba(36, 243, 255, 0.16),
+    0 0 24px rgba(0, 0, 0, 0.9);
+
+  transform: perspective(700px) rotateX(0deg) rotateY(0deg);
+  transition:
+    transform 0.18s ease-out,
+    border-color 0.16s ease-out,
+    box-shadow 0.18s ease-out,
+    color 0.16s ease-out,
+    background 0.16s ease-out;
+}
+
+/* subtle inner electric sheen (very dialed down) */
+.project-tile::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 180deg,
+    rgba(36, 243, 255, 0.0),
+    rgba(36, 243, 255, 0.20),
+    rgba(36, 243, 255, 0.0),
+    rgba(36, 243, 255, 0.30),
+    rgba(36, 243, 255, 0.0)
+  );
+  mix-blend-mode: screen;
+  opacity: 0.15;
+  filter: blur(1px);
+  pointer-events: none;
+  animation: tile-electric 7s linear infinite;
+}
+
+/* slight gradient wash */
+.project-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 255, 0.03),
+    transparent 45%,
+    rgba(0, 255, 255, 0.04)
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0.25;
+  pointer-events: none;
+  animation: tile-glitch 4.5s ease-in-out infinite;
+}
+
+/* Title + text */
+.project-tile h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 1.02rem;
+  letter-spacing: 0.02em;
+  color: #e6fbff;
+}
+
+.project-tile p {
+  margin-bottom: 6px;
+}
+
+.small {
+  font-size: 0.82rem;
+  color: #7bd7ff;
+}
+
+/* Glow button inside tiles */
+.glow-btn {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 230, 255, 0.9);
+  color: #a9f6ff;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(7, 18, 26, 0.7);
+  box-shadow:
+    0 0 6px rgba(36, 243, 255, 0.5),
+    0 0 18px rgba(0, 0, 0, 0.9);
+  transition:
+    color 0.16s ease-out,
+    border-color 0.16s ease-out,
+    box-shadow 0.16s ease-out,
+    background 0.16s ease-out,
+    transform 0.12s ease-out;
+}
+
+.glow-btn:hover {
+  color: #ffe6ff;
+  border-color: #ff4df5;
+  background: rgba(255, 77, 245, 0.10);
+  box-shadow:
+    0 0 12px rgba(255, 77, 245, 0.7),
+    0 0 24px rgba(0, 0, 0, 1);
+  transform: translateY(-1px);
+}
+
+.glow-btn-ghost {
+  border-color: rgba(150, 210, 255, 0.7);
+  background: rgba(5, 10, 24, 0.35);
+  box-shadow: 0 0 6px rgba(150, 210, 255, 0.4);
+  font-size: 0.78rem;
+}
+
+/* Hover: dünne Linie → Neon-Rahmen, leicht 3D */
+.project-tile:hover {
+  border-color: #ff4df5;
+  box-shadow:
+    0 0 14px rgba(255, 77, 245, 0.6),
+    0 0 40px rgba(0, 0, 0, 0.95);
+  color: #ffe6ff;
+  background: rgba(10, 6, 18, 0.30);
+  transform:
+    perspective(700px)
+    rotateX(-1deg)
+    rotateY(1.4deg)
+    translateY(-4px);
+}
+
+.project-tile:hover h3 {
+  color: #ffd5ff;
+}
+
+/* Electric animations minimal */
+@keyframes tile-electric {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0.18; }
+  25%  { transform: translate3d(1px, -1px, 0) scale(1.01); opacity: 0.26; }
+  50%  { transform: translate3d(-1px, 1px, 0) scale(1.0); opacity: 0.18; }
+  75%  { transform: translate3d(1px, 0.5px, 0) scale(1.01); opacity: 0.24; }
+  100% { transform: translate3d(0, 0, 0); opacity: 0.18; }
+}
+
+@keyframes tile-glitch {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0.22; }
+  15%  { transform: translate3d(-0.5px, 0.5px, 0) skewX(0.3deg); opacity: 0.28; }
+  33%  { transform: translate3d(0.3px, -0.3px, 0) skewX(-0.4deg); opacity: 0.30; }
+  50%  { transform: translate3d(0, 0, 0); opacity: 0.24; }
+  70%  { transform: translate3d(0.6px, 0.4px, 0) skewX(0.2deg); opacity: 0.26; }
+  100% { transform: translate3d(0, 0, 0); opacity: 0.22; }
+}
+/* ============================================================
+   Footer — Calyrai
+   Minimalistic + neutral + unobtrusive + global
+   ============================================================ */
+
+.site-footer {
+  width: 100%;
+  padding: 24px 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(200, 200, 200, 0.55);
+  letter-spacing: 0.03em;
+  font-weight: 300;
+
+  /* soft separation from dark backgrounds */
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  /* ensures footer stays at bottom when content is short */
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    font-size: 0.7rem;
+    padding: 18px 0;
+  }
+}

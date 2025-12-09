@@ -1,0 +1,15 @@
+{
+  "models": [
+    {
+      "name": "sphere",
+      "label": "Sphere",
+      "params": [
+        { "name": "radius", "default": 50 },
+        { "name": "sld", "default": 4.0 },
+        { "name": "sld_solvent", "default": 1.0 },
+        { "name": "background", "default": 0.0 },
+        { "name": "scale", "default": 1.0 }
+      ]
+    }
+  ]
+}
