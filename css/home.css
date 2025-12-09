@@ -1,8 +1,11 @@
 /* =========================
-   HOME PAGE: HERO + GLOBE (CLEAN)
+   HOME PAGE: HERO + GLOBE
    ========================= */
 
-/* Canvas behind hero */
+/* Vollbild-Hero mit Globe im Hintergrund */
+
+/* Globe-Canvas füllt den Hero und bekommt Maus-Events
+   (für Rotation, Zoom etc.) */
 #globe-canvas {
   position: absolute;
   inset: 0;
@@ -10,65 +13,29 @@
   height: 100%;
   display: block;
   z-index: 0;
-
-  /* IMPORTANT: allow taps to pass through */
-  pointer-events: none;
-}
-
-/* Entire hero section (the upper part) */
-.hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-
-  transition: height 0.45s ease, opacity 0.3s ease;
   pointer-events: auto;
 }
 
-/* Half-height state (if used by JS) */
-.hero.hero-half {
-  height: 50vh;
-  opacity: 0.9;
-}
-
-/* Collapsed hero (if used by scroll logic) */
-.hero.hero-collapsed {
-  height: 0 !important;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* The visible text/button block */
+/* Text-Layer über dem Globe */
 .hero-content {
   position: relative;
   z-index: 1;
-
   width: 100%;
-  max-height: 120vh;
-  overflow: hidden;
-
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-
   padding: 12vh 2rem 2rem;
   text-align: center;
-
   opacity: 1;
-  transition: max-height 0.5s ease, opacity 0.4s ease;
+  transition: opacity 0.5s ease;
 
-  pointer-events: auto; /* clickable again */
+  /* WICHTIG: Mausereignisse an den Globe durchlassen */
+  pointer-events: none;
 }
 
-/* Collapsed hero-content (for tap collapse) */
-.hero-content.collapsed {
-  max-height: 0 !important;
-  opacity: 0 !important;
-}
-
-/* Mobile tweaks */
+/* Mobile: Text etwas weiter nach unten */
 @media (max-width: 768px) {
   .hero-content {
     justify-content: center;
@@ -86,7 +53,7 @@
   text-shadow: 0 0 10px rgba(140, 240, 255, 0.8);
 }
 
-/* Glow headline */
+/* Glow-Headline */
 .glow-title-wrap {
   position: relative;
   display: inline-block;
@@ -113,30 +80,30 @@
     0 0 72px rgba(0, 0, 0, 0.9);
 }
 
-/* Subtitle */
+/* Subtitle / Tagline */
 .subtitle {
   font-size: 1rem;
   max-width: 42rem;
   color: #b5d9ef;
   line-height: 1.7;
   margin-top: 1.4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.0rem;
   text-shadow:
     0 0 12px rgba(0, 200, 255, 0.7),
     0 0 26px rgba(0, 0, 0, 1);
 }
 
 .tagline {
-  margin-top: 1rem;
+  margin-top: 1.0rem;
   font-size: 0.9rem;
   color: #8fdcff;
   opacity: 0.9;
 }
-
 /* =========================
-   ATLANTIS CTA BUTTON
+   UNCOVER / ATLANTIS BUTTON
    ========================= */
 
+/* Orbit-Container */
 .cta-orbit {
   position: relative;
   width: 220px;
@@ -144,6 +111,7 @@
   margin-top: 0.5rem;
 }
 
+/* Cyan-Rahmen, transparent, magenta-pulsierend, kein Text */
 .cta-atlantis {
   position: absolute;
   left: 50%;
@@ -153,19 +121,27 @@
   padding: 18px 48px;
   border-radius: 18px;
 
+  /* Transparente Kachel */
   background: transparent;
+
+  /* Cyan Rahmen */
   border: 2px solid rgba(120, 240, 255, 0.95);
 
+  /* Text verstecken → Klickfläche bleibt */
   color: transparent !important;
 
+  /* Neon Glow (Cyan + Magenta) */
   box-shadow:
     0 0 10px rgba(120, 240, 255, 0.6),
     0 0 26px rgba(255, 120, 255, 0.35);
 
+  /* Puls */
   animation: atlantis-pulse 2.4s ease-in-out infinite;
+
   cursor: pointer;
 }
 
+/* Hover: mehr Neon */
 .cta-atlantis:hover {
   transform: translate(-50%, -50%) scale(1.05);
   box-shadow:
@@ -173,12 +149,14 @@
     0 0 38px rgba(255, 120, 255, 0.75);
 }
 
+/* Button garantiert sichtbar und klickbar */
 #uncover-btn {
   opacity: 1 !important;
   pointer-events: auto !important;
   display: inline-flex;
 }
 
+/* Puls-Animation */
 @keyframes atlantis-pulse {
   0% {
     box-shadow:
@@ -198,4 +176,87 @@
       0 0 18px rgba(255, 120, 255, 0.3);
     transform: translate(-50%, -50%) scale(1.00);
   }
+}
+/* Mobile: hero intro block hide-on-scroll */
+@media (max-width: 900px) {
+  .hero-hide-on-scroll {
+    transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+    overflow: hidden;
+  }
+  .hero-hide-on-scroll--hidden {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* Collapse full-screen hero on scroll */
+
+.hero.hero-collapsed {
+  height: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tap-to-collapse hero */
+
+.hero.hero-half {
+  height: 50vh !important;
+  opacity: 0.9;
+}
+
+/* CLEAN HERO RULE (auto-inserted patch) */
+
+/* Make content clickable */
+.hero-content {
+  pointer-events: auto !important;
+}
+
+/* Prevent globe canvas from blocking interactions */
+#globe-canvas {
+  pointer-events: none !important;
+}
+
+/* Tap collapse */
+.hero.hero-half {
+  height: 50vh !important;
+  opacity: 0.9;
+}
+
+/* CLEAN HERO BLOCK (PATCHED) */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  transition: height 0.45s ease, opacity 0.3s ease;
+  pointer-events: auto !important;
+}
+
+/* Allow text/button interactions */
+.hero-content {
+  pointer-events: auto !important;
+}
+
+/* Prevent canvas from capturing taps */
+#globe-canvas {
+  pointer-events: none !important;
+}
+
+/* Tap collapse */
+.hero.hero-half {
+  height: 50vh !important;
+  opacity: 0.9;
+}
+
+/* COLLAPSIBLE HERO CONTENT (PATCHED) */
+.hero-content {
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+  overflow: hidden;
+  max-height: 120vh;
+}
+
+.hero-content.collapsed {
+  max-height: 0 !important;
+  opacity: 0 !important;
 }
