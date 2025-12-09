@@ -1,8 +1,8 @@
 /* =========================
-   HOME PAGE: HERO + GLOBE (CLEAN)
+   HOME PAGE: HERO + GLOBE (NEW)
    ========================= */
 
-/* Canvas behind hero */
+/* Globe-Canvas hinter allem */
 #globe-canvas {
   position: absolute;
   inset: 0;
@@ -11,76 +11,63 @@
   display: block;
   z-index: 0;
 
-  /* allow dragging + clicking on the globe */
+  /* Globe bleibt interaktiv */
   pointer-events: auto;
 }
 
-/* Entire hero section (upper part) */
+/* Gesamter Hero-Bereich */
 .hero {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  transition: height 0.45s ease, opacity 0.3s ease;
-  pointer-events: auto;
+  background: radial-gradient(circle at top,
+    #06091a 0%,
+    #02030a 45%,
+    #000000 100%);
 }
 
-/* Hero content block (visual layer only) */
+/* Inhaltsebene über dem Globe */
 .hero-content {
   position: relative;
   z-index: 1;
 
   width: 100%;
-  max-height: 120vh;
-  overflow: hidden;
+  max-width: 64rem;
+  margin: 0 auto;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
 
-  padding: 12vh 2rem 2rem;
+  padding: 22vh 2rem 3rem;
   text-align: center;
 
-  opacity: 1;
-  transition: max-height 0.5s ease, opacity 0.4s ease;
-
-  /* IMPORTANT: let events fall through to the globe */
+  /* lässt Klicks zum Globe durch */
   pointer-events: none;
 }
 
-/* Make the button itself clickable again */
+/* Nur interaktive Elemente wieder anklickbar */
 .hero-content a,
 .hero-content button,
-#uncover-btn {
+.hero-content .hero-window {
   pointer-events: auto;
 }
 
-/* Collapsed hero-content (for tap collapse) */
-.hero-content.collapsed {
-  max-height: 0 !important;
-  opacity: 0 !important;
-}
+/* -------------------------
+   Typografie
+   ------------------------- */
 
-/* Mobile layout */
-@media (max-width: 768px) {
-  .hero-content {
-    justify-content: center;
-    padding-top: 4rem;
-  }
-}
-
-/* Eyebrow */
 .eyebrow {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   font-size: 0.8rem;
   color: #8fdcff;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 10px rgba(140, 240, 255, 0.8);
+  margin-bottom: 1.2rem;
+  text-shadow: 0 0 10px rgba(140, 240, 255, 0.9);
 }
 
-/* Glow headline */
 .glow-title-wrap {
   position: relative;
   display: inline-block;
@@ -91,104 +78,134 @@
   position: absolute;
   inset: -40px;
   background: radial-gradient(circle,
-    rgba(0, 220, 255, 0.25),
+    rgba(0, 220, 255, 0.26),
     rgba(0, 120, 160, 0.16),
     transparent 70%);
-  filter: blur(26px);
+  filter: blur(28px);
   z-index: 0;
 }
 
 .glow-title {
   position: relative;
   z-index: 1;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 800;
+  color: #ffffff;
   text-shadow:
     0 0 18px rgba(0, 220, 255, 0.9),
     0 0 42px rgba(255, 120, 255, 0.6),
     0 0 72px rgba(0, 0, 0, 0.9);
 }
 
-/* Subtitle */
 .subtitle {
   font-size: 1rem;
   max-width: 42rem;
   color: #b5d9ef;
   line-height: 1.7;
-  margin-top: 1.4rem;
-  margin-bottom: 2rem;
+  margin-top: 1.6rem;
+  margin-bottom: 2.3rem;
   text-shadow:
     0 0 12px rgba(0, 200, 255, 0.7),
     0 0 26px rgba(0, 0, 0, 1);
 }
 
 .tagline {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #8fdcff;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
-/* =========================
-   MAIN CTA BUTTON
-   ========================= */
+/* -------------------------
+   Glow-Window / Portal
+   ------------------------- */
 
 .cta-orbit {
   position: relative;
-  width: 220px;
-  height: 80px;
-  margin-top: 0.5rem;
+  width: min(420px, 72vw);
+  height: 110px;
+  margin-top: 3.2rem;
 }
 
-.cta-main {
+/* #uncover-btn wird zum leeren Glow-Fenster */
+.hero-window {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
-  padding: 18px 48px;
-  border-radius: 18px;
+  width: 100%;
+  height: 100%;
 
-  background: transparent;
+  border-radius: 999px;
   border: 2px solid rgba(120, 240, 255, 0.95);
-
-  color: transparent !important;
+  background: rgba(3, 6, 18, 0.28);
 
   box-shadow:
-    0 0 10px rgba(120, 240, 255, 0.6),
-    0 0 26px rgba(255, 120, 255, 0.35);
+    0 0 26px rgba(120, 240, 255, 0.65),
+    0 0 60px rgba(255, 120, 255, 0.55);
 
-  animation: cta-pulse 2.4s ease-in-out infinite;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  /* innen leer – kein sichtbarer Text */
+  color: transparent;
+  font-size: 0;
+
+  animation: hero-window-pulse 3.2s ease-in-out infinite alternate;
   cursor: pointer;
 }
 
-.cta-main:hover {
-  transform: translate(-50%, -50%) scale(1.05);
+.hero-window:hover {
+  transform: translate(-50%, -50%) scale(1.03);
   box-shadow:
-    0 0 14px rgba(120, 240, 255, 0.9),
-    0 0 38px rgba(255, 120, 255, 0.75);
+    0 0 32px rgba(120, 240, 255, 0.9),
+    0 0 80px rgba(255, 120, 255, 0.8);
 }
 
-#uncover-btn {
-  opacity: 1 !important;
-  display: inline-flex;
-}
-
-@keyframes cta-pulse {
+/* Pulsierender Glow */
+@keyframes hero-window-pulse {
   0% {
     box-shadow:
-      0 0 6px rgba(120, 240, 255, 0.5),
-      0 0 18px rgba(255, 120, 255, 0.3);
-    transform: translate(-50%, -50%) scale(1.00);
-  }
-  50% {
-    box-shadow:
-      0 0 14px rgba(120, 240, 255, 0.9),
-      0 0 34px rgba(255, 120, 255, 0.7);
-    transform: translate(-50%, -50%) scale(1.06);
+      0 0 18px rgba(120, 240, 255, 0.5),
+      0 0 40px rgba(255, 120, 255, 0.35);
   }
   100% {
     box-shadow:
-      0 0 6px rgba(120, 240, 255, 0.5),
-      0 0 18px rgba(255, 120, 255, 0.3);
-    transform: translate(-50%, -50%) scale(1.00);
+      0 0 30px rgba(120, 240, 255, 0.9),
+      0 0 80px rgba(255, 120, 255, 0.7);
+  }
+}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+
+@media (max-width: 1024px) {
+  .hero-content {
+    padding-top: 24vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content {
+    padding-top: 34vh;
+    padding-inline: 1.5rem;
+  }
+
+  .cta-orbit {
+    width: 78vw;
+    height: 100px;
+    margin-top: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding-top: 36vh;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
   }
 }
