@@ -1,5 +1,6 @@
 // nav_autohide.js
-// Hide/show the PROJECTS header (pill bar) on scroll.
+// Hide/show the PROJECTS header (pill bar) on scroll,
+// with a delay: only after 150px scroll depth.
 // HOME PAGE remains unaffected.
 
 (function () {
@@ -15,17 +16,20 @@
   let ticking = false;
   let isHidden = false;
 
+  // Scroll depth threshold (in px) before auto-hide kicks in
+  const THRESHOLD = 150;
+
   function update() {
     const currentY = window.scrollY;
     const scrollingDown = currentY > lastScrollY;
 
-    // Hide on downward scroll
-    if (scrollingDown && currentY > 120 && !isHidden) {
+    // HIDE: only when scrolling down AND below threshold
+    if (scrollingDown && currentY > THRESHOLD && !isHidden) {
       header.classList.add("site-header-hidden");
       isHidden = true;
     }
-    // Show on upward scroll or near top
-    else if ((!scrollingDown || currentY <= 120) && isHidden) {
+    // SHOW: when scrolling up OR back near the top
+    else if ((!scrollingDown || currentY <= THRESHOLD) && isHidden) {
       header.classList.remove("site-header-hidden");
       isHidden = false;
     }
