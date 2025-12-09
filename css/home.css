@@ -1,8 +1,8 @@
 /* =========================
-   HOME PAGE: HERO + GLOBE (NEW)
+   HOME PAGE: HERO + GLOBE (CLEAN NEW VERSION)
    ========================= */
 
-/* Globe-Canvas hinter allem */
+/* Globe Canvas (interactive, behind everything) */
 #globe-canvas {
   position: absolute;
   inset: 0;
@@ -10,24 +10,25 @@
   height: 100%;
   display: block;
   z-index: 0;
-
-  /* Globe bleibt interaktiv */
   pointer-events: auto;
 }
 
-/* Gesamter Hero-Bereich */
+/* Fullscreen Hero Section */
 .hero {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: radial-gradient(circle at top,
+
+  background: radial-gradient(
+    circle at top,
     #06091a 0%,
     #02030a 45%,
-    #000000 100%);
+    #000000 100%
+  );
 }
 
-/* Inhaltsebene über dem Globe */
+/* Foreground Content */
 .hero-content {
   position: relative;
   z-index: 1;
@@ -41,23 +42,22 @@
   align-items: center;
   justify-content: flex-start;
 
-  padding: 22vh 2rem 3rem;
+  padding: 20vh 2rem 3rem;
   text-align: center;
 
-  /* lässt Klicks zum Globe durch */
+  /* Let mouse events pass through except on buttons */
   pointer-events: none;
 }
 
-/* Nur interaktive Elemente wieder anklickbar */
 .hero-content a,
 .hero-content button,
 .hero-content .hero-window {
   pointer-events: auto;
 }
 
-/* -------------------------
-   Typografie
-   ------------------------- */
+/* ------------------------------------
+   Typography
+   ------------------------------------ */
 
 .eyebrow {
   letter-spacing: 0.25em;
@@ -77,10 +77,14 @@
   content: "";
   position: absolute;
   inset: -40px;
-  background: radial-gradient(circle,
+
+  background: radial-gradient(
+    circle,
     rgba(0, 220, 255, 0.26),
     rgba(0, 120, 160, 0.16),
-    transparent 70%);
+    transparent 70%
+  );
+
   filter: blur(28px);
   z-index: 0;
 }
@@ -88,9 +92,11 @@
 .glow-title {
   position: relative;
   z-index: 1;
+
   font-size: clamp(2.4rem, 4vw, 3.4rem);
   font-weight: 800;
   color: #ffffff;
+
   text-shadow:
     0 0 18px rgba(0, 220, 255, 0.9),
     0 0 42px rgba(255, 120, 255, 0.6),
@@ -102,32 +108,34 @@
   max-width: 42rem;
   color: #b5d9ef;
   line-height: 1.7;
+
   margin-top: 1.6rem;
-  margin-bottom: 2.3rem;
+  margin-bottom: 2.2rem;
+
   text-shadow:
     0 0 12px rgba(0, 200, 255, 0.7),
     0 0 26px rgba(0, 0, 0, 1);
 }
 
 .tagline {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
   font-size: 0.9rem;
   color: #8fdcff;
   opacity: 0.95;
 }
 
-/* -------------------------
-   Glow-Window / Portal
-   ------------------------- */
+/* ------------------------------------
+   PORTAL WINDOW
+   ------------------------------------ */
 
 .cta-orbit {
   position: relative;
-  width: min(420px, 72vw);
-  height: 110px;
-  margin-top: 3.2rem;
+  width: min(260px, 60vw);   /* Much smaller */
+  height: 58px;             /* Slim shape */
+  margin-top: 2rem;
 }
 
-/* #uncover-btn wird zum leeren Glow-Fenster */
+/* Transparent neon-glass portal */
 .hero-window {
   position: absolute;
   left: 50%;
@@ -138,48 +146,53 @@
   height: 100%;
 
   border-radius: 999px;
-  border: 2px solid rgba(120, 240, 255, 0.95);
-  background: rgba(3, 6, 18, 0.28);
 
+  /* Soft border */
+  border: 1px solid rgba(120, 240, 255, 0.55);
+
+  /* Very transparent — lets you fully see the globe */
+  background: rgba(0, 0, 0, 0.06);
+
+  /* Subtle neon glow */
   box-shadow:
-    0 0 26px rgba(120, 240, 255, 0.65),
-    0 0 60px rgba(255, 120, 255, 0.55);
+    0 0 10px rgba(120, 240, 255, 0.25),
+    0 0 14px rgba(255, 120, 255, 0.15);
 
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 
-  /* innen leer – kein sichtbarer Text */
   color: transparent;
   font-size: 0;
 
-  animation: hero-window-pulse 3.2s ease-in-out infinite alternate;
+  animation: hero-window-pulse 4s ease-in-out infinite alternate;
   cursor: pointer;
 }
 
 .hero-window:hover {
-  transform: translate(-50%, -50%) scale(1.03);
+  transform: translate(-50%, -50%) scale(1.04);
+
   box-shadow:
-    0 0 32px rgba(120, 240, 255, 0.9),
-    0 0 80px rgba(255, 120, 255, 0.8);
+    0 0 16px rgba(120, 240, 255, 0.4),
+    0 0 26px rgba(255, 120, 255, 0.25);
 }
 
-/* Pulsierender Glow */
+/* Soft pulsing glow */
 @keyframes hero-window-pulse {
   0% {
     box-shadow:
-      0 0 18px rgba(120, 240, 255, 0.5),
-      0 0 40px rgba(255, 120, 255, 0.35);
+      0 0 6px rgba(120, 240, 255, 0.2),
+      0 0 12px rgba(255, 120, 255, 0.12);
   }
   100% {
     box-shadow:
-      0 0 30px rgba(120, 240, 255, 0.9),
-      0 0 80px rgba(255, 120, 255, 0.7);
+      0 0 12px rgba(120, 240, 255, 0.35),
+      0 0 22px rgba(255, 120, 255, 0.2);
   }
 }
 
-/* -------------------------
-   Responsive
-   ------------------------- */
+/* ------------------------------------
+   RESPONSIVE
+   ------------------------------------ */
 
 @media (max-width: 1024px) {
   .hero-content {
@@ -194,9 +207,9 @@
   }
 
   .cta-orbit {
-    width: 78vw;
-    height: 100px;
-    margin-top: 3rem;
+    width: 70vw;
+    height: 52px;
+    margin-top: 1.8rem;
   }
 }
 
