@@ -115,14 +115,3 @@
     setupHeroTap();
   }
 })();
-
-/* TAP TO COLLAPSE HERO-CONTENT (PATCHED) */
-(function () {
-  const hero = document.querySelector(".hero");
-  const content = document.querySelector(".hero-content");
-  if (!hero || !content) return;
-
-  hero.addEventListener("click", () => {
-    content.classList.toggle("collapsed");
-  });
-})();
