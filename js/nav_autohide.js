@@ -1,6 +1,3 @@
-// ============================================
-// 1) Header hide/show on scroll (optional)
-// ============================================
 (function () {
   let lastY = window.scrollY;
   let ticking = false;
@@ -8,7 +5,7 @@
   const header = document.querySelector(".site-header");
   const subnav = document.querySelector(".site-subnav");
 
-  if (!header) return; // nothing to do on pages without a header
+  if (!header) return; // safety
 
   function update() {
     const currentY = window.scrollY;
@@ -35,25 +32,97 @@
   });
 })();
 
-// ============================================
-// 2) Tap-to-collapse ONLY hero-content
-// ============================================
+/* Mobile auto-hide for top hero */
 (function () {
   "use strict";
 
-  function setupHeroTapCollapse() {
-    const hero = document.querySelector(".hero");
-    const content = document.querySelector(".hero-content");
-    if (!hero || !content) return;
+  function setupHeroHideOnScroll() {
+    var hero =
+      document.querySelector(".home-hero") ||
+      document.querySelector(".hero") ||
+      document.querySelector(".intro-block") ||
+      document.querySelector(".intro") ||
+      document.querySelector(".hero-section");
 
-    hero.addEventListener("click", () => {
-      content.classList.toggle("collapsed");
+    if (!hero) return;
+
+    hero.classList.add("hero-hide-on-scroll");
+
+    var lastHidden = false;
+
+    window.addEventListener("scroll", function () {
+      var y = window.pageYOffset;
+      var hide = y > 80;
+
+      if (hide !== lastHidden) {
+        hero.classList.toggle("hero-hide-on-scroll--hidden", hide);
+        lastHidden = hide;
+      }
     });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupHeroTapCollapse);
+    document.addEventListener("DOMContentLoaded", setupHeroHideOnScroll);
   } else {
-    setupHeroTapCollapse();
+    setupHeroHideOnScroll();
   }
+})();
+
+/* Collapse .hero on scroll */
+(function () {
+  "use strict";
+
+  function collapseHeroOnScroll() {
+    const hero = document.querySelector(".hero");
+    if (!hero) return;
+
+    let collapsed = false;
+
+    window.addEventListener("scroll", () => {
+      const y = window.pageYOffset || document.documentElement.scrollTop;
+      const shouldCollapse = y > 50; // collapse after small scroll
+
+      if (shouldCollapse !== collapsed) {
+        hero.classList.toggle("hero-collapsed", shouldCollapse);
+        collapsed = shouldCollapse;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", collapseHeroOnScroll);
+  } else {
+    collapseHeroOnScroll();
+  }
+})();
+
+/* Tap-to-collapse hero (2-state) */
+(function () {
+  "use strict";
+
+  function setupHeroTap() {
+    const hero = document.querySelector(".hero");
+    if (!hero) return;
+
+    hero.addEventListener("click", () => {
+      hero.classList.toggle("hero-half");
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupHeroTap);
+  } else {
+    setupHeroTap();
+  }
+})();
+
+/* TAP TO COLLAPSE HERO-CONTENT (PATCHED) */
+(function () {
+  const hero = document.querySelector(".hero");
+  const content = document.querySelector(".hero-content");
+  if (!hero || !content) return;
+
+  hero.addEventListener("click", () => {
+    content.classList.toggle("collapsed");
+  });
 })();
