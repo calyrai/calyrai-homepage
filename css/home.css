@@ -11,35 +11,21 @@
   display: block;
   z-index: 0;
 
-  /* IMPORTANT: allow taps to pass through */
-  pointer-events: none;
+  /* allow dragging + clicking on the globe */
+  pointer-events: auto;
 }
 
-/* Entire hero section (the upper part) */
+/* Entire hero section (upper part) */
 .hero {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-
   transition: height 0.45s ease, opacity 0.3s ease;
   pointer-events: auto;
 }
 
-/* Half-height state (if used by JS) */
-.hero.hero-half {
-  height: 50vh;
-  opacity: 0.9;
-}
-
-/* Collapsed hero (if used by scroll logic) */
-.hero.hero-collapsed {
-  height: 0 !important;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* The visible text/button block */
+/* Hero content block */
 .hero-content {
   position: relative;
   z-index: 1;
@@ -59,16 +45,16 @@
   opacity: 1;
   transition: max-height 0.5s ease, opacity 0.4s ease;
 
-  pointer-events: auto; /* clickable again */
+  pointer-events: auto;
 }
 
-/* Collapsed hero-content (for tap collapse) */
+/* Collapsed hero-content (used by JS) */
 .hero-content.collapsed {
   max-height: 0 !important;
   opacity: 0 !important;
 }
 
-/* Mobile tweaks */
+/* Mobile layout */
 @media (max-width: 768px) {
   .hero-content {
     justify-content: center;
@@ -76,7 +62,7 @@
   }
 }
 
-/* Eyebrow */
+/* Eyebrow text */
 .eyebrow {
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -134,7 +120,7 @@
 }
 
 /* =========================
-   ATLANTIS CTA BUTTON
+   MAIN CTA BUTTON
    ========================= */
 
 .cta-orbit {
@@ -144,7 +130,7 @@
   margin-top: 0.5rem;
 }
 
-.cta-atlantis {
+.cta-main {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -162,11 +148,11 @@
     0 0 10px rgba(120, 240, 255, 0.6),
     0 0 26px rgba(255, 120, 255, 0.35);
 
-  animation: atlantis-pulse 2.4s ease-in-out infinite;
+  animation: cta-pulse 2.4s ease-in-out infinite;
   cursor: pointer;
 }
 
-.cta-atlantis:hover {
+.cta-main:hover {
   transform: translate(-50%, -50%) scale(1.05);
   box-shadow:
     0 0 14px rgba(120, 240, 255, 0.9),
@@ -179,7 +165,7 @@
   display: inline-flex;
 }
 
-@keyframes atlantis-pulse {
+@keyframes cta-pulse {
   0% {
     box-shadow:
       0 0 6px rgba(120, 240, 255, 0.5),
