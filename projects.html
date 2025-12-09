@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="css/impressum.css" />
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-50 flex flex-col">
+<!-- 🔥 WICHTIG: Die Auto-Hide-Funktion hängt an dieser Klasse -->
+<body class="projects-page min-h-screen bg-slate-950 text-slate-50 flex flex-col">
 
   <!-- HEADER -->
   <header class="site-header border-b border-cyan-500/30 bg-slate-950/80 backdrop-blur">
@@ -77,7 +78,7 @@
       <section>
         <div class="section-inner">
           <div class="projects-grid grid gap-6 md:grid-cols-2" id="projects-grid">
-            <!-- filled from data/projects.yaml by js/projects_from_yaml.js -->
+            <!-- filled dynamically from data/projects.yaml -->
           </div>
         </div>
       </section>
@@ -114,5 +115,8 @@
   <!-- YAML parser + loader -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script src="js/projects_from_yaml.js"></script>
+
+  <!-- Auto-hide Script -->
+  <script src="js/nav_autohide.js"></script>
 </body>
 </html>

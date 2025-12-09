@@ -1,29 +1,36 @@
-// ============================================
-// 1) Header hide/show on scroll
-// ============================================
+// nav_autohide.js
+// Hide/show the PROJECTS header (pill bar) on scroll.
+// HOME PAGE remains unaffected.
+
 (function () {
-  let lastY = window.scrollY;
-  let ticking = false;
+  const body = document.body;
+
+  // Only activate on the Projects page
+  if (!body.classList.contains("projects-page")) return;
 
   const header = document.querySelector(".site-header");
-  const subnav = document.querySelector(".site-subnav");
+  if (!header) return;
 
-  if (!header) return; // safety
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  let isHidden = false;
 
   function update() {
     const currentY = window.scrollY;
+    const scrollingDown = currentY > lastScrollY;
 
-    if (currentY > lastY + 10) {
-      // scroll down -> hide
-      header.classList.add("nav-hidden");
-      if (subnav) subnav.classList.add("subnav-hidden");
-    } else if (currentY < lastY - 10) {
-      // scroll up -> show
-      header.classList.remove("nav-hidden");
-      if (subnav) subnav.classList.remove("subnav-hidden");
+    // Hide on downward scroll
+    if (scrollingDown && currentY > 120 && !isHidden) {
+      header.classList.add("site-header-hidden");
+      isHidden = true;
+    }
+    // Show on upward scroll or near top
+    else if ((!scrollingDown || currentY <= 120) && isHidden) {
+      header.classList.remove("site-header-hidden");
+      isHidden = false;
     }
 
-    lastY = currentY;
+    lastScrollY = currentY;
     ticking = false;
   }
 
@@ -33,27 +40,4 @@
       ticking = true;
     }
   });
-})();
-
-// ============================================
-// 2) Tap-to-collapse ONLY hero-content
-// ============================================
-(function () {
-  "use strict";
-
-  function setupHeroTapCollapse() {
-    const hero = document.querySelector(".hero");
-    const content = document.querySelector(".hero-content");
-    if (!hero || !content) return;
-
-    hero.addEventListener("click", () => {
-      content.classList.toggle("collapsed");
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupHeroTapCollapse);
-  } else {
-    setupHeroTapCollapse();
-  }
 })();
