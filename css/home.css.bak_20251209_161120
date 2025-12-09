@@ -206,6 +206,14 @@
 }
 
 /* CLEAN HERO RULE (auto-inserted patch) */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  transition: height 0.45s ease, opacity 0.3s ease;
+  pointer-events: auto;
+}
 
 /* Make content clickable */
 .hero-content {
@@ -213,32 +221,6 @@
 }
 
 /* Prevent globe canvas from blocking interactions */
-#globe-canvas {
-  pointer-events: none !important;
-}
-
-/* Tap collapse */
-.hero.hero-half {
-  height: 50vh !important;
-  opacity: 0.9;
-}
-
-/* CLEAN HERO BLOCK (PATCHED) */
-.hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  transition: height 0.45s ease, opacity 0.3s ease;
-  pointer-events: auto !important;
-}
-
-/* Allow text/button interactions */
-.hero-content {
-  pointer-events: auto !important;
-}
-
-/* Prevent canvas from capturing taps */
 #globe-canvas {
   pointer-events: none !important;
 }
