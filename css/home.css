@@ -2,6 +2,17 @@
    HOME PAGE: HERO + GLOBE (CLEAN NEW VERSION)
    ========================= */
 
+/* Easy vertical offsets (adjust as you like) */
+:root {
+  /* Desktop / Laptop */
+  --hero-text-offset-desktop: 0vh;     /* z.B. -4vh oder +4vh */
+  --hero-window-offset-desktop: 0vh;   /* z.B. -2vh oder +2vh */
+
+  /* Mobile (Tablets + Phones) */
+  --hero-text-offset-mobile: 0vh;      /* z.B. -6vh für höher */
+  --hero-window-offset-mobile: 0vh;    /* z.B. -4vh für Fenster höher */
+}
+
 /* Globe Canvas (interactive, behind everything) */
 #globe-canvas {
   position: absolute;
@@ -44,6 +55,9 @@
 
   padding: 20vh 2rem 3rem;
   text-align: center;
+
+  /* Desktop default vertical offset */
+  transform: translateY(var(--hero-text-offset-desktop));
 
   /* Let mouse events pass through except on buttons */
   pointer-events: none;
@@ -130,9 +144,12 @@
 
 .cta-orbit {
   position: relative;
-  width: min(260px, 60vw);   /* Much smaller */
-  height: 58px;             /* Slim shape */
+  width: min(260px, 60vw);   /* Smaller */
+  height: 58px;              /* Slim shape */
   margin-top: 2rem;
+
+  /* Desktop default vertical offset for the window */
+  transform: translateY(var(--hero-window-offset-desktop));
 }
 
 /* Transparent neon-glass portal */
@@ -197,6 +214,12 @@
 @media (max-width: 1024px) {
   .hero-content {
     padding-top: 24vh;
+    /* Tablet offset uses the "mobile" variable to keep it simple */
+    transform: translateY(var(--hero-text-offset-mobile));
+  }
+
+  .cta-orbit {
+    transform: translateY(var(--hero-window-offset-mobile));
   }
 }
 
@@ -204,18 +227,21 @@
   .hero-content {
     padding-top: 34vh;
     padding-inline: 1.5rem;
+    transform: translateY(var(--hero-text-offset-mobile));
   }
 
   .cta-orbit {
     width: 70vw;
     height: 52px;
     margin-top: 1.8rem;
+    transform: translateY(var(--hero-window-offset-mobile));
   }
 }
 
 @media (max-width: 480px) {
   .hero-content {
     padding-top: 36vh;
+    transform: translateY(var(--hero-text-offset-mobile));
   }
 
   .subtitle {
