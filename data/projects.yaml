@@ -27,7 +27,7 @@
     - thermodynamics
   link_label: "Open SAXS viewer"
   link_url: "saxs_viewer/index.html"
-  disabled: true   # optional flag if you want to gray it out later
+  disabled: true
 
 
 - id: redhuman-metabolism
