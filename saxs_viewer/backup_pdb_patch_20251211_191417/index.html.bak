@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>P(r) & I(q) – Wavelet-Modell + PDB Viewer</title>
+
+  <!-- main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 3Dmol.js from CDN (for PDB viewer) -->
+  <script src="https://3dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+</head>
+<body>
+
+  <!-- Top controls for wavelet / P(r) model -->
+  <div id="controls">
+    <span class="label">D:</span>
+    <input id="DSlider" type="range" min="1" max="6" step="1" value="2">
+    <span id="DVal">2</span>
+
+    <span class="label">α:</span>
+    <input id="alphaSlider" type="range" min="0.10" max="2.00" step="0.05" value="0.70">
+    <span id="alphaVal">0.70</span>
+
+    <label style="display:flex;align-items:center;gap:0.2rem;">
+      <input type="checkbox" id="mirrorChk">
+      ↔
+    </label>
+  </div>
+
+  <!-- Three panels: P(r), I(q), PDB viewer -->
+  <div id="plots">
+    <!-- P(r) panel -->
+    <div class="plot-column">
+      <div class="plot-label">
+        <strong>P(r)</strong> – drop ASCII file here (r, p(r), [err])
+      </div>
+      <canvas id="pCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- I(q) panel -->
+    <div class="plot-column">
+      <div class="plot-label">
+        <strong>I(q)</strong> – drop ASCII file here (q, I(q), [err])
+      </div>
+      <canvas id="iqCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- PDB viewer panel -->
+    <div class="plot-column">
+      <div class="plot-label">
+        <strong>PDB Viewer</strong> – drop .pdb file (amino acids as spheres)
+      </div>
+      <div id="pdbDropZone">
+        <div id="pdbViewer"></div>
+        <div id="pdbHint">
+          Drop a .pdb file here<br>
+          (ATOM/HETATM; amino acids shown as spheres)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P(r)/I(q) wavelet app -->
+  <script src="js/pr_iq_viewer.js"></script>
+
+  <!-- PDB viewer logic -->
+  <script src="js/pdb_viewer.js"></script>
+</body>
+</html>

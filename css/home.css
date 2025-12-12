@@ -9,8 +9,8 @@
   --hero-window-offset-desktop: 0vh;   /* z.B. -2vh oder +2vh */
 
   /* Mobile (Tablets + Phones) */
-  --hero-text-offset-mobile: 0vh;      /* z.B. -6vh für höher */
-  --hero-window-offset-mobile: 0vh;    /* z.B. -4vh für Fenster höher */
+  --hero-text-offset-mobile: -10vh;      /* 10vh nach oben */
+  --hero-window-offset-mobile: -10vh;    /* 10vh nach oben */
 }
 
 /* Globe Canvas (interactive, behind everything) */

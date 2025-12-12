@@ -10,8 +10,9 @@
     - P(r)
     - multi-state
     - PCA
-  link_label: "Open SAXS mode"
-  link_url: "saxs.html"
+  link_label: "Open SAXS viewer"
+  link_url: "saxs_viewer/index.html"
+
 
 - id: biosaxs-lab
   title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
@@ -24,8 +25,10 @@
     - BioSAXS
     - SEC-SAXS
     - thermodynamics
-  link_label: "Explore BioSAXS"
-  link_url: "biosaxs.html"
+  link_label: "Open SAXS viewer"
+  link_url: "saxs_viewer/index.html"
+  disabled: true   # optional flag if you want to gray it out later
+
 
 - id: redhuman-metabolism
   title: "Redhuman – Metabolic Network Reconstruction"
@@ -38,8 +41,10 @@
     - metabolism
     - flux analysis
     - ML
-  link_label: "View model"
-  link_url: "redhuman.html"
+  link_label: "Coming soon"
+  link_url: "#"
+  disabled: true
+
 
 - id: saxs_sasview
   title: "SAXS Engine (sasmodels)"
@@ -48,12 +53,13 @@
     Interactive SASView-based scattering console for testing analytical
     models, JSON-driven parameter sets and Calyr.ai workflow integration.
   tags:
-    - saxs
+    - SAXS
     - sasview
     - scattering
     - models
   link_label: "Open SAXS engine"
   link_url: "projects/saxs_sasview/index.html"
+
 
 - id: saxs_intro_talk
   kind: mode

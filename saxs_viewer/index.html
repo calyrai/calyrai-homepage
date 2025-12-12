@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>P(r) & I(q) – Wavelet-Modell + PDB Viewer</title>
+
+  <!-- main CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- THREE.js for PDB viewer (global THREE) -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Top controls -->
+  <div id="controls">
+    <span class="label">D:</span>
+    <input id="DSlider" type="range" min="1" max="6" step="1" value="2" />
+    <span id="DVal">2</span>
+
+    <span class="label">α:</span>
+    <input id="alphaSlider" type="range" min="0.10" max="2.00" step="0.05" value="0.70" />
+    <span id="alphaVal">0.70</span>
+
+    <label style="display:flex;align-items:center;gap:0.2rem;">
+      <input type="checkbox" id="mirrorChk" />
+      ↔
+    </label>
+
+    <label class="label">
+      Einheit:
+      <select id="unitSelect">
+        <option value="nm" selected>nm</option>
+        <option value="A">Å</option>
+      </select>
+    </label>
+
+    <label class="label">
+      I(q)-Skala:
+      <select id="iqScaleSelect">
+        <option value="log" selected>log I, log q</option>
+        <option value="linear">I, q</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- Three panels -->
+  <div id="plots">
+    <!-- I(q) LEFT -->
+    <div class="plot-column" style="flex:1;">
+      <div class="plot-label">
+        <strong>I(q)</strong> – drop ASCII file here (q, I(q), [err])
+      </div>
+      <canvas id="iqCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- P(r) MIDDLE -->
+    <div class="plot-column" style="flex:1;">
+      <div class="plot-label">
+        <strong>P(r)</strong> – drop ASCII file here (r, p(r), [err])
+      </div>
+      <canvas id="pCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- PDB RIGHT (larger) -->
+    <div class="plot-column" style="flex:2;">
+      <div class="plot-label">
+        <strong>PDB Viewer</strong> – drop .pdb file (amino acids as spheres)
+      </div>
+
+      <div id="pdbCanvasContainer">
+        <div id="pdb-drop-hint">
+          Drop a .pdb file here<br />
+          (CA atoms → spheres, cyan → magenta along sequence)<br />
+          Default: 3V03.pdb
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ PR/IQ app loader (MUST be module because it uses import()) -->
+  <script type="module" src="js/pr_iq_viewer.js"></script>
+
+  <!-- PDB viewer logic (classic script; uses global THREE) -->
+  <script src="js/pdb_viewer.js"></script>
+</body>
+</html>

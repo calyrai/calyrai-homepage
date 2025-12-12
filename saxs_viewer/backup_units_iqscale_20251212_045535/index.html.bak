@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>P(r) & I(q) – Wavelet-Modell + PDB Viewer</title>
+
+  <!-- main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- THREE.js for PDB viewer -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Top controls for wavelet / P(r) model -->
+  <div id="controls">
+    <span class="label">D:</span>
+    <input id="DSlider" type="range" min="1" max="6" step="1" value="2">
+    <span id="DVal">2</span>
+
+    <span class="label">α:</span>
+    <input id="alphaSlider" type="range" min="0.10" max="2.00" step="0.05" value="0.70">
+    <span id="alphaVal">0.70</span>
+
+    <label style="display:flex;align-items:center;gap:0.2rem;">
+      <input type="checkbox" id="mirrorChk">
+      ↔
+    </label>
+  </div>
+
+  <!-- Three panels: I(q) (left), P(r) (middle), PDB model (right) -->
+  <div id="plots">
+
+    <!-- I(q) panel – LEFT -->
+    <div class="plot-column" style="flex:1;">
+      <div class="plot-label">
+        <strong>I(q)</strong> – drop ASCII file here (q, I(q), [err])
+      </div>
+      <canvas id="iqCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- P(r) panel – MIDDLE -->
+    <div class="plot-column" style="flex:1;">
+      <div class="plot-label">
+        <strong>P(r)</strong> – drop ASCII file here (r, p(r), [err])
+      </div>
+      <canvas id="pCanvas" width="420" height="320"></canvas>
+    </div>
+
+    <!-- PDB viewer panel – RIGHT (larger) -->
+    <div class="plot-column" style="flex:2;">
+      <div class="plot-label">
+        <strong>PDB Viewer</strong> – drop .pdb file (amino acids as spheres)
+      </div>
+
+      <!-- container ID must match pdb_viewer.js: pdbCanvasContainer -->
+      <div id="pdbCanvasContainer">
+        <div id="pdb-drop-hint">
+          Drop a .pdb file here<br>
+          (CA atoms → spheres, cyan → magenta along sequence)<br>
+          Default: 3V03.pdb
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- P(r)/I(q) wavelet app (requires controls + canvases already present) -->
+  <script src="js/pr_iq_viewer.js"></script>
+
+  <!-- PDB viewer logic (uses #pdbCanvasContainer, autoloads 3V03.pdb) -->
+  <script src="js/pdb_viewer.js"></script>
+
+</body>
+</html>
