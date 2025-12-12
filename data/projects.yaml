@@ -13,6 +13,17 @@
   link_label: "Open SAXS viewer"
   link_url: "saxs_viewer/index.html"
 
+- id: presentation-boku-2025
+  title: "PRESENTATION BOKU 2025"
+  subtitle: "Keynote export (HTML/PDF) + assets"
+  description: >
+    Exported Keynote talk with embedded PDFs and the Keynote HTML player assets.
+  tags:
+    - TALK
+    - KEYNOTE
+    - BOKU
+  link_label: "Open talk"
+  link_url: "projects/presentation-boku-2025/index.html"
 
 - id: biosaxs-lab
   title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
@@ -29,7 +40,6 @@
   link_url: "saxs_viewer/index.html"
   disabled: true
 
-
 - id: redhuman-metabolism
   title: "Redhuman – Metabolic Network Reconstruction"
   subtitle: "Thermodynamically consistent flux spaces"
@@ -45,7 +55,6 @@
   link_url: "#"
   disabled: true
 
-
 - id: saxs_sasview
   title: "SAXS Engine (sasmodels)"
   subtitle: "Interactive scattering console powered by the Calyr.ai stack."
@@ -59,7 +68,6 @@
     - models
   link_label: "Open SAXS engine"
   link_url: "projects/saxs_sasview/index.html"
-
 
 - id: saxs_intro_talk
   kind: mode
