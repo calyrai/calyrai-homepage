@@ -13,19 +13,6 @@
   link_label: "Open SAXS viewer"
   link_url: "saxs_viewer/index.html"
 
-- id: presentation-boku-2025
-  disabled : true
-  title: "PRESENTATION BOKU 2025"
-  subtitle: "Keynote export (HTML/PDF) + assets"
-  description: >
-    Exported Keynote talk with embedded PDFs and the Keynote HTML player assets.
-  tags:
-    - TALK
-    - KEYNOTE
-    - BOKU
-  link_label: "Open talk"
-  link_url: "projects/presentation-boku-2025/index.html"
-
 - id: biosaxs-lab
   title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
   subtitle: "Time-resolved, SEC-coupled structural biology"
