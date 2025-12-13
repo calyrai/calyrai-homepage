@@ -14,6 +14,7 @@
   link_url: "saxs_viewer/index.html"
 
 - id: presentation-boku-2025
+  disabled : true
   title: "PRESENTATION BOKU 2025"
   subtitle: "Keynote export (HTML/PDF) + assets"
   description: >
