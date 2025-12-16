@@ -6,12 +6,14 @@
 //   • Night side: magenta (approx. real time, UTC + axial tilt)
 // - Invisible sphere for raycasting (so pin-placement still works)
 // - Bright cyan line + spike marker on click, fading out
-// - Traffic as cyan "strikes" (cylinders) from surface outward: pulsing + fade
+// - Traffic as YELLOW "access strikes" (cylinders) from surface outward: pulsing + fade
+// - Persistent visitor dots: tiny YELLOW points on the surface (loaded from /api/visitors)
 // - Auto-rotation, stops on interaction, resumes after idle
 // - Strike history exposed via CalyrGlobe API
+// - Visible "sun" marker (cyan) that moves with the day/night direction
 //
-// NOTE: This file no longer manipulates .hero-content at all.
-//       The hero visibility is handled purely by nav_autohide.js + CSS.
+// NOTE: This file does not manipulate .hero-content.
+//       The hero visibility is handled purely by your CSS + nav scripts.
 
 (function () {
   const canvas = document.getElementById("globe-canvas");
@@ -36,6 +38,13 @@
 
   const R = 1.4; // Earth radius
 
+  // =========================================================
+  // COLORS (final)
+  // =========================================================
+  const DAY_CYAN = 0x00eaff;
+  const NIGHT_MAGENTA = 0xff3cff;
+  const ACCESS_YELLOW = 0xfff200;
+
   // ---- Camera orbit parameters ----
   let camRadius = 3.4;
   let camTheta = 0.0; // vertical angle
@@ -55,6 +64,18 @@
   const globeGroup = new THREE.Group();
   scene.add(globeGroup);
 
+  // Visible Sun marker (cyan)
+  const sunMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.05, 16, 16),
+    new THREE.MeshBasicMaterial({
+      color: DAY_CYAN,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+    })
+  );
+  scene.add(sunMarker);
+
   // Raycaster for click-pin placement
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -73,17 +94,27 @@
   const strikeHistory = []; // { lat, lon, weight, createdAt, dot }
   const historyDots = [];   // list of dot meshes
 
+  // Persistent visitor dots
+  const visitorDots = []; // meshes
+  const visitorDotGeom = new THREE.SphereGeometry(0.012, 6, 6);
+  const visitorDotBaseMat = new THREE.MeshBasicMaterial({
+    color: ACCESS_YELLOW,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false,
+  });
+
   // Continent lines
   const continentLines = []; // { line, centroid }
 
   // Materials: day (cyan) & night (magenta)
   const dayMat = new THREE.LineBasicMaterial({
-    color: 0x00eaff,
+    color: DAY_CYAN,
     linewidth: 1,
   });
 
   const nightMat = new THREE.LineBasicMaterial({
-    color: 0xff3cff,
+    color: NIGHT_MAGENTA,
     linewidth: 1,
   });
 
@@ -158,6 +189,15 @@
     return new THREE.Vector3(x, y, z);
   }
 
+  // ---------- Persistent visitor dot ----------
+  function addVisitorDot(lat, lon) {
+    const dot = new THREE.Mesh(visitorDotGeom, visitorDotBaseMat.clone());
+    dot.position.copy(latLonToVector3(lat, lon, R + 0.01));
+    globeGroup.add(dot);
+    visitorDots.push(dot);
+    return dot;
+  }
+
   // ---------- Click pin ----------
   function placePin(screenX, screenY) {
     if (!earthMesh) return;
@@ -191,7 +231,7 @@
     );
 
     const innerMat = new THREE.MeshBasicMaterial({
-      color: 0x00eaff,
+      color: DAY_CYAN,
       transparent: true,
       opacity: 1.0,
     });
@@ -222,15 +262,13 @@
     );
 
     const spikeMat = new THREE.MeshBasicMaterial({
-      color: 0x00eaff,
+      color: DAY_CYAN,
       transparent: true,
       opacity: 1.0,
     });
 
     const spike = new THREE.Mesh(spikeGeom, spikeMat);
-    spike.position.copy(
-      outwardDir.clone().multiplyScalar(R + spikeHeight / 2)
-    );
+    spike.position.copy(outwardDir.clone().multiplyScalar(R + spikeHeight / 2));
     spike.quaternion.setFromUnitVectors(
       new THREE.Vector3(0, 1, 0),
       outwardDir
@@ -244,7 +282,7 @@
     pinFadeStart = performance.now();
   }
 
-  // ---------- Access strikes ----------
+  // ---------- Access strikes (YELLOW) ----------
   const strikeGeom = new THREE.CylinderGeometry(0.004, 0.004, 1.0, 8);
 
   function addAccessStrike(lat, lon, weight = 1) {
@@ -255,7 +293,7 @@
     const strikeHeight = baseHeight + extra;
 
     const mat = new THREE.MeshBasicMaterial({
-      color: 0x00eaff,
+      color: ACCESS_YELLOW,
       transparent: true,
       opacity: 1.0,
     });
@@ -279,14 +317,16 @@
       lifetime: 4000 + Math.random() * 2000,
     });
 
-    const dotGeom = new THREE.SphereGeometry(0.015, 8, 8);
+    // surface dot (YELLOW) shown during "history"
+    const dotGeom = new THREE.SphereGeometry(0.015, 10, 10);
     const dotMat = new THREE.MeshBasicMaterial({
-      color: 0x00eaff,
+      color: ACCESS_YELLOW,
       transparent: true,
       opacity: 0.0,
+      depthWrite: false,
     });
     const dot = new THREE.Mesh(dotGeom, dotMat);
-    dot.position.copy(latLonToVector3(lat, lon, R + 0.02));
+    dot.position.copy(latLonToVector3(lat, lon, R + 0.015));
     globeGroup.add(dot);
 
     strikeHistory.push({
@@ -332,13 +372,11 @@
     const cosLon = Math.cos(lonRad);
     const sinLon = Math.sin(lonRad);
 
-    const sunDir = new THREE.Vector3(
+    return new THREE.Vector3(
       cosLat * cosLon,
       sinLat,
       cosLat * sinLon
     ).normalize();
-
-    return sunDir;
   }
 
   // ---------- Recolor continents ----------
@@ -351,6 +389,12 @@
       const n = entry.centroid.clone().normalize();
       const ndl = n.dot(sunDir);
       entry.line.material = ndl >= 0 ? dayMat : nightMat;
+    }
+
+    // OPTIONAL: dim visitor dots on the night side (keeps them yellow)
+    for (const dot of visitorDots) {
+      const n = dot.position.clone().normalize();
+      dot.material.opacity = n.dot(sunDir) >= 0 ? 0.9 : 0.35;
     }
   }
 
@@ -393,9 +437,7 @@
 
   function addLines(rings) {
     for (const ring of rings) {
-      const pts = ring.map(([lon, lat]) =>
-        latLonToVector3(lat, lon, R)
-      );
+      const pts = ring.map(([lon, lat]) => latLonToVector3(lat, lon, R));
       const geom = new THREE.BufferGeometry().setFromPoints(pts);
       const line = new THREE.LineLoop(geom, dayMat);
       globeGroup.add(line);
@@ -406,6 +448,35 @@
 
       continentLines.push({ line, centroid });
     }
+  }
+
+  // ---------- Visitor API wiring ----------
+  function logVisitToServer() {
+    // Server should geoip from IP. Client only sends "what page".
+    fetch("/api/visit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path: location.pathname,
+        ref: document.referrer || "",
+        ts: Date.now()
+      }),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function loadVisitorsFromServer() {
+    fetch("/api/visitors")
+      .then(r => r.ok ? r.json() : [])
+      .then(list => {
+        if (!Array.isArray(list)) return;
+        for (const v of list) {
+          if (typeof v?.lat === "number" && typeof v?.lon === "number") {
+            addVisitorDot(v.lat, v.lon);
+          }
+        }
+      })
+      .catch(() => {});
   }
 
   // ---------- Animation ----------
@@ -423,8 +494,14 @@
         autoRotActive = true;
       }
 
+      // Update day/night materials (real-time)
       updateDayNightOnContours();
 
+      // Update sun marker (real-time)
+      const sunDirNow = computeSunDirection();
+      sunMarker.position.copy(sunDirNow.clone().multiplyScalar(5.0));
+
+      // Pin fade
       if (pinFadeStart !== null && (innerMatRef || spikeMatRef)) {
         const elapsed = now - pinFadeStart;
         const duration = 10000;
@@ -445,6 +522,7 @@
         }
       }
 
+      // Strikes pulse + fade
       for (let i = accessStrikes.length - 1; i >= 0; i--) {
         const strike = accessStrikes[i];
         const dt = now - strike.t0;
@@ -466,9 +544,10 @@
         strike.mesh.material.opacity = 0.2 + 0.8 * fade;
       }
 
+      // Show strike history dots when user is interacting (or idle after drag)
       const showingHistory = !autoRotActive && !isDragging;
       for (const dot of historyDots) {
-        dot.material.opacity = showingHistory ? 0.6 : 0.0;
+        dot.material.opacity = showingHistory ? 0.65 : 0.0;
       }
 
       renderer.render(scene, camera);
@@ -488,10 +567,15 @@
   // Expose API
   window.CalyrGlobe = {
     addAccessStrike,
+    addVisitorDot,
     getStrikeHistory: () => strikeHistory.slice(),
   };
 
-  // Simulated traffic
+  // Load + log (only works once you have a backend)
+  loadVisitorsFromServer();
+  logVisitToServer();
+
+  // Simulated traffic (remove later if you want real only)
   (function simulateTraffic() {
     function randomLat() {
       return -85 + Math.random() * 170;
@@ -541,10 +625,7 @@
       let diff = Math.abs(ry - TARGET_Y);
       diff = Math.min(diff, Math.abs(diff - TWO_PI));
 
-      const proximity = Math.max(
-        0,
-        1 - diff / (TOLERANCE * 1.5)
-      );
+      const proximity = Math.max(0, 1 - diff / (TOLERANCE * 1.5));
 
       let rings = document.getElementById("atlantis-rings");
       if (!rings) {
