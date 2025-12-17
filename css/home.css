@@ -1,14 +1,10 @@
-replace file /* =========================
+/* =========================
    HOME PAGE: HERO + GLOBE
    TWO REAL PILLS — FINAL
    ========================= */
 
 :root{
   --calyr-magenta:#ff00b8;
-
-  /* magenta offset (desktop) */
-  --magenta-x:215px;
-  --magenta-y:-32px;
 }
 
 /* =========================
@@ -42,7 +38,7 @@ replace file /* =========================
   margin:0 auto;
   padding:20vh 2rem 3rem;
   text-align:center;
-  pointer-events:none; /* canvas stays interactive */
+  pointer-events:none;
 }
 
 .hero-content a,
@@ -86,6 +82,7 @@ replace file /* =========================
   color:#8fdcff;
   opacity:.95;
 }
+
 /* =========================
    ACTION AREA
    ========================= */
@@ -93,7 +90,7 @@ replace file /* =========================
 .cta-orbit{
   position:relative;
   width:min(620px,92vw);
-  height:110px;            /* enough room for stacked pills */
+  height:110px;
   margin:2rem auto 0;
   overflow:visible;
   z-index:20;
@@ -119,7 +116,7 @@ replace file /* =========================
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
 
-  opacity:0;                 /* desktop default: hidden */
+  opacity:0;
   pointer-events:none;
 
   transition:
@@ -159,7 +156,6 @@ replace file /* =========================
   width:132px;
   height:32px;
 
-  /* centered + stacked above cyan */
   transform:translate(-50%,-50%) translateY(-44px);
 
   border:1.25px solid var(--calyr-magenta);
@@ -180,7 +176,6 @@ replace file /* =========================
 
 .pill-label{ display:none !important; }
 
-/* also kill any old pseudo text */
 .hero-window::before,
 .hero-window::after,
 .pill-magenta-small::before,
@@ -221,7 +216,6 @@ replace file /* =========================
   .cta-orbit{ height:130px; }
   .hero-window{ width:min(360px,92vw); }
 
-  /* keep magenta above on small phones too */
   .pill-magenta-small{
     transform:translate(-50%,-50%) translateY(-46px);
   }
@@ -232,26 +226,50 @@ replace file /* =========================
 
 /* =========================================================
    MOBILE: allow scrolling + move hero text as you scroll
+   MUST BE LAST
    ========================================================= */
 
-/* Make the hero scrollable on touch so user can push text up/down */
 @media (hover: none) and (pointer: coarse){
+
+  /* hero becomes scroll container */
   .hero{
-    height: 100svh;          /* stable mobile viewport */
-    overflow-y: auto;        /* allow vertical scroll */
+    height: 100svh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* keep globe fixed behind */
+  /* IMPORTANT: stop forcing absolute on mobile */
   #globe-canvas{
-    position: sticky;
+    position: sticky !important;
     top: 0;
+    inset: auto !important;
+    width: 100%;
+    height: 100svh;
   }
 
-  /* give content extra vertical space so it can move */
+  /* create vertical travel room for the text */
   .hero-content{
-    min-height: 140svh;      /* scroll room */
-    padding-top: 10vh;
-    padding-bottom: 22vh;    /* room around pills */
+    min-height: 160svh;
+    padding-top: 8vh;
+    padding-bottom: 28vh;
+  }
+}
+
+/* =========================================================
+   MOBILE: FORCE BOTH PILLS PERFECTLY CENTERED
+   ========================================================= */
+
+@media (hover: none) and (pointer: coarse){
+  .pill{
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  /* ensure same size centering behavior */
+  .hero-window,
+  .pill-magenta-small{
+    margin: 0 !important;
   }
 }
