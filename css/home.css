@@ -156,7 +156,8 @@
   width:132px;
   height:32px;
 
-  transform:translate(-50%,-50%) translateY(-44px);
+  /* final vertical position */
+  transform:translate(-50%,-50%) translateY(-20px);
 
   border:1.25px solid var(--calyr-magenta);
   box-shadow:
@@ -167,7 +168,8 @@
 }
 
 .pill-magenta-small:hover{
-  transform:translate(-50%,-50%) translateY(-44px) scale(1.06);
+  /* SAME position + scale only */
+  transform:translate(-50%,-50%) translateY(-20px) scale(1.06);
 }
 
 /* =========================
@@ -226,7 +228,7 @@
 
 /* =========================================================
    MOBILE: allow scrolling + move hero text as you scroll
-   MUST BE LAST
+   MUST BE LAST (except final centering block below)
    ========================================================= */
 
 @media (hover: none) and (pointer: coarse){
@@ -239,7 +241,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* IMPORTANT: stop forcing absolute on mobile */
+  /* keep globe fixed behind */
   #globe-canvas{
     position: sticky !important;
     top: 0;
@@ -267,9 +269,25 @@
     transform: translate(-50%, -50%) !important;
   }
 
-  /* ensure same size centering behavior */
   .hero-window,
   .pill-magenta-small{
     margin: 0 !important;
+  }
+}
+
+/* =========================================================
+   FINAL: CENTER HERO TEXT (DESKTOP + MOBILE)
+   ========================================================= */
+
+.hero-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;      /* horizontal centering */
+  text-align:center;
+}
+
+@media (hover: none) and (pointer: coarse){
+  .hero-content{
+    justify-content:center; /* vertical centering on mobile */
   }
 }
