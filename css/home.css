@@ -98,6 +98,8 @@
   margin:2rem auto 0;
   overflow:visible;
   z-index:20;
+
+  transform: translateY(-6vh); /* ← pills higher */
 }
 
 /* =========================
@@ -218,11 +220,11 @@
 
 /* =========================
    INTERACTION MODEL
-   Desktop: hover
+   Desktop: hover / focus
    Mobile: always visible
    ========================= */
 
-/* Desktop / mouse */
+/* Desktop / mouse: show pills only on hover/focus */
 @media (hover: hover) and (pointer: fine){
   .cta-orbit:hover .pill,
   .cta-orbit:focus-within .pill{
@@ -231,7 +233,7 @@
   }
 }
 
-/* Touch devices */
+/* Touch devices: pills always visible */
 @media (hover: none) and (pointer: coarse){
   .pill{
     opacity:1 !important;
@@ -244,6 +246,14 @@
     padding-bottom:10vh !important;
     transform:translateY(-10vh) !important;
   }
+
+  /* stack magenta under cyan on touch (so it never blocks taps) */
+  .pill-magenta-small{
+    transform:translate(-50%,-50%) translateY(48px) !important;
+  }
+  .pill-magenta-small:hover{
+    transform:translate(-50%,-50%) translateY(48px) scale(1.06) !important;
+  }
 }
 
 /* Small phones */
@@ -253,25 +263,26 @@
     padding-bottom:12vh !important;
     transform:translateY(-12vh) !important;
   }
+
+  .hero-window{ width:min(360px,92vw); }
+  .subtitle{ font-size:.95rem; }
+
+  .pill-magenta-small{
+    transform:translate(-50%,-50%) translateY(52px) !important;
+  }
+  .pill-magenta-small:hover{
+    transform:translate(-50%,-50%) translateY(52px) scale(1.06) !important;
+  }
 }
 
 /* =========================
-   RESPONSIVE SIZING
+   RESPONSIVE SIZING (non-touch width changes)
    ========================= */
 
 @media (max-width:768px){
   .cta-orbit{ height:130px; }
-
-  .pill-magenta-small{
-    transform:translate(-50%,-50%) translateY(48px);
-  }
-
-  .pill-magenta-small:hover{
-    transform:translate(-50%,-50%) translateY(48px) scale(1.06);
-  }
 }
 
 @media (max-width:480px){
-  .hero-window{ width:min(360px,92vw); }
-  .subtitle{ font-size:.95rem; }
+  .cta-orbit{ height:140px; }
 }
