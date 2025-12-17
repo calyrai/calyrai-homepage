@@ -98,8 +98,6 @@
   margin:2rem auto 0;
   overflow:visible;
   z-index:20;
-
-  transform: translateY(-6vh); /* ← pills higher */
 }
 
 /* =========================
@@ -288,42 +286,29 @@
 }
 
 /* =========================================================
+   GLOBAL SHIFT (DESKTOP + MOBILE)
+   moves BOTH pills slightly left everywhere
+   ========================================================= */
+.hero-window,
+.pill-magenta-small{
+  left: 48% !important; /* was 50% */
+}
+
+/* =========================================================
    MOBILE FINAL OVERRIDES (MUST BE LAST IN home.css)
    - Touch: pills always visible
-   - Touch: shift pills left
+   - Touch: shift pills left more
    - Touch: move hero text up (so pills are tappable)
    ========================================================= */
 
-/* Touch devices */
 @media (hover: none) and (pointer: coarse){
-  /* pills always visible on mobile */
-  .pill{
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  /* move hero text up so pills stay tappable */
-  .hero-content{
-    padding-top: 14vh !important;
-    padding-bottom: 10vh !important;
-    transform: translateY(-10vh) !important;
-  }
-
-  /* shift both pills slightly left */
   .hero-window,
   .pill-magenta-small{
-    left: 46% !important;  /* was 50% */
+    left: 46% !important;
   }
 }
 
-/* Small phones */
 @media (hover: none) and (pointer: coarse) and (max-width:480px){
-  .hero-content{
-    padding-top: 12vh !important;
-    padding-bottom: 12vh !important;
-    transform: translateY(-12vh) !important;
-  }
-
   .hero-window,
   .pill-magenta-small{
     left: 44% !important;
