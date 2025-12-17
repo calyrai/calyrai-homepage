@@ -1,13 +1,12 @@
 /* =========================
    HOME PAGE: HERO + GLOBE
-   TWO REAL PILLS — HOVER ONLY
-   FINAL
+   TWO REAL PILLS — FINAL
    ========================= */
 
 :root{
   --calyr-magenta:#ff00b8;
 
-  /* magenta offset */
+  /* magenta offset (desktop) */
   --magenta-x:215px;
   --magenta-y:-32px;
 }
@@ -32,7 +31,10 @@
   background:radial-gradient(circle at top,#06091a 0%,#02030a 45%,#000 100%);
 }
 
-/* content above canvas */
+/* =========================
+   HERO CONTENT
+   ========================= */
+
 .hero-content{
   position:relative;
   z-index:10;
@@ -40,7 +42,7 @@
   margin:0 auto;
   padding:20vh 2rem 3rem;
   text-align:center;
-  pointer-events:none;
+  pointer-events:none; /* canvas stays interactive */
 }
 
 .hero-content a,
@@ -114,7 +116,7 @@
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
 
-  opacity:0;                 /* hidden by default */
+  opacity:0;                 /* desktop default: hidden */
   pointer-events:none;
 
   transition:
@@ -124,7 +126,7 @@
 }
 
 /* =========================
-   CYAN MAIN PILL (BOTTOM)
+   CYAN MAIN PILL
    ========================= */
 
 .hero-window{
@@ -150,7 +152,7 @@
 }
 
 /* =========================
-   MAGENTA SMALL PILL (TOP)
+   MAGENTA SMALL PILL
    ========================= */
 
 .pill-magenta-small{
@@ -204,15 +206,6 @@
 }
 
 /* =========================
-   HOVER ACTIVATION
-   ========================= */
-
-.cta-orbit:hover .pill{
-  opacity:1;
-  pointer-events:auto;
-}
-
-/* =========================
    KILL LEGACY PSEUDO TEXT
    ========================= */
 
@@ -224,7 +217,46 @@
 }
 
 /* =========================
-   RESPONSIVE
+   INTERACTION MODEL
+   Desktop: hover
+   Mobile: always visible
+   ========================= */
+
+/* Desktop / mouse */
+@media (hover: hover) and (pointer: fine){
+  .cta-orbit:hover .pill,
+  .cta-orbit:focus-within .pill{
+    opacity:1;
+    pointer-events:auto;
+  }
+}
+
+/* Touch devices */
+@media (hover: none) and (pointer: coarse){
+  .pill{
+    opacity:1 !important;
+    pointer-events:auto !important;
+  }
+
+  /* move hero text up so pills are tappable */
+  .hero-content{
+    padding-top:14vh !important;
+    padding-bottom:10vh !important;
+    transform:translateY(-10vh) !important;
+  }
+}
+
+/* Small phones */
+@media (hover: none) and (pointer: coarse) and (max-width:480px){
+  .hero-content{
+    padding-top:12vh !important;
+    padding-bottom:12vh !important;
+    transform:translateY(-12vh) !important;
+  }
+}
+
+/* =========================
+   RESPONSIVE SIZING
    ========================= */
 
 @media (max-width:768px){
@@ -240,7 +272,6 @@
 }
 
 @media (max-width:480px){
-  .hero-content{ padding-top:36vh; }
-  .subtitle{ font-size:.95rem; }
   .hero-window{ width:min(360px,92vw); }
+  .subtitle{ font-size:.95rem; }
 }
