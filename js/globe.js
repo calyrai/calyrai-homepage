@@ -6,7 +6,7 @@
 //   • Night side: magenta (approx. real time, UTC + axial tilt)
 // - Invisible sphere for raycasting (so pin-placement still works)
 // - Bright cyan line + spike marker on click, fading out
-// - Traffic as YELLOW "access strikes" (cylinders) from surface outward: pulsing + fade
+// - Traffic as CYAN "access strikes" (cylinders) from surface outward: pulsing + fade
 // - Persistent visitor dots: tiny YELLOW points on the surface (loaded from /api/visitors)
 // - Auto-rotation, stops on interaction, resumes after idle
 // - Strike history exposed via CalyrGlobe API
@@ -43,7 +43,9 @@
   // =========================================================
   const DAY_CYAN = 0x00eaff;
   const NIGHT_MAGENTA = 0xff3cff;
-  const ACCESS_YELLOW = 0xfff200;
+
+  const ACCESS_CYAN = DAY_CYAN;     // strikes + strike-history dots
+  const VISITOR_YELLOW = 0xfff200;  // persistent visitor dots
 
   // ---- Camera orbit parameters ----
   let camRadius = 3.4;
@@ -98,7 +100,7 @@
   const visitorDots = []; // meshes
   const visitorDotGeom = new THREE.SphereGeometry(0.012, 6, 6);
   const visitorDotBaseMat = new THREE.MeshBasicMaterial({
-    color: ACCESS_YELLOW,
+    color: VISITOR_YELLOW,
     transparent: true,
     opacity: 0.9,
     depthWrite: false,
@@ -282,7 +284,7 @@
     pinFadeStart = performance.now();
   }
 
-  // ---------- Access strikes (YELLOW) ----------
+  // ---------- Access strikes (CYAN) ----------
   const strikeGeom = new THREE.CylinderGeometry(0.004, 0.004, 1.0, 8);
 
   function addAccessStrike(lat, lon, weight = 1) {
@@ -293,7 +295,7 @@
     const strikeHeight = baseHeight + extra;
 
     const mat = new THREE.MeshBasicMaterial({
-      color: ACCESS_YELLOW,
+      color: ACCESS_CYAN,
       transparent: true,
       opacity: 1.0,
     });
@@ -317,10 +319,10 @@
       lifetime: 4000 + Math.random() * 2000,
     });
 
-    // surface dot (YELLOW) shown during "history"
+    // strike-history surface dot (CYAN)
     const dotGeom = new THREE.SphereGeometry(0.015, 10, 10);
     const dotMat = new THREE.MeshBasicMaterial({
-      color: ACCESS_YELLOW,
+      color: ACCESS_CYAN,
       transparent: true,
       opacity: 0.0,
       depthWrite: false,
@@ -391,7 +393,7 @@
       entry.line.material = ndl >= 0 ? dayMat : nightMat;
     }
 
-    // OPTIONAL: dim visitor dots on the night side (keeps them yellow)
+    // OPTIONAL: dim visitor dots on the night side
     for (const dot of visitorDots) {
       const n = dot.position.clone().normalize();
       dot.material.opacity = n.dot(sunDir) >= 0 ? 0.9 : 0.35;
@@ -452,7 +454,6 @@
 
   // ---------- Visitor API wiring ----------
   function logVisitToServer() {
-    // Server should geoip from IP. Client only sends "what page".
     fetch("/api/visit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -494,14 +495,11 @@
         autoRotActive = true;
       }
 
-      // Update day/night materials (real-time)
       updateDayNightOnContours();
 
-      // Update sun marker (real-time)
       const sunDirNow = computeSunDirection();
       sunMarker.position.copy(sunDirNow.clone().multiplyScalar(5.0));
 
-      // Pin fade
       if (pinFadeStart !== null && (innerMatRef || spikeMatRef)) {
         const elapsed = now - pinFadeStart;
         const duration = 10000;
@@ -522,7 +520,6 @@
         }
       }
 
-      // Strikes pulse + fade
       for (let i = accessStrikes.length - 1; i >= 0; i--) {
         const strike = accessStrikes[i];
         const dt = now - strike.t0;
@@ -544,7 +541,6 @@
         strike.mesh.material.opacity = 0.2 + 0.8 * fade;
       }
 
-      // Show strike history dots when user is interacting (or idle after drag)
       const showingHistory = !autoRotActive && !isDragging;
       for (const dot of historyDots) {
         dot.material.opacity = showingHistory ? 0.65 : 0.0;
@@ -564,44 +560,29 @@
   loadContinents();
   startAnimation();
 
-  // Expose API
   window.CalyrGlobe = {
     addAccessStrike,
     addVisitorDot,
     getStrikeHistory: () => strikeHistory.slice(),
   };
 
-  // Load + log (only works once you have a backend)
   loadVisitorsFromServer();
   logVisitToServer();
 
   // Simulated traffic (remove later if you want real only)
   (function simulateTraffic() {
-    function randomLat() {
-      return -85 + Math.random() * 170;
-    }
-    function randomLon() {
-      return -180 + Math.random() * 360;
-    }
-    function randomWeight() {
-      return 1 + Math.floor(Math.random() * 100);
-    }
+    function randomLat() { return -85 + Math.random() * 170; }
+    function randomLon() { return -180 + Math.random() * 360; }
+    function randomWeight() { return 1 + Math.floor(Math.random() * 100); }
     function spawnHit() {
       if (window.CalyrGlobe && window.CalyrGlobe.addAccessStrike) {
-        const lat = randomLat();
-        const lon = randomLon();
-        const w = randomWeight();
-        window.CalyrGlobe.addAccessStrike(lat, lon, w);
+        window.CalyrGlobe.addAccessStrike(randomLat(), randomLon(), randomWeight());
       }
-      const nextInMs = 2000 + Math.random() * 3000;
-      setTimeout(spawnHit, nextInMs);
+      setTimeout(spawnHit, 2000 + Math.random() * 3000);
     }
     spawnHit();
   })();
 
-  // =========================================================
-  // Atlantis Unlock Logic – retains globeGroup and button logic
-  // =========================================================
   (function () {
     const btn = document.getElementById("uncover-btn");
     if (!btn) return;
