@@ -86,7 +86,6 @@
   color:#8fdcff;
   opacity:.95;
 }
-
 /* =========================
    ACTION AREA
    ========================= */
@@ -94,7 +93,7 @@
 .cta-orbit{
   position:relative;
   width:min(620px,92vw);
-  height:86px;
+  height:110px;            /* enough room for stacked pills */
   margin:2rem auto 0;
   overflow:visible;
   z-index:20;
@@ -106,6 +105,10 @@
 
 .pill{
   position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+
   display:flex;
   align-items:center;
   justify-content:center;
@@ -126,13 +129,10 @@
 }
 
 /* =========================
-   CYAN MAIN PILL
+   CYAN MAIN PILL (CENTER)
    ========================= */
 
 .hero-window{
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
   width:min(520px,92vw);
   height:58px;
 
@@ -152,63 +152,35 @@
 }
 
 /* =========================
-   MAGENTA SMALL PILL
+   MAGENTA SMALL PILL (ABOVE, CENTERED)
    ========================= */
 
 .pill-magenta-small{
-  left:50%;
-  top:50%;
-  transform:
-    translate(-50%,-50%)
-    translateX(var(--magenta-x))
-    translateY(var(--magenta-y));
-
   width:132px;
   height:32px;
 
-  border:1px solid rgba(255,0,184,.70);
+  /* centered + stacked above cyan */
+  transform:translate(-50%,-50%) translateY(-44px);
+
+  border:1.25px solid var(--calyr-magenta);
   box-shadow:
-    0 0 10px rgba(255,0,184,.20),
-    0 0 18px rgba(255,0,184,.10);
+    0 0 10px rgba(255,0,184,.35),
+    0 0 18px rgba(255,0,184,.18);
 
   z-index:50;
 }
 
 .pill-magenta-small:hover{
-  transform:
-    translate(-50%,-50%)
-    translateX(var(--magenta-x))
-    translateY(var(--magenta-y))
-    scale(1.06);
+  transform:translate(-50%,-50%) translateY(-44px) scale(1.06);
 }
 
 /* =========================
-   LABELS
+   REMOVE ALL TEXT
    ========================= */
 
-.pill-label{
-  letter-spacing:.02em;
-  white-space:nowrap;
-  line-height:1;
-  font-weight:600;
-}
+.pill-label{ display:none !important; }
 
-.pill-label.cyan{
-  color:#8fdcff;
-  font-size:1.05rem;
-  text-shadow:0 0 12px rgba(140,240,255,.22);
-}
-
-.pill-label.magenta{
-  color:var(--calyr-magenta);
-  font-size:.82rem;
-  text-shadow:0 0 10px rgba(255,0,184,.18);
-}
-
-/* =========================
-   KILL LEGACY PSEUDO TEXT
-   ========================= */
-
+/* also kill any old pseudo text */
 .hero-window::before,
 .hero-window::after,
 .pill-magenta-small::before,
@@ -218,11 +190,10 @@
 
 /* =========================
    INTERACTION MODEL
-   Desktop: hover / focus
+   Desktop: hover/focus shows pills
    Mobile: always visible
    ========================= */
 
-/* Desktop / mouse: show pills only on hover/focus */
 @media (hover: hover) and (pointer: fine){
   .cta-orbit:hover .pill,
   .cta-orbit:focus-within .pill{
@@ -231,86 +202,30 @@
   }
 }
 
-/* Touch devices: pills always visible */
 @media (hover: none) and (pointer: coarse){
   .pill{
     opacity:1 !important;
     pointer-events:auto !important;
   }
-
-  /* move hero text up so pills are tappable */
-  .hero-content{
-    padding-top:14vh !important;
-    padding-bottom:10vh !important;
-    transform:translateY(-10vh) !important;
-  }
-
-  /* stack magenta under cyan on touch (so it never blocks taps) */
-  .pill-magenta-small{
-    transform:translate(-50%,-50%) translateY(48px) !important;
-  }
-  .pill-magenta-small:hover{
-    transform:translate(-50%,-50%) translateY(48px) scale(1.06) !important;
-  }
-}
-
-/* Small phones */
-@media (hover: none) and (pointer: coarse) and (max-width:480px){
-  .hero-content{
-    padding-top:12vh !important;
-    padding-bottom:12vh !important;
-    transform:translateY(-12vh) !important;
-  }
-
-  .hero-window{ width:min(360px,92vw); }
-  .subtitle{ font-size:.95rem; }
-
-  .pill-magenta-small{
-    transform:translate(-50%,-50%) translateY(52px) !important;
-  }
-  .pill-magenta-small:hover{
-    transform:translate(-50%,-50%) translateY(52px) scale(1.06) !important;
-  }
 }
 
 /* =========================
-   RESPONSIVE SIZING (non-touch width changes)
+   RESPONSIVE
    ========================= */
 
 @media (max-width:768px){
-  .cta-orbit{ height:130px; }
+  .cta-orbit{ height:120px; }
 }
 
 @media (max-width:480px){
-  .cta-orbit{ height:140px; }
-}
+  .cta-orbit{ height:130px; }
+  .hero-window{ width:min(360px,92vw); }
 
-/* =========================================================
-   GLOBAL SHIFT (DESKTOP + MOBILE)
-   moves BOTH pills slightly left everywhere
-   ========================================================= */
-.hero-window,
-.pill-magenta-small{
-  left: 48% !important; /* was 50% */
-}
-
-/* =========================================================
-   MOBILE FINAL OVERRIDES (MUST BE LAST IN home.css)
-   - Touch: pills always visible
-   - Touch: shift pills left more
-   - Touch: move hero text up (so pills are tappable)
-   ========================================================= */
-
-@media (hover: none) and (pointer: coarse){
-  .hero-window,
+  /* keep magenta above on small phones too */
   .pill-magenta-small{
-    left: 46% !important;
+    transform:translate(-50%,-50%) translateY(-46px);
   }
-}
-
-@media (hover: none) and (pointer: coarse) and (max-width:480px){
-  .hero-window,
-  .pill-magenta-small{
-    left: 44% !important;
+  .pill-magenta-small:hover{
+    transform:translate(-50%,-50%) translateY(-46px) scale(1.06);
   }
 }
