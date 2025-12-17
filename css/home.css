@@ -229,3 +229,29 @@ replace file /* =========================
     transform:translate(-50%,-50%) translateY(-46px) scale(1.06);
   }
 }
+
+/* =========================================================
+   MOBILE: allow scrolling + move hero text as you scroll
+   ========================================================= */
+
+/* Make the hero scrollable on touch so user can push text up/down */
+@media (hover: none) and (pointer: coarse){
+  .hero{
+    height: 100svh;          /* stable mobile viewport */
+    overflow-y: auto;        /* allow vertical scroll */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* keep globe fixed behind */
+  #globe-canvas{
+    position: sticky;
+    top: 0;
+  }
+
+  /* give content extra vertical space so it can move */
+  .hero-content{
+    min-height: 140svh;      /* scroll room */
+    padding-top: 10vh;
+    padding-bottom: 22vh;    /* room around pills */
+  }
+}
