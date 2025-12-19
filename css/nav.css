@@ -153,3 +153,22 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/* =========================================
+   ART MODE – MAGENTA NAV TEXT
+   ========================================= */
+
+.art-page .nav-pill,
+.art-page .glow-nav {
+  color: #ff4df5;
+  text-shadow:
+    0 0 8px rgba(255, 77, 245, 0.7),
+    0 0 18px rgba(255, 77, 245, 0.4);
+}
+
+/* Optional: slightly magenta border + glow */
+.art-page .nav-pill {
+  border-color: rgba(255, 77, 245, 0.65);
+  box-shadow:
+    0 0 10px rgba(255, 77, 245, 0.45);
+}

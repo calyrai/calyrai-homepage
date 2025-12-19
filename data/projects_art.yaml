@@ -1,0 +1,10 @@
+projects:
+  - title: "The Child’s Story"
+    subtitle: "Narrative intuition before equations"
+    description: |
+      A gentle, interactive storytelling space where scientific ideas
+      emerge through metaphor, motion and curiosity — without equations,
+      but with structure.
+    tags: ["STORY", "INTERACTIVE", "ART"]
+    accent: "#ff4df5"
+    href: "projects/child_story/index.html"

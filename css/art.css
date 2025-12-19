@@ -1,0 +1,42 @@
+/* =========================
+   ART MODE – MAGENTA GLOW
+   ========================= */
+
+/* Header pills */
+.art-page .nav-pill {
+  border-color: rgba(255, 77, 245, 0.7);
+  box-shadow:
+    0 0 10px rgba(255, 77, 245, 0.25),
+    0 0 26px rgba(0, 0, 0, 0.9);
+}
+
+.art-page .nav-pill:hover {
+  border-color: #ff4df5;
+  box-shadow:
+    0 0 18px rgba(255, 77, 245, 0.6),
+    0 0 40px rgba(0, 0, 0, 1);
+}
+
+/* Section accent line */
+.art-page .section-inner .bg-gradient-to-r {
+  background: linear-gradient(
+    to right,
+    #ff4df5,
+    #ff7ad9,
+    #ffc2f0
+  );
+}
+
+/* Project cards: magenta bias */
+.art-page .project-card {
+  border-color: rgba(255, 77, 245, 0.8);
+}
+
+.art-page .project-card:hover {
+  border-color: #ff4df5;
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 90, 220, 0.22),
+    rgba(3, 8, 20, 0.98)
+  );
+}
