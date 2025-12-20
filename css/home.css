@@ -1,6 +1,6 @@
 /* =========================
    HOME PAGE: HERO + GLOBE
-   TWO (OR THREE) REAL PILLS — FINAL
+   ONE REAL CTA PILL + ONE INNER WANDER PILL (mobile JS)
    ========================= */
 
 :root{
@@ -40,7 +40,6 @@
   text-align:center;
   pointer-events:none;
 
-  /* keep the stack aligned */
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -89,7 +88,7 @@
 }
 
 /* =========================
-   ACTION AREA
+   ACTION AREA (PILLS)
    ========================= */
 
 .cta-orbit{
@@ -131,7 +130,7 @@
 }
 
 /* =========================
-   CYAN MAIN PILL (CENTER)
+   CYAN MAIN PILL (CLICKABLE CTA)
    ========================= */
 
 .hero-window{
@@ -154,15 +153,12 @@
 }
 
 /* =========================
-   MAGENTA SMALL PILL (DEFAULT = ABOVE)
+   INNER MAGENTA PILL (VISUAL ONLY, JS MOVES IT ON MOBILE)
    ========================= */
 
 .pill-magenta-small{
   width:132px;
   height:32px;
-
-  /* baseline vertical position (desktop default) */
-  transform:translate(-50%,-50%) translateY(-20px);
 
   border:1.25px solid var(--calyr-magenta);
   box-shadow:
@@ -170,28 +166,16 @@
     0 0 18px rgba(255,0,184,.18);
 
   z-index:50;
+
+  /* IMPORTANT: never steal taps/clicks from the cyan pill */
+  pointer-events:none !important;
+
+  /* baseline (JS will override transform on mobile) */
+  transform:translate(-50%,-50%);
 }
 
-.pill-magenta-small:hover{
-  transform:translate(-50%,-50%) translateY(-20px) scale(1.06);
-}
-
-/* OPTIONAL: if you have a 2nd magenta pill (Art) below cyan */
-.pill-art{
-  transform:translate(-50%,-50%) translateY(44px);
-  z-index:45;
-}
-
-.pill-art:hover{
-  transform:translate(-50%,-50%) translateY(44px) scale(1.06);
-}
-
-/* =========================
-   REMOVE ALL TEXT
-   ========================= */
-
+/* remove any text/ornaments */
 .pill-label{ display:none !important; }
-
 .hero-window::before,
 .hero-window::after,
 .pill-magenta-small::before,
@@ -201,7 +185,7 @@
 
 /* =========================
    INTERACTION MODEL
-   Desktop: hover/focus shows pills
+   Desktop: show pills only on hover/focus
    Mobile: always visible
    ========================= */
 
@@ -211,12 +195,23 @@
     opacity:1;
     pointer-events:auto;
   }
+
+  /* but keep inner magenta non-interactive even on desktop */
+  .pill-magenta-small{
+    pointer-events:none !important;
+  }
 }
 
 @media (hover: none) and (pointer: coarse){
   .pill{
     opacity:1 !important;
     pointer-events:auto !important;
+  }
+
+  /* inner magenta stays non-clickable */
+  .pill-magenta-small{
+    pointer-events:none !important;
+    will-change: transform;
   }
 }
 
@@ -234,60 +229,6 @@
 }
 
 /* =========================================================
-   MOBILE: CENTER THE WHOLE HERO STACK NICELY
-   ========================================================= */
-
-@media (max-width: 480px){
-  .hero-content{
-    padding: 0 1.25rem 2.25rem !important;
-    min-height: 100svh;
-    justify-content: center;
-  }
-
-  .subtitle{ margin: 1.1rem auto 1.4rem; }
-  .cta-orbit{ margin-top: 1.4rem; }
-  .tagline{ margin-top: 1.0rem; }
-}
-
-/* =========================================================
-   MOBILE: IMPORTANT — DO NOT OVERRIDE MAGENTA TRANSFORMS
-   (Only force-center the cyan pill)
-   ========================================================= */
-
-@media (hover: none) and (pointer: coarse){
-  .hero-window{
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  /* keep magenta centered by position, JS owns transform */
-  .pill-magenta-small{
-    left: 50% !important;
-    top: 50% !important;
-  }
-}
-
-/* =========================================================
-   MAGENTA PILL — REAL BROWNIAN (driven by JS)
-   Disable deterministic CSS animations so it never loops.
-   ========================================================= */
-
-.pill-wander{
-  animation: none !important;
-}
-
-@media (hover: none) and (pointer: coarse){
-  .pill-wander{
-    will-change: transform;
-  }
-}
-
-@media (prefers-reduced-motion: reduce){
-  .pill-wander{ animation: none !important; }
-}
-
-/* =========================================================
    MOBILE: TRUE OPTICAL CENTERING + SCROLLABLE HERO
    ========================================================= */
 
@@ -302,16 +243,17 @@
   }
 
   .hero-content{
+    /* remove the 20vh top padding influence */
     padding: 0 1.25rem 2rem !important;
 
     min-height: 100svh;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 
-    text-align: center;
+    text-align:center;
   }
 
   .eyebrow{ margin-bottom: 0.9rem; }
