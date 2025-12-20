@@ -1,6 +1,6 @@
 /* =========================
    HOME PAGE: HERO + GLOBE
-   TWO REAL PILLS — FINAL
+   TWO (OR THREE) REAL PILLS — FINAL
    ========================= */
 
 :root{
@@ -39,6 +39,11 @@
   padding:20vh 2rem 3rem;
   text-align:center;
   pointer-events:none;
+
+  /* keep the stack aligned */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .hero-content a,
@@ -149,14 +154,14 @@
 }
 
 /* =========================
-   MAGENTA SMALL PILL (ABOVE, CENTERED)
+   MAGENTA SMALL PILL (DEFAULT = ABOVE)
    ========================= */
 
 .pill-magenta-small{
   width:132px;
   height:32px;
 
-  /* final vertical position */
+  /* baseline vertical position (desktop default) */
   transform:translate(-50%,-50%) translateY(-20px);
 
   border:1.25px solid var(--calyr-magenta);
@@ -168,8 +173,17 @@
 }
 
 .pill-magenta-small:hover{
-  /* SAME position + scale only */
   transform:translate(-50%,-50%) translateY(-20px) scale(1.06);
+}
+
+/* OPTIONAL: if you have a 2nd magenta pill (Art) below cyan */
+.pill-art{
+  transform:translate(-50%,-50%) translateY(44px);
+  z-index:45;
+}
+
+.pill-art:hover{
+  transform:translate(-50%,-50%) translateY(44px) scale(1.06);
 }
 
 /* =========================
@@ -217,34 +231,59 @@
 @media (max-width:480px){
   .cta-orbit{ height:130px; }
   .hero-window{ width:min(360px,92vw); }
-
-  /* NOTE: desktop/tablet tuning only; phone is handled by final mobile block */
-  .pill-magenta-small{
-    transform:translate(-50%,-50%) translateY(-46px);
-  }
-  .pill-magenta-small:hover{
-    transform:translate(-50%,-50%) translateY(-46px) scale(1.06);
-  }
 }
 
 /* =========================================================
-   FINAL: CENTER HERO TEXT (DESKTOP + MOBILE)
+   MOBILE: CENTER THE WHOLE HERO STACK NICELY
    ========================================================= */
 
-.hero-content{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
+@media (max-width: 480px){
+  .hero-content{
+    padding: 0 1.25rem 2.25rem !important;
+    min-height: 100svh;
+    justify-content: center;
+  }
+
+  .subtitle{ margin: 1.1rem auto 1.4rem; }
+  .cta-orbit{ margin-top: 1.4rem; }
+  .tagline{ margin-top: 1.0rem; }
+}
+
+/* =========================================================
+   MOBILE: IMPORTANT — DO NOT OVERRIDE MAGENTA TRANSFORMS
+   (Only force-center the cyan pill)
+   ========================================================= */
+
+@media (hover: none) and (pointer: coarse){
+  .hero-window{
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  /* keep magenta centered by position, but let animation own transform */
+  .pill-magenta-small{
+    left: 50% !important;
+    top: 50% !important;
+  }
 }
 
 /* =========================
-   MAGENTA PILL — BROWNIAN MOTION
+   MAGENTA PILLS — “MORE RANDOM FEEL” DRIFT (mobile only)
+   (still CSS-deterministic, but less patterned + two different paths)
    ========================= */
 
 @media (hover: none) and (pointer: coarse){
-  .pill-magenta-small{
-    animation: calyrBrownian 11s linear infinite;
+  /* top magenta (Interactive science) */
+  .pill-magenta-small:not(.pill-art){
+    animation: calyrBrownianTop 13.7s linear infinite;
+    will-change: transform;
+  }
+
+  /* bottom magenta (Art) if present */
+  .pill-art{
+    animation: calyrBrownianBottom 16.9s linear infinite;
+    will-change: transform;
   }
 }
 
@@ -252,19 +291,31 @@
   .pill-magenta-small{ animation: none !important; }
 }
 
-/* Subtle Brownian-like drift */
-@keyframes calyrBrownian{
-  0%   { transform: translate(-50%, -50%) translate(  0px, -20px) scale(1.00); }
-  8%   { transform: translate(-50%, -50%) translate( -6px, -22px) scale(0.99); }
-  16%  { transform: translate(-50%, -50%) translate(  4px, -18px) scale(1.01); }
-  24%  { transform: translate(-50%, -50%) translate( -3px, -21px) scale(1.00); }
-  32%  { transform: translate(-50%, -50%) translate(  7px, -19px) scale(0.995); }
-  40%  { transform: translate(-50%, -50%) translate(  2px, -23px) scale(1.01); }
-  48%  { transform: translate(-50%, -50%) translate( -5px, -20px) scale(1.00); }
-  56%  { transform: translate(-50%, -50%) translate(  6px, -18px) scale(0.99); }
-  64%  { transform: translate(-50%, -50%) translate( -2px, -22px) scale(1.005); }
-  72%  { transform: translate(-50%, -50%) translate(  5px, -19px) scale(1.00); }
-  80%  { transform: translate(-50%, -50%) translate( -4px, -21px) scale(0.995); }
-  88%  { transform: translate(-50%, -50%) translate(  3px, -20px) scale(1.01); }
-  100% { transform: translate(-50%, -50%) translate(  0px, -20px) scale(1.00); }
+/* TOP: baseline y = -20px */
+@keyframes calyrBrownianTop{
+  0%   { transform: translate(-50%, -50%) translate(  0px, -20px); }
+  9%   { transform: translate(-50%, -50%) translate( -7px, -25px); }
+  17%  { transform: translate(-50%, -50%) translate(  6px, -17px); }
+  26%  { transform: translate(-50%, -50%) translate( -3px, -28px); }
+  38%  { transform: translate(-50%, -50%) translate(  9px, -21px); }
+  47%  { transform: translate(-50%, -50%) translate(  2px, -29px); }
+  59%  { transform: translate(-50%, -50%) translate( -8px, -19px); }
+  68%  { transform: translate(-50%, -50%) translate(  5px, -16px); }
+  81%  { transform: translate(-50%, -50%) translate( -4px, -26px); }
+  92%  { transform: translate(-50%, -50%) translate(  3px, -22px); }
+  100% { transform: translate(-50%, -50%) translate(  0px, -20px); }
+}
+
+/* BOTTOM: baseline y = +44px */
+@keyframes calyrBrownianBottom{
+  0%   { transform: translate(-50%, -50%) translate(  0px, 44px); }
+  11%  { transform: translate(-50%, -50%) translate(  6px, 40px); }
+  19%  { transform: translate(-50%, -50%) translate( -5px, 48px); }
+  31%  { transform: translate(-50%, -50%) translate( 10px, 46px); }
+  43%  { transform: translate(-50%, -50%) translate( -2px, 38px); }
+  52%  { transform: translate(-50%, -50%) translate( -9px, 45px); }
+  66%  { transform: translate(-50%, -50%) translate(  4px, 50px); }
+  74%  { transform: translate(-50%, -50%) translate( -6px, 42px); }
+  87%  { transform: translate(-50%, -50%) translate(  2px, 47px); }
+  100% { transform: translate(-50%, -50%) translate(  0px, 44px); }
 }

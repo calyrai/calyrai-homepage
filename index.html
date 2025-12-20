@@ -16,10 +16,22 @@
   <script src="js/globe.js" defer></script>
   <script src="js/nav_autohide.js" defer></script>
   <script src="js/analytics.js" defer></script>
+
+  <!-- NEW: magenta pill random wander inside cyan pill -->
+  <script src="js/pill_wander.js" defer></script>
+
+  <!-- Index-only safety: make pills visible/clickable on mobile even if CSS got stricter -->
+  <style>
+    @media (hover: none) and (pointer: coarse){
+      .cta-orbit .pill{
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
   <section class="hero" id="hero">
     <canvas id="globe-canvas"></canvas>
 
@@ -37,19 +49,14 @@
 
       <!-- PILLS -->
       <div class="cta-orbit">
-        <!-- CYAN (main) -->
+        <!-- CYAN (host / main) -->
         <a href="projects.html" class="pill hero-window pill-cyan" aria-label="Science">
           <span class="pill-label cyan">Science</span>
         </a>
 
-        <!-- MAGENTA (top) -->
-        <a href="bookshelf/" class="pill pill-magenta-small" aria-label="Interactive science">
+        <!-- ONE MAGENTA pill (wanders inside the cyan pill) -->
+        <a href="bookshelf/" class="pill pill-magenta-small pill-wander" aria-label="Interactive science">
           <span class="pill-label magenta">Interactive science</span>
-        </a>
-
-        <!-- MAGENTA (bottom / sibling) -->
-        <a href="art.html" class="pill pill-magenta-small pill-art" aria-label="Art">
-          <span class="pill-label magenta">Art</span>
         </a>
       </div>
 
@@ -57,10 +64,8 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     © 2025 Calyr.ai™ — All rights reserved.
   </footer>
-
 </body>
 </html>
