@@ -17,7 +17,7 @@
   const bounce  = 0.55;   // softer bounce
   const maxV    = 45;     // velocity cap (px/s) -> prevents spikes
 
-  const sigma   = 130;    // random accel strength (px/s^2)
+  const sigma   = 180;    // random accel strength (px/s^2)
   const gamma   = 4.0;    // friction (1/s) higher = more sticky/slow
   const k       = 0.35;   // weak spring to center (1/s^2) lower = less “predictive”
 
