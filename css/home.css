@@ -238,86 +238,33 @@
   text-align:center;
 }
 
-/* =========================================================
-   MOBILE: TRUE CENTER + MAGENTA "SAMPLING" ANIMATION
-   (put this at the very end of home.css)
-   ========================================================= */
+/* =========================
+   MAGENTA PILL — BROWNIAN MOTION
+   ========================= */
 
 @media (hover: none) and (pointer: coarse){
-
-  /* hero becomes a stable centered stage on phones */
-  .hero{
-    height: 100svh !important;
-    overflow: hidden !important;
-  }
-
-  /* keep globe fixed behind */
-  #globe-canvas{
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  /* center the whole text stack */
-  .hero-content{
-    padding: 0 1.25rem 0 !important;
-    min-height: 100svh !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-
-  .subtitle{ margin: 1.1rem auto 1.4rem; }
-  .tagline{ margin-top: 1.0rem; }
-
-  /* pill system as the visual anchor */
-  .cta-orbit{
-    width: min(420px, 92vw);
-    height: 120px;
-    margin: 1.2rem auto 0 !important;
-    position: relative;
-  }
-
-  /* cyan centered */
-  .hero-window{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* magenta offset + sampling */
   .pill-magenta-small{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) translateY(-20px);
-
-    animation: calyrSamplePill 7.5s ease-in-out infinite;
-  }
-
-  /* touch: keep hover stable */
-  .pill-magenta-small:hover{
-    transform: translate(-50%, -50%) translateY(-20px) scale(1.06);
+    animation: calyrBrownian 11s linear infinite;
   }
 }
 
-/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce){
   .pill-magenta-small{ animation: none !important; }
 }
 
-/* Magenta pill slowly "samples" the big pill */
-@keyframes calyrSamplePill{
-  0%   { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)     scale(1.00); }
-  18%  { transform: translate(-50%, -50%) translateY(-20px) translateX(-120px) scale(0.985); }
-  32%  { transform: translate(-50%, -50%) translateY(-20px) translateX(-120px) scale(1.00); }
-  50%  { transform: translate(-50%, -50%) translateY(-20px) translateX(120px)  scale(0.985); }
-  68%  { transform: translate(-50%, -50%) translateY(-20px) translateX(120px)  scale(1.00); }
-  82%  { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)    scale(0.99); }
-  100% { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)    scale(1.00); }
+/* Subtle Brownian-like drift */
+@keyframes calyrBrownian{
+  0%   { transform: translate(-50%, -50%) translate(  0px, -20px) scale(1.00); }
+  8%   { transform: translate(-50%, -50%) translate( -6px, -22px) scale(0.99); }
+  16%  { transform: translate(-50%, -50%) translate(  4px, -18px) scale(1.01); }
+  24%  { transform: translate(-50%, -50%) translate( -3px, -21px) scale(1.00); }
+  32%  { transform: translate(-50%, -50%) translate(  7px, -19px) scale(0.995); }
+  40%  { transform: translate(-50%, -50%) translate(  2px, -23px) scale(1.01); }
+  48%  { transform: translate(-50%, -50%) translate( -5px, -20px) scale(1.00); }
+  56%  { transform: translate(-50%, -50%) translate(  6px, -18px) scale(0.99); }
+  64%  { transform: translate(-50%, -50%) translate( -2px, -22px) scale(1.005); }
+  72%  { transform: translate(-50%, -50%) translate(  5px, -19px) scale(1.00); }
+  80%  { transform: translate(-50%, -50%) translate( -4px, -21px) scale(0.995); }
+  88%  { transform: translate(-50%, -50%) translate(  3px, -20px) scale(1.01); }
+  100% { transform: translate(-50%, -50%) translate(  0px, -20px) scale(1.00); }
 }
