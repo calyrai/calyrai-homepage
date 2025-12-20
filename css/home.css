@@ -261,61 +261,60 @@
     transform: translate(-50%, -50%) !important;
   }
 
-  /* keep magenta centered by position, but let animation own transform */
+  /* keep magenta centered by position, JS owns transform */
   .pill-magenta-small{
     left: 50% !important;
     top: 50% !important;
   }
 }
 
-/* =========================
-   MAGENTA PILLS — “MORE RANDOM FEEL” DRIFT (mobile only)
-   (still CSS-deterministic, but less patterned + two different paths)
-   ========================= */
+/* =========================================================
+   MAGENTA PILL — REAL BROWNIAN (driven by JS)
+   Disable deterministic CSS animations so it never loops.
+   ========================================================= */
+
+.pill-wander{
+  animation: none !important;
+}
 
 @media (hover: none) and (pointer: coarse){
-  /* top magenta (Interactive science) */
-  .pill-magenta-small:not(.pill-art){
-    animation: calyrBrownianTop 13.7s linear infinite;
-    will-change: transform;
-  }
-
-  /* bottom magenta (Art) if present */
-  .pill-art{
-    animation: calyrBrownianBottom 16.9s linear infinite;
+  .pill-wander{
     will-change: transform;
   }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .pill-magenta-small{ animation: none !important; }
+  .pill-wander{ animation: none !important; }
 }
 
-/* TOP: baseline y = -20px */
-@keyframes calyrBrownianTop{
-  0%   { transform: translate(-50%, -50%) translate(  0px, -20px); }
-  9%   { transform: translate(-50%, -50%) translate( -7px, -25px); }
-  17%  { transform: translate(-50%, -50%) translate(  6px, -17px); }
-  26%  { transform: translate(-50%, -50%) translate( -3px, -28px); }
-  38%  { transform: translate(-50%, -50%) translate(  9px, -21px); }
-  47%  { transform: translate(-50%, -50%) translate(  2px, -29px); }
-  59%  { transform: translate(-50%, -50%) translate( -8px, -19px); }
-  68%  { transform: translate(-50%, -50%) translate(  5px, -16px); }
-  81%  { transform: translate(-50%, -50%) translate( -4px, -26px); }
-  92%  { transform: translate(-50%, -50%) translate(  3px, -22px); }
-  100% { transform: translate(-50%, -50%) translate(  0px, -20px); }
-}
+/* =========================================================
+   MOBILE: TRUE OPTICAL CENTERING + SCROLLABLE HERO
+   ========================================================= */
 
-/* BOTTOM: baseline y = +44px */
-@keyframes calyrBrownianBottom{
-  0%   { transform: translate(-50%, -50%) translate(  0px, 44px); }
-  11%  { transform: translate(-50%, -50%) translate(  6px, 40px); }
-  19%  { transform: translate(-50%, -50%) translate( -5px, 48px); }
-  31%  { transform: translate(-50%, -50%) translate( 10px, 46px); }
-  43%  { transform: translate(-50%, -50%) translate( -2px, 38px); }
-  52%  { transform: translate(-50%, -50%) translate( -9px, 45px); }
-  66%  { transform: translate(-50%, -50%) translate(  4px, 50px); }
-  74%  { transform: translate(-50%, -50%) translate( -6px, 42px); }
-  87%  { transform: translate(-50%, -50%) translate(  2px, 47px); }
-  100% { transform: translate(-50%, -50%) translate(  0px, 44px); }
+@media (hover: none) and (pointer: coarse){
+
+  .hero{
+    min-height: 100svh;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hero-content{
+    padding: 0 1.25rem 2rem !important;
+
+    min-height: 100svh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+  }
+
+  .eyebrow{ margin-bottom: 0.9rem; }
+  .subtitle{ margin: 1.1rem auto 1.3rem; }
+  .tagline{ margin-top: 0.9rem; }
 }
