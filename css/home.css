@@ -121,7 +121,9 @@
   -webkit-backdrop-filter:blur(6px);
 
   opacity:0;
-  pointer-events:none;
+
+  /* allow clicking by default (per-pill overrides are possible) */
+  pointer-events:auto;
 
   transition:
     opacity .22s ease,
@@ -143,6 +145,7 @@
     0 0 18px rgba(255,120,255,.10);
 
   z-index:10;
+  pointer-events:auto;
 }
 
 .hero-window:hover{
@@ -153,7 +156,7 @@
 }
 
 /* =========================
-   INNER MAGENTA PILL (VISUAL ONLY, JS MOVES IT ON MOBILE)
+   MAGENTA PILL (CLICKABLE, JS MOVES IT ON MOBILE)
    ========================= */
 
 .pill-magenta-small{
@@ -167,11 +170,19 @@
 
   z-index:50;
 
-  /* IMPORTANT: never steal taps/clicks from the cyan pill */
-  pointer-events:none !important;
+  /* ✅ must be clickable (link to art.html) */
+  pointer-events:auto;
+  cursor:pointer;
 
-  /* baseline (JS will override transform on mobile) */
+  /* baseline (JS overwrites transform on mobile) */
   transform:translate(-50%,-50%);
+}
+
+.pill-magenta-small:hover{
+  /* keep hover subtle; JS may override transform on mobile */
+  box-shadow:
+    0 0 14px rgba(255,0,184,.55),
+    0 0 22px rgba(255,0,184,.25);
 }
 
 /* remove any text/ornaments */
@@ -183,6 +194,16 @@
   content:none !important;
 }
 
+/* =========================================================
+   IMPORTANT: prevent the magenta pill from blocking clicks
+   on the cyan pill IF it drifts over it.
+   We solve this by making the magenta pill only clickable
+   when it's not overlapping? (CSS can't detect overlap)
+   Practical solution: keep it small and let z-index win.
+   If you want "cyan always wins", tell me and we can do
+   click-through logic in JS.
+   ========================================================= */
+
 /* =========================
    INTERACTION MODEL
    Desktop: show pills only on hover/focus
@@ -193,24 +214,14 @@
   .cta-orbit:hover .pill,
   .cta-orbit:focus-within .pill{
     opacity:1;
-    pointer-events:auto;
-  }
-
-  /* but keep inner magenta non-interactive even on desktop */
-  .pill-magenta-small{
-    pointer-events:none !important;
   }
 }
 
 @media (hover: none) and (pointer: coarse){
   .pill{
     opacity:1 !important;
-    pointer-events:auto !important;
   }
-
-  /* inner magenta stays non-clickable */
   .pill-magenta-small{
-    pointer-events:none !important;
     will-change: transform;
   }
 }
@@ -243,9 +254,7 @@
   }
 
   .hero-content{
-    /* remove the 20vh top padding influence */
     padding: 0 1.25rem 2rem !important;
-
     min-height: 100svh;
 
     display:flex;

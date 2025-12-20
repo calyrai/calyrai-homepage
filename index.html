@@ -17,10 +17,10 @@
   <script src="js/nav_autohide.js" defer></script>
   <script src="js/analytics.js" defer></script>
 
-  <!-- NEW: magenta pill random wander inside cyan pill -->
+  <!-- Magenta pill Brownian motion (mobile only) -->
   <script src="js/pill_wander.js" defer></script>
 
-  <!-- Index-only safety: make pills visible/clickable on mobile even if CSS got stricter -->
+  <!-- Safety: ensure pills are visible & clickable on mobile -->
   <style>
     @media (hover: none) and (pointer: coarse){
       .cta-orbit .pill{
@@ -47,16 +47,18 @@
         turning experimental signals into real-time molecular insight.
       </p>
 
-      <!-- PILLS -->
+      <!-- CTA -->
       <div class="cta-orbit">
-        <!-- CYAN (host / main) -->
-        <a href="projects.html" class="pill hero-window pill-cyan" aria-label="Science">
-          <span class="pill-label cyan">Science</span>
+        <!-- CYAN MAIN CTA -->
+        <a href="projects.html"
+           class="pill hero-window pill-cyan"
+           aria-label="Science">
         </a>
 
-        <!-- ONE MAGENTA pill (wanders inside the cyan pill) -->
-        <a href="bookshelf/" class="pill pill-magenta-small pill-wander" aria-label="Interactive science">
-          <span class="pill-label magenta">Interactive science</span>
+        <!-- MAGENTA INNER PILL (wanders inside cyan, links to ART) -->
+        <a href="art.html"
+           class="pill pill-magenta-small pill-wander"
+           aria-label="Art">
         </a>
       </div>
 
