@@ -218,60 +218,12 @@
   .cta-orbit{ height:130px; }
   .hero-window{ width:min(360px,92vw); }
 
+  /* NOTE: desktop/tablet tuning only; phone is handled by final mobile block */
   .pill-magenta-small{
     transform:translate(-50%,-50%) translateY(-46px);
   }
   .pill-magenta-small:hover{
     transform:translate(-50%,-50%) translateY(-46px) scale(1.06);
-  }
-}
-
-/* =========================================================
-   MOBILE: allow scrolling + move hero text as you scroll
-   MUST BE LAST (except final centering block below)
-   ========================================================= */
-
-@media (hover: none) and (pointer: coarse){
-
-  /* hero becomes scroll container */
-  .hero{
-    height: 100svh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* keep globe fixed behind */
-  #globe-canvas{
-    position: sticky !important;
-    top: 0;
-    inset: auto !important;
-    width: 100%;
-    height: 100svh;
-  }
-
-  /* create vertical travel room for the text */
-  .hero-content{
-    min-height: 160svh;
-    padding-top: 8vh;
-    padding-bottom: 28vh;
-  }
-}
-
-/* =========================================================
-   MOBILE: FORCE BOTH PILLS PERFECTLY CENTERED
-   ========================================================= */
-
-@media (hover: none) and (pointer: coarse){
-  .pill{
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  .hero-window,
-  .pill-magenta-small{
-    margin: 0 !important;
   }
 }
 
@@ -282,34 +234,90 @@
 .hero-content{
   display:flex;
   flex-direction:column;
-  align-items:center;      /* horizontal centering */
+  align-items:center;
   text-align:center;
 }
 
+/* =========================================================
+   MOBILE: TRUE CENTER + MAGENTA "SAMPLING" ANIMATION
+   (put this at the very end of home.css)
+   ========================================================= */
+
 @media (hover: none) and (pointer: coarse){
+
+  /* hero becomes a stable centered stage on phones */
+  .hero{
+    height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  /* keep globe fixed behind */
+  #globe-canvas{
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* center the whole text stack */
   .hero-content{
-    justify-content:center; /* vertical centering on mobile */
+    padding: 0 1.25rem 0 !important;
+    min-height: 100svh !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .subtitle{ margin: 1.1rem auto 1.4rem; }
+  .tagline{ margin-top: 1.0rem; }
+
+  /* pill system as the visual anchor */
+  .cta-orbit{
+    width: min(420px, 92vw);
+    height: 120px;
+    margin: 1.2rem auto 0 !important;
+    position: relative;
+  }
+
+  /* cyan centered */
+  .hero-window{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* magenta offset + sampling */
+  .pill-magenta-small{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) translateY(-20px);
+
+    animation: calyrSamplePill 7.5s ease-in-out infinite;
+  }
+
+  /* touch: keep hover stable */
+  .pill-magenta-small:hover{
+    transform: translate(-50%, -50%) translateY(-20px) scale(1.06);
   }
 }
 
-/* =========================
-   MOBILE: center hero content better
-   ========================= */
-@media (max-width: 480px){
-  .hero-content{
-    /* stop the big top padding on phones */
-    padding: 0 1.25rem 2.25rem !important;
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .pill-magenta-small{ animation: none !important; }
+}
 
-    /* truly center the stack */
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* a bit tighter spacing so it feels centered */
-  .subtitle{ margin: 1.1rem auto 1.4rem; }
-  .cta-orbit{ margin-top: 1.4rem; }
-  .tagline{ margin-top: 1.0rem; }
+/* Magenta pill slowly "samples" the big pill */
+@keyframes calyrSamplePill{
+  0%   { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)     scale(1.00); }
+  18%  { transform: translate(-50%, -50%) translateY(-20px) translateX(-120px) scale(0.985); }
+  32%  { transform: translate(-50%, -50%) translateY(-20px) translateX(-120px) scale(1.00); }
+  50%  { transform: translate(-50%, -50%) translateY(-20px) translateX(120px)  scale(0.985); }
+  68%  { transform: translate(-50%, -50%) translateY(-20px) translateX(120px)  scale(1.00); }
+  82%  { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)    scale(0.99); }
+  100% { transform: translate(-50%, -50%) translateY(-20px) translateX(0px)    scale(1.00); }
 }
