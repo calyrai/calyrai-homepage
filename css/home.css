@@ -291,3 +291,25 @@
     justify-content:center; /* vertical centering on mobile */
   }
 }
+
+/* =========================
+   MOBILE: center hero content better
+   ========================= */
+@media (max-width: 480px){
+  .hero-content{
+    /* stop the big top padding on phones */
+    padding: 0 1.25rem 2.25rem !important;
+
+    /* truly center the stack */
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* a bit tighter spacing so it feels centered */
+  .subtitle{ margin: 1.1rem auto 1.4rem; }
+  .cta-orbit{ margin-top: 1.4rem; }
+  .tagline{ margin-top: 1.0rem; }
+}
