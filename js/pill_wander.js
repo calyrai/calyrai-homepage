@@ -3,23 +3,28 @@
   const host = document.querySelector(".hero-window");
   if (!mag || !host) return;
 
+  // Mobile only (as you wanted)
   const isMobile = matchMedia("(hover: none) and (pointer: coarse)").matches;
   if (!isMobile) return;
 
-  let x = 0, y = 0;
-  let vx = 0, vy = 0;
+  // State
+  let x = 0, y = 0;     // position relative to host center (px)
+  let vx = 0, vy = 0;   // velocity (px/s)
   let last = performance.now();
 
-  const noise = 900;
-  const damp  = 0.88;
-  const pull  = 2.2;
-  const padding = 14;
-  const bounce = 0.65;
+  // --- Tunables (Brownian, not orbital) ---
+  const padding = 14;     // keep off border
+  const bounce  = 0.55;   // softer bounce
+  const maxV    = 45;     // velocity cap (px/s) -> prevents spikes
 
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  const sigma   = 130;    // random accel strength (px/s^2)
+  const gamma   = 4.0;    // friction (1/s) higher = more sticky/slow
+  const k       = 0.35;   // weak spring to center (1/s^2) lower = less “predictive”
 
-  function step(t) {
-    const dt = Math.min((t - last) / 1000, 0.05);
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+  function step(t){
+    const dt = Math.min((t - last) / 1000, 0.033); // cap dt ~30fps step
     last = t;
 
     const hostRect = host.getBoundingClientRect();
@@ -35,25 +40,30 @@
       return;
     }
 
-    vx += (Math.random() - 0.5) * noise * dt;
-    vy += (Math.random() - 0.5) * noise * dt;
+    // Ornstein–Uhlenbeck-ish: dv = (-gamma v - k x) dt + sigma dW
+    // Here we approximate dW ~ sqrt(dt) * N(0,1) using uniform-ish noise.
+    const nx = (Math.random() * 2 - 1);
+    const ny = (Math.random() * 2 - 1);
 
-    vx += (-x) * pull * dt;
-    vy += (-y) * pull * dt;
+    vx += (-gamma * vx - k * x) * dt + (sigma * Math.sqrt(dt)) * nx;
+    vy += (-gamma * vy - k * y) * dt + (sigma * Math.sqrt(dt)) * ny;
 
-    const frameDamp = Math.pow(damp, dt * 60);
-    vx *= frameDamp;
-    vy *= frameDamp;
+    // cap velocity (prevents “teleport” feel)
+    vx = clamp(vx, -maxV, maxV);
+    vy = clamp(vy, -maxV, maxV);
 
+    // integrate
     x += vx * dt;
     y += vy * dt;
 
-    if (x >  maxX) { x =  maxX; vx *= -bounce; }
-    if (x < -maxX) { x = -maxX; vx *= -bounce; }
-    if (y >  maxY) { y =  maxY; vy *= -bounce; }
-    if (y < -maxY) { y = -maxY; vy *= -bounce; }
+    // soft bounce
+    if (x >  maxX){ x =  maxX; vx *= -bounce; }
+    if (x < -maxX){ x = -maxX; vx *= -bounce; }
+    if (y >  maxY){ y =  maxY; vy *= -bounce; }
+    if (y < -maxY){ y = -maxY; vy *= -bounce; }
 
-    const s = mag.matches(":hover") ? 1.06 : (1.0 + 0.008 * Math.sin(t / 900));
+    // tiny breathing only (no big scale motion)
+    const s = 1.0 + 0.006 * Math.sin(t / 900);
 
     mag.style.transform =
       `translate(-50%,-50%) translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${s.toFixed(4)})`;
