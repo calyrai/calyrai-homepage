@@ -228,6 +228,12 @@
 }
 
 @media (hover: none) and (pointer: coarse){
+
+  #globe-canvas{
+    opacity: 0.92;
+    filter: blur(1.4px) saturate(1.12);
+    transform: translateZ(0);
+  }
   .pill{
     opacity:1 !important;
   }

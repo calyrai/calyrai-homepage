@@ -193,3 +193,35 @@
     margin-top: 6px;
   }
 }
+
+/* Phone: clean stacked header + aligned pills */
+@media (max-width: 560px) {
+  .nav-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nav-left-row {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* Make left-row pills span the row for clean alignment */
+  .nav-left-row > a {
+    width: 100%;
+  }
+
+  .nav-links {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .nav-links a {
+    margin: 0;
+  }
+}
