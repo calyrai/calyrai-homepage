@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.ai – Machine Learning for Structural Biology</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Calyr.ai connects structural biology, thermodynamic modelling and nano-scale interfaces — turning experimental signals into real-time molecular insight." />
+
+  <!-- Minimal notwendige Styles für die Landing-Page -->
+  <!-- 
+    CSS STRUCTURE (minimal + modular)
+    ---------------------------------
+    base.css
+      – Grundlayout für die gesamte Seite:
+        • Farben, Typography, Default-Links
+        • Body-Background (Deep-Night Blue)
+        • Resets & Basic Utility Classes
+
+    components.css
+      – Wiederverwendbare UI-Elemente:
+        • Buttons (.cta)
+        • Navigation Pills (falls später wieder)
+        • Glow-Frames, Labels
+        • Grid-Utilities & Tiles (shared)
+
+    home.css
+      – Styles NUR für die Landing-Page:
+        • Hero-Layout
+        • Globe Canvas Position
+        • Glow-Title, Eyebrow, Subtitle
+        • Atlantis CTA (cyan-magenta Puls)
+        • Optional: Unlock-Ritual, rings overlay
+  -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/impressum.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="nav-inner">
+      <div class="nav-left-row">
+        <a href="index.html" class="nav-pill glow-nav">
+          Calyr.ai – platform technology
+        </a>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+        <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+        <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <!-- WebGL globe in the background -->
+    <canvas id="globe-canvas" aria-hidden="true"></canvas>
+
+    <!-- Text + button on top -->
+    <div class="hero-content">
+      <div class="eyebrow">TOWARDS MOLECULAR DIGITIZATION</div>
+
+      <div class="glow-title-wrap">
+        <h1 class="glow-title">
+          Calyr.ai — Machine learning for structural biology
+        </h1>
+      </div>
+
+      <p class="subtitle">
+        Calyr.ai connects structural biology, thermodynamic modelling and nano-scale interfaces,
+        turning experimental signals into real-time molecular insight.
+      </p>
+
+      <div class="hero-actions" aria-label="Hero actions">
+        <a href="../explore.html" class="cta-atlantis" id="uncover-btn">Explore projects</a>
+      </div>
+
+      <div class="tagline">Calyr.ai / Molecular Deeptech</div>
+    </div>
+  </div>
+
+
+  <main>
+    <section class="section">
+      <div class="section-inner">
+        <h2>What this is</h2>
+        <p class="section-lead">
+          A research stack for connecting experimental signals, physical models and interactive interfaces —
+          built to help scientists iterate faster and keep interpretation grounded.
+        </p>
+
+        <div class="projects-grid" role="list">
+          <article class="project-tile" role="listitem">
+            <h3>Signals</h3>
+            <p>From scattering curves to multi-modal measurements — bring raw data into a coherent story.</p>
+            <p class="small">SAXS • kinetics • spectral fingerprints</p>
+          </article>
+          <article class="project-tile" role="listitem">
+            <h3>Models</h3>
+            <p>Thermodynamic and structural modelling to translate observations into testable hypotheses.</p>
+            <p class="small">ensembles • energetics • uncertainty</p>
+          </article>
+          <article class="project-tile" role="listitem">
+            <h3>Interfaces</h3>
+            <p>Interactive tools that keep computation close to the experiment — not hidden behind scripts.</p>
+            <p class="small">real-time exploration • provenance • collaboration</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>Start here</h2>
+        <p class="section-lead">Explore demo modules or read how access could look once the project is shared.</p>
+        <div class="home-links">
+          <a href="projects.html" class="glow-btn">Browse projects</a>
+          <a href="pricing.html" class="glow-btn glow-btn-ghost">View pricing</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="impressum" class="impressum">
+    <div class="impressum-inner">
+      <h2 class="impressum-title">Impressum</h2>
+      <p>
+        <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
+      </p>
+      <p>
+        It is currently not a company, involves no commercial activity, offers no services
+        and sells nothing. All content is provided solely for scientific reflection,
+        conceptual exploration and academic exchange.
+      </p>
+      <p class="impressum-contact">
+        Contact:
+        <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
+      </p>
+    </div>
+  </footer>
+
+  <footer class="site-footer">
+    © 2026 Calyr.ai™ — All rights reserved.
+  </footer>
+
+  <!-- Three.js core -->
+  <script defer src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+  <!-- Landmass / data -->
+  <script defer src="data/land_unified.js"></script>
+
+  <!-- Globe script -->
+  <script defer src="js/globe.js"></script>
+
+</body>
+</html>

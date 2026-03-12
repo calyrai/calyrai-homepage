@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Calyr.ai – Projects</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Tailwind via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Your existing styles (for glow, pills, impressum etc.) -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/nav.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -16,80 +12,47 @@
   <link rel="stylesheet" href="css/impressum.css" />
 </head>
 
-<!-- 🔥 WICHTIG: Die Auto-Hide-Funktion hängt an dieser Klasse -->
-<body class="projects-page min-h-screen bg-slate-950 text-slate-50 flex flex-col">
+<body class="projects-page">
 
-  <!-- HEADER -->
-  <header class="site-header border-b border-cyan-500/30 bg-slate-950/80 backdrop-blur">
-    <div class="nav-inner max-w-6xl mx-auto px-4 py-4">
-      <div class="flex flex-col gap-2">
-
-        <!-- Row 1: platform + lab -->
-        <div class="flex flex-wrap gap-3">
-          <a href="index.html"
-             class="nav-pill glow-nav px-6 py-2 text-sm sm:text-base rounded-full">
-            CALYR.AI – A PLATFORM TECHNOLOGY
-          </a>
-
-          <a href="projects.html"
-             class="nav-pill glow-nav px-6 py-2 text-sm sm:text-base rounded-full">
-            GELESNÍG LAB
-          </a>
-        </div>
-
-        <!-- Row 2: actions -->
-        <div class="flex flex-wrap gap-3 text-sm">
-          <a href="#" class="nav-pill glow-nav px-5 py-2 rounded-full">SHARE</a>
-          <a href="#" class="nav-pill glow-nav px-5 py-2 rounded-full">FOLLOW</a>
-          <a href="#" class="nav-pill glow-nav px-5 py-2 rounded-full">ABOUT</a>
-          <a href="pricing.html" class="nav-pill glow-nav px-5 py-2 rounded-full">PRICING</a>
-          <a href="#" class="nav-pill glow-nav px-5 py-2 rounded-full">LOG IN</a>
-        </div>
-
+  <header class="site-header">
+    <div class="nav-inner">
+      <div class="nav-left-row">
+        <a href="index.html" class="nav-pill glow-nav">
+          Calyr.ai – platform technology
+        </a>
       </div>
+
+      <nav class="nav-links nav-pill-row" aria-label="Primary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+        <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+        <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+      </nav>
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="flex-1">
-    <div class="max-w-6xl mx-auto px-4 pt-10 pb-16">
+  <main>
+    <section class="section">
+      <div class="section-inner">
+        <h2>Projects</h2>
+        <p class="section-lead">
+          Each project is a mode in the Calyr.ai stack — combining signals,
+          models and interfaces into a coherent experimental storyline.
+        </p>
+      </div>
+    </section>
 
-      <!-- Einleitung / Hero for Projects -->
-      <section class="mb-10">
-        <div class="section-inner space-y-3">
-          <p class="text-xs font-semibold tracking-[0.25em] text-cyan-300/80 uppercase">
-            Calyr.ai stack
-          </p>
-
-          <h1 class="text-3xl sm:text-4xl font-bold">
-            Projects
-          </h1>
-
-          <p class="section-lead text-slate-200 max-w-2xl text-base sm:text-lg">
-            Each project is a mode in the Calyr.ai stack &mdash; combining signals,
-            models and interfaces into a coherent experimental storyline.
-          </p>
-
-          <div class="h-1 w-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-fuchsia-500"></div>
+    <section class="section">
+      <div class="section-inner">
+        <div class="projects-grid" id="projects-grid">
+          <!-- js/projects_cards.js renders cards here -->
         </div>
-      </section>
-
-      <!-- Project Cards -->
-      <section>
-        <div class="section-inner">
-          <div class="projects-grid grid gap-6 md:grid-cols-2" id="projects-grid">
-            <!-- filled dynamically from data/projects.yaml -->
-          </div>
-        </div>
-      </section>
-
-    </div>
+      </div>
+    </section>
   </main>
 
-  <!-- IMPRESSUM -->
-  <footer id="impressum" class="impressum bg-slate-950 border-t border-slate-800">
-    <div class="impressum-inner max-w-4xl mx-auto px-4 py-8 text-sm text-slate-300 space-y-3">
-      <h2 class="impressum-title text-lg font-semibold mb-1">Impressum</h2>
+  <footer id="impressum" class="impressum">
+    <div class="impressum-inner">
+      <h2 class="impressum-title">Impressum</h2>
       <p>
         <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
       </p>
@@ -100,23 +63,17 @@
       </p>
       <p class="impressum-contact">
         Contact:
-        <a href="mailto:rupert.gelisnig@calyr.ai" class="underline hover:no-underline">
-          rupert.gelisnig@calyr.ai
-        </a>
+        <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
       </p>
     </div>
   </footer>
 
-  <!-- FOOTER -->
-  <footer class="site-footer border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
-    © 2025 Calyr.ai™ — All rights reserved.
+  <footer class="site-footer">
+    © 2026 Calyr.ai™ — All rights reserved.
   </footer>
 
-  <!-- YAML parser + loader -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-  <script src="js/projects_from_yaml.js"></script>
-
-  <!-- Auto-hide Script -->
+  <script src="data/projects.js"></script>
+  <script src="js/projects_cards.js"></script>
   <script src="js/nav_autohide.js"></script>
 </body>
 </html>

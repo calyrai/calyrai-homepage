@@ -338,5 +338,11 @@
     });
   }
 
-  init();
+  // Wait for full layout (CSS) before measuring stage dimensions.
+  // Otherwise the SVG can initialize with a tiny viewBox and appear empty.
+  if (document.readyState === "complete") {
+    init();
+  } else {
+    window.addEventListener("load", init, { once: true });
+  }
 })();
