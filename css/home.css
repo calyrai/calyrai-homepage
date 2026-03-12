@@ -87,6 +87,16 @@
   opacity:.95;
 }
 
+.hero-pill-text{
+  font-size:.82rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#c9fbff;
+  text-shadow:0 0 14px rgba(120,240,255,.55);
+  padding:0 18px;
+  white-space:nowrap;
+}
+
 /* =========================
    ACTION AREA (PILLS)
    ========================= */
@@ -224,6 +234,11 @@
   .pill-magenta-small{
     will-change: transform;
   }
+}
+
+/* Fallback for devices that misreport hover/pointer */
+@media (max-width: 820px){
+  .pill{ opacity: 1 !important; }
 }
 
 /* =========================
