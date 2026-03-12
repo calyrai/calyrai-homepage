@@ -46,7 +46,7 @@
         setTimeout(() => {
           el.scrollIntoView({ behavior: "smooth", block: "start" });
           // compensate sticky header
-          window.scrollBy({ top: -90, left: 0, behavior: "instant" });
+          window.scrollBy({ top: -90, left: 0, behavior: "auto" });
         }, 0);
       }
       return;
@@ -65,7 +65,7 @@
       setTimeout(() => {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
         // compensate sticky header
-        window.scrollBy({ top: -90, left: 0, behavior: "instant" });
+        window.scrollBy({ top: -90, left: 0, behavior: "auto" });
       }, 0);
     }
   }
