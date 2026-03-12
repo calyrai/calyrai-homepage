@@ -7,8 +7,10 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nav.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/impressum.css" />
 
   <!-- Scripts (deferred) -->
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
@@ -32,6 +34,21 @@
 </head>
 
 <body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <div class="nav-left-row">
+        <a href="index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+        <a href="explore.html" class="nav-pill glow-nav">Explore</a>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+        <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+        <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
   <section class="hero" id="hero">
     <canvas id="globe-canvas"></canvas>
 
@@ -65,6 +82,24 @@
       <div class="tagline">Calyr.ai / Molecular Deeptech</div>
     </div>
   </section>
+
+  <footer id="impressum" class="impressum">
+    <div class="impressum-inner">
+      <h2 class="impressum-title">Impressum</h2>
+      <p>
+        <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
+      </p>
+      <p>
+        It is currently not a company, involves no commercial activity, offers no services
+        and sells nothing. All content is provided solely for scientific reflection,
+        conceptual exploration and academic exchange.
+      </p>
+      <p class="impressum-contact">
+        Contact:
+        <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
+      </p>
+    </div>
+  </footer>
 
   <footer class="site-footer">
     © 2025 Calyr.ai™ — All rights reserved.
