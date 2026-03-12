@@ -3,11 +3,17 @@
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 9999;
+  isolation: isolate;
+  pointer-events: auto;
   background: radial-gradient(circle at top, #0a1024 0, #050815 60%, #03040b 100%);
   backdrop-filter: blur(10px);
   padding: 10px 22px;
   border-bottom: 1px solid rgba(36, 243, 255, 0.2);
+}
+
+.site-header a {
+  pointer-events: auto;
 }
 
 .nav-inner {
@@ -112,7 +118,6 @@
   border-color: rgba(255, 140, 245, 1);
 }
 
-
 /* ================================
    Mobile auto-hide navigation (legacy)
    ================================ */
@@ -132,7 +137,6 @@
     transform: translateY(-140%);
   }
 }
-
 
 /* =========================================
    NEW: PROJECTS-ONLY AUTO-HIDE HEADER
@@ -171,4 +175,21 @@
   border-color: rgba(255, 77, 245, 0.65);
   box-shadow:
     0 0 10px rgba(255, 77, 245, 0.45);
+}
+
+@media (max-width: 920px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    margin-left: 0;
+    margin-right: 10px;
+    margin-top: 6px;
+  }
 }

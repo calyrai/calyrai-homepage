@@ -113,11 +113,17 @@
   const dayMat = new THREE.LineBasicMaterial({
     color: DAY_CYAN,
     linewidth: 1,
+    transparent: true,
+    opacity: 0.55,
+    depthWrite: false,
   });
 
   const nightMat = new THREE.LineBasicMaterial({
     color: NIGHT_MAGENTA,
     linewidth: 1,
+    transparent: true,
+    opacity: 0.55,
+    depthWrite: false,
   });
 
   // ---- Drag / Auto-Rotation control ----
@@ -407,10 +413,13 @@
       color: 0x000000,
       transparent: true,
       opacity: 0.0,
-      depthWrite: false,
+      // Important: write depth so far-side contour lines get hidden.
+      depthWrite: true,
       depthTest: true,
       visible: true,
     });
+    // Ensure the invisible sphere does not draw into the color buffer.
+    sphereMat.colorWrite = false;
     earthMesh = new THREE.Mesh(sphereGeom, sphereMat);
     globeGroup.add(earthMesh);
 
@@ -437,9 +446,66 @@
     }
   }
 
+  // --- Helper: great-circle densification (keeps edges on sphere surface) ---
+  const _tmpAxis = new THREE.Vector3();
+  const _tmpQ = new THREE.Quaternion();
+
+  function clamp01(v) {
+    return Math.max(-1, Math.min(1, v));
+  }
+
+  function ringToSurfacePoints(ring, radius, maxAngleRad, radialOffset = 0.008) {
+    if (!Array.isArray(ring) || ring.length < 2) return [];
+
+    // Remove duplicated closing point if present.
+    let coords = ring;
+    const a0 = ring[0];
+    const al = ring[ring.length - 1];
+    if (a0 && al && a0[0] === al[0] && a0[1] === al[1]) {
+      coords = ring.slice(0, -1);
+    }
+    if (coords.length < 2) return [];
+
+    const unit = coords.map(([lon, lat]) => latLonToVector3(lat, lon, 1.0).normalize());
+
+    const pts = [];
+    const n = unit.length;
+    for (let i = 0; i < n; i++) {
+      const v0 = unit[i];
+      const v1 = unit[(i + 1) % n];
+      const dot = clamp01(v0.dot(v1));
+      const ang = Math.acos(dot);
+      const steps = Math.max(1, Math.ceil(ang / maxAngleRad));
+
+      _tmpAxis.crossVectors(v0, v1);
+      const axisLenSq = _tmpAxis.lengthSq();
+
+      for (let s = 0; s < steps; s++) {
+        if (i > 0 && s === 0) continue; // avoid duplicates at segment boundaries
+        const t = s / steps;
+
+        let v;
+        if (axisLenSq < 1e-12 || !isFinite(ang) || ang === 0) {
+          // Fallback: lerp + normalize (handles identical/opposite vectors)
+          v = v0.clone().lerp(v1, t).normalize();
+        } else {
+          _tmpAxis.normalize();
+          _tmpQ.setFromAxisAngle(_tmpAxis, ang * t);
+          v = v0.clone().applyQuaternion(_tmpQ).normalize();
+        }
+
+        pts.push(v.multiplyScalar(radius + radialOffset));
+      }
+    }
+    return pts;
+  }
+
   function addLines(rings) {
     for (const ring of rings) {
-      const pts = ring.map(([lon, lat]) => latLonToVector3(lat, lon, R));
+      // Densify to keep segments visually on the globe surface.
+      // 5° max step is a good compromise between fidelity and performance.
+      const pts = ringToSurfacePoints(ring, R, (5 * Math.PI) / 180, 0.008);
+      if (pts.length < 2) continue;
       const geom = new THREE.BufferGeometry().setFromPoints(pts);
       const line = new THREE.LineLoop(geom, dayMat);
       globeGroup.add(line);

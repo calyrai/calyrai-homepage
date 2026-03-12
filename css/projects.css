@@ -14,6 +14,11 @@
   text-align: left;
 }
 
+.section-tagline {
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
 /* gleiche Breite wie die Cards – wie bei Pricing */
 .section:first-of-type .section-inner {
   max-width: 1024px;
@@ -67,6 +72,14 @@
   background: radial-gradient(circle at top left,
               rgba(255, 90, 220, 0.2),
               rgba(3, 8, 20, 0.98));
+}
+
+/* Deep link highlight (projects.html#project-...) */
+.project-card:target {
+  border-color: rgba(255, 140, 245, 0.95);
+  box-shadow:
+    0 0 22px rgba(255, 140, 245, 0.55),
+    0 0 56px rgba(0, 0, 0, 1);
 }
 
 /* kleine farbige Kante oben – bekommt Farbe aus JS inline-style */

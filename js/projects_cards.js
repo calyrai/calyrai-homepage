@@ -13,8 +13,12 @@
 
     const accent = p.color || "#78f0ff";
 
+    const cardId = p.id ? `project-${p.id}` : "";
+
+    const openHref = p.url || (p.id ? `#project-${p.id}` : "#");
+
     return `
-      <article class="project-card">
+      <article class="project-card" ${cardId ? `id="${cardId}"` : ""}>
         <div class="project-card-accent"
              style="background: linear-gradient(90deg, ${accent}, rgba(255,140,255,1));">
         </div>
@@ -24,8 +28,45 @@
 
         <div class="project-card-body">${bodyHtml}</div>
 
-        ${p.url ? `<a href="${p.url}" class="glow-btn">OPEN PROJECT</a>` : ""}
+        ${p.id ? `<a href="${openHref}" class="glow-btn">OPEN PROJECT</a>` : ""}
       </article>
     `;
   }).join("");
+
+  // If arriving with a hash, prefer routing to the project's interactive page.
+  // (This preserves old deep links like projects.html#project-vaults.)
+  const hash = window.location.hash || "";
+  if (hash && hash.startsWith("#project-")) {
+    const params = new URLSearchParams(window.location.search || "");
+    const stayOnList = params.get("stay") === "1";
+
+    if (stayOnList) {
+      const el = document.querySelector(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          // compensate sticky header
+          window.scrollBy({ top: -90, left: 0, behavior: "instant" });
+        }, 0);
+      }
+      return;
+    }
+
+    const projectId = decodeURIComponent(hash.slice("#project-".length));
+    const p = projects.find(pr => String(pr.id) === String(projectId));
+    if (p && p.url) {
+      window.location.replace(p.url);
+      return;
+    }
+
+    // Fallback: if no page exists, scroll to the card after render.
+    const el = document.querySelector(hash);
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        // compensate sticky header
+        window.scrollBy({ top: -90, left: 0, behavior: "instant" });
+      }, 0);
+    }
+  }
 })();
