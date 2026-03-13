@@ -153,6 +153,7 @@
 
   const contourOpacity = isCoarseMobile ? 0.92 : 0.55;
   const contourBlending = isCoarseMobile ? THREE.AdditiveBlending : THREE.NormalBlending;
+  const contourDepthTest = isCoarseMobile ? false : true;
 
   const dayMat = new THREE.LineBasicMaterial({
     color: DAY_CYAN,
@@ -160,6 +161,7 @@
     transparent: true,
     opacity: contourOpacity,
     blending: contourBlending,
+    depthTest: contourDepthTest,
     depthWrite: false,
   });
 
@@ -169,6 +171,7 @@
     transparent: true,
     opacity: contourOpacity,
     blending: contourBlending,
+    depthTest: contourDepthTest,
     depthWrite: false,
   });
 
@@ -459,8 +462,9 @@
       color: 0x000000,
       transparent: false,
       // Important: write depth so far-side contour lines get hidden.
-      depthWrite: true,
-      depthTest: true,
+      // Poster look on mobile: don't occlude contour lines.
+      depthWrite: isCoarseMobile ? false : true,
+      depthTest: isCoarseMobile ? false : true,
       visible: true,
     });
     // Ensure the invisible sphere does not draw into the color buffer.
