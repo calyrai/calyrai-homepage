@@ -19,6 +19,42 @@
   const canvas = document.getElementById("globe-canvas");
   if (!canvas) return; // only run on landing page
 
+  // ---------------------------------------------------------
+  // Dependency fallback (mobile networks sometimes block unpkg)
+  // If deps are missing, load a fallback and reload once.
+  // ---------------------------------------------------------
+  try {
+    const w = window;
+
+    if (typeof w.THREE === "undefined") {
+      const key = "calyr_three_fallback_loaded";
+      if (!w.sessionStorage.getItem(key)) {
+        w.sessionStorage.setItem(key, "1");
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
+        s.defer = true;
+        s.onload = () => w.location.reload();
+        document.head.appendChild(s);
+      }
+      return;
+    }
+
+    if (typeof w.continentsGeoJSON === "undefined" && typeof continentsGeoJSON === "undefined") {
+      const key = "calyr_land_fallback_loaded";
+      if (!w.sessionStorage.getItem(key)) {
+        w.sessionStorage.setItem(key, "1");
+        const s = document.createElement("script");
+        s.src = "data/land_unified.js?v=20260313";
+        s.defer = true;
+        s.onload = () => w.location.reload();
+        document.head.appendChild(s);
+      }
+      return;
+    }
+  } catch {
+    // If storage is blocked, fall through and attempt normal boot.
+  }
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     45,
