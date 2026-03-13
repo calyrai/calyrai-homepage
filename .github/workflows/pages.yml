@@ -17,10 +17,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build public artifact
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp -aL public/. dist/
+          cp CNAME dist/CNAME
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
+          path: ./dist
 
   deploy:
     needs: build
