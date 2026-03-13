@@ -553,7 +553,7 @@
     for (const ring of rings) {
       // Densify to keep segments visually on the globe surface.
       // 5° max step is a good compromise between fidelity and performance.
-      const pts = ringToSurfacePoints(ring, R, (5 * Math.PI) / 180, 0.008);
+      const pts = ringToSurfacePoints(ring, R, (5 * Math.PI) / 180, 0.016);
       if (pts.length < 2) continue;
       const geom = new THREE.BufferGeometry().setFromPoints(pts);
       const line = new THREE.LineLoop(geom, dayMat);
