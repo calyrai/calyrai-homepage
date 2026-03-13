@@ -32,7 +32,7 @@
     antialias: true,
     alpha: true,
   });
-  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
 
@@ -110,11 +110,20 @@
   const continentLines = []; // { line, centroid }
 
   // Materials: day (cyan) & night (magenta)
+  const isCoarseMobile =
+    window.matchMedia &&
+    (matchMedia("(hover: none) and (pointer: coarse)").matches ||
+      matchMedia("(max-width: 820px)").matches);
+
+  const contourOpacity = isCoarseMobile ? 0.92 : 0.55;
+  const contourBlending = isCoarseMobile ? THREE.AdditiveBlending : THREE.NormalBlending;
+
   const dayMat = new THREE.LineBasicMaterial({
     color: DAY_CYAN,
     linewidth: 1,
     transparent: true,
-    opacity: 0.55,
+    opacity: contourOpacity,
+    blending: contourBlending,
     depthWrite: false,
   });
 
@@ -122,7 +131,8 @@
     color: NIGHT_MAGENTA,
     linewidth: 1,
     transparent: true,
-    opacity: 0.55,
+    opacity: contourOpacity,
+    blending: contourBlending,
     depthWrite: false,
   });
 
