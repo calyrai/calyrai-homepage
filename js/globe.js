@@ -421,8 +421,7 @@
     const sphereGeom = new THREE.SphereGeometry(R, 64, 64);
     const sphereMat = new THREE.MeshBasicMaterial({
       color: 0x000000,
-      transparent: true,
-      opacity: 0.0,
+      transparent: false,
       // Important: write depth so far-side contour lines get hidden.
       depthWrite: true,
       depthTest: true,
@@ -430,6 +429,10 @@
     });
     // Ensure the invisible sphere does not draw into the color buffer.
     sphereMat.colorWrite = false;
+    // Push depth slightly back to avoid z-fighting with contours.
+    sphereMat.polygonOffset = true;
+    sphereMat.polygonOffsetFactor = 1;
+    sphereMat.polygonOffsetUnits = 1;
     earthMesh = new THREE.Mesh(sphereGeom, sphereMat);
     globeGroup.add(earthMesh);
 
@@ -464,7 +467,7 @@
     return Math.max(-1, Math.min(1, v));
   }
 
-  function ringToSurfacePoints(ring, radius, maxAngleRad, radialOffset = 0.008) {
+  function ringToSurfacePoints(ring, radius, maxAngleRad, radialOffset = 0.014) {
     if (!Array.isArray(ring) || ring.length < 2) return [];
 
     // Remove duplicated closing point if present.

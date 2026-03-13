@@ -156,6 +156,9 @@
 
   z-index:10;
   pointer-events:auto;
+
+  /* Always visible (desktop + mobile) */
+  opacity: 1;
 }
 
 .hero-window:hover{
