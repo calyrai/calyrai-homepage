@@ -261,6 +261,12 @@
 @media (max-width:480px){
   .cta-orbit{ height:130px; }
   .hero-window{ width:min(360px,92vw); }
+  .hero-window{ height:50px; }
+  .hero-pill-text{
+    font-size:.72rem;
+    letter-spacing:.18em;
+    padding:0 14px;
+  }
 }
 
 /* =========================================================
