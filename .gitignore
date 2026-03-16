@@ -5,3 +5,11 @@ Icon?
 ._*
 *.log
 .DS_Store
+
+# Local-only sources / tooling (do not push)
+/src/
+/scripts/
+/private/
+
+# Root CNAME is redundant; public/CNAME is the deployed one
+/CNAME
