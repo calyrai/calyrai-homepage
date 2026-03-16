@@ -1,0 +1,104 @@
+/* =========================
+   ART MODE (EDITORIAL B/W)
+   ========================= */
+
+:root{
+  --art-bg: #050506;
+  --art-fg: #f4f4f5;
+  --art-muted: rgba(244,244,245,0.68);
+  --art-line: rgba(244,244,245,0.12);
+
+  /* single accent */
+  --art-magenta: #ff00b8;
+  --art-magenta-soft: rgba(255, 0, 184, 0.18);
+}
+
+/* Page base */
+.art-page{
+  background: radial-gradient(circle at top, #0b0b0e 0%, var(--art-bg) 55%, #000 100%);
+  color: var(--art-fg);
+}
+
+/* Header pills: grayscale base, magenta hover */
+.art-page .nav-pill{
+  border-color: rgba(255,255,255,0.22);
+  color: rgba(244,244,245,0.88);
+  background: rgba(0,0,0,0.35);
+  box-shadow: none;
+}
+
+.art-page .nav-pill:hover{
+  border-color: rgba(255,0,184,0.75);
+  box-shadow: 0 0 18px rgba(255,0,184,0.28);
+  color: #fff;
+}
+
+/* If you want the "ART MODE" pill to always be magenta:
+   (works if it's the second pill in row 1) */
+.art-page .site-header .nav-inner > div > div:first-child a:nth-child(2){
+  border-color: rgba(255,0,184,0.75);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(255,0,184,0.22);
+}
+
+/* Intro typography */
+.art-page .art-eyebrow{
+  color: rgba(255,0,184,0.85);
+  text-shadow: 0 0 10px rgba(255,0,184,0.20);
+}
+
+.art-page .art-title{
+  letter-spacing: 0.01em;
+}
+
+.art-page .art-lead{
+  color: var(--art-muted);
+}
+
+.art-page .art-rule{
+  background: linear-gradient(to right,
+    rgba(255,0,184,0.95),
+    rgba(255,0,184,0.35),
+    rgba(255,255,255,0.10)
+  );
+}
+
+/* Cards: neutral editorial, magenta on hover */
+.art-page .project-card{
+  border: 1px solid var(--art-line);
+  background: radial-gradient(circle at top left,
+    rgba(255,255,255,0.06),
+    rgba(0,0,0,0.82)
+  );
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.7),
+    0 18px 46px rgba(0,0,0,0.85);
+}
+
+.art-page .project-card:hover{
+  border-color: rgba(255,0,184,0.75);
+  box-shadow:
+    0 0 22px rgba(255,0,184,0.25),
+    0 22px 60px rgba(0,0,0,0.95);
+  background: radial-gradient(circle at top left,
+    rgba(255,0,184,0.10),
+    rgba(0,0,0,0.88)
+  );
+}
+
+.art-page .project-card-title{
+  color: #fff;
+}
+
+.art-page .project-card-subtitle{
+  color: rgba(244,244,245,0.62);
+}
+
+.art-page .project-card-body{
+  color: rgba(244,244,245,0.78);
+}
+
+/* Accent strip: force magenta */
+.art-page .project-card-accent{
+  background: linear-gradient(to right, var(--art-magenta), rgba(255,255,255,0.15));
+}

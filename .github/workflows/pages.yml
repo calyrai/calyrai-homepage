@@ -19,6 +19,7 @@ jobs:
 
       - name: Build public artifact
         run: |
+          bash scripts/build_public.sh
           rm -rf dist
           mkdir -p dist
           cp -aL public/. dist/

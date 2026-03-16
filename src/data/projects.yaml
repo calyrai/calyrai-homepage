@@ -1,0 +1,111 @@
+### data/projects.yaml
+### Single catalog for projects.html (rendered by js/projects_page_from_yaml.js)
+###
+### Fields used by the renderer:
+### - id (string)
+### - visibility: public|private (optional; default public)
+### - title, subtitle
+### - text: [paragraphs] OR description: string
+### - url OR link_url (optional)
+### - link_label (optional)
+### - color (optional)
+### - disabled: true|false (optional)
+
+- id: saxs
+  visibility: public
+  title: "SAXS – Multi-State Structural Analysis"
+  subtitle: "Pair-distance distributions, free-energy modes and browser-scale analysis."
+  text:
+    - "Scattering-based reconstruction of pair-distance distributions and state mixtures."
+    - "Goal: SAXS as a mode-based sensor with web-native orthogonal projections."
+  color: "#24f3ff"
+  link_label: "Open project"
+  url: "projects/exp_nodes_pr_iq_peaks.html"
+
+- id: pca
+  visibility: public
+  title: "PCA & Free-Energy Modes"
+  subtitle: "Principal components as perturbations of G(λ)."
+  text:
+    - "PCA modes mapped to θ(G), integrals and cooperative transitions."
+    - "Used for melting curves, ITC/SPR and multi-signal experiments."
+  color: "#ff4df5"
+  link_label: "Open project"
+  url: "projects/pca_free_energy.html"
+
+- id: vaults
+  visibility: public
+  title: "Vaults – Mail & Calendar Organiser"
+  subtitle: "MailVault / CalVault as scientific context engine."
+  text:
+    - "YAML vaults that turn communication into structured experimental trace."
+    - "Bridges inboxes, meetings and scientific interpretation."
+  color: "#ffd75a"
+  link_label: "Open project"
+  url: "projects/vaults.html"
+
+- id: chrom
+  visibility: public
+  title: "Chromatography & Wavelets"
+  subtitle: "Mode-based interpretation of LC–MS and chromatography."
+  text:
+    - "Thinks about chromatographic peaks as mode superpositions."
+    - "Extends SAXS/PCA logic to separation science."
+  color: "#9fff8b"
+  link_label: "Open project"
+  url: "projects/chrom_wavelets.html"
+
+- id: saxs-viewer
+  visibility: public
+  title: "SAXS Viewer"
+  subtitle: "Interactive scattering console (browser-scale)."
+  description: "Viewer and analysis workspace for SAXS models, parameters and signals."
+  link_label: "Open viewer"
+  url: "saxs_viewer/index.html"
+
+- id: pdb-viewer
+  visibility: public
+  title: "PDB Viewer"
+  subtitle: "CalyrAI PDB viewer"
+  description: "Interactive PDB viewer used as a companion tool for structural exploration."
+  link_label: "Open viewer"
+  url: "calyrai-pdb-viewer/index.html"
+
+# --- Private / internal / roadmap ---
+
+- id: biosaxs-lab
+  visibility: private
+  title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
+  subtitle: "Time-resolved, SEC-coupled structural biology"
+  description: "Inline SEC–SAXS workflows combining scattering, DLS and thermodynamic models into a single analysis story-line."
+  link_label: "Internal"
+  url: "#"
+  disabled: true
+
+- id: redhuman-metabolism
+  visibility: private
+  title: "Redhuman – Metabolic Network Reconstruction"
+  subtitle: "Thermodynamically consistent flux spaces"
+  description: "Metabolic modeling with annotation, pathway inference and free-energy consistent flux cones, prepared for ML structuralomics."
+  link_label: "Internal"
+  url: "#"
+  disabled: true
+
+- id: saxs_sasview
+  visibility: private
+  title: "SAXS Engine (sasmodels)"
+  subtitle: "Interactive scattering console integration"
+  description: "SASView/sasmodels integration experiments and workflow wiring."
+  link_label: "Internal"
+  url: "#"
+  disabled: true
+
+- id: saxs_intro_talk
+  visibility: private
+  kind: mode
+  title: "SAXS – A small SAXS intro"
+  subtitle: "Short introduction to SAXS, P(r) and experimental design"
+  description: "A compact intro deck concept (currently not published here)."
+  link_label: "Internal"
+  url: "#"
+  disabled: true

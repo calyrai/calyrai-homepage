@@ -1,0 +1,52 @@
+# data/pricing.yaml
+
+- id: solo-explorer
+  badge: "Starter"
+  highlight: false
+  title: "Solo Explorer"
+  tagline: "For individual scientists who want to experiment with the ideas."
+  price: "€0"
+  period: "/ month"
+  label: "Free"
+  features:
+    - "Access to public demos (SAXS, PCA & Vaults)"
+    - "Non-commercial research & teaching use"
+    - "Email updates when new modules go online"
+  cta_label: "Explore demos"
+  cta_url: "projects.html"
+  cta_variant: "ghost"
+
+- id: research-lab
+  badge: "Research"
+  highlight: true
+  highlight_label: "Most relevant for labs"
+  title: "Researcher / Lab PI"
+  tagline: "For PIs and postdocs who want to fold Calyr.ai into an active research programme."
+  price: "Custom"
+  period: "per lab"
+  label: ""
+  features:
+    - "Joint method development (SAXS, PCA, MD integration)"
+    - "Design of analysis pipelines around your instruments"
+    - "Co-authored publications & open scientific output"
+    - "On-site or remote sessions for your group"
+  cta_label: "Talk about a project"
+  cta_url: "mailto:rupert.gelisnig@calyr.ai?subject=Calyr.ai%20research%20collaboration"
+  cta_variant: "primary"
+
+- id: facility-partner
+  badge: "Facility / Partner"
+  highlight: false
+  title: "Core Facility & Industry"
+  tagline: "For beamlines, core facilities or companies that need robust, production-grade analytics."
+  price: "By arrangement"
+  period: ""
+  label: ""
+  features:
+    - "Custom deployment & integration with local IT"
+    - "Workflow design across multiple instruments"
+    - "Support for regulated environments (traceability, SOPs)"
+    - "Long-term roadmap co-design"
+  cta_label: "Contact for partnership"
+  cta_url: "mailto:rupert.gelisnig@calyr.ai?subject=Calyr.ai%20facility%20/industry%20interest"
+  cta_variant: "ghost"

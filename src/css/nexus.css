@@ -1,0 +1,122 @@
+/* =========================
+   NEXUS PAGE
+   ========================= */
+
+.nexus-page {
+  padding-top: 12px;
+}
+
+.nexus-intro {
+  padding: 18px 6px 8px;
+}
+
+.nexus-block {
+  margin-bottom: 22px;
+}
+
+.nexus-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(180, 240, 255, 0.9);
+  text-shadow: 0 0 10px rgba(140, 240, 255, 0.35);
+}
+
+.nexus-title {
+  margin-top: 10px;
+  font-size: clamp(1.9rem, 2.8vw + 1.1rem, 3.0rem);
+  line-height: 1.1;
+  color: #f3fbff;
+  text-shadow:
+    0 0 18px rgba(0, 220, 255, 0.45),
+    0 0 48px rgba(255, 120, 255, 0.22);
+}
+
+.nexus-subtitle {
+  margin-top: 10px;
+  max-width: 62rem;
+  color: rgba(210, 240, 255, 0.72);
+  line-height: 1.65;
+}
+
+.nexus-h2 {
+  font-size: clamp(1.15rem, 1.1vw + 0.9rem, 1.45rem);
+  color: rgba(240, 250, 255, 0.92);
+  margin-bottom: 10px;
+}
+
+.nexus-body {
+  color: rgba(210, 240, 255, 0.74);
+  line-height: 1.65;
+  max-width: 62rem;
+}
+
+.nexus-bullets {
+  margin-top: 10px;
+  margin-left: 18px;
+  color: rgba(220, 246, 255, 0.78);
+  line-height: 1.65;
+}
+
+.nexus-math {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(7, 18, 26, 0.55);
+  color: rgba(235, 250, 255, 0.88);
+  overflow-x: auto;
+  white-space: pre;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.nexus-table-wrap {
+  margin-top: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(7, 18, 26, 0.45);
+  overflow: hidden;
+}
+
+.nexus-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nexus-table th,
+.nexus-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nexus-table th {
+  color: rgba(240, 250, 255, 0.92);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.nexus-table td {
+  color: rgba(220, 246, 255, 0.78);
+}
+
+.nexus-usecases {
+  margin-top: 22px;
+  padding: 18px 6px 18px;
+}
+
+@media (max-width: 720px) {
+  .nexus-intro {
+    padding: 16px 4px 6px;
+  }
+
+  .nexus-math {
+    font-size: 0.92rem;
+  }
+}
