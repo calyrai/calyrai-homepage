@@ -17,10 +17,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare site artifact
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.gitignore' \
+            --exclude='src/' \
+            --exclude='scripts/' \
+            --exclude='private/' \
+            --exclude='public/' \
+            ./ dist/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./dist
 
   deploy:
     needs: build

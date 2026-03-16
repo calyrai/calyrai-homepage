@@ -10,6 +10,3 @@ Icon?
 /src/
 /scripts/
 /private/
-
-# Root CNAME is redundant; public/CNAME is the deployed one
-/CNAME
