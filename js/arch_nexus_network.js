@@ -32,6 +32,8 @@
     let dpr = 1;
     let lastNow = 0;
 
+    let inView = true;
+
     const nodes = [];
     const links = [];
 
@@ -94,7 +96,7 @@
     }
 
     function step(now) {
-      raf = requestAnimationFrame(step);
+      if (!raf) return;
 
       const nnow = typeof now === 'number' ? now : performance.now();
       const dtFrames = lastNow ? (nnow - lastNow) / 16.666 : 1;
@@ -198,6 +200,26 @@
         ctx.fill();
       }
       ctx.restore();
+
+      raf = requestAnimationFrame(step);
+    }
+
+    function start() {
+      if (raf) return;
+      lastNow = 0;
+      raf = requestAnimationFrame(step);
+    }
+
+    function stop() {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    function updateRunState() {
+      const shouldRun = inView && !document.hidden;
+      if (shouldRun) start();
+      else stop();
     }
 
     function renderStatic() {
@@ -246,6 +268,9 @@
     resize();
     initGraph();
 
+    // Ensure the section has something drawn even before it becomes visible.
+    renderStatic();
+
     // If we measured a tiny box (fonts/layout not ready yet), retry shortly.
     if (w < 80 || h < 80) {
       setTimeout(() => {
@@ -258,6 +283,7 @@
       const ro = new ResizeObserver(() => {
         resize();
         initGraph();
+        renderStatic();
       });
       ro.observe(section);
     } else {
@@ -266,13 +292,26 @@
         () => {
           resize();
           initGraph();
+          renderStatic();
         },
         { passive: true }
       );
     }
 
-    // Start.
-    raf = requestAnimationFrame(step);
+    // Run only when visible (saves CPU/GPU so the hero globe stays smooth).
+    if (typeof IntersectionObserver !== 'undefined') {
+      const io = new IntersectionObserver(
+        (entries) => {
+          inView = entries.some((e) => e.isIntersecting);
+          updateRunState();
+        },
+        { threshold: 0.08 }
+      );
+      io.observe(section);
+    }
+
+    document.addEventListener('visibilitychange', updateRunState);
+    updateRunState();
   }
 
   if (document.readyState === 'loading') {

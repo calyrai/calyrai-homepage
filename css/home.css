@@ -234,7 +234,8 @@
 
   #globe-canvas{
     opacity: 1;
-    filter: blur(1.2px) saturate(1.18) brightness(1.28) contrast(1.06);
+    /* Avoid softening the WebGL globe; keep color punch without blur. */
+    filter: saturate(1.18) brightness(1.28) contrast(1.06);
     transform: translateZ(0);
   }
   .pill{
