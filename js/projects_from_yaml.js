@@ -6,7 +6,7 @@
 
   // ✅ Use an absolute URL resolved against the current page
   // This avoids base-path issues on GitHub Pages and subfolders.
-  const YAML_URL = new URL('data/projects.yaml', window.location.href).toString();
+  const YAML_URL = new URL((window.PROJECTS_YAML || 'data/projects.yaml'), window.location.href).toString();
 
   // Fallback projects in case YAML cannot be loaded
   const DEFAULT_PROJECTS = [
@@ -134,11 +134,15 @@
       }
 
       const parsed = jsyaml.load(text) || [];
-      if (!Array.isArray(parsed)) {
-        throw new Error('projects.yaml must contain a top-level list.');
+      const projects = Array.isArray(parsed)
+        ? parsed
+        : (parsed && Array.isArray(parsed.projects) ? parsed.projects : null);
+
+      if (!projects) {
+        throw new Error('projects YAML must be a list or { projects: [...] }.');
       }
 
-      renderProjects(parsed, grid);
+      renderProjects(projects, grid);
     } catch (err) {
       console.error('Error loading projects.yaml, using fallback:', err);
       renderProjects(DEFAULT_PROJECTS, grid);

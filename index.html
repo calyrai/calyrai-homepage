@@ -18,6 +18,9 @@
   <script src="js/globe.js?v=20260313c" defer></script>
   <script src="js/nav_autohide.js" defer></script>
   <script src="js/analytics.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js" defer></script>
+  <script src="js/home_from_yaml.js?v=20260316" defer></script>
+  <script src="js/arch_nexus_network.js?v=20260316d" defer></script>
 
   <!-- Safety: ensure pills are visible & clickable on mobile -->
   <style>
@@ -74,6 +77,11 @@
 
       <div class="tagline">Calyr.ai / Molecular Deeptech</div>
     </div>
+  </section>
+
+  <section class="home-architecture" aria-label="Architecture">
+    <canvas id="arch-bg" class="home-arch-canvas" aria-hidden="true"></canvas>
+    <div id="home-architecture"></div>
   </section>
 
   <footer id="impressum" class="impressum">
