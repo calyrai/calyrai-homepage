@@ -1,0 +1,22 @@
+{
+  "requests": [
+    {
+      "id": "sphere_default",
+      "label": "Sphere – default (0.001–0.3)",
+      "file": "sphere_default.json",
+      "model": "sphere"
+    },
+    {
+      "id": "sphere_low_q",
+      "label": "Sphere – low-q Guinier",
+      "file": "sphere_low_q.json",
+      "model": "sphere"
+    },
+    {
+      "id": "core_shell_example",
+      "label": "Core–Shell – example",
+      "file": "core_shell_example.json",
+      "model": "core_shell_sphere"
+    }
+  ]
+}

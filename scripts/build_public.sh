@@ -24,7 +24,7 @@ rsync -a --delete \
 # but you can manage it via a separate private git repository cloned into
 # ./private (or just keep it as local files).
 PRIVATE_OVERLAY_DIR="private/public_overlay"
-if [ -d "$PRIVATE_OVERLAY_DIR" ]; then
+if [ -d "$PRIVATE_OVERLAY_DIR" ] && [ "${CALYRAI_DISABLE_PRIVATE_OVERLAY:-}" != "1" ]; then
   echo "→ applying private overlay ($PRIVATE_OVERLAY_DIR)"
   rsync -a \
     --exclude='**/.DS_Store' \

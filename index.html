@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calyr.ai</title>
+    <meta http-equiv="refresh" content="0; url=./public/index.html" />
+    <link rel="canonical" href="./public/index.html" />
+  </head>
+  <body>
+    <script>
+      (function () {
+        const target = new URL('./public/index.html', window.location.href);
+        target.search = window.location.search;
+        target.hash = window.location.hash;
+        window.location.replace(target.toString());
+      })();
+    </script>
+    <noscript>
+      <p>
+        Redirecting to <a href="./public/index.html">./public/index.html</a>…
+      </p>
+    </noscript>
+  </body>
+</html>
