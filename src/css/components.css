@@ -206,7 +206,8 @@
 }
 
 /* Glow button inside tiles */
-.glow-btn {
+.glow-btn,
+.glow-button {
   display: inline-block;
   padding: 6px 14px;
   border-radius: 999px;
@@ -227,7 +228,8 @@
     transform 0.12s ease-out;
 }
 
-.glow-btn:hover {
+  .glow-btn:hover,
+  .glow-button:hover {
   color: #ffe6ff;
   border-color: #ff4df5;
   background: rgba(255, 77, 245, 0.10);

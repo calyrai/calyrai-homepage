@@ -93,30 +93,18 @@
     </div>
   </div>
 
-  <div class="hero-content">
-    <div class="eyebrow">TOWARDS MOLECULAR DIGITIZATION</div>
+  <div class="hero-copy">
+    <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
 
-    <div class="glow-title-wrap">
-      <h1 class="glow-title">Calýr, aí dríven Structuralomícs</h1>
-    </div>
+    <h1 class="hero-title">Calyrai — AI-Driven Structuralomics</h1>
 
-    <p class="subtitle">
-      Calýr.ai connects structural biology, thermodynamic modelling and nano-scale interfaces,
-      turning experimental signals into real-time molecular insight.
+    <p class="hero-subtitle">
+      Transforming experimental signals into real-time molecular insight.
     </p>
 
-    <!-- CTA -->
-    <div class="cta-orbit">
-      <!-- CYAN MAIN CTA -->
-      <a href="explore.html"
-         class="pill hero-window pill-cyan"
-        aria-label="Explore projects">
-       <span class="hero-pill-text">Explore projects</span>
-      </a>
-
-    </div>
-
-    <div class="tagline">Calyr.ai / Molecular Deeptech</div>
+    <a href="pages/nexus.html" class="hero-cta glow-button">
+      Explore the Nexus
+    </a>
   </div>
 </section>
 
