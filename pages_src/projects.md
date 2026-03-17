@@ -1,0 +1,201 @@
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="index.html" class="nav-pill glow-nav">
+        Calyr.ai – platform technology
+      </a>
+      <a href="explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="team.html" class="nav-pill glow-nav">Team</a>
+    </div>
+
+    <nav class="nav-links nav-pill-row" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="section-inner">
+      <h2>Projects</h2>
+      <p class="section-lead">
+        One core idea, multiple instrument and analysis domains.
+        Calyr.ai is built around a single representation layer that converts experimental signals into a parameter space
+        where physical models and prediction can connect.
+      </p>
+
+      <div class="core-box" id="core-concept" role="note" aria-label="Core concept">
+        <div class="core-kicker">Core concept</div>
+        <h3 class="core-title">Parameterized PCA as a universal representation of experimental signals</h3>
+        <p class="core-text">
+          Experimental observables are high-dimensional. PCA extracts modes. Parameterization turns modes into interpretable
+          coordinates that can be coupled to physics models, simulations and learning systems.
+        </p>
+        <p class="core-goal">
+          Goal: map <strong>experimental observables → parameter space → predictive models</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method-layer">
+    <div class="section-inner">
+      <h3 class="section-h3">Method layer</h3>
+      <p class="section-lead">
+        A reusable pipeline that stays stable across domains.
+      </p>
+
+      <div class="pipeline" aria-label="Signal to prediction pipeline">
+        <div class="pipeline-step">
+          <div class="pipeline-label">Experiments</div>
+          <div class="pipeline-sub">SAXS, chromatography, cryo-EM, trajectories, fluxes</div>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Signal representation</div>
+          <div class="pipeline-sub">preprocessing, normalization, aligned observables</div>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">PCA modes</div>
+          <div class="pipeline-sub">low-dimensional modes of variation</div>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Parameterized space</div>
+          <div class="pipeline-sub">interpretable coordinates linked to physical parameters</div>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Physics / ML models</div>
+          <div class="pipeline-sub">MD, thermodynamics, flux models, learned predictors</div>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Prediction layer</div>
+          <div class="pipeline-sub">hypotheses, parameter inference, experiment design</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="platforms">
+    <div class="section-inner">
+      <h3 class="section-h3">Experimental platforms</h3>
+      <p class="section-lead">
+        Different measurement domains become data sources and validation layers for the same representation.
+      </p>
+
+      <div class="topic-grid" aria-label="Experimental domains">
+        <article class="topic-card" id="platform-saxs-chrom">
+          <h4 class="topic-title">SAXS + chromatography</h4>
+          <p class="topic-text">
+            Resolve mixture states, generate structural signatures and validate inferred states.
+            Pair-distance distributions, peak deconvolution and time-resolved signals become structured inputs.
+          </p>
+        </article>
+
+        <article class="topic-card" id="platform-cryoem">
+          <h4 class="topic-title">Cryo-EM</h4>
+          <p class="topic-text">
+            Structural validation and state classification.
+            Connect inferred modes to real conformational ensembles via density maps and discrete classes.
+          </p>
+        </article>
+
+        <article class="topic-card" id="platform-md">
+          <h4 class="topic-title">Molecular dynamics</h4>
+          <p class="topic-text">
+            Continuous trajectories and energy landscapes.
+            Relate PCA coordinates to free-energy surfaces and mechanistic intermediates.
+          </p>
+        </article>
+
+        <article class="topic-card" id="platform-metabolic">
+          <h4 class="topic-title">Metabolic modelling</h4>
+          <p class="topic-text">
+            Systems-level extension.
+            Replace structures with flux states and thermodynamic constraints, but keep the same modal representation.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ai-layer">
+    <div class="section-inner">
+      <h3 class="section-h3">AI / prediction layer</h3>
+      <p class="section-lead">
+        LLM-assisted modelling is treated as an interface layer: it translates experimental descriptions and parameter
+        constraints into model setups, simulation prompts and hypothesis candidates.
+      </p>
+
+      <div class="mini-list" aria-label="AI tasks">
+        <div class="mini-item">Experiment → model suggestion</div>
+        <div class="mini-item">Parameter inference and uncertainty framing</div>
+        <div class="mini-item">Automated hypothesis generation and validation loops</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="integration">
+    <div class="section-inner">
+      <h3 class="section-h3">Integration layer</h3>
+      <p class="section-lead">
+        The message: the same analytical structure works across domains.
+        A unified representation (PCA coordinates + parameterization) can be applied to scattering signals,
+        chromatographic pulses, trajectories and fluxes.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="subprojects">
+    <div class="section-inner">
+      <h3 class="section-h3">Subprojects</h3>
+      <p class="section-lead">
+        Concrete implementations and prototypes around the core concept.
+      </p>
+
+      <h4 class="section-h3" style="margin-top: 16px;">Public</h4>
+      <div class="projects-grid" id="projects-public-grid">
+        <!-- js/projects_page_from_yaml.js renders cards here -->
+      </div>
+
+      <div id="projects-private-section">
+        <h4 class="section-h3" style="margin-top: 26px;">Private / internal</h4>
+        <p class="section-lead">Roadmap, experiments and internal work.</p>
+        <div class="projects-grid" id="projects-private-grid">
+          <!-- js/projects_page_from_yaml.js renders cards here -->
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="impressum" class="impressum">
+  <div class="impressum-inner">
+    <h2 class="impressum-title">Impressum</h2>
+    <p>
+      <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
+    </p>
+    <p>
+      It is currently not a company, involves no commercial activity, offers no services
+      and sells nothing. All content is provided solely for scientific reflection,
+      conceptual exploration and academic exchange.
+    </p>
+    <p class="impressum-contact">
+      Contact:
+      <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
+    </p>
+  </div>
+</footer>
+
+<footer class="site-footer">
+  © 2026 Calyr.ai™ — All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script src="js/projects_page_from_yaml.js?v=20260316"></script>
+<script src="js/nav_autohide.js"></script>

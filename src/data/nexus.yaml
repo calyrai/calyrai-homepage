@@ -1,0 +1,47 @@
+identity:
+  name: "Rupert Tscheliessnig"
+  role: "Scientific ML & Structural Biophysics"
+  focus: "SAXS, PCA, Representation Learning"
+
+  contact:
+    email: "rupert.tscheliessnig@calyr.ai"
+    bluesky: "https://bsky.app/profile/calyrai.bsky.social"
+
+core_node:
+  id: "saxs_state_inference"
+  title: "SAXS Representation & State Inference"
+  subtitle: "ML-based interpretation of scattering data"
+  url: "projects/pca_free_energy.html"
+  color: "#ff4df5"
+
+  description:
+    - "SAXS signal decomposition"
+    - "PCA-based state identification"
+    - "Structural interpretation"
+    - "Thermodynamic mapping"
+
+# Optional: if omitted, build script falls back to data/projects_public.yaml.
+projects:
+  - id: "saxs"
+    title: "SAXS – Multi-State Structural Analysis"
+    url: "projects/exp_nodes_pr_iq_peaks.html"
+
+  - id: "pca"
+    title: "PCA & Free-Energy Modes"
+    url: "projects/pca_free_energy.html"
+
+  - id: "vaults"
+    title: "Vaults – Mail & Calendar Organiser"
+    url: "projects/vaults.html"
+
+  - id: "chrom"
+    title: "Chromatography & Wavelets"
+    url: "projects/chrom_wavelets.html"
+
+nexus:
+  connections:
+    - from: "saxs_state_inference"
+      to: "chrom"
+
+    - from: "saxs_state_inference"
+      to: "pca"

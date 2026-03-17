@@ -1,0 +1,10 @@
+[
+  {
+    "from": "saxs_state_inference",
+    "to": "chrom"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "pca"
+  }
+]

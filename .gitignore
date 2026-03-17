@@ -6,7 +6,22 @@ Icon?
 *.log
 .DS_Store
 
-# Local-only sources / tooling (do not push)
-/src/
-/scripts/
+# Python cache / bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Local-only content (do not push)
 /private/
+
+# Generated outputs
+/public/
+/dist/
+/backup_root/
+
+# Build-time safety artifacts (should never be published)
+/src/_root_conflicts/
+
+# Local Python env
+/.venv/
+/.venv_build/
