@@ -15,6 +15,7 @@ __pycache__/
 /private/
 
 # Generated outputs
+/public/
 /dist/
 /backup_root/
 
