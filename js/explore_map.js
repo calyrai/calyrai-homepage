@@ -5,9 +5,27 @@
   const links = document.querySelector(".explore-links");
   if (!svg || !stage) return;
 
-  const NEXUS_HREF = window.location && window.location.pathname && window.location.pathname.includes("/pages/")
-    ? "nexus.html"
-    : "pages/nexus.html";
+  function siteRootPrefix() {
+    const path = (window.location && window.location.pathname) ? String(window.location.pathname) : "/";
+    const segments = path.replace(/\/+$/, "").split("/").filter(Boolean);
+    const depth = Math.max(0, segments.length - 1);
+    if (depth <= 0) return ".";
+    return Array.from({ length: depth }, () => "..").join("/");
+  }
+
+  const ROOT_PREFIX = siteRootPrefix();
+
+  function toSiteRootHref(href) {
+    if (!href) return href;
+    const s = String(href);
+    if (s.startsWith("#")) return s;
+    if (s.startsWith("mailto:")) return s;
+    if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(s)) return s; // http(s): etc.
+    if (ROOT_PREFIX === ".") return s;
+    return `${ROOT_PREFIX}/${s}`;
+  }
+
+  const NEXUS_HREF = toSiteRootHref("pages/nexus.html");
 
   const STORAGE_KEY = "calyr_explore_state_v2";
   const ENGAGEMENT_KEY = "calyr_explore_engagement_v1";
@@ -110,7 +128,7 @@
   const projects = (window.CALYR_PROJECTS || []).map((p) => ({
     id: String(p.id),
     title: String(p.title),
-    href: p.url ? String(p.url) : `projects.html#project-${encodeURIComponent(p.id)}`,
+    href: toSiteRootHref(p.url ? String(p.url) : `projects.html#project-${encodeURIComponent(p.id)}`),
   }));
 
   const nodeCatalog = [
