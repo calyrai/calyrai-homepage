@@ -1,0 +1,33 @@
+# Canonical homepage source (data-driven)
+# Rendered by scripts/build_pages.py into index.html
+
+kind: index
+
+nav:
+  left:
+    - href: index.html
+      text_html: "Cal&iacute;r.ai – platform technology"
+    - href: explore.html
+      text: Explore
+    - href: team.html
+      text: Team
+  right:
+    - href: https://bsky.app/profile/calyrai.bsky.social
+      text: Follow
+    - href: "mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body="
+      text: Contact
+    - href: "#impressum"
+      text: Impressum
+
+hero:
+  kicker: TOWARDS MOLECULAR DIGITIZATION
+  title_html: "Cal&iacute;r.a&iacute; — dr&iacute;ven"
+  subtitle: "Transforming experimental signals into real-time molecular insight."
+  cta:
+    href: pages/nexus.html
+    text: Explore the Nexus
+  characteristics: "Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces"
+  orbit:
+    aria_label: Calir.ai
+    size_css: "min(48vmin, 360px)"
+    accent_rot: "140s"
