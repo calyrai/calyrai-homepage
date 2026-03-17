@@ -38,6 +38,10 @@ jobs:
           rsync -a --delete \
             ./public/ dist/
 
+          # Custom domain + avoid Jekyll processing
+          if [ -f ./CNAME ]; then cp ./CNAME dist/CNAME; fi
+          touch dist/.nojekyll
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
