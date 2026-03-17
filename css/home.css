@@ -371,6 +371,10 @@
 }
 
 /* =========================
+   MOBILE (SMALL SCREENS)
+   ========================= */
+
+@media (max-width: 640px){
   .hero-orbit-logo{
     top: calc(50% + clamp(28px, 8vh, 78px));
   }
@@ -395,6 +399,8 @@
   .hero-cta{
     min-width: min(320px, 86vw);
   }
+}
+
 .home-architecture{
   position: relative;
   overflow: hidden;
