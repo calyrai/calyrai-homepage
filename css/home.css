@@ -30,7 +30,9 @@
 /* Orbit logo replaces the globe canvas */
 .hero-orbit-logo{
   position:absolute;
-  inset:0;
+  left: 50%;
+  top: calc(50% + clamp(40px, 10vh, 110px));
+  transform: translate(-50%, -50%);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -47,6 +49,10 @@
 @media (max-width: 640px){
   .hero-orbit-logo [data-orbit-logo]{
     --orbit-size: min(62vmin, 300px);
+  }
+
+  .hero-orbit-logo{
+    padding-top: clamp(3.75rem, 8vh, 6rem);
   }
 }
 
@@ -82,7 +88,8 @@
   font-size: clamp(2.8rem, 6vw, 5rem);
   line-height: 0.96;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
+  font-variant-ligatures: none;
   color: #f7fbff;
   text-shadow:
     0 0 8px rgba(110, 230, 255, 0.45),
@@ -125,6 +132,14 @@
   box-shadow:
     0 0 22px rgba(0, 245, 255, 0.26),
     inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.hero-characteristics {
+  margin-top: 1.15rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(180, 222, 245, 0.92);
 }
 
 .hero-content{
@@ -356,9 +371,30 @@
 }
 
 /* =========================
-   ARCHITECTURE SECTION (YAML-driven)
-   ========================= */
+  .hero-orbit-logo{
+    top: calc(50% + clamp(28px, 8vh, 78px));
+  }
 
+  .hero-copy{
+    padding: 4.25rem 1.25rem 2.5rem;
+  }
+
+  .hero-title{
+    font-size: clamp(2.15rem, 9vw, 3.35rem);
+    line-height: 1.02;
+  }
+
+  .hero-kicker{
+    font-size: 0.8rem;
+  }
+
+  .hero-subtitle{
+    font-size: 1.02rem;
+  }
+
+  .hero-cta{
+    min-width: min(320px, 86vw);
+  }
 .home-architecture{
   position: relative;
   overflow: hidden;

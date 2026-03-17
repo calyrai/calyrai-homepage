@@ -96,7 +96,7 @@
   <div class="hero-copy">
     <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
 
-    <h1 class="hero-title">Calyrai — AI-Driven Structuralomics</h1>
+    <h1 class="hero-title">Cal&yacute;r.ai — AI-Driven Structuralomics</h1>
 
     <p class="hero-subtitle">
       Transforming experimental signals into real-time molecular insight.
@@ -105,6 +105,10 @@
     <a href="pages/nexus.html" class="hero-cta glow-button">
       Explore the Nexus
     </a>
+
+    <div class="hero-characteristics">
+      Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces
+    </div>
   </div>
 </section>
 
