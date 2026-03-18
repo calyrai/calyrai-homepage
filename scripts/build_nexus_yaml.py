@@ -217,32 +217,40 @@ def _write_nexus_edges(cfg: dict[str, Any], out_edges_json: Path) -> None:
 
 def main(argv: list[str]) -> int:
     root = Path(__file__).resolve().parent.parent
-    yaml_path = root / "src" / "data" / "nexus.yaml"
+    src_root = root / "src"
+    yaml_path = src_root / "data" / "nexus.yaml"
 
     cfg_raw = _load_yaml(yaml_path)
     if not isinstance(cfg_raw, dict):
         _die("nexus.yaml must contain a top-level mapping")
 
-    projects_fallback_yaml = root / "src" / "data" / "projects_public.yaml"
+    projects_fallback_yaml = src_root / "data" / "projects_public.yaml"
     projects = _build_projects(cfg_raw, projects_fallback_yaml=projects_fallback_yaml)
 
-    out_projects_js = root / "src" / "data" / "projects.js"
-    out_projects_json = root / "src" / "data" / "projects.json"
+    # Keep both build trees in sync:
+    # - src/ is used for public builds (public/ is rsync'd from src/)
+    # - repo root is useful for local previews that serve from the root
+    out_roots = [src_root, root]
+    wrote_edges_any = False
 
-    _write_text(out_projects_js, _render_projects_js(projects))
-    _write_json(out_projects_json, projects)
+    for out_root in out_roots:
+        out_projects_js = out_root / "data" / "projects.js"
+        out_projects_json = out_root / "data" / "projects.json"
+        _write_text(out_projects_js, _render_projects_js(projects))
+        _write_json(out_projects_json, projects)
 
-    # Optional: keep a Nexus-specific edge list in sync.
-    out_edges_json = root / "src" / "data" / "nexus" / "edges.json"
-    _write_nexus_edges(cfg_raw, out_edges_json=out_edges_json)
+        # Optional: keep a Nexus-specific edge list in sync.
+        out_edges_json = out_root / "data" / "nexus" / "edges.json"
+        _write_nexus_edges(cfg_raw, out_edges_json=out_edges_json)
+        wrote_edges_any = wrote_edges_any or out_edges_json.exists()
 
-    # Optional: inject identity contact into the generated Nexus page (build-time).
-    _inject_contact_into_nexus_page(cfg_raw, src_nexus_html=root / "src" / "pages" / "nexus.html")
+        # Optional: inject identity contact into the generated Nexus page (build-time).
+        _inject_contact_into_nexus_page(cfg_raw, src_nexus_html=out_root / "pages" / "nexus.html")
 
-    print(f"✔ projects.js generated ({out_projects_js.relative_to(root)})")
-    print(f"✔ projects.json generated ({out_projects_json.relative_to(root)})")
-    if out_edges_json.exists():
-        print(f"✔ nexus edges updated ({out_edges_json.relative_to(root)})")
+    print("✔ projects.js generated (src/data and data)")
+    print("✔ projects.json generated (src/data and data)")
+    if wrote_edges_any:
+        print("✔ nexus edges updated (src/data/nexus and data/nexus)")
 
     return 0
 
