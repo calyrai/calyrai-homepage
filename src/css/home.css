@@ -48,7 +48,7 @@
 
 @media (max-width: 640px){
   .hero-orbit-logo [data-orbit-logo]{
-    --orbit-size: min(62vmin, 300px);
+    --orbit-size: min(78vmin, 360px);
   }
 
   .hero-orbit-logo{
