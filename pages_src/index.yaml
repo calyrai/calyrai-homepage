@@ -6,7 +6,7 @@ kind: index
 nav:
   left:
     - href: index.html
-      text_html: "Calyr.ai – platform technology"
+      text_html: "Calyr.a&iacute; – platform technology"
     - href: explore.html
       text: Explore
     - href: team.html
@@ -21,13 +21,13 @@ nav:
 
 hero:
   kicker: TOWARDS MOLECULAR DIGITIZATION
-  title_html: "Calyr.ai — driven"
+  title_html: "Calyr.a&iacute; — dr&iacute;ven"
   subtitle: "Transforming experimental signals into real-time molecular insight."
   cta:
     href: pages/nexus.html
     text: Explore the Nexus
   characteristics: "Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces"
   orbit:
-    aria_label: Calyr.ai
+    aria_label: "Calyr.a&iacute;"
     size_css: "min(48vmin, 360px)"
     accent_rot: "140s"

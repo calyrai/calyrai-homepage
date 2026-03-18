@@ -1,7 +1,7 @@
 <header class="site-header">
   <div class="nav-inner">
     <div class="nav-left-row">
-      <a href="index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="index.html" class="nav-pill glow-nav">Calyr.a&iacute; – platform technology</a>
       <a href="explore.html" class="nav-pill glow-nav">Explore</a>
       <a href="team.html" class="nav-pill glow-nav">Team</a>
     </div>
@@ -96,7 +96,7 @@
   <div class="hero-copy">
     <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
 
-    <h1 class="hero-title">Calyr.ai — AI-Dr&iacute;ven Structuralom&iacute;cs</h1>
+    <h1 class="hero-title">Calyr.a&iacute; — AI-Dr&iacute;ven Structuralom&iacute;cs</h1>
 
     <p class="hero-subtitle">
       Transforming experimental signals into real-time molecular insight.
@@ -135,5 +135,5 @@
 </footer>
 
 <footer class="site-footer">
-  © 2025 Calyr.ai™ — All rights reserved.
+  © 2025 Calyr.a&iacute;™ — All rights reserved.
 </footer>
