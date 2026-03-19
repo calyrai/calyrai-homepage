@@ -481,17 +481,22 @@
     function triggerStabilize() {
       const now = performance.now();
 
-       // Toggle off if already stabilized.
+      const durationMs =
+        Number(el.getAttribute("data-stabilize-ms") || "0") ||
+        Number(el.getAttribute("data-qr-stabilize-ms") || "0") ||
+        10_000;
+
+      // Toggle off if already stabilized.
       if (state.stabilizeEndMs && now < state.stabilizeEndMs) {
         state.stabilizeStartMs = 0;
         state.stabilizeEndMs = 0;
-        state.stabilizeDidMail = false;
-        hideMailPill();
+        state.stabilizeDidMail = true;
+        showMailPill();
         return;
       }
 
       state.stabilizeStartMs = now;
-      state.stabilizeEndMs = now + 10_000;
+      state.stabilizeEndMs = now + Math.max(150, durationMs);
       state.stabilizeDidMail = false;
       hideMailPill();
 
@@ -516,6 +521,20 @@
     window.addEventListener("resize", resize);
     maybeLoadQrYaml();
     requestAnimationFrame(draw);
+
+    // Start the contact page by briefly showing the QR.
+    // Keep this short so the page doesn't feel "stuck" in QR mode.
+    const startMs =
+      Number(el.getAttribute("data-start-ms") || "0") ||
+      Number(el.getAttribute("data-qr-start-ms") || "0") ||
+      0;
+    if (startMs > 0) {
+      const prev = el.getAttribute("data-stabilize-ms");
+      el.setAttribute("data-stabilize-ms", String(startMs));
+      triggerStabilize();
+      if (prev == null) el.removeAttribute("data-stabilize-ms");
+      else el.setAttribute("data-stabilize-ms", prev);
+    }
   }
 
   function init() {

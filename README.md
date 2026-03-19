@@ -20,6 +20,20 @@ This repo is **Markdown-first**:
 
 Note: the generated `src/*.html` files are reproducible build outputs; edit the Markdown sources + templates instead.
 
+
+## Homepage maintenance
+
+The homepage is designed to be **single-source-of-truth**:
+
+- Content: `pages_src/index.yaml`
+- Renderer: `scripts/build_pages.py` (index YAML kind: `index`)
+- Styles: `src/css/home.css`
+- Built output: `src/index.html`
+- Repo-root mirror: `index.html` + `css/` + `js/` etc (synced from `src/` by `scripts/sync_root_from_src.sh`)
+- Deploy output: `public/` (synced from `src/` by `scripts/build_public.sh`)
+
+Rule of thumb: **edit `pages_src/` + `src/`, then run `bash scripts/build_all.sh`**.
+
 ## Public vs. private content
 
 - **Public source of truth:** `src/` (committed)

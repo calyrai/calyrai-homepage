@@ -214,13 +214,6 @@
     width: 100%;
   }
 
-  /* Phone: make the brand/logo link more prominent */
-  .nav-left-row > a:first-child {
-    font-size: 1.05rem;
-    padding: 10px 12px;
-    letter-spacing: 0.03em;
-  }
-
   .nav-links {
     width: 100%;
     flex-wrap: wrap;

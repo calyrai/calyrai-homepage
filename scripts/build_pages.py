@@ -194,17 +194,23 @@ def _render_index_body(data: dict) -> str:
 
 <section class=\"hero\" id=\"hero\">
     <div class=\"hero-orbit-logo\">
-        <div
-            data-orbit-logo
-            class=\"orbit-logo\"
-            id=\"orbit-logo-home\"
-            role=\"button\"
-            tabindex=\"0\"
-            aria-label=\"{orbit_label}\"
-            style=\"--orbit-size: {orbit_size_css}; --orbit-accent-rot: {orbit_accent_rot};\"
-        >
-            {orbit_svg}
+        <div class=\"hero-orbit-stack\">
+            <div
+                data-orbit-logo
+                class=\"orbit-logo\"
+                id=\"orbit-logo-home\"
+                role=\"button\"
+                tabindex=\"0\"
+                aria-label=\"{orbit_label}\"
+                style=\"--orbit-size: {orbit_size_css}; --orbit-accent-rot: {orbit_accent_rot};\"
+            >
+                {orbit_svg}
+            </div>
+
+            <a href=\"{cta_href}\" class=\"hero-cta hero-cta--orbit glow-button\">{cta_text}</a>
         </div>
+
+        <div class=\"hero-characteristics hero-characteristics--orbit\">{characteristics}</div>
     </div>
 
     <div class=\"hero-copy\">
@@ -215,15 +221,7 @@ def _render_index_body(data: dict) -> str:
         <p class=\"hero-subtitle\">
             {subtitle}
         </p>
-
-        <a href=\"{cta_href}\" class=\"hero-cta glow-button\">{cta_text}</a>
-
-        <div class=\"hero-characteristics\">{characteristics}</div>
     </div>
-</section>
-
-<section class=\"home-architecture\" aria-label=\"Architecture\">
-    <div id=\"home-architecture\"></div>
 </section>
 
 <footer id=\"impressum\" class=\"impressum\">

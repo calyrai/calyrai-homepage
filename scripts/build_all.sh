@@ -35,13 +35,13 @@ fi
 
 echo "→ building site pages"
 "$VENV_PY" scripts/build_pages.py --out src
-"$VENV_PY" scripts/build_pages.py --out .
 
 echo "→ building nexus YAML artifacts"
 "$VENV_PY" scripts/build_nexus_yaml.py
 
 echo "→ building projects"
 "$VENV_PY" scripts/build_projects.py --clean --out src/projects
+bash scripts/sync_root_from_src.sh
 
 echo "→ building public"
 bash scripts/build_public.sh

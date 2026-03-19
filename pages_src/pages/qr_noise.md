@@ -16,7 +16,7 @@
 
 <main class="qr-noise-page" aria-label="QR">
   <section class="qr-noise-shell">
-    <button type="button" class="qr-noise-widget" data-qr-noise data-qr-yaml="../data/contact.yaml" data-qr-text="https://calyr.ai/" data-qr-size="340" aria-label="QR">
+    <button type="button" class="qr-noise-widget" data-qr-noise data-start-ms="1000" data-qr-yaml="../data/contact.yaml" data-qr-text="https://calyr.ai/" data-qr-size="340" aria-label="QR">
       <canvas class="qr-noise-canvas" width="300" height="300" aria-hidden="true"></canvas>
     </button>
   </section>

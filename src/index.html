@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calyr.ai – Molecular Deeptech</title>
+  <title>Calyr.a&iacute; – Molecular Deeptech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Stylesheets -->
@@ -17,7 +17,6 @@
   <script src="js/collect_hearts.js" defer></script>
   <script src="js/orbit_logo.js?v=20260317c" defer></script>
   <script src="js/analytics.js" defer></script>
-  <script src="js/home_from_yaml.js?v=20260316" defer></script>
 
   <!-- Safety: ensure pills are visible & clickable on mobile -->
   <style>
@@ -49,16 +48,17 @@
 
 <section class="hero" id="hero">
     <div class="hero-orbit-logo">
-        <div
-            data-orbit-logo
-            class="orbit-logo"
-            id="orbit-logo-home"
-            role="button"
-            tabindex="0"
-            aria-label="Calyr.a&amp;iacute;"
-            style="--orbit-size: min(48vmin, 360px); --orbit-accent-rot: 140s;"
-        >
-            <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&amp;iacute;" focusable="false">
+        <div class="hero-orbit-stack">
+            <div
+                data-orbit-logo
+                class="orbit-logo"
+                id="orbit-logo-home"
+                role="button"
+                tabindex="0"
+                aria-label="Calyr.a&amp;iacute;"
+                style="--orbit-size: min(48vmin, 360px); --orbit-accent-rot: 140s;"
+            >
+                <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&amp;iacute;" focusable="false">
                 <defs>
                     <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
@@ -123,7 +123,12 @@
                     </g>
                 </g>
             </svg>
+            </div>
+
+            <a href="pages/nexus.html" class="hero-cta hero-cta--orbit glow-button">Explore the Nexus</a>
         </div>
+
+        <div class="hero-characteristics hero-characteristics--orbit">Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces</div>
     </div>
 
     <div class="hero-copy">
@@ -134,15 +139,7 @@
         <p class="hero-subtitle">
             Transforming experimental signals into real-time molecular insight.
         </p>
-
-        <a href="pages/nexus.html" class="hero-cta glow-button">Explore the Nexus</a>
-
-        <div class="hero-characteristics">Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces</div>
     </div>
-</section>
-
-<section class="home-architecture" aria-label="Architecture">
-    <div id="home-architecture"></div>
 </section>
 
 <footer id="impressum" class="impressum">
