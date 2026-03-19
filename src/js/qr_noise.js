@@ -316,11 +316,22 @@
 
     function resize() {
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      const fallbackCss = Math.floor(el.clientWidth || 280);
-      const cssSize = requestedSize > 0 ? requestedSize : Math.max(220, Math.min(360, fallbackCss));
+      const rect = canvas.getBoundingClientRect();
+      let cssSize = Math.floor(Math.min(rect.width || 0, rect.height || rect.width || 0));
 
-      canvas.style.width = cssSize + "px";
-      canvas.style.height = cssSize + "px";
+      if (!cssSize || cssSize < 10) {
+        const fallbackCss = Math.floor(el.clientWidth || 280);
+        const maxByViewport = Math.floor(Math.min(360, (window.innerWidth || 360) * 0.78));
+        const desired =
+          requestedSize > 0
+            ? Math.min(requestedSize, maxByViewport)
+            : Math.max(220, Math.min(360, fallbackCss));
+        cssSize = desired;
+
+        canvas.style.width = cssSize + "px";
+        canvas.style.height = cssSize + "px";
+      }
+
       canvas.width = Math.floor(cssSize * dpr);
       canvas.height = Math.floor(cssSize * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

@@ -2,7 +2,7 @@
 # Contact details used for QR/vCard generation.
 
 contact:
-  full_name: "Rupert Tscheliessnig"
+  full_name: "Rupert Gelisnig"
   email: "rupert.tscheliessnig@calyr.ai"
   phone: ""
   organization: "CalyrAI"
@@ -12,7 +12,7 @@ contact:
   # vcard: |-
   #   BEGIN:VCARD
   #   VERSION:3.0
-  #   FN:Rupert Tscheliessnig
+  #   FN:Rupert Gelisnig
   #   ORG:CalyrAI
   #   TEL;TYPE=CELL:+43...
   #   EMAIL:rupert.tscheliessnig@calyr.ai
