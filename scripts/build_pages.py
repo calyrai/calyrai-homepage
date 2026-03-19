@@ -302,6 +302,11 @@ def _default_pages(src_root: Path, template_root: Path, out_root: Path) -> list[
             template_path=template_root / "pages" / "nexus.template.html",
             out_path=out_root / "pages" / "nexus.html",
         ),
+        SitePage(
+            src_path=src_root / "pages" / "qr_noise.md",
+            template_path=template_root / "pages" / "qr_noise.template.html",
+            out_path=out_root / "pages" / "qr_noise.html",
+        ),
     ]
 
 

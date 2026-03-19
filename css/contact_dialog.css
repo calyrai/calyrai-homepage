@@ -1,0 +1,113 @@
+/* Minimal contact dialog overlay */
+
+.contact-dialog {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  max-width: none;
+  max-height: none;
+}
+
+.contact-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.contact-dialog__frame {
+  width: min(92vw, 520px);
+  height: min(92vh, 620px);
+  margin: 0 auto;
+  border-radius: 22px;
+  border: 1px solid rgba(114, 250, 255, 0.28);
+  background: rgba(0, 0, 0, 0.78);
+  box-shadow:
+    0 0 22px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(36, 243, 255, 0.14);
+  overflow: hidden;
+}
+
+.contact-dialog__track {
+  width: 200%;
+  height: 100%;
+  display: flex;
+  transform: translateX(0%);
+  transition: transform 180ms ease-out;
+}
+
+.contact-dialog.is-email .contact-dialog__track {
+  transform: translateX(-50%);
+}
+
+.contact-dialog__panel {
+  width: 50%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.contact-dialog__panel--email {
+  padding: 18px;
+}
+
+/* Right-pointing triangle indicator */
+.contact-dialog__swipe-right {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 14px solid rgba(255, 77, 245, 0.78);
+  filter: drop-shadow(0 0 10px rgba(255, 77, 245, 0.35));
+  opacity: 0.9;
+}
+
+/* QR widget in dialog */
+.contact-dialog .qr-noise-widget {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.contact-dialog .qr-noise-canvas {
+  display: block;
+  width: min(72vw, 360px);
+  height: min(72vw, 360px);
+  border-radius: 18px;
+  box-shadow:
+    0 0 18px rgba(36, 243, 255, 0.10),
+    0 0 26px rgba(0, 0, 0, 0.95);
+}
+
+/* Email view */
+.contact-dialog__email {
+  font-size: 0.98rem;
+  letter-spacing: 0.02em;
+  color: #bdfcff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(114, 250, 255, 0.35);
+  background: rgba(7, 18, 26, 0.45);
+  box-shadow: 0 0 10px rgba(114, 250, 255, 0.18);
+}
+
+.contact-dialog__email:hover {
+  color: #ff9bf7;
+  border-color: rgba(255, 113, 245, 0.55);
+  box-shadow:
+    0 0 14px rgba(255, 113, 245, 0.22),
+    0 0 26px rgba(0, 0, 0, 0.95);
+}
+
+@media (max-width: 560px) {
+  .contact-dialog__frame {
+    width: 94vw;
+    height: 78vh;
+  }
+}

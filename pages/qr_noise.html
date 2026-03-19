@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nexus – Calyr.ai</title>
+  <title>QR – Calyr.ai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Nexus — the operational interface of Calyrai." />
 
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/nav.css" />
   <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/explore.css" />
-  <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/qr_noise.css?v=20260319d" />
   <link rel="stylesheet" href="../css/contact_dialog.css?v=20260319d" />
 
   <script src="../js/collect_hearts.js" defer></script>
@@ -22,7 +20,29 @@
 </head>
 
 <body>
-{{CONTENT}}
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="../team.html" class="nav-pill glow-nav">Team</a>
+    </div>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&amp;body=" class="nav-pill glow-nav">Contact</a>
+      <a href="../index.html#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main class="qr-noise-page" aria-label="QR">
+  <section class="qr-noise-shell">
+    <button type="button" class="qr-noise-widget" data-qr-noise data-qr-yaml="../data/contact.yaml" data-qr-text="https://calyr.ai/" data-qr-size="340" aria-label="QR">
+      <canvas class="qr-noise-canvas" width="300" height="300" aria-hidden="true"></canvas>
+    </button>
+  </section>
+</main>
 
 <dialog id="contact-dialog" class="contact-dialog" aria-label="Contact">
   <div class="contact-dialog__frame" data-contact-swipe>

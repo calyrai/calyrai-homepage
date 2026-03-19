@@ -1,0 +1,20 @@
+# data/contact.yaml
+# Contact details used for QR/vCard generation.
+
+contact:
+  full_name: "Rupert Tscheliessnig"
+  email: "rupert.tscheliessnig@calyr.ai"
+  phone: ""
+  organization: "CalyrAI"
+  url: "https://calyr.ai/"
+
+  # Optional: provide an explicit vCard payload instead of the fields above.
+  # vcard: |-
+  #   BEGIN:VCARD
+  #   VERSION:3.0
+  #   FN:Rupert Tscheliessnig
+  #   ORG:CalyrAI
+  #   TEL;TYPE=CELL:+43...
+  #   EMAIL:rupert.tscheliessnig@calyr.ai
+  #   URL:https://calyr.ai/
+  #   END:VCARD
