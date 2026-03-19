@@ -102,3 +102,32 @@
   font-size: 0.95rem;
   color: rgba(180, 222, 245, 0.88);
 }
+
+/* Mail prompt pill (appears after stabilization). */
+.qr-noise-mail-pill{
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qr-cyan);
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--qr-border);
+  background: rgba(7, 18, 26, 0.45);
+  box-shadow: 0 0 10px rgba(114, 250, 255, 0.18);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qr-noise-mail-pill:focus{ outline: none; }
+
+.qr-noise-mail-pill:focus-visible{
+  border-color: rgba(140, 245, 255, 0.75);
+  box-shadow:
+    0 0 14px rgba(0, 245, 255, 0.18),
+    0 0 26px rgba(0, 0, 0, 0.95);
+}

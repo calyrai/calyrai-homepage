@@ -371,11 +371,12 @@
         hopAtMs = t;
         hopIndex = (hopIndex + 1) >>> 0;
 
+        const hopRand = xorshift32((seedFromString(qrText) ^ Math.imul(hopIndex, 0x9e3779b9)) >>> 0);
         if (!stabilizedActive) {
-          const hopRand = xorshift32((seedFromString(qrText) ^ Math.imul(hopIndex, 0x9e3779b9)) >>> 0);
           hopNoisePoints(hopRand);
-          updateMagentaCell(hopRand);
         }
+        // Keep the magenta dot alive even during stabilization.
+        updateMagentaCell(hopRand);
       }
 
       resize();

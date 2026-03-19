@@ -8,7 +8,7 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+      <a href="pages/qr_noise.html" class="nav-pill glow-nav">Contact</a>
       <a href="index.html#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>

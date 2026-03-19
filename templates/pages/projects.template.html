@@ -10,34 +10,12 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/projects.css" />
   <link rel="stylesheet" href="css/impressum.css" />
-  <link rel="stylesheet" href="css/contact_dialog.css?v=20260319f" />
 
   <script src="js/collect_hearts.js" defer></script>
   <script src="js/orbit_logo.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
-  <script src="js/qr_noise.js?v=20260319f" defer></script>
-  <script src="js/contact_dialog.js?v=20260319f" defer></script>
 </head>
 
 <body class="projects-page">
 {{CONTENT}}
-
-<dialog id="contact-dialog" class="contact-dialog" aria-label="Contact">
-  <div class="contact-dialog__frame" data-contact-swipe>
-    <div class="contact-dialog__track">
-      <section class="contact-dialog__panel contact-dialog__panel--qr" aria-label="QR">
-        <div class="contact-dialog__swipe-right" aria-hidden="true"></div>
-        <button type="button" class="qr-noise-widget" data-qr-noise data-qr-yaml="/data/contact.yaml" data-qr-text="https://calyr.ai/" data-qr-size="340" aria-label="QR">
-          <canvas class="qr-noise-canvas" width="300" height="300" aria-hidden="true"></canvas>
-        </button>
-      </section>
-
-      <section class="contact-dialog__panel contact-dialog__panel--email" aria-label="Email">
-        <a id="contact-dialog-email" data-contact-direct-mail href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="contact-dialog__email">rupert.tscheliessnig@calyr.ai</a>
-      </section>
-    </div>
-  </div>
-</dialog>
 </body>
 </html>

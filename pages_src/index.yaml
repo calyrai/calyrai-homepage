@@ -14,7 +14,7 @@ nav:
   right:
     - href: https://bsky.app/profile/calyrai.bsky.social
       text: Follow
-    - href: "mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body="
+    - href: pages/qr_noise.html
       text: Contact
     - href: "#impressum"
       text: Impressum
