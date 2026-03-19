@@ -48,8 +48,18 @@
   function openDialog(dialog, view) {
     dialog.classList.toggle("is-email", view === "email");
 
-    if (typeof dialog.showModal === "function") {
-      if (!dialog.open) dialog.showModal();
+    // Non-modal: keep site header clickable (escape/navigation on mobile).
+    const header = document.querySelector(".site-header");
+    if (header && typeof header.getBoundingClientRect === "function") {
+      const r = header.getBoundingClientRect();
+      const top = Math.max(0, Math.min(window.innerHeight, Math.ceil(r.bottom + 8)));
+      dialog.style.setProperty("--contact-dialog-top", top + "px");
+    } else {
+      dialog.style.setProperty("--contact-dialog-top", "0px");
+    }
+
+    if (typeof dialog.show === "function") {
+      if (!dialog.open) dialog.show();
     } else {
       dialog.setAttribute("open", "open");
     }

@@ -265,13 +265,53 @@
       mailtoHref: defaultMailto,
     };
 
-    function openPreparedMail() {
-      try {
-        const href = state.mailtoHref || defaultMailto;
-        window.location.assign(href);
-      } catch (err) {
-        console.error("Failed to open mailto:", err);
+    // Mail prompt pill shown after stabilization ends.
+    let mailPill = null;
+    function ensureMailPill() {
+      if (mailPill) return mailPill;
+
+      const wrap = document.createElement("span");
+      wrap.style.display = "inline-block";
+      wrap.style.position = "relative";
+      wrap.style.lineHeight = "0";
+
+      const parent = el.parentNode;
+      if (parent) {
+        parent.insertBefore(wrap, el);
+        wrap.appendChild(el);
       }
+
+      const a = document.createElement("a");
+      a.className = "qr-noise-mail-pill";
+      a.href = state.mailtoHref || defaultMailto;
+      a.textContent = "Mail";
+      a.style.display = "none";
+      a.setAttribute("aria-label", "Mail");
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          const href = state.mailtoHref || defaultMailto;
+          window.location.assign(href);
+        } catch (err) {
+          console.error("Failed to open mailto:", err);
+        }
+        a.style.display = "none";
+      });
+
+      wrap.appendChild(a);
+      mailPill = a;
+      return a;
+    }
+
+    function hideMailPill() {
+      if (mailPill) mailPill.style.display = "none";
+    }
+
+    function showMailPill() {
+      const a = ensureMailPill();
+      a.href = state.mailtoHref || defaultMailto;
+      a.style.display = "inline-block";
     }
 
     function resize() {
@@ -311,7 +351,7 @@
       if (state.stabilizeEndMs && t >= state.stabilizeEndMs) {
         if (!state.stabilizeDidMail) {
           state.stabilizeDidMail = true;
-          openPreparedMail();
+          showMailPill();
         }
         state.stabilizeStartMs = 0;
         state.stabilizeEndMs = 0;
@@ -434,12 +474,14 @@
         state.stabilizeStartMs = 0;
         state.stabilizeEndMs = 0;
         state.stabilizeDidMail = false;
+        hideMailPill();
         return;
       }
 
       state.stabilizeStartMs = now;
       state.stabilizeEndMs = now + 10_000;
       state.stabilizeDidMail = false;
+      hideMailPill();
 
       if (typeof window.qrcode === "function") {
         matrix = pickMatrix(qrText);

@@ -1,18 +1,25 @@
 /* Minimal contact dialog overlay */
 
 .contact-dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--contact-dialog-top, 0px);
+  height: calc(100vh - var(--contact-dialog-top, 0px));
+  bottom: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px 0;
   border: 0;
-  padding: 0;
   background: transparent;
   color: inherit;
   max-width: none;
   max-height: none;
+  pointer-events: none;
 }
 
-.contact-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(8px);
-}
+/* Non-modal dialog: backdrop is unused (show()). */
 
 .contact-dialog__frame {
   width: min(92vw, 520px);
@@ -25,6 +32,7 @@
     0 0 22px rgba(0, 0, 0, 0.95),
     0 0 18px rgba(36, 243, 255, 0.14);
   overflow: hidden;
+  pointer-events: auto;
 }
 
 .contact-dialog__track {
@@ -51,19 +59,36 @@
   padding: 18px;
 }
 
-/* Right-pointing triangle indicator */
-.contact-dialog__swipe-right {
+/* Swipe indicator removed. */
+.contact-dialog__swipe-right { display: none; }
+
+/* Mail prompt pill (appears after stabilization). */
+.qr-noise-mail-pill {
   position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 14px solid rgba(255, 77, 245, 0.78);
-  filter: drop-shadow(0 0 10px rgba(255, 77, 245, 0.35));
-  opacity: 0.9;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bdfcff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(114, 250, 255, 0.35);
+  background: rgba(7, 18, 26, 0.45);
+  box-shadow: 0 0 10px rgba(114, 250, 255, 0.18);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qr-noise-mail-pill:focus { outline: none; }
+
+.qr-noise-mail-pill:focus-visible {
+  border-color: rgba(140, 245, 255, 0.75);
+  box-shadow:
+    0 0 14px rgba(0, 245, 255, 0.18),
+    0 0 26px rgba(0, 0, 0, 0.95);
 }
 
 /* QR widget in dialog */
