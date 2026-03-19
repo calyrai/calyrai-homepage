@@ -14,7 +14,7 @@
     },
     {
       "id": "core_shell_example",
-      "label": "Core–Shell – example",
+      "label": "Core–Shell – example (0.001–0.3)",
       "file": "core_shell_example.json",
       "model": "core_shell_sphere"
     }
