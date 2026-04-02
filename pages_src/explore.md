@@ -10,8 +10,8 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="pages/qr_noise.html" class="nav-pill glow-nav">Contact</a>
-      <a href="index.html#impressum" class="nav-pill glow-nav">Impressum</a>
+      <a href="pages/contact.html" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>
 </header>
@@ -21,7 +21,7 @@
     <div class="explore-header">
       <div class="explore-kicker">Calyr.ai / Explore</div>
       <h1 class="explore-title">Research constellation</h1>
-      <p class="explore-subtitle">Drag to pan, scroll to zoom. Click nodes to expand the constellation. Your arrangement persists on this device.</p>
+      <p class="explore-subtitle">Drag to pan, scroll to zoom. Click nodes to open the corresponding page. Your arrangement persists on this device.</p>
     </div>
 
     <div class="explore-stage" id="explore-stage">

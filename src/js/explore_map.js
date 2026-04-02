@@ -6,6 +6,7 @@
   if (!svg || !stage) return;
 
   function siteRootPrefix() {
+    if (window.location && window.location.protocol === "file:") return ".";
     const path = (window.location && window.location.pathname) ? String(window.location.pathname) : "/";
     const segments = path.replace(/\/+$/, "").split("/").filter(Boolean);
     const depth = Math.max(0, segments.length - 1);
@@ -13,7 +14,19 @@
     return Array.from({ length: depth }, () => "..").join("/");
   }
 
+  function detectFileSiteRoot() {
+    const path = (window.location && window.location.pathname) ? String(window.location.pathname) : "";
+    for (const marker of ["/public/", "/src/"]) {
+      const idx = path.lastIndexOf(marker);
+      if (idx !== -1) return path.slice(0, idx + marker.length);
+    }
+    const parts = path.split("/");
+    parts.pop();
+    return `${parts.join("/")}/`;
+  }
+
   const ROOT_PREFIX = siteRootPrefix();
+  const FILE_SITE_ROOT = window.location && window.location.protocol === "file:" ? detectFileSiteRoot() : "";
 
   function toSiteRootHref(href) {
     if (!href) return href;
@@ -21,13 +34,15 @@
     if (s.startsWith("#")) return s;
     if (s.startsWith("mailto:")) return s;
     if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(s)) return s; // http(s): etc.
+    if (FILE_SITE_ROOT) return new URL(s, `file://${FILE_SITE_ROOT}`).href;
     if (ROOT_PREFIX === ".") return s;
     return `${ROOT_PREFIX}/${s}`;
   }
 
   const NEXUS_HREF = toSiteRootHref("pages/nexus.html");
 
-  const STORAGE_KEY = "calyr_explore_state_v2";
+  const STORAGE_KEY = "calyr_explore_state_v5";
+  const LEGACY_STORAGE_KEYS = ["calyr_explore_state_v3", "calyr_explore_state_v4"];
   const ENGAGEMENT_KEY = "calyr_explore_engagement_v1";
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -114,6 +129,15 @@
     }
   }
 
+  function lsRemove(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   function getEngagement() {
     const n = Number(lsGet(ENGAGEMENT_KEY) || "0");
     return Number.isFinite(n) ? n : 0;
@@ -125,11 +149,15 @@
     return next;
   }
 
-  const projects = (window.CALYR_PROJECTS || []).map((p) => ({
-    id: String(p.id),
-    title: String(p.title),
-    href: toSiteRootHref(p.url ? String(p.url) : `projects.html#project-${encodeURIComponent(p.id)}`),
-  }));
+  const HIDDEN_NODE_IDS = new Set(["parvotec"]);
+
+  const projects = (window.CALYR_PROJECTS || [])
+    .map((p) => ({
+      id: String(p.id),
+      title: String(p.title),
+      href: toSiteRootHref(p.url ? String(p.url) : `projects.html#project-${encodeURIComponent(p.id)}`),
+    }))
+    .filter((p) => !HIDDEN_NODE_IDS.has(p.id));
 
   const nodeCatalog = [
     ...projects,
@@ -304,7 +332,7 @@
     saveTimer = window.setTimeout(() => {
       saveTimer = 0;
       const payload = {
-        v: 2,
+        v: 4,
         nodes,
         edges,
         remaining,
@@ -319,7 +347,7 @@
     const raw = lsGet(STORAGE_KEY);
     if (!raw) return false;
     const parsed = safeJsonParse(raw);
-    if (!parsed || parsed.v !== 2) return false;
+    if (!parsed || parsed.v !== 4) return false;
     if (!parsed.nodes || !parsed.edges || !parsed.remaining || !parsed.transform) return false;
 
     nodes = parsed.nodes;
@@ -346,12 +374,43 @@
       remaining = Array.from(new Set(mapped));
     }
 
-    // Ensure we can always keep growing even if an older state stored an empty/invalid queue.
+    const validIds = new Set(["nexus", ...nodeCatalog.map((n) => n.id)]);
+    const sanitizedNodes = Object.create(null);
+    for (const [id, node] of Object.entries(nodes)) {
+      if (HIDDEN_NODE_IDS.has(id) || !validIds.has(id)) continue;
+      sanitizedNodes[id] = node;
+    }
+    nodes = sanitizedNodes;
+    edges = edges.filter((e) => !HIDDEN_NODE_IDS.has(e.from) && !HIDDEN_NODE_IDS.has(e.to) && validIds.has(e.from) && validIds.has(e.to));
+    remaining = remaining.filter((id) => !HIDDEN_NODE_IDS.has(id) && validIds.has(id));
+    if (HIDDEN_NODE_IDS.has(activeId) || !validIds.has(activeId)) activeId = "nexus";
+
+    // Ensure we can always keep growing even if a saved state stored an empty/invalid queue.
     if (!Array.isArray(remaining) || remaining.length === 0) {
       const present = new Set(Object.keys(nodes));
       remaining = nodeCatalog.map((n) => n.id).filter((id) => !present.has(id));
     }
     return true;
+  }
+
+  function purgeLegacyState() {
+    for (const key of LEGACY_STORAGE_KEYS) lsRemove(key);
+
+    const raw = lsGet(STORAGE_KEY);
+    if (!raw) return;
+    const parsed = safeJsonParse(raw);
+    if (!parsed) {
+      lsRemove(STORAGE_KEY);
+      return;
+    }
+
+    const nodeIds = parsed.nodes && typeof parsed.nodes === "object" ? Object.keys(parsed.nodes) : [];
+    const hasHiddenNode = nodeIds.some((id) => HIDDEN_NODE_IDS.has(id));
+    const hasHiddenEdge = Array.isArray(parsed.edges) && parsed.edges.some((edge) => HIDDEN_NODE_IDS.has(edge.from) || HIDDEN_NODE_IDS.has(edge.to));
+    const hasHiddenRemaining = Array.isArray(parsed.remaining) && parsed.remaining.some((id) => HIDDEN_NODE_IDS.has(id));
+    const hiddenActive = HIDDEN_NODE_IDS.has(parsed.activeId);
+
+    if (hasHiddenNode || hasHiddenEdge || hasHiddenRemaining || hiddenActive) lsRemove(STORAGE_KEY);
   }
 
   function resetState() {
@@ -371,7 +430,7 @@
     transform = { x: 0, y: 0, k: 1 };
     activeId = "nexus";
 
-    expandFrom("nexus", 4);
+    expandFrom("nexus", remaining.length);
   }
 
   function nodeRadius() {
@@ -508,6 +567,12 @@
     return wrapper;
   }
 
+  function navigateToNode(id) {
+    const meta = id === "nexus" ? { href: NEXUS_HREF } : catalogById.get(id);
+    const href = meta && meta.href ? meta.href : "";
+    if (href) window.location.href = href;
+  }
+
   function renderNodes() {
     nodesGroup.innerHTML = "";
     const ids = Object.keys(nodes);
@@ -620,14 +685,8 @@
     }
 
     if (pointerDownOnNodeId) {
-      if (pointerDownOnNodeId === "nexus") {
-        window.location.href = NEXUS_HREF;
-        pointerDownOnNodeId = "";
-        nodeDragId = "";
-        return;
-      }
       setActive(pointerDownOnNodeId);
-      expandFrom(pointerDownOnNodeId, pointerDownOnNodeId === "nexus" ? 3 : 1);
+      navigateToNode(pointerDownOnNodeId);
     }
 
     pointerDownOnNodeId = "";
@@ -656,6 +715,7 @@
     computeDims();
     buildSvg();
     buildLinkList();
+    purgeLegacyState();
 
     const restored = restoreState();
     if (!restored) resetState();

@@ -1,0 +1,106 @@
+/* =========================
+   EXPLORE PAGE
+   ========================= */
+
+.explore-page {
+  padding: 18px 16px 40px;
+}
+
+.explore-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.explore-header {
+  padding: 18px 6px 14px;
+}
+
+.explore-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(180, 240, 255, 0.9);
+  text-shadow: 0 0 10px rgba(140, 240, 255, 0.35);
+}
+
+.explore-title {
+  margin-top: 10px;
+  font-size: clamp(1.8rem, 2.6vw + 1.2rem, 2.8rem);
+  line-height: 1.1;
+  color: #f3fbff;
+  text-shadow:
+    0 0 18px rgba(0, 220, 255, 0.45),
+    0 0 48px rgba(255, 120, 255, 0.22);
+}
+
+.explore-subtitle {
+  margin-top: 10px;
+  max-width: 56rem;
+  color: rgba(210, 240, 255, 0.72);
+  line-height: 1.65;
+}
+
+.explore-stage {
+  position: relative;
+  height: min(72vh, 720px);
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background:
+    radial-gradient(circle at top left, rgba(255, 60, 210, 0.12), transparent 35%),
+    radial-gradient(circle at 76% 20%, rgba(255, 255, 255, 0.06), transparent 14%),
+    radial-gradient(circle at bottom right, rgba(0, 220, 255, 0.10), transparent 35%);
+  overflow: hidden;
+  box-shadow:
+    0 0 14px rgba(36, 243, 255, 0.12),
+    0 0 44px rgba(0, 0, 0, 0.95);
+}
+
+.explore-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Link list (accessibility fallback) */
+.explore-links {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.explore-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 230, 255, 0.55);
+  background: rgba(7, 18, 26, 0.55);
+  color: rgba(200, 250, 255, 0.90);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 8px rgba(36, 243, 255, 0.16);
+}
+
+.explore-links a:hover {
+  border-color: rgba(255, 120, 240, 0.75);
+  color: #ffe6ff;
+  box-shadow: 0 0 14px rgba(255, 120, 240, 0.35);
+}
+
+@media (max-width: 720px) {
+  .explore-page {
+    padding: 14px 12px 28px;
+  }
+
+  .explore-stage {
+    height: min(70vh, 560px);
+  }
+}

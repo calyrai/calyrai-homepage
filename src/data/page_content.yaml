@@ -1,0 +1,120 @@
+pages:
+  nexus:
+    title: "Nexus — Data-governed scientific infrastructure for controlled inference"
+    subtitle: "Nexus is the scientific data warehouse and orchestration layer of Calyr.ai. It keeps experiments, derived representations, model states and reportable outcomes inside one governed system so interpretation remains linked to the data and assumptions that produced it."
+    outline:
+      - { id: summary, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: architecture, label: Architecture }
+      - { id: inference, label: Inference }
+      - { id: map, label: Map }
+      - { id: integration, label: Integration }
+    sections:
+      - id: summary
+        title: "Nexus in one sentence"
+        formula: "EXPERIMENT → REPRESENTATION → MODEL STATE → RESULT → REPORT"
+        body:
+          - "Nexus is not just a machine-learning page and not just a workflow UI."
+          - "It is the governed middle layer where raw measurements, experimental context, derived representations and model-facing states are collected into one coherent scientific object."
+      - id: flow
+        title: "Data flow"
+        steps:
+          - title: "Experiments"
+            text: "SAXS, ITC, SPR, Unicorn and related measurements enter with metadata, run context and acquisition constraints intact."
+          - title: "Representations"
+            text: "Signals are transformed into governed features, embeddings and coordinate systems that remain attached to the source record."
+          - title: "Model states"
+            text: "Fits, constraints, candidate mechanisms and uncertainty estimates are stored as explicit states rather than hidden intermediate artifacts."
+          - title: "Controlled outputs"
+            text: "Reports, scores and publication-facing results can always be traced back to the warehouse object that produced them."
+      - id: architecture
+        title: "Layered architecture"
+        layers:
+          - title: "Data layer"
+            text: "Raw measurements, acquisition metadata, sample state and experimental constraints are stored as first-class scientific records."
+          - title: "Representation layer"
+            text: "Derived features, embeddings, P(r), decomposition outputs and other intermediate forms become stable warehouse objects."
+          - title: "Inference layer"
+            text: "Model families, fit states, constraints, rankings and uncertainty structures are managed as governed transitions rather than one-off scripts."
+          - title: "Result layer"
+            text: "Claims, dashboards and reports are emitted from the warehouse with provenance still visible."
+      - id: inference
+        title: "Controlled inference"
+        body:
+          - "The key idea is not 'AI on top of data.' It is controlled inference: each step from signal to interpretation is staged inside a warehouse-like system where assumptions, transformations and outputs can be inspected."
+        stages:
+          - { tag: A, title: Ingest, text: "Capture measurements and metadata as governed scientific objects." }
+          - { tag: B, title: Transform, text: "Generate controlled representations without losing the connection to source data." }
+          - { tag: C, title: Infer, text: "Store fit states, comparisons and decision logic as explicit analysis records." }
+          - { tag: D, title: Publish, text: "Emit results and reports that remain linked to their experimental and analytical lineage." }
+      - id: map
+        title: "Interactive map"
+        body:
+          - "The homepage is organised as a warehouse-to-modality system. The map links that structure to the concrete project pages."
+      - id: integration
+        title: "ITC + Unicorn + SAXS integration"
+        cards:
+          - label: ITC
+            title: "Thermodynamic traces"
+            text: "Binding and heat-flow experiments become governed records whose fitted states remain attached to the experimental run."
+          - label: Unicorn
+            title: "Chromatography runs"
+            text: "Separation traces, fractions and inline context are stored so downstream analysis still knows what was physically isolated."
+          - label: SAXS
+            title: "Structural inference"
+            text: "Scattering analysis can be linked back to the upstream fractionation and thermodynamic states that define the sample context."
+        merge_band:
+          - "shared metadata"
+          - "representation objects"
+          - "fit-state lineage"
+          - "report-ready outputs"
+
+  saxs:
+    title: "SAXS – Multi-State Structural Analysis"
+    subtitle: "Structured scattering analysis through data warehousing, state space mapping and governed model coupling."
+    outline:
+      - { id: overview, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: layers, label: Warehouse }
+      - { id: sasview-layer, label: Models }
+      - { id: state-space, label: State space }
+      - { id: pipeline, label: Integration }
+      - { id: statement, label: Outcome }
+
+  itc:
+    title: "ITC – Thermodynamic State Mapping"
+    subtitle: "Calorimetry as governed state-space data inside the Nexus warehouse."
+    outline:
+      - { id: overview, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: architecture, label: Warehouse }
+      - { id: state-space, label: State space }
+      - { id: statement, label: Outcome }
+
+  spr:
+    title: "SPR – Binding State Surfaces"
+    subtitle: "Response traces as controlled kinetic data inside the Nexus warehouse."
+    outline:
+      - { id: overview, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: architecture, label: Warehouse }
+      - { id: state-space, label: State space }
+      - { id: statement, label: Outcome }
+
+  unicorn:
+    title: "Unicorn – Chromatography Data Layer"
+    subtitle: "Instrument-native fractionation records as governed warehouse data."
+    outline:
+      - { id: overview, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: architecture, label: Warehouse }
+      - { id: statement, label: Outcome }
+
+  cryo_em:
+    title: "Cryo-EM – Density State Mapping"
+    subtitle: "Density maps, classes and structural states inside the Nexus warehouse."
+    outline:
+      - { id: overview, label: Overview }
+      - { id: flow, label: Data flow }
+      - { id: architecture, label: Warehouse }
+      - { id: statement, label: Outcome }

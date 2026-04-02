@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <title>Nexus – Calyr.ai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Nexus — the operational interface of Calyrai." />
+  <meta name="description" content="Nexus — the data-governed scientific infrastructure layer of Calyr.ai." />
 
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/nav.css" />
   <link rel="stylesheet" href="../css/components.css" />
   <link rel="stylesheet" href="../css/explore.css" />
   <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/impressum.css" />
 
   <script src="../js/collect_hearts.js" defer></script>
   <script src="../js/orbit_logo.js" defer></script>
@@ -27,8 +28,8 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="qr_noise.html" class="nav-pill glow-nav">Contact</a>
-      <a href="../index.html#impressum" class="nav-pill glow-nav">Impressum</a>
+      <a href="contact.html" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>
 </header>
@@ -36,159 +37,176 @@
 <main class="explore-page nexus-page">
   <section class="explore-shell" aria-label="Nexus">
     <div class="nexus-intro">
-      <section class="nexus-block" aria-label="Hero">
+      <section class="nexus-hero" aria-label="Hero">
         <div class="nexus-kicker">Calyr.ai / Nexus</div>
-        <h1 class="nexus-title">
-          Nexus — Machine Learning for Scientific Interpretation
-        </h1>
-
-        <p class="nexus-subtitle">
-          The Nexus is the machine-learning core of Calyrai.
-          It transforms experimental data into structured representations
-          that reveal states, transitions, and physical meaning.
-        </p>
+        <h1 class="nexus-title">Nexus — Data-governed scientific infrastructure for controlled inference</h1>
+        <p class="nexus-subtitle">Nexus is the scientific data warehouse and orchestration layer of Calyr.ai. It keeps experiments, derived representations, model states and reportable outcomes inside one governed system so interpretation remains linked to the data and assumptions that produced it.</p>
+        <div class="nexus-hero-grid">
+          <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Core Role</div>
+            <div class="nexus-stat-value">Warehouse</div>
+            <p class="nexus-stat-body">Experimental records, metadata, derived features and model-side states stay linked instead of being scattered across ad hoc files.</p>
+          </article>
+<article class="nexus-stat-card">
+            <div class="nexus-stat-label">Method</div>
+            <div class="nexus-stat-value">Control</div>
+            <p class="nexus-stat-body">Inference is staged through governed transformations, with each reduction step attached to its provenance.</p>
+          </article>
+<article class="nexus-stat-card">
+            <div class="nexus-stat-label">Outcome</div>
+            <div class="nexus-stat-value">Traceability</div>
+            <p class="nexus-stat-body">Claims, scores and reports remain connected to the underlying data warehouse rather than detached from their origin.</p>
+          </article>
+        </div>
       </section>
 
-      <section class="nexus-block">
-        <h2 class="nexus-h2">What the Nexus Does</h2>
+      <nav class="nexus-outline" aria-label="Nexus sections">
+        <a class="nexus-outline-link" href="#concept">Warehouse concept</a>
+        <a class="nexus-outline-link" href="#layers">Experimental layers</a>
+        <a class="nexus-outline-link" href="#works">Papers and works</a>
+        <a class="nexus-outline-link" href="#map">Interactive map</a>
+      </nav>
 
-        <pre class="nexus-math">DATA → FEATURES → EMBEDDING → INTERPRETATION</pre>
-
-        <ul class="nexus-bullets">
-          <li><strong>Data:</strong> SAXS, cryo-EM, simulations</li>
-          <li><strong>Features:</strong> extracted signal descriptors</li>
-          <li><strong>Embedding:</strong> PCA / latent space</li>
-          <li><strong>Interpretation:</strong> physical states</li>
-        </ul>
+      <section id="concept" class="nexus-block">
+        <h2 class="nexus-h2">Data warehouse concept</h2>
+        <pre class="nexus-math">EXPERIMENT → REPRESENTATION → MODEL STATE → RESULT → REPORT</pre>
+        <p class="nexus-body">Nexus is not just a machine-learning page and not just a workflow UI.</p>
+        <p class="nexus-body">It is the governed middle layer where raw measurements, experimental context, derived representations and model-facing states are collected into one coherent scientific object.</p>
+        <div class="nexus-flow">
+          <div class="nexus-flow-node">
+              <span class="nexus-flow-step">1</span>
+              <strong>Experiments</strong>
+              <span>Measurements enter with metadata, run context and acquisition constraints intact.</span>
+            </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+              <span class="nexus-flow-step">2</span>
+              <strong>Representations</strong>
+              <span>Signals are transformed into governed features, embeddings and coordinate systems that remain attached to the source record.</span>
+            </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+              <span class="nexus-flow-step">3</span>
+              <strong>Model states</strong>
+              <span>Fits, constraints, candidate mechanisms and uncertainty estimates are stored as explicit states rather than hidden intermediate artifacts.</span>
+            </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+              <span class="nexus-flow-step">4</span>
+              <strong>Controlled outputs</strong>
+              <span>Reports, scores and publication-facing results can always be traced back to the warehouse object that produced them.</span>
+            </div>
+        </div>
       </section>
 
-      <section class="nexus-block">
-        <h2 class="nexus-h2">Representation Space</h2>
-
-        <p class="nexus-body">
-          The Nexus maps experimental signals into a shared latent space.
-          In this space, structure becomes visible: clusters, transitions,
-          and trajectories correspond to physical states.
-        </p>
-
-        <div id="nexus-pca-demo" data-collect-id="nexus-representation" data-collect-title="Representation demo" style="
-          position:relative;
-          width:320px;
-          height:320px;
-          margin-top:20px;
-          border:1px solid rgba(255,255,255,0.1);
-        "></div>
+      <section id="layers" class="nexus-block">
+        <h2 class="nexus-h2">Experimental layers</h2>
+        <p class="nexus-body">The homepage is organised by experimental layers that all feed the same warehouse logic. Each layer keeps its own native signal, but the interpretation path stays governed and comparable.</p>
+        <div class="nexus-integration-grid">
+          <a class="nexus-card-link" href="../projects/exp_nodes_pr_iq_peaks.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">SAXS</div>
+              <h3>Structural layer</h3>
+              <p>Scattering curves, P(r), model states and state-space coordinates remain linked inside the same data architecture.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/itc_data.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">ITC</div>
+              <h3>Thermodynamic layer</h3>
+              <p>Thermograms, integrated heats, fit states and reportable energetics remain tied to the experimental run.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/spr_data.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">SPR</div>
+              <h3>Kinetic layer</h3>
+              <p>Sensorgrams, response features and kinetic fit states are handled as governed binding-state objects.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/unicorn_data.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Unicorn</div>
+              <h3>Separation layer</h3>
+              <p>Chromatography traces, fractions and downstream assay handoff stay visible as one separation record.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/cryo_em.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Cryo-EM</div>
+              <h3>Density layer</h3>
+              <p>Particle sets, classes, maps and structural interpretations remain linked as a comparable density-state system.</p>
+            </article>
+          </a>
+        </div>
       </section>
 
-      <section class="nexus-block">
-        <h2 class="nexus-h2">Method: Representation → Parameters → Model Coupling</h2>
-
-        <p class="nexus-body">
-          The Nexus separates structure discovery from physical interpretation.
-          Instead of fitting models directly to data, it first extracts stable
-          representations and parameters, which are then coupled through models.
-        </p>
-
-        <pre class="nexus-math">signal
-  → representation (PCA / embedding)
-  → flexible reconstruction (frac)
-  → parameter extraction
-  → model coupling
-  → physical interpretation</pre>
-
-        <p class="nexus-body">
-          In this framework, machine learning reveals structure in the data,
-          while physical models operate on extracted parameters rather than raw signals.
-          This avoids premature modeling and ensures interpretability.
-        </p>
+      <section id="works" class="nexus-block">
+        <h2 class="nexus-h2">Papers and works</h2>
+        <p class="nexus-body">From the warehouse layer, Nexus hands off into concrete analysis pages, method pages and paper-facing work. These are the pages where the concept becomes operational.</p>
+        <div class="nexus-integration-grid">
+          <a class="nexus-card-link" href="../projects/exp_nodes_pr_iq_peaks.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Work</div>
+              <h3>SAXS – Multi-State Structural Analysis</h3>
+              <p>Structured scattering analysis through warehousing, state-space mapping and governed model coupling.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/pca_free_energy.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Work</div>
+              <h3>PCA &amp; Free-Energy Modes</h3>
+              <p>Principal components as a shared representation layer for experimental signals and transition analysis.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/epistemic_damage.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Work</div>
+              <h3>Epistemic Damage</h3>
+              <p>Model bias, propagation and literature-scale scoring connected back to publication networks.</p>
+            </article>
+          </a>
+          <a class="nexus-card-link" href="../projects/chrom_wavelets.html">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Work</div>
+              <h3>Chromatography &amp; Wavelets</h3>
+              <p>Mode-based interpretation of chromatography and transport-like trace decomposition.</p>
+            </article>
+          </a>
+        </div>
       </section>
 
-      <section class="nexus-block">
-        <h2 class="nexus-h2">Key Idea</h2>
-
-        <p class="nexus-body">
-          Physical models do not directly fit experimental data.
-          They couple parameters extracted from flexible representations.
-        </p>
+      <section id="map" class="nexus-block">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">Interactive map</h2>
+            <p class="nexus-body">The map links the warehouse concept to the concrete project pages.</p>
+        <p class="nexus-body">Click a node to expand the constellation and move from the central Nexus layer into the specific experimental or analytical branches.</p>
+          </div>
+          <a class="nexus-inline-link" href="../explore.html">Open full explore map</a>
+        </div>
+        <div id="nexus-graph" aria-label="Interactive system">
+          <div class="explore-stage" id="explore-stage">
+            <svg id="explore-svg" class="explore-svg" role="img" aria-label="Interactive nexus graph" data-collect-id="nexus-graph" data-collect-title="Nexus graph"></svg>
+          </div>
+          <div class="explore-links" aria-label="Node links"></div>
+        </div>
       </section>
+      <!-- CALYR_CONTACT_BLOCK -->
     </div>
-
-    <section class="nexus-block" aria-label="Navigation">
-      <h2 class="nexus-h2" id="navigate">How to use the map</h2>
-      <ul class="nexus-bullets">
-        <li><strong>Click a node:</strong> expands the constellation from that node.</li>
-        <li><strong>Drag a node:</strong> repositions it; edges update live; layout is remembered.</li>
-        <li><strong>Click the Nexus node:</strong> returns here (this page).</li>
-        <li><strong>Click a project node link:</strong> opens the project documentation page.</li>
-      </ul>
-      <p class="nexus-body">The drifting motion is a subtle “alive” signal; dragging always overrides drift for the node you move.</p>
-    </section>
-
-    <div id="nexus-graph" aria-label="Interactive system">
-      <div class="explore-stage" id="explore-stage">
-        <svg id="explore-svg" class="explore-svg" role="img" aria-label="Interactive nexus graph" data-collect-id="nexus-graph" data-collect-title="Nexus graph"></svg>
-      </div>
-      <div class="explore-links" aria-label="Node links"></div>
-    </div>
-
-    <section class="nexus-block">
-      <h2 class="nexus-h2">Example: Chromatography</h2>
-
-      <p class="nexus-body">
-        Chromatographic peaks emerge from repeated transport motifs:
-        drift, surface interaction, and trapping.
-        The Nexus captures these dynamics in a representation space,
-        linking microscopic behavior to macroscopic signals.
-      </p>
-    </section>
-
-    <section class="nexus-block" aria-label="Contact">
-  <h2 class="nexus-h2">Contact</h2>
-  <p class="nexus-body">
-    Rupert Tscheliessnig<br>
-    Scientific ML & Structural Biophysics<br>
-  </p>
-  <p class="nexus-body">
-    <a href="mailto:rupert.tscheliessnig@calyr.ai" class="glow-link">rupert.tscheliessnig@calyr.ai</a>
-  </p>
-  <p class="nexus-body">
-    <a href="https://bsky.app/profile/calyrai.bsky.social" class="glow-link">Bluesky</a>
-  </p>
-</section>
-
   </section>
 </main>
 
 <script defer src="../data/projects.js"></script>
 <script defer src="../js/explore_map.js"></script>
-
-<script>
-(function() {
-  const container = document.getElementById("nexus-pca-demo");
-  if (!container) return;
-
-  const N = 80;
-  const size = 6;
-  const width = container.clientWidth || 320;
-  const height = container.clientHeight || 320;
-  const pad = 8;
-
-  for (let i = 0; i < N; i++) {
-    const x = Math.random() * 2 - 1;
-    const y = Math.random() * 2 - 1;
-
-    const point = document.createElement("div");
-    point.style.position = "absolute";
-    point.style.left = `${pad + ((x + 1) * 0.5) * (width - 2 * pad - size)}px`;
-    point.style.top = `${pad + ((y + 1) * 0.5) * (height - 2 * pad - size)}px`;
-    point.style.width = `${size}px`;
-    point.style.height = `${size}px`;
-    point.style.background = "#ff4df5";
-    point.style.borderRadius = "50%";
-
-    container.appendChild(point);
-  }
-})();
-</script>
+<footer id="impressum" class="impressum">
+  <div class="impressum-inner">
+    <h2 class="impressum-title">Impressum</h2>
+    <p><strong><span class="brand-lockup"><span class="brand-word">G<span class="brand-acute" aria-hidden="true">´</span>Labs</span> <span class="brand-hold" aria-hidden="true">⏸</span></span></strong> is a data warehouse research project by Rupert Gelisnig (Vienna).</p>
+    <p>It is currently not a company, involves no commercial activity, offers no services and sells nothing. All content is provided solely for scientific reflection, conceptual exploration and academic exchange.</p>
+    <p class="impressum-contact">Contact: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
+  </div>
+</footer>
+<footer class="site-footer">© 2026 Calyr.ai™ — All rights reserved.</footer>
 </body>
 </html>

@@ -18,9 +18,34 @@
     "url": "projects/exp_nodes_pr_iq_peaks.html"
   },
   {
+    "id": "saxs-interface",
+    "title": "SAXS Interface",
+    "url": "projects/saxs_interface.html"
+  },
+  {
+    "id": "epistemic-damage",
+    "title": "Epistemic Damage",
+    "url": "projects/epistemic_damage.html"
+  },
+  {
+    "id": "redgem",
+    "title": "RedGEM",
+    "url": "projects/redgem.html"
+  },
+  {
     "id": "pca",
     "title": "PCA & Free-Energy Modes",
     "url": "projects/pca_free_energy.html"
+  },
+  {
+    "id": "itc-data",
+    "title": "ITC – Thermodynamic State Mapping",
+    "url": "projects/itc_data.html"
+  },
+  {
+    "id": "spr-data",
+    "title": "SPR – Binding State Surfaces",
+    "url": "projects/spr_data.html"
   },
   {
     "id": "vaults",
@@ -31,5 +56,15 @@
     "id": "chrom",
     "title": "Chromatography & Wavelets",
     "url": "projects/chrom_wavelets.html"
+  },
+  {
+    "id": "unicorn-data",
+    "title": "Unicorn – Chromatography Data Layer",
+    "url": "projects/unicorn_data.html"
+  },
+  {
+    "id": "cryo-em",
+    "title": "Cryo-EM – Density State Mapping",
+    "url": "projects/cryo_em.html"
   }
 ]

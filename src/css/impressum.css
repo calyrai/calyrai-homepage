@@ -33,6 +33,39 @@
   margin: 6px 0;
 }
 
+.brand-lockup {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.brand-word {
+  color: #f7feff;
+  text-shadow:
+    0 0 10px rgba(119, 255, 255, 0.18),
+    0 0 30px rgba(119, 255, 255, 0.08);
+}
+
+.brand-acute {
+  color: #ff4df5;
+  display: inline-block;
+  transform: translateY(-0.02em);
+  text-shadow:
+    0 0 10px rgba(255, 77, 245, 0.7),
+    0 0 24px rgba(255, 77, 245, 0.34);
+}
+
+.brand-hold {
+  color: #8af7ff;
+  font-size: 0.9em;
+  text-shadow:
+    0 0 10px rgba(138, 247, 255, 0.35),
+    0 0 22px rgba(138, 247, 255, 0.18);
+  opacity: 0.95;
+}
+
 .impressum-contact a {
   color: #8af7ff;
   border-bottom: 1px dotted rgba(138, 247, 255, 0.6);

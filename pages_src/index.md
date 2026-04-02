@@ -8,7 +8,7 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="pages/qr_noise.html" class="nav-pill glow-nav">Contact</a>
+      <a href="pages/contact.html" class="nav-pill glow-nav">Contact</a>
       <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>
@@ -116,24 +116,43 @@
   <div id="home-architecture"></div>
 </section>
 
-<footer id="impressum" class="impressum">
-  <div class="impressum-inner">
-    <h2 class="impressum-title">Impressum</h2>
-    <p>
-      <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
+<section class="section" aria-label="Browser-side PDB and SAXS">
+  <div class="section-inner">
+    <h2>Browser-side structure + SAXS</h2>
+    <p class="section-lead">
+      PDB structures and SAXS curves can be loaded directly in JavaScript.
+      This is a good fit for interactive workflows where the browser is the interface layer,
+      and backends are used only for heavier physics or model inference.
     </p>
-    <p>
-      It is currently not a company, involves no commercial activity, offers no services
-      and sells nothing. All content is provided solely for scientific reflection,
-      conceptual exploration and academic exchange.
-    </p>
-    <p class="impressum-contact">
-      Contact:
-      <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
-    </p>
-  </div>
-</footer>
 
-<footer class="site-footer">
-  © 2025 Calyr.a&iacute;™ — All rights reserved.
-</footer>
+    <div class="projects-grid">
+      <article class="project-tile">
+        <h3>Load a PDB from RCSB</h3>
+        <p class="small">Fetch as text (no backend required):</p>
+        <pre>fetch("https://files.rcsb.org/download/1CRN.pdb")
+  .then(r =&gt; r.text())
+  .then(pdbText =&gt; {
+    // parse / visualize / forward to your pipeline
+    console.log(pdbText);
+  });</pre>
+        <p class="small">For rendering: Mol*, NGL, or 3Dmol.js are common choices.</p>
+      </article>
+
+      <article class="project-tile">
+        <h3>Parse a SAXS file (q, I, dI)</h3>
+        <p class="small">Minimal parser for whitespace / CSV-like columns:</p>
+        <pre>function parseSaxs(text){
+  const q=[], I=[], dI=[];
+  for (const line of text.split(/\r?\n/)){
+    const s=line.trim();
+    if (!s || s.startsWith("#")) continue;
+    const parts=s.split(/[\s,;]+/).map(Number);
+    if (parts.length &gt;= 3){ q.push(parts[0]); I.push(parts[1]); dI.push(parts[2]); }
+  }
+  return {q, I, dI};
+}</pre>
+        <p class="small">From here you can plot, fit, compute P(r), or compare to structure-derived I(q).</p>
+      </article>
+    </div>
+  </div>
+</section>

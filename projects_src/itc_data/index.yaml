@@ -1,0 +1,81 @@
+kind: nexus_project
+title: "ITC – Thermodynamic State Mapping"
+project_id: itc-data
+subtitle: "Calorimetry as governed state-space data inside the Nexus warehouse."
+primary_label: Back to Projects
+primary_href: ../projects.html#project-itc-data
+secondary_label: Explore Map
+secondary_href: ../explore.html
+contact_subject: ITC data collaboration
+outline_label: ITC
+
+hero:
+  kicker: "ITC · Thermodynamic Layer"
+  title: "Thermodynamic State Mapping"
+  subtitle: "Nexus treats ITC as a governed data object rather than a single fitted thermogram. Injections, baseline corrections, integrated heats, fit states and thermodynamic summaries remain connected inside one warehouse record."
+  stats:
+    - label: Primary Signal
+      value: Heat
+      text: "Raw power traces and integrated injection heats are preserved alongside the acquisition sequence that produced them."
+    - label: State Layer
+      value: Binding
+      text: "Each experiment becomes a thermodynamic state record rather than a detached table of ΔH and Kd values."
+    - label: Outcome
+      value: Lineage
+      text: "Reported energetics remain linked to injection processing, model choice and comparative runs."
+
+outline:
+  - { id: flow, label: Data flow }
+  - { id: architecture, label: Warehouse }
+  - { id: state-space, label: State space }
+  - { id: statement, label: Outcome }
+
+sections:
+  - id: flow
+    title: "Data-driven ITC"
+    body:
+      - "ITC is handled as structured thermodynamic data. The page centers reproducible storage of injections, dilution context, concentration setup and fit lineage before the experiment is reduced to publication-ready summary parameters."
+    steps:
+      - title: "Run capture"
+        text: "Store the thermogram, injection schedule, concentration setup and buffer context as one warehouse object."
+      - title: "Derived heats"
+        text: "Track baseline handling, integration and normalization as explicit derived records."
+      - title: "State mapping"
+        text: "Place thermodynamic experiments into a state space where comparable binding regimes can be grouped and contrasted."
+      - title: "Controlled output"
+        text: "Expose ΔH, Kd and stoichiometry as reportable states that stay linked to the full experimental path."
+
+  - id: architecture
+    title: "Warehouse integration"
+    cards:
+      - label: Storage
+        title: "Injection-level records"
+        text: "Each titration can retain its full injection structure instead of being flattened to a final fit card."
+      - label: Models
+        title: "Fit-state lineage"
+        text: "Competing one-site, multi-site or constrained thermodynamic models can be stored as parallel governed states."
+      - label: Reuse
+        title: "Cross-experimental comparison"
+        text: "ITC results can be compared directly with SPR, SAXS and chromatography-linked state transitions."
+
+  - id: state-space
+    title: "State space instead of endpoint fitting"
+    formula: "thermogram → derived heats → projection → thermodynamic state space"
+    layers:
+      - title: Features
+        text: "Integrated heats, saturation shape, stoichiometric turning points and concentration-normalized descriptors build the feature space."
+      - title: Projection
+        text: "PCA is one entry point, but the page is framed as state space so later nonlinear and mechanistic projections can be added without changing the concept."
+      - title: Interpretation
+        text: "Binding regimes, cooperativity changes and formulation shifts become neighborhoods in a comparable thermodynamic map."
+
+  - id: statement
+    title: "From thermograms to governed binding states"
+    body:
+      - "Within Nexus, ITC is organised as a warehouse-backed state system. The experimental run, the derived heats, the competing fit states and the final thermodynamic interpretation stay connected, so the page reflects the same controlled-inference structure as the rest of the homepage."
+    merge_band:
+      - thermogram
+      - "derived heats"
+      - "fit-state lineage"
+      - "binding state space"
+      - "reportable energetics"

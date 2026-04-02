@@ -91,6 +91,7 @@
     if (!ctx) return;
 
     const qrYamlRef = el.getAttribute("data-qr-yaml") || "";
+    const redirectHref = (el.getAttribute("data-qr-redirect") || "").trim();
     let qrText = decodeQrText(el.getAttribute("data-qr-text") || "https://calyr.ai/");
     const defaultMailto =
       el.getAttribute("data-mailto") ||
@@ -510,13 +511,39 @@
       }
     }
 
-    el.addEventListener("click", triggerStabilize);
+    function maybeRedirect(event) {
+      if (!redirectHref) return false;
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      try {
+        const url = new URL(redirectHref, window.location.href).toString();
+        window.location.assign(url);
+      } catch (err) {
+        console.error("Failed to redirect QR page:", err);
+      }
+      return true;
+    }
+
+    el.addEventListener("click", function (e) {
+      if (maybeRedirect(e)) return;
+      triggerStabilize();
+    });
     el.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") {
+        if (maybeRedirect(e)) return;
         e.preventDefault();
         triggerStabilize();
       }
     });
+    el.addEventListener(
+      "touchstart",
+      function (e) {
+        maybeRedirect(e);
+      },
+      { passive: false }
+    );
 
     window.addEventListener("resize", resize);
     maybeLoadQrYaml();

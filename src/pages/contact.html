@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breakout</title>
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/nav.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/impressum.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <style>
+    :root {
+      --bg: #050816;
+      --panel: rgba(8, 15, 34, 0.92);
+      --ink: #eefaff;
+      --cyan: #39e7ff;
+      --magenta: #ff4df5;
+      --line: rgba(125, 240, 255, 0.2);
+      --glow: 0 0 24px rgba(57, 231, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: block;
+      padding: 0;
+      overflow-y: auto;
+      color: var(--ink);
+    }
+
+    .shell {
+      width: 100%;
+      display: grid;
+      gap: 18px;
+    }
+
+    .contact-page-flow {
+      padding: 22px 10px 10px;
+      max-width: 76rem;
+      margin: 0 auto;
+    }
+
+    .page-intro,
+    .stage,
+    .hud {
+      position: relative;
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at top right, rgba(253, 84, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top left, rgba(31, 230, 255, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(7, 18, 26, 0.74), rgba(7, 18, 26, 0.42));
+      box-shadow:
+        0 0 22px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .page-intro {
+      padding: 28px 24px 24px;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+    }
+
+    .page-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(106, 240, 255, 0.22);
+      background: rgba(6, 14, 20, 0.55);
+      font-size: 0.72rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(180, 240, 255, 0.92);
+      text-shadow: 0 0 10px rgba(140, 240, 255, 0.3);
+      margin: 0 0 14px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .title {
+      margin: 0;
+      max-width: 56rem;
+      font-size: clamp(2.2rem, 3.4vw + 1rem, 4.1rem);
+      line-height: 1.02;
+      color: #f4fbff;
+      text-shadow:
+        0 0 24px rgba(0, 220, 255, 0.22),
+        0 0 54px rgba(255, 120, 255, 0.14);
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 50rem;
+      color: rgba(210, 240, 255, 0.76);
+      line-height: 1.7;
+      font-size: 1.08rem;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: end;
+      gap: 10px;
+    }
+
+    .chip {
+      min-width: 110px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(7, 13, 28, 0.9);
+    }
+
+    .chip-label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(238, 250, 255, 0.6);
+    }
+
+    .chip-value {
+      font-size: 1.15rem;
+      color: var(--cyan);
+    }
+
+    .stage {
+      padding: 18px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(57, 231, 255, 0.06), transparent 35%),
+        linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .action-pill {
+      min-width: 108px;
+      height: 44px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 13, 28, 0.92);
+      color: var(--ink);
+      font: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(57, 231, 255, 0.12);
+    }
+
+    .action-pill-primary {
+      background: linear-gradient(90deg, rgba(255, 77, 245, 0.95), rgba(57, 231, 255, 0.9));
+      color: #050816;
+      box-shadow: 0 0 22px rgba(255, 77, 245, 0.22);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 0 6px 12px;
+      color: rgba(238, 250, 255, 0.72);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 720px) {
+      .hud {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .stats {
+        width: 100%;
+        justify-content: start;
+      }
+
+      .chip {
+        min-width: 92px;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <div class="nav-left-row">
+        <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+        <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+        <a href="../team.html" class="nav-pill glow-nav">Team</a>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+        <a href="contact.html" class="nav-pill glow-nav">Contact</a>
+        <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="explore-page nexus-page">
+    <section class="explore-shell" aria-label="Contact">
+      <div class="contact-page-flow">
+        <div class="shell">
+          <section class="page-intro">
+            <p class="page-kicker">Calyr.ai / Contact</p>
+            <div class="brand">
+              <h1 class="title">Breakout Contact</h1>
+              <p class="subtitle">Use the contact page as a playable QR surface. Tap once for the full contact QR, tap again to return to play.</p>
+            </div>
+          </section>
+
+          <section class="stage">
+            <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
+          </section>
+
+          <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
+            <button type="button" class="action-pill" id="mail-btn">Mail</button>
+          </div>
+
+          <section class="hud">
+            <div class="stats">
+              <div class="chip">
+                <span class="chip-label">Score</span>
+                <span class="chip-value" id="score">0</span>
+              </div>
+              <div class="chip">
+                <span class="chip-label">Lives</span>
+                <span class="chip-value" id="lives">3</span>
+              </div>
+              <div class="chip">
+                <span class="chip-label">Level</span>
+                <span class="chip-value" id="level">1</span>
+              </div>
+              <div class="chip">
+                <span class="chip-label">Pattern Hits</span>
+                <span class="chip-value" id="pattern">0/0</span>
+              </div>
+            </div>
+          </section>
+
+          <footer class="footer">
+            <span>Controls: Left / Right, A / D, or move the mouse.</span>
+            <span id="mail-queue">Mail queues current score: 0</span>
+          </footer>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const scoreNode = document.getElementById("score");
+    const livesNode = document.getElementById("lives");
+    const levelNode = document.getElementById("level");
+    const patternNode = document.getElementById("pattern");
+    const mailQueueNode = document.getElementById("mail-queue");
+    const contactActions = document.getElementById("contact-actions");
+    const mailBtn = document.getElementById("mail-btn");
+    const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:G'Labs Hold;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;;";
+
+    function contactSeed() {
+      let seed = 0;
+      for (const char of CONTACT_PAYLOAD) {
+        seed = (seed * 31 + char.charCodeAt(0)) % 100000;
+      }
+      return seed;
+    }
+
+    const state = {
+      running: false,
+      initialized: false,
+      paused: false,
+      contactOpen: false,
+      contactMode: true,
+      score: 0,
+      lives: 3,
+      level: 1,
+      paddle: { w: 124, h: 14, x: 388, y: 504, speed: 540, dx: 0 },
+      ball: { x: 450, y: 420, r: 9, dx: 240, dy: -240, speedBase: 240 },
+      bricks: [],
+      rows: 0,
+      cols: 0,
+      brickGap: 3,
+      brickSize: { w: 18, h: 18 },
+      totalBricks: 0,
+      patternHits: 0,
+      blinkTime: 0,
+      patternTimer: 0,
+      patternSeed: 0,
+      playSeconds: 0,
+      keys: { left: false, right: false },
+      lastTime: 0,
+    };
+
+    function buildQrWall(size, seed) {
+      const matrix = Array.from({ length: size }, () => Array(size).fill(0));
+
+      function addFinder(startX, startY) {
+        for (let y = 0; y < 7; y += 1) {
+          for (let x = 0; x < 7; x += 1) {
+            const edge = x === 0 || x === 6 || y === 0 || y === 6;
+            const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+            matrix[startY + y][startX + x] = edge || core ? 1 : 0;
+          }
+        }
+      }
+
+      addFinder(0, 0);
+      addFinder(size - 7, 0);
+      addFinder(0, size - 7);
+
+      for (let i = 8; i < size - 8; i += 1) {
+        matrix[6][i] = i % 2 === 0 ? 1 : 0;
+        matrix[i][6] = i % 2 === 0 ? 1 : 0;
+      }
+
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          if (matrix[y][x] === 1) continue;
+          const reservedTop = y < 8 && (x < 8 || x >= size - 8);
+          const reservedBottom = y >= size - 8 && x < 8;
+          const timing = x === 6 || y === 6;
+          if (reservedTop || reservedBottom || timing) continue;
+          matrix[y][x] = ((x * 13 + y * 17 + x * y * 3 + seed * 19) % 7) < 3 ? 1 : 0;
+        }
+      }
+
+      matrix[size - 8][8] = 1;
+      return matrix;
+    }
+
+    function buildContactMatrix(text, options = {}) {
+      const allowFallback = options.allowFallback !== false;
+      if (typeof window.qrcode === "function") {
+        const qr = window.qrcode(0, "L");
+        qr.addData(text);
+        qr.make();
+
+        const count = qr.getModuleCount();
+        const quiet = 4;
+        const size = count + quiet * 2;
+        const matrix = Array.from({ length: size }, () => Array(size).fill(0));
+
+        for (let y = 0; y < size; y += 1) {
+          for (let x = 0; x < size; x += 1) {
+            const mx = x - quiet;
+            const my = y - quiet;
+            if (mx < 0 || my < 0 || mx >= count || my >= count) {
+              matrix[y][x] = 0;
+            } else {
+              matrix[y][x] = qr.isDark(my, mx) ? 1 : 0;
+            }
+          }
+        }
+        return matrix;
+      }
+
+      if (allowFallback) {
+        return buildQrWall(33, contactSeed());
+      }
+
+      return null;
+    }
+
+    function isQrReservedCell(row, col, size) {
+      const quiet = 4;
+      const inner = size - quiet * 2;
+      const x = col - quiet;
+      const y = row - quiet;
+
+      if (x < 0 || y < 0 || x >= inner || y >= inner) return true;
+
+      const inTopLeft = x < 9 && y < 9;
+      const inTopRight = x >= inner - 9 && y < 9;
+      const inBottomLeft = x < 9 && y >= inner - 9;
+      const inTiming = x === 6 || y === 6;
+
+      return inTopLeft || inTopRight || inBottomLeft || inTiming;
+    }
+
+    function randomizedGameWall(baseWall, seed) {
+      const size = baseWall.length;
+      const wall = baseWall.map((row) => row.slice());
+
+      function randAt(row, col) {
+        const n = (row * 92837111 + col * 689287499 + seed * 283923481) >>> 0;
+        return ((n ^ (n >>> 13) ^ (n << 7)) >>> 0) / 4294967295;
+      }
+
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          if (isQrReservedCell(row, col, size)) continue;
+          const r = randAt(row, col);
+          if (baseWall[row][col]) {
+            wall[row][col] = r > 0.16 ? 1 : 0;
+          } else {
+            wall[row][col] = r > 0.94 ? 1 : 0;
+          }
+        }
+      }
+
+      return wall;
+    }
+
+    function resetBricks(fullQr = false) {
+      const baseWall = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
+      if (!baseWall) {
+        state.bricks = [];
+        state.rows = 0;
+        state.cols = 0;
+        state.totalBricks = 0;
+        return;
+      }
+      const wall = fullQr ? baseWall : randomizedGameWall(baseWall, state.patternSeed + state.level * 17);
+      const qrSize = wall.length;
+      const gap = 2;
+      const horizontalPadding = fullQr ? 180 : 120;
+      const verticalPadding = fullQr ? 200 : 120;
+      const moduleSize = Math.max(
+        fullQr ? 10 : 8,
+        Math.floor(
+          Math.min(
+            (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
+            (canvas.height - verticalPadding - gap * (qrSize - 1)) / qrSize
+          )
+        )
+      );
+      const totalW = qrSize * moduleSize + (qrSize - 1) * gap;
+      const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
+      const top = fullQr
+        ? Math.max(28, Math.round((canvas.height - totalH) / 2) - 26)
+        : Math.round((canvas.height - totalH) / 2);
+      const left = Math.round((canvas.width - totalW) / 2);
+      state.bricks = [];
+      state.rows = qrSize;
+      state.cols = qrSize;
+      state.ball.r = Math.max(4, Math.floor(moduleSize * 0.5));
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!wall[row][col]) continue;
+          state.bricks.push({
+            x: left + col * (moduleSize + gap),
+            y: top + row * (moduleSize + gap),
+            w: moduleSize,
+            h: moduleSize,
+            glow: "rgba(57, 231, 255, 0.18)",
+            phase: (row * 0.37) + (col * 0.21),
+            alive: true,
+          });
+        }
+      }
+      state.totalBricks = state.bricks.length;
+    }
+
+    function resetBallAndPaddle() {
+      state.paddle.x = (canvas.width - state.paddle.w) / 2;
+      state.ball.x = canvas.width / 2;
+      state.ball.y = canvas.height - 120;
+      state.ball.dx = state.ball.speedBase + (state.level - 1) * 24;
+      state.ball.dy = -(state.ball.speedBase + (state.level - 1) * 24);
+    }
+
+    function resetGame() {
+      state.score = 0;
+      state.lives = 3;
+      state.level = 1;
+      state.patternHits = 0;
+      state.patternTimer = 0;
+      state.patternSeed = Math.floor(Math.random() * 1000000);
+      state.playSeconds = 0;
+      state.contactOpen = false;
+      resetBricks(false);
+      resetBallAndPaddle();
+      syncHud();
+    }
+
+    function syncHud() {
+      scoreNode.textContent = String(state.score);
+      livesNode.textContent = String(state.lives);
+      levelNode.textContent = String(state.level);
+      patternNode.textContent = `${state.patternHits}/${state.totalBricks}`;
+      mailQueueNode.textContent = `Mail queues current score: ${state.score}`;
+    }
+
+    function resetContactState() {
+      state.contactOpen = false;
+      resetBricks(false);
+      syncHud();
+      draw();
+    }
+
+    function openMail() {
+      resetContactState();
+      if (state.running) {
+        state.paused = false;
+        state.lastTime = 0;
+        requestAnimationFrame(frame);
+      }
+      const subject = encodeURIComponent(`Breakout run score ${state.score}`);
+      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`);
+      window.location.href = `mailto:rupert.tscheliessnig@calyr.ai?subject=${subject}&body=${body}`;
+    }
+
+    function showContactQr() {
+      state.paused = true;
+      state.contactOpen = true;
+      resetBricks(true);
+      syncHud();
+      draw();
+    }
+
+    function endToContact(reasonText) {
+      state.running = false;
+      state.paused = true;
+      state.contactOpen = true;
+      resetBricks(true);
+    }
+
+    function drawRoundedRect(x, y, w, h, r, fill) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+
+    function drawQrBrick(brick) {
+      const { x, y, w, h } = brick;
+      const cyan = state.contactOpen ? "#0f9fbe" : "#bff8ff";
+      const blink = 1;
+      const radius = state.contactOpen ? 0.5 : Math.max(4, Math.min(w, h) * 0.5);
+
+      ctx.save();
+      ctx.globalAlpha = blink;
+      ctx.shadowBlur = state.contactOpen ? 0 : 8;
+      ctx.shadowColor = brick.glow;
+      drawRoundedRect(x, y, w, h, radius, cyan);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      for (let i = 0; i < 16; i += 1) {
+        ctx.strokeStyle = i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)";
+        ctx.beginPath();
+        ctx.moveTo(0, i * 34);
+        ctx.lineTo(canvas.width, i * 34);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      if (!state.initialized) {
+        ctx.save();
+        ctx.fillStyle = "rgba(6, 12, 28, 0.96)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(191, 248, 255, 0.88)";
+        ctx.font = '24px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText("Loading contact QR...", canvas.width / 2, canvas.height / 2);
+        ctx.restore();
+        return;
+      }
+
+      if (state.contactOpen && state.bricks.length) {
+        const minX = Math.min(...state.bricks.map((brick) => brick.x));
+        const minY = Math.min(...state.bricks.map((brick) => brick.y));
+        const maxX = Math.max(...state.bricks.map((brick) => brick.x + brick.w));
+        const maxY = Math.max(...state.bricks.map((brick) => brick.y + brick.h));
+        const pad = 18;
+        ctx.save();
+        drawRoundedRect(
+          minX - pad,
+          minY - pad,
+          (maxX - minX) + pad * 2,
+          (maxY - minY) + pad * 2,
+          18,
+          "rgba(250, 254, 255, 0.98)"
+        );
+        ctx.restore();
+      }
+
+      for (const brick of state.bricks) {
+        if (!brick.alive) continue;
+        drawQrBrick(brick);
+      }
+
+      if (!state.contactOpen) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(57,231,255,0.6)";
+        drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#39e7ff");
+        ctx.shadowBlur = 0;
+
+        ctx.shadowBlur = 9;
+        ctx.shadowColor = "rgba(255,77,245,0.42)";
+        ctx.beginPath();
+        ctx.arc(state.ball.x, state.ball.y, state.ball.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff4df5";
+        ctx.fill();
+        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = "rgba(255, 219, 252, 0.78)";
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function clampPaddle() {
+      state.paddle.x = Math.max(0, Math.min(canvas.width - state.paddle.w, state.paddle.x));
+    }
+
+    function updatePaddle(dt) {
+      state.paddle.dx = 0;
+      if (state.keys.left) state.paddle.dx -= state.paddle.speed;
+      if (state.keys.right) state.paddle.dx += state.paddle.speed;
+      state.paddle.x += state.paddle.dx * dt;
+      clampPaddle();
+    }
+
+    function loseLife() {
+      state.lives -= 1;
+      syncHud();
+      if (state.lives <= 0) {
+        endToContact(`Final score: ${state.score}. Play again or mail the run?`);
+        return;
+      }
+      state.paused = true;
+      resetBallAndPaddle();
+    }
+
+    function nextLevel() {
+      state.level += 1;
+      state.patternSeed = Math.floor(Math.random() * 1000000);
+      resetBricks();
+      resetBallAndPaddle();
+      syncHud();
+      state.paused = true;
+    }
+
+    function normalizeBallVelocity() {
+      const b = state.ball;
+      const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const minAxis = Math.max(70, speed * 0.24);
+
+      if (Math.abs(b.dx) < minAxis) b.dx = Math.sign(b.dx || 1) * minAxis;
+      if (Math.abs(b.dy) < minAxis) b.dy = Math.sign(b.dy || -1) * minAxis;
+
+      const scale = speed / Math.hypot(b.dx, b.dy);
+      b.dx *= scale;
+      b.dy *= scale;
+    }
+
+    function collideWithPaddle() {
+      const p = state.paddle;
+      const b = state.ball;
+      if (
+        b.x + b.r >= p.x &&
+        b.x - b.r <= p.x + p.w &&
+        b.y + b.r >= p.y &&
+        b.y - b.r <= p.y + p.h &&
+        b.dy > 0
+      ) {
+        const hit = (b.x - (p.x + p.w / 2)) / (p.w / 2);
+        const speed = Math.hypot(b.dx, b.dy) * 1.02;
+        b.dx = speed * hit;
+        b.dy = -Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000));
+        b.y = p.y - b.r - 1;
+        normalizeBallVelocity();
+      }
+    }
+
+    function collideWithBricks() {
+      const b = state.ball;
+      let remaining = 0;
+
+      for (const brick of state.bricks) {
+        if (!brick.alive) continue;
+        remaining += 1;
+        const nearestX = Math.max(brick.x, Math.min(b.x, brick.x + brick.w));
+        const nearestY = Math.max(brick.y, Math.min(b.y, brick.y + brick.h));
+        const dx = b.x - nearestX;
+        const dy = b.y - nearestY;
+
+        if (dx * dx + dy * dy > b.r * b.r) continue;
+
+        brick.alive = false;
+        state.patternHits += 1;
+        state.score += 100;
+        syncHud();
+
+        if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+        else b.dy *= -1;
+        normalizeBallVelocity();
+
+        remaining -= 1;
+        if (remaining <= 0 || state.bricks.every((item) => !item.alive)) nextLevel();
+        return;
+      }
+    }
+
+    function updateBall(dt) {
+      const b = state.ball;
+      b.x += b.dx * dt;
+      b.y += b.dy * dt;
+
+      if (b.x - b.r <= 0) {
+        b.x = b.r;
+        b.dx *= -1;
+        normalizeBallVelocity();
+      } else if (b.x + b.r >= canvas.width) {
+        b.x = canvas.width - b.r;
+        b.dx *= -1;
+        normalizeBallVelocity();
+      }
+
+      if (b.y - b.r <= 0) {
+        b.y = b.r;
+        b.dy *= -1;
+        normalizeBallVelocity();
+      } else if (b.y - b.r > canvas.height) {
+        loseLife();
+      }
+
+      collideWithPaddle();
+      collideWithBricks();
+    }
+
+    function updatePattern(dt) {
+      return;
+    }
+
+    function updatePlayClock(dt) {
+      state.playSeconds += dt;
+      if (state.playSeconds >= 120 && !state.contactOpen) {
+        endToContact("Two minutes are up. Mail opens from the contact pill, or you can play again.");
+      }
+    }
+
+    function frame(ts) {
+      if (!state.running) {
+        draw();
+        return;
+      }
+
+      if (!state.lastTime) state.lastTime = ts;
+      const dt = Math.min(0.02, (ts - state.lastTime) / 1000);
+      state.lastTime = ts;
+      state.blinkTime += dt;
+
+      if (!state.paused) {
+        updatePlayClock(dt);
+        if (!state.running) {
+          draw();
+          return;
+        }
+        updatePattern(dt);
+        updatePaddle(dt);
+        updateBall(dt);
+      }
+
+      draw();
+      requestAnimationFrame(frame);
+    }
+
+    function startOrResume() {
+      if (!state.running) {
+        resetGame();
+        state.running = true;
+      }
+      resetContactState();
+      state.paused = false;
+      state.lastTime = 0;
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") state.keys.left = true;
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = true;
+      if (event.key === " ") {
+        event.preventDefault();
+        if (!state.running || state.paused) startOrResume();
+        else state.paused = true;
+      }
+    });
+
+    window.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") state.keys.left = false;
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = false;
+    });
+
+    canvas.addEventListener("mousemove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = canvas.width / rect.width;
+      const x = (event.clientX - rect.left) * ratio;
+      state.paddle.x = x - state.paddle.w / 2;
+      clampPaddle();
+    });
+
+    mailBtn.addEventListener("click", () => {
+      openMail();
+    });
+
+    canvas.addEventListener("click", () => {
+      if (!state.initialized) return;
+      if (state.contactOpen) {
+        resetContactState();
+        if (state.running) {
+          state.paused = false;
+          state.lastTime = 0;
+          requestAnimationFrame(frame);
+        } else {
+          startOrResume();
+        }
+        return;
+      }
+      showContactQr();
+    });
+
+    function bootWhenReady(startMs) {
+      const deadline = performance.now() + 4000;
+
+      function tryBoot() {
+        if (typeof window.qrcode === "function" || performance.now() >= deadline) {
+          state.initialized = true;
+          resetGame();
+          state.running = true;
+          state.paused = false;
+          state.lastTime = 0;
+          requestAnimationFrame(frame);
+          return;
+        }
+
+        draw();
+        window.setTimeout(tryBoot, 40);
+      }
+
+      if (startMs) {
+        draw();
+      }
+      tryBoot();
+    }
+
+    bootWhenReady(true);
+  </script>
+</body>
+</html>

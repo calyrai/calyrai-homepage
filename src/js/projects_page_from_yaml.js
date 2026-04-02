@@ -16,6 +16,11 @@
   const GRID_PRIVATE_ID = 'projects-private-grid';
   const PRIVATE_SECTION_ID = 'projects-private-section';
 
+  function inlinePublicCatalog() {
+    const list = window.CALYR_PROJECTS;
+    return Array.isArray(list) ? forceVisibility(list, 'public') : [];
+  }
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replaceAll('&', '&amp;')
@@ -259,6 +264,14 @@
 
   async function loadYaml() {
     try {
+      if (window.location && window.location.protocol === 'file:') {
+        const inlinePublic = inlinePublicCatalog();
+        if (inlinePublic.length) {
+          renderProjects(inlinePublic, []);
+          return;
+        }
+      }
+
       if (typeof jsyaml === 'undefined') {
         throw new Error('jsyaml is not loaded');
       }
@@ -291,6 +304,11 @@
       renderProjects(pub, priv);
     } catch (err) {
       console.error('Error loading project catalog:', err);
+      const inlinePublic = inlinePublicCatalog();
+      if (inlinePublic.length) {
+        renderProjects(inlinePublic, []);
+        return;
+      }
       const gridPublic = document.getElementById(GRID_PUBLIC_ID);
       const gridPrivate = document.getElementById(GRID_PRIVATE_ID);
       if (gridPublic) {

@@ -9,22 +9,6 @@
   url: "#"
   disabled: true
 
-- id: redhuman-metabolism
-  title: "Redhuman – Metabolic Network Reconstruction"
-  subtitle: "Thermodynamically consistent flux spaces"
-  description: "Metabolic modeling with annotation, pathway inference and free-energy consistent flux cones, prepared for ML structuralomics."
-  link_label: "Internal"
-  url: "#"
-  disabled: true
-
-- id: saxs_sasview
-  title: "SAXS Engine (sasmodels)"
-  subtitle: "Interactive scattering console integration"
-  description: "SASView/sasmodels integration experiments and workflow wiring."
-  link_label: "Internal"
-  url: "#"
-  disabled: true
-
 - id: saxs_intro_talk
   kind: mode
   title: "SAXS – A small SAXS intro"

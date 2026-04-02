@@ -2,6 +2,49 @@
 
 This repository is the public Calyr.ai website.
 
+## Short navigation
+
+Use this repo section when you are doing homepage-facing work.
+
+### Edit here
+
+- `pages_src/` for site page content
+- `projects_src/` for project pages
+- `templates/` for page and project shells
+- `src/viewers/` for viewer code
+- `src/css/` and `src/js/` for assets
+
+### Prefer these sources
+
+- Primary homepage source: `apps/homepage/`
+- Docs mirror only when needed: `docs/_repo/apps/homepage/`
+
+Project homepage rule:
+
+- Canonical project homepage source: `projects_src/<project>/index.md`
+- Optional project notes/pages: `projects_src/<project>/*.md`
+- Generated output: `src/projects/*.html`, `src/projects/<project>/*.html`
+
+If you are unsure where to edit homepage content, start in `pages_src/` or `projects_src/`, not in generated HTML.
+
+Canonical path example:
+
+- mirror path: `docs/_repo/apps/homepage/pages_src/projects.md`
+- source path: `apps/homepage/pages_src/projects.md`
+
+### Build
+
+```bash
+cd /Users/rtscheliessnig/Workspace/Calyr/apps/homepage
+bash scripts/build_all.sh
+```
+
+### Related active paths
+
+- Nexus app UI: `apps/nexus/`
+- BMCA app: `apps/bmca/`
+- Main workspace map: `docs/ACTIVE_MAP.md`
+
 ## Markdown organization
 
 This repo is **Markdown-first**:
@@ -15,8 +58,9 @@ This repo is **Markdown-first**:
 - **Project documentation**
 	- Sources: `projects_src/<project>/*.md`
 	- Template: `templates/project_template.html`
+	- Homepage template: `templates/project_home_template.html`
 	- Builder: `scripts/build_projects.py`
-	- Output: `src/projects/<project>/*.html`
+	- Output: `src/projects/*.html` and `src/projects/<project>/*.html`
 
 Note: the generated `src/*.html` files are reproducible build outputs; edit the Markdown sources + templates instead.
 

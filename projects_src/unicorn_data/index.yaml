@@ -1,0 +1,69 @@
+kind: nexus_project
+title: "Unicorn – Chromatography Data Layer"
+project_id: unicorn-data
+subtitle: "Instrument-native fractionation records as governed warehouse data."
+primary_label: Back to Projects
+primary_href: ../projects.html#project-unicorn-data
+secondary_label: Explore Map
+secondary_href: ../explore.html
+contact_subject: Unicorn data collaboration
+outline_label: Unicorn
+
+hero:
+  kicker: "Unicorn · Separation Layer"
+  title: "Chromatography Data Layer"
+  subtitle: "Nexus treats Unicorn outputs as the canonical separation record for chromatography-driven workflows. Fractions, gradients, detector traces and run metadata become governed warehouse objects that can be linked into SAXS, ITC and SPR follow-up analyses."
+  stats:
+    - label: Primary Signal
+      value: Traces
+      text: "UV, conductivity and run-program traces remain attached to the same run object rather than exported as disconnected snapshots."
+    - label: State Layer
+      value: Fractions
+      text: "Fractions become state-carrying entities with their own provenance and downstream assay links."
+    - label: Outcome
+      value: Linkage
+      text: "Separation context stays visible when the sample moves into structural or thermodynamic measurement."
+
+outline:
+  - { id: flow, label: Data flow }
+  - { id: architecture, label: Warehouse }
+  - { id: statement, label: Outcome }
+
+sections:
+  - id: flow
+    title: "Data-first Unicorn handling"
+    body:
+      - "The point of this page is not only to visualize chromatograms. It is to make the instrument-native Unicorn run the stable data object from which fraction records, wavelet representations and downstream experiments inherit their meaning."
+    steps:
+      - title: "Run capture"
+        text: "Store the complete Unicorn export, run program, detector channels and time axis inside the warehouse."
+      - title: "Fraction records"
+        text: "Materialized fractions become explicit records that can later be tied to SAXS, ITC or SPR assays."
+      - title: Representation
+        text: "Wavelet or basis decompositions convert the raw trace into transport-aware and overlap-aware derived forms."
+      - title: "Cross-modality handoff"
+        text: "Downstream measurements inherit the fraction identity and separation context as part of their provenance."
+
+  - id: architecture
+    title: "Integration layer"
+    cards:
+      - label: Acquisition
+        title: "Instrument-native runs"
+        text: "Unicorn exports are preserved as the reference data layer for separation workflows."
+      - label: "Derived forms"
+        title: "Wavelets and modes"
+        text: "Transport motifs, overlapping peaks and drift become explicit representational objects instead of visual impressions only."
+      - label: Handoff
+        title: "Fraction-to-assay linkage"
+        text: "The run can be linked directly to structural and thermodynamic branches inside Nexus."
+
+  - id: statement
+    title: "From separation traces to warehouse-linked fractions"
+    body:
+      - "The Unicorn page now follows the same Nexus spine as the homepage: record the run, derive structured forms, preserve fraction identity and hand the resulting state forward into other modalities. This keeps chromatography as a governed warehouse origin rather than a temporary preprocessing step."
+    merge_band:
+      - "run traces"
+      - "fraction records"
+      - "derived wavelets"
+      - "handoff lineage"
+      - "cross-modality context"

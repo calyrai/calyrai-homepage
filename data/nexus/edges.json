@@ -5,6 +5,34 @@
   },
   {
     "from": "saxs_state_inference",
+    "to": "epistemic-damage"
+  },
+  {
+    "from": "saxs_state_inference",
     "to": "pca"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "itc-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "spr-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "redgem"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs-interface"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "unicorn-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "cryo-em"
   }
 ]

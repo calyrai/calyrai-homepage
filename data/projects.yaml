@@ -22,6 +22,22 @@
   link_label: "Open project"
   url: "projects/exp_nodes_pr_iq_peaks.html"
 
+- id: saxs-interface
+  visibility: public
+  title: "SAXS Interface"
+  subtitle: "Local Nexus/BMCA structural console"
+  description: "The preserved local SAXS interface for PDB loading, I(q)/P(r) inspection, spline refits and browser-side evolution."
+  link_label: "Open project"
+  url: "projects/saxs_interface.html"
+
+- id: redgem
+  visibility: public
+  title: "RedGEM"
+  subtitle: "Metabolic reduction and thermodynamic structure"
+  description: "A compact project page for REDGEM-style metabolic reduction, structural constraints and coarse-grained systems logic."
+  link_label: "Open project"
+  url: "projects/redgem.html"
+
 - id: pca
   visibility: public
   title: "PCA & Free-Energy Modes"
@@ -32,6 +48,24 @@
   color: "#ff4df5"
   link_label: "Open project"
   url: "projects/pca_free_energy.html"
+
+- id: itc-data
+  visibility: public
+  title: "ITC – Thermodynamic State Mapping"
+  subtitle: "Calorimetry as governed state-space data"
+  description: "A dedicated Nexus page for isothermal titration calorimetry, thermodynamic state inference and database-linked binding records."
+  color: "#ff8bcf"
+  link_label: "Open project"
+  url: "projects/itc_data.html"
+
+- id: spr-data
+  visibility: public
+  title: "SPR – Binding State Surfaces"
+  subtitle: "Response traces as controlled kinetic data"
+  description: "A dedicated Nexus page for surface plasmon resonance, kinetic state mapping and provenance-linked response analysis."
+  color: "#8fe7ff"
+  link_label: "Open project"
+  url: "projects/spr_data.html"
 
 - id: vaults
   visibility: public
@@ -55,21 +89,75 @@
   link_label: "Open project"
   url: "projects/chrom_wavelets.html"
 
+- id: unicorn-data
+  visibility: public
+  title: "Unicorn – Chromatography Data Layer"
+  subtitle: "Instrument-native fractionation as governed warehouse data"
+  description: "A dedicated Nexus page for Unicorn traces, fraction records and chromatography-to-structure linkage."
+  color: "#74ffd4"
+  link_label: "Open project"
+  url: "projects/unicorn_data.html"
+
+- id: cryo-em
+  visibility: public
+  title: "Cryo-EM – Density State Mapping"
+  subtitle: "Density maps, classes and structural states"
+  description: "A dedicated Nexus page for cryo-EM density records, class assignments and state-space organization across reconstructions."
+  color: "#86b7ff"
+  link_label: "Open project"
+  url: "projects/cryo_em.html"
+
+- id: redhuman
+  visibility: public
+  title: "Redhuman"
+  subtitle: "Human metabolic reconstruction and thermodynamic consistency"
+  description: "A project node for Redhuman network reconstruction, pathway curation and thermodynamically constrained flux analysis."
+  color: "#ff9a7a"
+  link_label: "Open project"
+  url: "projects/redhuman.html"
+
+- id: saxs_sasview
+  visibility: public
+  title: "SAXS SasView"
+  subtitle: "Nexus-controlled SasView fitting workflow"
+  description: "The active Nexus scaffold for SasView-driven SAXS fitting, scoring and report export."
+  color: "#5dd0ff"
+  link_label: "Open project"
+  url: "projects/saxs_sasview.html"
+
+- id: saxs_igm
+  visibility: public
+  title: "SAXS IGM"
+  subtitle: "Immunoglobulin mixture modelling from scattering"
+  description: "A SAXS project node for immunoglobulin state mixtures, low-resolution envelopes and comparative curve interpretation."
+  color: "#7ef0c6"
+  link_label: "Open project"
+  url: "projects/saxs_igm.html"
+
+- id: saxs_hdl_ldl
+  visibility: public
+  title: "SAXS HDL LDL"
+  subtitle: "Lipoprotein scattering and distribution states"
+  description: "A SAXS project node for HDL/LDL scattering comparisons, heterogeneous particle classes and structure-to-signal interpretation."
+  color: "#ffd36b"
+  link_label: "Open project"
+  url: "projects/saxs_hdl_ldl.html"
+
 - id: saxs-viewer
   visibility: public
   title: "SAXS Viewer"
   subtitle: "Interactive scattering console (browser-scale)."
   description: "Viewer and analysis workspace for SAXS models, parameters and signals."
-  link_label: "Open viewer"
-  url: "saxs_viewer/index.html"
+  link_label: "Open project"
+  url: "projects/saxs_viewer.html"
 
 - id: pdb-viewer
   visibility: public
   title: "PDB Viewer"
   subtitle: "CalyrAI PDB viewer"
   description: "Interactive PDB viewer used as a companion tool for structural exploration."
-  link_label: "Open viewer"
-  url: "calyrai-pdb-viewer/index.html"
+  link_label: "Open project"
+  url: "projects/pdb_viewer.html"
 
 # --- Private / internal / roadmap ---
 
@@ -78,24 +166,6 @@
   title: "BioSAXS – Inline SEC and Thermodynamic Coupling"
   subtitle: "Time-resolved, SEC-coupled structural biology"
   description: "Inline SEC–SAXS workflows combining scattering, DLS and thermodynamic models into a single analysis story-line."
-  link_label: "Internal"
-  url: "#"
-  disabled: true
-
-- id: redhuman-metabolism
-  visibility: private
-  title: "Redhuman – Metabolic Network Reconstruction"
-  subtitle: "Thermodynamically consistent flux spaces"
-  description: "Metabolic modeling with annotation, pathway inference and free-energy consistent flux cones, prepared for ML structuralomics."
-  link_label: "Internal"
-  url: "#"
-  disabled: true
-
-- id: saxs_sasview
-  visibility: private
-  title: "SAXS Engine (sasmodels)"
-  subtitle: "Interactive scattering console integration"
-  description: "SASView/sasmodels integration experiments and workflow wiring."
   link_label: "Internal"
   url: "#"
   disabled: true

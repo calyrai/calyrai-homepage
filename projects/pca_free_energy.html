@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calyr.ai – PCA & Free‑Energy Modes</title>
+  <title>Calyr.ai – PCA & Free-Energy Modes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="stylesheet" href="../css/base.css" />
@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../css/components.css" />
   <link rel="stylesheet" href="../css/explore.css" />
   <link rel="stylesheet" href="../css/project_page.css" />
+  <link rel="stylesheet" href="../css/nexus.css" />
   <link rel="stylesheet" href="../css/impressum.css" />
 </head>
 
@@ -18,95 +19,165 @@
 <header class="site-header">
   <div class="nav-inner">
     <div class="nav-left-row">
-      <a href="../index.html" class="nav-pill glow-nav">
-        Calyr.ai – platform technology
-      </a>
+      <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
       <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="../team.html" class="nav-pill glow-nav">Team</a>
     </div>
 
-    <nav class="nav-links nav-pill-row">
+    <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Contact&body=" class="nav-pill glow-nav">Contact</a>
+      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=PCA%20Free%20Energy" class="nav-pill glow-nav">Contact</a>
       <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>
 </header>
 
-<main class="project-shell">
-  <div class="project-shell-inner">
-    <header class="project-header">
-      <div class="project-kicker">Project</div>
-      <h1 class="project-title">PCA & Free‑Energy Modes</h1>
-      <p class="project-subtitle">
-        Principal components interpreted as perturbations of G(λ) — a language for cooperative transitions.
-      </p>
+<main class="explore-page nexus-page project-home-page">
+  <section class="explore-shell" aria-label="PCA & Free-Energy Modes">
+    <div class="nexus-intro project-shell-inner">
+      <section class="nexus-hero project-hero" aria-label="Hero">
+        <div class="nexus-kicker">Calyr.ai / Project</div>
+        <h1 class="nexus-title">PCA & Free-Energy Modes</h1>
+        <p class="nexus-subtitle">Principal components interpreted as perturbations of G(lambda) and cooperative transitions.</p>
 
-      <div class="project-actions">
-        <a class="glow-btn" href="../projects.html#project-pca">Back to Projects</a>
-        <a class="glow-btn glow-btn-ghost" href="../explore.html">Explore Map</a>
-      </div>
-    </header>
+        <div class="project-actions">
+          <a class="glow-btn" href="../projects.html#project-pca">Back to Projects</a>
+          <a class="glow-btn glow-btn-ghost" href="../explore.html">Explore Map</a>
+        </div>
+      </section>
 
-    <div class="project-stage-wrap">
-      <div id="project-stage" class="explore-stage" aria-label="Interactive navigation stage">
-        <svg id="project-svg" class="explore-svg" role="img" aria-label="Interactive node chain"></svg>
-      </div>
-      <div class="explore-links project-links" aria-label="Quick links"></div>
+      <nav class="nexus-outline project-outline" aria-label="Project sections">
+        <a class="nexus-outline-link" href="#overview">PCA and free-energy modes for ITC, SPR and multi-signal experiments</a>
+        <a class="nexus-outline-link" href="#pipeline">Controlled inference pipeline</a>
+        <a class="nexus-outline-link" href="#methods">Why this matters</a>
+        <a class="nexus-outline-link" href="#docs">Working notes</a>
+        <a class="nexus-outline-link" href="#position">Constellation position</a>
+      </nav>
+
+      <section class="nexus-block project-map-block" id="map">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">Constellation Context</h2>
+            <p class="nexus-body">Each program keeps its own content, but the page shell, navigation rhythm and graph entry now follow the same structural logic as Nexus.</p>
+          </div>
+          <a class="nexus-inline-link" href="../explore.html">Open Full Explore Map</a>
+        </div>
+
+        <div class="project-stage-wrap">
+          <div id="project-stage" class="explore-stage" aria-label="Interactive navigation stage">
+            <svg id="project-svg" class="explore-svg" role="img" aria-label="Interactive node chain"></svg>
+          </div>
+          <div class="explore-links project-links" aria-label="Quick links"></div>
+        </div>
+      </section>
+
+      <div id="project-content" class="project-content-anchor project-home-content">
+        <div class="nexus-intro">
+<section id="overview" class="nexus-block project-section">
+    <div class="nexus-kicker">Representation Layer</div>
+    <h2 class="nexus-h2">PCA and free-energy modes for ITC, SPR and multi-signal experiments</h2>
+    <p class="nexus-body">This page is the mathematical bridge for experiments whose meaning emerges across conditions rather than from a single scalar fit. ITC, SPR, melting curves and related signal families are organized here through low-dimensional coordinates that can still be interpreted thermodynamically.</p>
+    <div class="nexus-hero-grid">
+        <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Signals</div>
+            <div class="nexus-stat-value">ITC / SPR</div>
+            <p class="nexus-stat-body">Heat-flow traces, response curves and related experimental series are handled as structured families, not isolated endpoints.</p>
+        </article>
+        <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Coordinates</div>
+            <div class="nexus-stat-value">PCA</div>
+            <p class="nexus-stat-body">Principal modes are used as interpretable perturbations rather than treated as anonymous compression axes.</p>
+        </article>
+        <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Interpretation</div>
+            <div class="nexus-stat-value">Landscape</div>
+            <p class="nexus-stat-body">Embedded states can be read as stability shifts, cooperative changes and free-energy neighborhoods.</p>
+        </article>
     </div>
+</section>
 
-    <section id="overview" class="project-section">
-      <h3>Overview</h3>
-      <p>
-        PCA here is not just dimensionality reduction — it is a model for how experiments move through
-        state space. The aim is interpretability: each mode is a candidate mechanism.
-      </p>
-    </section>
+<section id="pipeline" class="nexus-block project-section">
+    <h2 class="nexus-h2">Controlled inference pipeline</h2>
+    <div class="nexus-pipeline-shell">
+        <div class="nexus-pipeline-track">
+            <article class="nexus-pipeline-stage">
+                <div class="nexus-pipeline-tag">1</div>
+                <h3>Normalize</h3>
+                <p>Bring experiments onto a comparable support while keeping conditions and units attached.</p>
+            </article>
+            <article class="nexus-pipeline-stage">
+                <div class="nexus-pipeline-tag">2</div>
+                <h3>Embed</h3>
+                <p>Estimate low-dimensional coordinates that expose the dominant experimental directions of change.</p>
+            </article>
+            <article class="nexus-pipeline-stage">
+                <div class="nexus-pipeline-tag">3</div>
+                <h3>Interpret</h3>
+                <p>Relate each dominant mode back to state shifts, cooperativity or mechanistic perturbations.</p>
+            </article>
+            <article class="nexus-pipeline-stage">
+                <div class="nexus-pipeline-tag">4</div>
+                <h3>Compare</h3>
+                <p>Use the same representation language across ITC, SPR, chromatography and SAXS-facing branches.</p>
+            </article>
+        </div>
+    </div>
+</section>
 
-    <section id="methods" class="project-section">
-      <h3>Methods</h3>
-      <p>
-        We track changes across conditions using low-dimensional coordinates, then map them back to
-        thermodynamic narratives (stability, cooperativity, transitions).
-      </p>
-    </section>
+<section id="methods" class="nexus-block project-section">
+    <h2 class="nexus-h2">Why this matters</h2>
+    <p class="nexus-body">The page keeps the representation layer scientifically visible. Instead of hiding PCA behind downstream plots, it states that the dimensional reduction itself is part of the inference logic: a way to decide whether a signal family supports discrete states, trajectories or cooperative transitions.</p>
+    <div class="nexus-stack">
+        <article class="nexus-layer-card">
+            <div class="nexus-layer-index">A</div>
+            <div>
+                <h3 class="nexus-layer-title">Thermodynamic language</h3>
+                <p class="nexus-layer-body">Coordinates are mapped back to stability shifts and free-energy narratives wherever that interpretation is justified.</p>
+            </div>
+        </article>
+        <article class="nexus-layer-card">
+            <div class="nexus-layer-index">B</div>
+            <div>
+                <h3 class="nexus-layer-title">Cross-experimental reuse</h3>
+                <p class="nexus-layer-body">The same framework can organize ITC, SPR, melting and chromatography signals without forcing them into one rigid mechanistic model up front.</p>
+            </div>
+        </article>
+        <article class="nexus-layer-card">
+            <div class="nexus-layer-index">C</div>
+            <div>
+                <h3 class="nexus-layer-title">Governed model coupling</h3>
+                <p class="nexus-layer-body">Only after the coordinates are stable do model families or mechanistic interpretations get attached.</p>
+            </div>
+        </article>
+    </div>
+</section>
 
-    <section id="demo" class="project-section">
-      <h3>Interactive</h3>
-      <p>
-        Use the constellation navigator above to jump between sections.
-      </p>
-    </section>
+<section id="docs" class="nexus-block project-section">
+    <h2 class="nexus-h2">Working notes</h2>
+    <p class="nexus-body"><a href="pca_free_energy/theory.html">Theory notes</a></p>
+    <p class="nexus-body"><a href="pca_free_energy/pipeline.html">Pipeline notes</a></p>
+</section>
 
-    <section id="links" class="project-section">
-      <h3>Links</h3>
-      <p>
-        Collaborate: <a class="glow-btn glow-btn-ghost" href="mailto:rupert.tscheliessnig@calyr.ai?subject=PCA%20collaboration">Email</a>
-      </p>
-    </section>
-  </div>
+<section id="position" class="nexus-block project-section">
+    <h2 class="nexus-h2">Constellation position</h2>
+    <p class="nexus-body">This project is the mathematical core of the representation layer. It links scattering, chromatography, ITC and SPR by giving them a common lower-dimensional language for state organization, comparison and controlled interpretation.</p>
+</section>
+</div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer id="impressum" class="impressum">
   <div class="impressum-inner">
     <h2 class="impressum-title">Impressum</h2>
-    <p>
-      <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
-    </p>
-    <p>
-      It is currently not a company, involves no commercial activity, offers no services
-      and sells nothing. All content is provided solely for scientific reflection,
-      conceptual exploration and academic exchange.
-    </p>
-    <p class="impressum-contact">
-      Contact:
-      <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
-    </p>
+    <p><strong><span class="brand-lockup"><span class="brand-word">G<span class="brand-acute" aria-hidden="true">´</span>Labs</span> <span class="brand-hold" aria-hidden="true">⏸</span></span></strong> is a data warehouse research project by Rupert Gelisnig (Vienna).</p>
+    <p>It is currently not a company, involves no commercial activity, offers no services and sells nothing. All content is provided solely for scientific reflection, conceptual exploration and academic exchange.</p>
+    <p class="impressum-contact">Contact: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
   </div>
 </footer>
 
-<footer class="site-footer">
-  © 2026 Calyr.ai™ — All rights reserved.
-</footer>
+<footer class="site-footer">© 2026 Calyr.ai™ — All rights reserved.</footer>
 
 <script src="../data/projects.js"></script>
 <script src="../js/project_map.js"></script>

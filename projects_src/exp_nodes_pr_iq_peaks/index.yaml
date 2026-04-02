@@ -1,0 +1,113 @@
+kind: nexus_project
+title: "SAXS – Multi-State Structural Analysis"
+project_id: saxs
+subtitle: "Structured scattering analysis through data warehousing, state space mapping and governed model coupling."
+primary_label: Back to Projects
+primary_href: ../projects.html#project-saxs
+secondary_label: Explore Map
+secondary_href: ../explore.html
+contact_subject: SAXS collaboration
+outline_label: SAXS
+
+hero:
+  kicker: "SAXS · Structural Layer"
+  title: "Structured Scattering Analysis"
+  subtitle: "Calyr.ai Nexus transforms SAXS from a standalone fitting task into a governed inference system in which scattering curves, experimental context, model states and state-space coordinates remain linked inside the same data architecture."
+  stats:
+    - label: Primary Signal
+      value: "I(q)"
+      text: "Raw scattering curves remain first-class records and are never detached from the conditions that produced them."
+    - label: State Layer
+      value: "State Space"
+      text: "P(r), Rg, Dmax, curve descriptors and mode coordinates become comparable structural states rather than isolated curve summaries."
+    - label: Model Layer
+      value: "SasView+"
+      text: "Form factors, structure factors and hybrid model families are integrated as governed representations, not as the sole definition of the experiment."
+
+outline:
+  - { id: flow, label: Data flow }
+  - { id: layers, label: Warehouse }
+  - { id: sasview-layer, label: Models }
+  - { id: state-space, label: State space }
+  - { id: pipeline, label: Integration }
+  - { id: statement, label: Outcome }
+
+sections:
+  - id: flow
+    title: "Data-driven SAXS"
+    body:
+      - "SAXS is treated as a structured data source rather than a narrow curve-fitting problem. Each experiment is stored, versioned and connected to its buffer, concentration, temperature and processing lineage before any model family is used for interpretation."
+    steps:
+      - title: Curve record
+        text: "Persist the measured scattering profile, uncertainty and acquisition context as one governed warehouse object."
+      - title: Derived features
+        text: "Attach Rg, Dmax, P(r), curve descriptors and preprocessing choices as traceable derived quantities."
+      - title: State mapping
+        text: "Project the experiment into a shared state space where neighboring curves can be compared across conditions and modalities."
+      - title: Controlled output
+        text: "Link model states, scores and structural claims back to the exact experimental and representational lineage."
+
+  - id: layers
+    title: "Database integration"
+    body:
+      - "All SAXS objects live inside the Nexus data layer, which makes comparison, provenance and reproducibility native to the page rather than post-hoc documentation."
+    cards:
+      - label: Storage
+        title: "Versioned datasets"
+        text: "Curves, metadata and derived objects can be stored as evolving records rather than rewritten local exports."
+      - label: Lineage
+        title: "Provenance tracking"
+        text: "Every reduction step can be linked to its source run, preprocessing decision and later report output."
+      - label: Reuse
+        title: "Comparable experiments"
+        text: "Different SAXS runs can be compared through shared warehouse entities instead of manual file-by-file inspection."
+
+  - id: sasview-layer
+    title: "Model-based representation"
+    body:
+      - "Nexus incorporates SasView-style model structure without being limited to a single forward-fitting loop. Model families become one governed layer within the system, attached to the data warehouse and the state-space representation."
+    cards:
+      - label: Geometry
+        title: "Form factors"
+        text: "Sphere, cylinder, ellipsoid and related shape models provide interpretable geometric coordinates for particle-side structure."
+      - label: Interactions
+        title: "Structure factors"
+        text: "Correlation and interaction models remain available as a distinct solution-state layer rather than being mixed into the raw measurement."
+      - label: Synthesis
+        title: "Hybrid models"
+        text: "Experimental constraints, priors and composite representations can be stored as explicit model states within Nexus."
+
+  - id: state-space
+    title: "State space mapping"
+    formula: "raw SAXS → features → projection → state space"
+    body:
+      - "Instead of stopping at the scattering curve or at a single model fit, Nexus maps SAXS experiments into a shared state space. This allows comparison across concentrations, conditions, batches and later multimodal experiments."
+    layers:
+      - title: "Feature extraction"
+        text: "P(r), Rg, Dmax, curve-shape descriptors and low-order basis features provide a real-space and signal-space view of the measurement."
+      - title: Projection
+        text: "PCA is the initial mapping layer, but the page is framed as state space rather than PCA-only, leaving room for nonlinear and model-constrained projections."
+      - title: "Thermodynamic coupling"
+        text: "Projected states can be linked back to mixture changes, stability shifts and later cross-modality interpretation."
+
+  - id: pipeline
+    title: "Integration with experimental systems"
+    type: table
+    body:
+      - "SAXS is not isolated in the Nexus philosophy. Structural state is interpreted together with thermodynamic and compositional information inside the same database architecture."
+    headers: [Domain, Feature, Interpretation]
+    rows:
+      - [SAXS, "Rg, P(r), Dmax", "Structural state"]
+      - [ITC, "ΔH, Kd", "Binding energetics"]
+      - [Chromatography, "Peak shifts, fractions", "Aggregation and oligomerization"]
+
+  - id: statement
+    title: "From scattering curves to structural intelligence"
+    body:
+      - "Nexus turns SAXS into a structured inference system in which data, models and state-space representations converge into reproducible knowledge. The page is therefore not about fitting alone; it is about governed structural intelligence built on top of a scientific data warehouse."
+    merge_band:
+      - raw curves
+      - "P(r) + descriptors"
+      - "SasView model states"
+      - state space
+      - "cross-modality results"

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{TITLE}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/nav.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="../css/project_page.css" />
+  <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/impressum.css" />
+</head>
+
+<body data-project-id="{{PROJECT_ID}}">
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="../team.html" class="nav-pill glow-nav">Team</a>
+    </div>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="{{CONTACT_HREF}}" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main class="explore-page nexus-page project-home-page">
+  <section class="explore-shell" aria-label="{{PROJECT_TITLE}}">
+    <div class="nexus-intro project-shell-inner">
+      <section class="nexus-hero project-hero" aria-label="Hero">
+        <div class="nexus-kicker">Calyr.ai / Project</div>
+        <h1 class="nexus-title">{{PROJECT_TITLE}}</h1>
+        <p class="nexus-subtitle">{{PROJECT_SUBTITLE}}</p>
+
+        <div class="project-actions">
+          <a class="glow-btn" href="{{PRIMARY_HREF}}">{{PRIMARY_LABEL}}</a>
+          <a class="glow-btn glow-btn-ghost" href="{{SECONDARY_HREF}}">{{SECONDARY_LABEL}}</a>
+        </div>
+      </section>
+
+{{PROJECT_OUTLINE}}
+
+      <section class="nexus-block project-map-block" id="map">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">Constellation Context</h2>
+            <p class="nexus-body">Each program keeps its own content, but the page shell, navigation rhythm and graph entry now follow the same structural logic as Nexus.</p>
+          </div>
+          <a class="nexus-inline-link" href="../explore.html">Open Full Explore Map</a>
+        </div>
+
+        <div class="project-stage-wrap">
+          <div id="project-stage" class="explore-stage" aria-label="Interactive navigation stage">
+            <svg id="project-svg" class="explore-svg" role="img" aria-label="Interactive node chain"></svg>
+          </div>
+          <div class="explore-links project-links" aria-label="Quick links"></div>
+        </div>
+      </section>
+
+      <div id="project-content" class="project-content-anchor project-home-content">
+        {{CONTENT}}
+      </div>
+    </div>
+  </section>
+</main>
+
+{{IMPRESSUM}}
+
+{{SITE_FOOTER}}
+
+<script src="../data/projects.js"></script>
+<script src="../js/project_map.js"></script>
+
+</body>
+</html>

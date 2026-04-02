@@ -16,6 +16,12 @@ class SitePage:
     out_path: Path
 
 
+@dataclass(frozen=True)
+class SharedShell:
+    impressum_html: str
+    site_footer_html: str
+
+
 def _die(msg: str, code: int = 1) -> None:
     print(f"ERROR: {msg}", file=sys.stderr)
     raise SystemExit(code)
@@ -79,6 +85,69 @@ def _text_or_html(item: dict, key_text: str = "text", key_html: str = "text_html
         return _esc_html(item.get(key_text, ""))
 
 
+def _render_nav(items: list[object]) -> str:
+        out: list[str] = []
+        for raw in items:
+                if not isinstance(raw, dict):
+                        continue
+                href = _esc_attr(raw.get("href", "#"))
+                label = _text_or_html(raw)
+                out.append(f'<a href="{href}" class="nav-pill glow-nav">{label}</a>')
+        return "\n      ".join(out)
+
+
+def _render_header(nav: dict) -> str:
+        nav_left = nav.get("left") if isinstance(nav.get("left"), list) else []
+        nav_right = nav.get("right") if isinstance(nav.get("right"), list) else []
+        return f"""
+<header class=\"site-header\">
+  <div class=\"nav-inner\">
+    <div class=\"nav-left-row\">
+      {_render_nav(nav_left)}
+    </div>
+
+    <nav class=\"nav-links\" aria-label=\"Primary\">
+      {_render_nav(nav_right)}
+    </nav>
+  </div>
+</header>
+""".strip()
+
+
+def _render_impressum(data: dict) -> SharedShell:
+        title = _esc_html(data.get("title", "Impressum"))
+        brand_html = str(data.get("brand_html", "Calyr.ai"))
+        location = _esc_html(data.get("location", ""))
+        body = data.get("body") if isinstance(data.get("body"), list) else []
+        contact_label = _esc_html(data.get("contact_label", "Contact"))
+        contact_email = _esc_attr(data.get("contact_email", ""))
+        site_footer = _esc_html(data.get("site_footer", ""))
+
+        body_html: list[str] = []
+        if body:
+                first = _esc_html(body[0])
+                body_html.append(f"    <p><strong>{brand_html}</strong> {first}</p>")
+                for item in body[1:]:
+                        body_html.append(f"    <p>{_esc_html(item)}</p>")
+        else:
+                location_suffix = f" ({location})" if location else ""
+                body_html.append(f"    <p><strong>{brand_html}</strong>{location_suffix}</p>")
+
+        impressum = "\n".join(
+                [
+                        '<footer id="impressum" class="impressum">',
+                        '  <div class="impressum-inner">',
+                        f"    <h2 class=\"impressum-title\">{title}</h2>",
+                        *body_html,
+                        f"    <p class=\"impressum-contact\">{contact_label}: <a href=\"mailto:{contact_email}\">{contact_email}</a></p>",
+                        "  </div>",
+                        "</footer>",
+                ]
+        )
+        site_footer_html = f'<footer class="site-footer">{site_footer}</footer>'
+        return SharedShell(impressum_html=impressum, site_footer_html=site_footer_html)
+
+
 def _render_index_body(data: dict) -> str:
         nav = data.get("nav") if isinstance(data.get("nav"), dict) else {}
         hero = data.get("hero") if isinstance(data.get("hero"), dict) else {}
@@ -87,16 +156,6 @@ def _render_index_body(data: dict) -> str:
 
         nav_left = nav.get("left") if isinstance(nav.get("left"), list) else []
         nav_right = nav.get("right") if isinstance(nav.get("right"), list) else []
-
-        def render_nav(items: list[object]) -> str:
-                out: list[str] = []
-                for raw in items:
-                        if not isinstance(raw, dict):
-                                continue
-                        href = _esc_attr(raw.get("href", "#"))
-                        label = _text_or_html(raw)
-                        out.append(f'<a href="{href}" class="nav-pill glow-nav">{label}</a>')
-                return "\n      ".join(out)
 
         kicker = _esc_html(hero.get("kicker", ""))
         subtitle = _esc_html(hero.get("subtitle", ""))
@@ -180,17 +239,7 @@ def _render_index_body(data: dict) -> str:
         """.strip()
 
         return f"""
-<header class=\"site-header\">
-    <div class=\"nav-inner\">
-        <div class=\"nav-left-row\">
-            {render_nav(nav_left)}
-        </div>
-
-        <nav class=\"nav-links\" aria-label=\"Primary\">
-            {render_nav(nav_right)}
-        </nav>
-    </div>
-</header>
+{_render_header(nav)}
 
 <section class=\"hero\" id=\"hero\">
     <div class=\"hero-orbit-logo\">
@@ -223,40 +272,170 @@ def _render_index_body(data: dict) -> str:
         </p>
     </div>
 </section>
+""".strip()
 
-<footer id=\"impressum\" class=\"impressum\">
-    <div class=\"impressum-inner\">
-        <h2 class=\"impressum-title\">Impressum</h2>
-        <p>
-            <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
-        </p>
-        <p>
-            It is currently not a company, involves no commercial activity, offers no services
-            and sells nothing. All content is provided solely for scientific reflection,
-            conceptual exploration and academic exchange.
-        </p>
-        <p class=\"impressum-contact\">
-            Contact:
-            <a href=\"mailto:rupert.tscheliessnig@calyr.ai\">rupert.tscheliessnig@calyr.ai</a>
-        </p>
+
+def _render_nexus_page(data: dict) -> str:
+        nav = data.get("nav") if isinstance(data.get("nav"), dict) else {}
+        hero = data.get("hero") if isinstance(data.get("hero"), dict) else {}
+        outline = data.get("outline") if isinstance(data.get("outline"), list) else []
+        concept = data.get("concept") if isinstance(data.get("concept"), dict) else {}
+        layers = data.get("layers") if isinstance(data.get("layers"), dict) else {}
+        works = data.get("works") if isinstance(data.get("works"), dict) else {}
+        map_block = data.get("map") if isinstance(data.get("map"), dict) else {}
+
+        stats = hero.get("stats") if isinstance(hero.get("stats"), list) else []
+        concept_body = concept.get("body") if isinstance(concept.get("body"), list) else []
+        concept_steps = concept.get("steps") if isinstance(concept.get("steps"), list) else []
+        layer_cards = layers.get("cards") if isinstance(layers.get("cards"), list) else []
+        work_entries = works.get("entries") if isinstance(works.get("entries"), list) else []
+        map_body = map_block.get("body") if isinstance(map_block.get("body"), list) else []
+
+        stats_html = "\n".join(
+                [
+                        f"""<article class="nexus-stat-card">
+            <div class="nexus-stat-label">{_esc_html(item.get("label", ""))}</div>
+            <div class="nexus-stat-value">{_esc_html(item.get("value", ""))}</div>
+            <p class="nexus-stat-body">{_esc_html(item.get("text", ""))}</p>
+          </article>"""
+                        for item in stats
+                        if isinstance(item, dict)
+                ]
+        )
+
+        outline_html = "\n        ".join(
+                [
+                        f'<a class="nexus-outline-link" href="#{_esc_attr(item.get("id", ""))}">{_esc_html(item.get("label", ""))}</a>'
+                        for item in outline
+                        if isinstance(item, dict)
+                ]
+        )
+
+        concept_body_html = "\n        ".join([f'<p class="nexus-body">{_esc_html(p)}</p>' for p in concept_body])
+        concept_steps_html = "\n          ".join(
+                [
+                        f"""<div class="nexus-flow-node">
+              <span class="nexus-flow-step">{index}</span>
+              <strong>{_esc_html(item.get("title", ""))}</strong>
+              <span>{_esc_html(item.get("text", ""))}</span>
+            </div>"""
+                        for index, item in enumerate([i for i in concept_steps if isinstance(i, dict)], start=1)
+                ]
+        )
+        concept_flow_html = concept_steps_html.replace("</div>\n          <div class=\"nexus-flow-node\">", "</div>\n          <div class=\"nexus-flow-arrow\"></div>\n          <div class=\"nexus-flow-node\">")
+
+        layer_cards_html = "\n          ".join(
+                [
+                        f"""<a class="nexus-card-link" href="{_esc_attr(item.get("href", "#"))}">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">{_esc_html(item.get("label", ""))}</div>
+              <h3>{_esc_html(item.get("title", ""))}</h3>
+              <p>{_esc_html(item.get("text", ""))}</p>
+            </article>
+          </a>"""
+                        for item in layer_cards
+                        if isinstance(item, dict)
+                ]
+        )
+
+        works_html = "\n          ".join(
+                [
+                        f"""<a class="nexus-card-link" href="{_esc_attr(item.get("href", "#"))}">
+            <article class="nexus-integration-card">
+              <div class="nexus-integration-label">Work</div>
+              <h3>{_esc_html(item.get("title", ""))}</h3>
+              <p>{_esc_html(item.get("text", ""))}</p>
+            </article>
+          </a>"""
+                        for item in work_entries
+                        if isinstance(item, dict)
+                ]
+        )
+
+        map_body_html = "\n        ".join([f'<p class="nexus-body">{_esc_html(p)}</p>' for p in map_body])
+
+        return f"""
+{_render_header(nav)}
+
+<main class="explore-page nexus-page">
+  <section class="explore-shell" aria-label="Nexus">
+    <div class="nexus-intro">
+      <section class="nexus-hero" aria-label="Hero">
+        <div class="nexus-kicker">{_esc_html(hero.get("kicker", ""))}</div>
+        <h1 class="nexus-title">{_esc_html(hero.get("title", ""))}</h1>
+        <p class="nexus-subtitle">{_esc_html(hero.get("subtitle", ""))}</p>
+        <div class="nexus-hero-grid">
+          {stats_html}
+        </div>
+      </section>
+
+      <nav class="nexus-outline" aria-label="Nexus sections">
+        {outline_html}
+      </nav>
+
+      <section id="concept" class="nexus-block">
+        <h2 class="nexus-h2">{_esc_html(concept.get("title", ""))}</h2>
+        <pre class="nexus-math">{_esc_html(concept.get("formula", ""))}</pre>
+        {concept_body_html}
+        <div class="nexus-flow">
+          {concept_flow_html}
+        </div>
+      </section>
+
+      <section id="layers" class="nexus-block">
+        <h2 class="nexus-h2">{_esc_html(layers.get("title", ""))}</h2>
+        <p class="nexus-body">{_esc_html(layers.get("body", ""))}</p>
+        <div class="nexus-integration-grid">
+          {layer_cards_html}
+        </div>
+      </section>
+
+      <section id="works" class="nexus-block">
+        <h2 class="nexus-h2">{_esc_html(works.get("title", ""))}</h2>
+        <p class="nexus-body">{_esc_html(works.get("body", ""))}</p>
+        <div class="nexus-integration-grid">
+          {works_html}
+        </div>
+      </section>
+
+      <section id="map" class="nexus-block">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">{_esc_html(map_block.get("title", ""))}</h2>
+            {map_body_html}
+          </div>
+          <a class="nexus-inline-link" href="{_esc_attr(map_block.get("explore_href", "../explore.html"))}">{_esc_html(map_block.get("explore_label", "Open full explore map"))}</a>
+        </div>
+        <div id="nexus-graph" aria-label="Interactive system">
+          <div class="explore-stage" id="explore-stage">
+            <svg id="explore-svg" class="explore-svg" role="img" aria-label="Interactive nexus graph" data-collect-id="nexus-graph" data-collect-title="Nexus graph"></svg>
+          </div>
+          <div class="explore-links" aria-label="Node links"></div>
+        </div>
+      </section>
+      <!-- CALYR_CONTACT_BLOCK -->
     </div>
-</footer>
+  </section>
+</main>
 
-<footer class=\"site-footer\">
-    © 2025 Calyr.ai™ — All rights reserved.
-</footer>
+<script defer src="../data/projects.js"></script>
+<script defer src="../js/explore_map.js"></script>
 """.strip()
 
 
 def _convert_source(path: Path) -> str:
         if path.suffix.lower() == ".md":
                 return _convert_markdown(_read_text(path))
+        if path.suffix.lower() == ".html":
+                return _read_text(path)
         if path.suffix.lower() in {".yaml", ".yml"}:
                 data = _load_yaml(path)
                 kind = data.get("kind")
-                if kind != "index":
-                        _die(f"Unsupported YAML page kind '{kind}' in {path} (expected kind: index)")
-                return _render_index_body(data)
+                if kind == "index":
+                        return _render_index_body(data)
+                if kind == "nexus_page":
+                        return _render_nexus_page(data)
+                _die(f"Unsupported YAML page kind '{kind}' in {path}")
         _die(f"Unsupported page source type: {path}")
         return ""
 
@@ -267,10 +446,13 @@ def _load_template(path: Path) -> str:
     return _read_text(path)
 
 
-def _render(template: str, content_html: str) -> str:
+def _render(template: str, content_html: str, shell: SharedShell) -> str:
     if "{{CONTENT}}" not in template:
         _die("Template missing required placeholder {{CONTENT}}")
-    return template.replace("{{CONTENT}}", content_html)
+    rendered = template.replace("{{CONTENT}}", content_html)
+    rendered = rendered.replace("{{IMPRESSUM}}", shell.impressum_html)
+    rendered = rendered.replace("{{SITE_FOOTER}}", shell.site_footer_html)
+    return rendered
 
 
 def _default_pages(src_root: Path, template_root: Path, out_root: Path) -> list[SitePage]:
@@ -296,27 +478,32 @@ def _default_pages(src_root: Path, template_root: Path, out_root: Path) -> list[
             out_path=out_root / "projects.html",
         ),
         SitePage(
-            src_path=src_root / "pages" / "nexus.md",
+            src_path=src_root / "pages" / "nexus.yaml",
             template_path=template_root / "pages" / "nexus.template.html",
             out_path=out_root / "pages" / "nexus.html",
         ),
         SitePage(
-            src_path=src_root / "pages" / "qr_noise.md",
-            template_path=template_root / "pages" / "qr_noise.template.html",
-            out_path=out_root / "pages" / "qr_noise.html",
+            src_path=src_root / "pages" / "contact.html",
+            template_path=template_root / "pages" / "contact.template.html",
+            out_path=out_root / "pages" / "contact.html",
         ),
     ]
 
 
 def build_pages(src_root: Path, template_root: Path, out_root: Path) -> None:
     pages = _default_pages(src_root=src_root, template_root=template_root, out_root=out_root)
+    data_path = Path(__file__).resolve().parent.parent / "src" / "data" / "impressum.yaml"
+    shell = _render_impressum(_load_yaml(data_path))
 
     for p in pages:
         if not p.src_path.exists():
             _die(f"Page source not found: {p.src_path}")
-        template = _load_template(p.template_path)
         html = _convert_source(p.src_path)
-        rendered = _render(template, html)
+        if p.src_path.suffix.lower() == ".html":
+            rendered = html
+        else:
+            template = _load_template(p.template_path)
+            rendered = _render(template, html, shell)
         _write_text(p.out_path, rendered)
 
     print(f"Built site pages from {src_root} -> {out_root}")

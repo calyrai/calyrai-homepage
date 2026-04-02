@@ -39,6 +39,12 @@ echo "→ building site pages"
 echo "→ building nexus YAML artifacts"
 "$VENV_PY" scripts/build_nexus_yaml.py
 
+echo "→ building epistemic damage homepage metadata"
+"$VENV_PY" scripts/build_epistemic_damage_homepage.py
+
+echo "→ building publication graph"
+"$VENV_PY" scripts/build_epistemic_damage_graph.py
+
 echo "→ building projects"
 "$VENV_PY" scripts/build_projects.py --clean --out src/projects
 bash scripts/sync_root_from_src.sh

@@ -8,8 +8,8 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="pages/qr_noise.html" class="nav-pill glow-nav">Contact</a>
-      <a href="index.html#impressum" class="nav-pill glow-nav">Impressum</a>
+      <a href="pages/contact.html" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
     </nav>
   </div>
 </header>
@@ -42,27 +42,5 @@
     </div>
   </section>
 </main>
-
-<footer id="impressum" class="impressum">
-  <div class="impressum-inner">
-    <h2 class="impressum-title">Impressum</h2>
-    <p>
-      <strong>CalyrAI</strong> is a private research project by Rupert Gelisnig (Vienna).
-    </p>
-    <p>
-      It is currently not a company, involves no commercial activity, offers no services
-      and sells nothing. All content is provided solely for scientific reflection,
-      conceptual exploration and academic exchange.
-    </p>
-    <p class="impressum-contact">
-      Contact:
-      <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
-    </p>
-  </div>
-</footer>
-
-<footer class="site-footer">
-  © 2026 Calyr.ai™ — All rights reserved.
-</footer>
 
 <script src="js/nav_autohide.js"></script>

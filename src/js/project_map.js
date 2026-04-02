@@ -62,17 +62,38 @@
 
   const pageTitle = (project && project.title) ? project.title : "Project";
 
-  const nodesData = [
-    { id: "overview", title: "Overview", href: "#overview" },
-    { id: "methods", title: "Methods", href: "#methods" },
-    { id: "demo", title: "Interactive", href: "#demo" },
-    { id: "links", title: "Links", href: "#links" },
-    {
-      id: "projects",
-      title: "Back to Projects",
-      href: projectId ? `../projects.html#project-${encodeURIComponent(projectId)}` : "../projects.html",
-    },
-  ];
+  const sectionTitleMap = {
+    overview: 'Overview',
+    methods: 'Methods',
+    demo: 'Interactive',
+    publications: 'Publications',
+    links: 'Links',
+  };
+
+  const nodesData = Array.from(document.querySelectorAll('.project-section[id]'))
+    .map((section) => ({
+      id: safeId(section.id),
+      title: sectionTitleMap[safeId(section.id)] || section.querySelector('h3')?.textContent?.trim() || safeId(section.id),
+      href: `#${safeId(section.id)}`,
+    }))
+    .filter((entry) => entry.id);
+
+  if (!nodesData.length) {
+    const contentTarget = document.getElementById("project-content");
+    if (contentTarget) {
+      nodesData.push({
+        id: "content",
+        title: "Read Page",
+        href: "#project-content",
+      });
+    }
+  }
+
+  nodesData.push({
+    id: 'projects',
+    title: 'Back to Projects',
+    href: projectId ? `../projects.html#project-${encodeURIComponent(projectId)}` : '../projects.html',
+  });
 
   let dims = { width: 1200, height: 720 };
   let pathBase = null;
