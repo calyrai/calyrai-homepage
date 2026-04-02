@@ -38,12 +38,12 @@
     .shell {
       width: 100%;
       display: grid;
-      gap: 18px;
+      gap: 12px;
     }
 
     .contact-page-flow {
-      padding: 22px 10px 10px;
-      max-width: 76rem;
+      padding: 14px 8px 8px;
+      max-width: 84rem;
       margin: 0 auto;
     }
 
@@ -64,7 +64,7 @@
     }
 
     .page-intro {
-      padding: 28px 24px 24px;
+      padding: 18px 20px 16px;
     }
 
     .hud {
@@ -72,7 +72,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 16px 18px;
+      padding: 10px 14px;
     }
 
     .page-kicker {
@@ -88,19 +88,19 @@
       text-transform: uppercase;
       color: rgba(180, 240, 255, 0.92);
       text-shadow: 0 0 10px rgba(140, 240, 255, 0.3);
-      margin: 0 0 14px;
+      margin: 0 0 10px;
     }
 
     .brand {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .title {
       margin: 0;
       max-width: 56rem;
-      font-size: clamp(2.2rem, 3.4vw + 1rem, 4.1rem);
+      font-size: clamp(1.8rem, 2.2vw + 1rem, 3rem);
       line-height: 1.02;
       color: #f4fbff;
       text-shadow:
@@ -112,47 +112,48 @@
       margin: 0;
       max-width: 50rem;
       color: rgba(210, 240, 255, 0.76);
-      line-height: 1.7;
-      font-size: 1.08rem;
+      line-height: 1.5;
+      font-size: 0.98rem;
     }
 
     .stats {
       display: flex;
       flex-wrap: wrap;
       justify-content: end;
-      gap: 10px;
+      gap: 8px;
     }
 
     .chip {
-      min-width: 110px;
-      padding: 10px 12px;
-      border-radius: 14px;
+      min-width: 92px;
+      padding: 8px 10px;
+      border-radius: 12px;
       border: 1px solid var(--line);
       background: rgba(7, 13, 28, 0.9);
     }
 
     .chip-label {
       display: block;
-      margin-bottom: 4px;
-      font-size: 0.72rem;
+      margin-bottom: 2px;
+      font-size: 0.66rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: rgba(238, 250, 255, 0.6);
     }
 
     .chip-value {
-      font-size: 1.15rem;
+      font-size: 1rem;
       color: var(--cyan);
     }
 
     .stage {
-      padding: 18px;
+      padding: 10px;
     }
 
     canvas {
       display: block;
       width: 100%;
-      height: auto;
+      height: min(74vh, 860px);
+      touch-action: none;
       border-radius: 20px;
       background:
         radial-gradient(circle at 50% 0%, rgba(57, 231, 255, 0.06), transparent 35%),
@@ -169,7 +170,7 @@
 
     .action-pill {
       min-width: 108px;
-      height: 44px;
+      height: 42px;
       padding: 0 22px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -193,15 +194,24 @@
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      padding: 0 6px 12px;
+      padding: 0 4px 8px;
       color: rgba(238, 250, 255, 0.72);
-      font-size: 0.9rem;
+      font-size: 0.82rem;
     }
 
     @media (max-width: 720px) {
+      .contact-page-flow {
+        padding: 10px 4px 6px;
+      }
+
+      .page-intro {
+        padding: 14px 14px 12px;
+      }
+
       .hud {
         flex-direction: column;
         align-items: start;
+        gap: 8px;
       }
 
       .stats {
@@ -210,9 +220,41 @@
       }
 
       .chip {
-        min-width: 92px;
+        min-width: 78px;
+        padding: 7px 9px;
       }
 
+      .title {
+        font-size: clamp(1.5rem, 5.6vw, 2.1rem);
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+        line-height: 1.42;
+      }
+
+      .stage {
+        padding: 6px;
+      }
+
+      canvas {
+        height: min(70vh, 620px);
+      }
+
+      .footer {
+        font-size: 0.76rem;
+        gap: 6px;
+      }
+    }
+
+    @media (min-width: 721px) {
+      .stage {
+        min-height: 70vh;
+      }
+
+      canvas {
+        min-height: 68vh;
+      }
     }
   </style>
 </head>
@@ -323,6 +365,7 @@
       patternHits: 0,
       blinkTime: 0,
       patternTimer: 0,
+      patternInterval: 1.0,
       patternSeed: 0,
       playSeconds: 0,
       keys: { left: false, right: false },
@@ -451,10 +494,11 @@
       const wall = fullQr ? baseWall : randomizedGameWall(baseWall, state.patternSeed + state.level * 17);
       const qrSize = wall.length;
       const gap = 2;
-      const horizontalPadding = 120;
-      const verticalPadding = 120;
+      const narrowScreen = window.innerWidth <= 640;
+      const horizontalPadding = fullQr && narrowScreen ? 48 : 120;
+      const verticalPadding = fullQr && narrowScreen ? 72 : 120;
       const moduleSize = Math.max(
-        8,
+        fullQr && narrowScreen ? 10 : 8,
         Math.floor(
           Math.min(
             (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
@@ -772,7 +816,13 @@
     }
 
     function updatePattern(dt) {
-      return;
+      if (state.contactOpen || state.paused || !state.running) return;
+      state.patternTimer += dt;
+      if (state.patternTimer < state.patternInterval) return;
+      state.patternTimer = 0;
+      state.patternSeed = Math.floor(Math.random() * 1000000);
+      resetBricks(false);
+      syncHud();
     }
 
     function updatePlayClock(dt) {
@@ -841,6 +891,36 @@
       state.paddle.x = x - state.paddle.w / 2;
       clampPaddle();
     });
+
+    function movePaddleFromClientX(clientX) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = canvas.width / rect.width;
+      const x = (clientX - rect.left) * ratio;
+      state.paddle.x = x - state.paddle.w / 2;
+      clampPaddle();
+    }
+
+    canvas.addEventListener(
+      "touchstart",
+      (event) => {
+        if (state.contactOpen) return;
+        if (!event.touches || !event.touches[0]) return;
+        event.preventDefault();
+        movePaddleFromClientX(event.touches[0].clientX);
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchmove",
+      (event) => {
+        if (state.contactOpen) return;
+        if (!event.touches || !event.touches[0]) return;
+        event.preventDefault();
+        movePaddleFromClientX(event.touches[0].clientX);
+      },
+      { passive: false }
+    );
 
     mailBtn.addEventListener("click", () => {
       openMail();
