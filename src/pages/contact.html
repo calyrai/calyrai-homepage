@@ -358,6 +358,15 @@
         box-shadow: 0 0 22px rgba(57, 231, 255, 0.28);
       }
 
+      body.game-over .contact-actions {
+        position: fixed;
+        left: 50%;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        display: flex;
+        z-index: 30;
+      }
+
       .action-pill {
         min-width: 112px;
         height: 40px;
@@ -483,6 +492,7 @@
       patternInterval: 1.0,
       patternSeed: 0,
       playSeconds: 0,
+      gameOver: false,
       keys: { left: false, right: false },
       lastTime: 0,
       clickTimer: null,
@@ -645,9 +655,11 @@
       state.patternSeed = 0;
       state.playSeconds = 0;
       state.contactOpen = false;
+      state.gameOver = false;
       resetBricks();
       resetBallAndPaddle();
       syncHud();
+      syncGameUi();
     }
 
     function syncHud() {
@@ -660,8 +672,10 @@
 
     function resetContactState() {
       state.contactOpen = false;
+      state.gameOver = false;
       resetBricks();
       syncHud();
+      syncGameUi();
       draw();
     }
 
@@ -680,8 +694,10 @@
     function showContactQr() {
       state.paused = true;
       state.contactOpen = true;
+      state.gameOver = false;
       resetBricks();
       syncHud();
+      syncGameUi();
       draw();
     }
 
@@ -695,7 +711,13 @@
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
+      state.gameOver = true;
       resetBricks();
+      syncGameUi();
+    }
+
+    function syncGameUi() {
+      document.body.classList.toggle("game-over", !!state.gameOver);
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
@@ -1009,7 +1031,7 @@
       if (direction === "right") state.keys.right = active;
       const target = direction === "left" ? landscapeLeft : landscapeRight;
       if (target) target.classList.toggle("is-active", active);
-      if (active) startOrResume();
+      if (active && (!state.running || state.paused || state.contactOpen)) startOrResume();
     }
 
     function bindLandscapeControl(node, direction) {

@@ -270,10 +270,15 @@
     }
 
     @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        overflow: hidden;
+      }
+
       .site-header,
       .page-intro,
       .hud,
-      .footer {
+      .footer,
+      .contact-actions {
         display: none;
       }
 
@@ -310,14 +315,6 @@
         border: 0;
       }
 
-      .contact-actions {
-        position: fixed;
-        left: 50%;
-        bottom: max(10px, env(safe-area-inset-bottom));
-        transform: translateX(-50%);
-        z-index: 30;
-      }
-
       .landscape-controls {
         position: absolute;
         inset: 0;
@@ -348,11 +345,11 @@
       }
 
       .landscape-arrow-left {
-        left: max(8px, env(safe-area-inset-left));
+        left: max(10px, env(safe-area-inset-left));
       }
 
       .landscape-arrow-right {
-        right: max(8px, env(safe-area-inset-right));
+        right: max(10px, env(safe-area-inset-right));
       }
 
       .landscape-arrow:active,
