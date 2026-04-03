@@ -149,6 +149,7 @@
       padding: 10px;
       display: flex;
       justify-content: center;
+      align-items: center;
     }
 
     canvas {
@@ -169,6 +170,14 @@
       justify-content: center;
       align-items: center;
       gap: 12px;
+    }
+
+    .landscape-controls {
+      display: none;
+    }
+
+    .landscape-arrow {
+      display: none;
     }
 
     .action-pill {
@@ -261,10 +270,15 @@
     }
 
     @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        overflow: hidden;
+      }
+
       .site-header,
       .page-intro,
       .hud,
-      .footer {
+      .footer,
+      .contact-actions {
         display: none;
       }
 
@@ -301,12 +315,47 @@
         border: 0;
       }
 
-      .contact-actions {
-        position: fixed;
-        left: 50%;
-        bottom: max(10px, env(safe-area-inset-bottom));
-        transform: translateX(-50%);
-        z-index: 30;
+      .landscape-controls {
+        position: absolute;
+        inset: 0;
+        display: block;
+        pointer-events: none;
+      }
+
+      .landscape-arrow {
+        position: absolute;
+        top: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 999px;
+        border: 1px solid rgba(191, 248, 255, 0.18);
+        background: rgba(7, 13, 28, 0.82);
+        color: #bff8ff;
+        font: inherit;
+        font-size: 1.6rem;
+        line-height: 1;
+        box-shadow: 0 0 18px rgba(57, 231, 255, 0.14);
+        transform: translateY(-50%);
+        pointer-events: auto;
+        backdrop-filter: blur(8px);
+        z-index: 25;
+      }
+
+      .landscape-arrow-left {
+        left: max(10px, env(safe-area-inset-left));
+      }
+
+      .landscape-arrow-right {
+        right: max(10px, env(safe-area-inset-right));
+      }
+
+      .landscape-arrow:active,
+      .landscape-arrow.is-active {
+        background: rgba(57, 231, 255, 0.18);
+        box-shadow: 0 0 22px rgba(57, 231, 255, 0.28);
       }
 
       .action-pill {
@@ -349,6 +398,10 @@
 
           <section class="stage">
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
+            <div class="landscape-controls" aria-hidden="true">
+              <button type="button" class="landscape-arrow landscape-arrow-left" id="landscape-left" aria-label="Move left">‹</button>
+              <button type="button" class="landscape-arrow landscape-arrow-right" id="landscape-right" aria-label="Move right">›</button>
+            </div>
           </section>
 
           <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
@@ -395,6 +448,8 @@
     const mailQueueNode = document.getElementById("mail-queue");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
+    const landscapeLeft = document.getElementById("landscape-left");
+    const landscapeRight = document.getElementById("landscape-right");
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:G'Labs Hold;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;;";
 
     function contactSeed() {
@@ -948,6 +1003,33 @@
     mailBtn.addEventListener("click", () => {
       openMail();
     });
+
+    function setLandscapeDirection(direction, active) {
+      if (direction === "left") state.keys.left = active;
+      if (direction === "right") state.keys.right = active;
+      const target = direction === "left" ? landscapeLeft : landscapeRight;
+      if (target) target.classList.toggle("is-active", active);
+      if (active) startOrResume();
+    }
+
+    function bindLandscapeControl(node, direction) {
+      if (!node) return;
+      const start = (event) => {
+        event.preventDefault();
+        setLandscapeDirection(direction, true);
+      };
+      const stop = (event) => {
+        event.preventDefault();
+        setLandscapeDirection(direction, false);
+      };
+      node.addEventListener("pointerdown", start);
+      node.addEventListener("pointerup", stop);
+      node.addEventListener("pointercancel", stop);
+      node.addEventListener("pointerleave", stop);
+    }
+
+    bindLandscapeControl(landscapeLeft, "left");
+    bindLandscapeControl(landscapeRight, "right");
 
     function clearPendingSingleTap() {
       if (state.clickTimer) {
