@@ -147,12 +147,15 @@
 
     .stage {
       padding: 10px;
+      display: flex;
+      justify-content: center;
     }
 
     canvas {
       display: block;
-      width: 100%;
-      height: min(74vh, 860px);
+      width: min(100%, calc(min(74vh, 860px) * 1.6667));
+      height: auto;
+      aspect-ratio: 5 / 3;
       touch-action: none;
       border-radius: 20px;
       background:
@@ -238,7 +241,7 @@
       }
 
       canvas {
-        height: min(70vh, 620px);
+        width: min(100%, calc(min(70vh, 620px) * 1.6667));
       }
 
       .footer {
@@ -253,7 +256,7 @@
       }
 
       canvas {
-        min-height: 68vh;
+        min-width: min(100%, calc(min(68vh, 820px) * 1.6667));
       }
     }
   </style>
@@ -370,6 +373,8 @@
       playSeconds: 0,
       keys: { left: false, right: false },
       lastTime: 0,
+      clickTimer: null,
+      lastPointerUp: 0,
     };
 
     function buildQrWall(size, seed) {
@@ -458,31 +463,7 @@
       return inTopLeft || inTopRight || inBottomLeft || inTiming;
     }
 
-    function randomizedGameWall(baseWall, seed) {
-      const size = baseWall.length;
-      const wall = baseWall.map((row) => row.slice());
-
-      function randAt(row, col) {
-        const n = (row * 92837111 + col * 689287499 + seed * 283923481) >>> 0;
-        return ((n ^ (n >>> 13) ^ (n << 7)) >>> 0) / 4294967295;
-      }
-
-      for (let row = 0; row < size; row += 1) {
-        for (let col = 0; col < size; col += 1) {
-          if (isQrReservedCell(row, col, size)) continue;
-          const r = randAt(row, col);
-          if (baseWall[row][col]) {
-            wall[row][col] = r > 0.16 ? 1 : 0;
-          } else {
-            wall[row][col] = r > 0.94 ? 1 : 0;
-          }
-        }
-      }
-
-      return wall;
-    }
-
-    function resetBricks(fullQr = false) {
+    function resetBricks() {
       const baseWall = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
       if (!baseWall) {
         state.bricks = [];
@@ -491,14 +472,14 @@
         state.totalBricks = 0;
         return;
       }
-      const wall = fullQr ? baseWall : randomizedGameWall(baseWall, state.patternSeed + state.level * 17);
+      const wall = baseWall;
       const qrSize = wall.length;
       const gap = 2;
       const narrowScreen = window.innerWidth <= 640;
-      const horizontalPadding = fullQr && narrowScreen ? 48 : 120;
-      const verticalPadding = fullQr && narrowScreen ? 72 : 120;
+      const horizontalPadding = narrowScreen ? 32 : 120;
+      const verticalPadding = narrowScreen ? 56 : 120;
       const moduleSize = Math.max(
-        fullQr && narrowScreen ? 10 : 8,
+        narrowScreen ? 11 : 8,
         Math.floor(
           Math.min(
             (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
@@ -528,7 +509,7 @@
             glow: "rgba(57, 231, 255, 0.18)",
             phase: (row * 0.37) + (col * 0.21),
             alive: true,
-            active,
+            active: true,
           });
         }
       }
@@ -549,10 +530,10 @@
       state.level = 1;
       state.patternHits = 0;
       state.patternTimer = 0;
-      state.patternSeed = Math.floor(Math.random() * 1000000);
+      state.patternSeed = 0;
       state.playSeconds = 0;
       state.contactOpen = false;
-      resetBricks(false);
+      resetBricks();
       resetBallAndPaddle();
       syncHud();
     }
@@ -567,7 +548,7 @@
 
     function resetContactState() {
       state.contactOpen = false;
-      resetBricks(false);
+      resetBricks();
       syncHud();
       draw();
     }
@@ -587,16 +568,22 @@
     function showContactQr() {
       state.paused = true;
       state.contactOpen = true;
-      resetBricks(true);
+      resetBricks();
       syncHud();
       draw();
+    }
+
+    function pauseIntoContact() {
+      if (!state.initialized) return;
+      state.paused = true;
+      showContactQr();
     }
 
     function endToContact(reasonText) {
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
-      resetBricks(true);
+      resetBricks();
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
@@ -614,15 +601,13 @@
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
       const cyan = "#bff8ff";
-      const blink = brick.active ? 1 : 0.22;
+      const blink = 1;
       const radius = Math.max(4, Math.min(w, h) * 0.5);
       const cx = x + w / 2;
       const cy = y + h / 2;
 
       ctx.save();
       ctx.globalAlpha = blink;
-      ctx.shadowBlur = state.contactOpen ? 0 : 8;
-      ctx.shadowColor = brick.glow;
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fillStyle = cyan;
@@ -662,20 +647,7 @@
         drawQrBrick(brick);
       }
 
-      if (state.contactOpen) {
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        ctx.shadowBlur = 9;
-        ctx.shadowColor = "rgba(255,77,245,0.42)";
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, state.ball.r, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff4df5";
-        ctx.fill();
-        ctx.lineWidth = 0.9;
-        ctx.strokeStyle = "rgba(255, 219, 252, 0.78)";
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      } else {
+      if (!state.contactOpen) {
         ctx.shadowBlur = 20;
         ctx.shadowColor = "rgba(57,231,255,0.6)";
         drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#39e7ff");
@@ -719,7 +691,6 @@
 
     function nextLevel() {
       state.level += 1;
-      state.patternSeed = Math.floor(Math.random() * 1000000);
       resetBricks();
       resetBallAndPaddle();
       syncHud();
@@ -818,11 +789,6 @@
     function updatePattern(dt) {
       if (state.contactOpen || state.paused || !state.running) return;
       state.patternTimer += dt;
-      if (state.patternTimer < state.patternInterval) return;
-      state.patternTimer = 0;
-      state.patternSeed = Math.floor(Math.random() * 1000000);
-      resetBricks(false);
-      syncHud();
     }
 
     function updatePlayClock(dt) {
@@ -926,21 +892,55 @@
       openMail();
     });
 
-    canvas.addEventListener("click", () => {
-      if (!state.initialized) return;
-      if (state.contactOpen) {
-        resetContactState();
-        if (state.running) {
-          state.paused = false;
-          state.lastTime = 0;
-          requestAnimationFrame(frame);
-        } else {
-          startOrResume();
-        }
-        return;
+    function clearPendingSingleTap() {
+      if (state.clickTimer) {
+        window.clearTimeout(state.clickTimer);
+        state.clickTimer = null;
       }
-      showContactQr();
+    }
+
+    function handleSingleActivate() {
+      clearPendingSingleTap();
+      pauseIntoContact();
+    }
+
+    function handleDoubleActivate() {
+      clearPendingSingleTap();
+      startOrResume();
+    }
+
+    canvas.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      handleDoubleActivate();
     });
+
+    canvas.addEventListener("click", (event) => {
+      event.preventDefault();
+      clearPendingSingleTap();
+      state.clickTimer = window.setTimeout(() => {
+        handleSingleActivate();
+      }, 220);
+    });
+
+    canvas.addEventListener(
+      "pointerup",
+      (event) => {
+        if (event.pointerType === "mouse") return;
+        const now = performance.now();
+        if (now - state.lastPointerUp < 260) {
+          state.lastPointerUp = 0;
+          handleDoubleActivate();
+          return;
+        }
+        state.lastPointerUp = now;
+        clearPendingSingleTap();
+        state.clickTimer = window.setTimeout(() => {
+          handleSingleActivate();
+          state.lastPointerUp = 0;
+        }, 260);
+      },
+      { passive: true }
+    );
 
     function bootWhenReady(startMs) {
       const deadline = performance.now() + 4000;
