@@ -183,6 +183,10 @@
       gap: 12px;
     }
 
+    body.mail-available .contact-actions {
+      display: flex !important;
+    }
+
     .landscape-controls {
       display: none;
     }
@@ -276,7 +280,7 @@
         display: none;
       }
 
-      body.game-over .contact-actions {
+      body.mail-available .contact-actions {
         display: flex;
       }
     }
@@ -375,14 +379,14 @@
       }
 
       canvas {
-        width: min(100vw, calc(100vh * 1.6667));
-        max-width: 100vw;
-        max-height: 100vh;
+        width: min(90vw, calc(86vh * 1.6667));
+        max-width: 90vw;
+        max-height: 86vh;
         border-radius: 0;
         border: 0;
       }
 
-      body.game-over .contact-actions {
+      body.mail-available .contact-actions {
         position: fixed;
         left: 50%;
         bottom: max(10px, env(safe-area-inset-bottom));
@@ -622,10 +626,11 @@
       const qrSize = wall.length;
       const gap = 2;
       const narrowScreen = window.innerWidth <= 640;
-      const horizontalPadding = narrowScreen ? 32 : 120;
-      const verticalPadding = narrowScreen ? 56 : 120;
+      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
+      const horizontalPadding = landscapePhone ? 120 : narrowScreen ? 32 : 120;
+      const verticalPadding = landscapePhone ? 92 : narrowScreen ? 56 : 120;
       const moduleSize = Math.max(
-        narrowScreen ? 11 : 8,
+        landscapePhone ? 8 : narrowScreen ? 11 : 8,
         Math.floor(
           Math.min(
             (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
@@ -742,6 +747,8 @@
 
     function syncGameUi() {
       document.body.classList.toggle("game-over", !!state.gameOver);
+      const mailAvailable = !state.running || state.paused || state.contactOpen || state.gameOver;
+      document.body.classList.toggle("mail-available", !!mailAvailable);
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
@@ -845,6 +852,7 @@
       }
       state.paused = true;
       resetBallAndPaddle();
+      syncGameUi();
     }
 
     function nextLevel() {
@@ -853,6 +861,7 @@
       resetBallAndPaddle();
       syncHud();
       state.paused = true;
+      syncGameUi();
     }
 
     function normalizeBallVelocity() {
@@ -989,6 +998,7 @@
       }
       resetContactState();
       state.paused = false;
+      syncGameUi();
       state.lastTime = 0;
       requestAnimationFrame(frame);
     }
@@ -999,7 +1009,10 @@
       if (event.key === " ") {
         event.preventDefault();
         if (!state.running || state.paused) startOrResume();
-        else state.paused = true;
+        else {
+          state.paused = true;
+          syncGameUi();
+        }
       }
     });
 
