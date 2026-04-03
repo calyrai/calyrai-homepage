@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#050816" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Breakout</title>
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/nav.css" />
@@ -33,6 +36,8 @@
       padding: 0;
       overflow-y: auto;
       color: var(--ink);
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
     }
 
     .shell {
@@ -256,6 +261,14 @@
       .footer {
         font-size: 0.76rem;
         gap: 6px;
+      }
+
+      .contact-actions {
+        display: none;
+      }
+
+      body.game-over .contact-actions {
+        display: flex;
       }
     }
 
