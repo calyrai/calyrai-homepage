@@ -463,7 +463,7 @@
       return inTopLeft || inTopRight || inBottomLeft || inTiming;
     }
 
-    function resetBricks(fullQr = false) {
+    function resetBricks() {
       const baseWall = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
       if (!baseWall) {
         state.bricks = [];
@@ -533,7 +533,7 @@
       state.patternSeed = 0;
       state.playSeconds = 0;
       state.contactOpen = false;
-      resetBricks(false);
+      resetBricks();
       resetBallAndPaddle();
       syncHud();
     }
@@ -548,7 +548,7 @@
 
     function resetContactState() {
       state.contactOpen = false;
-      resetBricks(false);
+      resetBricks();
       syncHud();
       draw();
     }
@@ -568,7 +568,7 @@
     function showContactQr() {
       state.paused = true;
       state.contactOpen = true;
-      resetBricks(true);
+      resetBricks();
       syncHud();
       draw();
     }
@@ -583,7 +583,7 @@
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
-      resetBricks(true);
+      resetBricks();
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
@@ -608,10 +608,6 @@
 
       ctx.save();
       ctx.globalAlpha = blink;
-      if (!state.contactOpen) {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = brick.glow;
-      }
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fillStyle = cyan;
