@@ -376,6 +376,7 @@
         border-radius: 0;
         background: transparent;
         box-shadow: none;
+        align-items: center;
       }
 
       canvas {
@@ -384,6 +385,7 @@
         max-height: 86vh;
         border-radius: 0;
         border: 0;
+        transform: translateY(calc(-1 * max(18px, env(safe-area-inset-top))));
       }
 
       body.mail-available .contact-actions {

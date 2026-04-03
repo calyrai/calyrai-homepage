@@ -376,8 +376,7 @@
         border-radius: 0;
         background: transparent;
         box-shadow: none;
-        align-items: flex-start;
-        padding-top: max(6px, env(safe-area-inset-top));
+        align-items: center;
       }
 
       canvas {
@@ -386,6 +385,7 @@
         max-height: 86vh;
         border-radius: 0;
         border: 0;
+        transform: translateY(calc(-1 * max(18px, env(safe-area-inset-top))));
       }
 
       body.mail-available .contact-actions {
@@ -629,10 +629,10 @@
       const gap = 2;
       const narrowScreen = window.innerWidth <= 640;
       const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
-      const horizontalPadding = landscapePhone ? 120 : narrowScreen ? 32 : 120;
-      const verticalPadding = landscapePhone ? 92 : narrowScreen ? 56 : 120;
+      const horizontalPadding = landscapePhone ? 132 : narrowScreen ? 32 : 120;
+      const verticalPadding = landscapePhone ? 128 : narrowScreen ? 56 : 120;
       const moduleSize = Math.max(
-        landscapePhone ? 8 : narrowScreen ? 11 : 8,
+        landscapePhone ? 7 : narrowScreen ? 11 : 8,
         Math.floor(
           Math.min(
             (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
@@ -670,9 +670,17 @@
     }
 
     function resetBallAndPaddle() {
+      const narrowScreen = window.innerWidth <= 640;
+      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
+      const qrBottom = state.bricks.length
+        ? Math.max(...state.bricks.map((brick) => brick.y + brick.h))
+        : canvas.height - 120;
+      const laneTop = qrBottom + (landscapePhone ? 18 : 24);
+
       state.paddle.x = (canvas.width - state.paddle.w) / 2;
+      state.paddle.y = Math.min(canvas.height - state.paddle.h - 18, laneTop);
       state.ball.x = canvas.width / 2;
-      state.ball.y = canvas.height - 120;
+      state.ball.y = Math.max(state.ball.r + 12, state.paddle.y - state.ball.r - 14);
       state.ball.dx = state.ball.speedBase + (state.level - 1) * 24;
       state.ball.dy = -(state.ball.speedBase + (state.level - 1) * 24);
     }
