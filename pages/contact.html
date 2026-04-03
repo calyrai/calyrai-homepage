@@ -269,6 +269,51 @@
       }
     }
 
+    @media (max-width: 900px), (hover: none), (pointer: coarse) {
+      .landscape-controls {
+        position: absolute;
+        inset: 0;
+        display: block;
+        pointer-events: none;
+      }
+
+      .landscape-arrow {
+        position: absolute;
+        top: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 999px;
+        border: 1px solid rgba(191, 248, 255, 0.18);
+        background: rgba(7, 13, 28, 0.82);
+        color: #bff8ff;
+        font: inherit;
+        font-size: 1.6rem;
+        line-height: 1;
+        box-shadow: 0 0 18px rgba(57, 231, 255, 0.14);
+        transform: translateY(-50%);
+        pointer-events: auto;
+        backdrop-filter: blur(8px);
+        z-index: 25;
+      }
+
+      .landscape-arrow-left {
+        left: max(10px, env(safe-area-inset-left));
+      }
+
+      .landscape-arrow-right {
+        right: max(10px, env(safe-area-inset-right));
+      }
+
+      .landscape-arrow:active,
+      .landscape-arrow.is-active {
+        background: rgba(57, 231, 255, 0.18);
+        box-shadow: 0 0 22px rgba(57, 231, 255, 0.28);
+      }
+    }
+
     @media (max-width: 900px) and (orientation: landscape) {
       body {
         overflow: hidden;
@@ -313,49 +358,6 @@
         max-height: 100vh;
         border-radius: 0;
         border: 0;
-      }
-
-      .landscape-controls {
-        position: absolute;
-        inset: 0;
-        display: block;
-        pointer-events: none;
-      }
-
-      .landscape-arrow {
-        position: absolute;
-        top: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 52px;
-        height: 52px;
-        border-radius: 999px;
-        border: 1px solid rgba(191, 248, 255, 0.18);
-        background: rgba(7, 13, 28, 0.82);
-        color: #bff8ff;
-        font: inherit;
-        font-size: 1.6rem;
-        line-height: 1;
-        box-shadow: 0 0 18px rgba(57, 231, 255, 0.14);
-        transform: translateY(-50%);
-        pointer-events: auto;
-        backdrop-filter: blur(8px);
-        z-index: 25;
-      }
-
-      .landscape-arrow-left {
-        left: max(10px, env(safe-area-inset-left));
-      }
-
-      .landscape-arrow-right {
-        right: max(10px, env(safe-area-inset-right));
-      }
-
-      .landscape-arrow:active,
-      .landscape-arrow.is-active {
-        background: rgba(57, 231, 255, 0.18);
-        box-shadow: 0 0 22px rgba(57, 231, 255, 0.28);
       }
 
       body.game-over .contact-actions {
