@@ -495,7 +495,7 @@
     const landscapeRight = document.getElementById("landscape-right");
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
     const LEVEL_ONE_HITS = 100;
-    const LEVEL_TWO_HITS = 1000;
+    const LEVEL_TWO_HITS = 2000;
     const LEVEL_TWO_BURST_INTERVAL = 20;
     const RULE_110_MAP = {
       "111": 0,
@@ -1498,14 +1498,17 @@
         drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#39e7ff");
         ctx.shadowBlur = 0;
 
+        const ballFill = state.life.active ? "#f3ff2b" : "#ff4df5";
+        const ballGlow = state.life.active ? "rgba(243,255,43,0.62)" : "rgba(255,77,245,0.42)";
+        const ballStroke = state.life.active ? "rgba(255, 255, 196, 0.92)" : "rgba(255, 219, 252, 0.78)";
         ctx.shadowBlur = 9;
-        ctx.shadowColor = "rgba(255,77,245,0.42)";
+        ctx.shadowColor = ballGlow;
         ctx.beginPath();
         ctx.arc(state.ball.x, state.ball.y, state.ball.r, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff4df5";
+        ctx.fillStyle = ballFill;
         ctx.fill();
         ctx.lineWidth = 0.9;
-        ctx.strokeStyle = "rgba(255, 219, 252, 0.78)";
+        ctx.strokeStyle = ballStroke;
         ctx.stroke();
         ctx.shadowBlur = 0;
 
