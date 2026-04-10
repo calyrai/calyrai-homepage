@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#050816" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Breakout Contact</title>
+  <title>Breakout Life Contact</title>
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/nav.css" />
   <link rel="stylesheet" href="../css/components.css" />
@@ -430,8 +430,8 @@
           <section class="page-intro">
             <p class="page-kicker">Calyr.ai / Contact</p>
             <div class="brand">
-              <h1 class="title">Breakout Contact</h1>
-              <p class="subtitle">Hold the breakout run together long enough to unlock Level 2. The QR disks dim, then Rule 110 starts flipping modules on and off from your hits.</p>
+              <h1 class="title">Breakout Contact / Life Field</h1>
+              <p class="subtitle">Use the contact page as a playable QR surface. Level 1, level 2, and level 3 each run as their own hit phase. Level 2 shifts into the dimmed Rule 110 field, and level 3 grows the Life layer on top. Tap once for the full contact QR, tap again to return to play.</p>
             </div>
           </section>
 
@@ -462,7 +462,7 @@
                 <span class="chip-value" id="level">1</span>
               </div>
               <div class="chip">
-                <span class="chip-label">Threshold</span>
+                <span class="chip-label">Progress</span>
                 <span class="chip-value" id="pattern">0/0</span>
               </div>
             </div>
@@ -470,6 +470,7 @@
 
           <footer class="footer">
             <span>Controls: Left / Right, A / D, or move the mouse.</span>
+            <span id="levels-note">Levels: 1 / Breakout, 2 / Rule 110, 3 / Life on Rule 110.</span>
             <span id="mail-queue">Mail queues current score: 0</span>
             <span id="mode-note">Level 1: classic breakout on the bright QR.</span>
           </footer>
@@ -487,12 +488,15 @@
     const patternNode = document.getElementById("pattern");
     const mailQueueNode = document.getElementById("mail-queue");
     const modeNoteNode = document.getElementById("mode-note");
+    const levelsNoteNode = document.getElementById("levels-note");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
-    const LEVEL_TWO_THRESHOLD = 24;
+    const LEVEL_ONE_HITS = 100;
+    const LEVEL_TWO_HITS = 140;
+    const LEVEL_TWO_BURST_INTERVAL = 20;
     const RULE_110_MAP = {
       "111": 0,
       "110": 1,
@@ -536,16 +540,377 @@
       patternTimer: 0,
       patternInterval: 1.0,
       patternSeed: 0,
+      totalHits: 0,
+      upperFieldTime: 0,
       playSeconds: 0,
       gameOver: false,
+      gameOverReason: "",
       keys: { left: false, right: false },
       lastTime: 0,
       clickTimer: null,
       lastPointerUp: 0,
       automataBursts: [],
+      pendingAdvanceLevel: null,
       explosions: [],
       levelComplete: false,
+      snapshot: {
+        dataUrl: "",
+        blob: null,
+        fileName: "breakout-life-final.png",
+        patternFileName: "breakout-life-pattern.json",
+        patternJson: "",
+      },
+      life: {
+        active: false,
+        rows: 30,
+        cols: 50,
+        cellW: 0,
+        cellH: 0,
+        grid: [],
+        age: [],
+        stepTimer: 0,
+        stepInterval: 0.09,
+        seedEvery: 6,
+      },
     };
+
+    function makeLifeGrid(rows, cols, fill = 0) {
+      return Array.from({ length: rows }, () => Array(cols).fill(fill));
+    }
+
+    function initLifeField() {
+      const life = state.life;
+      life.rows = 30;
+      life.cols = 50;
+      life.cellW = canvas.width / life.cols;
+      life.cellH = canvas.height / life.rows;
+      life.grid = makeLifeGrid(life.rows, life.cols, 0);
+      life.age = makeLifeGrid(life.rows, life.cols, 0);
+      life.stepTimer = 0;
+    }
+
+    function clearLifeField() {
+      const life = state.life;
+      if (!life.grid.length) initLifeField();
+      for (let row = 0; row < life.rows; row += 1) {
+        life.grid[row].fill(0);
+        life.age[row].fill(0);
+      }
+      life.stepTimer = 0;
+    }
+
+    function lifeCellFromPoint(x, y) {
+      const life = state.life;
+      const col = Math.max(0, Math.min(life.cols - 1, Math.floor(x / life.cellW)));
+      const row = Math.max(0, Math.min(life.rows - 1, Math.floor(y / life.cellH)));
+      return { row, col };
+    }
+
+    function writeLifeCell(row, col, value = 1) {
+      const life = state.life;
+      if (row < 0 || col < 0 || row >= life.rows || col >= life.cols) return;
+      life.grid[row][col] = value;
+      life.age[row][col] = value ? Math.max(life.age[row][col], 1) : 0;
+    }
+
+    function rotatePattern(pattern, turns) {
+      let points = pattern.map(([row, col]) => [row, col]);
+      for (let step = 0; step < turns; step += 1) {
+        points = points.map(([row, col]) => [col, -row]);
+      }
+      return points;
+    }
+
+    function injectLifeStructure(x, y, directionX, directionY) {
+      const life = state.life;
+      if (!life.active) return;
+      const { row, col } = lifeCellFromPoint(x, y);
+      const patterns = [
+        [[0, 0], [0, 1], [0, 2], [1, 2], [-1, 1]],
+        [[0, 0], [1, 0], [2, 0], [2, 1], [1, 2]],
+        [[0, 0], [0, 1], [0, -1], [1, 0], [-1, 0], [1, 1]],
+      ];
+      const pattern = patterns[Math.floor(state.totalHits / life.seedEvery) % patterns.length];
+      const horizontal = Math.abs(directionX) >= Math.abs(directionY);
+      let turns = 0;
+      if (horizontal && directionX < 0) turns = 2;
+      else if (!horizontal && directionY > 0) turns = 1;
+      else if (!horizontal && directionY < 0) turns = 3;
+      const oriented = rotatePattern(pattern, turns);
+      for (const [dRow, dCol] of oriented) {
+        writeLifeCell(row + dRow, col + dCol, 1);
+      }
+      for (let dRow = -1; dRow <= 1; dRow += 1) {
+        for (let dCol = -1; dCol <= 1; dCol += 1) {
+          if ((dRow + dCol) % 2 === 0) writeLifeCell(row + dRow, col + dCol, 1);
+        }
+      }
+    }
+
+    function stimulateLifeField(x, y) {
+      const life = state.life;
+      if (!life.active) return;
+      const { row, col } = lifeCellFromPoint(x, y);
+      writeLifeCell(row, col, 1);
+      writeLifeCell(row + 1, col, 1);
+      writeLifeCell(row - 1, col, 1);
+      writeLifeCell(row, col + 1, 1);
+      writeLifeCell(row, col - 1, 1);
+      writeLifeCell(row + 1, col + 1, 1);
+      writeLifeCell(row + 1, col - 1, 1);
+      writeLifeCell(row - 1, col + 1, 1);
+      writeLifeCell(row - 1, col - 1, 1);
+      writeLifeCell(row + 2, col, 1);
+      writeLifeCell(row - 2, col, 1);
+      writeLifeCell(row, col + 2, 1);
+      writeLifeCell(row, col - 2, 1);
+    }
+
+    function activateLevel3() {
+      if (state.life.active) return;
+      state.level = 3;
+      state.life.active = true;
+      initLifeField();
+      syncHud();
+    }
+
+    function currentLevelTarget() {
+      if (state.level === 1) return LEVEL_ONE_HITS;
+      if (state.level === 2) return LEVEL_TWO_HITS;
+      return null;
+    }
+
+    function currentLevelProgress() {
+      const target = currentLevelTarget();
+      return target ? Math.min(state.levelHits, target) : state.levelHits;
+    }
+
+    function currentLevelProgressLabel() {
+      const target = currentLevelTarget();
+      return target ? `${currentLevelProgress()}/${target}` : `${state.levelHits} / live`;
+    }
+
+    function rule110Next(left, center, right) {
+      return RULE_110_MAP[`${left}${center}${right}`];
+    }
+
+    function updateLifeField(dt) {
+      const life = state.life;
+      if (!life.active || state.contactOpen || state.paused || !state.running) return;
+      life.stepTimer += dt;
+      if (life.stepTimer < life.stepInterval) return;
+      life.stepTimer = 0;
+
+      const next = makeLifeGrid(life.rows, life.cols, 0);
+      const nextAge = makeLifeGrid(life.rows, life.cols, 0);
+
+      for (let row = 0; row < life.rows; row += 1) {
+        for (let col = 0; col < life.cols; col += 1) {
+          let neighbors = 0;
+          for (let dRow = -1; dRow <= 1; dRow += 1) {
+            for (let dCol = -1; dCol <= 1; dCol += 1) {
+              if (dRow === 0 && dCol === 0) continue;
+              const nr = row + dRow;
+              const nc = col + dCol;
+              if (nr < 0 || nc < 0 || nr >= life.rows || nc >= life.cols) continue;
+              neighbors += life.grid[nr][nc] ? 1 : 0;
+            }
+          }
+          const alive = !!life.grid[row][col];
+          const survives = alive ? neighbors === 2 || neighbors === 3 : neighbors === 3;
+          if (survives) {
+            next[row][col] = 1;
+            nextAge[row][col] = alive ? Math.min(life.age[row][col] + 1, 12) : 1;
+          }
+        }
+      }
+
+      life.grid = next;
+      life.age = nextAge;
+    }
+
+    function drawLifeField() {
+      const life = state.life;
+      if (!life.active || state.contactOpen) return;
+      ctx.save();
+      for (let row = 0; row < life.rows; row += 1) {
+        for (let col = 0; col < life.cols; col += 1) {
+          if (!life.grid[row][col]) continue;
+          const age = life.age[row][col] || 1;
+          const x = col * life.cellW;
+          const y = row * life.cellH;
+          const alpha = Math.min(0.24 + age * 0.055, 0.86);
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgba(130, 255, 214, ${Math.min(alpha * 0.85, 0.6)})`;
+          ctx.fillStyle = `rgba(130, 255, 214, ${alpha})`;
+          ctx.fillRect(x + 0.45, y + 0.45, Math.max(2.8, life.cellW - 0.9), Math.max(2.8, life.cellH - 0.9));
+          ctx.shadowBlur = 0;
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = `rgba(214, 255, 242, ${Math.min(alpha * 0.9, 0.72)})`;
+          ctx.strokeRect(x + 0.45, y + 0.45, Math.max(2.8, life.cellW - 0.9), Math.max(2.8, life.cellH - 0.9));
+        }
+      }
+      ctx.restore();
+    }
+
+    function captureSnapshot() {
+      try {
+        state.snapshot.dataUrl = canvas.toDataURL("image/png");
+      } catch (_error) {
+        state.snapshot.dataUrl = "";
+      }
+      if (canvas.toBlob) {
+        canvas.toBlob((blob) => {
+          state.snapshot.blob = blob;
+          syncHud();
+        }, "image/png");
+      }
+    }
+
+    async function refreshSnapshot() {
+      try {
+        state.snapshot.dataUrl = canvas.toDataURL("image/png");
+      } catch (_error) {
+        state.snapshot.dataUrl = "";
+      }
+
+      if (!canvas.toBlob) {
+        state.snapshot.blob = null;
+        return state.snapshot;
+      }
+
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob((nextBlob) => resolve(nextBlob ?? null), "image/png");
+      });
+
+      state.snapshot.blob = blob;
+      syncHud();
+      return state.snapshot;
+    }
+
+    function buildPatternRecord() {
+      return {
+        version: 1,
+        capturedAt: new Date().toISOString(),
+        score: state.score,
+        lives: state.lives,
+        level: state.level,
+        levelHits: state.levelHits,
+        totalHits: state.totalHits,
+        patternHits: state.patternHits,
+        levelComplete: state.levelComplete,
+        gameOver: state.gameOver,
+        gameOverReason: state.gameOverReason,
+        ball: {
+          x: Number(state.ball.x.toFixed(3)),
+          y: Number(state.ball.y.toFixed(3)),
+          dx: Number(state.ball.dx.toFixed(3)),
+          dy: Number(state.ball.dy.toFixed(3)),
+          r: state.ball.r,
+        },
+        paddle: {
+          x: Number(state.paddle.x.toFixed(3)),
+          y: Number(state.paddle.y.toFixed(3)),
+          w: state.paddle.w,
+          h: state.paddle.h,
+        },
+        bricks: {
+          rows: state.rows,
+          cols: state.cols,
+          active: state.bricks
+            .filter((brick) => brick.alive)
+            .map((brick) => ({
+              row: brick.row,
+              col: brick.col,
+              active: !!brick.active,
+              energized: !!brick.energized,
+            })),
+        },
+        life: {
+          active: state.life.active,
+          rows: state.life.rows,
+          cols: state.life.cols,
+          grid: state.life.grid.map((row) => row.slice()),
+          age: state.life.age.map((row) => row.slice()),
+        },
+      };
+    }
+
+    function storePatternRecord() {
+      const record = buildPatternRecord();
+      const json = JSON.stringify(record, null, 2);
+      state.snapshot.patternJson = json;
+      try {
+        window.localStorage.setItem("calyr.contact.lastPattern", json);
+      } catch (_error) {
+        // Ignore storage restrictions and keep the in-memory record.
+      }
+      return json;
+    }
+
+    function downloadPatternRecord() {
+      if (!state.snapshot.patternJson) {
+        storePatternRecord();
+      }
+      if (!state.snapshot.patternJson) return false;
+      const blob = new Blob([state.snapshot.patternJson], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = state.snapshot.patternFileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      return true;
+    }
+
+    async function prepareSnapshotForMail() {
+      let copied = false;
+      let downloaded = false;
+      const blob = state.snapshot.blob;
+
+      if (blob && navigator.clipboard && window.ClipboardItem) {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+          copied = true;
+        } catch (_error) {
+          copied = false;
+        }
+      }
+
+      if (!copied && state.snapshot.dataUrl) {
+        const link = document.createElement("a");
+        link.href = state.snapshot.dataUrl;
+        link.download = state.snapshot.fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        downloaded = true;
+      }
+
+      return { copied, downloaded };
+    }
+
+    async function shareSnapshotWithMailClient(subject, text) {
+      const blob = state.snapshot.blob;
+      if (!blob || !navigator.share || typeof File === "undefined") return false;
+
+      try {
+        const file = new File([blob], state.snapshot.fileName, { type: blob.type || "image/png" });
+        if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+          return false;
+        }
+        await navigator.share({
+          title: subject,
+          text,
+          files: [file],
+        });
+        return true;
+      } catch (_error) {
+        return false;
+      }
+    }
 
     function buildQrWall(size, seed) {
       const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -671,7 +1036,6 @@
       state.rows = qrSize;
       state.cols = qrSize;
       state.levelHits = 0;
-      state.levelComplete = false;
       state.automataBursts = [];
       state.explosions = [];
       state.ball.r = Math.max(4, Math.floor(moduleSize * 0.5));
@@ -723,11 +1087,22 @@
       state.patternHits = 0;
       state.thresholdProgress = 0;
       state.levelHits = 0;
+      state.levelComplete = false;
+      state.pendingAdvanceLevel = null;
+      state.totalHits = 0;
+      state.upperFieldTime = 0;
       state.patternTimer = 0;
       state.patternSeed = 0;
       state.playSeconds = 0;
       state.contactOpen = false;
       state.gameOver = false;
+      state.gameOverReason = "";
+      state.snapshot.dataUrl = "";
+      state.snapshot.blob = null;
+      state.snapshot.patternJson = "";
+      state.life.active = false;
+      initLifeField();
+      clearLifeField();
       resetBricks();
       resetBallAndPaddle();
       syncHud();
@@ -738,41 +1113,83 @@
       scoreNode.textContent = String(state.score);
       livesNode.textContent = String(state.lives);
       levelNode.textContent = String(state.level);
-      patternNode.textContent = state.level === 1
-        ? `${Math.min(state.thresholdProgress, LEVEL_TWO_THRESHOLD)}/${LEVEL_TWO_THRESHOLD}`
-        : `${remainingBricks()}/${state.totalBricks}`;
-      mailQueueNode.textContent = `Mail queues current score: ${state.score}`;
-      modeNoteNode.textContent = state.level === 1
-        ? "Level 1: classic breakout on the bright QR."
-        : "Level 2: the QR disks dim and Rule 110 flips modules on and off.";
+      patternNode.textContent = currentLevelProgressLabel();
+      if (levelsNoteNode) {
+        levelsNoteNode.textContent = "Levels: 1 / Breakout, 2 / Rule 110, 3 / Life on Rule 110.";
+      }
+      if (state.gameOver && state.snapshot.dataUrl) {
+        mailQueueNode.textContent = `Mail queues score ${state.score}, the final PNG snapshot, and a reconstructable pattern record.`;
+      } else if (state.life.active) {
+        mailQueueNode.textContent = `Mail queues current score: ${state.score} / Level 3 live at ${state.levelHits} hits`;
+      } else if (state.level === 2) {
+        mailQueueNode.textContent = `Mail queues current score: ${state.score} / Level 2 progress ${currentLevelProgress()}/${LEVEL_TWO_HITS}`;
+      } else {
+        mailQueueNode.textContent = `Mail queues current score: ${state.score} / Level 1 progress ${currentLevelProgress()}/${LEVEL_ONE_HITS}`;
+      }
+      if (state.life.active) {
+        modeNoteNode.textContent = "Level 3: the Life field grows more visibly on top of the dimmed Rule 110 stage and keeps running.";
+      } else if (state.level === 2) {
+        modeNoteNode.textContent = `Level 2: the QR disks dim and Rule 110 flips modules on and off for a full ${LEVEL_TWO_HITS}-hit phase.`;
+      } else {
+        modeNoteNode.textContent = `Level 1: classic breakout on the bright QR for the first ${LEVEL_ONE_HITS}-hit phase.`;
+      }
     }
 
     function resetContactState() {
+      const savedLevelHits = state.levelHits;
+      const savedThresholdProgress = state.thresholdProgress;
       state.contactOpen = false;
       state.gameOver = false;
       resetBricks();
+      state.levelHits = savedLevelHits;
+      state.thresholdProgress = savedThresholdProgress;
       syncHud();
       syncGameUi();
       draw();
     }
 
-    function openMail() {
-      resetContactState();
-      if (state.running) {
-        state.paused = false;
-        state.lastTime = 0;
-        requestAnimationFrame(frame);
+    async function openMail() {
+      if ((!state.contactOpen && !state.gameOver && !state.paused) || (!state.snapshot.dataUrl && !state.snapshot.blob)) {
+        await refreshSnapshot();
       }
-      const subject = encodeURIComponent(`Breakout run score ${state.score}`);
-      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nThreshold progress: ${Math.min(state.thresholdProgress, LEVEL_TWO_THRESHOLD)}/${LEVEL_TWO_THRESHOLD}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`);
+      storePatternRecord();
+      const subjectText = `Breakout run score ${state.score}`;
+      const bodyText = `Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nLevel progress: ${currentLevelProgressLabel()}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\nTotal hits: ${state.totalHits}\nPNG: ${state.snapshot.fileName}\nPattern record: ${state.snapshot.patternFileName}\n`;
+      const shared = !!state.snapshot.blob
+        ? await shareSnapshotWithMailClient(subjectText, bodyText)
+        : false;
+      if (shared) return;
+
+      const snapshotStatus = state.snapshot.dataUrl
+        ? await prepareSnapshotForMail()
+        : { copied: false, downloaded: false };
+      const patternDownloaded = downloadPatternRecord();
+      const subject = encodeURIComponent(subjectText);
+      const snapshotNote = snapshotStatus.copied
+        ? "Final PNG snapshot copied to clipboard. Paste it into the message."
+        : snapshotStatus.downloaded
+          ? "Final PNG snapshot was downloaded as breakout-life-final.png. Attach it to the message if needed."
+          : state.snapshot.dataUrl
+            ? "Final PNG snapshot is available on the page, but the browser did not allow automatic clipboard or file export."
+            : "";
+      const patternNote = patternDownloaded
+        ? `Pattern record was downloaded as ${state.snapshot.patternFileName} so the run can be reconstructed later.`
+        : state.snapshot.patternJson
+          ? `Pattern record is stored locally under calyr.contact.lastPattern.`
+          : "";
+      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nLevel progress: ${currentLevelProgressLabel()}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\nTotal hits: ${state.totalHits}\nPNG: ${state.snapshot.fileName}\nPattern record: ${state.snapshot.patternFileName}\n${snapshotNote ? `\n${snapshotNote}` : ""}${patternNote ? `\n${patternNote}` : ""}\n`);
       window.location.href = `mailto:rupert.tscheliessnig@calyr.ai?subject=${subject}&body=${body}`;
     }
 
     function showContactQr() {
+      const savedLevelHits = state.levelHits;
+      const savedThresholdProgress = state.thresholdProgress;
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
       resetBricks();
+      state.levelHits = savedLevelHits;
+      state.thresholdProgress = savedThresholdProgress;
       syncHud();
       syncGameUi();
       draw();
@@ -780,16 +1197,30 @@
 
     function pauseIntoContact() {
       if (!state.initialized) return;
+      if (state.running && !state.contactOpen) {
+        draw();
+        captureSnapshot();
+        storePatternRecord();
+      }
       state.paused = true;
       showContactQr();
     }
 
     function endToContact(reasonText) {
+      const savedLevelHits = state.levelHits;
+      const savedThresholdProgress = state.thresholdProgress;
+      state.gameOverReason = reasonText;
+      draw();
+      captureSnapshot();
+      storePatternRecord();
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = true;
       resetBricks();
+      state.levelHits = savedLevelHits;
+      state.thresholdProgress = savedThresholdProgress;
+      syncHud();
       syncGameUi();
     }
 
@@ -813,7 +1244,7 @@
 
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
-      const levelTwo = state.level === 2;
+      const levelTwo = state.level >= 2;
       const cyan = levelTwo
         ? (brick.energized
           ? "#ff8ef7"
@@ -821,11 +1252,13 @@
             ? "rgba(105, 138, 156, 0.55)"
             : "rgba(45, 64, 82, 0.58)")
         : "#bff8ff";
-      const blink = levelTwo && brick.energized
-        ? 0.82 + Math.sin(state.blinkTime * 5 + brick.phase) * 0.18
-        : levelTwo && brick.active
-          ? 0.92
-          : 0.74;
+      const blink = levelTwo
+        ? (brick.energized
+          ? 0.82 + Math.sin(state.blinkTime * 5 + brick.phase) * 0.18
+          : brick.active
+            ? 0.92
+            : 0.74)
+        : 1;
       const radius = Math.max(4, Math.min(w, h) * 0.5);
       const cx = x + w / 2;
       const cy = y + h / 2;
@@ -844,30 +1277,43 @@
       const progress = 1 - effect.life / effect.maxLife;
       const alpha = Math.max(0, effect.life / effect.maxLife);
       const radius = effect.radius * (0.55 + progress * 1.4);
+      const tail = effect.radius * (0.8 + progress * 1.6);
 
       ctx.save();
       ctx.globalAlpha = alpha * 0.9;
       ctx.beginPath();
       ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = effect.fill ?? "rgba(255, 108, 245, 0.28)";
+      ctx.fillStyle = "rgba(255, 108, 245, 0.32)";
       ctx.fill();
+
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = Math.max(1.4, effect.radius * 0.18);
+      ctx.strokeStyle = "rgba(191, 248, 255, 0.92)";
+      ctx.beginPath();
+      ctx.moveTo(effect.x, effect.y);
+      ctx.lineTo(effect.x + effect.dx * tail, effect.y + effect.dy * tail);
+      ctx.stroke();
       ctx.restore();
     }
 
     function spawnExplosion(brick, directionX, directionY, intensity = 1) {
+      const length = Math.hypot(directionX, directionY) || 1;
       state.explosions.push({
         x: brick.x + brick.w / 2,
         y: brick.y + brick.h / 2,
+        dx: directionX / length,
+        dy: directionY / length,
         radius: Math.max(brick.w, brick.h) * (0.7 + intensity * 0.7),
         life: 0.34 + intensity * 0.08,
         maxLife: 0.34 + intensity * 0.08,
-        fill: state.level === 2 ? "rgba(255, 217, 251, 0.28)" : "rgba(255, 108, 245, 0.28)",
+        fill: state.level >= 2 ? "rgba(255, 217, 251, 0.28)" : undefined,
       });
     }
 
     function destroyBrick(brick, options = {}) {
       if (!brick || !brick.alive || !brick.active) return false;
-      if (state.level === 2) {
+
+      if (state.level >= 2) {
         return energizeBrick(brick, options);
       }
 
@@ -918,7 +1364,7 @@
     }
 
     function startAutomataBurst(originBrick, directionX, directionY) {
-      if (state.level !== 2) return;
+      if (state.level < 2) return;
       state.automataBursts.push({
         stepTimer: 0,
         stepInterval: 0.075,
@@ -928,9 +1374,6 @@
     }
 
     function remainingBricks() {
-      if (state.level === 2) {
-        return state.bricks.reduce((count, brick) => count + (brick.alive && brick.active ? 1 : 0), 0);
-      }
       return state.bricks.reduce((count, brick) => count + (brick.alive && brick.active ? 1 : 0), 0);
     }
 
@@ -957,7 +1400,6 @@
         burst.stepTimer = 0;
         const nextFrontier = new Set();
         const candidateKeys = new Set();
-
         for (const key of burst.frontier) {
           const [row, col] = key.split(":").map(Number);
           for (let dRow = -1; dRow <= 1; dRow += 1) {
@@ -978,17 +1420,14 @@
           const center = brickAliveAt(row, col);
           const right = brickAliveAt(row, col + 1);
           const nextValue = rule110Next(left, center, right);
-          burst.visited.add(key);
-
           const brick = findBrickByCell(row, col);
+          burst.visited.add(key);
           if (!brick || !brick.alive) continue;
 
-          if (setBrickState(brick, !!nextValue, {
-            directionX: 0,
-            directionY: 0,
-            intensity: 0.7,
-            score: 60,
-          })) {
+          const changedCell = setBrickState(brick, !!nextValue, {
+            intensity: nextValue ? 0.7 : 0.52,
+          });
+          if (changedCell) {
             changed = true;
             nextFrontier.add(key);
           }
@@ -1003,9 +1442,14 @@
       state.automataBursts = survivors;
       if (!changed) return;
       syncHud();
-      if (remainingBricks() <= 0) {
-        state.levelComplete = true;
-        endToContact("Rule 110 fully collapsed. Mail opens from the contact pill, or restart the run.");
+      if (state.level === 2 && !state.life.active && remainingBricks() <= 0) {
+        refreshCurrentLevel();
+        return;
+      }
+      if (state.pendingAdvanceLevel === 3 && !state.automataBursts.length && state.level === 2) {
+        state.pendingAdvanceLevel = null;
+        activateLevel3();
+        nextLevel();
       }
     }
 
@@ -1015,7 +1459,7 @@
       ctx.save();
       ctx.globalAlpha = 0.5;
       for (let i = 0; i < 16; i += 1) {
-        ctx.strokeStyle = state.level === 2
+        ctx.strokeStyle = state.level >= 2
           ? (i % 2 === 0 ? "rgba(255,217,251,0.06)" : "rgba(255,77,245,0.04)")
           : (i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)");
         ctx.beginPath();
@@ -1042,6 +1486,8 @@
         drawQrBrick(brick);
       }
 
+      drawLifeField();
+
       for (const effect of state.explosions) {
         drawExplosion(effect);
       }
@@ -1062,6 +1508,15 @@
         ctx.strokeStyle = "rgba(255, 219, 252, 0.78)";
         ctx.stroke();
         ctx.shadowBlur = 0;
+
+        if (state.life.active) {
+          ctx.save();
+          ctx.fillStyle = "rgba(186, 255, 228, 0.92)";
+          ctx.font = '15px "SF Mono", "Fira Code", ui-monospace, monospace';
+          ctx.textAlign = "left";
+          ctx.fillText("LEVEL 3 / Life field on Rule 110", 22, canvas.height - 18);
+          ctx.restore();
+        }
       }
     }
 
@@ -1096,21 +1551,114 @@
       const previousY = state.ball.y;
       const previousPaddleX = state.paddle.x;
 
-      state.level += 1;
-      state.patternHits = 0;
       resetBricks();
+      state.levelHits = 0;
+      state.thresholdProgress = 0;
       state.paddle.x = previousPaddleX;
       clampPaddle();
       state.ball.x = Math.max(state.ball.r + 4, Math.min(canvas.width - state.ball.r - 4, previousX));
       state.ball.y = Math.max(state.ball.r + 4, Math.min(state.paddle.y - state.ball.r - 10, previousY));
       state.ball.dx = previousDx * 1.04;
       state.ball.dy = previousDy * 1.04;
+      state.upperFieldTime = 0;
+      stabilizeBallAfterLevelSwitch();
+      syncHud();
+      state.running = true;
+      state.paused = false;
+      state.contactOpen = false;
+      state.lastTime = 0;
+      syncGameUi();
+    }
+
+    function refreshCurrentLevel() {
+      const savedLevelHits = state.levelHits;
+      const savedThresholdProgress = state.thresholdProgress;
+      const previousDx = state.ball.dx;
+      const previousDy = state.ball.dy;
+      const previousX = state.ball.x;
+      const previousY = state.ball.y;
+      const previousPaddleX = state.paddle.x;
+
+      resetBricks();
+      state.levelHits = savedLevelHits;
+      state.thresholdProgress = savedThresholdProgress;
+      state.paddle.x = previousPaddleX;
+      clampPaddle();
+      state.ball.x = Math.max(state.ball.r + 4, Math.min(canvas.width - state.ball.r - 4, previousX));
+      state.ball.y = Math.max(state.ball.r + 4, Math.min(state.paddle.y - state.ball.r - 10, previousY));
+      state.ball.dx = previousDx;
+      state.ball.dy = previousDy;
+      state.upperFieldTime = 0;
       normalizeBallVelocity();
       nudgeBallAwayFromWalls();
       syncHud();
       state.paused = false;
       state.contactOpen = false;
       syncGameUi();
+    }
+
+    function nudgeBallAwayFromWalls() {
+      const b = state.ball;
+      const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const wallInset = Math.max(12, b.r * 1.35);
+      const minHorizontal = Math.max(165, speed * 0.52);
+      const minVertical = Math.max(85, speed * 0.22);
+
+      if (b.x - b.r <= wallInset) {
+        b.x = b.r + wallInset;
+        b.dx = Math.abs(b.dx);
+        if (Math.abs(b.dx) < minHorizontal) {
+          b.dx = minHorizontal;
+        }
+        if (Math.abs(b.dy) < minVertical) {
+          b.dy = Math.sign(b.dy || -1) * minVertical;
+        }
+      } else if (b.x + b.r >= canvas.width - wallInset) {
+        b.x = canvas.width - b.r - wallInset;
+        b.dx = -Math.abs(b.dx);
+        if (Math.abs(b.dx) < minHorizontal) {
+          b.dx = -minHorizontal;
+        }
+        if (Math.abs(b.dy) < minVertical) {
+          b.dy = Math.sign(b.dy || -1) * minVertical;
+        }
+      }
+
+      if (b.y - b.r <= wallInset) {
+        b.y = b.r + wallInset;
+        b.dy = Math.abs(b.dy);
+      }
+
+      normalizeBallVelocity();
+    }
+
+    function stabilizeBallAfterLevelSwitch() {
+      const b = state.ball;
+      const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const sideInset = Math.max(72, b.r * 7);
+      const topInset = Math.max(canvas.height * 0.34, b.r * 6);
+      const bottomInset = state.paddle.y - b.r - 18;
+      const minHorizontal = Math.max(180, speed * 0.5);
+      const minVertical = Math.max(120, speed * 0.3);
+
+      b.x = Math.max(sideInset, Math.min(canvas.width - sideInset, b.x));
+      b.y = Math.max(topInset, Math.min(bottomInset, b.y));
+
+      if (b.x <= sideInset + 2) {
+        b.dx = Math.abs(b.dx);
+      } else if (b.x >= canvas.width - sideInset - 2) {
+        b.dx = -Math.abs(b.dx);
+      }
+
+      if (Math.abs(b.dx) < minHorizontal) {
+        b.dx = Math.sign(b.dx || (b.x < canvas.width * 0.5 ? 1 : -1)) * minHorizontal;
+      }
+      if (Math.abs(b.dy) < minVertical) {
+        b.dy = Math.sign(b.dy || -1) * minVertical;
+      }
+
+      normalizeBallVelocity();
+      nudgeBallAwayFromWalls();
     }
 
     function normalizeBallVelocity() {
@@ -1126,22 +1674,19 @@
       b.dy *= scale;
     }
 
-    function nudgeBallAwayFromWalls() {
+    function rescueBallFromUpperTrap() {
       const b = state.ball;
-      const edgeInset = Math.max(3, b.r * 0.4);
+      const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const horizontalKick = Math.max(180, speed * 0.48);
+      const downwardKick = Math.max(220, speed * 0.72);
+      const goRight = b.x < canvas.width * 0.5;
 
-      if (b.x - b.r <= edgeInset) {
-        b.x = b.r + edgeInset;
-        b.dx = Math.abs(b.dx);
-      } else if (b.x + b.r >= canvas.width - edgeInset) {
-        b.x = canvas.width - b.r - edgeInset;
-        b.dx = -Math.abs(b.dx);
-      }
-
-      if (b.y - b.r <= edgeInset) {
-        b.y = b.r + edgeInset;
-        b.dy = Math.abs(b.dy);
-      }
+      b.dx = goRight ? horizontalKick : -horizontalKick;
+      b.dy = downwardKick;
+      b.y = Math.max(b.y, canvas.height * 0.38);
+      state.upperFieldTime = 0;
+      normalizeBallVelocity();
+      nudgeBallAwayFromWalls();
     }
 
     function collideWithPaddle() {
@@ -1159,6 +1704,7 @@
         b.dx = speed * hit;
         b.dy = -Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000));
         b.y = p.y - b.r - 1;
+        state.upperFieldTime = 0;
         normalizeBallVelocity();
       }
     }
@@ -1177,6 +1723,7 @@
 
         const impactX = b.dx;
         const impactY = b.dy;
+        const hitLevel = state.level;
 
         destroyBrick(brick, {
           directionX: impactX,
@@ -1184,30 +1731,51 @@
           intensity: 1.1,
         });
         state.levelHits += 1;
-        if (state.level === 1) {
-          state.thresholdProgress += 1;
+        state.totalHits += 1;
+        if (hitLevel === 1) {
+          state.thresholdProgress = currentLevelProgress();
         }
-        syncHud();
 
         if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
         else b.dy *= -1;
         normalizeBallVelocity();
+        nudgeBallAwayFromWalls();
 
-        if (state.level === 1 && state.thresholdProgress >= LEVEL_TWO_THRESHOLD) {
+        if (hitLevel === 1 && state.levelHits >= LEVEL_ONE_HITS) {
+          state.level = 2;
+          state.life.active = false;
+          state.automataBursts = [];
           nextLevel();
           return;
         }
 
-        if (state.level === 2) {
+        if (hitLevel === 2 && state.levelHits >= LEVEL_TWO_HITS) {
+          if (state.automataBursts.length > 0) {
+            state.pendingAdvanceLevel = 3;
+            syncHud();
+            return;
+          }
+          activateLevel3();
+          nextLevel();
+          return;
+        }
+
+        if (state.life.active) {
+          stimulateLifeField(brick.x + brick.w / 2, brick.y + brick.h / 2);
+          if (state.totalHits % state.life.seedEvery === 0) {
+            injectLifeStructure(brick.x + brick.w / 2, brick.y + brick.h / 2, impactX, impactY);
+          }
+        }
+
+        if (hitLevel === 2 && state.levelHits < LEVEL_TWO_HITS && state.levelHits % LEVEL_TWO_BURST_INTERVAL === 0) {
           startAutomataBurst(brick, impactX, impactY);
         }
 
+        syncHud();
+
         if (remainingBricks() <= 0) {
-          if (state.level === 1) nextLevel();
-          else {
-            state.levelComplete = true;
-            endToContact("Rule 110 fully collapsed. Mail opens from the contact pill, or restart the run.");
-          }
+          refreshCurrentLevel();
+          return;
         }
         return;
       }
@@ -1220,20 +1788,41 @@
       let wallBounceX = false;
       let wallBounceY = false;
 
+      if (state.level === 2 && !state.life.active) {
+        if (b.y < canvas.height * 0.62) {
+          state.upperFieldTime += dt;
+          if (state.upperFieldTime >= 4.5) {
+            rescueBallFromUpperTrap();
+          }
+        } else {
+          state.upperFieldTime = 0;
+        }
+      } else {
+        state.upperFieldTime = 0;
+      }
+
       if (b.x - b.r <= 0) {
         b.x = b.r;
-        b.dx = Math.abs(b.dx);
-        wallBounceX = true;
+        b.dx *= -1;
+        if (state.level === 2 && !state.life.active && b.y < canvas.height * 0.72) {
+          rescueBallFromUpperTrap();
+        } else {
+          nudgeBallAwayFromWalls();
+        }
       } else if (b.x + b.r >= canvas.width) {
         b.x = canvas.width - b.r;
-        b.dx = -Math.abs(b.dx);
-        wallBounceX = true;
+        b.dx *= -1;
+        if (state.level === 2 && !state.life.active && b.y < canvas.height * 0.72) {
+          rescueBallFromUpperTrap();
+        } else {
+          nudgeBallAwayFromWalls();
+        }
       }
 
       if (b.y - b.r <= 0) {
         b.y = b.r;
-        b.dy = Math.abs(b.dy);
-        wallBounceY = true;
+        b.dy *= -1;
+        nudgeBallAwayFromWalls();
       } else if (b.y - b.r > canvas.height) {
         loseLife();
       }
@@ -1284,6 +1873,7 @@
         updatePattern(dt);
         updatePaddle(dt);
         updateBall(dt);
+        updateLifeField(dt);
         updateAutomataBursts(dt);
       }
 
