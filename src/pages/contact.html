@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#050816" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Breakout Contact</title>
+  <title>Breakout</title>
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/nav.css" />
   <link rel="stylesheet" href="../css/components.css" />
@@ -431,7 +431,7 @@
             <p class="page-kicker">Calyr.ai / Contact</p>
             <div class="brand">
               <h1 class="title">Breakout Contact</h1>
-              <p class="subtitle">Hold the breakout run together long enough to unlock Level 2. The QR disks dim, then Rule 110 starts flipping modules on and off from your hits.</p>
+              <p class="subtitle">Use the contact page as a playable QR surface. Tap once for the full contact QR, tap again to return to play.</p>
             </div>
           </section>
 
@@ -462,7 +462,7 @@
                 <span class="chip-value" id="level">1</span>
               </div>
               <div class="chip">
-                <span class="chip-label">Threshold</span>
+                <span class="chip-label">Pattern Hits</span>
                 <span class="chip-value" id="pattern">0/0</span>
               </div>
             </div>
@@ -472,6 +472,7 @@
             <span>Controls: Left / Right, A / D, or move the mouse.</span>
             <span id="mail-queue">Mail queues current score: 0</span>
             <span id="mode-note">Level 1: classic breakout on the bright QR.</span>
+            <span id="save-note">Single tap toggles play and QR. Double-tap the QR on phone to store the contact locally.</span>
           </footer>
         </div>
       </div>
@@ -487,22 +488,19 @@
     const patternNode = document.getElementById("pattern");
     const mailQueueNode = document.getElementById("mail-queue");
     const modeNoteNode = document.getElementById("mode-note");
+    const saveNoteNode = document.getElementById("save-note");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
-    const LEVEL_TWO_THRESHOLD = 24;
-    const RULE_110_MAP = {
-      "111": 0,
-      "110": 1,
-      "101": 1,
-      "100": 0,
-      "011": 1,
-      "010": 1,
-      "001": 1,
-      "000": 0,
-    };
+    const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
+    const MAX_LEVEL = 3;
+    const LEVEL_THREE_PERIODIC_SCORE = 1000;
+    const LEVEL_UP_LIFE_BONUS = 1;
+    const SUPER_WALL_BOUNCE = 1.12;
+    const PERIMETER_SCORE_PENALTY = 180;
+    const PERIMETER_DROP_LEVEL = 2;
 
     function contactSeed() {
       let seed = 0;
@@ -530,7 +528,6 @@
       brickSize: { w: 18, h: 18 },
       totalBricks: 0,
       patternHits: 0,
-      thresholdProgress: 0,
       levelHits: 0,
       blinkTime: 0,
       patternTimer: 0,
@@ -538,13 +535,16 @@
       patternSeed: 0,
       playSeconds: 0,
       gameOver: false,
+      periodicModeUnlocked: false,
       keys: { left: false, right: false },
       lastTime: 0,
       clickTimer: null,
       lastPointerUp: 0,
       automataBursts: [],
       explosions: [],
-      levelComplete: false,
+      qrBounds: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 },
+      perimeterOffset: 0,
+      saveFeedback: "",
     };
 
     function buildQrWall(size, seed) {
@@ -633,8 +633,263 @@
       return inTopLeft || inTopRight || inBottomLeft || inTiming;
     }
 
-    function rule110Next(left, center, right) {
-      return RULE_110_MAP[`${left}${center}${right}`];
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function isLevelTwoReflective() {
+      return state.level >= 2 && !state.periodicModeUnlocked;
+    }
+
+    function isPerimeterChallengeActive() {
+      return state.level >= 3 && state.periodicModeUnlocked;
+    }
+
+    function perimeterLength() {
+      const { width, height } = state.qrBounds;
+      return width > 0 && height > 0 ? (width * 2) + (height * 2) : 0;
+    }
+
+    function defaultPerimeterOffset() {
+      const { width, height } = state.qrBounds;
+      return width + height + width * 0.5;
+    }
+
+    function normalizePerimeterOffset(offset) {
+      const total = perimeterLength();
+      if (!total) return 0;
+      return ((offset % total) + total) % total;
+    }
+
+    function setPerimeterOffset(offset) {
+      state.perimeterOffset = normalizePerimeterOffset(offset);
+    }
+
+    function advancePerimeterSlider(distance) {
+      setPerimeterOffset(state.perimeterOffset + distance);
+    }
+
+    function currentModeNote() {
+      if (isPerimeterChallengeActive()) {
+        return "Level 3: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
+      }
+      if (state.level === 3) {
+        return `Level 3: reach ${LEVEL_THREE_PERIODIC_SCORE} score to unlock periodic walls and the QR-frame slider.`;
+      }
+      if (state.level === 2) {
+        return "Level 2: super reflecting walls push the ball back harder.";
+      }
+      return "Level 1: classic breakout on the bright QR.";
+    }
+
+    function currentSaveNote() {
+      if (state.saveFeedback) return state.saveFeedback;
+      if (state.contactOpen) {
+        return "Single tap returns to play. Double-tap the QR on phone to store the contact locally.";
+      }
+      return "Single tap opens the QR contact view.";
+    }
+
+    function parseContactPayload(payload) {
+      const fields = {};
+      const parts = payload.replace(/^MECARD:/, "").split(";");
+      for (const part of parts) {
+        if (!part || !part.includes(":")) continue;
+        const [key, ...valueParts] = part.split(":");
+        fields[key] = valueParts.join(":");
+      }
+      return {
+        fullName: fields.N || "",
+        organization: fields.ORG || "",
+        phone: fields.TEL || "",
+        email: fields.EMAIL || "",
+        url: fields.URL || "",
+      };
+    }
+
+    function setSaveFeedback(message) {
+      state.saveFeedback = message;
+      saveNoteNode.textContent = currentSaveNote();
+    }
+
+    function saveContactLocally() {
+      try {
+        const contact = parseContactPayload(CONTACT_PAYLOAD);
+        const record = {
+          payload: CONTACT_PAYLOAD,
+          savedAt: new Date().toISOString(),
+          ...contact,
+        };
+        window.localStorage.setItem(LOCAL_CONTACT_KEY, JSON.stringify(record));
+        setSaveFeedback("Contact stored locally on this device.");
+        return true;
+      } catch (_error) {
+        setSaveFeedback("Local contact storage is unavailable in this browser.");
+        return false;
+      }
+    }
+
+    function syncPeriodicUnlockState() {
+      const shouldUnlock = state.level >= 3 && state.score >= LEVEL_THREE_PERIODIC_SCORE;
+      if (shouldUnlock && !state.periodicModeUnlocked) {
+        state.periodicModeUnlocked = true;
+        setPerimeterOffset(defaultPerimeterOffset());
+        resetBallAndPaddle();
+        state.paused = true;
+        syncGameUi();
+      } else if (!shouldUnlock) {
+        state.periodicModeUnlocked = false;
+      }
+    }
+
+    function getPerimeterSlider() {
+      if (!isPerimeterChallengeActive()) return null;
+
+      const { left, top, right, bottom, width, height } = state.qrBounds;
+      if (!width || !height) return null;
+
+      const thickness = 14;
+      const horizontalLength = clamp(width * 0.26, 92, 156);
+      const verticalLength = clamp(height * 0.26, 82, 132);
+      let offset = normalizePerimeterOffset(state.perimeterOffset || defaultPerimeterOffset());
+
+      if (offset < width) {
+        const centerX = clamp(left + offset, left + horizontalLength / 2, right - horizontalLength / 2);
+        return {
+          side: "top",
+          x: centerX - horizontalLength / 2,
+          y: top - thickness / 2,
+          w: horizontalLength,
+          h: thickness,
+          centerX,
+          centerY: top,
+        };
+      }
+
+      offset -= width;
+      if (offset < height) {
+        const centerY = clamp(top + offset, top + verticalLength / 2, bottom - verticalLength / 2);
+        return {
+          side: "right",
+          x: right - thickness / 2,
+          y: centerY - verticalLength / 2,
+          w: thickness,
+          h: verticalLength,
+          centerX: right,
+          centerY,
+        };
+      }
+
+      offset -= height;
+      if (offset < width) {
+        const centerX = clamp(right - offset, left + horizontalLength / 2, right - horizontalLength / 2);
+        return {
+          side: "bottom",
+          x: centerX - horizontalLength / 2,
+          y: bottom - thickness / 2,
+          w: horizontalLength,
+          h: thickness,
+          centerX,
+          centerY: bottom,
+        };
+      }
+
+      offset -= width;
+      const centerY = clamp(bottom - offset, top + verticalLength / 2, bottom - verticalLength / 2);
+      return {
+        side: "left",
+        x: left - thickness / 2,
+        y: centerY - verticalLength / 2,
+        w: thickness,
+        h: verticalLength,
+        centerX: left,
+        centerY,
+      };
+    }
+
+    function closestPerimeterOffset(x, y) {
+      const { left, top, right, bottom, width, height } = state.qrBounds;
+      const candidates = [
+        { distance: Math.abs(y - top), offset: clamp(x - left, 0, width) },
+        { distance: Math.abs(x - right), offset: width + clamp(y - top, 0, height) },
+        { distance: Math.abs(y - bottom), offset: width + height + (width - clamp(x - left, 0, width)) },
+        { distance: Math.abs(x - left), offset: width + height + width + (height - clamp(y - top, 0, height)) },
+      ];
+      candidates.sort((a, b) => a.distance - b.distance);
+      return candidates[0].offset;
+    }
+
+    function drawQrBoundary() {
+      const { left, top, width, height } = state.qrBounds;
+      if (!width || !height) return;
+
+      const crispLeft = Math.round(left) + 0.5;
+      const crispTop = Math.round(top) + 0.5;
+      const crispWidth = Math.round(width);
+      const crispHeight = Math.round(height);
+
+      ctx.save();
+      ctx.strokeStyle = isPerimeterChallengeActive()
+        ? "rgba(255, 214, 94, 0.88)"
+        : state.level >= 2
+          ? "rgba(191, 248, 255, 0.86)"
+          : "rgba(90, 203, 225, 0.38)";
+      ctx.lineWidth = isPerimeterChallengeActive() ? 3.2 : state.level >= 2 ? 2.6 : 1.4;
+      ctx.setLineDash(isPerimeterChallengeActive() ? [12, 8] : []);
+      ctx.shadowBlur = state.level >= 2 ? 20 : 0;
+      ctx.shadowColor = isPerimeterChallengeActive()
+        ? "rgba(255, 214, 94, 0.34)"
+        : "rgba(57, 231, 255, 0.28)";
+      ctx.strokeRect(crispLeft, crispTop, crispWidth, crispHeight);
+      ctx.restore();
+    }
+
+    function drawSlider() {
+      const slider = getPerimeterSlider();
+      if (!slider) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(57,231,255,0.6)";
+        drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#39e7ff");
+        ctx.shadowBlur = 0;
+        return;
+      }
+
+      ctx.save();
+      ctx.shadowBlur = 22;
+      ctx.shadowColor = "rgba(255, 214, 94, 0.45)";
+      drawRoundedRect(slider.x, slider.y, slider.w, slider.h, 10, "#ffd65e");
+      ctx.restore();
+    }
+
+    function boostBallSpeed(factor) {
+      const b = state.ball;
+      const current = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const target = current * factor;
+      const scale = target / current;
+      b.dx *= scale;
+      b.dy *= scale;
+    }
+
+    function isBallOutsideQrBounds() {
+      const { left, top, right, bottom } = state.qrBounds;
+      const pad = state.ball.r + 1;
+      return state.ball.x < left - pad
+        || state.ball.x > right + pad
+        || state.ball.y < top - pad
+        || state.ball.y > bottom + pad;
+    }
+
+    function dropBackFromPerimeter() {
+      state.score = Math.max(0, state.score - PERIMETER_SCORE_PENALTY);
+      state.level = PERIMETER_DROP_LEVEL;
+      state.periodicModeUnlocked = false;
+      state.patternHits = 0;
+      state.levelHits = 0;
+      resetBricks();
+      resetBallAndPaddle();
+      state.paused = true;
+      syncHud();
+      syncGameUi();
     }
 
     function resetBricks() {
@@ -667,14 +922,24 @@
       const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
       const top = Math.round((canvas.height - totalH) / 2);
       const left = Math.round((canvas.width - totalW) / 2);
+      state.qrBounds = {
+        left,
+        top,
+        right: left + totalW,
+        bottom: top + totalH,
+        width: totalW,
+        height: totalH,
+      };
       state.bricks = [];
       state.rows = qrSize;
       state.cols = qrSize;
       state.levelHits = 0;
-      state.levelComplete = false;
       state.automataBursts = [];
       state.explosions = [];
       state.ball.r = Math.max(4, Math.floor(moduleSize * 0.5));
+      if (!state.perimeterOffset) {
+        state.perimeterOffset = defaultPerimeterOffset();
+      }
       let activeCount = 0;
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
@@ -690,7 +955,6 @@
             phase: (row * 0.37) + (col * 0.21),
             alive: true,
             active: true,
-            energized: false,
             row,
             col,
             pendingBlast: false,
@@ -701,6 +965,18 @@
     }
 
     function resetBallAndPaddle() {
+      if (isPerimeterChallengeActive()) {
+        const { left, top, right, bottom, width, height } = state.qrBounds;
+        setPerimeterOffset(state.perimeterOffset || defaultPerimeterOffset());
+        state.ball.x = left + width * 0.5;
+        state.ball.y = top + height * 0.5;
+        state.ball.dx = state.ball.speedBase + 28;
+        state.ball.dy = -(state.ball.speedBase + 12);
+        state.paddle.x = left + width * 0.5;
+        state.paddle.y = bottom;
+        return;
+      }
+
       const narrowScreen = window.innerWidth <= 640;
       const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
       const qrBottom = state.bricks.length
@@ -721,14 +997,15 @@
       state.lives = 3;
       state.level = 1;
       state.patternHits = 0;
-      state.thresholdProgress = 0;
       state.levelHits = 0;
       state.patternTimer = 0;
       state.patternSeed = 0;
       state.playSeconds = 0;
+      state.periodicModeUnlocked = false;
       state.contactOpen = false;
       state.gameOver = false;
       resetBricks();
+      setPerimeterOffset(defaultPerimeterOffset());
       resetBallAndPaddle();
       syncHud();
       syncGameUi();
@@ -738,18 +1015,16 @@
       scoreNode.textContent = String(state.score);
       livesNode.textContent = String(state.lives);
       levelNode.textContent = String(state.level);
-      patternNode.textContent = state.level === 1
-        ? `${Math.min(state.thresholdProgress, LEVEL_TWO_THRESHOLD)}/${LEVEL_TWO_THRESHOLD}`
-        : `${remainingBricks()}/${state.totalBricks}`;
+      patternNode.textContent = `${state.patternHits}/${state.totalBricks}`;
       mailQueueNode.textContent = `Mail queues current score: ${state.score}`;
-      modeNoteNode.textContent = state.level === 1
-        ? "Level 1: classic breakout on the bright QR."
-        : "Level 2: the QR disks dim and Rule 110 flips modules on and off.";
+      modeNoteNode.textContent = currentModeNote();
+      saveNoteNode.textContent = currentSaveNote();
     }
 
     function resetContactState() {
       state.contactOpen = false;
       state.gameOver = false;
+      state.saveFeedback = "";
       resetBricks();
       syncHud();
       syncGameUi();
@@ -764,7 +1039,7 @@
         requestAnimationFrame(frame);
       }
       const subject = encodeURIComponent(`Breakout run score ${state.score}`);
-      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nThreshold progress: ${Math.min(state.thresholdProgress, LEVEL_TWO_THRESHOLD)}/${LEVEL_TWO_THRESHOLD}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`);
+      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`);
       window.location.href = `mailto:rupert.tscheliessnig@calyr.ai?subject=${subject}&body=${body}`;
     }
 
@@ -772,6 +1047,7 @@
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
+      state.saveFeedback = "";
       resetBricks();
       syncHud();
       syncGameUi();
@@ -813,19 +1089,8 @@
 
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
-      const levelTwo = state.level === 2;
-      const cyan = levelTwo
-        ? (brick.energized
-          ? "#ff8ef7"
-          : brick.active
-            ? "rgba(105, 138, 156, 0.55)"
-            : "rgba(45, 64, 82, 0.58)")
-        : "#bff8ff";
-      const blink = levelTwo && brick.energized
-        ? 0.82 + Math.sin(state.blinkTime * 5 + brick.phase) * 0.18
-        : levelTwo && brick.active
-          ? 0.92
-          : 0.74;
+      const cyan = "#bff8ff";
+      const blink = 1;
       const radius = Math.max(4, Math.min(w, h) * 0.5);
       const cx = x + w / 2;
       const cy = y + h / 2;
@@ -844,32 +1109,40 @@
       const progress = 1 - effect.life / effect.maxLife;
       const alpha = Math.max(0, effect.life / effect.maxLife);
       const radius = effect.radius * (0.55 + progress * 1.4);
+      const tail = effect.radius * (0.8 + progress * 1.6);
 
       ctx.save();
       ctx.globalAlpha = alpha * 0.9;
       ctx.beginPath();
       ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = effect.fill ?? "rgba(255, 108, 245, 0.28)";
+      ctx.fillStyle = "rgba(255, 108, 245, 0.32)";
       ctx.fill();
+
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = Math.max(1.4, effect.radius * 0.18);
+      ctx.strokeStyle = "rgba(191, 248, 255, 0.92)";
+      ctx.beginPath();
+      ctx.moveTo(effect.x, effect.y);
+      ctx.lineTo(effect.x + effect.dx * tail, effect.y + effect.dy * tail);
+      ctx.stroke();
       ctx.restore();
     }
 
     function spawnExplosion(brick, directionX, directionY, intensity = 1) {
+      const length = Math.hypot(directionX, directionY) || 1;
       state.explosions.push({
         x: brick.x + brick.w / 2,
         y: brick.y + brick.h / 2,
+        dx: directionX / length,
+        dy: directionY / length,
         radius: Math.max(brick.w, brick.h) * (0.7 + intensity * 0.7),
         life: 0.34 + intensity * 0.08,
         maxLife: 0.34 + intensity * 0.08,
-        fill: state.level === 2 ? "rgba(255, 217, 251, 0.28)" : "rgba(255, 108, 245, 0.28)",
       });
     }
 
     function destroyBrick(brick, options = {}) {
       if (!brick || !brick.alive || !brick.active) return false;
-      if (state.level === 2) {
-        return energizeBrick(brick, options);
-      }
 
       brick.alive = false;
       brick.active = false;
@@ -877,29 +1150,6 @@
       state.patternHits += 1;
       state.score += options.score ?? 100;
       spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 1);
-      return true;
-    }
-
-    function energizeBrick(brick, options = {}) {
-      if (!brick || !brick.alive || !brick.active || brick.energized) return false;
-
-      brick.energized = true;
-      state.patternHits += 1;
-      state.score += options.score ?? 100;
-      spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 0.8);
-      return true;
-    }
-
-    function setBrickState(brick, nextActive, options = {}) {
-      if (!brick || !brick.alive) return false;
-      if (brick.active === nextActive) return false;
-
-      brick.active = nextActive;
-      brick.energized = !!nextActive;
-      if (nextActive) {
-        state.score += options.score ?? 60;
-      }
-      spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? 0, options.intensity ?? 0.7);
       return true;
     }
 
@@ -911,26 +1161,22 @@
       return state.bricks.find((brick) => brick.row === row && brick.col === col);
     }
 
-    function brickAliveAt(row, col) {
-      const wrappedCol = (col + state.cols) % state.cols;
-      const brick = findBrickByCell(row, wrappedCol);
-      return brick && brick.active ? 1 : 0;
-    }
-
     function startAutomataBurst(originBrick, directionX, directionY) {
-      if (state.level !== 2) return;
+      const length = Math.hypot(directionX, directionY) || 1;
+      const nx = directionX / length;
+      const ny = directionY / length;
       state.automataBursts.push({
+        directionX: nx,
+        directionY: ny,
         stepTimer: 0,
-        stepInterval: 0.075,
+        stepInterval: 0.06,
+        ttl: 9,
         frontier: new Set([brickKey(originBrick.row, originBrick.col)]),
         visited: new Set([brickKey(originBrick.row, originBrick.col)]),
       });
     }
 
     function remainingBricks() {
-      if (state.level === 2) {
-        return state.bricks.reduce((count, brick) => count + (brick.alive && brick.active ? 1 : 0), 0);
-      }
       return state.bricks.reduce((count, brick) => count + (brick.alive && brick.active ? 1 : 0), 0);
     }
 
@@ -955,46 +1201,48 @@
         }
 
         burst.stepTimer = 0;
-        const nextFrontier = new Set();
-        const candidateKeys = new Set();
+        burst.ttl -= 1;
 
+        const candidateScores = new Map();
         for (const key of burst.frontier) {
           const [row, col] = key.split(":").map(Number);
           for (let dRow = -1; dRow <= 1; dRow += 1) {
             for (let dCol = -1; dCol <= 1; dCol += 1) {
-              const targetRow = row + dRow;
-              if (targetRow < 0 || targetRow >= state.rows) continue;
-              const targetCol = (col + dCol + state.cols) % state.cols;
-              const targetKey = brickKey(targetRow, targetCol);
-              if (burst.visited.has(targetKey)) continue;
-              candidateKeys.add(targetKey);
+              if (dRow === 0 && dCol === 0) continue;
+              const nextRow = row + dRow;
+              const nextCol = col + dCol;
+              const nextKey = brickKey(nextRow, nextCol);
+              if (burst.visited.has(nextKey)) continue;
+
+              const alignment = (dCol * burst.directionX) + (dRow * burst.directionY);
+              const lateral = Math.abs((dCol * -burst.directionY) + (dRow * burst.directionX));
+              const score = alignment * 1.4 - lateral * 0.55;
+
+              if (score < -0.35) continue;
+              candidateScores.set(nextKey, Math.max(candidateScores.get(nextKey) ?? -Infinity, score));
             }
           }
         }
 
-        for (const key of candidateKeys) {
+        const nextFrontier = new Set();
+        for (const [key, score] of candidateScores) {
           const [row, col] = key.split(":").map(Number);
-          const left = brickAliveAt(row, col - 1);
-          const center = brickAliveAt(row, col);
-          const right = brickAliveAt(row, col + 1);
-          const nextValue = rule110Next(left, center, right);
-          burst.visited.add(key);
-
           const brick = findBrickByCell(row, col);
-          if (!brick || !brick.alive) continue;
+          burst.visited.add(key);
+          if (!brick || !brick.alive || !brick.active) continue;
 
-          if (setBrickState(brick, !!nextValue, {
-            directionX: 0,
-            directionY: 0,
-            intensity: 0.7,
-            score: 60,
+          const intensity = Math.max(0.35, Math.min(1.2, 0.6 + score * 0.35));
+          if (destroyBrick(brick, {
+            directionX: burst.directionX,
+            directionY: burst.directionY,
+            intensity,
           })) {
             changed = true;
             nextFrontier.add(key);
           }
         }
 
-        if (nextFrontier.size > 0) {
+        if (nextFrontier.size > 0 && burst.ttl > 0) {
           burst.frontier = nextFrontier;
           survivors.push(burst);
         }
@@ -1003,10 +1251,7 @@
       state.automataBursts = survivors;
       if (!changed) return;
       syncHud();
-      if (remainingBricks() <= 0) {
-        state.levelComplete = true;
-        endToContact("Rule 110 fully collapsed. Mail opens from the contact pill, or restart the run.");
-      }
+      if (remainingBricks() <= 0) nextLevel();
     }
 
     function draw() {
@@ -1015,9 +1260,7 @@
       ctx.save();
       ctx.globalAlpha = 0.5;
       for (let i = 0; i < 16; i += 1) {
-        ctx.strokeStyle = state.level === 2
-          ? (i % 2 === 0 ? "rgba(255,217,251,0.06)" : "rgba(255,77,245,0.04)")
-          : (i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)");
+        ctx.strokeStyle = i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)";
         ctx.beginPath();
         ctx.moveTo(0, i * 34);
         ctx.lineTo(canvas.width, i * 34);
@@ -1042,15 +1285,14 @@
         drawQrBrick(brick);
       }
 
+      drawQrBoundary();
+
       for (const effect of state.explosions) {
         drawExplosion(effect);
       }
 
       if (!state.contactOpen) {
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "rgba(57,231,255,0.6)";
-        drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#39e7ff");
-        ctx.shadowBlur = 0;
+        drawSlider();
 
         ctx.shadowBlur = 9;
         ctx.shadowColor = "rgba(255,77,245,0.42)";
@@ -1070,6 +1312,15 @@
     }
 
     function updatePaddle(dt) {
+      if (isPerimeterChallengeActive()) {
+        let travel = 0;
+        const perimeterSpeed = state.paddle.speed * 0.85;
+        if (state.keys.left) travel -= perimeterSpeed * dt;
+        if (state.keys.right) travel += perimeterSpeed * dt;
+        if (travel) advancePerimeterSlider(travel);
+        return;
+      }
+
       state.paddle.dx = 0;
       if (state.keys.left) state.paddle.dx -= state.paddle.speed;
       if (state.keys.right) state.paddle.dx += state.paddle.speed;
@@ -1090,26 +1341,22 @@
     }
 
     function nextLevel() {
-      const previousDx = state.ball.dx;
-      const previousDy = state.ball.dy;
-      const previousX = state.ball.x;
-      const previousY = state.ball.y;
-      const previousPaddleX = state.paddle.x;
-
-      state.level += 1;
+      const next = Math.min(MAX_LEVEL, state.level + 1);
+      const changed = next !== state.level;
+      state.level = next;
+      if (changed) {
+        state.lives += LEVEL_UP_LIFE_BONUS;
+      }
       state.patternHits = 0;
+      state.levelHits = 0;
+      syncPeriodicUnlockState();
       resetBricks();
-      state.paddle.x = previousPaddleX;
-      clampPaddle();
-      state.ball.x = Math.max(state.ball.r + 4, Math.min(canvas.width - state.ball.r - 4, previousX));
-      state.ball.y = Math.max(state.ball.r + 4, Math.min(state.paddle.y - state.ball.r - 10, previousY));
-      state.ball.dx = previousDx * 1.04;
-      state.ball.dy = previousDy * 1.04;
-      normalizeBallVelocity();
-      nudgeBallAwayFromWalls();
+      if (isPerimeterChallengeActive()) {
+        setPerimeterOffset(defaultPerimeterOffset());
+      }
+      resetBallAndPaddle();
       syncHud();
-      state.paused = false;
-      state.contactOpen = false;
+      state.paused = true;
       syncGameUi();
     }
 
@@ -1126,25 +1373,48 @@
       b.dy *= scale;
     }
 
-    function nudgeBallAwayFromWalls() {
-      const b = state.ball;
-      const edgeInset = Math.max(3, b.r * 0.4);
-
-      if (b.x - b.r <= edgeInset) {
-        b.x = b.r + edgeInset;
-        b.dx = Math.abs(b.dx);
-      } else if (b.x + b.r >= canvas.width - edgeInset) {
-        b.x = canvas.width - b.r - edgeInset;
-        b.dx = -Math.abs(b.dx);
-      }
-
-      if (b.y - b.r <= edgeInset) {
-        b.y = b.r + edgeInset;
-        b.dy = Math.abs(b.dy);
-      }
-    }
-
     function collideWithPaddle() {
+      if (isPerimeterChallengeActive()) {
+        const slider = getPerimeterSlider();
+        const b = state.ball;
+        if (!slider) return;
+
+        const overlaps = b.x + b.r >= slider.x
+          && b.x - b.r <= slider.x + slider.w
+          && b.y + b.r >= slider.y
+          && b.y - b.r <= slider.y + slider.h;
+
+        if (!overlaps) return;
+
+        const speed = Math.hypot(b.dx, b.dy) * 1.04;
+        if (slider.side === "top" && b.dy < 0) {
+          const hit = (b.x - slider.centerX) / (slider.w / 2);
+          b.dx = speed * hit * 0.92;
+          b.dy = Math.abs(Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000)));
+          b.y = slider.y + slider.h + b.r + 1;
+        } else if (slider.side === "bottom" && b.dy > 0) {
+          const hit = (b.x - slider.centerX) / (slider.w / 2);
+          b.dx = speed * hit * 0.92;
+          b.dy = -Math.abs(Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000)));
+          b.y = slider.y - b.r - 1;
+        } else if (slider.side === "left" && b.dx < 0) {
+          const hit = (b.y - slider.centerY) / (slider.h / 2);
+          b.dy = speed * hit * 0.92;
+          b.dx = Math.abs(Math.sqrt(Math.max(speed * speed - b.dy * b.dy, 16000)));
+          b.x = slider.x + slider.w + b.r + 1;
+        } else if (slider.side === "right" && b.dx > 0) {
+          const hit = (b.y - slider.centerY) / (slider.h / 2);
+          b.dy = speed * hit * 0.92;
+          b.dx = -Math.abs(Math.sqrt(Math.max(speed * speed - b.dy * b.dy, 16000)));
+          b.x = slider.x - b.r - 1;
+        } else {
+          return;
+        }
+
+        normalizeBallVelocity();
+        return;
+      }
+
       const p = state.paddle;
       const b = state.ball;
       if (
@@ -1184,31 +1454,20 @@
           intensity: 1.1,
         });
         state.levelHits += 1;
-        if (state.level === 1) {
-          state.thresholdProgress += 1;
-        }
+        syncPeriodicUnlockState();
         syncHud();
+
+        if (state.paused) return;
 
         if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
         else b.dy *= -1;
         normalizeBallVelocity();
 
-        if (state.level === 1 && state.thresholdProgress >= LEVEL_TWO_THRESHOLD) {
-          nextLevel();
-          return;
-        }
-
-        if (state.level === 2) {
+        if (state.level === 2 && state.levelHits % 10 === 0) {
           startAutomataBurst(brick, impactX, impactY);
         }
 
-        if (remainingBricks() <= 0) {
-          if (state.level === 1) nextLevel();
-          else {
-            state.levelComplete = true;
-            endToContact("Rule 110 fully collapsed. Mail opens from the contact pill, or restart the run.");
-          }
-        }
+        if (remainingBricks() <= 0) nextLevel();
         return;
       }
     }
@@ -1217,38 +1476,49 @@
       const b = state.ball;
       b.x += b.dx * dt;
       b.y += b.dy * dt;
-      let wallBounceX = false;
-      let wallBounceY = false;
 
-      if (b.x - b.r <= 0) {
-        b.x = b.r;
-        b.dx = Math.abs(b.dx);
-        wallBounceX = true;
-      } else if (b.x + b.r >= canvas.width) {
-        b.x = canvas.width - b.r;
-        b.dx = -Math.abs(b.dx);
-        wallBounceX = true;
-      }
-
-      if (b.y - b.r <= 0) {
-        b.y = b.r;
-        b.dy = Math.abs(b.dy);
-        wallBounceY = true;
-      } else if (b.y - b.r > canvas.height) {
-        loseLife();
-      }
-
-      if (wallBounceX || wallBounceY) {
-        if (wallBounceX && wallBounceY) {
-          b.dx = Math.sign(b.dx || 1) * Math.max(Math.abs(b.dx), b.speedBase * 0.58);
-          b.dy = Math.sign(b.dy || 1) * Math.max(Math.abs(b.dy), b.speedBase * 0.58);
+      if (isPerimeterChallengeActive()) {
+        if (b.x + b.r < 0) {
+          b.x = canvas.width + b.r;
+        } else if (b.x - b.r > canvas.width) {
+          b.x = -b.r;
         }
-        normalizeBallVelocity();
-        nudgeBallAwayFromWalls();
+
+        if (b.y + b.r < 0) {
+          b.y = canvas.height + b.r;
+        } else if (b.y - b.r > canvas.height) {
+          b.y = -b.r;
+        }
+      } else {
+        if (b.x - b.r <= 0) {
+          b.x = b.r;
+          b.dx = Math.abs(b.dx);
+          normalizeBallVelocity();
+          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
+        } else if (b.x + b.r >= canvas.width) {
+          b.x = canvas.width - b.r;
+          b.dx = -Math.abs(b.dx);
+          normalizeBallVelocity();
+          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
+        }
+
+        if (b.y - b.r <= 0) {
+          b.y = b.r;
+          b.dy = Math.abs(b.dy);
+          normalizeBallVelocity();
+          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
+        } else if (b.y - b.r > canvas.height) {
+          loseLife();
+          return;
+        }
       }
 
       collideWithPaddle();
       collideWithBricks();
+
+      if (isPerimeterChallengeActive() && isBallOutsideQrBounds()) {
+        dropBackFromPerimeter();
+      }
     }
 
     function updatePattern(dt) {
@@ -1321,21 +1591,24 @@
       if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = false;
     });
 
-    canvas.addEventListener("mousemove", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = canvas.width / rect.width;
-      const x = (event.clientX - rect.left) * ratio;
-      state.paddle.x = x - state.paddle.w / 2;
-      clampPaddle();
-    });
-
-    function movePaddleFromClientX(clientX) {
+    function movePaddleFromClientPoint(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       const ratio = canvas.width / rect.width;
       const x = (clientX - rect.left) * ratio;
+      const y = (clientY - rect.top) * ratio;
+
+      if (isPerimeterChallengeActive()) {
+        setPerimeterOffset(closestPerimeterOffset(x, y));
+        return;
+      }
+
       state.paddle.x = x - state.paddle.w / 2;
       clampPaddle();
     }
+
+    canvas.addEventListener("mousemove", (event) => {
+      movePaddleFromClientPoint(event.clientX, event.clientY);
+    });
 
     canvas.addEventListener(
       "touchstart",
@@ -1343,7 +1616,7 @@
         if (state.contactOpen) return;
         if (!event.touches || !event.touches[0]) return;
         event.preventDefault();
-        movePaddleFromClientX(event.touches[0].clientX);
+        movePaddleFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
       },
       { passive: false }
     );
@@ -1354,7 +1627,7 @@
         if (state.contactOpen) return;
         if (!event.touches || !event.touches[0]) return;
         event.preventDefault();
-        movePaddleFromClientX(event.touches[0].clientX);
+        movePaddleFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
       },
       { passive: false }
     );
@@ -1399,11 +1672,20 @@
 
     function handleSingleActivate() {
       clearPendingSingleTap();
+      if (state.contactOpen && state.running && !state.gameOver) {
+        startOrResume();
+        return;
+      }
       pauseIntoContact();
     }
 
-    function handleDoubleActivate() {
+    function handleDoubleActivate(options = {}) {
       clearPendingSingleTap();
+      if (options.storeLocal && state.contactOpen) {
+        saveContactLocally();
+        draw();
+        return;
+      }
       startOrResume();
     }
 
@@ -1427,7 +1709,7 @@
         const now = performance.now();
         if (now - state.lastPointerUp < 260) {
           state.lastPointerUp = 0;
-          handleDoubleActivate();
+          handleDoubleActivate({ storeLocal: true });
           return;
         }
         state.lastPointerUp = now;
