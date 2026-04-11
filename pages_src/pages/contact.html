@@ -640,10 +640,6 @@
       return Math.max(min, Math.min(max, value));
     }
 
-    function isLevelTwoReflective() {
-      return state.level === 2 && !state.periodicModeUnlocked;
-    }
-
     function isPerimeterChallengeActive() {
       return state.level >= 3 && state.periodicModeUnlocked;
     }
@@ -677,10 +673,10 @@
         return "Level 3: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
       }
       if (state.level === 3) {
-        return `Level 3: reach ${LEVEL_TARGETS[3]} hits, then periodic walls take over and the bar moves around the QR square.`;
+        return `Level 3: the game of life wakes up every 10 hits until ${LEVEL_TARGETS[3]}, then periodic walls take over.`;
       }
       if (state.level === 2) {
-        return `Level 2: super reflecting walls push the ball back harder until ${LEVEL_TARGETS[2]} hits.`;
+        return `Level 2: hold the damaged QR state and work steadily to ${LEVEL_TARGETS[2]} hits.`;
       }
       return `Level 1: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits.`;
     }
@@ -1501,7 +1497,7 @@
         else b.dy *= -1;
         normalizeBallVelocity();
 
-        if (state.level === 2 && state.levelHits % 10 === 0) {
+        if (state.level === 3 && state.levelHits % 10 === 0) {
           startAutomataBurst(brick, impactX, impactY);
         }
 
@@ -1613,7 +1609,9 @@
         resetGame();
         state.running = true;
       }
-      resetContactState();
+      if (state.contactOpen || state.gameOver) {
+        resetContactState();
+      }
       state.paused = false;
       syncGameUi();
       state.lastTime = 0;
