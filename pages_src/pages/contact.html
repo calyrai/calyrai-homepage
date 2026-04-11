@@ -495,15 +495,16 @@
     const landscapeRight = document.getElementById("landscape-right");
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
-    const MAX_LEVEL = 3;
+    const MAX_LEVEL = 4;
     const LEVEL_TARGETS = {
       1: 200,
       2: 400,
-      3: 800,
+      3: 400,
+      4: 1000,
     };
     const LEVEL_UP_LIFE_BONUS = 1;
     const PERIMETER_SCORE_PENALTY = 180;
-    const PERIMETER_DROP_LEVEL = 2;
+    const PERIMETER_DROP_LEVEL = 3;
 
     function contactSeed() {
       let seed = 0;
@@ -548,6 +549,7 @@
       qrBounds: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 },
       perimeterOffset: 0,
       saveFeedback: "",
+      lastGameplaySnapshot: "",
     };
 
     function buildQrWall(size, seed) {
@@ -641,7 +643,11 @@
     }
 
     function isPerimeterChallengeActive() {
-      return state.level >= 3 && state.periodicModeUnlocked;
+      return state.level >= 4 && state.periodicModeUnlocked;
+    }
+
+    function isRuleLightningLevel() {
+      return state.level === 4 && !state.periodicModeUnlocked;
     }
 
     function perimeterLength() {
@@ -670,10 +676,13 @@
 
     function currentModeNote() {
       if (isPerimeterChallengeActive()) {
-        return "Level 3: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
+        return "Level 4: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
+      }
+      if (state.level === 4) {
+        return `Level 4: game of life rules ignite magenta trajectories until ${LEVEL_TARGETS[4]} hits, then periodic walls take over.`;
       }
       if (state.level === 3) {
-        return `Level 3: the game of life wakes up every 10 hits until ${LEVEL_TARGETS[3]}, then periodic walls take over.`;
+        return `Level 3: drive the fractured QR up to ${LEVEL_TARGETS[3]} hits to unlock the rule-based phase.`;
       }
       if (state.level === 2) {
         return `Level 2: cascades return every 10 hits while you work through the damaged QR to ${LEVEL_TARGETS[2]}.`;
@@ -739,7 +748,7 @@
     }
 
     function syncPeriodicUnlockState() {
-      const shouldUnlock = state.level >= 3 && state.levelHits >= LEVEL_TARGETS[3];
+      const shouldUnlock = state.level >= 4 && state.levelHits >= LEVEL_TARGETS[4];
       if (shouldUnlock && !state.periodicModeUnlocked) {
         state.periodicModeUnlocked = true;
         setPerimeterOffset(defaultPerimeterOffset());
@@ -1014,7 +1023,7 @@
     function syncHud() {
       scoreNode.textContent = String(state.score);
       livesNode.textContent = String(state.lives);
-      levelNode.textContent = isPerimeterChallengeActive() ? "3P" : String(state.level);
+      levelNode.textContent = isPerimeterChallengeActive() ? "4P" : String(state.level);
       patternNode.textContent = isPerimeterChallengeActive()
         ? `${state.patternHits}/${state.totalBricks}`
         : currentLevelProgressLabel();
@@ -1041,19 +1050,100 @@
       draw();
     }
 
-    function openMail() {
+    function captureGameplaySnapshot() {
+      if (!canvas || state.contactOpen) return;
+      try {
+        state.lastGameplaySnapshot = canvas.toDataURL("image/png");
+      } catch (_error) {
+        state.lastGameplaySnapshot = "";
+      }
+    }
+
+    function canvasToBlob(targetCanvas) {
+      return new Promise((resolve, reject) => {
+        targetCanvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Canvas snapshot failed."));
+        }, "image/png");
+      });
+    }
+
+    async function dataUrlToBlob(dataUrl) {
+      const response = await fetch(dataUrl);
+      return response.blob();
+    }
+
+    async function getMailSnapshotBlob() {
+      if (!state.contactOpen) {
+        return canvasToBlob(canvas);
+      }
+      if (state.lastGameplaySnapshot) {
+        return dataUrlToBlob(state.lastGameplaySnapshot);
+      }
+      return canvasToBlob(canvas);
+    }
+
+    function downloadSnapshot(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    function resumeAfterMailAction() {
       resetContactState();
       if (state.running) {
         state.paused = false;
         state.lastTime = 0;
         requestAnimationFrame(frame);
       }
-      const subject = encodeURIComponent(`Breakout run score ${state.score}`);
-      const body = encodeURIComponent(`Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`);
+    }
+
+    async function openMail() {
+      const subjectText = `Breakout run score ${state.score}`;
+      const bodyText = `Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`;
+      const subject = encodeURIComponent(subjectText);
+      const body = encodeURIComponent(bodyText);
+      const fileName = `calyr-breakout-level-${state.level}-score-${state.score}.png`;
+
+      let snapshotBlob = null;
+      try {
+        snapshotBlob = await getMailSnapshotBlob();
+      } catch (_error) {
+        snapshotBlob = null;
+      }
+
+      if (snapshotBlob && navigator.share) {
+        const snapshotFile = new File([snapshotBlob], fileName, { type: "image/png" });
+        if (!navigator.canShare || navigator.canShare({ files: [snapshotFile] })) {
+          try {
+            await navigator.share({
+              title: subjectText,
+              text: bodyText,
+              files: [snapshotFile],
+            });
+            resumeAfterMailAction();
+            return;
+          } catch (_error) {
+          }
+        }
+      }
+
+      if (snapshotBlob) {
+        downloadSnapshot(snapshotBlob, fileName);
+        setSaveFeedback("Snapshot downloaded. Attach it to the mail draft if your device cannot share it directly.");
+      }
+
       window.location.href = `mailto:rupert.tscheliessnig@calyr.ai?subject=${subject}&body=${body}`;
+      resumeAfterMailAction();
     }
 
     function showContactQr() {
+      captureGameplaySnapshot();
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
@@ -1071,6 +1161,7 @@
     }
 
     function endToContact(reasonText) {
+      captureGameplaySnapshot();
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
@@ -1120,17 +1211,22 @@
       const alpha = Math.max(0, effect.life / effect.maxLife);
       const radius = effect.radius * (0.55 + progress * 1.4);
       const tail = effect.radius * (0.8 + progress * 1.6);
+      const fillStyle = effect.fillStyle || "rgba(255, 108, 245, 0.32)";
+      const strokeStyle = effect.strokeStyle || "rgba(191, 248, 255, 0.92)";
+      const shadowColor = effect.shadowColor || strokeStyle;
 
       ctx.save();
       ctx.globalAlpha = alpha * 0.9;
       ctx.beginPath();
       ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 108, 245, 0.32)";
+      ctx.fillStyle = fillStyle;
       ctx.fill();
 
       ctx.globalAlpha = alpha;
       ctx.lineWidth = Math.max(1.4, effect.radius * 0.18);
-      ctx.strokeStyle = "rgba(191, 248, 255, 0.92)";
+      ctx.strokeStyle = strokeStyle;
+      ctx.shadowBlur = effect.ruleLightning ? 18 : 0;
+      ctx.shadowColor = shadowColor;
       ctx.beginPath();
       ctx.moveTo(effect.x, effect.y);
       ctx.lineTo(effect.x + effect.dx * tail, effect.y + effect.dy * tail);
@@ -1138,7 +1234,7 @@
       ctx.restore();
     }
 
-    function spawnExplosion(brick, directionX, directionY, intensity = 1) {
+    function spawnExplosion(brick, directionX, directionY, intensity = 1, options = {}) {
       const length = Math.hypot(directionX, directionY) || 1;
       state.explosions.push({
         x: brick.x + brick.w / 2,
@@ -1148,6 +1244,10 @@
         radius: Math.max(brick.w, brick.h) * (0.7 + intensity * 0.7),
         life: 0.34 + intensity * 0.08,
         maxLife: 0.34 + intensity * 0.08,
+        fillStyle: options.fillStyle,
+        strokeStyle: options.strokeStyle,
+        shadowColor: options.shadowColor,
+        ruleLightning: !!options.ruleLightning,
       });
     }
 
@@ -1162,7 +1262,12 @@
         state.levelHits += 1;
       }
       state.score += options.score ?? 100;
-      spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 1);
+      spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 1, {
+        fillStyle: options.fillStyle,
+        strokeStyle: options.strokeStyle,
+        shadowColor: options.shadowColor,
+        ruleLightning: options.ruleLightning,
+      });
       return true;
     }
 
@@ -1178,14 +1283,16 @@
       const length = Math.hypot(directionX, directionY) || 1;
       const nx = directionX / length;
       const ny = directionY / length;
+      const ruleLightning = isRuleLightningLevel();
       state.automataBursts.push({
         directionX: nx,
         directionY: ny,
         stepTimer: 0,
         stepInterval: 0.06,
-        ttl: 9,
+        ttl: ruleLightning ? 12 : 9,
         frontier: new Set([brickKey(originBrick.row, originBrick.col)]),
         visited: new Set([brickKey(originBrick.row, originBrick.col)]),
+        ruleLightning,
       });
     }
 
@@ -1249,6 +1356,10 @@
             directionX: burst.directionX,
             directionY: burst.directionY,
             intensity,
+            fillStyle: burst.ruleLightning ? "rgba(255, 77, 245, 0.42)" : undefined,
+            strokeStyle: burst.ruleLightning ? "rgba(255, 77, 245, 0.96)" : undefined,
+            shadowColor: burst.ruleLightning ? "rgba(255, 77, 245, 0.72)" : undefined,
+            ruleLightning: burst.ruleLightning,
           })) {
             changed = true;
             nextFrontier.add(key);
@@ -1497,7 +1608,7 @@
         else b.dy *= -1;
         normalizeBallVelocity();
 
-        if (state.level >= 2 && state.levelHits % 10 === 0) {
+        if ((state.level === 2 || isRuleLightningLevel()) && state.levelHits % 10 === 0) {
           startAutomataBurst(brick, impactX, impactY);
         }
 
