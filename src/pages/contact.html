@@ -1172,6 +1172,9 @@
       brick.active = false;
       brick.pendingBlast = false;
       state.patternHits += 1;
+      if (options.countHit !== false) {
+        state.levelHits += 1;
+      }
       state.score += options.score ?? 100;
       spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 1);
       return true;
@@ -1274,10 +1277,18 @@
 
       state.automataBursts = survivors;
       if (!changed) return;
+      syncPeriodicUnlockState();
       syncHud();
+
+      const target = currentLevelTarget();
+      if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+        nextLevel();
+        return;
+      }
+
       if (remainingBricks() > 0) return;
 
-      if (!isPerimeterChallengeActive() && state.levelHits < (currentLevelTarget() ?? 0)) {
+      if (!isPerimeterChallengeActive() && state.levelHits < (target ?? 0)) {
         resetCurrentLevelLayout();
         return;
       }
@@ -1491,7 +1502,6 @@
           directionY: impactY,
           intensity: 1.1,
         });
-        state.levelHits += 1;
         syncPeriodicUnlockState();
         syncHud();
 
