@@ -502,7 +502,6 @@
       3: 800,
     };
     const LEVEL_UP_LIFE_BONUS = 1;
-    const SUPER_WALL_BOUNCE = 1.12;
     const PERIMETER_SCORE_PENALTY = 180;
     const PERIMETER_DROP_LEVEL = 2;
 
@@ -873,15 +872,6 @@
       ctx.shadowColor = "rgba(255, 214, 94, 0.45)";
       drawRoundedRect(slider.x, slider.y, slider.w, slider.h, 10, "#ffd65e");
       ctx.restore();
-    }
-
-    function boostBallSpeed(factor) {
-      const b = state.ball;
-      const current = Math.hypot(b.dx, b.dy) || b.speedBase;
-      const target = current * factor;
-      const scale = target / current;
-      b.dx *= scale;
-      b.dy *= scale;
     }
 
     function isBallOutsideQrBounds() {
@@ -1554,19 +1544,16 @@
           b.x = b.r;
           b.dx = Math.abs(b.dx);
           normalizeBallVelocity();
-          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
         } else if (b.x + b.r >= canvas.width) {
           b.x = canvas.width - b.r;
           b.dx = -Math.abs(b.dx);
           normalizeBallVelocity();
-          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
         }
 
         if (b.y - b.r <= 0) {
           b.y = b.r;
           b.dy = Math.abs(b.dy);
           normalizeBallVelocity();
-          if (isLevelTwoReflective()) boostBallSpeed(SUPER_WALL_BOUNCE);
         } else if (b.y - b.r > canvas.height) {
           loseLife();
           return;
