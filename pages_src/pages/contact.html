@@ -496,7 +496,11 @@
     const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
     const MAX_LEVEL = 3;
-    const LEVEL_THREE_PERIODIC_SCORE = 1000;
+    const LEVEL_TARGETS = {
+      1: 200,
+      2: 400,
+      3: 800,
+    };
     const LEVEL_UP_LIFE_BONUS = 1;
     const SUPER_WALL_BOUNCE = 1.12;
     const PERIMETER_SCORE_PENALTY = 180;
@@ -638,7 +642,7 @@
     }
 
     function isLevelTwoReflective() {
-      return state.level >= 2 && !state.periodicModeUnlocked;
+      return state.level === 2 && !state.periodicModeUnlocked;
     }
 
     function isPerimeterChallengeActive() {
@@ -674,12 +678,22 @@
         return "Level 3: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
       }
       if (state.level === 3) {
-        return `Level 3: reach ${LEVEL_THREE_PERIODIC_SCORE} score to unlock periodic walls and the QR-frame slider.`;
+        return `Level 3: reach ${LEVEL_TARGETS[3]} hits, then periodic walls take over and the bar moves around the QR square.`;
       }
       if (state.level === 2) {
-        return "Level 2: super reflecting walls push the ball back harder.";
+        return `Level 2: super reflecting walls push the ball back harder until ${LEVEL_TARGETS[2]} hits.`;
       }
-      return "Level 1: classic breakout on the bright QR.";
+      return `Level 1: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits.`;
+    }
+
+    function currentLevelTarget() {
+      return LEVEL_TARGETS[state.level] ?? null;
+    }
+
+    function currentLevelProgressLabel() {
+      const target = currentLevelTarget();
+      if (!target) return `${state.levelHits}`;
+      return `${Math.min(state.levelHits, target)}/${target}`;
     }
 
     function currentSaveNote() {
@@ -730,7 +744,7 @@
     }
 
     function syncPeriodicUnlockState() {
-      const shouldUnlock = state.level >= 3 && state.score >= LEVEL_THREE_PERIODIC_SCORE;
+      const shouldUnlock = state.level >= 3 && state.levelHits >= LEVEL_TARGETS[3];
       if (shouldUnlock && !state.periodicModeUnlocked) {
         state.periodicModeUnlocked = true;
         setPerimeterOffset(defaultPerimeterOffset());
@@ -1014,11 +1028,21 @@
     function syncHud() {
       scoreNode.textContent = String(state.score);
       livesNode.textContent = String(state.lives);
-      levelNode.textContent = String(state.level);
-      patternNode.textContent = `${state.patternHits}/${state.totalBricks}`;
+      levelNode.textContent = isPerimeterChallengeActive() ? "3P" : String(state.level);
+      patternNode.textContent = isPerimeterChallengeActive()
+        ? `${state.patternHits}/${state.totalBricks}`
+        : currentLevelProgressLabel();
       mailQueueNode.textContent = `Mail queues current score: ${state.score}`;
       modeNoteNode.textContent = currentModeNote();
       saveNoteNode.textContent = currentSaveNote();
+    }
+
+    function resetCurrentLevelLayout() {
+      const wasPaused = state.paused;
+      resetBricks();
+      resetBallAndPaddle();
+      state.paused = wasPaused;
+      syncHud();
     }
 
     function resetContactState() {
@@ -1251,7 +1275,14 @@
       state.automataBursts = survivors;
       if (!changed) return;
       syncHud();
-      if (remainingBricks() <= 0) nextLevel();
+      if (remainingBricks() > 0) return;
+
+      if (!isPerimeterChallengeActive() && state.levelHits < (currentLevelTarget() ?? 0)) {
+        resetCurrentLevelLayout();
+        return;
+      }
+
+      nextLevel();
     }
 
     function draw() {
@@ -1341,19 +1372,26 @@
     }
 
     function nextLevel() {
-      const next = Math.min(MAX_LEVEL, state.level + 1);
-      const changed = next !== state.level;
-      state.level = next;
-      if (changed) {
+      if (state.level < MAX_LEVEL) {
+        state.level += 1;
+        state.patternHits = 0;
+        state.levelHits = 0;
+        state.periodicModeUnlocked = false;
         state.lives += LEVEL_UP_LIFE_BONUS;
+        resetBricks();
+        resetBallAndPaddle();
+        syncHud();
+        state.paused = true;
+        syncGameUi();
+        return;
       }
-      state.patternHits = 0;
-      state.levelHits = 0;
+
       syncPeriodicUnlockState();
+      if (!isPerimeterChallengeActive()) return;
+
+      state.patternHits = 0;
       resetBricks();
-      if (isPerimeterChallengeActive()) {
-        setPerimeterOffset(defaultPerimeterOffset());
-      }
+      setPerimeterOffset(defaultPerimeterOffset());
       resetBallAndPaddle();
       syncHud();
       state.paused = true;
@@ -1467,7 +1505,19 @@
           startAutomataBurst(brick, impactX, impactY);
         }
 
-        if (remainingBricks() <= 0) nextLevel();
+        const target = currentLevelTarget();
+        if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+          nextLevel();
+          return;
+        }
+
+        if (remainingBricks() <= 0) {
+          if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+            resetCurrentLevelLayout();
+          } else {
+            nextLevel();
+          }
+        }
         return;
       }
     }
