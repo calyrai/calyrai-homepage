@@ -1,13 +1,14 @@
 // nav_autohide.js
-// Hide/show the PROJECTS header (pill bar) on scroll,
-// with a delay: only after 150px scroll depth.
-// HOME PAGE remains unaffected.
+// Hide/show the site header on supported pages while scrolling.
+// Home remains unaffected unless a page explicitly opts in via body class.
 
 (function () {
   const body = document.body;
 
-  // Only activate on the Projects page
-  if (!body.classList.contains("projects-page")) return;
+  const isProjectsPage = body.classList.contains("projects-page");
+  const isExplorePage = body.classList.contains("explore-page");
+
+  if (!isProjectsPage && !isExplorePage) return;
 
   const header = document.querySelector(".site-header");
   if (!header) return;
@@ -16,20 +17,22 @@
   let ticking = false;
   let isHidden = false;
 
-  // Scroll depth threshold (in px) before auto-hide kicks in
-  const THRESHOLD = 150;
+  const THRESHOLD = isExplorePage ? 72 : 150;
+  const SHOW_DELTA = isExplorePage ? 8 : 0;
 
   function update() {
     const currentY = window.scrollY;
-    const scrollingDown = currentY > lastScrollY;
+    const delta = currentY - lastScrollY;
+    const scrollingDown = delta > 0;
+    const scrollingUpEnough = delta < -SHOW_DELTA;
 
-    // HIDE: only when scrolling down AND below threshold
+    // HIDE: only when scrolling down and sufficiently below the top.
     if (scrollingDown && currentY > THRESHOLD && !isHidden) {
       header.classList.add("site-header-hidden");
       isHidden = true;
     }
-    // SHOW: when scrolling up OR back near the top
-    else if ((!scrollingDown || currentY <= THRESHOLD) && isHidden) {
+    // SHOW: quickly when scrolling back up, or whenever we are near the top.
+    else if ((scrollingUpEnough || currentY <= THRESHOLD) && isHidden) {
       header.classList.remove("site-header-hidden");
       isHidden = false;
     }
@@ -43,5 +46,5 @@
       window.requestAnimationFrame(update);
       ticking = true;
     }
-  });
+  }, { passive: true });
 })();

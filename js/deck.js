@@ -171,12 +171,19 @@
 
   function build() {
     var data   = window.CALYR_DECK;
+    var shell  = document.getElementById('deck-shell');
     var track  = document.getElementById('deck-track');
     var dotsEl = document.getElementById('deck-dots');
     var prevBtn = document.getElementById('deck-prev');
     var nextBtn = document.getElementById('deck-next');
 
-    if (!data || !track || !dotsEl || !prevBtn || !nextBtn) return;
+    if (!data || !shell || !track || !dotsEl || !prevBtn || !nextBtn) return;
+
+    var phoneLayoutQuery = window.matchMedia('(max-width: 700px)');
+
+    function isStackedLayout() {
+      return phoneLayoutQuery.matches && !document.fullscreenElement;
+    }
 
     data.forEach(function (slide, i) {
       var renderer = R[slide.type];
@@ -188,6 +195,8 @@
       // Slide element
       var isSplitEq = slide.type === 'equation' && slide.body;
       var el = document.createElement('div');
+      el.id = 'deck-slide-' + i;
+      el.setAttribute('data-slide-index', String(i));
       el.className = 'deck-slide' +
         (slide.type === 'title'    ? ' deck-slide--title' : '') +
         (slide.type === 'equation' ? ' deck-slide--eq' : '') +
@@ -291,15 +300,34 @@
 
     var total   = track.querySelectorAll('.deck-slide').length;
     var current = 0;
+    var slides  = track.querySelectorAll('.deck-slide');
+
+    function updateLayoutMode() {
+      var stacked = isStackedLayout();
+      shell.classList.toggle('deck-shell--stacked', stacked);
+      if (stacked) {
+        track.style.transform = 'none';
+      } else {
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      }
+      prevBtn.disabled = stacked || current === 0;
+      nextBtn.disabled = stacked || current === total - 1;
+    }
 
     function go(n) {
       current = Math.max(0, Math.min(n, total - 1));
-      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      if (isStackedLayout()) {
+        if (slides[current]) {
+          slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      }
       dotsEl.querySelectorAll('.deck-dot').forEach(function (d, i) {
         d.classList.toggle('active', i === current);
       });
-      prevBtn.disabled = (current === 0);
-      nextBtn.disabled = (current === total - 1);
+      prevBtn.disabled = isStackedLayout() || (current === 0);
+      nextBtn.disabled = isStackedLayout() || (current === total - 1);
       updateToc(data[current] ? data[current].chapter : null);
     }
 
@@ -315,15 +343,22 @@
     });
 
     document.addEventListener('keydown', function (e) {
+      if (isStackedLayout()) return;
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
     });
 
+    if (typeof phoneLayoutQuery.addEventListener === 'function') {
+      phoneLayoutQuery.addEventListener('change', updateLayoutMode);
+    } else if (typeof phoneLayoutQuery.addListener === 'function') {
+      phoneLayoutQuery.addListener(updateLayoutMode);
+    }
+
+    updateLayoutMode();
     go(0);
 
     /* ── Fullscreen ─────────────────────────────────────────────────────── */
     var fsBtn  = document.getElementById('deck-fs');
-    var shell  = document.getElementById('deck-shell');
 
     if (fsBtn && shell) {
       fsBtn.addEventListener('click', function () {
@@ -339,6 +374,7 @@
         fsBtn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;';
         fsBtn.setAttribute('aria-label', isFs ? 'Exit fullscreen' : 'Enter fullscreen');
         shell.classList.toggle('deck-shell--fullscreen', isFs);
+        updateLayoutMode();
       });
     }
   }
