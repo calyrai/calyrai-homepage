@@ -498,11 +498,12 @@
     const CONTACT_PAYLOAD = [
       "MECARD:",
       "N:Rupert Tscheliessnig",
-      "ORG:G'Labs ⏸",
+      "ORG:G´Labs ⏸",
       "EMAIL:rupert.tscheliessnig@calyr.ai",
       ";"
     ].join("");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
+    const CONTACT_CARD_QR_SCALE = 0.76;
     const QR_RENDER_SCALE = 0.84;
     const MAX_LEVEL = 4;
     const LEVEL_TARGETS = {
@@ -1029,7 +1030,10 @@
         )
       );
       const moduleSize = state.contactOpen
-        ? Math.max(landscapePhone ? 8 : narrowScreen ? 10 : 9, baseModuleSize)
+        ? Math.max(
+            landscapePhone ? 6 : narrowScreen ? 8 : 7,
+            Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
+          )
         : Math.max(
             landscapePhone ? 6 : narrowScreen ? 9 : 7,
             Math.floor(baseModuleSize * QR_RENDER_SCALE)
@@ -1564,7 +1568,7 @@
 
         ctx.fillStyle = "#8ef4ff";
         ctx.font = '16px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.fillText("G\'Labs ⏸", layout.textX, layout.line2Y);
+        ctx.fillText("G´Labs ⏸", layout.textX, layout.line2Y);
         ctx.fillText("rupert.tscheliessnig@calyr.ai", layout.textX, layout.line3Y);
         ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
         ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';

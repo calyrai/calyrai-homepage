@@ -41,6 +41,25 @@
 </header>
 
 <section class="deck-shell" aria-label="Presentation" id="deck-shell">
+  <button class="deck-mobile-menu-btn" id="deck-mobile-menu-btn" type="button" aria-label="Open content and help" aria-expanded="false" aria-controls="deck-mobile-panel">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <aside class="deck-mobile-panel" id="deck-mobile-panel" aria-label="Content and help" hidden>
+    <div class="deck-mobile-panel__header">
+      <button class="deck-mobile-tab active" id="deck-mobile-tab-content" type="button" data-panel-tab="content" aria-pressed="true">Content</button>
+      <button class="deck-mobile-tab" id="deck-mobile-tab-help" type="button" data-panel-tab="help" aria-pressed="false">Help</button>
+    </div>
+    <div class="deck-mobile-panel__body">
+      <div class="deck-mobile-section active" id="deck-mobile-section-content"></div>
+      <div class="deck-mobile-section" id="deck-mobile-section-help">
+        <p>Swipe vertically through the deck on phone.</p>
+        <p>Use Content to jump between sections quickly.</p>
+        <p>Rotate or use fullscreen for a larger presentation view.</p>
+      </div>
+    </div>
+  </aside>
   <div class="deck-stage">
     <div class="deck-viewport">
       <div class="deck-track" id="deck-track"></div>

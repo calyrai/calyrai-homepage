@@ -176,6 +176,10 @@
     var dotsEl = document.getElementById('deck-dots');
     var prevBtn = document.getElementById('deck-prev');
     var nextBtn = document.getElementById('deck-next');
+    var mobileMenuBtn = document.getElementById('deck-mobile-menu-btn');
+    var mobilePanel = document.getElementById('deck-mobile-panel');
+    var mobileContent = document.getElementById('deck-mobile-section-content');
+    var mobileHelp = document.getElementById('deck-mobile-section-help');
 
     if (!data || !shell || !track || !dotsEl || !prevBtn || !nextBtn) return;
 
@@ -224,7 +228,54 @@
       dotWrap.appendChild(dot);
       dotWrap.appendChild(dotLabel);
       dotsEl.appendChild(dotWrap);
+
+      if (mobileContent) {
+        var mobileJump = document.createElement('button');
+        mobileJump.className = 'deck-mobile-jump';
+        mobileJump.type = 'button';
+        mobileJump.textContent = labelText || ('Slide ' + (i + 1));
+        mobileJump.addEventListener('click', (function (n) {
+          return function () {
+            go(n);
+            closeMobilePanel();
+          };
+        })(i));
+        mobileContent.appendChild(mobileJump);
+      }
     });
+
+    function setMobileTab(name) {
+      if (!mobilePanel) return;
+      var contentTab = document.getElementById('deck-mobile-tab-content');
+      var helpTab = document.getElementById('deck-mobile-tab-help');
+      var showContent = name === 'content';
+      if (contentTab) {
+        contentTab.classList.toggle('active', showContent);
+        contentTab.setAttribute('aria-pressed', showContent ? 'true' : 'false');
+      }
+      if (helpTab) {
+        helpTab.classList.toggle('active', !showContent);
+        helpTab.setAttribute('aria-pressed', !showContent ? 'true' : 'false');
+      }
+      if (mobileContent) mobileContent.classList.toggle('active', showContent);
+      if (mobileHelp) mobileHelp.classList.toggle('active', !showContent);
+    }
+
+    function closeMobilePanel() {
+      if (!mobilePanel || !mobileMenuBtn) return;
+      mobilePanel.classList.remove('is-open');
+      mobilePanel.hidden = true;
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleMobilePanel() {
+      if (!mobilePanel || !mobileMenuBtn) return;
+      var willOpen = !mobilePanel.classList.contains('is-open');
+      mobilePanel.classList.toggle('is-open', willOpen);
+      mobilePanel.hidden = !willOpen;
+      mobileMenuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) setMobileTab('content');
+    }
 
     /* ── Table of Contents ────────────────────────────────────────────────── */
 
@@ -305,6 +356,8 @@
     function updateLayoutMode() {
       var stacked = isStackedLayout();
       shell.classList.toggle('deck-shell--stacked', stacked);
+      shell.classList.toggle('deck-shell--title-active', current === 0 && !stacked);
+      if (!stacked) closeMobilePanel();
       if (stacked) {
         track.style.transform = 'none';
       } else {
@@ -316,6 +369,7 @@
 
     function go(n) {
       current = Math.max(0, Math.min(n, total - 1));
+      shell.classList.toggle('deck-shell--title-active', current === 0 && !isStackedLayout());
       if (isStackedLayout()) {
         if (slides[current]) {
           slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -333,6 +387,16 @@
 
     prevBtn.addEventListener('click', function () { go(current - 1); });
     nextBtn.addEventListener('click', function () { go(current + 1); });
+
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', toggleMobilePanel);
+    }
+
+    document.querySelectorAll('[data-panel-tab]').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        setMobileTab(tab.getAttribute('data-panel-tab'));
+      });
+    });
 
     // Wire in-deck jump links (data-slide buttons injected by renderLinks)
     track.querySelectorAll('.deck-link--jump').forEach(function (btn) {
