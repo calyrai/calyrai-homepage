@@ -606,7 +606,7 @@
     function buildContactMatrix(text, options = {}) {
       const allowFallback = options.allowFallback !== false;
       if (typeof window.qrcode === "function") {
-        const qr = window.qrcode(0, state.contactOpen ? "M" : "L");
+        const qr = window.qrcode(0, "M");
         qr.addData(text, "Byte");
         qr.make();
 
@@ -1183,7 +1183,7 @@
     }
 
     function resetBricks() {
-      const baseWall = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
+      const baseWall = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
       if (!baseWall) {
         state.bricks = [];
         state.rows = 0;
