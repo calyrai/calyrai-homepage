@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Studio</title>
+  <style>
+    :root {
+      --bg: #07101a;
+      --panel: rgba(9, 22, 34, 0.92);
+      --line: rgba(106, 240, 255, 0.22);
+      --text: rgba(228, 236, 248, 0.94);
+      --muted: rgba(177, 194, 212, 0.72);
+      --accent: #6af0ff;
+      --warm: #ffd166;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(106, 240, 255, 0.11), transparent 22%),
+        linear-gradient(180deg, #07111a 0%, #040a12 100%);
+      padding: 24px;
+    }
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: 2.2rem; letter-spacing: -0.04em; }
+    p { margin: 0 0 16px; color: var(--muted); line-height: 1.65; }
+    textarea {
+      width: 100%;
+      min-height: 360px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+      padding: 16px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.94rem;
+      resize: vertical;
+    }
+    .hash {
+      margin: 16px 0;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(106, 240, 255, 0.08);
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
+      word-break: break-all;
+    }
+    .meta {
+      display: grid;
+      gap: 12px;
+    }
+    .meta-card {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .meta-card strong { display: block; margin-bottom: 6px; color: var(--warm); }
+    .back { display: inline-flex; margin-top: 12px; color: var(--accent); text-decoration: none; }
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel">
+      <h1>Hash Studio</h1>
+      <p>Edit the object payload to see how a content-addressed archive derives a stable identifier from object content.</p>
+      <textarea id="editor">{
+  "type": "Signal(q)",
+  "origin": "dataset_042",
+  "operation": "saxs",
+  "data": [0.12, 0.18, 0.22, 0.19]
+}</textarea>
+      <div class="hash" id="hash">Computing hash…</div>
+    </section>
+
+    <aside class="panel">
+      <div class="meta" id="meta"></div>
+      <a class="back" href="index.html">Back to examples</a>
+    </aside>
+  </div>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const hashBox = document.getElementById('hash');
+    const meta = document.getElementById('meta');
+
+    function canonicalize(value) {
+      if (Array.isArray(value)) {
+        return value.map(canonicalize);
+      }
+      if (value && typeof value === 'object') {
+        return Object.keys(value).sort().reduce((result, key) => {
+          result[key] = canonicalize(value[key]);
+          return result;
+        }, {});
+      }
+      return value;
+    }
+
+    async function digest(text) {
+      const bytes = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(hashBuffer)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function render() {
+      try {
+        const parsed = JSON.parse(editor.value);
+        const canonical = JSON.stringify(canonicalize(parsed));
+        const hash = await digest(canonical);
+        hashBox.textContent = hash;
+        meta.innerHTML = `
+          <div class="meta-card"><strong>Canonical bytes</strong>${canonical.length}</div>
+          <div class="meta-card"><strong>Type</strong>${parsed.type || 'unknown'}</div>
+          <div class="meta-card"><strong>Origin</strong>${parsed.origin || 'none'}</div>
+          <div class="meta-card"><strong>Archive rule</strong>same content → same id</div>
+        `;
+      } catch (error) {
+        hashBox.textContent = `Invalid JSON: ${error.message}`;
+        meta.innerHTML = '<div class="meta-card"><strong>Status</strong>Fix the JSON payload to compute a stable archive ID.</div>';
+      }
+    }
+
+    editor.addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>

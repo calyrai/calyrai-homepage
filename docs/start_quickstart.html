@@ -1,0 +1,33 @@
+<article class="doc-article">
+  <h1>Quick start</h1>
+  <p class="doc-subtitle">Your first Nexus pipeline in five minutes</p>
+
+  <h2>1 — Open the SAXS interface</h2>
+  <p>Navigate to <strong>Explore → SAXS</strong> or open <code>explore.html</code> in the local dev server.
+  Select a raw scattering file (<code>.dat</code> or <code>.csv</code>) from your data directory.</p>
+
+  <h2>2 — Write your first expression</h2>
+  <pre>d = warehouse["my-sample-001"]
+s = d > saxs
+p = s > compute@pr
+f = p > fit@guinier</pre>
+  <p>Each line shadows the previous result into a named variable. The pipeline is lazy — nothing executes until you call <code>resolve(f)</code> or the interface requests the plot.</p>
+
+  <h2>3 — Inspect the result</h2>
+  <p>The interface renders four panes automatically:</p>
+  <ul>
+    <li><strong>I(q)</strong> — raw and smoothed intensity vs. momentum transfer</li>
+    <li><strong>Dimensionless</strong> — scaled (Kratky / Zimm) curves</li>
+    <li><strong>p(r)</strong> — pair-distance distribution</li>
+    <li><strong>PDB</strong> — ab-initio envelope (if <code>fit@envelope</code> was run)</li>
+  </ul>
+
+  <h2>4 — Save to the warehouse</h2>
+  <pre>warehouse.push(f, tags=["guinier", "my-sample-001"])</pre>
+  <p>All intermediate objects — <code>s</code>, <code>p</code>, <code>f</code> — are versioned and linked. You can retrieve any of them later by ID or tag.</p>
+
+  <div class="doc-note">
+    <strong>Note:</strong> If you are running from <code>file://</code> rather than a local server, the warehouse
+    falls back to <code>localStorage</code> for persistence.
+  </div>
+</article>

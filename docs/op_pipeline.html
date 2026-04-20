@@ -1,0 +1,25 @@
+<article class="doc-article">
+  <h1>Pipeline  <code>&gt;</code></h1>
+  <p class="doc-subtitle">Pipe a typed value into the next computation stage</p>
+
+  <h2>Signature</h2>
+  <div class="doc-eq">$$a : T_1 \;>\; f : T_1 \to T_2 \;\Rightarrow\; T_2$$</div>
+
+  <p>The pipeline operator feeds the output of the left-hand expression as the single input of the right-hand stage.
+  Both sides must agree on the transferring type.</p>
+
+  <h2>Examples</h2>
+  <pre>d > saxs                  -- Dataset → Signal(q-space)
+s > compute@pr            -- Signal(q-space) → Distribution(r-space)
+p > fit@guinier           -- Distribution → Fit
+d > saxs > compute@pr > fit@guinier   -- full chain</pre>
+
+  <h2>Chaining</h2>
+  <p>Pipeline chains associate left-to-right. The following are equivalent:</p>
+  <pre>d > saxs > compute@pr
+(d > saxs) > compute@pr</pre>
+
+  <h2>Multiple sources</h2>
+  <p>To pipe a list into a stage that accepts lists, wrap in <code>{ }</code>:</p>
+  <pre>{d1, d2, d3} > merge > saxs</pre>
+</article>

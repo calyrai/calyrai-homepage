@@ -1,0 +1,34 @@
+<article class="doc-article">
+  <h1>Roadmap</h1>
+  <p class="doc-subtitle">Where Nexus is going</p>
+
+  <h2>Near-term (0.2)</h2>
+  <ul>
+    <li><strong>Modular package system</strong> — <code>nexus_language_saxs</code>, <code>nexus_language_spr</code>, <code>nexus_language_nexus</code>, <code>nexus_language_warehouse</code> as individually pip-installable packages with isolated dependency trees.</li>
+    <li><strong>Live SAXS interface</strong> — streaming analysis during beam time, real-time $P(r)$ and Guinier display in the browser.</li>
+    <li><strong>NMR instrument layer</strong> — chemical shift perturbations as constraints on binding site geometry.</li>
+    <li><strong>Cryo-EM instrument layer</strong> — density maps as volumetric constraints on 3D structure.</li>
+    <li><strong>MCMC solver improvements</strong> — HMC / NUTS sampler replacing the current random-walk MH.</li>
+  </ul>
+
+  <h2>Medium-term (0.3 – 0.5)</h2>
+  <ul>
+    <li><strong>Nexus Cloud</strong> — managed warehouse + compute on Calyr.aí infrastructure, zero local install.</li>
+    <li><strong>Collaborative sessions</strong> — shared Nexus contexts with real-time co-editing.</li>
+    <li><strong>Instrument plugin SDK</strong> — formal specification for third-party instrument layers, with automated type-checking and sandbox testing.</li>
+    <li><strong>Publication export</strong> — one-command export of a Nexus result to a reproducible supplement package (data + code + figures).</li>
+  </ul>
+
+  <h2>Long-term vision</h2>
+  <p>
+    Every biophysical measurement in the world — past, present, and future — expressed as a
+    <code>Constraint</code> in a single global warehouse.
+    Nexus becomes the language in which molecular science is written.
+  </p>
+
+  <div class="doc-note">
+    <strong>Contributing:</strong> The Nexus language specification and reference implementation are
+    developed openly. If you want to propose a new operator, instrument layer, or solver,
+    open an issue or contact us via the <a href="pages/contact.html">contact page</a>.
+  </div>
+</article>

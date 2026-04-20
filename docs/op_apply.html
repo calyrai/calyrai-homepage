@@ -1,0 +1,35 @@
+<article class="doc-article">
+  <h1>Apply  <code>@</code></h1>
+  <p class="doc-subtitle">Select a named variant of an operator</p>
+
+  <h2>Concept</h2>
+  <p>
+    Many Nexus operators are families — <code>compute</code> can compute $P(r)$, Kratky plots,
+    distance distributions, and more. The <code>@</code> operator selects the variant at parse time
+    and returns a <em>stage</em> (a typed function) that can be used in a pipeline.
+  </p>
+
+  <h2>Signature</h2>
+  <pre>op @ arg   →   Stage&lt;T_in, T_out&gt;</pre>
+
+  <h2>Built-in variants</h2>
+  <table class="doc-table">
+    <thead><tr><th>Expression</th><th>Input</th><th>Output</th><th>Algorithm</th></tr></thead>
+    <tbody>
+      <tr><td><code>compute@pr</code></td><td>Signal(q-space)</td><td>Distribution(r-space)</td><td>IFT via Shannon / BIFT</td></tr>
+      <tr><td><code>compute@kratky</code></td><td>Signal(q-space)</td><td>Signal(q-space)</td><td>$q^2 I(q)$ vs $q$</td></tr>
+      <tr><td><code>fit@guinier</code></td><td>Signal(q-space)</td><td>Fit</td><td>Linear Guinier plot, $R_g$, $I(0)$</td></tr>
+      <tr><td><code>fit@debye</code></td><td>Signal(q-space)</td><td>Fit</td><td>Debye chain model</td></tr>
+      <tr><td><code>fit@envelope</code></td><td>Distribution(r-space)</td><td>Envelope</td><td>Ab-initio bead modelling (DAMMIF-style)</td></tr>
+      <tr><td><code>fit@kinetic</code></td><td>Signal(time)</td><td>Fit</td><td>Langmuir 1:1 kinetic model</td></tr>
+      <tr><td><code>refine@density</code></td><td>Envelope</td><td>Envelope</td><td>Density-regularised refinement</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Custom operators</h2>
+  <p>Register a new variant in the Python API:</p>
+  <pre>@nexus.operator("fit", "my_model")
+def fit_my_model(signal: Signal) -> Fit:
+    ...</pre>
+  <p>After registration, <code>fit@my_model</code> is available in all Nexus sessions.</p>
+</article>

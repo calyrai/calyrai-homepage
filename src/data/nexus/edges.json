@@ -1,5 +1,9 @@
 [
   {
+    "from": "nexus",
+    "to": "saxs_state_inference"
+  },
+  {
     "from": "saxs_state_inference",
     "to": "chrom"
   },
@@ -34,5 +38,49 @@
   {
     "from": "saxs_state_inference",
     "to": "cryo-em"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs_hdl_ldl"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "research_portfolio"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "research_program_head"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "spr-kinetic-modes"
+  },
+  {
+    "from": "spr-kinetic-modes",
+    "to": "paper-spr-kinetic-modes"
+  },
+  {
+    "from": "spr-data",
+    "to": "paper-spr-evaluation"
+  },
+  {
+    "from": "spr-data",
+    "to": "paper-constraint-coupled"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs_sbpa"
+  },
+  {
+    "from": "saxs_sbpa",
+    "to": "paper-sbpa"
+  },
+  {
+    "from": "chrom",
+    "to": "paper-chrom-fractional"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "paper-fco"
   }
 ]

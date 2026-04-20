@@ -127,6 +127,14 @@
   link_label: "Open project"
   url: "projects/saxs_hdl_ldl.html"
 
+- id: research_portfolio
+  title: "Research Portfolio"
+  subtitle: "Public paper-program map"
+  description: "A public-facing map of the current Calyr.ai paper program across SAXS, lipoproteins, chromatography, SBPA, and shared inference logic."
+  color: "#ff6fb2"
+  link_label: "Open project"
+  url: "projects/research_portfolio.html"
+
 - id: saxs-viewer
   title: "SAXS Viewer"
   subtitle: "Interactive scattering console (browser-scale)."

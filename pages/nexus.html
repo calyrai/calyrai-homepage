@@ -15,6 +15,10 @@
 
   <script src="../js/collect_hearts.js" defer></script>
   <script src="../js/orbit_logo.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
 </head>
 
 <body>
@@ -24,6 +28,7 @@
       <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
       <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
       <a href="../team.html" class="nav-pill glow-nav">Team</a>
+      <a href="../docs.html" class="nav-pill glow-nav">Docs</a>
     </div>
 
     <nav class="nav-links" aria-label="Primary">
@@ -62,6 +67,8 @@
 
       <nav class="nexus-outline" aria-label="Nexus sections">
         <a class="nexus-outline-link" href="#concept">Warehouse concept</a>
+        <a class="nexus-outline-link" href="#core">Mathematical core</a>
+        <a class="nexus-outline-link" href="#dual-architecture">Dual architecture</a>
         <a class="nexus-outline-link" href="#layers">Experimental layers</a>
         <a class="nexus-outline-link" href="#works">Papers and works</a>
         <a class="nexus-outline-link" href="#map">Interactive map</a>
@@ -99,9 +106,39 @@
         </div>
       </section>
 
+      <section id="core" class="nexus-block nexus-core-block">
+        <div class="nexus-core-paper">
+          <p class="nexus-eq-manifesto">$$S_i \;\longrightarrow\; C_i(\theta), \quad \theta \in \bigcap_i C_i$$</p>
+          <p class="nexus-eq-philosophy">$S_i$ experimental signal &nbsp;·&nbsp; $C_i$ induced constraint &nbsp;·&nbsp; $\theta$ molecular state</p>
+          <p class="nexus-eq-manifesto">Signals do not fit models. Signals constrain reality.</p>
+        </div>
+      </section>
+
+      <section id="dual-architecture" class="nexus-block">
+        <h2 class="nexus-h2">Scientific and conceptual architecture</h2>
+        <p class="nexus-body">Nexus holds two coupled voices at once: an operational scientific architecture that reviewers can recognize immediately, and a conceptual architecture that explains what kind of object the full apparatus-code-signal-control system becomes.</p>
+        <div class="nexus-dual-grid">
+          <article class="nexus-dual-card">
+            <div class="nexus-integration-label">Operational scientific core</div>
+            <h3>Scientific modules</h3>
+            <ul class="nexus-bullets nexus-bullets-tight">
+              <li>Structural layer: AlphaFold, SAXS, PDD, and resin morphology define geometry, accessibility, and heterogeneity.</li><li>Interfacial kinetic layer: SPR and adsorption operators define multistate binding and constitutive kinetics.</li><li>Transport layer: packed-bed convection-diffusion executes the adsorption law under flow.</li><li>Geometric substrate layer: LAMMPS packings and OpenFOAM renormalize porosity, tortuosity, and accessibility.</li><li>Control layer: pH, temperature, ionic strength, solvent composition, and forcing functions perturb the system.</li><li>Emergent-output layer: chromatograms, retention, tailing, hysteresis, and resonance-catastrophe regimes become the readout.</li>
+            </ul>
+          </article>
+          <article class="nexus-dual-card">
+            <div class="nexus-integration-label">Meta-theoretical frame</div>
+            <h3>Theoretical interpreters</h3>
+            <ul class="nexus-bullets nexus-bullets-tight">
+              <li>Flusser: apparatus, program, and technical image explain how observables are generated and mediated.</li><li>Wiener: feedback, control, and dynamic regulation explain coupled forcing and response.</li><li>Shannon: signal and information justify multi-channel state reconstruction.</li><li>Kittler: code is materially instantiated in transport equations, adsorption kinetics, and device logic.</li><li>Prigogine: irreversible, driven, non-equilibrium dynamics explain emergence and instability.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
       <section id="layers" class="nexus-block">
         <h2 class="nexus-h2">Experimental layers</h2>
         <p class="nexus-body">The homepage is organised by experimental layers that all feed the same warehouse logic. Each layer keeps its own native signal, but the interpretation path stays governed and comparable.</p>
+        <p class="nexus-body nexus-layer-tagline">Chromatography becomes an apparatus-mediated nonlinear transformation system: adsorption acts as constitutive code, packed-bed flow executes that code, and the measured traces become technical images of underlying state.</p>
         <div class="nexus-integration-grid">
           <a class="nexus-card-link" href="../projects/exp_nodes_pr_iq_peaks.html">
             <article class="nexus-integration-card">
@@ -192,7 +229,20 @@
           <div class="explore-links" aria-label="Node links"></div>
         </div>
       </section>
-      <!-- CALYR_CONTACT_BLOCK -->
+      <section class="nexus-block" aria-label="Contact">
+  <h2 class="nexus-h2">Contact</h2>
+  <p class="nexus-body">
+    Rupert Tscheliessnig<br>
+    Scientific ML & Structural Biophysics<br>
+  </p>
+  <p class="nexus-body">
+    <a href="mailto:rupert.tscheliessnig@calyr.ai" class="glow-link">rupert.tscheliessnig@calyr.ai</a>
+  </p>
+  <p class="nexus-body">
+    <a href="https://bsky.app/profile/calyrai.bsky.social" class="glow-link">Bluesky</a>
+  </p>
+</section>
+
     </div>
   </section>
 </main>

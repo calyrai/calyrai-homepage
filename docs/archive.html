@@ -1,0 +1,91 @@
+<article class="doc-article">
+  <h1>Archive</h1>
+  <p class="doc-subtitle">Physical storage for a queryable scientific state space</p>
+
+  <h2>Why archive exists</h2>
+  <p>
+    A Nexus workflow does not produce isolated files. It produces datasets, signals,
+    intermediate states, models, and computation graphs that must remain reproducible and linked.
+    The archive is the durable layer that stores those artifacts without losing their relationships.
+    It is therefore more than file storage. It is a structured, queryable scientific state space.
+  </p>
+
+  <h2>What existing standards solve</h2>
+  <table class="doc-table">
+    <thead><tr><th>Approach</th><th>Strength</th><th>Limit for Nexus</th></tr></thead>
+    <tbody>
+      <tr><td>Folder trees</td><td>Simple and familiar</td><td>No lineage, no reproducibility, no graph semantics</td></tr>
+      <tr><td>HDF5</td><td>Structured and fast for hierarchical data</td><td>Weak expression of workflows and cross-object provenance</td></tr>
+      <tr><td>NeXus</td><td>Strong scientific hierarchy for facility data</td><td>Too rigid for a typed DSL plus computation graph model</td></tr>
+      <tr><td>Workflow engines</td><td>Dependency tracking between steps</td><td>Usually file-oriented rather than object-oriented</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Recommended layout</h2>
+  <p>
+    The archive should be hybrid: content-addressed object storage for immutable scientific records,
+    graph storage for provenance and dependency structure, and an index for fast lookup.
+    The filesystem stores blobs efficiently, while SQLite maintains object metadata and edges.
+  </p>
+  <pre>nexus_archive/
+├── datasets/
+│   └── &lt;dataset_id&gt;/
+│       ├── raw/
+│       └── metadata.json
+├── objects/
+│   └── &lt;hash&gt;.json
+├── graphs/
+│   └── &lt;graph_id&gt;.json
+├── results/
+│   └── &lt;result_id&gt;.json
+└── index.db</pre>
+
+  <h2>Core object model</h2>
+  <p>
+    Every stored entity is an object with a declared type, its origin, and the operation that produced it.
+    Content-addressed IDs make identical computations converge to the same stored result.
+    New inputs generate new IDs, so history is preserved without overwriting prior states.
+  </p>
+  <pre>{
+  "type": "Signal(q)",
+  "data": [...],
+  "origin": "dataset_042",
+  "operation": "saxs"
+}</pre>
+
+  <h2>Content addressing</h2>
+  <p>
+    The archive should name immutable objects by the hash of their content rather than by ad hoc filenames.
+    This gives deterministic caching and strong reproducibility: same input, same output, same object ID.
+    The warehouse can then expose stable references and version views without mutating the archive itself.
+  </p>
+
+  <h2>Graph storage</h2>
+  <p>
+    The archive must also persist computation graphs, not only terminal results.
+    A graph record captures which datasets entered a computation, which operators were applied,
+    and which downstream results depend on each node.
+  </p>
+  <pre>{
+  "nodes": [
+    {"op": "dataset", "id": "run_042"},
+    {"op": "saxs"},
+    {"op": "compute", "arg": "pr"}
+  ]
+}</pre>
+
+  <h2>Archive vs warehouse</h2>
+  <p>
+    The archive is the physical persistence layer.
+    The warehouse is the logical view over that persistence layer.
+    The archive stores immutable scientific state; the warehouse makes it discoverable, typed, and queryable.
+  </p>
+
+  <h2>Best practice</h2>
+  <pre>objects(id, type, created_at)
+edges(source, target)</pre>
+  <p>
+    Avoid using only folders, only HDF5, or only a database.
+    The practical design is hybrid: files for blobs, a graph for provenance, and SQLite for indexing.
+  </p>
+</article>

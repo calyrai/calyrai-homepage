@@ -1,0 +1,75 @@
+<article class="doc-article">
+  <h1>Overview</h1>
+  <p class="doc-subtitle">What Nexus is and why it exists</p>
+
+  <p>
+    Nexus is the language and runtime at the core of Calyr.aí. It expresses scientific
+    measurement pipelines as typed, composable expressions — turning raw instrument data
+    into constrained molecular parameters.
+  </p>
+
+  <h2>Design goals</h2>
+  <ul>
+    <li><strong>One language, many instruments</strong> — SAXS, SPR, ITC, chromatography, MD all share the same operator vocabulary.</li>
+    <li><strong>Lazy, graph-based execution</strong> — nothing runs until a result is requested; the runtime can parallelise and cache automatically.</li>
+    <li><strong>Constraint-first modelling</strong> — every measurement constrains a shared parameter space; inconsistencies surface as constraint violations, not silent errors.</li>
+    <li><strong>Warehouse-native</strong> — every intermediate object is versioned and addressable; reproducibility is structural, not procedural.</li>
+  </ul>
+
+  <h2>Three-minute example</h2>
+  <pre>-- load a SAXS run and fit it
+d = warehouse["run-042"]
+d > saxs > compute@pr > fit@guinier</pre>
+  <p>
+    The <code>&gt;</code> operator pipes a typed value into the next stage.
+    <code>compute@pr</code> applies the <code>compute</code> operator with argument <code>pr</code>
+    (pair-distance distribution). The result is a <code>Fit</code> object stored back in the warehouse.
+  </p>
+
+  <h2>Where to go next</h2>
+  <ul>
+    <li><a href="#start/quickstart" class="doc-page-link" style="display:inline">Quick start</a> — run your first pipeline in five minutes.</li>
+    <li><a href="#philosophy/core" class="doc-page-link" style="display:inline">Core principle</a> — the mathematical manifesto behind Nexus.</li>
+    <li><a href="#language/syntax" class="doc-page-link" style="display:inline">Syntax reference</a> — the full grammar.</li>
+  </ul>
+
+  <hr class="doc-rule" />
+
+  <div class="doc-internal-note">
+    <h2>Internal — contributor notes</h2>
+    <p>
+      This docs site and the internal MkDocs hub are <strong>two separate systems</strong>.
+      See the full guide at <a href="#internal/docs_system">Internal → Docs system</a>.
+    </p>
+    <table class="doc-table">
+      <thead><tr><th></th><th>MkDocs hub (internal)</th><th>This site (public)</th></tr></thead>
+      <tbody>
+        <tr><td>Source files</td><td><code>docs/**/*.md</code></td><td><code>apps/homepage/docs/*.html</code></td></tr>
+        <tr><td>Nav config</td><td><code>mkdocs.yml</code></td><td><code>apps/homepage/data/docs.js</code></td></tr>
+        <tr><td>Run locally</td><td><code>mkdocs serve</code></td><td>open <code>docs.html</code> in browser</td></tr>
+        <tr><td>Format</td><td>Markdown</td><td>HTML <code>&lt;article&gt;</code> fragments</td></tr>
+        <tr><td>Audience</td><td>Contributors</td><td>Nexus users</td></tr>
+      </tbody>
+    </table>
+    <h3>To add a page here (public docs)</h3>
+    <ol>
+      <li>Create <code>apps/homepage/docs/&lt;section&gt;_&lt;page&gt;.html</code> as an <code>&lt;article class="doc-article"&gt;</code> fragment.</li>
+      <li>Add an entry to <code>apps/homepage/data/docs.js</code> → <code>window.CALYR_DOCS</code>:<br>
+        <code>{ id: 'my_page', title: 'My Page', src: 'docs/section_my_page.html' }</code>
+      </li>
+      <li>The page is live at <code>docs.html#section/my_page</code> — no build step needed.</li>
+    </ol>
+    <h3>To add a page to the MkDocs hub</h3>
+    <ol>
+      <li>Create the <code>.md</code> file under <code>docs/</code>.</li>
+      <li>Add it to the <code>nav:</code> section in <code>mkdocs.yml</code>.</li>
+      <li>Run <code>mkdocs serve</code> — hot-reloads automatically.</li>
+    </ol>
+    <h3>Known build issue</h3>
+    <p>
+      <code>mkdocs build --strict</code> fails on broken <code>docs/_repo/</code> symlinks from a previous
+      auto-generation run. Non-strict builds and <code>mkdocs serve</code> are unaffected.
+      Regenerate with <code>python3 tools/repo/build_docs_hub.py</code>.
+    </p>
+  </div>
+</article>

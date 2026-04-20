@@ -194,6 +194,18 @@ def _inject_contact_into_nexus_page(cfg: dict[str, Any], src_nexus_html: Path) -
     src_nexus_html.write_text(html, encoding="utf-8")
 
 
+def _render_nexus_edges_js(edges: list[dict[str, str]]) -> str:
+    payload = json.dumps(edges, indent=2, ensure_ascii=False)
+    return (
+        "// data/nexus_edges.js\n"
+        "// Generated from data/nexus.yaml by scripts/build_nexus_yaml.py\n"
+        "// All explicit node→node connections for the explore constellation.\n\n"
+        "window.CALYR_NEXUS_EDGES = "
+        + payload
+        + ";\n"
+    )
+
+
 def _write_nexus_edges(cfg: dict[str, Any], out_edges_json: Path) -> None:
     nexus = cfg.get("nexus")
     if not isinstance(nexus, dict):
@@ -220,6 +232,9 @@ def main(argv: list[str]) -> int:
     src_root = root / "src"
     yaml_path = src_root / "data" / "nexus.yaml"
 
+    # Fall back to data/nexus.yaml at repo root when src/ doesn't exist.
+    if not yaml_path.exists():
+        yaml_path = root / "data" / "nexus.yaml"
     cfg_raw = _load_yaml(yaml_path)
     if not isinstance(cfg_raw, dict):
         _die("nexus.yaml must contain a top-level mapping")
@@ -243,6 +258,17 @@ def main(argv: list[str]) -> int:
         out_edges_json = out_root / "data" / "nexus" / "edges.json"
         _write_nexus_edges(cfg_raw, out_edges_json=out_edges_json)
         wrote_edges_any = wrote_edges_any or out_edges_json.exists()
+
+        # Also emit edges as a JS window variable for the explore constellation.
+        nexus_cfg = cfg_raw.get("nexus") or {}
+        conns = nexus_cfg.get("connections") or []
+        edges_list: list[dict[str, str]] = [
+            {"from": str(c.get("from") or ""), "to": str(c.get("to") or "")}
+            for c in conns
+            if isinstance(c, dict) and c.get("from") and c.get("to")
+        ]
+        out_nexus_edges_js = out_root / "data" / "nexus_edges.js"
+        _write_text(out_nexus_edges_js, _render_nexus_edges_js(edges_list))
 
         # Optional: inject identity contact into the generated Nexus page (build-time).
         _inject_contact_into_nexus_page(cfg_raw, src_nexus_html=out_root / "pages" / "nexus.html")

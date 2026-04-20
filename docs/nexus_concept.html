@@ -1,0 +1,41 @@
+<article class="doc-article">
+  <h1>Nexus concept</h1>
+  <p class="doc-subtitle">The integration layer that unifies all instruments</p>
+
+  <h2>What is a Nexus?</h2>
+  <p>
+    A <em>Nexus</em> is a named, versioned integration context.
+    It holds a set of instrument-derived <code>Constraint</code> objects and a shared
+    parameter vector $\theta$. When you <code>solve</code> a Nexus, the runtime finds
+    $\theta^*$ that satisfies — or best satisfies — all constraints simultaneously.
+  </p>
+
+  <h2>Creating a Nexus</h2>
+  <pre>n = nexus @ {
+  d_saxs > saxs > to@constraint,
+  d_spr  > spr  > to@constraint,
+  d_itc  > itc  > to@constraint
+}</pre>
+  <p>This expression constructs a Nexus object; no solving happens yet.</p>
+
+  <h2>Solving</h2>
+  <pre>result = n > solve@MAP       -- maximum a-posteriori estimate
+result = n > solve@mcmc      -- full posterior sampling</pre>
+  <div class="doc-eq">$$\theta^* = \arg\min_{\theta} \sum_i \ell_i(\theta) + \log p(\theta)$$</div>
+
+  <h2>Result structure</h2>
+  <p>The <code>solve</code> output is a <code>Fit</code> with additional fields:</p>
+  <ul>
+    <li><code>.theta</code> — point estimate of all parameters</li>
+    <li><code>.posterior</code> — posterior samples (MCMC only)</li>
+    <li><code>.constraint_residuals</code> — per-instrument $\chi^2$ contributions</li>
+    <li><code>.inconsistencies</code> — list of any detected constraint conflicts</li>
+  </ul>
+
+  <h2>Provenance</h2>
+  <p>
+    The Nexus object is stored in the warehouse with links to all its input datasets and constraints.
+    Reproducing a result from a Nexus ID requires no additional metadata — everything is
+    encoded in the graph.
+  </p>
+</article>

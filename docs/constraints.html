@@ -1,0 +1,59 @@
+<article class="doc-article">
+  <h1>Constraint system</h1>
+  <p class="doc-subtitle">How each instrument narrows the space of valid molecular parameters</p>
+
+  <h2>Definition</h2>
+  <p>
+    A <code>Constraint</code> is a predicate $C_i : \Theta \to \{0, 1\}$ (hard constraint) or
+    a likelihood contribution $\ell_i(\theta)$ (soft constraint).
+    Nexus supports both; in practice most instrument constraints are soft (chi-squared penalties).
+  </p>
+
+  <h2>From signal to constraint</h2>
+  <p>Calling an instrument operator on a <code>Signal</code> produces a <code>Constraint</code>:</p>
+  <pre>c_saxs = d_saxs > saxs > to@constraint
+c_spr  = d_spr  > spr  > to@constraint</pre>
+
+  <h2>Instrument constraint catalogue</h2>
+  <table class="doc-table">
+    <thead><tr><th>Operator</th><th>Parameters constrained</th><th>Constraint type</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>saxs > to@constraint</code></td>
+        <td>$R_g$, $D_{\max}$, $N_S$ (Shannon channels), excluded volume, oligomeric state</td>
+        <td>Soft ($\chi^2$) + hard (positivity of $P(r)$)</td>
+      </tr>
+      <tr>
+        <td><code>spr > to@constraint</code></td>
+        <td>$k_\text{on}$, $k_\text{off}$, $K_d$, stoichiometry $n$</td>
+        <td>Soft (residual sum of squares)</td>
+      </tr>
+      <tr>
+        <td><code>itc > to@constraint</code></td>
+        <td>$\Delta H$, $K_d$, $n$</td>
+        <td>Soft ($\chi^2$)</td>
+      </tr>
+      <tr>
+        <td><code>chrom > to@constraint</code></td>
+        <td>$R_H$, oligomeric state</td>
+        <td>Hard (elution volume bounds)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Combining constraints</h2>
+  <p>
+    The <code>intersect</code> operator combines any number of constraints into a joint system:
+  </p>
+  <pre>joint = { c_saxs, c_spr, c_itc } > intersect</pre>
+  <div class="doc-eq">
+    $$\mathcal{L}(\theta) = \sum_i \ell_i(\theta), \qquad \theta^* = \arg\min_\theta \mathcal{L}(\theta)$$
+  </div>
+
+  <h2>Inconsistency detection</h2>
+  <p>
+    The runtime compares the feasible sets of all hard constraints before solving.
+    If $\bigcap_i C_i = \emptyset$, a <code>ConstraintError</code> is raised with a diagnostic
+    listing which pair of constraints is mutually exclusive.
+  </p>
+</article>

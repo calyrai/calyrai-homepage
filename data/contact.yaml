@@ -2,21 +2,21 @@
 # Contact details used for QR/vCard generation.
 
 contact:
-  full_name: "Rupert Gelisnig"
+  full_name: "Rupert Tscheliessnig"
   first_name: "Rupert"
-  last_name: "Gelisnig"
+  last_name: "Tscheliessnig"
   email: "rupert.tscheliessnig@calyr.ai"
-  phone: "069919200915"
-  organization: "CalyrAI"
-  url: "https://calyr.ai/"
+  phone: "+4369919200915"
+  organization: "G'Labs"
+  url: "http://localhost:8080/pages/contact.html"
 
   # Optional: provide an explicit vCard payload instead of the fields above.
   # vcard: |-
   #   BEGIN:VCARD
   #   VERSION:3.0
-  #   FN:Rupert Gelisnig
-  #   ORG:CalyrAI
-  #   TEL;TYPE=CELL:+43...
+  #   FN:Rupert Tscheliessnig
+  #   ORG:G'Labs
+  #   TEL;TYPE=CELL:+4369919200915
   #   EMAIL:rupert.tscheliessnig@calyr.ai
-  #   URL:https://calyr.ai/
+  #   URL:http://localhost:8080/pages/contact.html
   #   END:VCARD

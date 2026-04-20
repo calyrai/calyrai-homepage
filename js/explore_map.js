@@ -39,10 +39,10 @@
     return `${ROOT_PREFIX}/${s}`;
   }
 
-  const NEXUS_HREF = toSiteRootHref("pages/nexus.html");
+  const NEXUS_HREF = toSiteRootHref("explore.html");
 
-  const STORAGE_KEY = "calyr_explore_state_v5";
-  const LEGACY_STORAGE_KEYS = ["calyr_explore_state_v3", "calyr_explore_state_v4"];
+  const STORAGE_KEY = "calyr_explore_state_v7";
+  const LEGACY_STORAGE_KEYS = ["calyr_explore_state_v3", "calyr_explore_state_v4", "calyr_explore_state_v5", "calyr_explore_state_v6"];
   const ENGAGEMENT_KEY = "calyr_explore_engagement_v1";
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -332,7 +332,7 @@
     saveTimer = window.setTimeout(() => {
       saveTimer = 0;
       const payload = {
-        v: 4,
+        v: 5,
         nodes,
         edges,
         remaining,
@@ -347,7 +347,7 @@
     const raw = lsGet(STORAGE_KEY);
     if (!raw) return false;
     const parsed = safeJsonParse(raw);
-    if (!parsed || parsed.v !== 4) return false;
+    if (!parsed || parsed.v !== 5) return false;
     if (!parsed.nodes || !parsed.edges || !parsed.remaining || !parsed.transform) return false;
 
     nodes = parsed.nodes;
@@ -427,6 +427,32 @@
     nodes[root.id] = root;
     showLink(root.id);
 
+    // BFS-seed explicit connections declared in nexus.yaml (via CALYR_NEXUS_EDGES).
+    const yamlEdges = (typeof window !== "undefined" && window.CALYR_NEXUS_EDGES) || [];
+    if (yamlEdges.length > 0) {
+      const adj = Object.create(null);
+      yamlEdges.forEach(function (e) {
+        if (!adj[e.from]) adj[e.from] = [];
+        adj[e.from].push(e.to);
+      });
+      const bfsQueue = ["nexus"];
+      const visited = new Set(["nexus"]);
+      while (bfsQueue.length) {
+        const cur = bfsQueue.shift();
+        (adj[cur] || []).forEach(function (childId) {
+          if (!visited.has(childId)) {
+            visited.add(childId);
+            addNode(cur, childId);
+            bfsQueue.push(childId);
+          }
+        });
+      }
+    }
+
+    // Remove already-placed nodes from the organic-expansion queue.
+    const placed = new Set(Object.keys(nodes));
+    remaining = remaining.filter((id) => !placed.has(id));
+
     transform = { x: 0, y: 0, k: 1 };
     activeId = "nexus";
 
@@ -452,9 +478,15 @@
   }
 
   function addNode(parentId, childId) {
-    if (nodes[childId]) return;
     const parent = nodes[parentId];
     if (!parent) return;
+    // If already placed (multi-parent), just record the cross-edge.
+    if (nodes[childId]) {
+      if (!edges.some((e) => e.from === parentId && e.to === childId)) {
+        edges.push({ from: parentId, to: childId });
+      }
+      return;
+    }
 
     const minSep2 = 54 * 54;
     let pos = null;

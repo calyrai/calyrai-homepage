@@ -1,0 +1,38 @@
+<article class="doc-article">
+  <h1>CLI</h1>
+  <p class="doc-subtitle">Running Nexus from the command line</p>
+
+  <h2>Installation check</h2>
+  <pre>nexus --version</pre>
+
+  <h2>Running a script file</h2>
+  <pre>nexus run analysis.nx</pre>
+  <p>The <code>.nx</code> extension is conventional; any plain-text file is accepted.</p>
+
+  <h2>Inlining an expression</h2>
+  <pre>nexus eval 'd = warehouse["run-042"]; d > saxs > fit@guinier'</pre>
+
+  <h2>Warehouse commands</h2>
+  <pre>nexus warehouse list                     # list all objects
+nexus warehouse list --tag guinier       # filter by tag
+nexus warehouse show 3f8a               # display object metadata
+nexus warehouse push result.json        # import an external result
+nexus warehouse export 3f8a output.csv  # export a Fit as CSV</pre>
+
+  <h2>Operator registry</h2>
+  <pre>nexus ops list          # show all registered operators
+nexus ops show fit      # show all variants of 'fit'
+nexus ops show fit@guinier  # show signature + docstring</pre>
+
+  <h2>Environment variables</h2>
+  <table class="doc-table">
+    <thead><tr><th>Variable</th><th>Default</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>NEXUS_WAREHOUSE</code></td><td><code>sqlite</code></td><td>Warehouse backend</td></tr>
+      <tr><td><code>NEXUS_WAREHOUSE_PATH</code></td><td><code>~/.nexus/warehouse.db</code></td><td>Filesystem backend path</td></tr>
+      <tr><td><code>NEXUS_WORKERS</code></td><td>CPU count</td><td>Thread pool size</td></tr>
+      <tr><td><code>NEXUS_GRAPH_CACHE_MB</code></td><td>512</td><td>In-memory graph cache limit</td></tr>
+      <tr><td><code>NEXUS_LOG_LEVEL</code></td><td><code>WARNING</code></td><td>Logging verbosity</td></tr>
+    </tbody>
+  </table>
+</article>

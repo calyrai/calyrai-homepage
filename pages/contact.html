@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/explore.css" />
   <link rel="stylesheet" href="../css/nexus.css" />
   <link rel="stylesheet" href="../css/impressum.css" />
-  <script src="../js/vendor_qrcode.js"></script>
+
   <style>
     :root {
       --bg: #050816;
@@ -409,16 +409,17 @@
 <body>
   <header class="site-header">
     <div class="nav-inner">
-      <div class="nav-left-row">
-        <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
-        <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
-        <a href="../team.html" class="nav-pill glow-nav">Team</a>
-      </div>
-
-      <nav class="nav-links" aria-label="Primary">
-        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-        <a href="contact.html" class="nav-pill glow-nav">Contact</a>
-        <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+      <a href="../index.html" class="nav-brand">Calyr.a&iacute;</a>
+      <nav class="nav-core" aria-label="Primary">
+        <a href="../explore.html" class="nav-pill">Explore</a>
+        <a href="../docs.html" class="nav-pill">Docs</a>
+        <a href="../team.html" class="nav-pill">Team</a>
+        <a href="../publications.html" class="nav-pill">Publications</a>
+      </nav>
+      <nav class="nav-secondary" aria-label="Secondary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+        <a href="contact.html" class="nav-pill active">Contact</a>
+        <a href="http://localhost:8000" class="nav-pill" target="_blank" rel="noopener">Login</a>
       </nav>
     </div>
   </header>
@@ -493,7 +494,19 @@
     const mailBtn = document.getElementById("mail-btn");
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
-    const CONTACT_PAYLOAD = "MECARD:N:Tscheliessnig,Rupert;ORG:calyr.ai;TEL:+4369919200915;EMAIL:rupert.tscheliessnig@calyr.ai;URL:https://calyr.ai;;";
+    const CONTACT_PAYLOAD = [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      "N:Tscheliessnig;Rupert;;;",
+      "FN:Rupert Tscheliessnig",
+      "ORG:G'Labs / Calyr.ai",
+      "EMAIL;TYPE=INTERNET:rupert.tscheliessnig@calyr.ai",
+      "TEL;TYPE=CELL:+4369919200915",
+      "URL:https://calyr.ai/pages/contact.html",
+      "URL:https://bsky.app/profile/calyrai.bsky.social",
+      "NOTE:Calyr.ai contact card",
+      "END:VCARD"
+    ].join("\n");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
     const MAX_LEVEL = 4;
     const LEVEL_TARGETS = {
@@ -709,6 +722,31 @@
     }
 
     function parseContactPayload(payload) {
+      if (payload.startsWith("BEGIN:VCARD")) {
+        const fields = {};
+        const urls = [];
+        const lines = payload.split(/\r?\n/);
+        for (const line of lines) {
+          if (!line || !line.includes(":")) continue;
+          const idx = line.indexOf(":");
+          const rawKey = line.slice(0, idx);
+          const value = line.slice(idx + 1).trim();
+          const key = rawKey.split(";")[0].toUpperCase();
+          if (key === "URL") {
+            urls.push(value);
+            continue;
+          }
+          if (!(key in fields)) fields[key] = value;
+        }
+        return {
+          fullName: fields.FN || "",
+          organization: fields.ORG || "",
+          phone: fields.TEL || "",
+          email: fields.EMAIL || "",
+          url: urls[0] || "",
+        };
+      }
+
       const fields = {};
       const parts = payload.replace(/^MECARD:/, "").split(";");
       for (const part of parts) {

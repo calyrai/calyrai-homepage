@@ -1,0 +1,70 @@
+<article class="doc-article">
+  <h1>Type system</h1>
+  <p class="doc-subtitle">The built-in types and their domains</p>
+
+  <h2>Primitive types</h2>
+  <table class="doc-table">
+    <thead><tr><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Number</code></td><td>IEEE-754 double, optionally with physical unit</td></tr>
+      <tr><td><code>String</code></td><td>UTF-8 text</td></tr>
+      <tr><td><code>Bool</code></td><td><code>true</code> / <code>false</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Scientific types</h2>
+  <table class="doc-table">
+    <thead><tr><th>Type</th><th>Fields</th><th>Typical domain</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>Dataset</code></td>
+        <td>id, source, format, metadata</td>
+        <td>Raw file from instrument or warehouse</td>
+      </tr>
+      <tr>
+        <td><code>Signal(domain, values, units)</code></td>
+        <td>domain axis, values axis, physical units</td>
+        <td>$I(q)$, SPR response, ITC heat</td>
+      </tr>
+      <tr>
+        <td><code>Distribution(domain, values)</code></td>
+        <td>same as Signal</td>
+        <td>$P(r)$, elution profile</td>
+      </tr>
+      <tr>
+        <td><code>Model(θ)</code></td>
+        <td>parameter vector $\theta$, prior, log-likelihood</td>
+        <td>Guinier, Debye, kinetic</td>
+      </tr>
+      <tr>
+        <td><code>Fit(model, result, residuals)</code></td>
+        <td>fitted <code>Model</code>, residual <code>Signal</code></td>
+        <td>Guinier result, $k_\text{on}/k_\text{off}$</td>
+      </tr>
+      <tr>
+        <td><code>Constraint(C, θ)</code></td>
+        <td>predicate $C_i(\theta)$, feasible set</td>
+        <td>Any instrument-derived constraint</td>
+      </tr>
+      <tr>
+        <td><code>Envelope</code></td>
+        <td>3D bead/voxel model</td>
+        <td>SAXS ab-initio reconstruction</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Domain labels</h2>
+  <p>Domains are string tags attached to <code>Signal</code> and <code>Distribution</code>:</p>
+  <ul>
+    <li><code>q-space</code> — momentum transfer $q$ (Å⁻¹)</li>
+    <li><code>r-space</code> — real-space distance $r$ (Å)</li>
+    <li><code>time</code> — seconds (kinetics, chromatography)</li>
+    <li><code>concentration</code> — molar ratio (ITC)</li>
+    <li><code>energy</code> — kcal/mol or kJ/mol (MD)</li>
+  </ul>
+  <p>Operators check domain compatibility; e.g., <code>compute@pr</code> requires <code>Signal(q-space, ...)</code> as input.</p>
+
+  <h2>Type coercion</h2>
+  <p>There is none. All conversions are explicit operator applications. This prevents silent unit mismatches.</p>
+</article>

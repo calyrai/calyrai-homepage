@@ -2,6 +2,691 @@
    EXPLORE PAGE
    ========================= */
 
+/* ---- Presentation deck ---- */
+.deck-shell {
+  width: min(94vw, 1500px);
+  max-width: 1500px;
+  margin: 40px auto 0;
+  padding: 0 8px;
+}
+
+/* Stage: viewport + ToC side-panel */
+.deck-stage {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.deck-viewport {
+  flex: 1;
+  min-width: 0;
+}
+
+.deck-viewport {
+  overflow: hidden;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background:
+    radial-gradient(circle at top left, rgba(255, 60, 210, 0.09), transparent 42%),
+    radial-gradient(circle at bottom right, rgba(0, 220, 255, 0.09), transparent 42%),
+    rgba(7, 16, 26, 0.88);
+  box-shadow:
+    0 0 14px rgba(36, 243, 255, 0.08),
+    0 0 52px rgba(0, 0, 0, 0.9);
+}
+
+.deck-track {
+  display: flex;
+  transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.deck-slide {
+  flex: 0 0 100%;
+  min-height: min(84vh, 820px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(30px, 3vw, 54px) clamp(24px, 3vw, 46px);
+  box-sizing: border-box;
+}
+
+/* Title slide: content flush right */
+.deck-slide--title {
+  justify-content: flex-end;
+}
+
+/* All slide content: flush right */
+.deck-content {
+  width: 100%;
+  max-width: min(64vw, 1040px);
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(20px, 1.8vw, 30px);
+  margin-left: auto;
+}
+
+.deck-content--narrow { max-width: min(50vw, 760px); }
+.deck-content--wide   { max-width: min(78vw, 1280px); width: 100%; }
+
+.deck-kicker {
+  font-size: clamp(0.78rem, 0.55vw + 0.55rem, 1.12rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(106, 240, 255, 0.82);
+  text-shadow: 0 0 10px rgba(106, 240, 255, 0.3);
+}
+
+/* Chapter prefix inside the kicker (e.g. "CORE · ") */
+.deck-chapter {
+  color: rgba(106, 240, 255, 0.42);
+}
+.deck-chapter-sep {
+  color: rgba(106, 240, 255, 0.28);
+}
+
+.deck-headline {
+  font-size: clamp(2.4rem, 3.8vw + 0.6rem, 5.8rem);
+  line-height: 1.04;
+  color: #f4fbff;
+  margin: 0;
+  text-shadow:
+    0 0 28px rgba(0, 220, 255, 0.18),
+    0 0 60px rgba(255, 120, 255, 0.12);
+}
+
+/* Equation slide headline: full-width, flush right, above the split row */
+.deck-headline--eq {
+  text-align: right;
+  align-self: flex-end;
+  width: 100%;
+}
+
+.deck-headline--medium {
+  font-size: clamp(1.8rem, 2.6vw + 0.5rem, 3.5rem);
+  line-height: 1.1;
+  color: #f4fbff;
+  margin: 0 0 4px;
+}
+
+.deck-tagline {
+  font-size: clamp(1.08rem, 1.15vw + 0.55rem, 2rem);
+  color: rgba(210, 240, 255, 0.58);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.deck-body {
+  font-size: clamp(1rem, 0.85vw + 0.72rem, 1.5rem);
+  color: rgba(210, 240, 255, 0.7);
+  line-height: 1.72;
+  margin: 0;
+  text-align: right;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.62em;
+}
+
+.deck-body-paragraph {
+  margin: 0;
+}
+
+/* Inline code tokens inside body text */
+.deck-body code {
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: 0.85em;
+  color: rgba(253, 84, 255, 0.92);
+  background: rgba(253, 84, 255, 0.08);
+  border: 1px solid rgba(253, 84, 255, 0.22);
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+/* Standalone code block box — same shape as .deck-eq but magenta-tinted */
+.deck-code-block {
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: clamp(1rem, 0.8vw + 0.7rem, 1.45rem);
+  color: rgba(253, 84, 255, 0.90);
+  line-height: 1.65;
+  padding: clamp(22px, 2.2vw, 34px) clamp(24px, 2.6vw, 40px);
+  border-radius: 20px;
+  border: 1px solid rgba(253, 84, 255, 0.22);
+  background: rgba(6, 14, 20, 0.64);
+  box-shadow:
+    0 0 44px rgba(253, 84, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  width: 100%;
+  white-space: pre;
+}
+
+.deck-manifesto {
+  font-size: clamp(1.28rem, 1.4vw + 0.8rem, 2.5rem);
+  font-style: italic;
+  color: rgba(244, 251, 255, 0.92);
+  line-height: 1.38;
+  margin: 0;
+  text-shadow: 0 0 24px rgba(0, 220, 255, 0.22);
+}
+
+/* Equation slides */
+.deck-eq {
+  padding: clamp(24px, 2.3vw, 40px) clamp(28px, 2.8vw, 44px);
+  border-radius: 20px;
+  border: 1px solid rgba(106, 240, 255, 0.22);
+  background: rgba(6, 14, 20, 0.64);
+  box-shadow:
+    0 0 44px rgba(44, 240, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  width: 100%;
+  font-size: clamp(1.25rem, 1vw + 0.95rem, 2.15rem);
+}
+
+.deck-eq .katex-display { margin: 0; }
+
+.deck-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 28px;
+  font-size: clamp(0.92rem, 0.45vw + 0.82rem, 1.15rem);
+  font-style: italic;
+  color: rgba(210, 240, 255, 0.50);
+}
+
+/* Platform grid (slide 7) */
+.deck-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+}
+
+.deck-platform {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(6, 14, 20, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.deck-platform strong {
+  color: #f3fbff;
+  font-size: clamp(1rem, 0.45vw + 0.92rem, 1.28rem);
+}
+
+.deck-platform span {
+  color: rgba(210, 240, 255, 0.56);
+  font-size: clamp(0.86rem, 0.42vw + 0.78rem, 1.08rem);
+  line-height: 1.5;
+}
+
+/* Papers list (slide 8) */
+.deck-papers {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.deck-paper {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(6, 14, 20, 0.52);
+}
+
+.deck-status {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.deck-status--active {
+  background: rgba(0, 200, 80, 0.12);
+  color: rgba(100, 240, 120, 0.9);
+  border: 1px solid rgba(0, 200, 80, 0.24);
+}
+
+.deck-status--progress {
+  background: rgba(255, 180, 0, 0.10);
+  color: rgba(255, 211, 107, 0.9);
+  border: 1px solid rgba(255, 180, 0, 0.22);
+}
+
+.deck-paper-title {
+  color: #f3fbff;
+  font-size: clamp(0.98rem, 0.42vw + 0.9rem, 1.22rem);
+  font-weight: 600;
+}
+
+.deck-paper-sub {
+  color: rgba(210, 240, 255, 0.50);
+  font-size: clamp(0.84rem, 0.34vw + 0.78rem, 1rem);
+}
+
+/* Navigation */
+.deck-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 20px 0 0;
+}
+
+.deck-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(106, 240, 255, 0.22);
+  background: rgba(7, 16, 26, 0.72);
+  color: rgba(200, 240, 255, 0.9);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.deck-btn:hover {
+  border-color: rgba(253, 84, 255, 0.46);
+  box-shadow: 0 0 16px rgba(253, 84, 255, 0.2);
+}
+
+.deck-btn:disabled {
+  opacity: 0.24;
+  cursor: default;
+}
+
+.deck-btn--fs {
+  margin-left: 10px;
+  font-size: 1rem;
+  border-color: rgba(106, 240, 255, 0.18);
+}
+
+.deck-btn--fs:hover {
+  border-color: rgba(106, 240, 255, 0.5);
+  box-shadow: 0 0 14px rgba(106, 240, 255, 0.2);
+}
+
+/* Fullscreen state */
+.deck-shell--fullscreen,
+.deck-shell:fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0 !important;
+  padding: 20px 0 16px;
+  background: #060e14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+}
+
+.deck-shell--fullscreen .deck-viewport,
+.deck-shell:fullscreen .deck-viewport {
+  border-radius: 0;
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.deck-shell--fullscreen .deck-slide,
+.deck-shell:fullscreen .deck-slide {
+  min-height: calc(100vh - 120px);
+  padding: clamp(34px, 3vw, 60px) clamp(28px, 3.5vw, 60px);
+}
+
+.deck-shell--fullscreen .deck-content,
+.deck-shell:fullscreen .deck-content {
+  max-width: min(70vw, 1180px);
+}
+
+.deck-shell--fullscreen .deck-content--wide,
+.deck-shell:fullscreen .deck-content--wide {
+  max-width: min(84vw, 1440px);
+}
+
+.deck-shell--fullscreen .deck-stage,
+.deck-shell:fullscreen .deck-stage {
+  width: 100%;
+  flex: 1;
+}
+
+.deck-shell--fullscreen .deck-toc,
+.deck-shell:fullscreen .deck-toc {
+  display: none;
+}
+
+.deck-shell--fullscreen .deck-nav,
+.deck-shell:fullscreen .deck-nav {
+  width: 100%;
+  max-width: 860px;
+  padding: 16px 0 0;
+}
+
+.deck-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Wrapper per dot — provides hover context for label */
+.deck-dot-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover label — appears above the dot */
+.deck-dot-label {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(210, 240, 255, 0.9);
+  background: rgba(7, 16, 26, 0.94);
+  border: 1px solid rgba(106, 240, 255, 0.2);
+  border-radius: 4px;
+  padding: 3px 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+
+.deck-dot-wrap:hover .deck-dot-label { opacity: 1; }
+
+.deck-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(106, 240, 255, 0.25);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.deck-dot.active {
+  background: rgba(106, 240, 255, 0.92);
+  transform: scale(1.35);
+}
+
+/* Slide links */
+.deck-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+/* Equation slides: pills stacked in a right-hand column */
+.deck-slide--eq .deck-links {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: nowrap;
+  padding-top: 0;
+  padding-left: 28px;
+}
+
+/* Split equation slides (eq left / body right): column stack, links bottom row */
+.deck-slide--eq-split {
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 40px;
+}
+
+.deck-slide--eq-split .deck-links {
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Two-column eq/body row */
+.deck-eq-row {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.deck-eq-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.deck-body-col {
+  display: flex;
+  align-items: stretch;
+}
+
+.deck-body--left {
+  text-align: right;
+}
+
+.deck-slide--eq-split .deck-legend-row {
+  justify-content: flex-end;
+}
+
+@media (max-width: 700px) {
+  .deck-eq-row { grid-template-columns: 1fr; gap: 20px; }
+  .deck-toc { display: none; }
+}
+
+/* ── ToC side panel ────────────────────────────────────────────────────────── */
+.deck-toc {
+  width: 132px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0 28px 4px;
+  cursor: default;
+}
+
+.deck-toc-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.deck-toc-connector {
+  width: 1px;
+  height: 18px;
+  margin-left: 4px;
+  background: rgba(106, 240, 255, 0.13);
+  flex-shrink: 0;
+}
+
+.deck-toc-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.deck-toc-circle {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(106, 240, 255, 0.28);
+  background: transparent;
+  flex-shrink: 0;
+  transition: background 0.22s, border-color 0.22s, box-shadow 0.22s;
+}
+
+.deck-toc-item--active .deck-toc-circle {
+  background: rgba(106, 240, 255, 0.88);
+  border-color: rgba(106, 240, 255, 0.88);
+  box-shadow: 0 0 8px rgba(106, 240, 255, 0.55);
+}
+
+.deck-toc-label {
+  font-family: 'Space Grotesk', 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  color: rgba(106, 240, 255, 0.28);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 108px;
+  transition: color 0.22s;
+}
+
+.deck-toc-item--active .deck-toc-label {
+  color: rgba(106, 240, 255, 0.82);
+}
+
+.deck-toc-item:hover .deck-toc-label {
+  color: rgba(106, 240, 255, 0.60);
+}
+
+.deck-toc-item:hover .deck-toc-circle {
+  border-color: rgba(106, 240, 255, 0.55);
+}
+
+.deck-link {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+  transition: border-color 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+.deck-link--page {
+  border: 1px solid rgba(106, 240, 255, 0.26);
+  color: rgba(106, 240, 255, 0.80);
+  background: rgba(106, 240, 255, 0.06);
+}
+
+.deck-link--page:hover {
+  border-color: rgba(106, 240, 255, 0.58);
+  color: #f4fbff;
+  box-shadow: 0 0 12px rgba(106, 240, 255, 0.22);
+}
+
+.deck-link--jump {
+  border: 1px solid rgba(253, 84, 255, 0.26);
+  color: rgba(253, 84, 255, 0.80);
+  background: rgba(253, 84, 255, 0.06);
+}
+
+.deck-link--jump:hover {
+  border-color: rgba(253, 84, 255, 0.56);
+  color: #f4fbff;
+  box-shadow: 0 0 12px rgba(253, 84, 255, 0.22);
+}
+
+.deck-paper-title--link {
+  color: rgba(244, 251, 255, 0.92);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.deck-paper-title--link:hover {
+  color: rgba(106, 240, 255, 0.95);
+  border-color: rgba(106, 240, 255, 0.5);
+}
+
+@media (max-width: 860px) {
+  .deck-content {
+    max-width: min(82vw, 760px);
+  }
+
+  .deck-content--narrow,
+  .deck-content--wide {
+    max-width: 100%;
+  }
+
+  .deck-platform-grid { grid-template-columns: repeat(2, 1fr); }
+  .deck-paper { grid-template-columns: 96px 1fr; }
+  .deck-paper-sub { display: none; }
+}
+
+@media (max-width: 580px) {
+  .deck-slide { padding: 28px 18px; min-height: min(78vh, 580px); }
+  .deck-content {
+    max-width: 100%;
+    gap: 16px;
+  }
+  .deck-platform-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1440px) {
+  .deck-stage {
+    gap: 26px;
+  }
+
+  .deck-toc {
+    width: 164px;
+  }
+
+  .deck-toc-label {
+    font-size: 0.68rem;
+    max-width: 138px;
+  }
+
+  .deck-eq-row {
+    gap: 56px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .deck-shell {
+    width: min(95vw, 1760px);
+    max-width: 1760px;
+  }
+
+  .deck-slide {
+    min-height: min(86vh, 900px);
+  }
+
+  .deck-content {
+    max-width: min(66vw, 1180px);
+  }
+
+  .deck-content--wide {
+    max-width: min(82vw, 1480px);
+  }
+}
+
 .explore-page {
   padding: 18px 16px 40px;
 }

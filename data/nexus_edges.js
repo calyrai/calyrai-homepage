@@ -1,0 +1,90 @@
+// data/nexus_edges.js
+// Generated from data/nexus.yaml by scripts/build_nexus_yaml.py
+// All explicit node→node connections for the explore constellation.
+
+window.CALYR_NEXUS_EDGES = [
+  {
+    "from": "nexus",
+    "to": "saxs_state_inference"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "chrom"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "epistemic-damage"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "pca"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "itc-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "spr-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "redgem"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs-interface"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "unicorn-data"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "cryo-em"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs_hdl_ldl"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "research_portfolio"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "research_program_head"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "spr-kinetic-modes"
+  },
+  {
+    "from": "spr-kinetic-modes",
+    "to": "paper-spr-kinetic-modes"
+  },
+  {
+    "from": "spr-data",
+    "to": "paper-spr-evaluation"
+  },
+  {
+    "from": "spr-data",
+    "to": "paper-constraint-coupled"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs_sbpa"
+  },
+  {
+    "from": "saxs_sbpa",
+    "to": "paper-sbpa"
+  },
+  {
+    "from": "chrom",
+    "to": "paper-chrom-fractional"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "paper-fco"
+  }
+];

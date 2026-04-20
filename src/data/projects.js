@@ -69,5 +69,103 @@ window.CALYR_PROJECTS = [
     "id": "cryo-em",
     "title": "Cryo-EM – Density State Mapping",
     "url": "projects/cryo_em.html"
+  },
+  {
+    "id": "saxs_hdl_ldl",
+    "title": "SAXS HDL LDL",
+    "subtitle": "Lipoprotein scattering and distribution states",
+    "url": "projects/saxs_hdl_ldl.html",
+    "color": "#ffd36b"
+  },
+  {
+    "id": "spr-kinetic-modes",
+    "title": "SPR Kinetic Modes & Modelling",
+    "subtitle": "Gillespie simulation · PCA basis · constraint inference",
+    "url": "projects/spr_kinetic_modes.html",
+    "color": "#24f3ff"
+  },
+  {
+    "id": "saxs_igm",
+    "title": "SAXS IgG / IgM",
+    "subtitle": "Immunoglobulin mixture modelling from scattering",
+    "url": "projects/saxs_igm.html",
+    "color": "#ffd36b"
+  },
+  {
+    "id": "saxs_sasview",
+    "title": "SAXS SasView",
+    "subtitle": "Nexus-controlled SasView fitting and report pipeline",
+    "url": "projects/saxs_sasview.html",
+    "color": "#ffd36b"
+  },
+  {
+    "id": "saxs_keratin",
+    "title": "SAXS Keratin",
+    "subtitle": "Fibrous protein scattering and structural analysis",
+    "url": "projects/saxs_keratin.html",
+    "color": "#ffd36b"
+  },
+  {
+    "id": "saxs_sbpa",
+    "title": "SAXS SBPA",
+    "subtitle": "Structure-based potential analysis with SAXS validation",
+    "url": "projects/saxs_sbpa.html",
+    "color": "#ffd36b"
+  },
+  {
+    "id": "paper-spr-kinetic-modes",
+    "title": "SPR Kinetic Modes",
+    "subtitle": "Manuscript · active",
+    "url": "publications.html#spr-kinetic-modes",
+    "color": "#c084fc"
+  },
+  {
+    "id": "paper-spr-evaluation",
+    "title": "SPR Evaluation Concept",
+    "subtitle": "Manuscript · active",
+    "url": "publications.html#spr-evaluation-concept",
+    "color": "#c084fc"
+  },
+  {
+    "id": "paper-constraint-coupled",
+    "title": "Constraint-Coupled Inference",
+    "subtitle": "Manuscript · in progress",
+    "url": "publications.html#constraint-coupled-inference",
+    "color": "#c084fc"
+  },
+  {
+    "id": "paper-chrom-fractional",
+    "title": "Chromatography Fractional Transport",
+    "subtitle": "Manuscript · in progress",
+    "url": "publications.html#chromatography-fractional-transport",
+    "color": "#c084fc"
+  },
+  {
+    "id": "paper-sbpa",
+    "title": "SBPA Modelling 2026",
+    "subtitle": "Manuscript · active",
+    "url": "publications.html#sbpa-modelling-2026",
+    "color": "#c084fc"
+  },
+  {
+    "id": "paper-fco",
+    "title": "FCO Manuscript",
+    "subtitle": "Manuscript · staged",
+    "url": "publications.html#fco-manuscript",
+    "color": "#c084fc"
+  },
+  {
+    "id": "research_portfolio",
+    "title": "Research Portfolio",
+    "subtitle": "Public paper-program map",
+    "url": "projects/research_portfolio.html",
+    "color": "#ff6fb2"
+  },
+  {
+    "id": "research_program_head",
+    "title": "Architecture of Connected Scientific Inference",
+    "subtitle": "Public conceptual publication",
+    "url": "projects/research_program_head.html",
+    "color": "#7dd3ff"
   }
 ];

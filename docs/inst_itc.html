@@ -1,0 +1,26 @@
+<article class="doc-article">
+  <h1>ITC instrument layer</h1>
+  <p class="doc-subtitle">Isothermal titration calorimetry in Nexus</p>
+
+  <h2>Input</h2>
+  <p>A <code>Dataset</code> with molar ratio (or injection number) vs. differential heat $\delta Q$ (µcal or kJ/mol injected).</p>
+
+  <h2>Pipeline</h2>
+  <pre>d > itc                -- Dataset → Signal(concentration)
+  > fit@one_site       -- → Fit  {ΔH, Kd, n}
+  > to@constraint      -- → Constraint(itc)</pre>
+
+  <h2>Binding models</h2>
+  <table class="doc-table">
+    <thead><tr><th>Variant</th><th>Model</th><th>Parameters</th></tr></thead>
+    <tbody>
+      <tr><td><code>fit@one_site</code></td><td>Independent single binding site</td><td>$\Delta H$, $K_d$, $n$</td></tr>
+      <tr><td><code>fit@two_site</code></td><td>Two independent site classes</td><td>$\Delta H_1$, $K_{d1}$, $n_1$, $\Delta H_2$, $K_{d2}$, $n_2$</td></tr>
+      <tr><td><code>fit@sequential</code></td><td>Sequential binding</td><td>$K_{d1}$, $K_{d2}$, $\Delta H_1$, $\Delta H_2$</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Thermodynamic output</h2>
+  <div class="doc-eq">$$\Delta G = RT \ln K_d, \qquad -T\Delta S = \Delta G - \Delta H$$</div>
+  <p>These derived quantities are available on the <code>Fit</code> object as <code>.thermodynamics</code>.</p>
+</article>

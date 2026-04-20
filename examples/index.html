@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calyr Examples</title>
+  <style>
+    :root {
+      --bg: #07101a;
+      --panel: rgba(10, 24, 38, 0.9);
+      --line: rgba(106, 240, 255, 0.2);
+      --text: rgba(225, 236, 246, 0.92);
+      --muted: rgba(170, 194, 214, 0.72);
+      --accent: #6af0ff;
+      --accent-soft: rgba(106, 240, 255, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(106, 240, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(80, 146, 255, 0.12), transparent 24%),
+        linear-gradient(180deg, #08111b 0%, #060d16 100%);
+      padding: 48px 20px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0 0 36px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      min-height: 220px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(106, 240, 255, 0.42);
+      background: rgba(12, 29, 46, 0.95);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .chip {
+      display: inline-block;
+      margin: 0 8px 8px 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-top: 28px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Interactive examples</h1>
+    <p class="subtitle">
+      Small browser-native demos for Nexus ideas. These are standalone HTML files so they can be opened,
+      copied, and extended without a build step.
+    </p>
+
+    <section class="grid">
+      <a class="card" href="facility-of-dmax.html">
+        <div class="eyebrow">Facility</div>
+        <h2>Facility of Dmax</h2>
+        <p>See how a wrong assumed Dmax truncates P(r), destabilizes I(q), and drives a facility-style uncertainty band and deviation metric.</p>
+        <span class="chip">SAXS</span>
+        <span class="chip">Dmax</span>
+        <span class="chip">uncertainty</span>
+      </a>
+
+      <a class="card" href="signal-lab.html">
+        <div class="eyebrow">Signals</div>
+        <h2>Signal Lab</h2>
+        <p>Manipulate amplitude, frequency, damping, and phase to see how a synthetic instrument trace changes in real time.</p>
+        <span class="chip">SVG</span>
+        <span class="chip">sliders</span>
+        <span class="chip">live model</span>
+      </a>
+
+      <a class="card" href="warehouse-lineage.html">
+        <div class="eyebrow">Warehouse</div>
+        <h2>Lineage Graph</h2>
+        <p>Inspect how datasets, transforms, and results connect inside a provenance graph and why the warehouse is a logical view.</p>
+        <span class="chip">graph</span>
+        <span class="chip">metadata</span>
+        <span class="chip">provenance</span>
+      </a>
+
+      <a class="card" href="hash-studio.html">
+        <div class="eyebrow">Archive</div>
+        <h2>Hash Studio</h2>
+        <p>Change object content and watch the content-addressed identifier update, showing why same input leads to same object ID.</p>
+        <span class="chip">SHA-256</span>
+        <span class="chip">content addressing</span>
+        <span class="chip">archive</span>
+      </a>
+    </section>
+
+    <a class="back" href="/docs.html#examples/examples">Back to docs examples</a>
+  </main>
+</body>
+</html>

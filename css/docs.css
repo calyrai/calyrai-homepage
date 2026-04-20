@@ -1,0 +1,366 @@
+/* docs.css — two-pane documentation layout (Calyr.ai dark glass style) */
+
+/* ── Search ──────────────────────────────────────────────────────── */
+.doc-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 16px 14px 10px;
+  background: rgba(7, 16, 26, 0.98);
+  border-bottom: 1px solid rgba(106, 240, 255, 0.1);
+}
+
+.doc-search-label {
+  margin: 0 0 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(106, 240, 255, 0.72);
+}
+
+.doc-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(106, 240, 255, 0.18);
+  border-radius: 6px;
+  padding: 7px 11px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  color: rgba(200, 220, 240, 0.9);
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+  letter-spacing: 0.02em;
+}
+.doc-search-input::placeholder {
+  color: rgba(180, 200, 220, 0.25);
+}
+.doc-search-input:focus {
+  border-color: rgba(106, 240, 255, 0.5);
+  background: rgba(106, 240, 255, 0.04);
+}
+
+.doc-search-results {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: none;
+  background: rgba(7, 16, 26, 0.98);
+  border: 1px solid rgba(106, 240, 255, 0.12);
+  border-radius: 8px;
+}
+.doc-search-results.open { display: block; }
+
+.doc-search-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.doc-search-result:hover,
+.doc-search-result.focused {
+  background: rgba(106, 240, 255, 0.09);
+}
+
+.doc-search-title {
+  font-size: 12.5px;
+  color: rgba(220, 235, 255, 0.88);
+  font-family: 'Space Grotesk', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.doc-search-section {
+  font-size: 10px;
+  color: rgba(106, 240, 255, 0.48);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.doc-search-empty {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: rgba(200, 210, 220, 0.3);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ── Shell ────────────────────────────────────────────────────────── */
+.doc-shell {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 56px;          /* nav height offset */
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────── */
+.doc-sidebar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  overflow-y: auto;
+  background: rgba(7, 16, 26, 0.92);
+  border-right: 1px solid rgba(106, 240, 255, 0.14);
+  padding: 24px 0 64px;
+  z-index: 40;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(106,240,255,0.18) transparent;
+}
+.doc-sidebar::-webkit-scrollbar { width: 4px; }
+.doc-sidebar::-webkit-scrollbar-thumb { background: rgba(106,240,255,0.18); border-radius: 2px; }
+
+.doc-sidebar-section {
+  margin-bottom: 2px;
+}
+
+.doc-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(106, 240, 255, 0.6);
+  transition: color 0.2s;
+}
+.doc-section-toggle:hover { color: rgba(106, 240, 255, 1); }
+.doc-section-toggle .arrow {
+  font-size: 8px;
+  transition: transform 0.2s;
+}
+.doc-section-toggle.open .arrow { transform: rotate(90deg); }
+
+.doc-page-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+.doc-page-list.open { max-height: 600px; }
+
+.doc-page-link {
+  display: block;
+  padding: 6px 20px 6px 30px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: rgba(200, 220, 240, 0.7);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+  border-left: 2px solid transparent;
+}
+.doc-page-link:hover {
+  color: #fff;
+  background: rgba(106, 240, 255, 0.05);
+}
+.doc-page-link.active {
+  color: rgba(106, 240, 255, 1);
+  border-left-color: rgba(106, 240, 255, 0.8);
+  background: rgba(106, 240, 255, 0.07);
+}
+
+/* ── Main content area ────────────────────────────────────────────── */
+.doc-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 48px 48px 96px;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.doc-article {
+  max-width: 780px;
+  margin: 0;
+  color: rgba(220, 232, 244, 0.88);
+  font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.65;
+}
+
+/* ── Typography ───────────────────────────────────────────────────── */
+.doc-article h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: left;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.doc-article .doc-subtitle {
+  font-size: 0.95rem;
+  color: rgba(106, 240, 255, 0.65);
+  margin: 0 0 36px;
+}
+.doc-article h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+  margin: 40px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(106, 240, 255, 0.15);
+}
+.doc-article h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(106, 240, 255, 0.85);
+  margin: 28px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.doc-article p  { margin: 0 0 16px; }
+.doc-article ul { margin: 0 0 16px; padding-left: 24px; }
+.doc-article li { margin-bottom: 6px; }
+
+/* ── Code blocks ──────────────────────────────────────────────────── */
+.doc-code, .doc-article pre {
+  background: rgba(6, 14, 24, 0.88);
+  border: 1px solid rgba(106, 240, 255, 0.18);
+  border-radius: 6px;
+  padding: 16px 20px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(180, 220, 255, 0.92);
+  overflow-x: auto;
+  margin: 0 0 20px;
+  white-space: pre;
+}
+.doc-article code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.88em;
+  background: rgba(106, 240, 255, 0.09);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: rgba(106, 240, 255, 0.9);
+}
+.doc-article pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+
+/* ── Equation blocks ──────────────────────────────────────────────── */
+.doc-eq {
+  background: rgba(6, 14, 24, 0.7);
+  border-left: 3px solid rgba(106, 240, 255, 0.55);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+  font-size: 1.05em;
+}
+
+/* ── Info / note callouts ─────────────────────────────────────────── */
+.doc-note {
+  background: rgba(106, 240, 255, 0.07);
+  border-left: 3px solid rgba(106, 240, 255, 0.5);
+  border-radius: 0 6px 6px 0;
+  padding: 12px 20px;
+  margin: 20px 0;
+  font-size: 0.92em;
+  color: rgba(200, 228, 255, 0.8);
+}
+.doc-note strong { color: rgba(106, 240, 255, 0.9); }
+
+/* ── Table ────────────────────────────────────────────────────────── */
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.93em;
+}
+.doc-table th {
+  text-align: left;
+  padding: 8px 14px;
+  background: rgba(106, 240, 255, 0.1);
+  color: rgba(106, 240, 255, 0.85);
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(106, 240, 255, 0.2);
+}
+.doc-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(200, 220, 240, 0.85);
+}
+.doc-table tr:hover td { background: rgba(106,240,255,0.035); }
+
+/* ── Prev / Next footer ───────────────────────────────────────────── */
+.doc-nav-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.doc-nav-btn {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 10px 18px;
+  border: 1px solid rgba(106, 240, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(106, 240, 255, 0.04);
+  color: rgba(200, 228, 255, 0.8);
+  text-decoration: none;
+  font-size: 13px;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  max-width: 46%;
+}
+.doc-nav-btn:hover {
+  border-color: rgba(106, 240, 255, 0.6);
+  background: rgba(106, 240, 255, 0.09);
+  color: #fff;
+}
+.doc-nav-btn .doc-nav-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(106, 240, 255, 0.6);
+  margin-bottom: 3px;
+}
+.doc-nav-btn.next { text-align: right; margin-left: auto; }
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .doc-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s;
+  }
+  .doc-sidebar.open { transform: translateX(0); }
+  .doc-main { margin-left: 0; padding: 24px 20px 80px; }
+  .doc-menu-btn {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 60;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(106,240,255,0.3);
+    background: rgba(7,16,26,0.95);
+    cursor: pointer;
+    font-size: 18px;
+    color: rgba(106,240,255,0.9);
+  }
+}
+@media (min-width: 769px) {
+  .doc-menu-btn { display: none; }
+}

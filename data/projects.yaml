@@ -143,6 +143,24 @@
   link_label: "Open project"
   url: "projects/saxs_hdl_ldl.html"
 
+- id: research_portfolio
+  visibility: public
+  title: "Research Portfolio"
+  subtitle: "Public paper-program map"
+  description: "A public-facing map of the current Calyr.ai paper program across SAXS, lipoproteins, chromatography, SBPA, and shared inference logic."
+  color: "#ff6fb2"
+  link_label: "Open project"
+  url: "projects/research_portfolio.html"
+
+- id: research_program_head
+  visibility: public
+  title: "Architecture of Connected Scientific Inference"
+  subtitle: "Public conceptual publication"
+  description: "A publication-style conceptual head page that explains how the current Calyr.ai research branches fit into one coherent program."
+  color: "#7dd3ff"
+  link_label: "Open project"
+  url: "projects/research_program_head.html"
+
 - id: saxs-viewer
   visibility: public
   title: "SAXS Viewer"

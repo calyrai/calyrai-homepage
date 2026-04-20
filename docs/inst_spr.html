@@ -1,0 +1,44 @@
+<article class="doc-article">
+  <h1>SPR instrument layer</h1>
+  <p class="doc-subtitle">Surface plasmon resonance kinetics in Nexus</p>
+
+  <h2>Input</h2>
+  <p>A <code>Dataset</code> with response units (RU) vs. time (s). Multi-cycle data is supported — each concentration cycle is a named series in the dataset.</p>
+
+  <h2>Pipeline</h2>
+  <pre>d > spr                -- Dataset → Signal(time) (RU vs. t, all cycles)
+  > fit@kinetic        -- → Fit  {kon, koff, Kd, n}
+  > to@constraint      -- → Constraint(spr)</pre>
+
+  <h2>Kinetic models</h2>
+  <table class="doc-table">
+    <thead><tr><th>Variant</th><th>Model</th><th>Parameters</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>fit@kinetic</code></td>
+        <td>Langmuir 1:1</td>
+        <td>$k_{\rm on}$, $k_{\rm off}$, $R_{\max}$</td>
+      </tr>
+      <tr>
+        <td><code>fit@kinetic_2state</code></td>
+        <td>Two-state conformational change</td>
+        <td>$k_{\rm on}$, $k_{\rm off}$, $k_2$, $k_{-2}$, $R_{\max}$</td>
+      </tr>
+      <tr>
+        <td><code>fit@steady_state</code></td>
+        <td>Equilibrium (Scatchard)</td>
+        <td>$K_d$, $R_{\max}$</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Equilibrium constant</h2>
+  <div class="doc-eq">$$K_d = \frac{k_{\rm off}}{k_{\rm on}}$$</div>
+
+  <h2>Multi-cycle global fit</h2>
+  <p>
+    When the input dataset contains multiple analyte concentrations, the fit is global by default:
+    $k_{\rm on}$, $k_{\rm off}$, and $R_{\max}$ are shared; only the expected equilibrium response
+    varies per cycle. This improves parameter accuracy and avoids per-cycle overfitting.
+  </p>
+</article>

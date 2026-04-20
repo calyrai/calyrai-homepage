@@ -17,7 +17,6 @@
   <script src="js/collect_hearts.js" defer></script>
   <script src="js/orbit_logo.js?v=20260317c" defer></script>
   <script src="js/analytics.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js" defer></script>
   <script src="js/home_from_yaml.js?v=20260316" defer></script>
 
   <!-- Safety: ensure pills are visible & clickable on mobile -->
@@ -34,115 +33,140 @@
 <body>
 <header class="site-header">
   <div class="nav-inner">
-    <div class="nav-left-row">
-      <a href="index.html" class="nav-pill glow-nav">Calyr.a&iacute; – platform technology</a>
-      <a href="explore.html" class="nav-pill glow-nav">Explore</a>
-      <a href="team.html" class="nav-pill glow-nav">Team</a>
-    </div>
-
-    <nav class="nav-links" aria-label="Primary">
-      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
-      <a href="pages/contact.html" class="nav-pill glow-nav">Contact</a>
-      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    <a href="index.html" class="nav-brand">Calyr.a&iacute;</a>
+    <nav class="nav-core" aria-label="Primary">
+      <a href="explore.html" class="nav-pill">Explore</a>
+      <a href="docs.html" class="nav-pill">Docs</a>
+      <a href="team.html" class="nav-pill">Team</a>
+      <a href="publications.html" class="nav-pill">Publications</a>
+    </nav>
+    <nav class="nav-secondary" aria-label="Secondary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+      <a href="pages/contact.html" class="nav-pill">Contact</a>
+      <a href="http://localhost:8000" class="nav-pill" target="_blank" rel="noopener">Login</a>
     </nav>
   </div>
 </header>
 
 <section class="hero" id="hero">
-    <div class="hero-orbit-logo">
-        <div class="hero-orbit-stack">
-            <div
-                data-orbit-logo
-                class="orbit-logo"
-                id="orbit-logo-home"
-                role="button"
-                tabindex="0"
-                aria-label="Calyr.a&amp;iacute;"
-                style="--orbit-size: min(48vmin, 360px); --orbit-accent-rot: 140s;"
-            >
-                <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&amp;iacute;" focusable="false">
-                <defs>
-                    <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
-                        <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96" />
-                        <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
-                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96" />
-                    </linearGradient>
+  <div class="hero-orbit-logo">
+    <div class="hero-orbit-stack">
+      <div
+        data-orbit-logo
+        class="orbit-logo"
+        id="orbit-logo-home"
+        role="button"
+        tabindex="0"
+        aria-label="Calyr.a&amp;iacute;"
+        style="--orbit-size: min(48vmin, 360px); --orbit-accent-rot: 140s;"
+      >
+        <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&amp;iacute;" focusable="false">
+        <defs>
+          <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+            <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96" />
+            <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96" />
+          </linearGradient>
 
-                    <linearGradient id="orbit-logo-home-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92" />
-                        <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22" />
-                        <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82" />
-                    </linearGradient>
+          <linearGradient id="orbit-logo-home-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92" />
+            <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22" />
+            <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82" />
+          </linearGradient>
 
-                    <linearGradient id="orbit-logo-home-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
-                        <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06" />
-                        <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22" />
-                    </linearGradient>
+          <linearGradient id="orbit-logo-home-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+            <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06" />
+            <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22" />
+          </linearGradient>
 
-                    <filter id="orbit-logo-home-glowWhite" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="4.5" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
+          <filter id="orbit-logo-home-glowWhite" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
 
-                    <filter id="orbit-logo-home-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="3.0" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
+          <filter id="orbit-logo-home-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.0" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
 
-                </defs>
+        </defs>
 
-                <g class="orbit-logo__ring-c">
-                    <circle class="orbit-logo__stroke" cx="100" cy="100" r="84"
-                        stroke="url(#orbit-logo-home-soft)" stroke-width="10"
-                        stroke-dasharray="420 110" stroke-linecap="round" />
-                </g>
+        <g class="orbit-logo__ring-c">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="84"
+            stroke="url(#orbit-logo-home-soft)" stroke-width="10"
+            stroke-dasharray="420 110" stroke-linecap="round" />
+        </g>
 
-                <g class="orbit-logo__ring-b" filter="url(#orbit-logo-home-glowMagenta)">
-                    <circle class="orbit-logo__stroke" cx="100" cy="100" r="66"
-                        stroke="url(#orbit-logo-home-magenta)" stroke-width="14"
-                        stroke-dasharray="300 114" stroke-linecap="round" />
-                </g>
+        <g class="orbit-logo__ring-b" filter="url(#orbit-logo-home-glowMagenta)">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="66"
+            stroke="url(#orbit-logo-home-magenta)" stroke-width="14"
+            stroke-dasharray="300 114" stroke-linecap="round" />
+        </g>
 
-                <g class="orbit-logo__ring" filter="url(#orbit-logo-home-glowWhite)">
-                    <circle class="orbit-logo__stroke" cx="100" cy="100" r="48"
-                        stroke="url(#orbit-logo-home-whiteCyan)" stroke-width="22"
-                        stroke-dasharray="235 68" stroke-linecap="round" />
-                </g>
+        <g class="orbit-logo__ring" filter="url(#orbit-logo-home-glowWhite)">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="48"
+            stroke="url(#orbit-logo-home-whiteCyan)" stroke-width="22"
+            stroke-dasharray="235 68" stroke-linecap="round" />
+        </g>
 
-                <g class="orbit-logo__accent" filter="url(#orbit-logo-home-glowMagenta)">
-                    <g transform="translate(126 98) rotate(-10)">
-                        <path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96" />
-                        <path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78" />
-                        <path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65" />
-                    </g>
-                </g>
-            </svg>
-            </div>
+        <g class="orbit-logo__accent" filter="url(#orbit-logo-home-glowMagenta)">
+          <g transform="translate(126 98) rotate(-10)">
+            <path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96" />
+            <path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78" />
+            <path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65" />
+          </g>
+        </g>
+      </svg>
+      </div>
 
-            <a href="pages/nexus.html" class="hero-cta hero-cta--orbit glow-button">Explore the Nexus</a>
-        </div>
-
-        <div class="hero-characteristics hero-characteristics--orbit">Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces</div>
+      <a href="explore.html" class="hero-cta hero-cta--orbit glow-button">Explore the Nexus</a>
     </div>
 
-    <div class="hero-copy">
-        <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
+    <div class="hero-characteristics hero-characteristics--orbit">Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces</div>
+  </div>
 
-        <h1 class="hero-title">Calyr.a&iacute; — dr&iacute;ven</h1>
+  <div class="hero-copy">
+    <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
 
-        <p class="hero-subtitle">
-            Transforming experimental signals into real-time molecular insight.
-        </p>
-    </div>
+    <h1 class="hero-title">Calyr.a&iacute; — dr&iacute;ven</h1>
+
+    <p class="hero-subtitle">
+      Transforming experimental signals into real-time molecular insight.
+    </p>
+  </div>
 </section>
+<section style="padding: 48px 24px 40px; max-width: 960px; margin: 0 auto; color: #e8ecff;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+
+    <a href="explore.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s;" onmouseover="this.style.borderColor='rgba(192,132,252,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
+      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(192,132,252,0.7); margin-bottom:8px;">Research &amp; Publications</div>
+      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px;">Explore</div>
+      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Projects, active manuscripts, and the interactive research constellation map.</div>
+    </a>
+
+    <a href="pages/nexus.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s;" onmouseover="this.style.borderColor='rgba(36,243,255,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
+      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(36,243,255,0.7); margin-bottom:8px;">Platform</div>
+      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px;">Nexus</div>
+      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">The scientific control architecture behind instrument analysis, simulation, and inference.</div>
+    </a>
+
+    <a href="team.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,77,245,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
+      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,77,245,0.7); margin-bottom:8px;">People</div>
+      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px;">Team</div>
+      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Who is behind Calyr.ai and the research program.</div>
+    </a>
+
+  </div>
+</section>
+
 <footer id="impressum" class="impressum">
   <div class="impressum-inner">
     <h2 class="impressum-title">Impressum</h2>

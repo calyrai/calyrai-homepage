@@ -59,10 +59,84 @@ projects:
   - id: cryo-em
     title: Cryo-EM – Density State Mapping
     url: projects/cryo_em.html
+  - id: saxs_hdl_ldl
+    title: SAXS HDL LDL
+    subtitle: Lipoprotein scattering and distribution states
+    color: "#ffd36b"
+    url: projects/saxs_hdl_ldl.html
+  - id: spr-kinetic-modes
+    title: "SPR Kinetic Modes & Modelling"
+    subtitle: "Gillespie simulation \u00b7 PCA basis \u00b7 constraint inference"
+    color: "#24f3ff"
+    url: projects/spr_kinetic_modes.html
+  - id: saxs_igm
+    title: SAXS IgG / IgM
+    subtitle: Immunoglobulin mixture modelling from scattering
+    color: "#ffd36b"
+    url: projects/saxs_igm.html
+  - id: saxs_sasview
+    title: SAXS SasView
+    subtitle: Nexus-controlled SasView fitting and report pipeline
+    color: "#ffd36b"
+    url: projects/saxs_sasview.html
+  - id: saxs_keratin
+    title: SAXS Keratin
+    subtitle: Fibrous protein scattering and structural analysis
+    color: "#ffd36b"
+    url: projects/saxs_keratin.html
+  - id: saxs_sbpa
+    title: SAXS SBPA
+    subtitle: Structure-based potential analysis with SAXS validation
+    color: "#ffd36b"
+    url: projects/saxs_sbpa.html
+  - id: paper-spr-kinetic-modes
+    title: SPR Kinetic Modes
+    subtitle: "Manuscript · active"
+    color: "#c084fc"
+    url: publications.html#spr-kinetic-modes
+  - id: paper-spr-evaluation
+    title: SPR Evaluation Concept
+    subtitle: "Manuscript · active"
+    color: "#c084fc"
+    url: publications.html#spr-evaluation-concept
+  - id: paper-constraint-coupled
+    title: Constraint-Coupled Inference
+    subtitle: "Manuscript · in progress"
+    color: "#c084fc"
+    url: publications.html#constraint-coupled-inference
+  - id: paper-chrom-fractional
+    title: Chromatography Fractional Transport
+    subtitle: "Manuscript · in progress"
+    color: "#c084fc"
+    url: publications.html#chromatography-fractional-transport
+  - id: paper-sbpa
+    title: SBPA Modelling 2026
+    subtitle: "Manuscript · active"
+    color: "#c084fc"
+    url: publications.html#sbpa-modelling-2026
+  - id: paper-fco
+    title: FCO Manuscript
+    subtitle: "Manuscript · staged"
+    color: "#c084fc"
+    url: publications.html#fco-manuscript
+  - id: research_portfolio
+    title: Research Portfolio
+    subtitle: Public paper-program map
+    color: "#ff6fb2"
+    url: projects/research_portfolio.html
+  - id: research_program_head
+    title: Architecture of Connected Scientific Inference
+    subtitle: Public conceptual publication
+    color: "#7dd3ff"
+    url: projects/research_program_head.html
 
 # Optional: explicit edges between nodes (in addition to shared core node).
 nexus:
   connections:
+    # ── Root ──────────────────────────────────────────────────────
+    - from: nexus
+      to: saxs_state_inference
+    # ── Core hub ──────────────────────────────────────────────────
     - from: saxs_state_inference
       to: chrom
     - from: saxs_state_inference
@@ -81,3 +155,27 @@ nexus:
       to: unicorn-data
     - from: saxs_state_inference
       to: cryo-em
+    - from: saxs_state_inference
+      to: saxs_hdl_ldl
+    - from: saxs_state_inference
+      to: research_portfolio
+    - from: saxs_state_inference
+      to: research_program_head
+    # ── SPR branch ────────────────────────────────────────────────
+    - from: saxs_state_inference
+      to: spr-kinetic-modes
+    - from: spr-kinetic-modes
+      to: paper-spr-kinetic-modes
+    - from: spr-data
+      to: paper-spr-evaluation
+    - from: spr-data
+      to: paper-constraint-coupled
+    # ── SAXS / structure branch ───────────────────────────────────
+    - from: saxs_state_inference
+      to: saxs_sbpa
+    - from: saxs_sbpa
+      to: paper-sbpa
+    - from: chrom
+      to: paper-chrom-fractional
+    - from: saxs_state_inference
+      to: paper-fco

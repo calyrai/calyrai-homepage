@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Lab</title>
+  <style>
+    :root {
+      --bg: #07101a;
+      --panel: rgba(9, 22, 34, 0.92);
+      --line: rgba(106, 240, 255, 0.25);
+      --text: rgba(228, 236, 248, 0.94);
+      --muted: rgba(177, 194, 212, 0.72);
+      --accent: #6af0ff;
+      --hot: #ffd166;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(106, 240, 255, 0.12), transparent 24%),
+        linear-gradient(180deg, #07111a 0%, #040b12 100%);
+      padding: 28px;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+    h1 { margin: 0 0 8px; font-size: 2.2rem; letter-spacing: -0.04em; }
+    p { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
+    .control { margin-bottom: 18px; }
+    .control label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+    input[type="range"] { width: 100%; }
+    .formula {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(106, 240, 255, 0.08);
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
+      overflow-x: auto;
+    }
+    .plot {
+      width: 100%;
+      height: 440px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stat {
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .stat strong { display: block; color: var(--hot); font-size: 1.2rem; }
+    .back { display: inline-flex; margin-top: 18px; color: var(--accent); text-decoration: none; }
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      body { padding: 16px; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel">
+      <h1>Signal Lab</h1>
+      <p>Interactive synthetic signal explorer for a damped oscillatory trace.</p>
+
+      <div class="control">
+        <label for="amplitude"><span>Amplitude</span><span id="amplitude-value"></span></label>
+        <input id="amplitude" type="range" min="0.4" max="2.5" step="0.05" value="1.2" />
+      </div>
+      <div class="control">
+        <label for="frequency"><span>Frequency</span><span id="frequency-value"></span></label>
+        <input id="frequency" type="range" min="0.5" max="8" step="0.1" value="3.4" />
+      </div>
+      <div class="control">
+        <label for="decay"><span>Decay</span><span id="decay-value"></span></label>
+        <input id="decay" type="range" min="0.02" max="0.4" step="0.01" value="0.12" />
+      </div>
+      <div class="control">
+        <label for="phase"><span>Phase</span><span id="phase-value"></span></label>
+        <input id="phase" type="range" min="0" max="6.28" step="0.01" value="0.8" />
+      </div>
+      <div class="control">
+        <label for="offset"><span>Offset</span><span id="offset-value"></span></label>
+        <input id="offset" type="range" min="-0.8" max="0.8" step="0.02" value="0.1" />
+      </div>
+
+      <div class="formula" id="formula"></div>
+      <a class="back" href="index.html">Back to examples</a>
+    </section>
+
+    <section class="panel">
+      <svg class="plot" id="plot" viewBox="0 0 900 440" preserveAspectRatio="none">
+        <g id="grid"></g>
+        <polyline id="curve" fill="none" stroke="#6af0ff" stroke-width="3" stroke-linecap="round"></polyline>
+      </svg>
+      <div class="stats">
+        <div class="stat"><span>Peak</span><strong id="peak"></strong></div>
+        <div class="stat"><span>Minimum</span><strong id="minimum"></strong></div>
+        <div class="stat"><span>Integral</span><strong id="integral"></strong></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const controls = {
+      amplitude: document.getElementById('amplitude'),
+      frequency: document.getElementById('frequency'),
+      decay: document.getElementById('decay'),
+      phase: document.getElementById('phase'),
+      offset: document.getElementById('offset')
+    };
+
+    const labels = {
+      amplitude: document.getElementById('amplitude-value'),
+      frequency: document.getElementById('frequency-value'),
+      decay: document.getElementById('decay-value'),
+      phase: document.getElementById('phase-value'),
+      offset: document.getElementById('offset-value')
+    };
+
+    const formula = document.getElementById('formula');
+    const curve = document.getElementById('curve');
+    const grid = document.getElementById('grid');
+    const peak = document.getElementById('peak');
+    const minimum = document.getElementById('minimum');
+    const integral = document.getElementById('integral');
+
+    function drawGrid() {
+      const lines = [];
+      for (let x = 0; x <= 900; x += 90) {
+        lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="440" stroke="rgba(255,255,255,0.06)" />`);
+      }
+      for (let y = 0; y <= 440; y += 55) {
+        lines.push(`<line x1="0" y1="${y}" x2="900" y2="${y}" stroke="rgba(255,255,255,0.05)" />`);
+      }
+      lines.push('<line x1="0" y1="220" x2="900" y2="220" stroke="rgba(255,209,102,0.22)" />');
+      grid.innerHTML = lines.join('');
+    }
+
+    function render() {
+      const a = Number(controls.amplitude.value);
+      const f = Number(controls.frequency.value);
+      const d = Number(controls.decay.value);
+      const p = Number(controls.phase.value);
+      const o = Number(controls.offset.value);
+
+      labels.amplitude.textContent = a.toFixed(2);
+      labels.frequency.textContent = f.toFixed(2);
+      labels.decay.textContent = d.toFixed(2);
+      labels.phase.textContent = p.toFixed(2);
+      labels.offset.textContent = o.toFixed(2);
+
+      const values = [];
+      let maxValue = -Infinity;
+      let minValue = Infinity;
+      let sum = 0;
+      for (let i = 0; i <= 240; i += 1) {
+        const x = i / 20;
+        const y = a * Math.exp(-d * x) * Math.sin(f * x + p) + o;
+        values.push({ x, y });
+        maxValue = Math.max(maxValue, y);
+        minValue = Math.min(minValue, y);
+        sum += y;
+      }
+
+      const ySpan = Math.max(Math.abs(maxValue), Math.abs(minValue), 0.1) * 1.25;
+      const points = values.map((point, index) => {
+        const x = (index / (values.length - 1)) * 900;
+        const y = 220 - (point.y / ySpan) * 180;
+        return `${x.toFixed(2)},${y.toFixed(2)}`;
+      }).join(' ');
+
+      curve.setAttribute('points', points);
+      formula.textContent = `s(t) = ${a.toFixed(2)} · exp(-${d.toFixed(2)} t) · sin(${f.toFixed(2)} t + ${p.toFixed(2)}) + ${o.toFixed(2)}`;
+      peak.textContent = maxValue.toFixed(3);
+      minimum.textContent = minValue.toFixed(3);
+      integral.textContent = (sum / values.length * 12).toFixed(3);
+    }
+
+    drawGrid();
+    Object.values(controls).forEach((input) => input.addEventListener('input', render));
+    render();
+  </script>
+</body>
+</html>

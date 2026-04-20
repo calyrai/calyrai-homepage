@@ -1,0 +1,65 @@
+<article class="doc-article">
+  <h1>Semantics</h1>
+  <p class="doc-subtitle">What expressions mean at runtime</p>
+
+  <h2>Values and types</h2>
+  <p>
+    Every Nexus expression evaluates to a <em>typed value</em>. The type system is strict:
+    passing a <code>Signal</code> where a <code>Dataset</code> is expected is a compile-time error.
+    See <a href="#types/types">Type system</a> for the full type catalogue.
+  </p>
+
+  <h2>Pipeline semantics ( &gt; )</h2>
+  <p>
+    <code>a &gt; f</code> is equivalent to function application <code>f(a)</code>.
+    The type of <code>f</code> must declare an input type compatible with the type of <code>a</code>.
+    Pipelines are <strong>lazy</strong>: the expression graph is constructed eagerly, but evaluation
+    is deferred until a terminal operation (plot, resolve, push) demands the value.
+  </p>
+
+  <h2>Application semantics ( @ )</h2>
+  <p>
+    <code>op @ arg</code> selects a <em>variant</em> of operator <code>op</code> parameterised by <code>arg</code>.
+    Both <code>op</code> and <code>arg</code> must be known names in the operator registry at parse time.
+  </p>
+  <pre>compute@pr     -- compute with arg "pr"  → P(r) transform
+fit@guinier    -- fit    with arg "guinier" → Guinier analysis</pre>
+
+  <h2>Iterate semantics ( &gt;&gt; )</h2>
+  <p>
+    <code>a &gt;&gt; f</code> repeatedly applies <code>f</code> to its own output until the result
+    satisfies the convergence criterion declared by <code>f</code>, or a maximum iteration count is reached.
+    Used for refinement loops:
+  </p>
+  <pre>envelope >> refine@density</pre>
+
+  <h2>Variable binding</h2>
+  <p>
+    <code>x = expr</code> binds the <em>expression graph node</em>, not the evaluated value.
+    Reusing <code>x</code> in a later expression is a reference to the same graph node —
+    the value is computed at most once.
+  </p>
+
+  <h2>Module scope</h2>
+  <p>
+    Operator names are resolved through the global <strong>operator registry</strong>, not through
+    language-level imports.  A name like <code>saxs</code> is not a variable — it is looked up in the
+    registry at graph-build time.  This means:
+  </p>
+  <ul>
+    <li>an operator is available exactly when its module has been imported,</li>
+    <li>using an unloaded operator raises an <code>ImportError</code> with a helpful module hint,</li>
+    <li>the language session itself carries no import state — only the registry does.</li>
+  </ul>
+  <pre>-- SAXs not loaded:
+d > saxs
+-- ❌  ImportError: Operator 'saxs' not available.  Did you import nexus_language_saxs?
+
+-- After loading:
+from nexus_language_saxs import *
+d > saxs    -- ✅</pre>
+  <p>See <a href="#modules/modules">Module system</a> for the full architecture.</p>
+
+  <h2>Variable scope</h2>
+  <p>All names live in a single flat scope within a session. There are no closures or nested namespaces at the language level — modularity is achieved through the operator registry.</p>
+</article>

@@ -149,128 +149,134 @@ def _render_impressum(data: dict) -> SharedShell:
 
 
 def _render_index_body(data: dict) -> str:
-        nav = data.get("nav") if isinstance(data.get("nav"), dict) else {}
-        hero = data.get("hero") if isinstance(data.get("hero"), dict) else {}
-        cta = hero.get("cta") if isinstance(hero.get("cta"), dict) else {}
-        orbit = hero.get("orbit") if isinstance(hero.get("orbit"), dict) else {}
+    nav = data.get("nav") if isinstance(data.get("nav"), dict) else {}
+    hero = data.get("hero") if isinstance(data.get("hero"), dict) else {}
+    cta = hero.get("cta") if isinstance(hero.get("cta"), dict) else {}
+    secondary_cta = hero.get("secondary_cta") if isinstance(hero.get("secondary_cta"), dict) else {}
+    orbit = hero.get("orbit") if isinstance(hero.get("orbit"), dict) else {}
 
-        nav_left = nav.get("left") if isinstance(nav.get("left"), list) else []
-        nav_right = nav.get("right") if isinstance(nav.get("right"), list) else []
+    kicker = _esc_html(hero.get("kicker", ""))
+    subtitle = _esc_html(hero.get("subtitle", ""))
+    characteristics = _esc_html(hero.get("characteristics", ""))
+    cta_href = _esc_attr(cta.get("href", "pages/nexus.html"))
+    cta_text = _esc_html(cta.get("text", "Explore the Nexus"))
+    secondary_cta_href = _esc_attr(secondary_cta.get("href", ""))
+    secondary_cta_text = _esc_html(secondary_cta.get("text", ""))
 
-        kicker = _esc_html(hero.get("kicker", ""))
-        subtitle = _esc_html(hero.get("subtitle", ""))
-        characteristics = _esc_html(hero.get("characteristics", ""))
-        cta_href = _esc_attr(cta.get("href", "pages/nexus.html"))
-        cta_text = _esc_html(cta.get("text", "Explore the Nexus"))
+    title_html = str(hero.get("title_html", ""))
 
-        title_html = str(hero.get("title_html", ""))
+    orbit_label = _esc_attr(orbit.get("aria_label", "Calyrai"))
+    orbit_size_css = _esc_attr(orbit.get("size_css", "min(48vmin, 360px)"))
+    orbit_accent_rot = _esc_attr(orbit.get("accent_rot", "140s"))
 
-        orbit_label = _esc_attr(orbit.get("aria_label", "Calyrai"))
-        orbit_size_css = _esc_attr(orbit.get("size_css", "min(48vmin, 360px)"))
-        orbit_accent_rot = _esc_attr(orbit.get("accent_rot", "140s"))
+    orbit_svg = f"""
+      <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="{orbit_label}" focusable="false">
+        <defs>
+          <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+            <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96" />
+            <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96" />
+          </linearGradient>
 
-        # NOTE: SVG is intentionally inlined here (not YAML) to keep the YAML readable.
-        orbit_svg = f"""
-            <svg class=\"orbit-logo__svg\" viewBox=\"0 0 200 200\" role=\"img\" aria-label=\"{orbit_label}\" focusable=\"false\">
-                <defs>
-                    <linearGradient id=\"orbit-logo-home-whiteCyan\" x1=\"30\" y1=\"30\" x2=\"170\" y2=\"170\" gradientUnits=\"userSpaceOnUse\">
-                        <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.96\" />
-                        <stop offset=\"40%\" stop-color=\"#ffffff\" stop-opacity=\"0.96\" />
-                        <stop offset=\"68%\" stop-color=\"#24f3ff\" stop-opacity=\"0.92\" />
-                        <stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"0.96\" />
-                    </linearGradient>
+          <linearGradient id="orbit-logo-home-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92" />
+            <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22" />
+            <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82" />
+          </linearGradient>
 
-                    <linearGradient id=\"orbit-logo-home-magenta\" x1=\"170\" y1=\"40\" x2=\"35\" y2=\"160\" gradientUnits=\"userSpaceOnUse\">
-                        <stop offset=\"0%\" stop-color=\"#ff4df5\" stop-opacity=\"0.92\" />
-                        <stop offset=\"55%\" stop-color=\"#ffffff\" stop-opacity=\"0.22\" />
-                        <stop offset=\"100%\" stop-color=\"#ff4df5\" stop-opacity=\"0.82\" />
-                    </linearGradient>
+          <linearGradient id="orbit-logo-home-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+            <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06" />
+            <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22" />
+          </linearGradient>
 
-                    <linearGradient id=\"orbit-logo-home-soft\" x1=\"40\" y1=\"25\" x2=\"160\" y2=\"175\" gradientUnits=\"userSpaceOnUse\">
-                        <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.42\" />
-                        <stop offset=\"60%\" stop-color=\"#ffffff\" stop-opacity=\"0.06\" />
-                        <stop offset=\"100%\" stop-color=\"#24f3ff\" stop-opacity=\"0.22\" />
-                    </linearGradient>
+          <filter id="orbit-logo-home-glowWhite" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
 
-                    <filter id=\"orbit-logo-home-glowWhite\" x=\"-60%\" y=\"-60%\" width=\"220%\" height=\"220%\">
-                        <feGaussianBlur stdDeviation=\"4.5\" result=\"b\" />
-                        <feMerge>
-                            <feMergeNode in=\"b\" />
-                            <feMergeNode in=\"SourceGraphic\" />
-                        </feMerge>
-                    </filter>
+          <filter id="orbit-logo-home-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.0" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
 
-                    <filter id=\"orbit-logo-home-glowMagenta\" x=\"-60%\" y=\"-60%\" width=\"220%\" height=\"220%\">
-                        <feGaussianBlur stdDeviation=\"3.0\" result=\"b\" />
-                        <feMerge>
-                            <feMergeNode in=\"b\" />
-                            <feMergeNode in=\"SourceGraphic\" />
-                        </feMerge>
-                    </filter>
+        </defs>
 
-                </defs>
+        <g class="orbit-logo__ring-c">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="84"
+            stroke="url(#orbit-logo-home-soft)" stroke-width="10"
+            stroke-dasharray="420 110" stroke-linecap="round" />
+        </g>
 
-                <g class=\"orbit-logo__ring-c\">
-                    <circle class=\"orbit-logo__stroke\" cx=\"100\" cy=\"100\" r=\"84\"
-                        stroke=\"url(#orbit-logo-home-soft)\" stroke-width=\"10\"
-                        stroke-dasharray=\"420 110\" stroke-linecap=\"round\" />
-                </g>
+        <g class="orbit-logo__ring-b" filter="url(#orbit-logo-home-glowMagenta)">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="66"
+            stroke="url(#orbit-logo-home-magenta)" stroke-width="14"
+            stroke-dasharray="300 114" stroke-linecap="round" />
+        </g>
 
-                <g class=\"orbit-logo__ring-b\" filter=\"url(#orbit-logo-home-glowMagenta)\">
-                    <circle class=\"orbit-logo__stroke\" cx=\"100\" cy=\"100\" r=\"66\"
-                        stroke=\"url(#orbit-logo-home-magenta)\" stroke-width=\"14\"
-                        stroke-dasharray=\"300 114\" stroke-linecap=\"round\" />
-                </g>
+        <g class="orbit-logo__ring" filter="url(#orbit-logo-home-glowWhite)">
+          <circle class="orbit-logo__stroke" cx="100" cy="100" r="48"
+            stroke="url(#orbit-logo-home-whiteCyan)" stroke-width="22"
+            stroke-dasharray="235 68" stroke-linecap="round" />
+        </g>
 
-                <g class=\"orbit-logo__ring\" filter=\"url(#orbit-logo-home-glowWhite)\">
-                    <circle class=\"orbit-logo__stroke\" cx=\"100\" cy=\"100\" r=\"48\"
-                        stroke=\"url(#orbit-logo-home-whiteCyan)\" stroke-width=\"22\"
-                        stroke-dasharray=\"235 68\" stroke-linecap=\"round\" />
-                </g>
+        <g class="orbit-logo__accent" filter="url(#orbit-logo-home-glowMagenta)">
+          <g transform="translate(126 98) rotate(-10)">
+            <path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96" />
+            <path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78" />
+            <path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65" />
+          </g>
+        </g>
+      </svg>
+    """.strip()
 
-                <g class=\"orbit-logo__accent\" filter=\"url(#orbit-logo-home-glowMagenta)\">
-                    <g transform=\"translate(126 98) rotate(-10)\">
-                        <path d=\"M 0 -18 L 92 -18 L 76 18 L -16 18 Z\" fill=\"#ff4df5\" fill-opacity=\"0.96\" />
-                        <path d=\"M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z\" fill=\"#24f3ff\" fill-opacity=\"0.78\" />
-                        <path d=\"M -14 -10 L 10 -10 L 4 10 L -20 10 Z\" fill=\"#ffffff\" fill-opacity=\"0.65\" />
-                    </g>
-                </g>
-            </svg>
-        """.strip()
+    secondary_link_html = (
+        f'<div class="hero-secondary-actions"><a href="{secondary_cta_href}" class="hero-secondary-link">{secondary_cta_text}</a></div>'
+        if secondary_cta_href and secondary_cta_text
+        else ""
+    )
 
-        return f"""
+    return f"""
 {_render_header(nav)}
 
-<section class=\"hero\" id=\"hero\">
-    <div class=\"hero-orbit-logo\">
-        <div class=\"hero-orbit-stack\">
-            <div
-                data-orbit-logo
-                class=\"orbit-logo\"
-                id=\"orbit-logo-home\"
-                role=\"button\"
-                tabindex=\"0\"
-                aria-label=\"{orbit_label}\"
-                style=\"--orbit-size: {orbit_size_css}; --orbit-accent-rot: {orbit_accent_rot};\"
-            >
-                {orbit_svg}
-            </div>
+<section class="hero" id="hero">
+  <div class="hero-orbit-logo">
+    <div class="hero-orbit-stack">
+      <div
+        data-orbit-logo
+        class="orbit-logo"
+        id="orbit-logo-home"
+        role="button"
+        tabindex="0"
+        aria-label="{orbit_label}"
+        style="--orbit-size: {orbit_size_css}; --orbit-accent-rot: {orbit_accent_rot};"
+      >
+        {orbit_svg}
+      </div>
 
-            <a href=\"{cta_href}\" class=\"hero-cta hero-cta--orbit glow-button\">{cta_text}</a>
-        </div>
-
-        <div class=\"hero-characteristics hero-characteristics--orbit\">{characteristics}</div>
+      <a href="{cta_href}" class="hero-cta hero-cta--orbit glow-button">{cta_text}</a>
     </div>
 
-    <div class=\"hero-copy\">
-        <div class=\"hero-kicker\">{kicker}</div>
+    <div class="hero-characteristics hero-characteristics--orbit">{characteristics}</div>
+  </div>
 
-        <h1 class=\"hero-title\">{title_html}</h1>
+  <div class="hero-copy">
+    <div class="hero-kicker">{kicker}</div>
 
-        <p class=\"hero-subtitle\">
-            {subtitle}
-        </p>
-    </div>
+    <h1 class="hero-title">{title_html}</h1>
+
+    <p class="hero-subtitle">
+      {subtitle}
+    </p>
+    {secondary_link_html}
+  </div>
 </section>
 """.strip()
 
@@ -280,6 +286,7 @@ def _render_nexus_page(data: dict) -> str:
         hero = data.get("hero") if isinstance(data.get("hero"), dict) else {}
         outline = data.get("outline") if isinstance(data.get("outline"), list) else []
         concept = data.get("concept") if isinstance(data.get("concept"), dict) else {}
+        dual_architecture = data.get("dual_architecture") if isinstance(data.get("dual_architecture"), dict) else {}
         layers = data.get("layers") if isinstance(data.get("layers"), dict) else {}
         works = data.get("works") if isinstance(data.get("works"), dict) else {}
         map_block = data.get("map") if isinstance(data.get("map"), dict) else {}
@@ -287,6 +294,7 @@ def _render_nexus_page(data: dict) -> str:
         stats = hero.get("stats") if isinstance(hero.get("stats"), list) else []
         concept_body = concept.get("body") if isinstance(concept.get("body"), list) else []
         concept_steps = concept.get("steps") if isinstance(concept.get("steps"), list) else []
+        dual_columns = dual_architecture.get("columns") if isinstance(dual_architecture.get("columns"), list) else []
         layer_cards = layers.get("cards") if isinstance(layers.get("cards"), list) else []
         work_entries = works.get("entries") if isinstance(works.get("entries"), list) else []
         map_body = map_block.get("body") if isinstance(map_block.get("body"), list) else []
@@ -322,7 +330,24 @@ def _render_nexus_page(data: dict) -> str:
                         for index, item in enumerate([i for i in concept_steps if isinstance(i, dict)], start=1)
                 ]
         )
-        concept_flow_html = concept_steps_html.replace("</div>\n          <div class=\"nexus-flow-node\">", "</div>\n          <div class=\"nexus-flow-arrow\"></div>\n          <div class=\"nexus-flow-node\">")
+        concept_flow_html = concept_steps_html.replace(
+                "</div>\n          <div class=\"nexus-flow-node\">",
+                "</div>\n          <div class=\"nexus-flow-arrow\"></div>\n          <div class=\"nexus-flow-node\">",
+        )
+
+        dual_columns_html = "\n          ".join(
+                [
+                        f"""<article class="nexus-dual-card">
+            <div class="nexus-integration-label">{_esc_html(item.get("label", ""))}</div>
+            <h3>{_esc_html(item.get("title", ""))}</h3>
+            <ul class="nexus-bullets nexus-bullets-tight">
+              {''.join([f'<li>{_esc_html(entry)}</li>' for entry in (item.get('items') if isinstance(item.get('items'), list) else [])])}
+            </ul>
+          </article>"""
+                        for item in dual_columns
+                        if isinstance(item, dict)
+                ]
+        )
 
         layer_cards_html = "\n          ".join(
                 [
@@ -354,6 +379,17 @@ def _render_nexus_page(data: dict) -> str:
 
         map_body_html = "\n        ".join([f'<p class="nexus-body">{_esc_html(p)}</p>' for p in map_body])
 
+        dual_architecture_html = ""
+        if dual_columns_html:
+                dual_architecture_html = f"""<section id="dual-architecture" class="nexus-block">
+        <h2 class="nexus-h2">{_esc_html(dual_architecture.get("title", ""))}</h2>
+        <p class="nexus-body">{_esc_html(dual_architecture.get("body", ""))}</p>
+        <div class="nexus-dual-grid">
+          {dual_columns_html}
+        </div>
+        <pre class="nexus-math">{_esc_html(dual_architecture.get("bridge", ""))}</pre>
+      </section>"""
+
         return f"""
 {_render_header(nav)}
 
@@ -381,6 +417,8 @@ def _render_nexus_page(data: dict) -> str:
           {concept_flow_html}
         </div>
       </section>
+
+      {dual_architecture_html}
 
       <section id="layers" class="nexus-block">
         <h2 class="nexus-h2">{_esc_html(layers.get("title", ""))}</h2>

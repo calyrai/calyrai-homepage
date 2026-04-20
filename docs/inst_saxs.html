@@ -1,0 +1,45 @@
+<article class="doc-article">
+  <h1>SAXS instrument layer</h1>
+  <p class="doc-subtitle">Small-angle X-ray scattering in Nexus</p>
+
+  <h2>Input</h2>
+  <p>A <code>Dataset</code> pointing to a two-column ASCII file: $q$ (Å⁻¹) and $I(q)$ (arbitrary units), optionally a third column of errors $\sigma(q)$.</p>
+
+  <h2>Pipeline</h2>
+  <pre>d > saxs               -- Dataset → Signal(q-space)
+  > compute@pr         -- → Distribution(r-space) via indirect Fourier transform
+  > fit@guinier        -- → Fit  {Rg, I(0)}
+  > fit@envelope       -- → Envelope (3D reconstruction)</pre>
+
+  <h2>Shannon channels</h2>
+  <p>
+    The information content of a SAXS dataset is quantified by the number of Shannon channels:
+  </p>
+  <div class="doc-eq">
+    $$N_S = \frac{2\,\Delta q\,D_{\max}}{\pi}$$
+  </div>
+  <p>
+    where $\Delta q = q_{\max} - q_{\min}$.
+    Nexus computes $N_S$ automatically and warns if a requested fit has more free parameters than $N_S$.
+  </p>
+
+  <h2>Non-$D_\text{max}$ analytical approach</h2>
+  <p>
+    Traditional $P(r)$ analyses require an estimate of $D_{\max}$ (maximum particle diameter).
+    Nexus implements a non-$D_{\max}$ analytical transform: the pair-distance distribution is
+    obtained by Bayesian indirect Fourier transformation (BIFT) with an automatically
+    regularised kernel, removing the need to specify $D_{\max}$ as a user input.
+    The inferred $D_{\max}$ is reported as an output parameter with a credible interval.
+  </p>
+
+  <h2>Operator reference</h2>
+  <table class="doc-table">
+    <thead><tr><th>Expression</th><th>Output type</th><th>Key output parameters</th></tr></thead>
+    <tbody>
+      <tr><td><code>d > saxs</code></td><td>Signal(q-space)</td><td>background-subtracted $I(q)$, $\sigma(q)$</td></tr>
+      <tr><td><code>s > compute@pr</code></td><td>Distribution(r-space)</td><td>$P(r)$, $D_{\max}$, $R_g$, $\alpha$ (regularisation)</td></tr>
+      <tr><td><code>s > fit@guinier</code></td><td>Fit</td><td>$R_g$, $I(0)$, $q_{\max} R_g$ check</td></tr>
+      <tr><td><code>p > fit@envelope</code></td><td>Envelope</td><td>bead model, packing fraction, $\chi^2$</td></tr>
+    </tbody>
+  </table>
+</article>
