@@ -709,76 +709,6 @@
       ];
     }
 
-    function getContactCardPreviewLines(layout) {
-      return [
-        ...getContactCardTextLines(layout),
-        {
-          text: state.running ? "tap once to return to play" : "tap once to start playing",
-          font: '13px "SF Mono", "Fira Code", ui-monospace, monospace',
-          x: layout.textX,
-          y: layout.noteY,
-          fontSize: 13,
-          color: "rgba(142, 244, 255, 0.68)",
-        },
-      ];
-    }
-
-    function drawRasterTextLines(lines, moduleSize, moduleGap, radius) {
-      const scratch = document.createElement("canvas");
-      scratch.width = canvas.width;
-      scratch.height = canvas.height;
-      const scratchCtx = scratch.getContext("2d");
-      const step = moduleSize + moduleGap;
-
-      scratchCtx.clearRect(0, 0, scratch.width, scratch.height);
-      scratchCtx.fillStyle = "#ffffff";
-      scratchCtx.textAlign = "left";
-      scratchCtx.textBaseline = "alphabetic";
-
-      lines.forEach((line) => {
-        scratchCtx.font = line.font;
-        scratchCtx.fillText(line.text, line.x, line.y);
-      });
-
-      const image = scratchCtx.getImageData(0, 0, scratch.width, scratch.height).data;
-
-      function hasInk(startX, startY, size) {
-        for (let sampleY = startY; sampleY < startY + size; sampleY += 2) {
-          for (let sampleX = startX; sampleX < startX + size; sampleX += 2) {
-            const px = Math.max(0, Math.min(scratch.width - 1, Math.round(sampleX)));
-            const py = Math.max(0, Math.min(scratch.height - 1, Math.round(sampleY)));
-            const alpha = image[(py * scratch.width + px) * 4 + 3];
-            if (alpha > 32) return true;
-          }
-        }
-        return false;
-      }
-
-      ctx.save();
-      ctx.shadowBlur = 7;
-      ctx.shadowColor = "rgba(80, 236, 255, 0.26)";
-
-      lines.forEach((line) => {
-        scratchCtx.font = line.font;
-        const metrics = scratchCtx.measureText(line.text);
-        const textWidth = Math.ceil(metrics.width);
-        const top = Math.max(0, Math.floor(line.y - line.fontSize * 0.9));
-        const bottom = Math.min(canvas.height, Math.ceil(line.y + line.fontSize * 0.28));
-
-        ctx.fillStyle = line.color;
-        for (let y = top; y < bottom; y += step) {
-          for (let x = line.x; x < line.x + textWidth; x += step) {
-            if (!hasInk(x, y, moduleSize)) continue;
-            ctx.beginPath();
-            ctx.arc(x + moduleSize / 2, y + moduleSize / 2, radius, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-      });
-
-      ctx.restore();
-    }
-
     function buildTextBricks(layout, brickSize, gap) {
       const scratch = document.createElement("canvas");
       scratch.width = canvas.width;
@@ -843,7 +773,7 @@
 
     function drawHighResContactCard(layout) {
       const qrMatrix = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
-      const lines = getContactCardPreviewLines(layout);
+      const lines = getContactCardTextLines(layout);
 
       const qrSize = qrMatrix.length;
       if (!qrSize) return;
@@ -895,7 +825,17 @@
       ctx.closePath();
       ctx.stroke();
 
-      drawRasterTextLines(lines, moduleSize, moduleGap, radius);
+      ctx.save();
+      ctx.textAlign = "left";
+      lines.forEach((line) => {
+        ctx.font = line.font;
+        ctx.fillStyle = line.color;
+        ctx.fillText(line.text, line.x, line.y);
+      });
+      ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
+      ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
+      ctx.fillText(state.running ? "tap once to return to play" : "tap once to start playing", layout.textX, layout.noteY);
+      ctx.restore();
 
       ctx.save();
       ctx.fillStyle = "#8ef4ff";
@@ -1572,7 +1512,7 @@
 
       const cyan = "#bff8ff";
       const blink = 1;
-      const radius = Math.max(4, Math.min(w, h) * 0.5);
+      const radius = Math.max(4.8, Math.min(w, h) * 0.58);
       const cx = x + w / 2;
       const cy = y + h / 2;
 
