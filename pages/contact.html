@@ -560,6 +560,7 @@
       perimeterOffset: 0,
       saveFeedback: "",
       qrLoading: false,
+      previewMatrix: null,
       lastGameplaySnapshot: "",
     };
 
@@ -765,6 +766,59 @@
       });
 
       return bricks;
+    }
+
+    function drawHighResContactCard(layout) {
+      const qrMatrix = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
+      const lines = getContactCardTextLines(layout);
+
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
+
+      ctx.strokeStyle = "rgba(96, 236, 255, 0.26)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(layout.cardX + 28, layout.cardY);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY, layout.cardX + layout.cardW, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY + layout.cardH, layout.cardX, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX, layout.cardY + layout.cardH, layout.cardX, layout.cardY, 28);
+      ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.save();
+      ctx.textAlign = "left";
+      lines.forEach((line, index) => {
+        ctx.font = line.font;
+        ctx.fillStyle = index === 0 ? "#f7fbff" : "#8ef4ff";
+        ctx.fillText(line.text, line.x, line.y);
+      });
+      ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
+      ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
+      ctx.fillText("tap once to return to play", layout.textX, layout.noteY);
+      ctx.restore();
+
+      if (!qrMatrix || !state.qrBounds.width || !state.qrBounds.height) return;
+
+      const qrSize = qrMatrix.length;
+      const moduleGap = 2;
+      const moduleSize = (state.qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
+      const radius = Math.max(2.4, moduleSize * 0.34);
+
+      ctx.save();
+      ctx.fillStyle = "#8ef4ff";
+      ctx.shadowBlur = 7;
+      ctx.shadowColor = "rgba(80, 236, 255, 0.26)";
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const x = state.qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
+          const y = state.qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
     }
 
     function isPerimeterChallengeActive() {
@@ -1212,6 +1266,7 @@
       state.periodicModeUnlocked = false;
       state.contactOpen = false;
       state.gameOver = false;
+      state.previewMatrix = null;
       resetBricks();
       setPerimeterOffset(defaultPerimeterOffset());
       resetBallAndPaddle();
@@ -1244,7 +1299,6 @@
       state.gameOver = false;
       state.qrLoading = false;
       state.saveFeedback = "";
-      resetBricks();
       syncHud();
       syncGameUi();
       draw();
@@ -1343,7 +1397,9 @@
     }
 
     async function showContactQr() {
-      captureGameplaySnapshot();
+      if (state.running && !state.contactOpen) {
+        captureGameplaySnapshot();
+      }
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
@@ -1355,12 +1411,13 @@
 
       try {
         await loadQrLibrary();
+        state.previewMatrix = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
       } catch (_error) {
         state.saveFeedback = "Contact QR could not be loaded right now. Mail and local save still use your vCard.";
+        state.previewMatrix = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
       }
 
       state.qrLoading = false;
-      resetBricks();
       syncHud();
       syncGameUi();
       draw();
@@ -1379,7 +1436,6 @@
       state.contactOpen = true;
       state.gameOver = true;
       state.saveFeedback = reasonText || "";
-      resetBricks();
       syncHud();
       syncGameUi();
     }
@@ -1630,6 +1686,24 @@
       ctx.fillStyle = "#050816";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      if (!state.initialized) {
+        ctx.save();
+        ctx.fillStyle = "rgba(6, 12, 28, 0.96)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(191, 248, 255, 0.88)";
+        ctx.font = '24px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText("Loading contact QR...", canvas.width / 2, canvas.height / 2);
+        ctx.restore();
+        return;
+      }
+
+      if (state.contactOpen) {
+        drawHighResContactCard(layout);
+        ctx.restore();
+        return;
+      }
+
       drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
 
       ctx.strokeStyle = "rgba(96, 236, 255, 0.26)";
@@ -1642,26 +1716,6 @@
       ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
       ctx.closePath();
       ctx.stroke();
-
-      if (state.contactOpen) {
-        ctx.save();
-        ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
-        ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.fillText("tap once to return to play", layout.textX, layout.noteY);
-        ctx.restore();
-      }
-
-      if (!state.initialized) {
-        ctx.save();
-        ctx.fillStyle = "rgba(6, 12, 28, 0.96)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(191, 248, 255, 0.88)";
-        ctx.font = '24px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.textAlign = "center";
-        ctx.fillText("Loading contact QR...", canvas.width / 2, canvas.height / 2);
-        ctx.restore();
-        return;
-      }
 
       for (const brick of state.bricks) {
         if (!brick.alive) continue;
@@ -2088,6 +2142,10 @@
         draw();
         return;
       }
+      if (!state.contactOpen && state.running && !state.gameOver) {
+        pauseIntoContact();
+        return;
+      }
       startOrResume();
     }
 
@@ -2126,14 +2184,12 @@
 
     function bootWhenReady(startMs) {
       state.initialized = true;
-      resetGame();
-      state.running = true;
+      state.running = false;
       state.paused = true;
       state.lastTime = 0;
       if (startMs) {
         draw();
       }
-      requestAnimationFrame(frame);
       void showContactQr();
     }
 
