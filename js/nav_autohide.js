@@ -1,38 +1,63 @@
 // nav_autohide.js
-// Hide/show the site header on supported pages while scrolling.
-// Home remains unaffected unless a page explicitly opts in via body class.
+// Shared header behavior:
+// - keep mobile header offset in sync with wrapped pill rows
+// - hide on scroll down / show on scroll up on supported pages
 
 (function () {
   const body = document.body;
-
-  const isProjectsPage = body.classList.contains("projects-page");
-  const isExplorePage = body.classList.contains("explore-page");
-
-  if (!isProjectsPage && !isExplorePage) return;
-
   const header = document.querySelector(".site-header");
-  if (!header) return;
+  const navInner = header ? header.querySelector(".nav-inner") : null;
+
+  if (!header || !navInner) return;
+
+  const mobileQuery = window.matchMedia("(max-width: 760px)");
 
   let lastScrollY = window.scrollY;
   let ticking = false;
   let isHidden = false;
 
-  const THRESHOLD = isExplorePage ? 72 : 150;
-  const SHOW_DELTA = isExplorePage ? 8 : 0;
+  function getThreshold() {
+    return body.classList.contains("explore-page") ? 72 : 80;
+  }
+
+  function getShowDelta() {
+    return body.classList.contains("explore-page") ? 8 : 6;
+  }
+
+  function isMobile() {
+    return mobileQuery.matches;
+  }
+
+  function setHeaderOffset() {
+    if (isMobile()) {
+      document.documentElement.style.setProperty("--mobile-header-offset", header.offsetHeight + "px");
+    } else {
+      document.documentElement.style.removeProperty("--mobile-header-offset");
+    }
+  }
+
+  function syncMenuMode() {
+    setHeaderOffset();
+  }
 
   function update() {
+    if (!isMobile()) {
+      ticking = false;
+      return;
+    }
+
     const currentY = window.scrollY;
     const delta = currentY - lastScrollY;
     const scrollingDown = delta > 0;
-    const scrollingUpEnough = delta < -SHOW_DELTA;
+    const scrollingUpEnough = delta < -getShowDelta();
 
     // HIDE: only when scrolling down and sufficiently below the top.
-    if (scrollingDown && currentY > THRESHOLD && !isHidden) {
+    if (scrollingDown && currentY > getThreshold() && !isHidden) {
       header.classList.add("site-header-hidden");
       isHidden = true;
     }
     // SHOW: quickly when scrolling back up, or whenever we are near the top.
-    else if ((scrollingUpEnough || currentY <= THRESHOLD) && isHidden) {
+    else if ((scrollingUpEnough || currentY <= getThreshold()) && isHidden) {
       header.classList.remove("site-header-hidden");
       isHidden = false;
     }
@@ -47,4 +72,13 @@
       ticking = true;
     }
   }, { passive: true });
+
+  if (typeof mobileQuery.addEventListener === "function") {
+    mobileQuery.addEventListener("change", syncMenuMode);
+  } else if (typeof mobileQuery.addListener === "function") {
+    mobileQuery.addListener(syncMenuMode);
+  }
+
+  window.addEventListener("resize", setHeaderOffset, { passive: true });
+  syncMenuMode();
 })();

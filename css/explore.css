@@ -82,7 +82,7 @@
 /* All slide content: flush right */
 .deck-content {
   width: 100%;
-  max-width: min(64vw, 1040px);
+  max-width: 100%;
   text-align: right;
   display: flex;
   flex-direction: column;
@@ -91,8 +91,8 @@
   margin-left: auto;
 }
 
-.deck-content--narrow { max-width: min(50vw, 760px); }
-.deck-content--wide   { max-width: min(78vw, 1280px); width: 100%; }
+.deck-content--narrow { max-width: min(58vw, 860px); }
+.deck-content--wide   { max-width: 100%; width: 100%; }
 
 .deck-kicker {
   font-size: clamp(0.78rem, 0.55vw + 0.55rem, 1.12rem);
@@ -115,6 +115,8 @@
   line-height: 1.04;
   color: #f4fbff;
   margin: 0;
+  width: min(100%, 18ch);
+  margin-left: auto;
   text-shadow:
     0 0 28px rgba(0, 220, 255, 0.18),
     0 0 60px rgba(255, 120, 255, 0.12);
@@ -139,6 +141,8 @@
   color: rgba(210, 240, 255, 0.58);
   font-style: italic;
   margin: 0;
+  width: min(100%, 42rem);
+  margin-left: auto;
   line-height: 1.55;
 }
 
@@ -148,7 +152,8 @@
   line-height: 1.72;
   margin: 0;
   text-align: right;
-  width: 100%;
+  width: min(100%, 54rem);
+  margin-left: auto;
   display: flex;
   flex-direction: column;
   gap: 0.62em;
@@ -818,7 +823,7 @@
 
 @media (max-width: 860px) {
   .deck-content {
-    max-width: min(82vw, 760px);
+    max-width: min(92vw, 920px);
   }
 
   .deck-content--narrow,

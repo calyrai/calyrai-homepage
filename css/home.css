@@ -24,6 +24,7 @@
   width:100%;
   height:100vh;
   overflow:hidden;
+  overflow-x: clip;
   background:radial-gradient(circle at top,#06091a 0%,#02030a 45%,#000 100%);
 }
 
@@ -37,6 +38,7 @@
   flex-direction: column;
   align-items:center;
   justify-content:center;
+  width: min(100%, calc(100vw - 24px));
   z-index:6;
   pointer-events:none; /* don't block CTA clicks */
 }
@@ -46,6 +48,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
+  width: 100%;
   pointer-events:none;
 }
 
@@ -76,7 +79,7 @@
 
 .hero-characteristics.hero-characteristics--orbit{
   margin-top: 1.1rem;
-  width: 100%;
+  width: min(100%, 34rem);
   text-align: center;
   pointer-events:auto;
 }
@@ -95,6 +98,15 @@
 
   .hero-orbit-logo{
     padding-top: clamp(3.75rem, 8vh, 6rem);
+  }
+
+  .hero-orbit-stack {
+    max-width: min(100%, calc(100vw - 24px));
+  }
+
+  .hero-cta.hero-cta--orbit {
+    width: min(86vw, 420px);
+    padding-inline: 1.2rem;
   }
 }
 
@@ -476,6 +488,14 @@
 
   .hero-cta.hero-cta--orbit{
     min-width: 0;
+  }
+
+  .hero-characteristics.hero-characteristics--orbit {
+    max-width: min(92vw, 30rem);
+    font-size: 0.84rem;
+    letter-spacing: 0.11em;
+    line-height: 1.45;
+    margin-inline: auto;
   }
 }
 

@@ -494,17 +494,17 @@
     const mailBtn = document.getElementById("mail-btn");
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
+    const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const CONTACT_PAYLOAD = [
       "BEGIN:VCARD",
       "VERSION:3.0",
       "N:Tscheliessnig;Rupert;;;",
       "FN:Rupert Tscheliessnig",
-      "ORG:G'Labs / Calyr.ai",
+      "ORG:G'Labs ⏸",
       "EMAIL;TYPE=INTERNET:rupert.tscheliessnig@calyr.ai",
-      "TEL;TYPE=CELL:+4369919200915",
       "URL:https://calyr.ai/pages/contact.html",
       "URL:https://bsky.app/profile/calyrai.bsky.social",
-      "NOTE:Calyr.ai contact card",
+      "NOTE:G'Labs ⏸ contact card",
       "END:VCARD"
     ].join("\n");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
@@ -562,8 +562,11 @@
       qrBounds: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 },
       perimeterOffset: 0,
       saveFeedback: "",
+      qrLoading: false,
       lastGameplaySnapshot: "",
     };
+
+    let qrLibraryPromise = null;
 
     function buildQrWall(size, seed) {
       const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -715,10 +718,44 @@
 
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
+      if (state.qrLoading) return "Preparing your contact QR...";
       if (state.contactOpen) {
         return "Single tap returns to play. Double-tap the QR on phone to store the contact locally.";
       }
-      return "Single tap opens the QR contact view.";
+      return "Single tap opens the contact QR. Your contact card is prepared but not loaded until you ask for it.";
+    }
+
+    function loadQrLibrary() {
+      if (typeof window.qrcode === "function") {
+        return Promise.resolve();
+      }
+
+      if (qrLibraryPromise) {
+        return qrLibraryPromise;
+      }
+
+      qrLibraryPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-contact-qr-lib="true"]');
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true });
+          existing.addEventListener("error", () => reject(new Error("QR script failed to load.")), { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = QR_LIBRARY_URL;
+        script.async = true;
+        script.defer = true;
+        script.dataset.contactQrLib = "true";
+        script.addEventListener("load", () => resolve(), { once: true });
+        script.addEventListener("error", () => reject(new Error("QR script failed to load.")), { once: true });
+        document.head.appendChild(script);
+      }).catch((error) => {
+        qrLibraryPromise = null;
+        throw error;
+      });
+
+      return qrLibraryPromise;
     }
 
     function parseContactPayload(payload) {
@@ -1081,6 +1118,7 @@
     function resetContactState() {
       state.contactOpen = false;
       state.gameOver = false;
+      state.qrLoading = false;
       state.saveFeedback = "";
       resetBricks();
       syncHud();
@@ -1180,12 +1218,24 @@
       resumeAfterMailAction();
     }
 
-    function showContactQr() {
+    async function showContactQr() {
       captureGameplaySnapshot();
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
       state.saveFeedback = "";
+      state.qrLoading = true;
+      syncHud();
+      syncGameUi();
+      draw();
+
+      try {
+        await loadQrLibrary();
+      } catch (_error) {
+        state.saveFeedback = "Contact QR could not be loaded right now. Mail and local save still use your vCard.";
+      }
+
+      state.qrLoading = false;
       resetBricks();
       syncHud();
       syncGameUi();
@@ -1195,7 +1245,7 @@
     function pauseIntoContact() {
       if (!state.initialized) return;
       state.paused = true;
-      showContactQr();
+      void showContactQr();
     }
 
     function endToContact(reasonText) {
@@ -1204,7 +1254,9 @@
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = true;
+      state.saveFeedback = reasonText || "";
       resetBricks();
+      syncHud();
       syncGameUi();
     }
 
@@ -1866,6 +1918,7 @@
 
     function handleSingleActivate() {
       clearPendingSingleTap();
+      if (state.qrLoading) return;
       if (state.contactOpen && state.running && !state.gameOver) {
         startOrResume();
         return;
@@ -1875,6 +1928,7 @@
 
     function handleDoubleActivate(options = {}) {
       clearPendingSingleTap();
+      if (state.qrLoading) return;
       if (options.storeLocal && state.contactOpen) {
         saveContactLocally();
         draw();
@@ -1917,28 +1971,15 @@
     );
 
     function bootWhenReady(startMs) {
-      const deadline = performance.now() + 4000;
-
-      function tryBoot() {
-        if (typeof window.qrcode === "function" || performance.now() >= deadline) {
-          state.initialized = true;
-          resetGame();
-          state.running = true;
-          state.paused = true;
-          state.lastTime = 0;
-          showContactQr();
-          requestAnimationFrame(frame);
-          return;
-        }
-
-        draw();
-        window.setTimeout(tryBoot, 40);
-      }
-
+      state.initialized = true;
+      resetGame();
+      state.running = true;
+      state.paused = true;
+      state.lastTime = 0;
       if (startMs) {
         draw();
       }
-      tryBoot();
+      requestAnimationFrame(frame);
     }
 
     bootWhenReady(true);
