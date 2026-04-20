@@ -797,11 +797,41 @@
       ctx.fillText(state.running ? "tap once to return to play" : "tap once to start playing", layout.textX, layout.noteY);
       ctx.restore();
 
-      if (!qrMatrix || !state.qrBounds.width || !state.qrBounds.height) return;
-
       const qrSize = qrMatrix.length;
+      if (!qrSize) return;
+
       const moduleGap = 2;
-      const moduleSize = (state.qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
+      const narrowScreen = window.innerWidth <= 640;
+      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
+      const qrWidthLimit = narrowScreen ? 220 : 250;
+      const qrHeightLimit = layout.cardH - (narrowScreen ? 110 : 120);
+      const baseModuleSize = Math.max(
+        landscapePhone ? 7 : narrowScreen ? 11 : 8,
+        Math.floor(
+          Math.min(
+            (qrWidthLimit - moduleGap * (qrSize - 1)) / qrSize,
+            (qrHeightLimit - moduleGap * (qrSize - 1)) / qrSize
+          )
+        )
+      );
+      const previewModuleSize = Math.max(
+        landscapePhone ? 6 : narrowScreen ? 8 : 7,
+        Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
+      );
+      const previewWidth = qrSize * previewModuleSize + (qrSize - 1) * moduleGap;
+      const previewHeight = qrSize * previewModuleSize + (qrSize - 1) * moduleGap;
+      const previewLayout = getContactCardLayout(previewWidth, previewHeight);
+      const qrBounds = state.qrBounds.width && state.qrBounds.height
+        ? state.qrBounds
+        : {
+            left: previewLayout.qrLeft,
+            top: previewLayout.qrTop,
+            right: previewLayout.qrLeft + previewWidth,
+            bottom: previewLayout.qrTop + previewHeight,
+            width: previewWidth,
+            height: previewHeight,
+          };
+      const moduleSize = (qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
       const radius = Math.max(2.4, moduleSize * 0.34);
 
       ctx.save();
@@ -811,8 +841,8 @@
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!qrMatrix[row][col]) continue;
-          const x = state.qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
-          const y = state.qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          const x = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
+          const y = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fill();
