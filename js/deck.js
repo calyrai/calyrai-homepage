@@ -179,7 +179,7 @@
 
     if (!data || !shell || !track || !dotsEl || !prevBtn || !nextBtn) return;
 
-    var phoneLayoutQuery = window.matchMedia('(max-width: 700px)');
+    var phoneLayoutQuery = window.matchMedia('(max-width: 820px)');
 
     function isStackedLayout() {
       return phoneLayoutQuery.matches && !document.fullscreenElement;

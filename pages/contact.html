@@ -496,18 +496,14 @@
     const landscapeRight = document.getElementById("landscape-right");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const CONTACT_PAYLOAD = [
-      "BEGIN:VCARD",
-      "VERSION:3.0",
-      "N:Tscheliessnig;Rupert;;;",
-      "FN:Rupert Tscheliessnig",
+      "MECARD:",
+      "N:Rupert Tscheliessnig",
       "ORG:G'Labs ⏸",
-      "EMAIL;TYPE=INTERNET:rupert.tscheliessnig@calyr.ai",
-      "URL:https://calyr.ai/pages/contact.html",
-      "URL:https://bsky.app/profile/calyrai.bsky.social",
-      "NOTE:G'Labs ⏸ contact card",
-      "END:VCARD"
-    ].join("\n");
+      "EMAIL:rupert.tscheliessnig@calyr.ai",
+      ";"
+    ].join("");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
+    const QR_RENDER_SCALE = 0.84;
     const MAX_LEVEL = 4;
     const LEVEL_TARGETS = {
       1: 200,
@@ -608,7 +604,7 @@
     function buildContactMatrix(text, options = {}) {
       const allowFallback = options.allowFallback !== false;
       if (typeof window.qrcode === "function") {
-        const qr = window.qrcode(0, "L");
+        const qr = window.qrcode(0, state.contactOpen ? "M" : "L");
         qr.addData(text);
         qr.make();
 
@@ -913,6 +909,8 @@
     }
 
     function drawQrBoundary() {
+      if (state.contactOpen) return;
+
       const { left, top, width, height } = state.qrBounds;
       if (!width || !height) return;
 
@@ -988,12 +986,16 @@
       }
       const wall = baseWall;
       const qrSize = wall.length;
-      const gap = 2;
+      const gap = state.contactOpen ? 0 : 2;
       const narrowScreen = window.innerWidth <= 640;
       const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
-      const horizontalPadding = landscapePhone ? 132 : narrowScreen ? 32 : 120;
-      const verticalPadding = landscapePhone ? 128 : narrowScreen ? 56 : 120;
-      const moduleSize = Math.max(
+      const horizontalPadding = state.contactOpen
+        ? (landscapePhone ? 178 : narrowScreen ? 110 : 190)
+        : (landscapePhone ? 132 : narrowScreen ? 32 : 120);
+      const verticalPadding = state.contactOpen
+        ? (landscapePhone ? 118 : narrowScreen ? 150 : 190)
+        : (landscapePhone ? 128 : narrowScreen ? 56 : 120);
+      const baseModuleSize = Math.max(
         landscapePhone ? 7 : narrowScreen ? 11 : 8,
         Math.floor(
           Math.min(
@@ -1002,6 +1004,12 @@
           )
         )
       );
+      const moduleSize = state.contactOpen
+        ? Math.max(landscapePhone ? 8 : narrowScreen ? 10 : 9, baseModuleSize)
+        : Math.max(
+            landscapePhone ? 6 : narrowScreen ? 9 : 7,
+            Math.floor(baseModuleSize * QR_RENDER_SCALE)
+          );
       const totalW = qrSize * moduleSize + (qrSize - 1) * gap;
       const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
       const top = Math.round((canvas.height - totalH) / 2);
@@ -1280,6 +1288,14 @@
 
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
+      if (state.contactOpen) {
+        ctx.save();
+        ctx.fillStyle = "#050505";
+        ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+        ctx.restore();
+        return;
+      }
+
       const cyan = "#bff8ff";
       const blink = 1;
       const radius = Math.max(4, Math.min(w, h) * 0.5);
@@ -1486,14 +1502,39 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      if (state.contactOpen) {
+        ctx.save();
+        ctx.fillStyle = "#050816";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const cardX = 84;
+        const cardY = 48;
+        const cardW = canvas.width - 168;
+        const cardH = canvas.height - 96;
+        drawRoundedRect(cardX, cardY, cardW, cardH, 28, "#f7fbff");
+
+        ctx.fillStyle = "#0c1622";
+        ctx.font = '700 24px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        ctx.fillText("Rupert Tscheliessnig", cardX + 34, cardY + 42);
+
+        ctx.fillStyle = "#2a4052";
+        ctx.font = '16px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.fillText("G\'Labs ⏸", cardX + 34, cardY + 74);
+        ctx.fillText("rupert.tscheliessnig@calyr.ai", cardX + 34, cardY + 104);
+        ctx.restore();
+      }
+
       ctx.save();
       ctx.globalAlpha = 0.5;
-      for (let i = 0; i < 16; i += 1) {
-        ctx.strokeStyle = i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)";
-        ctx.beginPath();
-        ctx.moveTo(0, i * 34);
-        ctx.lineTo(canvas.width, i * 34);
-        ctx.stroke();
+      if (!state.contactOpen) {
+        for (let i = 0; i < 16; i += 1) {
+          ctx.strokeStyle = i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)";
+          ctx.beginPath();
+          ctx.moveTo(0, i * 34);
+          ctx.lineTo(canvas.width, i * 34);
+          ctx.stroke();
+        }
       }
       ctx.restore();
 
