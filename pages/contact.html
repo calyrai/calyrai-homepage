@@ -605,7 +605,7 @@
       const allowFallback = options.allowFallback !== false;
       if (typeof window.qrcode === "function") {
         const qr = window.qrcode(0, state.contactOpen ? "M" : "L");
-        qr.addData(text);
+        qr.addData(text, "Byte");
         qr.make();
 
         const count = qr.getModuleCount();
@@ -652,6 +652,30 @@
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
+    }
+
+    function getContactCardLayout(totalW = 0, totalH = 0) {
+      const narrowScreen = window.innerWidth <= 640;
+      const cardX = narrowScreen ? 28 : 54;
+      const cardY = narrowScreen ? 24 : 30;
+      const cardW = canvas.width - cardX * 2;
+      const cardH = canvas.height - cardY * 2;
+      const qrInset = narrowScreen ? 26 : 34;
+      const qrLeft = cardX + cardW - qrInset - totalW;
+      const qrTop = cardY + Math.round((cardH - totalH) / 2);
+      return {
+        cardX,
+        cardY,
+        cardW,
+        cardH,
+        qrLeft,
+        qrTop,
+        textX: cardX + (narrowScreen ? 24 : 34),
+        titleY: cardY + (narrowScreen ? 40 : 52),
+        line2Y: cardY + (narrowScreen ? 74 : 92),
+        line3Y: cardY + (narrowScreen ? 102 : 126),
+        noteY: cardY + cardH - (narrowScreen ? 24 : 28),
+      };
     }
 
     function isPerimeterChallengeActive() {
@@ -1012,8 +1036,13 @@
           );
       const totalW = qrSize * moduleSize + (qrSize - 1) * gap;
       const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
-      const top = Math.round((canvas.height - totalH) / 2);
-      const left = Math.round((canvas.width - totalW) / 2);
+      const contactLayout = state.contactOpen ? getContactCardLayout(totalW, totalH) : null;
+      const top = state.contactOpen
+        ? contactLayout.qrTop
+        : Math.round((canvas.height - totalH) / 2);
+      const left = state.contactOpen
+        ? contactLayout.qrLeft
+        : Math.round((canvas.width - totalW) / 2);
       state.qrBounds = {
         left,
         top,
@@ -1503,25 +1532,25 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (state.contactOpen) {
+        const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
         ctx.save();
         ctx.fillStyle = "#050816";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const cardX = 84;
-        const cardY = 48;
-        const cardW = canvas.width - 168;
-        const cardH = canvas.height - 96;
-        drawRoundedRect(cardX, cardY, cardW, cardH, 28, "#f7fbff");
+        drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#f7fbff");
 
         ctx.fillStyle = "#0c1622";
         ctx.font = '700 24px "SF Mono", "Fira Code", ui-monospace, monospace';
         ctx.textAlign = "left";
-        ctx.fillText("Rupert Tscheliessnig", cardX + 34, cardY + 42);
+        ctx.fillText("Rupert Tscheliessnig", layout.textX, layout.titleY);
 
         ctx.fillStyle = "#2a4052";
         ctx.font = '16px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.fillText("G\'Labs ⏸", cardX + 34, cardY + 74);
-        ctx.fillText("rupert.tscheliessnig@calyr.ai", cardX + 34, cardY + 104);
+        ctx.fillText("G\'Labs ⏸", layout.textX, layout.line2Y);
+        ctx.fillText("rupert.tscheliessnig@calyr.ai", layout.textX, layout.line3Y);
+        ctx.fillStyle = "#5f7385";
+        ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.fillText("tap once to return to play", layout.textX, layout.noteY);
         ctx.restore();
       }
 
@@ -2021,6 +2050,7 @@
         draw();
       }
       requestAnimationFrame(frame);
+      void showContactQr();
     }
 
     bootWhenReady(true);
