@@ -794,7 +794,7 @@
       });
       ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
       ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
-      ctx.fillText("tap once to return to play", layout.textX, layout.noteY);
+      ctx.fillText(state.running ? "tap once to return to play" : "tap once to start playing", layout.textX, layout.noteY);
       ctx.restore();
 
       if (!qrMatrix || !state.qrBounds.width || !state.qrBounds.height) return;
@@ -883,7 +883,9 @@
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
       if (state.contactOpen) {
-        return "Single tap returns to play. Double-tap the QR on phone to store the contact locally.";
+        return state.running
+          ? "Single tap returns to play. Double-tap the QR on phone to store the contact locally."
+          : "Single tap starts the game. Double-tap stores the contact locally.";
       }
       return "Single tap opens the contact QR. Your contact card is prepared but not loaded until you ask for it.";
     }
@@ -2127,7 +2129,7 @@
     function handleSingleActivate() {
       clearPendingSingleTap();
       if (state.qrLoading) return;
-      if (state.contactOpen && state.running && !state.gameOver) {
+      if (state.contactOpen && !state.gameOver) {
         startOrResume();
         return;
       }
