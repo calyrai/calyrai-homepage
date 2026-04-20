@@ -729,16 +729,21 @@
       const bricks = [];
       const step = brickSize + gap;
 
-      function hasInk(startX, startY) {
-        for (let sampleY = startY; sampleY < startY + brickSize; sampleY += 2) {
-          for (let sampleX = startX; sampleX < startX + brickSize; sampleX += 2) {
-            const px = Math.max(0, Math.min(scratch.width - 1, sampleX));
-            const py = Math.max(0, Math.min(scratch.height - 1, sampleY));
+      function inkCoverage(startX, startY) {
+        let filled = 0;
+        let samples = 0;
+
+        for (let sampleY = startY; sampleY < startY + brickSize; sampleY += 1) {
+          for (let sampleX = startX; sampleX < startX + brickSize; sampleX += 1) {
+            const px = Math.max(0, Math.min(scratch.width - 1, Math.round(sampleX)));
+            const py = Math.max(0, Math.min(scratch.height - 1, Math.round(sampleY)));
             const alpha = image[(py * scratch.width + px) * 4 + 3];
-            if (alpha > 32) return true;
+            samples += 1;
+            if (alpha > 96) filled += 1;
           }
         }
-        return false;
+
+        return samples ? filled / samples : 0;
       }
 
       lines.forEach((line) => {
@@ -750,7 +755,8 @@
 
         for (let y = top; y < bottom; y += step) {
           for (let x = line.x; x < line.x + textWidth; x += step) {
-            if (!hasInk(x, y)) continue;
+            const coverage = inkCoverage(x, y);
+            if (coverage < 0.22) continue;
             bricks.push({
               x,
               y,
