@@ -679,6 +679,94 @@
       };
     }
 
+    function getContactCardTextLines(layout) {
+      return [
+        {
+          text: "Rupert Tscheliessnig",
+          font: '700 24px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.titleY,
+          fontSize: 24,
+        },
+        {
+          text: "G´Labs ⏸",
+          font: '16px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.line2Y,
+          fontSize: 16,
+        },
+        {
+          text: "rupert.tscheliessnig@calyr.ai",
+          font: '16px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.line3Y,
+          fontSize: 16,
+        }
+      ];
+    }
+
+    function buildTextBricks(layout, brickSize, gap) {
+      const scratch = document.createElement("canvas");
+      scratch.width = canvas.width;
+      scratch.height = canvas.height;
+      const scratchCtx = scratch.getContext("2d");
+      const lines = getContactCardTextLines(layout);
+      scratchCtx.clearRect(0, 0, scratch.width, scratch.height);
+      scratchCtx.fillStyle = "#ffffff";
+      scratchCtx.textAlign = "left";
+      scratchCtx.textBaseline = "alphabetic";
+
+      lines.forEach((line) => {
+        scratchCtx.font = line.font;
+        scratchCtx.fillText(line.text, line.x, line.y);
+      });
+
+      const image = scratchCtx.getImageData(0, 0, scratch.width, scratch.height).data;
+      const bricks = [];
+      const step = brickSize + gap;
+
+      function hasInk(startX, startY) {
+        for (let sampleY = startY; sampleY < startY + brickSize; sampleY += 2) {
+          for (let sampleX = startX; sampleX < startX + brickSize; sampleX += 2) {
+            const px = Math.max(0, Math.min(scratch.width - 1, sampleX));
+            const py = Math.max(0, Math.min(scratch.height - 1, sampleY));
+            const alpha = image[(py * scratch.width + px) * 4 + 3];
+            if (alpha > 32) return true;
+          }
+        }
+        return false;
+      }
+
+      lines.forEach((line) => {
+        scratchCtx.font = line.font;
+        const metrics = scratchCtx.measureText(line.text);
+        const textWidth = Math.ceil(metrics.width);
+        const top = Math.max(0, Math.floor(line.y - line.fontSize * 0.9));
+        const bottom = Math.min(canvas.height, Math.ceil(line.y + line.fontSize * 0.28));
+
+        for (let y = top; y < bottom; y += step) {
+          for (let x = line.x; x < line.x + textWidth; x += step) {
+            if (!hasInk(x, y)) continue;
+            bricks.push({
+              x,
+              y,
+              w: brickSize,
+              h: brickSize,
+              glow: "rgba(57, 231, 255, 0.18)",
+              phase: (x * 0.013) + (y * 0.017),
+              alive: true,
+              active: true,
+              row: -1,
+              col: -1,
+              pendingBlast: false,
+            });
+          }
+        }
+      });
+
+      return bricks;
+    }
+
     function isPerimeterChallengeActive() {
       return state.level >= 4 && state.periodicModeUnlocked;
     }
@@ -1011,42 +1099,32 @@
       }
       const wall = baseWall;
       const qrSize = wall.length;
-      const gap = state.contactOpen ? 2 : 2;
+      const gap = 2;
       const narrowScreen = window.innerWidth <= 640;
       const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
-      const horizontalPadding = state.contactOpen
-        ? (landscapePhone ? 178 : narrowScreen ? 110 : 190)
-        : (landscapePhone ? 132 : narrowScreen ? 32 : 120);
-      const verticalPadding = state.contactOpen
-        ? (landscapePhone ? 118 : narrowScreen ? 150 : 190)
-        : (landscapePhone ? 128 : narrowScreen ? 56 : 120);
+      const layout = getContactCardLayout();
+      const horizontalPadding = landscapePhone ? 178 : narrowScreen ? 110 : 190;
+      const verticalPadding = landscapePhone ? 118 : narrowScreen ? 150 : 190;
+      const qrWidthLimit = narrowScreen ? 220 : 250;
+      const qrHeightLimit = layout.cardH - (narrowScreen ? 110 : 120);
       const baseModuleSize = Math.max(
         landscapePhone ? 7 : narrowScreen ? 11 : 8,
         Math.floor(
           Math.min(
-            (canvas.width - horizontalPadding - gap * (qrSize - 1)) / qrSize,
-            (canvas.height - verticalPadding - gap * (qrSize - 1)) / qrSize
+            (qrWidthLimit - gap * (qrSize - 1)) / qrSize,
+            (qrHeightLimit - gap * (qrSize - 1)) / qrSize
           )
         )
       );
-      const moduleSize = state.contactOpen
-        ? Math.max(
-            landscapePhone ? 6 : narrowScreen ? 8 : 7,
-            Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
-          )
-        : Math.max(
-            landscapePhone ? 6 : narrowScreen ? 9 : 7,
-            Math.floor(baseModuleSize * QR_RENDER_SCALE)
-          );
+      const moduleSize = Math.max(
+        landscapePhone ? 6 : narrowScreen ? 8 : 7,
+        Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
+      );
       const totalW = qrSize * moduleSize + (qrSize - 1) * gap;
       const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
-      const contactLayout = state.contactOpen ? getContactCardLayout(totalW, totalH) : null;
-      const top = state.contactOpen
-        ? contactLayout.qrTop
-        : Math.round((canvas.height - totalH) / 2);
-      const left = state.contactOpen
-        ? contactLayout.qrLeft
-        : Math.round((canvas.width - totalW) / 2);
+      const contactLayout = getContactCardLayout(totalW, totalH);
+      const top = contactLayout.qrTop;
+      const left = contactLayout.qrLeft;
       state.qrBounds = {
         left,
         top,
@@ -1086,6 +1164,11 @@
           });
         }
       }
+
+      const textBrickSize = Math.max(5, moduleSize - 2);
+      const textBricks = buildTextBricks(contactLayout, textBrickSize, gap);
+      state.bricks.push(...textBricks);
+      activeCount += textBricks.length;
       state.totalBricks = activeCount;
     }
 
@@ -1542,52 +1625,31 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      ctx.save();
+      ctx.fillStyle = "#050816";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
+
+      ctx.strokeStyle = "rgba(96, 236, 255, 0.26)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(layout.cardX + 28, layout.cardY);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY, layout.cardX + layout.cardW, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY + layout.cardH, layout.cardX, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX, layout.cardY + layout.cardH, layout.cardX, layout.cardY, 28);
+      ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
+      ctx.closePath();
+      ctx.stroke();
+
       if (state.contactOpen) {
-        const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
         ctx.save();
-        ctx.fillStyle = "#050816";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
-
-        ctx.strokeStyle = "rgba(96, 236, 255, 0.26)";
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.moveTo(layout.cardX + 28, layout.cardY);
-        ctx.arcTo(layout.cardX + layout.cardW, layout.cardY, layout.cardX + layout.cardW, layout.cardY + layout.cardH, 28);
-        ctx.arcTo(layout.cardX + layout.cardW, layout.cardY + layout.cardH, layout.cardX, layout.cardY + layout.cardH, 28);
-        ctx.arcTo(layout.cardX, layout.cardY + layout.cardH, layout.cardX, layout.cardY, 28);
-        ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
-        ctx.closePath();
-        ctx.stroke();
-
-        ctx.fillStyle = "#f7fbff";
-        ctx.font = '700 24px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.textAlign = "left";
-        ctx.fillText("Rupert Tscheliessnig", layout.textX, layout.titleY);
-
-        ctx.fillStyle = "#8ef4ff";
-        ctx.font = '16px "SF Mono", "Fira Code", ui-monospace, monospace';
-        ctx.fillText("G´Labs ⏸", layout.textX, layout.line2Y);
-        ctx.fillText("rupert.tscheliessnig@calyr.ai", layout.textX, layout.line3Y);
         ctx.fillStyle = "rgba(142, 244, 255, 0.68)";
         ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
         ctx.fillText("tap once to return to play", layout.textX, layout.noteY);
         ctx.restore();
       }
-
-      ctx.save();
-      ctx.globalAlpha = 0.5;
-      if (!state.contactOpen) {
-        for (let i = 0; i < 16; i += 1) {
-          ctx.strokeStyle = i % 2 === 0 ? "rgba(57,231,255,0.04)" : "rgba(255,77,245,0.04)";
-          ctx.beginPath();
-          ctx.moveTo(0, i * 34);
-          ctx.lineTo(canvas.width, i * 34);
-          ctx.stroke();
-        }
-      }
-      ctx.restore();
 
       if (!state.initialized) {
         ctx.save();
