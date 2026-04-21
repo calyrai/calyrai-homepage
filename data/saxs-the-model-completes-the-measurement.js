@@ -28,9 +28,17 @@ window.CALYR_DECK = [
     "type": "equation",
     "chapter": "Resolution",
     "kicker": "Fourier duality",
-    "headline": "Finite $q$ limits<br>real-space resolution",
+    "headline": "The Heisenberg-style analogy<br>is Fourier, not quantum",
     "eq": "$$\\Delta r \\sim \\frac{\\pi}{q_{\\max}}$$",
-    "body": "The Heisenberg analogy is not quantum-mechanical, but it is structurally useful.\nReciprocal space and real space are Fourier-dual descriptions.\nHigh $q$ resolves fine detail, low $q$ captures global shape, and truncating $q$ imposes a real-space resolution limit.\n"
+    "body": "The Heisenberg analogy is not literal quantum uncertainty, but it is structurally exact at the level of Fourier duality.\nReciprocal space and real space are conjugate descriptions: restricting $q$ limits what can be resolved in $r$.\nHigh $q$ resolves fine structural detail, low $q$ captures global shape, and truncating $q$ imposes a hard real-space resolution limit.\n"
+  },
+  {
+    "type": "statement",
+    "chapter": "Resolution",
+    "kicker": "Interpretation bridge",
+    "headline": "This limitation is the reason<br>modeling becomes necessary",
+    "body": "This is the right intuition behind the Heisenberg comparison.\nThe issue is not measurement disturbance but representational limitation: finite reciprocal-space support prevents arbitrarily sharp real-space reconstruction.\nIn SAXS, structural ambiguity is therefore built into the transform itself before noise and missing phase are even considered, and that is precisely why a model must enter.\n",
+    "manifesto": "Modeling is required because representation is intrinsically limited."
   },
   {
     "type": "statement",
@@ -44,8 +52,8 @@ window.CALYR_DECK = [
     "type": "coupling",
     "chapter": "Regularisation",
     "kicker": "Why models enter",
-    "headline": "Every reconstruction carries a prior",
-    "body": "Any structural reconstruction requires explicit or implicit constraints that regularise the admissible solution space.\nIn practice these appear as smoothness assumptions, maximum-entropy criteria, geometric parametrisations, bead models, or hybrid real/Fourier representations.\nThe model is not an optional post-processing step. It is the mechanism that collapses structural ambiguity into one interpretation.\n"
+    "headline": "Models enter because the signal<br>cannot finish the reconstruction",
+    "body": "Any structural reconstruction requires explicit or implicit constraints that regularise the admissible solution space.\nIn practice these appear as smoothness assumptions, maximum-entropy criteria, geometric parametrisations, bead models, or hybrid real/Fourier representations.\nThe model is not an optional post-processing step. It is required because the transform from signal to structure is incomplete on principle.\n"
   },
   {
     "type": "equation",

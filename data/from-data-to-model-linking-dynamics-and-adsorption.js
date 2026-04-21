@@ -7,38 +7,46 @@ window.CALYR_DECK = [
     "type": "title",
     "kicker": "Calyr.ai · SPR",
     "headline": "From data to model:<br>linking dynamics and adsorption",
-    "tagline": "why kinetics and isotherms must be unified"
+    "tagline": "one generative model spans both limits, from $t \\to 0$ to $t \\to \\infty$"
   },
   {
     "type": "statement",
     "chapter": "Problem",
     "kicker": "The problem",
-    "headline": "Signals are measured,<br>but interpretation splits",
-    "body": "We measure SPR curves and adsorption data.\nIn practice, kinetics and isotherms are often fitted separately.\nThat separation creates incomplete or internally inconsistent interpretations of the same system.\n",
+    "headline": "SPR traces and adsorption data<br>are too often split apart",
+    "body": "We measure time-resolved SPR signals and equilibrium adsorption behavior from the same physical system.\nIn practice, the early-time trace and the long-time isotherm are still often fitted separately.\nThat split creates interpretations that are mathematically convenient but physically inconsistent.\n",
     "manifesto": "Data alone is not enough."
   },
   {
     "type": "statement",
     "chapter": "System",
     "kicker": "Two views",
-    "headline": "Short time and long time<br>describe one process",
-    "body": "Short time reveals the binding and unbinding dynamics.\nLong time reveals the equilibrium adsorption isotherm.\nThese are not separate phenomena. They are two observational limits of the same physical system.\n",
+    "headline": "Short time and long time<br>are one modeled process",
+    "body": "The limit $t \\to 0$ reveals how binding begins and therefore exposes the dynamics.\nThe limit $t \\to \\infty$ reveals the relaxed occupancy and therefore the adsorption isotherm.\nThese are not separate phenomena. They are two limits of the same modeled process.\n",
     "manifesto": "Kinetics and isotherm describe the same process."
+  },
+  {
+    "type": "equation",
+    "chapter": "Model",
+    "kicker": "One governing model",
+    "headline": "The same law spans<br>both time scales",
+    "eq": "$$\\frac{dn}{dt} = k_{\\text{on}} c (N - n) - k_{\\text{off}} n$$",
+    "body": "A single adsorption model already spans the entire observation window.\nThe same evolution law determines the initial growth of the SPR response and the final equilibrium occupancy.\nThe model is not switched between the two regimes.\n"
   },
   {
     "type": "statement",
     "chapter": "Claim",
     "kicker": "The core claim",
-    "headline": "Do not fit curves<br>independently",
-    "body": "The correct move is not to fit one curve for dynamics and another for equilibrium.\nWe should build a model that generates both from the same mechanism.\nOne system should produce one consistent description.\n",
+    "headline": "Do not fit the trace<br>and plateau independently",
+    "body": "The correct move is not to fit one object for dynamics and another for equilibrium.\nWe should build one model that generates both the SPR trace and the adsorption isotherm from the same mechanism.\nOne system should produce one consistent description.\n",
     "manifesto": "Model the process, not the curve."
   },
   {
     "type": "statement",
     "chapter": "Constraint",
     "kicker": "Double-sided constraint",
-    "headline": "The data is bounded<br>by two extremes",
-    "body": "The limit $t \\to 0$ constrains how the signal begins and therefore fixes the initial dynamics.\nThe limit $t \\to \\infty$ constrains the equilibrium occupancy and therefore fixes the isotherm.\nAny valid model has to satisfy both limits at once.\n",
+    "headline": "The model is constrained<br>from both ends",
+    "body": "The limit $t \\to 0$ constrains how the signal begins and therefore fixes the initial dynamics.\nThe limit $t \\to \\infty$ constrains the equilibrium occupancy and therefore fixes the adsorption isotherm.\nAny valid model has to satisfy both limits at once.\n",
     "manifesto": "The data is bounded by two extremes."
   },
   {
@@ -53,8 +61,8 @@ window.CALYR_DECK = [
     "type": "statement",
     "chapter": "Method",
     "kicker": "Our approach",
-    "headline": "Generate the signal<br>from stochastic dynamics",
-    "body": "Use Gillespie-type stochastic models for binding and unbinding events.\nRecover the equilibrium behavior as the long-time limit of the same process.\nThis links time-resolved measurements to isotherms without switching frameworks.\n",
+    "headline": "Generate both observables<br>from stochastic dynamics",
+    "body": "Use Gillespie-type stochastic models for binding and unbinding events.\nRecover the adsorption isotherm as the long-time limit of the same process.\nThis links the time-resolved SPR measurement to the equilibrium curve without changing model class.\n",
     "manifesto": "Dynamics lead to the isotherm."
   },
   {
@@ -67,18 +75,10 @@ window.CALYR_DECK = [
   },
   {
     "type": "statement",
-    "chapter": "Vision",
-    "kicker": "Vision",
-    "headline": "A model-driven pipeline<br>across modalities",
-    "body": "The long-term aim is a consistent framework from structure to dynamics to equilibrium.\nThat logic should extend across SPR, chromatography, and SAXS.\nThe common thread is model-driven data analysis rather than disconnected post hoc fitting.\n",
-    "manifesto": "A consistent, physics-based pipeline."
-  },
-  {
-    "type": "statement",
     "chapter": "Summary",
     "kicker": "One-line summary",
-    "headline": "The isotherm is the long-time<br>shadow of the dynamics",
-    "body": "Linking the early-time and late-time limits is what makes the system interpretable.\nOnce both extremes are tied to one mechanism, the signal becomes physically coherent.\n",
+    "headline": "Both $t \\to 0$ and $t \\to \\infty$<br>are spanned by the model",
+    "body": "The signal becomes interpretable only when both extremes are generated by one mechanism.\nThe SPR trace and the adsorption isotherm are then two views of the same modeled system.\n",
     "manifesto": "Link the extremes to understand the system."
   }
 ];
