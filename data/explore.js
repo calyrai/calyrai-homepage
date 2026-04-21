@@ -27,5 +27,38 @@ window.CALYR_EXPLORE = [
         src: 'pages/explore_model_process_not_curve.html'
       }
     ]
+  },
+  {
+    id: 'spr',
+    title: 'SPR',
+    pages: [
+      {
+        id: 'from-data-to-model-linking-dynamics-and-adsorption',
+        title: 'From data to model: linking dynamics and adsorption',
+        src: 'pages/explore_spr_linking_dynamics_adsorption.html'
+      }
+    ]
+  },
+  {
+    id: 'language',
+    title: 'Language',
+    pages: [
+      {
+        id: 'an-abstract-language-for-data-organization',
+        title: 'An abstract language for data organization',
+        src: 'pages/explore_abstract_language.html'
+      }
+    ]
+  },
+  {
+    id: 'saxs-asc',
+    title: 'SAXS / ASC',
+    pages: [
+      {
+        id: 'from-saxs-signals-to-structured-models',
+        title: 'From SAXS signals to structured models',
+        src: 'pages/explore_saxs_structured_models.html'
+      }
+    ]
   }
 ];

@@ -1,0 +1,131 @@
+schema_version: 1
+# Slide deck for the Explore SAXS application presentation
+# Source of truth — edit here, then regenerate:
+#   python3 scripts/build_deck.py data/from-saxs-signals-to-structured-models.yaml
+
+slides:
+
+  - type: title
+    kicker: Calyr.ai · SAXS / ASC
+    headline: "From SAXS signals<br>to structured models"
+    tagline: PCA, coarse modeling, and HPC as an application of the abstract language
+
+  - type: statement
+    chapter: Starting point
+    kicker: Starting point
+    headline: "SAXS measures intensity,<br>not structure"
+    body: |
+      SAXS reports scattering intensity rather than a unique real-space structure.
+      The inverse problem is underdetermined, so multiple structures can explain the same signal.
+      Interpretation therefore requires a structured way to navigate admissible possibilities.
+    manifesto: We need a structured way to interpret SAXS data.
+
+  - type: statement
+    chapter: Representation
+    kicker: Signal to representation
+    headline: "Move from $I(q)$ to a more<br>structured description"
+    body: |
+      Transforming $I(q)$ into $P(r)$ yields a pair-distance representation of structural correlations.
+      The result is still not unique, but it is more interpretable and more compatible with geometric reasoning.
+      The signal is translated into a structured representation.
+    manifesto: We move from signal to structured representation.
+
+  - type: statement
+    chapter: PCA
+    kicker: PCA on SAXS / $P(r)$
+    headline: "Data defines a low-dimensional<br>structural space"
+    body: |
+      Collect many scattering curves or many pair-distance distributions.
+      PCA identifies dominant modes across that ensemble.
+      Each mode captures a structural variation and defines a low-dimensional coordinate system over admissible structures.
+    manifesto: Data defines a low-dimensional structural space.
+
+  - type: statement
+    chapter: Modes
+    kicker: Interpretation of PCA modes
+    headline: "PCA becomes a dictionary<br>of shapes"
+    body: |
+      The dominant modes can often be read as elongation, compaction, asymmetry, or other geometric deformations.
+      Those modes can then be linked back to physical parameters and constraints.
+      PCA starts acting like a structural language rather than a generic compression method.
+    manifesto: PCA becomes a dictionary of shapes.
+
+  - type: statement
+    chapter: Coarse modeling
+    kicker: Coarse modeling
+    headline: "Map modes onto tractable<br>geometric models"
+    body: |
+      Structures can be approximated with simple geometries such as ellipsoids or super-ellipsoids.
+      PCA coordinates can be mapped onto those coarse parameters.
+      Complexity is reduced without discarding structural meaning.
+    manifesto: From high-dimensional data to tractable models.
+
+  - type: statement
+    chapter: Language
+    kicker: Abstract language connection
+    headline: "SAXS fits naturally into the<br>abstract framework"
+    body: |
+      Entities become structural objects such as particles or domains.
+      States become conformations such as compact or extended.
+      Transitions become changes in mode amplitudes, and observables remain the scattering signal.
+    manifesto: SAXS data fits naturally into the abstract framework.
+
+  - type: statement
+    chapter: HPC
+    kicker: ASC integration
+    headline: "HPC explores the model<br>space at scale"
+    body: |
+      Large-scale forward simulations can compute scattering from many coarse models across parameter space.
+      That turns HPC into the layer that systematically explores the admissible model family.
+      The space of hypotheses becomes searchable rather than implicit.
+    manifesto: HPC enables exploration of model space.
+
+  - type: statement
+    chapter: Loop
+    kicker: Model to data loop
+    headline: "Close the loop between<br>simulation and experiment"
+    body: |
+      Generate structures, compute scattering, compare to experiment, and update the model parameters.
+      The workflow is iterative and explicit.
+      Data and models remain in the same representation throughout the loop.
+    manifesto: Closed loop between simulation and experiment.
+
+  - type: statement
+    chapter: Interface
+    kicker: Role of the abstract language
+    headline: "The language connects user,<br>model, and HPC"
+    body: |
+      The abstract language defines how both data and models are stored.
+      It ensures compatibility between experiments, simulations, and computational infrastructure.
+      It becomes the interface layer between scientist, model, and compute environment.
+    manifesto: The language connects all components.
+
+  - type: statement
+    chapter: Pipeline
+    kicker: Unified pipeline
+    headline: "End-to-end model-driven<br>analysis"
+    body: |
+      Raw data becomes an abstract representation, then a PCA space, then coarse model parameters, then HPC simulations, and finally refined comparisons to experiment.
+      Each step remains connected to the same structural vocabulary.
+      The pipeline is coherent from acquisition to refinement.
+    manifesto: End-to-end model-driven analysis.
+
+  - type: statement
+    chapter: Insight
+    kicker: Key insight
+    headline: "Explore structure space,<br>not single solutions"
+    body: |
+      SAXS does not return one structure.
+      It defines a constrained space of possible structures, and PCA plus coarse models make that space navigable.
+      The job is not to guess one answer but to organize the admissible region.
+    manifesto: We explore structure space, not single solutions.
+
+  - type: statement
+    chapter: Vision
+    kicker: Vision
+    headline: "A unified structural<br>systems platform"
+    body: |
+      The same logic should connect SAXS, SPR, and chromatography through one shared abstract language.
+      HPC then becomes a systematic exploration engine for model space across all of them.
+      This is the route to a unified structural systems platform.
+    manifesto: From signal to navigable structure space.
