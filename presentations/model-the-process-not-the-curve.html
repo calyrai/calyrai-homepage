@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.ai – We model the process, not the curve</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Calyr.ai presentation on one kinetic adsorption model generating both dynamics and the isotherm." />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+</head>
+
+<body class="explore-page explore-standalone">
+<section class="deck-shell" aria-label="Presentation" id="deck-shell">
+  <button class="deck-mobile-menu-btn" id="deck-mobile-menu-btn" type="button" aria-label="Open content and help" aria-expanded="false" aria-controls="deck-mobile-panel">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <aside class="deck-mobile-panel" id="deck-mobile-panel" aria-label="Content and help" hidden>
+    <div class="deck-mobile-panel__header">
+      <button class="deck-mobile-tab active" id="deck-mobile-tab-content" type="button" data-panel-tab="content" aria-pressed="true">Content</button>
+      <button class="deck-mobile-tab" id="deck-mobile-tab-help" type="button" data-panel-tab="help" aria-pressed="false">Help</button>
+    </div>
+    <div class="deck-mobile-panel__body">
+      <div class="deck-mobile-section active" id="deck-mobile-section-content"></div>
+      <div class="deck-mobile-section" id="deck-mobile-section-help">
+        <p>Swipe vertically through the deck on phone.</p>
+        <p>Use Content to jump between sections quickly.</p>
+        <p>Rotate or use fullscreen for a larger presentation view.</p>
+      </div>
+    </div>
+  </aside>
+  <div class="deck-stage">
+    <div class="deck-viewport">
+      <div class="deck-track" id="deck-track"></div>
+    </div>
+    <div class="deck-toc" id="deck-toc" aria-label="Chapter navigation"></div>
+  </div>
+  <nav class="deck-nav" aria-label="Slide navigation">
+    <button class="deck-btn" id="deck-prev" aria-label="Previous">&#8592;</button>
+    <div class="deck-dots" id="deck-dots"></div>
+    <button class="deck-btn" id="deck-next" aria-label="Next">&#8594;</button>
+    <button class="deck-btn deck-btn--fs" id="deck-fs" aria-label="Enter fullscreen">&#x26F6;</button>
+  </nav>
+</section>
+
+<script defer src="../data/model-the-process-not-the-curve.js"></script>
+<script defer src="../js/deck.js"></script>
+</body>
+</html>

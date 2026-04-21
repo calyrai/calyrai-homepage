@@ -20,6 +20,11 @@ window.CALYR_EXPLORE = [
         id: 'saxs-the-model-completes-the-measurement',
         title: 'SAXS: the model completes the measurement',
         src: 'pages/explore_saxs_model_completes_measurement.html'
+      },
+      {
+        id: 'model-the-process-not-the-curve',
+        title: 'We model the process, not the curve',
+        src: 'pages/explore_model_process_not_curve.html'
       }
     ]
   }
