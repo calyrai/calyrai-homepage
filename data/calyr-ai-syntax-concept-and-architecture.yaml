@@ -41,6 +41,26 @@ slides:
     manifesto: One semantic layer spans both regimes.
 
   - type: statement
+    chapter: Cohort
+    kicker: Downloaded protein cohort
+    headline: "Public SAXS entries are already<br>valid scientific sample objects"
+    body: |
+      Downloaded protein entries such as SASDXF6, SASDYY5, or SASDC44 already provide measured $I(q)$ together with metadata, optional $P(r)$, and attached model files.
+      The first stable representation is therefore the measured scattering curve, not an over-processed downstream artifact.
+      Calyr_ai_syntax must be able to hold those entries as aligned sample objects for comparison, representation learning, and PCA without breaking their provenance.
+    manifesto: Measured curves come first.
+
+  - type: statement
+    chapter: Reference sample
+    kicker: SBPA as deep object
+    headline: "SBPA is one system state across<br>AlphaFold, cryo-EM, MD, and SAXS"
+    body: |
+      SBPA is the reference case for a deeply structured sample object.
+      AlphaFold provides the initial local geometry, cryo-EM constrains the global arrangement, LAMMPS or OpenMM evolve the physical state, and SAXS provides observable-space evaluation.
+      The presentation logic only works if all of those layers remain one coordinated sample identity rather than turning into disconnected files and side products.
+    manifesto: One system, many modalities, one identity.
+
+  - type: statement
     chapter: Objects
     kicker: Structured sample logic
     headline: "A sample is not a file.<br>It is a coordinated state"
@@ -49,6 +69,17 @@ slides:
       For structured cases such as SBPA, the object must also hold AlphaFold structure, cryo-EM constraints, LAMMPS or OpenMM state, and back-calculated SAXS observables.
       The language therefore has to represent coupled system identity, not just datasets in isolation.
     manifesto: The sample is the primary object.
+
+  - type: statement
+    chapter: Modalities
+    kicker: Model surfaces
+    headline: "AlphaFold, cryo-EM, LAMMPS,<br>OpenMM, and SAXS each play a distinct role"
+    body: |
+      AlphaFold supplies a structural prior and confidence landscape.
+      Cryo-EM constrains the global arrangement and lattice or assembly consistency.
+      LAMMPS and OpenMM provide the dynamical physical refinement of the state under explicit force fields.
+      SAXS then evaluates the resulting ensemble in observable space through measured or back-calculated $I(q)$ and optional $P(r)$ objects.
+    manifesto: Each modality contributes a different constraint.
 
   - type: statement
     chapter: Architecture
@@ -99,6 +130,26 @@ slides:
       AlphaFold provides structural priors, LAMMPS and OpenMM provide dynamical refinement, and VSC exposes remote SLURM execution without changing the workflow language.
       The machine changes, but the declaration remains the same.
     manifesto: No execution exists outside Nexus.
+
+  - type: statement
+    chapter: Evaluation
+    kicker: One evaluation level
+    headline: "Simulation, PCA, and analysis stay<br>on one coordinated semantic plane"
+    body: |
+      Downloaded cohorts and multimodal system objects both enter the same evaluation layer once their observables or fitted parameters are aligned.
+      PCA can operate directly on standardized $I(q)$ vectors or on common-length parameter vectors without inventing a new semantic layer for each workflow.
+      Nexus keeps comparison, provenance, and analysis attached to the same object graph that defined execution in the first place.
+    manifesto: Evaluation should not break object identity.
+
+  - type: equation
+    chapter: Object model
+    kicker: Minimal symbolic form
+    headline: "One symbolic form can describe<br>equations, workflows, and sample state"
+    eq: '$$\mathrm{Expr}(\mathrm{Head},\,\mathrm{Args},\,\mathrm{Meta})$$'
+    body: |
+      Head defines the semantic type, Args carries ordered scientific structure, and Meta stores provenance, bindings, constraints, and evaluation context.
+      This is the minimal object model that lets a sample, an equation, an engine call, and an analysis contract remain representable in one language.
+      The point is not syntactic compression alone, but semantic continuity across the entire workflow.
 
   - type: statement
     chapter: FAIR

@@ -35,11 +35,35 @@ window.CALYR_DECK = [
   },
   {
     "type": "statement",
+    "chapter": "Cohort",
+    "kicker": "Downloaded protein cohort",
+    "headline": "Public SAXS entries are already<br>valid scientific sample objects",
+    "body": "Downloaded protein entries such as SASDXF6, SASDYY5, or SASDC44 already provide measured $I(q)$ together with metadata, optional $P(r)$, and attached model files.\nThe first stable representation is therefore the measured scattering curve, not an over-processed downstream artifact.\nCalyr_ai_syntax must be able to hold those entries as aligned sample objects for comparison, representation learning, and PCA without breaking their provenance.\n",
+    "manifesto": "Measured curves come first."
+  },
+  {
+    "type": "statement",
+    "chapter": "Reference sample",
+    "kicker": "SBPA as deep object",
+    "headline": "SBPA is one system state across<br>AlphaFold, cryo-EM, MD, and SAXS",
+    "body": "SBPA is the reference case for a deeply structured sample object.\nAlphaFold provides the initial local geometry, cryo-EM constrains the global arrangement, LAMMPS or OpenMM evolve the physical state, and SAXS provides observable-space evaluation.\nThe presentation logic only works if all of those layers remain one coordinated sample identity rather than turning into disconnected files and side products.\n",
+    "manifesto": "One system, many modalities, one identity."
+  },
+  {
+    "type": "statement",
     "chapter": "Objects",
     "kicker": "Structured sample logic",
     "headline": "A sample is not a file.<br>It is a coordinated state",
     "body": "Downloaded SAXS entries, fitted parameters, optional $P(r)$ objects, and evaluation results should all remain attached to one scientific sample object.\nFor structured cases such as SBPA, the object must also hold AlphaFold structure, cryo-EM constraints, LAMMPS or OpenMM state, and back-calculated SAXS observables.\nThe language therefore has to represent coupled system identity, not just datasets in isolation.\n",
     "manifesto": "The sample is the primary object."
+  },
+  {
+    "type": "statement",
+    "chapter": "Modalities",
+    "kicker": "Model surfaces",
+    "headline": "AlphaFold, cryo-EM, LAMMPS,<br>OpenMM, and SAXS each play a distinct role",
+    "body": "AlphaFold supplies a structural prior and confidence landscape.\nCryo-EM constrains the global arrangement and lattice or assembly consistency.\nLAMMPS and OpenMM provide the dynamical physical refinement of the state under explicit force fields.\nSAXS then evaluates the resulting ensemble in observable space through measured or back-calculated $I(q)$ and optional $P(r)$ objects.\n",
+    "manifesto": "Each modality contributes a different constraint."
   },
   {
     "type": "statement",
@@ -80,6 +104,22 @@ window.CALYR_DECK = [
     "headline": "AlphaFold, LAMMPS, OpenMM,<br>and VSC as Nexus-bound tools",
     "body": "Computational engines only exist operationally when they are registered in Nexus and invoked through declared pipeline steps.\nAlphaFold provides structural priors, LAMMPS and OpenMM provide dynamical refinement, and VSC exposes remote SLURM execution without changing the workflow language.\nThe machine changes, but the declaration remains the same.\n",
     "manifesto": "No execution exists outside Nexus."
+  },
+  {
+    "type": "statement",
+    "chapter": "Evaluation",
+    "kicker": "One evaluation level",
+    "headline": "Simulation, PCA, and analysis stay<br>on one coordinated semantic plane",
+    "body": "Downloaded cohorts and multimodal system objects both enter the same evaluation layer once their observables or fitted parameters are aligned.\nPCA can operate directly on standardized $I(q)$ vectors or on common-length parameter vectors without inventing a new semantic layer for each workflow.\nNexus keeps comparison, provenance, and analysis attached to the same object graph that defined execution in the first place.\n",
+    "manifesto": "Evaluation should not break object identity."
+  },
+  {
+    "type": "equation",
+    "chapter": "Object model",
+    "kicker": "Minimal symbolic form",
+    "headline": "One symbolic form can describe<br>equations, workflows, and sample state",
+    "eq": "$$\\mathrm{Expr}(\\mathrm{Head},\\,\\mathrm{Args},\\,\\mathrm{Meta})$$",
+    "body": "Head defines the semantic type, Args carries ordered scientific structure, and Meta stores provenance, bindings, constraints, and evaluation context.\nThis is the minimal object model that lets a sample, an equation, an engine call, and an analysis contract remain representable in one language.\nThe point is not syntactic compression alone, but semantic continuity across the entire workflow.\n"
   },
   {
     "type": "statement",
