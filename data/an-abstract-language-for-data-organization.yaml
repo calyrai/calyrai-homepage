@@ -8,7 +8,7 @@ slides:
   - type: title
     kicker: Calyr.ai · Language
     headline: "An abstract language<br>for data organization"
-    tagline: structuring data for model-driven interpretation
+    tagline: entities, states, transitions, and observables for model-driven interpretation
 
   - type: statement
     chapter: Problem
@@ -16,7 +16,8 @@ slides:
     headline: "Experimental data is stored,<br>but not model-ready"
     body: |
       Experimental results arrive as files, curves, and metadata scattered across incompatible formats.
-      Different instruments impose different conventions, and linking datasets to models becomes difficult.
+      Different instruments impose different conventions, so the same sample may appear as unrelated records in SAXS, SPR, and chromatography workflows.
+      A fit result, a simulation, and the raw measurement often cannot be traversed as one coherent object graph.
       The practical result is fragmentation rather than interpretation readiness.
     manifesto: Data is fragmented and not model-ready.
 
@@ -27,7 +28,8 @@ slides:
     body: |
       A signal is only interpretable relative to a model.
       This is obvious in SAXS, where measured intensity is not the structure itself.
-      The same problem appears in data systems more broadly: signals are not self-explanatory.
+      The same problem appears in data systems more broadly: a sensorgram is not yet a kinetic mechanism, and a chromatogram is not yet a transport model.
+      Signals are not self-explanatory unless the representation already encodes what objects, states, and processes they refer to.
     manifesto: Signals are not structures.
 
   - type: statement
@@ -46,8 +48,8 @@ slides:
     headline: "Meaning emerges only<br>through structure"
     body: |
       SPR, chromatography, SAXS, and related experiments all produce signals that are ambiguous without a relational description.
-      Data without structure behaves like an underdetermined inverse problem.
-      The warehouse should therefore encode how interpretation becomes possible.
+      Data without structure behaves like an underdetermined inverse problem because multiple mechanistic interpretations remain compatible with the same stored values.
+      The warehouse should therefore encode what the measured object is, which state space is admissible, and which observables are produced by which transitions.
     manifesto: Data without structure is ambiguous.
 
   - type: statement
@@ -56,8 +58,9 @@ slides:
     headline: "Introduce an abstract language<br>for describing data"
     body: |
       The aim is to make structure explicit rather than leaving it implicit in filenames, folders, and conventions.
-      The language should describe relations, admissible states, and observables in a way that is ready for direct model interaction.
-      Interpretation readiness becomes part of the data representation itself.
+      The language should describe relations, admissible states, parameters, and observables in a way that is ready for direct model interaction.
+      A dataset should declare what entities it contains, how they are connected, what transformations generated it, and which models can legally consume it.
+      Interpretation readiness becomes part of the data representation itself rather than a later manual reconstruction step.
     manifesto: We encode interpretation readiness.
 
   - type: statement
@@ -66,7 +69,8 @@ slides:
     headline: "Describe behavior,<br>not just measurements"
     body: |
       An abstract language is a set of symbols and rules for describing systems independent of any one experiment.
-      It captures relations between entities, states, transitions, and observables rather than storing only values.
+      It captures relations between entities, states, transitions, parameters, and observables rather than storing only values.
+      In practice this means storing statements such as: ligand L can bind site S, state Bound emits observable response R(t), and scattering intensity I(q) is generated from structural ensemble E.
       The representation becomes experiment-agnostic but model-compatible.
     manifesto: We describe behavior, not just measurements.
 
@@ -75,9 +79,10 @@ slides:
     kicker: Core elements
     headline: "One set of primitives<br>across experiments"
     body: |
-      Entities describe objects such as sites, ligands, domains, or particles.
-      States describe configurations such as occupied, free, folded, compact, or extended.
-      Transitions describe changes such as binding, diffusion, or scattering, and observables describe measured signals.
+      Entities describe objects such as ligands, binding sites, particles, domains, pores, or surface patches.
+      States describe configurations such as free, occupied, folded, compact, adsorbed, or extended.
+      Transitions describe changes such as binding, diffusion, adsorption, conformational switching, or transport.
+      Observables describe the measurable projections of those transitions: response units, intensity curves, elution profiles, or derived basis coordinates.
     manifesto: All experiments map to the same primitives.
 
   - type: statement
@@ -85,10 +90,10 @@ slides:
     kicker: Unifying experiments
     headline: "One language for SPR, SAXS,<br>and chromatography"
     body: |
-      SPR contributes dynamic binding signals.
-      SAXS contributes structural correlations.
-      Chromatography contributes transport and adsorption behavior.
-      The same abstract description should span all of them.
+      SPR contributes dynamic binding observables over time and constrains transition rates between occupancy states.
+      SAXS contributes structural observables over reciprocal space and constrains admissible ensembles and distances.
+      Chromatography contributes transport and adsorption observables and constrains residence, affinity, and dispersive behavior.
+      The same abstract description should span all of them so that one sample, one model family, and multiple observables can coexist in one representation.
     manifesto: One language for all data.
 
   - type: statement
@@ -97,7 +102,8 @@ slides:
     headline: "Models and data should share<br>one representation"
     body: |
       If models operate on the same primitives stored in the warehouse, simulation and experiment no longer live in separate worlds.
-      The representation becomes a common interface for data ingestion, forward simulation, and inverse interpretation.
+      A kinetic solver can read the same bound/free state graph that an SPR dataset writes; a SAXS forward model can consume the same ensemble object that a structure generator emits.
+      The representation becomes a common interface for data ingestion, forward simulation, inverse interpretation, and caching of derived objects.
       The warehouse becomes model-native.
     manifesto: No gap between data and interpretation.
 
@@ -108,7 +114,8 @@ slides:
     body: |
       SAXS inversion is ill-posed without structural constraints.
       Data warehouses are also underdetermined without an explicit description of relations and admissible interpretations.
-      The abstract language acts as a constraint system for scientific data.
+      The abstract language acts as a constraint system for scientific data by ruling out invalid joins, invalid model applications, and semantically meaningless comparisons.
+      It turns storage from a passive archive into an active filter on what can be claimed from the data.
     manifesto: Structure reduces ambiguity.
 
   - type: statement
@@ -117,8 +124,9 @@ slides:
     headline: "From storage to knowledge<br>generation"
     body: |
       Data organization becomes consistent, interpretation ambiguity is reduced, and compatibility with simulation becomes direct.
+      Traceability improves because every result can point back to the entities, states, transformations, parameters, and upstream observations that produced it.
       The system scales across experiments because the interface is no longer tied to one modality.
-      Storage turns into a foundation for mechanistic analysis.
+      Storage turns into a foundation for mechanistic analysis rather than a collection of disconnected files.
     manifesto: From data storage to knowledge generation.
 
   - type: statement
@@ -126,7 +134,7 @@ slides:
     kicker: Vision
     headline: "A language for scientific<br>systems"
     body: |
-      The long-term target is a unified loop between data, models, and simulation.
-      Cross-domain integration across SPR, SAXS, and chromatography then becomes natural rather than custom-built.
-      Analysis becomes automated because the data is already model-addressable.
+      The long-term target is a unified loop between data acquisition, typed storage, model execution, and decision-making.
+      Cross-domain integration across SPR, SAXS, and chromatography then becomes natural rather than custom-built because every domain contributes typed constraints to the same system description.
+      Analysis becomes automatable because the data is already model-addressable, validation becomes structural, and downstream inference can operate on meaning rather than only on files.
     manifesto: We store structured, interpretable data.

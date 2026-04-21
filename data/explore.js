@@ -66,6 +66,11 @@ window.CALYR_EXPLORE = [
         id: 'pdb-to-saxs-to-folding-landscape-dmax-free-framework',
         title: 'PDB → SAXS → Folding Landscape: A Dmax-Free Framework',
         src: 'pages/explore_pdb_saxs_folding_landscape.html'
+      },
+      {
+        id: 'calyr-ai-syntax-concept-and-architecture',
+        title: 'Calyr_ai_syntax: concept and architecture',
+        src: 'pages/explore_calyr_ai_syntax.html'
       }
     ]
   }
