@@ -1,5 +1,5 @@
 schema_version: 1
-# Slide deck for the Explore PDB -> SAXS folding-landscape presentation
+# Slide deck for the Explore PDB → SAXS folding-landscape presentation
 # Source of truth — edit here, then regenerate:
 #   python3 scripts/build_deck.py data/pdb-to-saxs-to-folding-landscape-dmax-free-framework.yaml
 
@@ -7,8 +7,8 @@ slides:
 
   - type: title
     kicker: Calyr.ai · SAXS
-    headline: "PDB -> SAXS -> Folding Landscape:<br>A Dmax-Free Framework"
-    tagline: data -> method -> math -> decision
+    headline: "PDB → SAXS → Folding Landscape:<br>A Dmax-Free Framework"
+    tagline: data → method → math → decision
 
   - type: statement
     chapter: Data

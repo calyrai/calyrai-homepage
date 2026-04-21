@@ -6,8 +6,8 @@ window.CALYR_DECK = [
   {
     "type": "title",
     "kicker": "Calyr.ai · SAXS",
-    "headline": "PDB -> SAXS -> Folding Landscape:<br>A Dmax-Free Framework",
-    "tagline": "data -> method -> math -> decision"
+    "headline": "PDB → SAXS → Folding Landscape:<br>A Dmax-Free Framework",
+    "tagline": "data → method → math → decision"
   },
   {
     "type": "statement",
