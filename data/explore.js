@@ -61,6 +61,11 @@ window.CALYR_EXPLORE = [
         id: 'spr-saxs-md-on-asc-from-data-to-mechanism',
         title: 'SPR + SAXS + MD on ASC: from data to mechanism',
         src: 'pages/explore_spr_saxs_md_on_asc.html'
+      },
+      {
+        id: 'pdb-to-saxs-to-folding-landscape-dmax-free-framework',
+        title: 'PDB -> SAXS -> Folding Landscape: A Dmax-Free Framework',
+        src: 'pages/explore_pdb_saxs_folding_landscape.html'
       }
     ]
   }
