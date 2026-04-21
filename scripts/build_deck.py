@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Build data/deck.js from data/deck.yaml.
+"""Build a deck JS payload from a deck YAML source.
 
 Usage:
-    python3 scripts/build_deck.py          # from any directory inside the repo
-    python3 scripts/build_deck.py --check  # dry-run: print JS, do not write
+    python3 scripts/build_deck.py
+    python3 scripts/build_deck.py --check
+    python3 scripts/build_deck.py data/my-deck.yaml data/my-deck.js
+    python3 scripts/build_deck.py data/my-deck.yaml --check
 
 Requires pyyaml:  pip install pyyaml
 """
@@ -12,6 +14,7 @@ from __future__ import annotations
 
 import json
 import sys
+import argparse
 from pathlib import Path
 from typing import Any
 
@@ -92,15 +95,34 @@ def _render_js(slides: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def _parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("yaml_path", nargs="?", help="Path to the source YAML deck")
+    parser.add_argument("out_path", nargs="?", help="Path to the generated JS payload")
+    parser.add_argument("--check", action="store_true", help="Print the JS without writing it")
+    return parser.parse_args(argv)
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 def main(argv: list[str]) -> int:
-    check_only = "--check" in argv
+    args = _parse_args(argv)
+    check_only = args.check
 
     # Locate repo root: walk up from this script's location.
     root = Path(__file__).resolve().parent.parent  # apps/homepage/
-    yaml_path = root / "data" / "deck.yaml"
-    out_path  = root / "data" / "deck.js"
+    yaml_path = (root / args.yaml_path).resolve() if args.yaml_path else root / "data" / "deck.yaml"
+    if args.out_path:
+        out_path = (root / args.out_path).resolve()
+    elif args.yaml_path:
+        out_path = yaml_path.with_suffix(".js")
+    else:
+        out_path = root / "data" / "deck.js"
+
+    if yaml_path.suffix.lower() != ".yaml":
+        _die(f"YAML source must end with .yaml, got: {yaml_path}")
+    if out_path.suffix.lower() != ".js":
+        _die(f"Output path must end with .js, got: {out_path}")
 
     raw = _load_yaml(yaml_path)
     if not isinstance(raw, dict):
@@ -117,6 +139,7 @@ def main(argv: list[str]) -> int:
         print(js)
         return 0
 
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(js, encoding="utf-8")
     print(f"✔ deck.js written ({len(slides)} slides) → {out_path}")
     return 0

@@ -14,6 +14,15 @@
   flex-direction: column;
 }
 
+.explore-standalone .deck-shell {
+  min-height: 100svh;
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.explore-standalone .deck-stage {
+  min-height: calc(100svh - 120px);
+}
+
 .deck-mobile-menu-btn,
 .deck-mobile-panel {
   display: none;
@@ -730,13 +739,8 @@
 }
 
 @media (max-width: 900px) {
-  .explore-page .site-header {
-    display: none;
-  }
-
   .deck-shell {
-    min-height: 100svh;
-    padding-top: max(10px, env(safe-area-inset-top));
+    min-height: calc(100svh - var(--mobile-header-offset, 72px));
   }
 
   .deck-stage {

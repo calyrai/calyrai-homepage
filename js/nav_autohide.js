@@ -32,6 +32,8 @@
     if (isMobile()) {
       document.documentElement.style.setProperty("--mobile-header-offset", header.offsetHeight + "px");
     } else {
+      header.classList.remove("site-header-hidden");
+      isHidden = false;
       document.documentElement.style.removeProperty("--mobile-header-offset");
     }
   }
@@ -42,6 +44,8 @@
 
   function update() {
     if (!isMobile()) {
+      header.classList.remove("site-header-hidden");
+      isHidden = false;
       ticking = false;
       return;
     }
