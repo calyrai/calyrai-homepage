@@ -180,6 +180,7 @@
     var mobilePanel = document.getElementById('deck-mobile-panel');
     var mobileContent = document.getElementById('deck-mobile-section-content');
     var mobileHelp = document.getElementById('deck-mobile-section-help');
+    var fsBtn  = document.getElementById('deck-fs');
 
     if (!data || !shell || !track || !dotsEl || !prevBtn || !nextBtn) return;
 
@@ -268,6 +269,57 @@
       mobileMenuBtn.setAttribute('aria-expanded', 'false');
     }
 
+    function currentFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    function enterFullscreen() {
+      if (typeof shell.requestFullscreen === 'function') {
+        return shell.requestFullscreen();
+      }
+      if (typeof shell.webkitRequestFullscreen === 'function') {
+        shell.webkitRequestFullscreen();
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('Fullscreen API unavailable'));
+    }
+
+    function exitFullscreen() {
+      if (typeof document.exitFullscreen === 'function') {
+        return document.exitFullscreen();
+      }
+      if (typeof document.webkitExitFullscreen === 'function') {
+        document.webkitExitFullscreen();
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('Fullscreen exit unavailable'));
+    }
+
+    function toggleFullscreen() {
+      if (!currentFullscreenElement()) {
+        enterFullscreen().catch(function () {});
+      } else {
+        exitFullscreen().catch(function () {});
+      }
+    }
+
+    function updateFullscreenState() {
+      var isFs = !!currentFullscreenElement();
+      if (fsBtn) {
+        fsBtn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;';
+        fsBtn.setAttribute('aria-label', isFs ? 'Exit fullscreen' : 'Enter fullscreen');
+      }
+      if (mobileHelp) {
+        var mobileFsBtn = document.getElementById('deck-mobile-fullscreen');
+        if (mobileFsBtn) {
+          mobileFsBtn.textContent = isFs ? 'Exit fullscreen' : 'Enter fullscreen';
+          mobileFsBtn.setAttribute('aria-label', isFs ? 'Exit fullscreen' : 'Enter fullscreen');
+        }
+      }
+      shell.classList.toggle('deck-shell--fullscreen', isFs);
+      updateLayoutMode();
+    }
+
     function toggleMobilePanel() {
       if (!mobilePanel || !mobileMenuBtn) return;
       var willOpen = !mobilePanel.classList.contains('is-open');
@@ -275,6 +327,20 @@
       mobilePanel.hidden = !willOpen;
       mobileMenuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
       if (willOpen) setMobileTab('content');
+    }
+
+    if (mobileHelp && fsBtn) {
+      var mobileFsBtn = document.createElement('button');
+      mobileFsBtn.className = 'deck-mobile-action';
+      mobileFsBtn.id = 'deck-mobile-fullscreen';
+      mobileFsBtn.type = 'button';
+      mobileFsBtn.textContent = 'Enter fullscreen';
+      mobileFsBtn.setAttribute('aria-label', 'Enter fullscreen');
+      mobileFsBtn.addEventListener('click', function () {
+        closeMobilePanel();
+        toggleFullscreen();
+      });
+      mobileHelp.appendChild(mobileFsBtn);
     }
 
     /* ── Table of Contents ────────────────────────────────────────────────── */
@@ -422,24 +488,10 @@
     go(0);
 
     /* ── Fullscreen ─────────────────────────────────────────────────────── */
-    var fsBtn  = document.getElementById('deck-fs');
-
     if (fsBtn && shell) {
-      fsBtn.addEventListener('click', function () {
-        if (!document.fullscreenElement) {
-          shell.requestFullscreen().catch(function () {});
-        } else {
-          document.exitFullscreen();
-        }
-      });
-
-      document.addEventListener('fullscreenchange', function () {
-        var isFs = !!document.fullscreenElement;
-        fsBtn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;';
-        fsBtn.setAttribute('aria-label', isFs ? 'Exit fullscreen' : 'Enter fullscreen');
-        shell.classList.toggle('deck-shell--fullscreen', isFs);
-        updateLayoutMode();
-      });
+      fsBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
     }
   }
 

@@ -126,6 +126,25 @@
   margin-bottom: 0;
 }
 
+.deck-mobile-action {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  min-height: 40px;
+  border: 1px solid rgba(106, 240, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(10, 22, 34, 0.88);
+  color: rgba(234, 249, 255, 0.92);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.deck-mobile-action:hover {
+  border-color: rgba(106, 240, 255, 0.42);
+  box-shadow: 0 0 14px rgba(106, 240, 255, 0.12);
+}
+
 /* Stage: viewport + ToC side-panel */
 .deck-stage {
   display: flex;
