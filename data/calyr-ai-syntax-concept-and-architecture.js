@@ -86,8 +86,8 @@ window.CALYR_DECK = [
     "chapter": "Control",
     "kicker": "Declarative execution",
     "headline": "Execution is a transition between<br>fully specified Nexus states",
-    "eq": "$$\\text{State}_t \\xrightarrow{\\text{Nexus declaration}} \\text{Execution} \\xrightarrow{\\text{Results}} \\text{State}_{t+1}$$",
-    "body": "Every scientific action is defined as a transition between two explicit Nexus states.\nThat means parameters, models, assumptions, and expected outputs are part of the declaration before the run begins.\nThe scientific object is therefore updated through controlled state transitions rather than through hidden imperative edits.\n"
+    "eq": "$$\\mathcal{S}_{t+1}=\\mathcal{E}\\!\\left(\\mathcal{S}_t,\\,\\mathcal{D}_t\\right)$$",
+    "body": "Here $\\mathcal{S}_t$ is the declared Nexus state, $\\mathcal{D}_t$ is the declaration that selects tools, parameters, and expected products, and $\\mathcal{E}$ is the execution operator.\nEvery scientific action is therefore a state update, not an informal runtime side effect.\nParameters, models, assumptions, and expected outputs are explicit before the run begins.\n"
   },
   {
     "type": "statement",
@@ -118,8 +118,8 @@ window.CALYR_DECK = [
     "chapter": "Object model",
     "kicker": "Minimal symbolic form",
     "headline": "One symbolic form can describe<br>equations, workflows, and sample state",
-    "eq": "$$\\mathrm{Expr}(\\mathrm{Head},\\,\\mathrm{Args},\\,\\mathrm{Meta})$$",
-    "body": "Head defines the semantic type, Args carries ordered scientific structure, and Meta stores provenance, bindings, constraints, and evaluation context.\nThis is the minimal object model that lets a sample, an equation, an engine call, and an analysis contract remain representable in one language.\nThe point is not syntactic compression alone, but semantic continuity across the entire workflow.\n"
+    "eq": "$$X=\\operatorname{Expr}\\!\\left(H,\\,A,\\,M\\right)$$",
+    "body": "$H$ defines the semantic head, $A$ carries ordered arguments, and $M$ stores provenance, bindings, constraints, and evaluation context.\nThis minimal symbolic form lets a sample object, an equation, an engine call, and an analysis contract remain representable in one language.\nThe point is semantic continuity across the workflow, not just syntax compression.\n"
   },
   {
     "type": "statement",
@@ -134,8 +134,8 @@ window.CALYR_DECK = [
     "chapter": "Construction",
     "kicker": "From simulation to control",
     "headline": "Constructability begins when the system<br>can invert toward a target",
-    "eq": "$$\\text{given } y^*:\\; \\text{find } x \\text{ such that } F(x) \\approx y^*$$",
-    "body": "Simulation answers what happens if a state is given.\nConstruction asks what interventions are needed so that a desired outcome becomes attainable.\nCalyr_ai_syntax and Nexus matter because they provide the declarative and provenance-preserving substrate required for that closed-loop shift from prediction to control.\n"
+    "eq": "$$x^{\\ast}=\\underset{x}{\\operatorname{arg\\,min}}\\;\\lVert F(x)-y^{\\ast}\\rVert$$",
+    "body": "Simulation asks for the forward map $y=F(x)$ once a state $x$ is given.\nConstruction inverts that logic by searching for the state or intervention that minimizes the gap to a desired target $y^{\\ast}$.\nCalyr_ai_syntax and Nexus matter because they provide the declarative and provenance-preserving substrate required for this shift from prediction toward control.\n"
   },
   {
     "type": "statement",
