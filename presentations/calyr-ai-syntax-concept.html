@@ -565,7 +565,9 @@
         updateNav();
       },
       nextPage: () => scrollToPage(activePage + 1),
-      previousPage: () => scrollToPage(activePage - 1)
+      previousPage: () => scrollToPage(activePage - 1),
+      goToPage: (index) => scrollToPage(index),
+      goToLastPage: () => scrollToPage(pageNodes.length - 1)
     };
 
     renderPdf();

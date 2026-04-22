@@ -4,6 +4,7 @@
   const sidebar = document.getElementById('explore-sidebar');
   const content = document.getElementById('explore-content');
   const EXPLORE = window.CALYR_EXPLORE;
+  let embeddedPresentationState = null;
 
   if (!sidebar || !content || !EXPLORE) return;
 
@@ -96,6 +97,8 @@
   }
 
   function initEmbeddedFullscreen() {
+    embeddedPresentationState = null;
+
     content.querySelectorAll('[data-fullscreen-target]').forEach(button => {
       if (button.dataset.fullscreenBound === 'true') return;
       button.dataset.fullscreenBound = 'true';
@@ -124,6 +127,11 @@
       function updateLabel() {
         button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
       }
+
+      embeddedPresentationState = {
+        getEmbeddedApi,
+        isFullscreen
+      };
 
       button.addEventListener('click', async function () {
         var embeddedApi = getEmbeddedApi();
@@ -164,6 +172,45 @@
       updateLabel();
     });
   }
+
+  document.addEventListener('keydown', function (event) {
+    if (!embeddedPresentationState || typeof embeddedPresentationState.isFullscreen !== 'function') return;
+    if (!embeddedPresentationState.isFullscreen()) return;
+
+    var embeddedApi = embeddedPresentationState.getEmbeddedApi();
+    if (!embeddedApi) return;
+
+    if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+      if (typeof embeddedApi.nextPage === 'function') {
+        event.preventDefault();
+        embeddedApi.nextPage();
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+      if (typeof embeddedApi.previousPage === 'function') {
+        event.preventDefault();
+        embeddedApi.previousPage();
+      }
+      return;
+    }
+
+    if (event.key === 'Home') {
+      if (typeof embeddedApi.goToPage === 'function') {
+        event.preventDefault();
+        embeddedApi.goToPage(0);
+      }
+      return;
+    }
+
+    if (event.key === 'End') {
+      if (typeof embeddedApi.goToLastPage === 'function') {
+        event.preventDefault();
+        embeddedApi.goToLastPage();
+      }
+    }
+  });
 
   async function loadPage(entry) {
     const { section, page } = entry;
