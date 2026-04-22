@@ -366,6 +366,10 @@
     let pageNodes = [];
     let activePage = 0;
 
+    if (!isEmbed) {
+      window.location.replace('../explore.html#saxs/calyr-ai-syntax-concept-and-architecture');
+    }
+
     if (isEmbed) {
       document.body.classList.add('embed-mode');
     }
