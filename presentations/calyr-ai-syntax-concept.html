@@ -40,6 +40,10 @@
       min-height: 100%;
     }
 
+    body.embed-mode.mobile-immersive .pdf-shell {
+      min-height: var(--pdf-app-height);
+    }
+
     .pdf-header {
       display: flex;
       align-items: center;
@@ -110,6 +114,10 @@
       min-height: var(--pdf-app-height);
     }
 
+    body.embed-mode.mobile-immersive .pdf-stage {
+      min-height: var(--pdf-app-height);
+    }
+
     .pdf-stage:fullscreen {
       padding: 0;
       background: #000000;
@@ -142,6 +150,10 @@
       box-shadow: none;
     }
 
+    body.embed-mode.mobile-immersive .pdf-frame {
+      overflow: hidden;
+    }
+
     .pdf-pages {
       display: flex;
       flex-direction: column;
@@ -154,6 +166,10 @@
     body.embed-mode .pdf-pages {
       padding: 0;
       gap: 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-pages {
+      min-height: var(--pdf-app-height);
     }
 
     .pdf-page {
@@ -182,6 +198,17 @@
     body.embed-mode .pdf-page {
       width: 100%;
       padding: 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-page {
+      min-height: var(--pdf-app-height);
+      align-items: center;
+      display: none;
+      padding: 12px 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-page.pdf-page--active {
+      display: flex;
     }
 
     .pdf-canvas {
@@ -227,6 +254,12 @@
     .pdf-stage:fullscreen .pdf-nav-overlay,
     .pdf-stage:-webkit-full-screen .pdf-nav-overlay {
       display: flex;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-nav-overlay {
+      display: flex;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+      right: 12px;
     }
 
     .pdf-nav-btn {
@@ -277,6 +310,11 @@
 
     .pdf-stage:fullscreen .pdf-footer-counter,
     .pdf-stage:-webkit-full-screen .pdf-footer-counter {
+      display: inline-flex;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-footer-counter {
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
       display: inline-flex;
     }
 
@@ -370,6 +408,8 @@
     const footerCounterValue = document.getElementById('pdf-footer-counter-value');
     const params = new URLSearchParams(window.location.search);
     const isEmbed = params.get('embed') === '1';
+    const wantsImmersive = params.get('immersive') !== '0';
+    const immersiveMedia = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
     let pageNodes = [];
     let activePage = 0;
     let resizeTimer = null;
@@ -386,6 +426,12 @@
 
     const isFullscreen = () => document.fullscreenElement === stage || document.webkitFullscreenElement === stage;
 
+    const isImmersive = () => document.body.classList.contains('mobile-immersive');
+
+    const applyImmersiveMode = () => {
+      document.body.classList.toggle('mobile-immersive', isEmbed && wantsImmersive && immersiveMedia.matches && !isFullscreen());
+    };
+
     const setViewportHeight = () => {
       const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty('--pdf-app-height', `${Math.round(viewportHeight)}px`);
@@ -395,6 +441,7 @@
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         setViewportHeight();
+        applyImmersiveMode();
         renderPdf();
       }, 180);
     };
@@ -427,7 +474,7 @@
     const scrollToPage = (index) => {
       if (!pageNodes.length) return;
       activePage = Math.max(0, Math.min(index, pageNodes.length - 1));
-      if (isFullscreen()) {
+      if (isFullscreen() || isImmersive()) {
         frame.scrollTop = 0;
       } else {
         pageNodes[activePage].scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -436,7 +483,7 @@
     };
 
     const syncActivePageFromScroll = () => {
-      if (isFullscreen()) return;
+      if (isFullscreen() || isImmersive()) return;
       if (!pageNodes.length) return;
       const frameTop = frame.getBoundingClientRect().top;
       let bestIndex = activePage;
@@ -545,7 +592,7 @@
         }
 
         activePage = Math.max(0, Math.min(preservedActivePage, pageNodes.length - 1));
-        if (isFullscreen()) {
+        if (isFullscreen() || isImmersive()) {
           frame.scrollTop = 0;
         } else if (pageNodes[activePage]) {
           pageNodes[activePage].scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -563,6 +610,11 @@
     window.addEventListener('orientationchange', scheduleRender);
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', scheduleRender);
+    }
+    if (immersiveMedia.addEventListener) {
+      immersiveMedia.addEventListener('change', scheduleRender);
+    } else if (immersiveMedia.addListener) {
+      immersiveMedia.addListener(scheduleRender);
     }
 
     frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
@@ -591,9 +643,12 @@
     document.addEventListener('webkitfullscreenchange', updateButton);
     document.addEventListener('fullscreenchange', notifyParent);
     document.addEventListener('webkitfullscreenchange', notifyParent);
+    document.addEventListener('fullscreenchange', applyImmersiveMode);
+    document.addEventListener('webkitfullscreenchange', applyImmersiveMode);
     document.addEventListener('fullscreenchange', scheduleRender);
     document.addEventListener('webkitfullscreenchange', scheduleRender);
     setViewportHeight();
+    applyImmersiveMode();
     updateButton();
     updateNav();
 
