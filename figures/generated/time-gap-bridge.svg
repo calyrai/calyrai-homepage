@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 700" role="img" aria-labelledby="title desc">
+  <title id="title">SPR and adsorption time-gap bridge</title>
+  <desc id="desc">Left panel shows a schematic kinetic SPR response near time zero. Right panel shows the adsorption isotherm near the infinite-time equilibrium limit.</desc>
+  <rect width="1360" height="700" fill="#0e1218"/>
+  <defs>
+    <marker id="axisArrow" markerWidth="8" markerHeight="8" refX="6.8" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#96a1ad"/>
+    </marker>
+    <marker id="bridgeArrow" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#5ccbff"/>
+    </marker>
+    <style>
+      .panel { fill:#181e27; stroke:#2d3948; stroke-width:2; }
+      .title { fill:#ebeff4; font: 700 34px Arial, sans-serif; }
+      .axis { stroke:#96a1ad; stroke-width:3; fill:none; marker-end:url(#axisArrow); }
+      .curve { stroke:#d674ff; stroke-width:6; fill:none; }
+      .dash { stroke:#96a1ad; stroke-width:2; stroke-dasharray:8 7; }
+      .label { fill:#ebeff4; font: 700 27px Arial, sans-serif; }
+      .sub { fill:#96a1ad; font: 500 24px Arial, sans-serif; }
+      .caption { fill:#96a1ad; font: 500 23px Arial, sans-serif; text-anchor: middle; }
+      .bridge { stroke:#5ccbff; stroke-width:5; fill:none; marker-end:url(#bridgeArrow); }
+    </style>
+  </defs>
+
+  <rect class="panel" x="70" y="58" width="470" height="330" rx="18" ry="18"/>
+  <rect class="panel" x="820" y="58" width="470" height="330" rx="18" ry="18"/>
+
+  <text class="title" x="102" y="110">t ≈ 0: kinetics</text>
+  <text class="title" x="852" y="110">t → ∞: adsorption isotherm</text>
+
+  <path class="axis" d="M 138 320 L 138 156"/>
+  <path class="axis" d="M 138 320 L 454 320"/>
+  <text class="sub" x="92" y="172">R(t)</text>
+  <text class="sub" x="442" y="354">t</text>
+  <path class="curve" d="M 156 312 L 176 312 L 176 232 C 176 230, 178 228, 180 228 L 284 228 C 318 228, 340 224, 362 208 C 382 194, 396 176, 428 170 L 448 168"/>
+  <line class="dash" x1="138" y1="228" x2="452" y2="228"/>
+  <line class="dash" x1="138" y1="168" x2="452" y2="168"/>
+  <text class="sub" x="458" y="232">jump response</text>
+  <text class="sub" x="458" y="172">slow rearrangement</text>
+
+  <path class="axis" d="M 878 320 L 878 156"/>
+  <path class="axis" d="M 878 320 L 1194 320"/>
+  <text class="sub" x="830" y="172">q<tspan baseline-shift="sub" font-size="16">eq</tspan></text>
+  <text class="sub" x="1182" y="354">c</text>
+  <path class="curve" d="M 894 312 C 944 294, 980 256, 1010 224 C 1034 198, 1056 190, 1088 190 C 1120 190, 1142 182, 1162 154 C 1182 130, 1210 122, 1254 120"/>
+  <line class="dash" x1="878" y1="190" x2="1258" y2="190"/>
+  <line class="dash" x1="878" y1="120" x2="1258" y2="120"/>
+  <text class="sub" x="1268" y="194">plateau 1</text>
+  <text class="sub" x="1268" y="124">plateau 2</text>
+
+  <text class="label" x="680" y="338" text-anchor="middle">same physical system</text>
+  <text class="sub" x="680" y="374" text-anchor="middle">two experimentally accessible limits</text>
+
+  <path class="bridge" d="M 542 236 C 596 244, 624 278, 654 316"/>
+  <path class="bridge" d="M 706 316 C 736 278, 764 244, 818 236"/>
+
+  <text class="caption" x="680" y="584">Near zero time we observe kinetics.</text>
+  <text class="caption" x="680" y="620">Near the infinite-time limit we observe the adsorption isotherm.</text>
+</svg>

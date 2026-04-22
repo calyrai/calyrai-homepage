@@ -44,7 +44,7 @@ def _validate_slide(idx: int, s: Any) -> dict[str, Any]:
         _die(f"slides[{idx}] must be a mapping")
 
     stype = s.get("type")
-    valid_types = {"title", "statement", "equation", "coupling", "platforms", "papers"}
+    valid_types = {"title", "statement", "equation", "coupling", "platforms", "papers", "figure"}
     if stype not in valid_types:
         _die(f"slides[{idx}].type must be one of {sorted(valid_types)}, got: {stype!r}")
 
@@ -56,6 +56,7 @@ def _validate_slide(idx: int, s: Any) -> dict[str, Any]:
         "coupling":  ["kicker", "headline"],
         "platforms": ["kicker", "title", "items"],
         "papers":    ["kicker", "title", "items"],
+        "figure":    ["kicker", "headline", "image"],
     }
     for field in required[stype]:
         if field not in s:

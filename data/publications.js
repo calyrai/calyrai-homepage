@@ -30,6 +30,40 @@ window.CALYR_PUBLICATION_NETWORK = {
 };
 window.CALYR_PUBLICATIONS = [
   {
+    "id": "calyr-ai-syntax-concept",
+    "title": "Calyr_ai_syntax: Concept and Architecture",
+    "topic": "nexus",
+    "status": "active",
+    "pdfs": [
+      {
+        "label": "presentation",
+        "path": "presentations/calyr-ai-syntax-concept.html"
+      },
+      {
+        "label": "pdf",
+        "path": "presentations/calyr-ai-syntax-concept.pdf"
+      }
+    ],
+    "method": "Reduced concept presentation for symbolic systems, Nexus control logic, and Calyr architecture",
+    "abstract": "Concept presentation for Calyr_ai_syntax as a symbolic language layer for computational science. The deck covers the symbolic-expression idea, sample regimes, Nexus as a declarative control plane, closed-loop validation, representation flow, and the transition from simulation toward construction.",
+    "description": "PDF presentation version of the Calyr_ai_syntax concept deck."
+  },
+  {
+    "id": "nexus-cli-from-data-to-decision",
+    "title": "Nexus CLI: From Data to Decision",
+    "topic": "nexus",
+    "status": "active",
+    "pdfs": [
+      {
+        "label": "presentation",
+        "path": "presentations/nexus-cli-user-guide.html"
+      }
+    ],
+    "method": "Training presentation for FAIR data, model-based decision making, Nexus control logic, and VSC-5 workflow",
+    "abstract": "Introductory training presentation for Nexus CLI workflows. The deck explains FAIR data objects, model-based decision making, the role of SPR and SAXS at a conceptual level, the Nexus control-plane idea, and the operational workflow on VSC-5 from login to ranked results.",
+    "description": "Homepage presentation version of the Nexus CLI training deck."
+  },
+  {
     "id": "spr-kinetic-modes",
     "title": "SPR Kinetic Modes",
     "topic": "spr",

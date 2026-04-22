@@ -10,6 +10,7 @@
   var NETWORK = window.CALYR_PUBLICATION_NETWORK || { title: 'Publication Network', subtitle: '', edges: [] };
 
   var TOPICS = [
+    { id: 'nexus', label: 'Nexus' },
     { id: 'spr', label: 'SPR' },
     { id: 'saxs', label: 'SAXS' }
   ];
@@ -46,6 +47,41 @@
     if (!href && pub.arxiv) href = 'https://arxiv.org/abs/' + encodeURIComponent(pub.arxiv);
     if (!href) return '';
     return '<a class="pub-detail-pdf" href="' + href + '" target="_blank" rel="noopener">archive</a>';
+  }
+
+  function isPdfPath(path) {
+    return typeof path === 'string' && /\.pdf(?:[#?].*)?$/i.test(path);
+  }
+
+  function primaryOpenLink(pub) {
+    if (!pub.pdfs || !pub.pdfs.length) return '';
+    var link = pub.pdfs[0];
+    var label = link.label || 'open';
+    return '<a class="pub-open-pill" href="' + link.path + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>';
+  }
+
+  function renderAssetLinks(pub) {
+    var links = [];
+    if (pub.pdfs && pub.pdfs.length) {
+      pub.pdfs.forEach(function (pdf) {
+        links.push('<a class="pub-detail-pdf" href="' + pdf.path + '" target="_blank" rel="noopener">' + escapeHtml(pdf.label || 'open') + '</a>');
+      });
+    }
+    var archive = archiveLink(pub);
+    if (archive) links.push(archive);
+    if (pub.doi) links.push(cpLink(pub));
+    return links.length ? '<div class="pub-detail-pdfs">' + links.join('') + '</div>' : '';
+  }
+
+  function renderPdfPreview(pub) {
+    if (!pub.pdfs || !pub.pdfs.length) return '';
+    var pdf = pub.pdfs.find(function (item) { return isPdfPath(item.path); });
+    if (!pdf) return '';
+    return '<section class="pub-preview-shell">' +
+      '<div class="pub-preview-head">PDF preview</div>' +
+      '<iframe class="pub-preview-frame" src="' + pdf.path + '#view=FitH" title="' + escapeHtml(pub.title) + ' PDF preview" loading="lazy"></iframe>' +
+      '<p class="pub-preview-note">If the preview does not load, open the <a href="' + pdf.path + '" target="_blank" rel="noopener">PDF directly</a>.</p>' +
+    '</section>';
   }
 
   function renderTopNetwork() {
@@ -116,12 +152,6 @@
     });
   }
 
-  function openPill(pub) {
-    if (!pub.pdfs || !pub.pdfs.length) return '';
-    var href = pub.pdfs[0].path;
-    return '<a class="pub-open-pill" href="' + href + '" target="_blank" rel="noopener">open</a>';
-  }
-
   function renderDetail(pub) {
     main.innerHTML =
       '<div class="doc-article pub-card-detail">' +
@@ -129,13 +159,13 @@
         '<h1>' + escapeHtml(pub.title) + '</h1>' +
         '<div class="pub-badge-row">' +
           '<span class="pub-status pub-status--' + pub.status + '">' + escapeHtml(STATUS_LABEL[pub.status] || pub.status) + '</span>' +
-          openPill(pub) +
-          archiveLink(pub) +
+          primaryOpenLink(pub) +
         '</div>' +
         renderTopNetwork() +
         '<p class="pub-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
         renderAbstract(pub) +
-        ((pub.doi || pub.archive_url || pub.arxiv) ? '<div class="pub-detail-pdfs">' + archiveLink(pub) + (pub.doi ? cpLink(pub) : '') + '</div>' : '') +
+        renderAssetLinks(pub) +
+        renderPdfPreview(pub) +
       '</div>';
     window.calyrPubGraphs && window.calyrPubGraphs.refresh();
   }
@@ -150,8 +180,7 @@
           '<div class="pub-card-top">' +
             '<a class="pub-card-title" href="#' + pub.id + '">' + escapeHtml(pub.title) + '</a>' +
             '<span class="pub-status pub-status--' + pub.status + '">' + escapeHtml(STATUS_LABEL[pub.status] || pub.status) + '</span>' +
-            openPill(pub) +
-            archiveLink(pub) +
+            primaryOpenLink(pub) +
           '</div>' +
           '<p class="pub-card-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
           renderAbstract(pub) +

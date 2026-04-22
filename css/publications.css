@@ -165,6 +165,48 @@
   background: rgba(100, 200, 255, 0.07);
 }
 
+.pub-preview-shell {
+  margin-top: 26px;
+  padding: 14px 14px 12px;
+  border: 1px solid rgba(106, 240, 255, 0.14);
+  background: linear-gradient(180deg, rgba(7, 14, 24, 0.9), rgba(6, 10, 18, 0.8));
+  border-radius: 12px;
+}
+
+.pub-preview-head {
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(106, 240, 255, 0.62);
+}
+
+.pub-preview-frame {
+  display: block;
+  width: 100%;
+  min-height: 76vh;
+  border: 1px solid rgba(160, 196, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.pub-preview-note {
+  margin: 10px 2px 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(185, 208, 236, 0.68);
+}
+
+.pub-preview-note a {
+  color: rgba(106, 240, 255, 0.9);
+  text-decoration: none;
+}
+
+.pub-preview-note a:hover {
+  text-decoration: underline;
+}
+
 /* ── Connected Papers button ────────────────────────────────────── */
 /* Only rendered by JS when pub.doi is set */
 .pub-cp-btn {
@@ -313,6 +355,10 @@
 
   .pub-network-shell .pub-graph-svg {
     min-height: 180px;
+  }
+
+  .pub-preview-frame {
+    min-height: 58vh;
   }
 }
 

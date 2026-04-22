@@ -22,6 +22,7 @@
         kicker(s.kicker, s.chapter) +
         '<h2 class="deck-headline">' + formatHeadline(s.headline) + '</h2>' +
         (s.body      ? '<div class="deck-body">'      + renderBody(s.body)      + '</div>' : '') +
+        (s.code      ? '<pre class="deck-code-block">' + escapeHtml(s.code) + '</pre>' : '') +
         (s.manifesto ? '<p class="deck-manifesto">' + s.manifesto + '</p>' : '')
       );
     },
@@ -103,6 +104,18 @@
         '<h3 class="deck-headline--medium">' + s.title + '</h3>' +
         '<div class="deck-papers">' + rows + '</div>'
       );
+    },
+
+    figure: function (s) {
+      return wrap('deck-content deck-content--wide',
+        kicker(s.kicker, s.chapter) +
+        '<h2 class="deck-headline">' + formatHeadline(s.headline) + '</h2>' +
+        '<figure class="deck-figure">' +
+          '<img class="deck-figure__image" src="' + s.image + '" alt="' + escapeHtml(s.alt || s.headline || 'Figure') + '">' +
+          (s.caption ? '<figcaption class="deck-figure__caption">' + s.caption + '</figcaption>' : '') +
+        '</figure>' +
+        (s.body ? '<div class="deck-body">' + renderBody(s.body) + '</div>' : '')
+      );
     }
   };
 
@@ -127,6 +140,13 @@
 
   function renderInline(text) {
     return text.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   function bodyParagraphs(text) {
@@ -176,6 +196,8 @@
     var dotsEl = document.getElementById('deck-dots');
     var prevBtn = document.getElementById('deck-prev');
     var nextBtn = document.getElementById('deck-next');
+    var footerCurrent = document.getElementById('deck-theme-current');
+    var footerTotal = document.getElementById('deck-theme-total');
     var mobileMenuBtn = document.getElementById('deck-mobile-menu-btn');
     var mobilePanel = document.getElementById('deck-mobile-panel');
     var mobileContent = document.getElementById('deck-mobile-section-content');
@@ -419,6 +441,8 @@
     var current = 0;
     var slides  = track.querySelectorAll('.deck-slide');
 
+    if (footerTotal) footerTotal.textContent = String(total);
+
     function updateLayoutMode() {
       var stacked = isStackedLayout();
       shell.classList.toggle('deck-shell--stacked', stacked);
@@ -436,6 +460,7 @@
     function go(n) {
       current = Math.max(0, Math.min(n, total - 1));
       shell.classList.toggle('deck-shell--title-active', current === 0 && !isStackedLayout());
+      if (footerCurrent) footerCurrent.textContent = String(current + 1);
       if (isStackedLayout()) {
         if (slides[current]) {
           slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });

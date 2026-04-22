@@ -1,0 +1,313 @@
+schema_version: 1
+
+slides:
+
+  - type: title
+    kicker: BOKU · User Training
+    headline: "Nexus CLI:<br>From Data to Decision"
+    tagline: Rupert Tscheliessnig
+
+  - type: statement
+    chapter: Overview
+    kicker: What we do today
+    headline: "How this session is structured"
+    body: |
+      I will start with a simple idea:
+
+      What does it actually mean for data to be usable later?
+
+      Then we move to the key question:
+      Why do we need models if we want to make decisions?
+
+      After that, I will place SPR and SAXS into that picture.
+
+      And only then we go into Nexus and the actual workflow.
+    manifesto: First understanding, then execution.
+
+  - type: statement
+    chapter: FAIR data
+    kicker: Why this matters
+    headline: "Data are only useful if they remain interpretable"
+    body: |
+      When you look at a file alone, you usually don't know what it really means.
+
+      You need context:
+      how it was measured,
+      what the sample was,
+      what assumptions were made.
+
+      That is what FAIR data actually means in practice.
+
+      In Nexus, this is handled through structured data objects, not just raw files.
+    manifesto: Data without context cannot be reused.
+
+  - type: statement
+    chapter: Decision making
+    kicker: The core problem
+    headline: "Looking at curves is not enough"
+    body: |
+      A curve can look convincing.
+
+      But it does not tell you what mechanism produced it.
+
+      In fact, different models can often explain the same curve.
+
+      That means:
+      If you want to decide something, you need a model.
+    manifesto: Data show behavior. Models explain it.
+
+  - type: statement
+    chapter: Model
+    kicker: What a model is
+    headline: "A model describes how the system evolves"
+    body: |
+      A model is not just a fit.
+
+      It describes a process.
+
+      It tells you what happens over time,
+      and how the system moves toward equilibrium.
+    manifesto: A model explains change.
+
+  - type: statement
+    chapter: SPR
+    kicker: Dynamic view
+    headline: "SPR shows how the system evolves in time"
+    body: |
+      With SPR, you measure a signal R(t).
+
+      You see how binding starts,
+      how fast it grows,
+      and how it relaxes again.
+
+      So SPR gives you access to kinetics.
+    manifesto: SPR tells you how fast things happen.
+
+  - type: statement
+    chapter: SPR
+    kicker: Kinetic interpretation
+    headline: "SPR is useful because it shows<br>how binding changes over time"
+    body: |
+      We do not need the full adsorption model here.
+
+      The important point is simpler: SPR gives a time-resolved view of how the system responds.
+
+      That makes it the kinetic side of the workflow.
+    manifesto: SPR contributes the time axis.
+
+  - type: statement
+    chapter: SAXS
+    kicker: Structural view
+    headline: "SAXS constrains what is structurally possible"
+    body: |
+      SAXS measures scattering I(q).
+
+      From that, you can derive P(r),
+      which tells you about distances inside the system.
+
+      This does not replace kinetics,
+      but it restricts which models are physically possible.
+    manifesto: SAXS limits the model space.
+
+  - type: equation
+    chapter: SAXS model
+    kicker: Without Dmax
+    headline: "Structure can be analyzed without fixing a size"
+    eq: '$$P(r) \sim r^{D} e^{-\alpha r}, \qquad I(q)=\mathrm{FFT}[P(r)](q)$$'
+    body: |
+      Traditional SAXS analysis often starts by choosing a fixed $D_{\max}$.
+
+      But that means you impose a hard outer size before the data have justified it.
+
+      Here we do something different. We write a structured form for $P(r)$ and then obtain $I(q)$ from it through the transform relation.
+
+      That makes the logic explicit: the measured scattering is the transform of the distance distribution, not a separate object with an independently imposed cutoff.
+
+      The benefit of losing $D_{\max}$ is that the model becomes less arbitrary, less user-dependent, and better suited to extended or heterogeneous systems where a single hard maximum size is not the right physical description.
+    manifesto: Structure from scaling, not cutoffs.
+
+  - type: statement
+    chapter: Time scales
+    kicker: One physical process
+    headline: "We are always looking at the same system"
+    body: |
+      At very short times,
+      SPR shows how binding starts.
+
+      At very long times,
+      we observe the equilibrium state.
+
+      These are not different systems.
+
+      They are two limits of the same process.
+    manifesto: One system, two limits.
+
+  - type: statement
+    chapter: Nexus
+    kicker: What Nexus does
+    headline: "Nexus connects all of this"
+    body: |
+      Nexus takes your data.
+
+      It generates models.
+
+      It tests those models against the data.
+
+      And it ranks the results.
+    manifesto: From data to decision.
+
+  - type: statement
+    chapter: Nexus
+    kicker: Control plane
+    headline: "Nexus is not a logbook;<br>it is the control plane"
+    body: |
+      In Calyr, Nexus is not just a place where results are collected afterward.
+
+      It is the layer that connects symbolic intent, execution, data, and evaluation.
+
+      That means a scientific action is not just "run code".
+
+      It is a declared transition from one well-defined state to the next.
+    manifesto: Declare first. Execute second.
+
+  - type: equation
+    chapter: Nexus
+    kicker: State transition
+    headline: "Every run is a transition between<br>two declared scientific states"
+    eq: '$$\mathrm{State}_t \xrightarrow{\mathrm{Nexus\ declaration}} \mathrm{Execution} \xrightarrow{\mathrm{Results}} \mathrm{State}_{t+1}$$'
+    body: |
+      The important point is that execution does not stand alone.
+
+      It is always attached to a declared state before the run and a traceable state after the run.
+
+      That is how FAIR data, reproducibility, and scientific meaning remain connected.
+    manifesto: A run is a state change, not a side effect.
+
+  - type: figure
+    chapter: Nexus
+    kicker: Closed loop
+    headline: "Results only count after<br>validation and scoring"
+    image: ../figures/generated/validation-scoring-loop.svg
+    alt: Closed loop from Nexus declaration to execution, results, and validation plus scoring.
+    caption: Each result re-enters the evaluation layer before it becomes the next accepted state.
+    body: |
+      This is the closed-loop part of the system.
+
+      You do not just execute and move on.
+
+      Results are validated, scored, and only then allowed back into the scientific workflow.
+
+  - type: figure
+    chapter: Infrastructure
+    kicker: Where things run
+    headline: "Nexus runs on VSC-5"
+    image: ../figures/generated/nexus-asc-remote-control.svg
+    caption: Your laptop is only the control interface.
+
+  - type: statement
+    chapter: Infrastructure
+    kicker: Important detail
+    headline: "Your laptop is only the control"
+    body: |
+      You connect via SSH.
+
+      All computation happens on VSC-5.
+
+      Data and results stay there.
+    manifesto: You control, the cluster computes.
+
+  - type: statement
+    chapter: Workflow
+    kicker: How to think about it
+    headline: "The workflow follows scientific reasoning"
+    body: |
+      You start with data.
+
+      You define a model.
+
+      You test it.
+
+      And then you decide.
+    manifesto: Not a tool chain — a reasoning process.
+
+  - type: statement
+    chapter: Step 1
+    kicker: Login
+    headline: "Connect to the cluster"
+    code: |
+      ssh trupert@vsc5.vsc.ac.at
+
+  - type: statement
+    chapter: Step 2
+    kicker: Start
+    headline: "Load Nexus"
+    code: |
+      module load nexus
+      nexus --help
+
+  - type: statement
+    chapter: Step 3
+    kicker: Project
+    headline: "Create a project"
+    code: |
+      nexus init project
+      cd project
+
+  - type: statement
+    chapter: Step 4
+    kicker: Data
+    headline: "Upload your data"
+    code: |
+      nexus upload saxs data.dat
+      nexus upload spr data.csv
+
+  - type: statement
+    chapter: Step 5
+    kicker: Model
+    headline: "Define a model"
+    code: |
+      nexus model cg --type alpha
+
+  - type: statement
+    chapter: Step 6
+    kicker: Scan
+    headline: "Explore parameters"
+    code: |
+      nexus scan epsilon=0.1:1.0:0.1
+
+  - type: statement
+    chapter: Step 7
+    kicker: Run
+    headline: "Run the simulation"
+    code: |
+      nexus run --backend asc
+
+  - type: statement
+    chapter: Step 8
+    kicker: Analyze
+    headline: "Analyze results"
+    code: |
+      nexus analyze pdd
+      nexus analyze pca
+
+  - type: statement
+    chapter: Step 9
+    kicker: Decision
+    headline: "Rank models"
+    code: |
+      nexus score
+      nexus results top 10
+
+  - type: statement
+    chapter: Takeaway
+    kicker: Final message
+    headline: "You can now run the full workflow"
+    body: |
+      Upload data.
+
+      Run models.
+
+      Get ranked results.
+
+      That is the complete loop.
+    manifesto: From data to decision.
