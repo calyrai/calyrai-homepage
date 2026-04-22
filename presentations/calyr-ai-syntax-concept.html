@@ -8,9 +8,13 @@
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/components.css" />
   <style>
+    :root {
+      color-scheme: dark;
+    }
+
     body {
       margin: 0;
-      background: radial-gradient(circle at top, rgba(24, 36, 58, 0.42), transparent 38%), #0e1218;
+      background: #000000;
       color: #ebeff4;
       font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
@@ -28,7 +32,7 @@
       gap: 18px;
       padding: 18px 24px;
       border-bottom: 1px solid rgba(106, 240, 255, 0.14);
-      background: rgba(6, 12, 20, 0.82);
+      background: rgba(0, 0, 0, 0.92);
       backdrop-filter: blur(12px);
     }
 
@@ -55,6 +59,8 @@
     }
 
     .pdf-link {
+      appearance: none;
+      cursor: pointer;
       display: inline-block;
       padding: 9px 16px;
       border-radius: 999px;
@@ -65,6 +71,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       background: rgba(106, 240, 255, 0.07);
+      font-family: inherit;
     }
 
     .pdf-link:hover {
@@ -75,6 +82,17 @@
     .pdf-stage {
       flex: 1;
       padding: 18px;
+      background: #000000;
+    }
+
+    .pdf-stage:fullscreen {
+      padding: 0;
+      background: #000000;
+    }
+
+    .pdf-stage:-webkit-full-screen {
+      padding: 0;
+      background: #000000;
     }
 
     .pdf-frame {
@@ -82,8 +100,16 @@
       height: calc(100vh - 118px);
       border: 1px solid rgba(160, 196, 255, 0.14);
       border-radius: 14px;
-      background: #ffffff;
+      background: #000000;
       box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .pdf-stage:fullscreen .pdf-frame,
+    .pdf-stage:-webkit-full-screen .pdf-frame {
+      height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     @media (max-width: 820px) {
@@ -111,12 +137,55 @@
       </div>
       <div class="pdf-actions">
         <a class="pdf-link" href="../publications.html#calyr-ai-syntax-concept">Back to publications</a>
-        <a class="pdf-link" href="calyr-ai-syntax-concept.pdf" target="_blank" rel="noopener">Open PDF</a>
+        <button class="pdf-link" id="fullscreen-toggle" type="button">Fullscreen</button>
       </div>
     </header>
-    <main class="pdf-stage">
-      <iframe class="pdf-frame" src="calyr-ai-syntax-concept.pdf#view=FitH" title="Calyr_ai_syntax concept PDF"></iframe>
+    <main class="pdf-stage" id="pdf-stage">
+      <iframe class="pdf-frame" id="pdf-frame" src="calyr-ai-syntax-concept.pdf#view=FitH" title="Calyr_ai_syntax concept PDF" allowfullscreen></iframe>
     </main>
   </div>
+  <script>
+    const stage = document.getElementById('pdf-stage');
+    const button = document.getElementById('fullscreen-toggle');
+
+    const isFullscreen = () => document.fullscreenElement === stage || document.webkitFullscreenElement === stage;
+
+    const updateButton = () => {
+      button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
+    };
+
+    const enterFullscreen = async () => {
+      if (stage.requestFullscreen) {
+        await stage.requestFullscreen();
+        return;
+      }
+      if (stage.webkitRequestFullscreen) {
+        stage.webkitRequestFullscreen();
+      }
+    };
+
+    const exitFullscreen = async () => {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+        return;
+      }
+      if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    };
+
+    button.addEventListener('click', async () => {
+      if (isFullscreen()) {
+        await exitFullscreen();
+      } else {
+        await enterFullscreen();
+      }
+      updateButton();
+    });
+
+    document.addEventListener('fullscreenchange', updateButton);
+    document.addEventListener('webkitfullscreenchange', updateButton);
+    updateButton();
+  </script>
 </body>
 </html>
