@@ -350,18 +350,18 @@
 /* Standalone code block box — same shape as .deck-eq but magenta-tinted */
 .deck-code-block {
   font-family: 'Space Mono', 'Courier New', monospace;
-  font-size: clamp(1rem, 0.8vw + 0.7rem, 1.45rem);
-  color: rgba(253, 84, 255, 0.90);
-  line-height: 1.65;
-  padding: clamp(22px, 2.2vw, 34px) clamp(24px, 2.6vw, 40px);
-  border-radius: 20px;
-  border: 1px solid rgba(253, 84, 255, 0.22);
-  background: rgba(6, 14, 20, 0.64);
-  box-shadow:
-    0 0 44px rgba(253, 84, 255, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  width: 100%;
+  font-size: clamp(0.96rem, 0.68vw + 0.7rem, 1.32rem);
+  color: rgba(236, 144, 255, 0.92);
+  line-height: 1.72;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  width: min(100%, 54rem);
   white-space: pre;
+  text-align: right;
+  margin: 0 0 0 auto;
 }
 
 .deck-manifesto {
@@ -478,6 +478,33 @@
 .deck-paper-sub {
   color: rgba(210, 240, 255, 0.50);
   font-size: clamp(0.84rem, 0.34vw + 0.78rem, 1rem);
+}
+
+.deck-figure {
+  width: min(100%, 72rem);
+  margin: 0 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.deck-figure__image {
+  display: block;
+  width: min(100%, 72rem);
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 18px;
+  border: 1px solid rgba(106, 240, 255, 0.14);
+  background: rgba(6, 14, 20, 0.58);
+}
+
+.deck-figure__caption {
+  width: min(100%, 64rem);
+  color: rgba(210, 240, 255, 0.62);
+  font-size: clamp(0.84rem, 0.34vw + 0.78rem, 1rem);
+  line-height: 1.55;
+  text-align: right;
 }
 
 /* Navigation */
@@ -698,6 +725,394 @@
 
 .deck-slide--eq-split .deck-legend-row {
   justify-content: flex-end;
+}
+
+/* ---- Presentation theme: Calyr.ai syntax / Beamer-inspired ---- */
+.deck-theme-calyr-beamer {
+  background:
+    radial-gradient(circle at top left, rgba(220, 226, 233, 0.16), transparent 26%),
+    linear-gradient(180deg, #1b2632 0%, #141d27 100%);
+}
+
+.deck-theme-calyr-beamer .deck-shell {
+  padding-bottom: 12px;
+}
+
+.deck-theme-calyr-beamer .deck-viewport {
+  border-radius: 12px;
+  border: 1px solid rgba(196, 208, 220, 0.18);
+  background:
+    linear-gradient(180deg, rgba(242, 246, 250, 0.035) 0%, rgba(0, 0, 0, 0) 24%),
+    linear-gradient(180deg, #15202b 0%, #111922 100%);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.deck-theme-calyr-beamer.deck-shell--title-active .deck-viewport,
+.deck-theme-calyr-beamer .deck-shell--title-active .deck-viewport {
+  border-color: rgba(228, 236, 243, 0.22);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 18%),
+    linear-gradient(180deg, #192532 0%, #111922 100%);
+  box-shadow:
+    0 26px 60px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.deck-theme-calyr-beamer .deck-slide,
+.deck-theme-calyr-beamer .deck-slide--eq-split {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: clamp(34px, 3.1vw, 56px) clamp(32px, 3.2vw, 52px) clamp(46px, 4vw, 64px);
+}
+
+.deck-theme-calyr-beamer .deck-slide--title {
+  justify-content: center;
+}
+
+.deck-theme-calyr-beamer .deck-content,
+.deck-theme-calyr-beamer .deck-content--narrow,
+.deck-theme-calyr-beamer .deck-content--wide {
+  max-width: min(84rem, 100%);
+  margin-left: 0;
+  align-items: flex-start;
+  text-align: left;
+  gap: clamp(16px, 1.5vw, 24px);
+}
+
+.deck-theme-calyr-beamer .deck-kicker,
+.deck-theme-calyr-beamer #deck-slide-0 .deck-kicker {
+  color: #9ab1c8;
+  text-shadow: none;
+  letter-spacing: 0.18em;
+  font-size: clamp(0.76rem, 0.45vw + 0.6rem, 1rem);
+}
+
+.deck-theme-calyr-beamer .deck-chapter,
+.deck-theme-calyr-beamer .deck-chapter-sep {
+  color: rgba(154, 177, 200, 0.78);
+}
+
+.deck-theme-calyr-beamer .deck-headline,
+.deck-theme-calyr-beamer #deck-slide-0 .deck-headline,
+.deck-theme-calyr-beamer .deck-headline--eq,
+.deck-theme-calyr-beamer .deck-headline--medium {
+  width: min(100%, 20ch);
+  margin-left: 0;
+  color: #eff4f8;
+  text-shadow: none;
+  line-height: 1.02;
+  position: relative;
+  padding-bottom: 18px;
+}
+
+.deck-theme-calyr-beamer .deck-headline::after,
+.deck-theme-calyr-beamer .deck-headline--eq::after,
+.deck-theme-calyr-beamer .deck-headline--medium::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: clamp(90px, 10vw, 140px);
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d7842b 0%, #f0b36c 100%);
+}
+
+.deck-theme-calyr-beamer .deck-tagline,
+.deck-theme-calyr-beamer #deck-slide-0 .deck-tagline {
+  width: min(100%, 56rem);
+  margin-left: 0;
+  color: rgba(224, 233, 241, 0.84);
+  font-style: normal;
+  text-shadow: none;
+}
+
+.deck-theme-calyr-beamer .deck-body,
+.deck-theme-calyr-beamer .deck-body--left,
+.deck-theme-calyr-beamer .deck-manifesto {
+  width: min(100%, 64rem);
+  margin-left: 0;
+  text-align: left;
+  color: rgba(229, 237, 244, 0.88);
+  text-shadow: none;
+}
+
+.deck-theme-calyr-beamer .deck-manifesto {
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.48;
+}
+
+.deck-theme-calyr-beamer .deck-body code,
+.deck-theme-calyr-beamer .deck-code-block,
+.deck-theme-calyr-beamer .deck-eq,
+.deck-theme-calyr-beamer .deck-platform,
+.deck-theme-calyr-beamer .deck-paper {
+  border-radius: 10px;
+  border: 1px solid rgba(217, 226, 235, 0.12);
+  background: rgba(233, 239, 244, 0.06);
+  box-shadow: none;
+}
+
+.deck-theme-calyr-beamer .deck-body code {
+  color: #f8d5a9;
+  background: rgba(215, 132, 43, 0.12);
+  border-color: rgba(215, 132, 43, 0.24);
+}
+
+.deck-theme-calyr-beamer .deck-code-block,
+.deck-theme-calyr-beamer .deck-eq {
+  position: relative;
+  overflow: hidden;
+}
+
+.deck-theme-calyr-beamer .deck-code-block::before,
+.deck-theme-calyr-beamer .deck-eq::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 6px;
+  background: linear-gradient(180deg, #d7842b 0%, #f0b36c 100%);
+}
+
+.deck-theme-calyr-beamer .deck-legend-row,
+.deck-theme-calyr-beamer .deck-slide--eq-split .deck-legend-row,
+.deck-theme-calyr-beamer .deck-links,
+.deck-theme-calyr-beamer .deck-slide--eq .deck-links,
+.deck-theme-calyr-beamer .deck-slide--eq-split .deck-links {
+  justify-content: flex-start;
+}
+
+.deck-theme-calyr-beamer .deck-platform-grid,
+.deck-theme-calyr-beamer .deck-papers {
+  text-align: left;
+}
+
+.deck-theme-calyr-beamer .deck-platform strong,
+.deck-theme-calyr-beamer .deck-paper-title {
+  color: #f1f5f9;
+}
+
+.deck-theme-calyr-beamer .deck-platform span,
+.deck-theme-calyr-beamer .deck-paper-sub,
+.deck-theme-calyr-beamer .deck-legend-row {
+  color: rgba(214, 224, 233, 0.76);
+}
+
+.deck-theme-calyr-beamer .deck-nav {
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px 0;
+}
+
+.deck-theme-calyr-beamer .deck-dots {
+  flex: 1;
+  justify-content: center;
+}
+
+.deck-theme-calyr-beamer .deck-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(221, 230, 237, 0.18);
+  background: rgba(233, 239, 244, 0.06);
+  color: #e7eef4;
+}
+
+.deck-theme-calyr-beamer .deck-btn:hover {
+  border-color: rgba(240, 179, 108, 0.7);
+  box-shadow: 0 0 0 1px rgba(240, 179, 108, 0.2);
+}
+
+.deck-theme-calyr-beamer .deck-dot-label {
+  background: rgba(20, 29, 39, 0.96);
+  border-color: rgba(221, 230, 237, 0.18);
+  color: rgba(235, 241, 246, 0.92);
+}
+
+.deck-theme-calyr-beamer .deck-dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(202, 214, 226, 0.28);
+}
+
+.deck-theme-calyr-beamer .deck-dot.active {
+  background: #f0b36c;
+}
+
+.deck-theme-calyr-beamer .deck-theme-footer {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 10px 6px 0;
+  border-top: 1px solid rgba(221, 230, 237, 0.14);
+  color: rgba(224, 232, 239, 0.78);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.deck-theme-calyr-beamer .deck-theme-footer__brand {
+  color: #f0b36c;
+  font-weight: 700;
+}
+
+.deck-theme-calyr-beamer .deck-theme-footer__topic {
+  color: rgba(224, 232, 239, 0.64);
+}
+
+.deck-theme-calyr-beamer .deck-theme-footer__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+  color: #eff4f8;
+}
+
+.deck-theme-calyr-beamer .deck-theme-footer__sep {
+  color: rgba(224, 232, 239, 0.38);
+}
+
+.deck-theme-calyr-beamer .deck-shell--fullscreen,
+.deck-theme-calyr-beamer .deck-shell:fullscreen {
+  background: #141d27;
+}
+
+.deck-theme-nexus-user {
+  background:
+    radial-gradient(circle at top left, rgba(156, 214, 126, 0.15), transparent 24%),
+    linear-gradient(180deg, #102118 0%, #0d1711 100%);
+}
+
+.deck-theme-nexus-user .deck-theme-brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 12px;
+}
+
+.deck-theme-nexus-user .deck-theme-brand {
+  display: flex;
+  align-items: center;
+}
+
+.deck-theme-nexus-user .deck-theme-brand svg {
+  display: block;
+  height: 48px;
+  width: auto;
+}
+
+.deck-theme-nexus-user .deck-viewport {
+  border-color: rgba(210, 240, 210, 0.16);
+  background:
+    linear-gradient(180deg, rgba(239, 248, 239, 0.03) 0%, rgba(0, 0, 0, 0) 22%),
+    linear-gradient(180deg, #122218 0%, #0d1711 100%);
+}
+
+.deck-theme-nexus-user .deck-kicker,
+.deck-theme-nexus-user #deck-slide-0 .deck-kicker,
+.deck-theme-nexus-user .deck-chapter,
+.deck-theme-nexus-user .deck-chapter-sep {
+  color: rgba(189, 231, 176, 0.88);
+}
+
+.deck-theme-nexus-user .deck-headline::after,
+.deck-theme-nexus-user .deck-headline--eq::after,
+.deck-theme-nexus-user .deck-headline--medium::after,
+.deck-theme-nexus-user .deck-code-block::before,
+.deck-theme-nexus-user .deck-eq::before {
+  background: linear-gradient(180deg, #85c653 0%, #c6e68d 100%);
+}
+
+.deck-theme-nexus-user .deck-body code {
+  color: #e3f4cf;
+  background: rgba(133, 198, 83, 0.14);
+  border-color: rgba(133, 198, 83, 0.28);
+}
+
+.deck-theme-nexus-user .deck-code-block,
+.deck-theme-nexus-user .deck-eq,
+.deck-theme-nexus-user .deck-platform,
+.deck-theme-nexus-user .deck-paper,
+.deck-theme-nexus-user .deck-btn,
+.deck-theme-nexus-user .deck-dot-label {
+  border-color: rgba(210, 240, 210, 0.14);
+  background: rgba(239, 248, 239, 0.06);
+}
+
+.deck-theme-nexus-user .deck-btn:hover {
+  border-color: rgba(198, 230, 141, 0.7);
+  box-shadow: 0 0 0 1px rgba(198, 230, 141, 0.18);
+}
+
+.deck-theme-nexus-user .deck-dot.active,
+.deck-theme-nexus-user .deck-theme-footer__brand {
+  background: none;
+  color: #c6e68d;
+}
+
+.deck-theme-nexus-user .deck-theme-footer {
+  border-top-color: rgba(210, 240, 210, 0.14);
+}
+
+@media (max-width: 700px) {
+  .deck-theme-nexus-user .deck-theme-brandbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .deck-theme-nexus-user .deck-theme-brand {
+    justify-content: center;
+  }
+
+  .deck-theme-nexus-user .deck-theme-brand svg {
+    max-width: 100%;
+    height: 42px;
+  }
+}
+
+@media (max-width: 700px) {
+  .deck-theme-calyr-beamer .deck-slide,
+  .deck-theme-calyr-beamer .deck-slide--title,
+  .deck-theme-calyr-beamer .deck-slide--eq-split {
+    padding: 24px 18px 28px;
+  }
+
+  .deck-theme-calyr-beamer .deck-content,
+  .deck-theme-calyr-beamer .deck-content--narrow,
+  .deck-theme-calyr-beamer .deck-content--wide {
+    gap: 12px;
+  }
+
+  .deck-theme-calyr-beamer .deck-headline,
+  .deck-theme-calyr-beamer .deck-headline--eq,
+  .deck-theme-calyr-beamer .deck-headline--medium,
+  .deck-theme-calyr-beamer .deck-tagline,
+  .deck-theme-calyr-beamer .deck-body,
+  .deck-theme-calyr-beamer .deck-body--left,
+  .deck-theme-calyr-beamer .deck-manifesto {
+    text-align: left;
+    align-self: stretch;
+  }
+
+  .deck-theme-calyr-beamer .deck-theme-footer {
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+    padding-top: 8px;
+  }
+
+  .deck-theme-calyr-beamer .deck-theme-footer__topic {
+    grid-column: 1 / -1;
+    order: 3;
+  }
 }
 
 @media (max-width: 1400px) {
@@ -938,6 +1353,18 @@
   .deck-platform-grid {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .deck-figure,
+  .deck-figure__caption {
+    width: 100%;
+    margin-left: 0;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .deck-figure__image {
+    max-height: none;
   }
 
   .deck-paper {
