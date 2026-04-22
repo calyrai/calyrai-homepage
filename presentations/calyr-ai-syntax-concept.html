@@ -12,6 +12,10 @@
       color-scheme: dark;
     }
 
+    html {
+      background: #000000;
+    }
+
     body {
       margin: 0;
       background: #000000;
@@ -25,6 +29,10 @@
       flex-direction: column;
     }
 
+    body.embed-mode .pdf-shell {
+      min-height: 100%;
+    }
+
     .pdf-header {
       display: flex;
       align-items: center;
@@ -34,6 +42,10 @@
       border-bottom: 1px solid rgba(106, 240, 255, 0.14);
       background: rgba(0, 0, 0, 0.92);
       backdrop-filter: blur(12px);
+    }
+
+    body.embed-mode .pdf-header {
+      display: none;
     }
 
     .pdf-header__eyebrow {
@@ -85,6 +97,11 @@
       background: #000000;
     }
 
+    body.embed-mode .pdf-stage {
+      padding: 0;
+      min-height: 100vh;
+    }
+
     .pdf-stage:fullscreen {
       padding: 0;
       background: #000000;
@@ -97,16 +114,76 @@
 
     .pdf-frame {
       width: 100%;
-      height: calc(100vh - 118px);
+      min-height: calc(100vh - 118px);
       border: 1px solid rgba(160, 196, 255, 0.14);
       border-radius: 14px;
       background: #000000;
       box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+      overflow: auto;
+    }
+
+    body.embed-mode .pdf-frame {
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .pdf-pages {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      padding: 22px 0 28px;
+      background: #000000;
+    }
+
+    body.embed-mode .pdf-pages {
+      padding: 0;
+      gap: 0;
+    }
+
+    .pdf-page {
+      width: min(100%, 1240px);
+      display: flex;
+      justify-content: center;
+      padding: 0 18px;
+      box-sizing: border-box;
+      background: #000000;
+    }
+
+    body.embed-mode .pdf-page {
+      width: 100%;
+      padding: 0;
+    }
+
+    .pdf-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000000;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+    }
+
+    body.embed-mode .pdf-canvas {
+      box-shadow: none;
+    }
+
+    .pdf-loading,
+    .pdf-error {
+      padding: 32px 24px;
+      text-align: center;
+      color: rgba(232, 242, 255, 0.82);
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-error {
+      color: rgba(255, 166, 166, 0.9);
     }
 
     .pdf-stage:fullscreen .pdf-frame,
     .pdf-stage:-webkit-full-screen .pdf-frame {
-      height: 100vh;
+      min-height: 100vh;
       border: 0;
       border-radius: 0;
       box-shadow: none;
@@ -123,7 +200,11 @@
       }
 
       .pdf-frame {
-        height: calc(100vh - 174px);
+        min-height: calc(100vh - 174px);
+      }
+
+      .pdf-page {
+        padding: 0;
       }
     }
   </style>
@@ -141,16 +222,33 @@
       </div>
     </header>
     <main class="pdf-stage" id="pdf-stage">
-      <iframe class="pdf-frame" id="pdf-frame" src="calyr-ai-syntax-concept.pdf#view=FitH" title="Calyr_ai_syntax concept PDF" allowfullscreen></iframe>
+      <div class="pdf-frame" id="pdf-frame">
+        <div class="pdf-pages" id="pdf-pages">
+          <div class="pdf-loading" id="pdf-loading">Loading PDF presentation…</div>
+        </div>
+      </div>
     </main>
   </div>
-  <script>
+  <script type="module">
+    import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
+
     const stage = document.getElementById('pdf-stage');
     const button = document.getElementById('fullscreen-toggle');
+    const pagesHost = document.getElementById('pdf-pages');
+    const loadingNode = document.getElementById('pdf-loading');
+    const params = new URLSearchParams(window.location.search);
+    const isEmbed = params.get('embed') === '1';
+
+    if (isEmbed) {
+      document.body.classList.add('embed-mode');
+    }
 
     const isFullscreen = () => document.fullscreenElement === stage || document.webkitFullscreenElement === stage;
 
     const updateButton = () => {
+      if (!button) return;
       button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
     };
 
@@ -174,18 +272,65 @@
       }
     };
 
-    button.addEventListener('click', async () => {
-      if (isFullscreen()) {
-        await exitFullscreen();
-      } else {
-        await enterFullscreen();
+    if (button) {
+      button.addEventListener('click', async () => {
+        if (isFullscreen()) {
+          await exitFullscreen();
+        } else {
+          await enterFullscreen();
+        }
+        updateButton();
+      });
+    }
+
+    async function renderPdf() {
+      try {
+        const pdf = await pdfjsLib.getDocument('calyr-ai-syntax-concept.pdf').promise;
+        const containerWidth = Math.max(stage.clientWidth - (isEmbed ? 0 : 48), 320);
+
+        pagesHost.innerHTML = '';
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+          const page = await pdf.getPage(pageNumber);
+          const initialViewport = page.getViewport({ scale: 1 });
+          const scale = containerWidth / initialViewport.width;
+          const viewport = page.getViewport({ scale });
+
+          const pageWrap = document.createElement('div');
+          pageWrap.className = 'pdf-page';
+
+          const canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          const context = canvas.getContext('2d', { alpha: false });
+
+          canvas.width = Math.floor(viewport.width * window.devicePixelRatio);
+          canvas.height = Math.floor(viewport.height * window.devicePixelRatio);
+          canvas.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
+
+          const renderViewport = page.getViewport({ scale: scale * window.devicePixelRatio });
+          await page.render({
+            canvasContext: context,
+            viewport: renderViewport
+          }).promise;
+
+          pageWrap.appendChild(canvas);
+          pagesHost.appendChild(pageWrap);
+        }
+      } catch (error) {
+        pagesHost.innerHTML = '<div class="pdf-error">Could not render the embedded PDF presentation.</div>';
       }
-      updateButton();
+    }
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(renderPdf, 180);
     });
 
     document.addEventListener('fullscreenchange', updateButton);
     document.addEventListener('webkitfullscreenchange', updateButton);
     updateButton();
+    renderPdf();
   </script>
 </body>
 </html>
