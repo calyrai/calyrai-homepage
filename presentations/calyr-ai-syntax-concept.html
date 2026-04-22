@@ -10,6 +10,13 @@
   <style>
     :root {
       color-scheme: dark;
+      --pdf-app-height: 100vh;
+    }
+
+    @supports (height: 100dvh) {
+      :root {
+        --pdf-app-height: 100dvh;
+      }
     }
 
     html {
@@ -24,7 +31,7 @@
     }
 
     .pdf-shell {
-      min-height: 100vh;
+      min-height: var(--pdf-app-height);
       display: flex;
       flex-direction: column;
     }
@@ -100,7 +107,7 @@
 
     body.embed-mode .pdf-stage {
       padding: 0;
-      min-height: 100vh;
+      min-height: var(--pdf-app-height);
     }
 
     .pdf-stage:fullscreen {
@@ -115,7 +122,7 @@
 
     .pdf-frame {
       width: 100%;
-      min-height: calc(100vh - 118px);
+      min-height: calc(var(--pdf-app-height) - 118px);
       border: 1px solid rgba(160, 196, 255, 0.14);
       border-radius: 14px;
       background: #000000;
@@ -129,7 +136,7 @@
     }
 
     body.embed-mode .pdf-frame {
-      min-height: 100vh;
+      min-height: var(--pdf-app-height);
       border: 0;
       border-radius: 0;
       box-shadow: none;
@@ -161,7 +168,7 @@
     .pdf-stage:fullscreen .pdf-page,
     .pdf-stage:-webkit-full-screen .pdf-page {
       width: 100%;
-      min-height: 100vh;
+      min-height: var(--pdf-app-height);
       align-items: center;
       padding: 20px;
       display: none;
@@ -283,7 +290,7 @@
 
     .pdf-stage:fullscreen .pdf-frame,
     .pdf-stage:-webkit-full-screen .pdf-frame {
-      min-height: 100vh;
+      min-height: var(--pdf-app-height);
       border: 0;
       border-radius: 0;
       box-shadow: none;
@@ -300,7 +307,7 @@
       }
 
       .pdf-frame {
-        min-height: calc(100vh - 174px);
+        min-height: calc(var(--pdf-app-height) - 174px);
       }
 
       .pdf-nav-overlay {
@@ -365,6 +372,9 @@
     const isEmbed = params.get('embed') === '1';
     let pageNodes = [];
     let activePage = 0;
+    let resizeTimer = null;
+    let pdfDocumentPromise = null;
+    let renderedWidth = 0;
 
     if (!isEmbed) {
       window.location.replace('../explore.html#saxs/calyr-ai-syntax-concept-and-architecture');
@@ -375,6 +385,19 @@
     }
 
     const isFullscreen = () => document.fullscreenElement === stage || document.webkitFullscreenElement === stage;
+
+    const setViewportHeight = () => {
+      const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--pdf-app-height', `${Math.round(viewportHeight)}px`);
+    };
+
+    const scheduleRender = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        setViewportHeight();
+        renderPdf();
+      }, 180);
+    };
 
     const updateButton = () => {
       if (!button) return;
@@ -472,13 +495,25 @@
       nextButton.addEventListener('click', () => scrollToPage(activePage + 1));
     }
 
-    async function renderPdf() {
+    async function renderPdf(force = false) {
       try {
-        const pdf = await pdfjsLib.getDocument('calyr-ai-syntax-concept.pdf').promise;
+        if (!pdfDocumentPromise) {
+          pdfDocumentPromise = pdfjsLib.getDocument('calyr-ai-syntax-concept.pdf').promise;
+        }
+
+        const pdf = await pdfDocumentPromise;
         const containerWidth = Math.max(stage.clientWidth - (isEmbed ? 0 : 48), 320);
 
+        if (!force && pageNodes.length && Math.abs(containerWidth - renderedWidth) < 2) {
+          updateNav();
+          return;
+        }
+
+        renderedWidth = containerWidth;
+        const preservedActivePage = activePage;
+
         pagesHost.innerHTML = '';
-  pageNodes = [];
+        pageNodes = [];
 
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
           const page = await pdf.getPage(pageNumber);
@@ -509,8 +544,12 @@
           pageNodes.push(pageWrap);
         }
 
-        activePage = 0;
-        frame.scrollTop = 0;
+        activePage = Math.max(0, Math.min(preservedActivePage, pageNodes.length - 1));
+        if (isFullscreen()) {
+          frame.scrollTop = 0;
+        } else if (pageNodes[activePage]) {
+          pageNodes[activePage].scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
         updateNav();
       } catch (error) {
         pagesHost.innerHTML = '<div class="pdf-error">Could not render the embedded PDF presentation.</div>';
@@ -520,11 +559,11 @@
       }
     }
 
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(renderPdf, 180);
-    });
+    window.addEventListener('resize', scheduleRender);
+    window.addEventListener('orientationchange', scheduleRender);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleRender);
+    }
 
     frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
 
@@ -552,6 +591,9 @@
     document.addEventListener('webkitfullscreenchange', updateButton);
     document.addEventListener('fullscreenchange', notifyParent);
     document.addEventListener('webkitfullscreenchange', notifyParent);
+    document.addEventListener('fullscreenchange', scheduleRender);
+    document.addEventListener('webkitfullscreenchange', scheduleRender);
+    setViewportHeight();
     updateButton();
     updateNav();
 
@@ -574,7 +616,7 @@
       goToLastPage: () => scrollToPage(pageNodes.length - 1)
     };
 
-    renderPdf();
+    renderPdf(true);
   </script>
 </body>
 </html>
