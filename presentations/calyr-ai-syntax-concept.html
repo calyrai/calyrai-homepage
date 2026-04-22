@@ -377,6 +377,15 @@
       button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
     };
 
+    const notifyParent = () => {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'calyr-presentation-fullscreen',
+          active: isFullscreen()
+        }, window.location.origin);
+      }
+    };
+
     const updateNav = () => {
       const total = pageNodes.length || 1;
       if (navStatus) navStatus.textContent = `${activePage + 1} / ${total}`;
@@ -537,8 +546,28 @@
 
     document.addEventListener('fullscreenchange', updateButton);
     document.addEventListener('webkitfullscreenchange', updateButton);
+    document.addEventListener('fullscreenchange', notifyParent);
+    document.addEventListener('webkitfullscreenchange', notifyParent);
     updateButton();
     updateNav();
+
+    window.__calyrPresentation = {
+      isFullscreen,
+      enterFullscreen,
+      exitFullscreen,
+      toggleFullscreen: async () => {
+        if (isFullscreen()) {
+          await exitFullscreen();
+        } else {
+          await enterFullscreen();
+        }
+        updateButton();
+        updateNav();
+      },
+      nextPage: () => scrollToPage(activePage + 1),
+      previousPage: () => scrollToPage(activePage - 1)
+    };
+
     renderPdf();
   </script>
 </body>

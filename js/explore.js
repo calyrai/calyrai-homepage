@@ -102,9 +102,22 @@
 
       var targetId = button.getAttribute('data-fullscreen-target');
       var target = targetId ? content.querySelector('#' + targetId) : null;
+      var iframe = target ? target.querySelector('iframe') : null;
       if (!target) return;
 
+      function getEmbeddedApi() {
+        try {
+          return iframe && iframe.contentWindow ? iframe.contentWindow.__calyrPresentation || null : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
       function isFullscreen() {
+        var embeddedApi = getEmbeddedApi();
+        if (embeddedApi && typeof embeddedApi.isFullscreen === 'function') {
+          return embeddedApi.isFullscreen();
+        }
         return document.fullscreenElement === target || document.webkitFullscreenElement === target;
       }
 
@@ -113,6 +126,13 @@
       }
 
       button.addEventListener('click', async function () {
+        var embeddedApi = getEmbeddedApi();
+        if (embeddedApi && typeof embeddedApi.toggleFullscreen === 'function') {
+          await embeddedApi.toggleFullscreen();
+          updateLabel();
+          return;
+        }
+
         if (isFullscreen()) {
           if (document.exitFullscreen) {
             await document.exitFullscreen();
@@ -133,6 +153,14 @@
 
       document.addEventListener('fullscreenchange', updateLabel);
       document.addEventListener('webkitfullscreenchange', updateLabel);
+      window.addEventListener('message', function (event) {
+        if (event.origin !== window.location.origin) return;
+        if (!event.data || event.data.type !== 'calyr-presentation-fullscreen') return;
+        updateLabel();
+      });
+      if (iframe) {
+        iframe.addEventListener('load', updateLabel);
+      }
       updateLabel();
     });
   }
