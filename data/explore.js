@@ -69,7 +69,7 @@ window.CALYR_EXPLORE = [
       },
       {
         id: 'calyr-ai-syntax-concept-and-architecture',
-        title: 'BOKU Launch May 2026',
+        title: 'Calyr_ai_syntax: Concept and Architecture',
         src: 'pages/explore_calyr_ai_syntax.html'
       }
     ]
