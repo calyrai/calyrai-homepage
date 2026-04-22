@@ -36,8 +36,8 @@ window.CALYR_PUBLICATIONS = [
     "status": "active",
     "pdfs": [
       {
-        "label": "presentation",
-        "path": "presentations/calyr-ai-syntax-concept.html"
+        "label": "explore",
+        "path": "explore.html#saxs/calyr-ai-syntax-concept-and-architecture"
       },
       {
         "label": "pdf",

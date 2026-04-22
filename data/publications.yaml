@@ -38,8 +38,8 @@ manuscripts:
       The deck covers the symbolic-expression idea, sample regimes, Nexus as a declarative control plane,
       closed-loop validation, representation flow, and the transition from simulation toward construction.
     pdfs:
-      - label: presentation
-        path: presentations/calyr-ai-syntax-concept.html
+      - label: explore
+        path: explore.html#saxs/calyr-ai-syntax-concept-and-architecture
       - label: pdf
         path: presentations/calyr-ai-syntax-concept.pdf
 

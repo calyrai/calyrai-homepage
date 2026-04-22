@@ -95,6 +95,48 @@
     return `<div class="doc-nav-footer">${prevHTML}${nextHTML}</div>`;
   }
 
+  function initEmbeddedFullscreen() {
+    content.querySelectorAll('[data-fullscreen-target]').forEach(button => {
+      if (button.dataset.fullscreenBound === 'true') return;
+      button.dataset.fullscreenBound = 'true';
+
+      var targetId = button.getAttribute('data-fullscreen-target');
+      var target = targetId ? content.querySelector('#' + targetId) : null;
+      if (!target) return;
+
+      function isFullscreen() {
+        return document.fullscreenElement === target || document.webkitFullscreenElement === target;
+      }
+
+      function updateLabel() {
+        button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
+      }
+
+      button.addEventListener('click', async function () {
+        if (isFullscreen()) {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+          updateLabel();
+          return;
+        }
+
+        if (target.requestFullscreen) {
+          await target.requestFullscreen();
+        } else if (target.webkitRequestFullscreen) {
+          target.webkitRequestFullscreen();
+        }
+        updateLabel();
+      });
+
+      document.addEventListener('fullscreenchange', updateLabel);
+      document.addEventListener('webkitfullscreenchange', updateLabel);
+      updateLabel();
+    });
+  }
+
   async function loadPage(entry) {
     const { section, page } = entry;
     setActive(section.id, page.id);
@@ -110,6 +152,7 @@
 
     const flat = { ...page, section: section.id };
     content.innerHTML = html + renderNavFooter(flat);
+    initEmbeddedFullscreen();
 
     if (window.renderMathInElement) {
       renderMathInElement(content, {
