@@ -154,6 +154,10 @@
       overflow: hidden;
     }
 
+    body.embed-mode.mobile-immersive.landscape-mode .pdf-frame {
+      touch-action: pan-x pinch-zoom;
+    }
+
     .pdf-pages {
       display: flex;
       flex-direction: column;
@@ -288,44 +292,6 @@
       letter-spacing: 0.04em;
     }
 
-    .pdf-footer-counter {
-      position: fixed;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%);
-      z-index: 39;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 16px;
-      border: 1px solid rgba(106, 240, 255, 0.16);
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(10px);
-      color: rgba(232, 242, 255, 0.92);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.74rem;
-    }
-
-    .pdf-stage:fullscreen .pdf-footer-counter,
-    .pdf-stage:-webkit-full-screen .pdf-footer-counter {
-      display: inline-flex;
-    }
-
-    body.embed-mode.mobile-immersive .pdf-footer-counter {
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-      display: inline-flex;
-    }
-
-    .pdf-footer-counter__value {
-      min-width: 54px;
-      text-align: center;
-      font-size: 0.84rem;
-      letter-spacing: 0.04em;
-      text-transform: none;
-    }
-
     .pdf-stage:fullscreen .pdf-frame,
     .pdf-stage:-webkit-full-screen .pdf-frame {
       min-height: var(--pdf-app-height);
@@ -350,10 +316,6 @@
 
       .pdf-nav-overlay {
         right: 12px;
-        bottom: 12px;
-      }
-
-      .pdf-footer-counter {
         bottom: 12px;
       }
 
@@ -386,10 +348,6 @@
         <div class="pdf-nav-status" id="pdf-nav-status">1 / 1</div>
         <button class="pdf-nav-btn" id="pdf-next" type="button" aria-label="Next page">&#8594;</button>
       </div>
-      <div class="pdf-footer-counter" id="pdf-footer-counter" aria-live="polite">
-        <span>Slide</span>
-        <span class="pdf-footer-counter__value" id="pdf-footer-counter-value">1 / 1</span>
-      </div>
     </main>
   </div>
   <script type="module">
@@ -405,16 +363,19 @@
     const prevButton = document.getElementById('pdf-prev');
     const nextButton = document.getElementById('pdf-next');
     const navStatus = document.getElementById('pdf-nav-status');
-    const footerCounterValue = document.getElementById('pdf-footer-counter-value');
     const params = new URLSearchParams(window.location.search);
     const isEmbed = params.get('embed') === '1';
     const wantsImmersive = params.get('immersive') !== '0';
     const immersiveMedia = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
+    const landscapeMedia = window.matchMedia('(orientation: landscape)');
     let pageNodes = [];
     let activePage = 0;
     let resizeTimer = null;
     let pdfDocumentPromise = null;
     let renderedWidth = 0;
+    let touchStartX = null;
+    let touchStartY = null;
+    let swipeLocked = false;
 
     if (!isEmbed) {
       window.location.replace('../explore.html#saxs/calyr-ai-syntax-concept-and-architecture');
@@ -428,8 +389,11 @@
 
     const isImmersive = () => document.body.classList.contains('mobile-immersive');
 
+    const isImmersiveLandscape = () => isImmersive() && landscapeMedia.matches;
+
     const applyImmersiveMode = () => {
       document.body.classList.toggle('mobile-immersive', isEmbed && wantsImmersive && immersiveMedia.matches && !isFullscreen());
+      document.body.classList.toggle('landscape-mode', isImmersiveLandscape());
     };
 
     const setViewportHeight = () => {
@@ -463,7 +427,6 @@
     const updateNav = () => {
       const total = pageNodes.length || 1;
       if (navStatus) navStatus.textContent = `${activePage + 1} / ${total}`;
-      if (footerCounterValue) footerCounterValue.textContent = `${activePage + 1} / ${total}`;
       if (prevButton) prevButton.disabled = activePage <= 0;
       if (nextButton) nextButton.disabled = activePage >= total - 1;
       pageNodes.forEach((node, index) => {
@@ -616,8 +579,82 @@
     } else if (immersiveMedia.addListener) {
       immersiveMedia.addListener(scheduleRender);
     }
+    if (landscapeMedia.addEventListener) {
+      landscapeMedia.addEventListener('change', scheduleRender);
+    } else if (landscapeMedia.addListener) {
+      landscapeMedia.addListener(scheduleRender);
+    }
 
     frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
+
+    frame.addEventListener('touchstart', (event) => {
+      if (!isImmersiveLandscape() || event.touches.length !== 1) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        return;
+      }
+
+      const touch = event.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      swipeLocked = false;
+    }, { passive: true });
+
+    frame.addEventListener('touchmove', (event) => {
+      if (!isImmersiveLandscape() || touchStartX === null || touchStartY === null || swipeLocked) {
+        return;
+      }
+
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      if (Math.abs(deltaX) < 18) {
+        return;
+      }
+
+      if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    frame.addEventListener('touchend', (event) => {
+      if (!isImmersiveLandscape() || touchStartX === null || touchStartY === null || swipeLocked) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      touchStartX = null;
+      touchStartY = null;
+
+      if (Math.abs(deltaX) < 60 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) {
+        return;
+      }
+
+      swipeLocked = true;
+      if (deltaX < 0) {
+        scrollToPage(activePage + 1);
+      } else {
+        scrollToPage(activePage - 1);
+      }
+
+      window.setTimeout(() => {
+        swipeLocked = false;
+      }, 180);
+    }, { passive: true });
+
+    frame.addEventListener('touchcancel', () => {
+      touchStartX = null;
+      touchStartY = null;
+      swipeLocked = false;
+    }, { passive: true });
 
     document.addEventListener('keydown', (event) => {
       if (!isFullscreen()) return;
