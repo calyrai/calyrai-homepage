@@ -154,7 +154,7 @@
       overflow: hidden;
     }
 
-    body.embed-mode.mobile-immersive.landscape-mode .pdf-frame {
+    body.landscape-mode .pdf-frame {
       touch-action: pan-x pinch-zoom;
     }
 
@@ -215,6 +215,11 @@
       display: flex;
     }
 
+    body.landscape-mode .pdf-page {
+      min-height: var(--pdf-app-height);
+      padding: 0;
+    }
+
     .pdf-canvas {
       display: block;
       width: 100%;
@@ -225,6 +230,12 @@
 
     body.embed-mode .pdf-canvas {
       box-shadow: none;
+    }
+
+    body.landscape-mode .pdf-canvas {
+      width: auto;
+      max-width: 100%;
+      max-height: var(--pdf-app-height);
     }
 
     .pdf-loading,
@@ -266,7 +277,9 @@
       right: 12px;
     }
 
-    body.embed-mode.mobile-immersive.landscape-mode .pdf-nav-overlay {
+    body.embed-mode.mobile-immersive.landscape-mode .pdf-nav-overlay,
+    body.landscape-mode .pdf-stage:fullscreen .pdf-nav-overlay,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-nav-overlay {
       display: none;
     }
 
@@ -393,11 +406,11 @@
 
     const isImmersive = () => document.body.classList.contains('mobile-immersive');
 
-    const isImmersiveLandscape = () => isImmersive() && landscapeMedia.matches;
+    const isLandscapeSlideMode = () => landscapeMedia.matches && (isFullscreen() || isImmersive());
 
     const applyImmersiveMode = () => {
       document.body.classList.toggle('mobile-immersive', isEmbed && wantsImmersive && immersiveMedia.matches && !isFullscreen());
-      document.body.classList.toggle('landscape-mode', isImmersiveLandscape());
+      document.body.classList.toggle('landscape-mode', isLandscapeSlideMode());
     };
 
     const setViewportHeight = () => {
@@ -517,6 +530,7 @@
 
         const pdf = await pdfDocumentPromise;
         const containerWidth = Math.max(stage.clientWidth - (isEmbed ? 0 : 48), 320);
+        const containerHeight = Math.max(stage.clientHeight || window.innerHeight, 240);
 
         if (!force && pageNodes.length && Math.abs(containerWidth - renderedWidth) < 2) {
           updateNav();
@@ -532,7 +546,11 @@
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
           const page = await pdf.getPage(pageNumber);
           const initialViewport = page.getViewport({ scale: 1 });
-          const scale = containerWidth / initialViewport.width;
+          const widthScale = containerWidth / initialViewport.width;
+          const heightScale = containerHeight / initialViewport.height;
+          const scale = isLandscapeSlideMode()
+            ? Math.min(widthScale, heightScale)
+            : widthScale;
           const viewport = page.getViewport({ scale });
 
           const pageWrap = document.createElement('div');
@@ -592,7 +610,7 @@
     frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
 
     frame.addEventListener('touchstart', (event) => {
-      if (!isImmersiveLandscape() || event.touches.length !== 1) {
+      if (!isLandscapeSlideMode() || event.touches.length !== 1) {
         touchStartX = null;
         touchStartY = null;
         swipeLocked = false;
@@ -606,7 +624,7 @@
     }, { passive: true });
 
     frame.addEventListener('touchmove', (event) => {
-      if (!isImmersiveLandscape() || touchStartX === null || touchStartY === null || swipeLocked) {
+      if (!isLandscapeSlideMode() || touchStartX === null || touchStartY === null || swipeLocked) {
         return;
       }
 
@@ -624,7 +642,7 @@
     }, { passive: false });
 
     frame.addEventListener('touchend', (event) => {
-      if (!isImmersiveLandscape() || touchStartX === null || touchStartY === null || swipeLocked) {
+      if (!isLandscapeSlideMode() || touchStartX === null || touchStartY === null || swipeLocked) {
         touchStartX = null;
         touchStartY = null;
         swipeLocked = false;
