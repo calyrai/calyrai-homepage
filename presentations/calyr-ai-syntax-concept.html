@@ -11,6 +11,7 @@
     :root {
       color-scheme: dark;
       --pdf-app-height: 100vh;
+      --slide-zoom: 1;
     }
 
     @supports (height: 100dvh) {
@@ -155,7 +156,8 @@
     }
 
     body.landscape-mode .pdf-frame {
-      touch-action: pan-x pinch-zoom;
+      touch-action: none;
+      overscroll-behavior: contain;
     }
 
     .pdf-pages {
@@ -218,6 +220,11 @@
     body.landscape-mode .pdf-page {
       min-height: var(--pdf-app-height);
       padding: 0;
+    }
+
+    body.landscape-mode .pdf-page.pdf-page--active {
+      transform: scale(var(--slide-zoom));
+      transform-origin: center center;
     }
 
     .pdf-canvas {
@@ -393,6 +400,9 @@
     let touchStartX = null;
     let touchStartY = null;
     let swipeLocked = false;
+    let slideZoom = 1;
+    let pinchStartDistance = null;
+    let pinchStartZoom = 1;
 
     if (!isEmbed) {
       window.location.replace('../explore.html#saxs/calyr-ai-syntax-concept-and-architecture');
@@ -408,9 +418,26 @@
 
     const isLandscapeSlideMode = () => landscapeMedia.matches && (isFullscreen() || isImmersive());
 
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const setSlideZoom = (zoom) => {
+      slideZoom = clamp(zoom, 0.7, 1.8);
+      document.documentElement.style.setProperty('--slide-zoom', String(slideZoom));
+    };
+
+    const getTouchDistance = (touches) => {
+      if (!touches || touches.length < 2) return 0;
+      const deltaX = touches[0].clientX - touches[1].clientX;
+      const deltaY = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(deltaX, deltaY);
+    };
+
     const applyImmersiveMode = () => {
       document.body.classList.toggle('mobile-immersive', isEmbed && wantsImmersive && immersiveMedia.matches && !isFullscreen());
       document.body.classList.toggle('landscape-mode', isLandscapeSlideMode());
+      if (!isLandscapeSlideMode()) {
+        setSlideZoom(1);
+      }
     };
 
     const setViewportHeight = () => {
@@ -610,10 +637,28 @@
     frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
 
     frame.addEventListener('touchstart', (event) => {
-      if (!isLandscapeSlideMode() || event.touches.length !== 1) {
+      if (!isLandscapeSlideMode()) {
         touchStartX = null;
         touchStartY = null;
         swipeLocked = false;
+        pinchStartDistance = null;
+        return;
+      }
+
+      if (event.touches.length === 2) {
+        pinchStartDistance = getTouchDistance(event.touches);
+        pinchStartZoom = slideZoom;
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = true;
+        return;
+      }
+
+      if (event.touches.length !== 1) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        pinchStartDistance = null;
         return;
       }
 
@@ -624,7 +669,20 @@
     }, { passive: true });
 
     frame.addEventListener('touchmove', (event) => {
-      if (!isLandscapeSlideMode() || touchStartX === null || touchStartY === null || swipeLocked) {
+      if (!isLandscapeSlideMode()) {
+        return;
+      }
+
+      if (event.touches.length === 2 && pinchStartDistance !== null) {
+        event.preventDefault();
+        const currentDistance = getTouchDistance(event.touches);
+        if (currentDistance > 0) {
+          setSlideZoom(pinchStartZoom * (currentDistance / pinchStartDistance));
+        }
+        return;
+      }
+
+      if (touchStartX === null || touchStartY === null || swipeLocked) {
         return;
       }
 
@@ -642,7 +700,29 @@
     }, { passive: false });
 
     frame.addEventListener('touchend', (event) => {
-      if (!isLandscapeSlideMode() || touchStartX === null || touchStartY === null || swipeLocked) {
+      if (!isLandscapeSlideMode()) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        pinchStartDistance = null;
+        pinchStartZoom = slideZoom;
+        return;
+      }
+
+      if (pinchStartDistance !== null) {
+        if (event.touches.length < 2) {
+          pinchStartDistance = null;
+          pinchStartZoom = slideZoom;
+        }
+        if (event.touches.length === 0) {
+          swipeLocked = false;
+        }
+        touchStartX = null;
+        touchStartY = null;
+        return;
+      }
+
+      if (touchStartX === null || touchStartY === null || swipeLocked) {
         touchStartX = null;
         touchStartY = null;
         swipeLocked = false;
@@ -676,6 +756,8 @@
       touchStartX = null;
       touchStartY = null;
       swipeLocked = false;
+      pinchStartDistance = null;
+      pinchStartZoom = slideZoom;
     }, { passive: true });
 
     document.addEventListener('keydown', (event) => {
