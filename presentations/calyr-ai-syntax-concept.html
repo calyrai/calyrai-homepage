@@ -201,6 +201,16 @@
       display: flex;
     }
 
+    body.landscape-mode .pdf-stage:fullscreen .pdf-page,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-page,
+    body.landscape-mode .pdf-stage:fullscreen .pdf-page.pdf-page--active,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-page.pdf-page--active {
+      min-height: var(--pdf-app-height);
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
     body.embed-mode .pdf-page {
       width: 100%;
       padding: 0;
@@ -242,6 +252,11 @@
     body.landscape-mode .pdf-canvas {
       width: auto;
       max-width: 100%;
+      max-height: var(--pdf-app-height);
+    }
+
+    body.landscape-mode .pdf-stage:fullscreen .pdf-canvas,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-canvas {
       max-height: var(--pdf-app-height);
     }
 
