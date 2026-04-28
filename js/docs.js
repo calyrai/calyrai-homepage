@@ -102,6 +102,31 @@
     return `<div class="doc-nav-footer">${prevHTML}${nextHTML}</div>`;
   }
 
+  async function fetchDocHtml (src) {
+    try {
+      const res = await fetch(src);
+      if (!res.ok) throw new Error(String(res.status));
+      return await res.text();
+    } catch (err) {
+      // Safari can block fetch() on local file:// URLs. Fallback to XHR.
+      if (window.location.protocol !== 'file:') throw err;
+      return await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', src, true);
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState !== 4) return;
+          if (xhr.status === 200 || xhr.status === 0) {
+            resolve(xhr.responseText);
+            return;
+          }
+          reject(new Error(String(xhr.status || 'Load failed')));
+        };
+        xhr.onerror = () => reject(new Error('Load failed'));
+        xhr.send();
+      });
+    }
+  }
+
   async function loadPage (entry) {
     const { section, page } = entry;
 
@@ -112,12 +137,12 @@
 
     let html;
     try {
-      const res = await fetch(src);
-      if (!res.ok) throw new Error(res.status);
-      html = await res.text();
+      html = await fetchDocHtml(src);
     } catch (e) {
       html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">
-        Could not load <code>${src}</code> (${e.message}).</p></div>`;
+        Could not load <code>${src}</code> (${e.message}).</p>
+        <p style="color:rgba(180,210,255,0.85)">If you are opening via <code>file://</code>, run a local server and open via <code>http://localhost</code>.</p>
+      </div>`;
     }
 
     const flat = { ...page, section: section.id };

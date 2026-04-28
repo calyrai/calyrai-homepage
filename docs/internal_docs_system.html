@@ -6,6 +6,44 @@
     Internal working note — not part of the public Nexus language reference.
   </div>
 
+  <h2>Current TODO</h2>
+  <ol>
+    <li>Migrate remaining presentation projects to <code>project.mode: presentation_yaml</code> with a local <code>Makefile</code>.</li>
+    <li>Use <code>nexus build presentations docs/publishing</code> or <code>make presentations</code> from <code>docs/publishing/</code> as the canonical batch build path.</li>
+    <li>Replace the dummy runner in <code>calyrai_modelling/scripts/run_module.py</code> with a real module dispatcher.</li>
+    <li>Implement <code>calyrai_modelling/modules/cryoem_patch/scripts/</code> as the first real modelling module.</li>
+    <li>After more presentation projects are migrated, do the larger physical cleanup of <code>docs/publishing/</code>.</li>
+  </ol>
+
+  <hr class="doc-rule" />
+
+  <h2>Current operational surfaces</h2>
+  <p>The repo now has two concrete internal build surfaces that should be treated as active.</p>
+
+  <h3>YAML-backed presentations</h3>
+  <table class="doc-table">
+    <thead><tr><th>Purpose</th><th>Canonical surface</th></tr></thead>
+    <tbody>
+      <tr><td>Canonical builder</td><td><code>docs/publishing/tools/presentation_yaml/build_presentation_from_yaml.py</code></td></tr>
+      <tr><td>Starter template</td><td><code>docs/publishing/templates/presentation_yaml_project/</code></td></tr>
+      <tr><td>Build one presentation</td><td><code>nexus build presentation &lt;project-root&gt;</code> or <code>make presentation</code></td></tr>
+      <tr><td>Build all YAML presentations</td><td><code>nexus build presentations docs/publishing</code> or <code>make presentations</code> from <code>docs/publishing/</code></td></tr>
+      <tr><td>Current real example</td><td><code>docs/publishing/Calyr_ai_syntax_full_docs/</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3><code>calyrai_modelling</code> scaffold</h3>
+  <table class="doc-table">
+    <thead><tr><th>Purpose</th><th>Canonical surface</th></tr></thead>
+    <tbody>
+      <tr><td>Scaffold root</td><td><code>calyrai_modelling/</code></td></tr>
+      <tr><td>Bootstrap script</td><td><code>bootstrap_calyrai_modelling.py</code></td></tr>
+      <tr><td>List modules</td><td><code>nexus modelling ls</code></td></tr>
+      <tr><td>Run a module</td><td><code>nexus modelling run cryoem_patch</code></td></tr>
+      <tr><td>Current limitation</td><td><code>calyrai_modelling/scripts/run_module.py</code> still writes a registration record and needs a real dispatcher.</td></tr>
+    </tbody>
+  </table>
+
   <h2>Two separate systems</h2>
   <p>The workspace maintains two distinct documentation systems that serve different audiences.</p>
 
@@ -124,6 +162,9 @@ mkdocs build          # → build/docs_site/</pre>
       <tr><td>Add a page to the public Nexus docs (here)</td><td><code>apps/homepage/docs/&lt;file&gt;.html</code> + <code>apps/homepage/data/docs.js</code></td></tr>
       <tr><td>Add a new section to the MkDocs hub</td><td><code>docs/&lt;section&gt;/</code> + <code>mkdocs.yml</code></td></tr>
       <tr><td>Change sidebar order here</td><td><code>apps/homepage/data/docs.js</code> — reorder entries</td></tr>
+      <tr><td>Build one YAML-backed presentation</td><td><code>nexus build presentation &lt;project-root&gt;</code> or the project <code>Makefile</code></td></tr>
+      <tr><td>Build all YAML-backed presentations</td><td><code>docs/publishing/Makefile</code> or <code>nexus build presentations docs/publishing</code></td></tr>
+      <tr><td>Run a modelling module</td><td><code>nexus modelling run &lt;module-id&gt;</code> or <code>calyrai_modelling/scripts/run_module.py</code></td></tr>
       <tr><td>Rebuild <code>_repo/</code> symlinks</td><td><code>python3 tools/repo/build_docs_hub.py</code></td></tr>
     </tbody>
   </table>

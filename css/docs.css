@@ -228,6 +228,20 @@
 .doc-article ul { margin: 0 0 16px; padding-left: 24px; }
 .doc-article li { margin-bottom: 6px; }
 
+/* Keep KaTeX inline/display text on the same docs font family. */
+.doc-article .katex .text,
+.doc-article .katex .textrm,
+.doc-article .katex .textsf,
+.doc-article .katex .texttt {
+  font-family: inherit !important;
+}
+
+.doc-article .katex .mord.text,
+.doc-article .katex .mord.text *,
+.doc-article .katex .text * {
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
 /* ── Code blocks ──────────────────────────────────────────────────── */
 .doc-code, .doc-article pre {
   background: rgba(6, 14, 24, 0.88);

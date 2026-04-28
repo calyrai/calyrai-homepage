@@ -1,192 +1,51 @@
 schema_version: 1
-# Slide deck for the Explore Calyr_ai_syntax presentation
+# Slide deck for the Explore Nexus and Data Warehouse presentation
 # Source of truth — edit here, then regenerate:
 #   python3 scripts/build_deck.py data/calyr-ai-syntax-concept-and-architecture.yaml
 
 slides:
 
   - type: title
-    kicker: Calyr.ai · Language
-    headline: "Calyr_ai_syntax:<br>concept and architecture"
-    tagline: symbolic expressions, Nexus control, and model-native execution
+    kicker: Calyr.ai · Nexus
+    headline: "Nexus and the data warehouse"
+    tagline: from experimental records to governed model states
 
   - type: statement
     chapter: Problem
-    kicker: The problem
-    headline: "Scientific execution loses meaning<br>once the run begins"
+    kicker: Fragmentation
+    headline: "Scientific data is stored,<br>but interpretation is fragmented"
     body: |
-      Scientific code usually fractures across notebooks, scripts, engine wrappers, and manually edited inputs.
-      Once execution starts, the semantic object is often lost and replaced by folders, logs, and tool-specific conventions.
-      Calyr_ai_syntax is motivated by that gap: the scientific object should remain explicit from declaration through execution and evaluation.
-    manifesto: Symbolic clarity must survive execution.
-
-  - type: statement
-    chapter: Core idea
-    kicker: Definition
-    headline: "A symbolic layer for Python-centric<br>computational science"
-    body: |
-      Calyr_ai_syntax is a Mathematica-inspired symbolic expression layer for Calyr workflows.
-      It is symbolic first and executable second: expressions define intent, rewrite rules normalize structure, and Nexus binds the resulting object graph to real engines.
-      The aim is not another scripting surface, but a language that preserves the meaning of the scientific object while it moves through computation.
-    manifesto: Express, map, run.
-
-  - type: statement
-    chapter: Regimes
-    kicker: Two sample regimes
-    headline: "One language for both downloaded<br>cohorts and deep system objects"
-    body: |
-      The same representation must support broad downloaded cohorts such as public SAXS protein entries and deep multimodal objects such as SBPA.
-      In the cohort regime, the first stable object is the measured curve and its attached metadata.
-      In the structured-system regime, one sample identity spans AlphaFold priors, cryo-EM constraints, MD trajectories, and SAXS observables.
-    manifesto: One semantic layer spans both regimes.
-
-  - type: statement
-    chapter: Cohort
-    kicker: Downloaded protein cohort
-    headline: "Public SAXS entries are already<br>valid scientific sample objects"
-    body: |
-      Downloaded protein entries such as SASDXF6, SASDYY5, or SASDC44 already provide measured $I(q)$ together with metadata, optional $P(r)$, and attached model files.
-      The first stable representation is therefore the measured scattering curve, not an over-processed downstream artifact.
-      Calyr_ai_syntax must be able to hold those entries as aligned sample objects for comparison, representation learning, and PCA without breaking their provenance.
-    manifesto: Measured curves come first.
-
-  - type: statement
-    chapter: Reference sample
-    kicker: SBPA as deep object
-    headline: "SBPA is one system state across<br>AlphaFold, cryo-EM, MD, and SAXS"
-    body: |
-      SBPA is the reference case for a deeply structured sample object.
-      AlphaFold provides the initial local geometry, cryo-EM constrains the global arrangement, LAMMPS or OpenMM evolve the physical state, and SAXS provides observable-space evaluation.
-      The presentation logic only works if all of those layers remain one coordinated sample identity rather than turning into disconnected files and side products.
-    manifesto: One system, many modalities, one identity.
-
-  - type: statement
-    chapter: Objects
-    kicker: Structured sample logic
-    headline: "A sample is not a file.<br>It is a coordinated state"
-    body: |
-      Downloaded SAXS entries, fitted parameters, optional $P(r)$ objects, and evaluation results should all remain attached to one scientific sample object.
-      For structured cases such as SBPA, the object must also hold AlphaFold structure, cryo-EM constraints, LAMMPS or OpenMM state, and back-calculated SAXS observables.
-      The language therefore has to represent coupled system identity, not just datasets in isolation.
-    manifesto: The sample is the primary object.
-
-  - type: statement
-    chapter: Modalities
-    kicker: Model surfaces
-    headline: "AlphaFold, cryo-EM, LAMMPS,<br>OpenMM, and SAXS each play a distinct role"
-    body: |
-      AlphaFold supplies a structural prior and confidence landscape.
-      Cryo-EM constrains the global arrangement and lattice or assembly consistency.
-      LAMMPS and OpenMM provide the dynamical physical refinement of the state under explicit force fields.
-      SAXS then evaluates the resulting ensemble in observable space through measured or back-calculated $I(q)$ and optional $P(r)$ objects.
-    manifesto: Each modality contributes a different constraint.
-
-  - type: statement
-    chapter: Architecture
-    kicker: Representation flow
-    headline: "Symbolic expressions become<br>normalized, executable, and auditable"
-    body: |
-      The architecture is a sequence: symbolic expressions, rewrites and normalization, Nexus coordination, execution backends, and typed manifests for evaluation.
-      Syntax objects are not thrown away when a run starts; they are carried forward as the semantic source of truth.
-      This is what lets execution, provenance, and analysis stay on one coordinated plane.
-    manifesto: The object graph persists through the run.
-
-  - type: statement
-    chapter: Nexus
-    kicker: Operational membrane
-    headline: "Nexus connects symbolic intent,<br>execution, and evaluation"
-    body: |
-      Nexus is the operational membrane of Calyr: it binds symbolic declarations to environments, engines, inputs, outputs, and validation steps.
-      It does not introduce a second runtime language; instead, it materializes declared state transitions and records them as manifests.
-      The result is reproducible execution where semantic meaning remains inspectable after the computation finishes.
-    manifesto: Nexus is the control plane, not a logbook.
+      Measurements, metadata, preprocessing, fitted parameters, and report figures are often separated into disconnected files and tools.
+      When this happens, claims drift away from the assumptions and transformations that produced them.
+      Nexus addresses this by treating the warehouse as a governed scientific layer rather than passive storage.
+    manifesto: The scientific object must stay intact.
 
   - type: equation
-    chapter: Control
-    kicker: Declarative execution
-    headline: "Execution is a transition between<br>fully specified Nexus states"
-    eq: '$$\mathcal{S}_{t+1}=\mathcal{E}\!\left(\mathcal{S}_t,\,\mathcal{D}_t\right)$$'
+    chapter: Core
+    kicker: Warehouse sequence
+    headline: "Nexus as governed middle layer"
+    eq: '$$\\text{EXPERIMENT} \\rightarrow \\text{REPRESENTATION} \\rightarrow \\text{MODEL STATE} \\rightarrow \\text{RESULT} \\rightarrow \\text{REPORT}$$'
     body: |
-      Here $\mathcal{S}_t$ is the declared Nexus state, $\mathcal{D}_t$ is the declaration that selects tools, parameters, and expected products, and $\mathcal{E}$ is the execution operator.
-      Every scientific action is therefore a state update, not an informal runtime side effect.
-      Parameters, models, assumptions, and expected outputs are explicit before the run begins.
+      Each step is a controlled transition with explicit provenance.
+      The warehouse keeps these layers linked so every output can be traced back to the originating experiment and transformation chain.
+      Nexus is therefore both storage semantics and control semantics.
 
   - type: statement
-    chapter: Hierarchy
-    kicker: Multi-level control
-    headline: "Root policy, domain semantics,<br>tool bindings, experiment layer"
+    chapter: Structure
+    kicker: Stored object
+    headline: "The warehouse stores<br>scientific objects, not files"
     body: |
-      Nexus operates hierarchically: root Nexus defines global policy, domain Nexus defines scientific semantics, tool Nexus defines engine bindings, and experiment declarations define concrete studies.
-      This separation keeps FAIR policy, scientific meaning, and execution details distinct without disconnecting them.
-      The same pipeline can therefore move across engines or machines without changing its conceptual definition.
-    manifesto: Change the executor, not the meaning.
+      A useful record contains the observation, its provenance, its derived representation, and the model-facing state that follows from it.
+      The same logic must hold for SAXS, SPR, and chromatography.
+      The point is not more storage. The point is to keep the scientific object traversable.
+    manifesto: Store the object, not only the file.
 
   - type: statement
-    chapter: Engines
-    kicker: Remote cluster execution
-    headline: "AlphaFold, LAMMPS, OpenMM,<br>and VSC as Nexus-bound tools"
+    chapter: Outcome
+    kicker: Traceability
+    headline: "Claims remain linked<br>to their origin"
     body: |
-      Computational engines only exist operationally when they are registered in Nexus and invoked through declared pipeline steps.
-      AlphaFold provides structural priors, LAMMPS and OpenMM provide dynamical refinement, and VSC exposes remote SLURM execution without changing the workflow language.
-      The machine changes, but the declaration remains the same.
-    manifesto: No execution exists outside Nexus.
-
-  - type: statement
-    chapter: Evaluation
-    kicker: One evaluation level
-    headline: "Simulation, PCA, and analysis stay<br>on one coordinated semantic plane"
-    body: |
-      Downloaded cohorts and multimodal system objects both enter the same evaluation layer once their observables or fitted parameters are aligned.
-      PCA can operate directly on standardized $I(q)$ vectors or on common-length parameter vectors without inventing a new semantic layer for each workflow.
-      Nexus keeps comparison, provenance, and analysis attached to the same object graph that defined execution in the first place.
-    manifesto: Evaluation should not break object identity.
-
-  - type: equation
-    chapter: Object model
-    kicker: Minimal symbolic form
-    headline: "One symbolic form can describe<br>equations, workflows, and sample state"
-    eq: '$$X=\operatorname{Expr}\!\left(H,\,A,\,M\right)$$'
-    body: |
-      $H$ defines the semantic head, $A$ carries ordered arguments, and $M$ stores provenance, bindings, constraints, and evaluation context.
-      This minimal symbolic form lets a sample object, an equation, an engine call, and an analysis contract remain representable in one language.
-      The point is semantic continuity across the workflow, not just syntax compression.
-
-  - type: statement
-    chapter: FAIR
-    kicker: FAIR by construction
-    headline: "Runs, queries, and outputs stay<br>findable, accessible, and reusable"
-    body: |
-      Each remote or local execution receives a stable run identity, declared output paths, versioned environment specs, and reproducible manifests.
-      The same logic also applies to data access: declarative queries can be translated to concrete SQL while keeping an auditable query hash.
-      FAIR is therefore not an afterthought but part of the execution model itself.
-    manifesto: The same query should produce the same trace.
-
-  - type: equation
-    chapter: Construction
-    kicker: From simulation to control
-    headline: "Constructability begins when the system<br>can invert toward a target"
-    eq: '$$x^{\ast}=\underset{x}{\operatorname{arg\,min}}\;\lVert F(x)-y^{\ast}\rVert$$'
-    body: |
-      Simulation asks for the forward map $y=F(x)$ once a state $x$ is given.
-      Construction inverts that logic by searching for the state or intervention that minimizes the gap to a desired target $y^{\ast}$.
-      Calyr_ai_syntax and Nexus matter because they provide the declarative and provenance-preserving substrate required for this shift from prediction toward control.
-
-  - type: statement
-    chapter: Closed loop
-    kicker: Scientific feedback system
-    headline: "Target, constrained inversion,<br>execution, validation, update"
-    body: |
-      In the construction regime, Nexus becomes a closed-loop scientific system: targets define candidate states, execution tests them, validation scores them, and the next Nexus state is updated from the result.
-      Constraints from structure, kinetics, geometry, packing, and experiment all participate in the loop.
-      This is how simulatable systems begin to become constructable ones.
-    manifesto: Inference becomes control through feedback.
-
-  - type: statement
-    chapter: Summary
-    kicker: Final statement
-    headline: "You do not run simulations.<br>You materialize Nexus states"
-    body: |
-      Calyr_ai_syntax provides the symbolic language layer.
-      Nexus provides the declarative control plane that keeps meaning, execution, and evaluation aligned.
-      Together they make Calyr workflows inspectable, reproducible, FAIR, and ready to support not only simulation but eventually scientific construction.
-    manifesto: Materialize states, not just runs.
+      Publication-facing outputs can be traced to result objects, model states, representations, and source experiments.
+      This is the practical value of a governed data warehouse.
+      Nexus is the layer that keeps this chain intact across modalities.
+    manifesto: Traceability is a warehouse property.

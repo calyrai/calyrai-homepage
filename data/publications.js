@@ -15,6 +15,10 @@ window.CALYR_PUBLICATION_NETWORK = {
       "to": "spr-evaluation-concept"
     },
     {
+      "from": "constraint-coupled-inference",
+      "to": "publication-network-builder"
+    },
+    {
       "from": "spr-kinetic-modes",
       "to": "spr-evaluation-concept"
     },
@@ -25,30 +29,54 @@ window.CALYR_PUBLICATION_NETWORK = {
     {
       "from": "sbpa-modelling-2026",
       "to": "fco-manuscript"
+    },
+    {
+      "from": "sbpa-modelling-2026",
+      "to": "sbpa-surface-properties"
+    },
+    {
+      "from": "sbpa-surface-properties",
+      "to": "saxs-cryo-working"
+    },
+    {
+      "from": "saxs-cryo-working",
+      "to": "saxs-alone-working"
+    },
+    {
+      "from": "saxs-alone-working",
+      "to": "keratin-data-evaluation"
+    },
+    {
+      "from": "keratin-data-evaluation",
+      "to": "keratin-modelling"
+    },
+    {
+      "from": "keratin-modelling",
+      "to": "red-human-working"
     }
   ]
 };
 window.CALYR_PUBLICATIONS = [
   {
     "id": "spr-kinetic-modes",
-    "title": "SPR Kinetic Modes",
+    "title": "SPR Model Paper (Working Set)",
     "topic": "spr",
-    "status": "active",
+    "status": "progress",
     "pdfs": [
       {
         "label": "open",
         "path": "../../docs/publishing/Calyr_ai_publishing/nexus_spr_kinetic_modes/nexus_spr_kinetic_modes.pdf"
       }
     ],
-    "method": "Gillespie-generated kinetic ensemble → PCA basis → SPR trace projection",
+    "method": "Process-level SPR adsorption model from coupled kinetic states",
     "abstract": "SPR sensorgrams and adsorption isotherms are customarily treated as separate analyses. The present system requires their joint treatment: a double-shouldered isotherm must emerge as the steady-state limit of the same coupled two-layer equations that fit the full sensorgram family. Primary adsorption and gated secondary uptake share one parameter object; kinetic trapping into a long-lived second state explains the near-flat dissociation observed across the concentration ladder.",
-    "description": "Stochastic ensemble generation via Gillespie simulation, PCA-based kinetic basis, and projection of SPR traces into kinetic space."
+    "description": "Model-first SPR paper defining coupled adsorption states and the generative kinetic process."
   },
   {
     "id": "spr-evaluation-concept",
-    "title": "SPR Evaluation Concept",
+    "title": "SPR Data Evaluation (Working Set)",
     "topic": "spr",
-    "status": "active",
+    "status": "progress",
     "pdfs": [
       {
         "label": "full",
@@ -59,14 +87,14 @@ window.CALYR_PUBLICATIONS = [
         "path": "../../docs/publishing/Calyr_ai_publishing/nexus_spr_evaluation_concept/nexus_learning_adsorption_mechanics_short.pdf"
       }
     ],
-    "method": "Latent-space inference of rate constants from raw SPR response curves",
+    "method": "Data-evaluation layer for SPR model via latent-space inference",
     "abstract": "Raw SPR response curves encode association and dissociation rate constants in a geometry that classical fitting does not expose. A latent-space encoder trained on Gillespie-generated sensorgram ensembles maps experimental curves into a kinetic-basis space where rate constants are directly separable. The encoder output is a typed KineticBasis object ready for constraint coupling across independent experimental series.",
-    "description": "Learning adsorption mechanics from SPR data."
+    "description": "Data-evaluation paper that estimates and validates model parameters from raw SPR response curves."
   },
   {
     "id": "constraint-coupled-inference",
     "title": "Constraint-Coupled Inference",
-    "topic": "spr",
+    "topic": "nexus",
     "status": "progress",
     "pdfs": [
       {
@@ -79,10 +107,29 @@ window.CALYR_PUBLICATIONS = [
     "description": "Bridge-defined constraints over a shared latent state. Analytical, semi-analytical, and stochastic reductions."
   },
   {
+    "id": "publication-network-builder",
+    "title": "Publication Network Builder",
+    "topic": "nexus",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/nexus_publication_network_builder/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/nexus_publication_network_builder/"
+      }
+    ],
+    "method": "Topic-aware publication graph construction with DOI-gated release routing",
+    "abstract": "This publication defines how publication nodes, topic groupings, and cross-paper edges are built and rendered in the Calyr Nexus publication layer. It includes DOI-gated behavior so pre-DOI work remains abstract-first while DOI-assigned entries expose release artifacts.",
+    "description": "Nexus publication that formalizes the publication-network builder as a core orchestration layer for manuscript discovery and release policy."
+  },
+  {
     "id": "sbpa-modelling-2026",
     "title": "SBPA Modelling 2026",
     "topic": "saxs",
-    "status": "active",
+    "status": "progress",
     "pdfs": [
       {
         "label": "open",
@@ -94,9 +141,123 @@ window.CALYR_PUBLICATIONS = [
     "description": "Structure-based potential analysis combining AlphaFold, cryo-EM, LAMMPS, and SAXS in a Nexus-controlled scaffold."
   },
   {
+    "id": "sbpa-surface-properties",
+    "title": "SBPA Surface Properties (Working Set)",
+    "topic": "saxs",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/sbpa_surface_properties/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/sbpa_surface_properties/"
+      }
+    ],
+    "method": "Assembly-first SBPA publication spine in four manuscripts",
+    "abstract": "Working publication set for SBPA surface properties. This entry points to the local index and root so the full four-paper structure can be read directly in a local browser session before DOI assignment.",
+    "description": "Local-only SBPA surface-properties working directory with manuscript stubs and branch index."
+  },
+  {
+    "id": "saxs-cryo-working",
+    "title": "SAXS Cryo LDL/HDL (Working Set)",
+    "topic": "saxs",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/saxs_cryo/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/saxs_cryo/"
+      }
+    ],
+    "method": "LDL/HDL cryo-EM and SAXS integration as a four-paper program",
+    "abstract": "Working publication set for SAXS Cryo (LDL and HDL) with local links to the manuscript index and root directory for immediate reading in local mode.",
+    "description": "Local-only SAXS Cryo working directory for LDL/HDL manuscript development."
+  },
+  {
+    "id": "saxs-alone-working",
+    "title": "SAXS Alone (Working Set)",
+    "topic": "saxs",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/saxs_alone/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/saxs_alone/"
+      }
+    ],
+    "method": "SAXS-only descriptor and model-space publication program",
+    "abstract": "Working publication set for SAXS-alone manuscript development. The local index and root links are included for direct browser access without deployment.",
+    "description": "Local-only SAXS-alone working directory with four manuscript stubs."
+  },
+  {
+    "id": "keratin-data-evaluation",
+    "title": "Keratin Data Evaluation (Working Set)",
+    "topic": "saxs",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/keratin_data_evaluation/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/keratin_data_evaluation/"
+      }
+    ],
+    "method": "Keratin signal-space and mode-based inference as a four-paper program",
+    "abstract": "Keratin assemblies exhibit complex hierarchical organization, ranging from filamentous structures to higher-order two-dimensional arrangements, yet quantitative tools for resolving their mesoscale geometry remain limited. Here, we introduce a two-dimensional analysis framework for keratin modeling based on the Pair Correlation Surface Analysis (PCSA) method, enabling direct extraction of spatial correlations and structural descriptors from projected or surface-resolved data. By applying PCSA to keratin systems, we quantify characteristic length scales, anisotropy, and packing heterogeneity in 2D, bridging real-space morphology with underlying interaction patterns.\nThe method leverages pair-distance statistics to construct surface-resolved correlation functions, allowing robust identification of domain organization, filament spacing, and deviations from idealized packing. Integration with scattering-derived constraints further enables cross-validation with experimental data, providing a consistent link between model predictions and measurable observables. We demonstrate that PCSA captures subtle structural transitions and disorder within keratin networks that are not readily accessible through conventional metrics.\nThis approach establishes a generalized framework for evaluating fibrous protein assemblies in reduced dimensional representations and provides a scalable route to integrate modeling, microscopy, and scattering data. The proposed methodology is particularly suited for systems exhibiting surface-dominated organization and offers new opportunities for quantitative characterization of keratin and related biomaterial architectures.",
+    "description": "Local-only keratin data-evaluation working directory with four manuscript stubs."
+  },
+  {
+    "id": "keratin-modelling",
+    "title": "Keratin Modelling (Working Set)",
+    "topic": "saxs",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/keratin_modelling/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/keratin_modelling/"
+      }
+    ],
+    "method": "Mechanistic keratin modelling under descriptor-space and constraint coupling",
+    "abstract": "Understanding the structural basis of keratin surface organization requires connecting sequence-derived models with dynamic, environment-dependent conformations. We combine AlphaFold-derived structural priors with molecular dynamics simulations to resolve how anisotropic surface \"faces\" emerge dynamically and govern intermolecular interaction and assembly behavior.",
+    "description": "Local-only keratin modelling publication line kept distinct from data evaluation."
+  },
+  {
+    "id": "red-human-working",
+    "title": "RED HUMAN (Working Set)",
+    "topic": "redhuman",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "index",
+        "path": "../../docs/publishing/Calyr_ai_publishing/red_human_working/index.html"
+      },
+      {
+        "label": "root",
+        "path": "../../docs/publishing/Calyr_ai_publishing/red_human_working/"
+      }
+    ],
+    "method": "Metabolic reduction, dynamics, and QTY decision layer in four papers",
+    "abstract": "Working publication set for the RED HUMAN project. This card links to the local index and root so the current draft set can be read during local development.",
+    "description": "Local-only RED HUMAN working directory with staged manuscripts and index page."
+  },
+  {
     "id": "chromatography-fractional-transport",
     "title": "Chromatography Fractional Transport",
-    "topic": "saxs",
+    "topic": "purification",
     "status": "progress",
     "pdfs": [
       {
@@ -112,7 +273,7 @@ window.CALYR_PUBLICATIONS = [
     "id": "fco-manuscript",
     "title": "FCO Manuscript",
     "topic": "saxs",
-    "status": "staged",
+    "status": "progress",
     "pdfs": [
       {
         "label": "open",

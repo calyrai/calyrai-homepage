@@ -12,10 +12,31 @@
   var TOPICS = [
     { id: 'nexus', label: 'Nexus' },
     { id: 'spr', label: 'SPR' },
-    { id: 'saxs', label: 'SAXS' }
+    { id: 'saxs', label: 'SAXS' },
+    { id: 'purification', label: 'Thoughts on Purification' },
+    { id: 'redhuman', label: 'RED HUMAN' }
   ];
 
+  function sortedTopics() {
+    return TOPICS.slice().sort(function (a, b) {
+      return a.label.localeCompare(b.label);
+    });
+  }
+
+  function sortedPubsByTitle(pubs) {
+    return pubs.slice().sort(function (a, b) {
+      return String(a.title || '').localeCompare(String(b.title || ''));
+    });
+  }
+
   var STATUS_LABEL = { active: 'active', progress: 'in progress', staged: 'staged' };
+
+  function normalizeStatus(status) {
+    var value = String(status || '').trim().toLowerCase();
+    if (value === 'in progress' || value === 'in-progress') return 'progress';
+    if (value === 'active' || value === 'progress' || value === 'staged') return value;
+    return 'progress';
+  }
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -54,6 +75,7 @@
   }
 
   function primaryOpenLink(pub) {
+    if (!pub.doi) return '';
     if (!pub.pdfs || !pub.pdfs.length) return '';
     var link = pub.pdfs[0];
     var label = link.label || 'open';
@@ -61,6 +83,7 @@
   }
 
   function renderAssetLinks(pub) {
+    if (!pub.doi) return '';
     var links = [];
     if (pub.pdfs && pub.pdfs.length) {
       pub.pdfs.forEach(function (pdf) {
@@ -74,6 +97,7 @@
   }
 
   function renderPdfPreview(pub) {
+    if (!pub.doi) return '';
     if (!pub.pdfs || !pub.pdfs.length) return '';
     var pdf = pub.pdfs.find(function (item) { return isPdfPath(item.path); });
     if (!pdf) return '';
@@ -100,10 +124,15 @@
     return '<div class="pub-abstract-area"><p class="pub-abstract">' + escapeHtml(pub.abstract) + '</p></div>';
   }
 
+  function renderPreDoiNote(pub) {
+    if (pub.doi) return '';
+    return '<p class="pub-preview-note">Pre-DOI entry: abstract-only in publications layer. Full artifacts stay local until DOI assignment.</p>';
+  }
+
   function buildSidebar() {
     sidebar.innerHTML = '';
-    TOPICS.forEach(function (topic) {
-      var pubs = DATA.filter(function (p) { return p.topic === topic.id; });
+    sortedTopics().forEach(function (topic) {
+      var pubs = sortedPubsByTitle(DATA.filter(function (p) { return p.topic === topic.id; }));
       if (!pubs.length) return;
 
       var wrap = document.createElement('div');
@@ -153,17 +182,19 @@
   }
 
   function renderDetail(pub) {
+    var status = normalizeStatus(pub.status);
     main.innerHTML =
       '<div class="doc-article pub-card-detail">' +
         '<p class="doc-subtitle">' + escapeHtml((pub.topic || '').toUpperCase()) + '</p>' +
         '<h1>' + escapeHtml(pub.title) + '</h1>' +
         '<div class="pub-badge-row">' +
-          '<span class="pub-status pub-status--' + pub.status + '">' + escapeHtml(STATUS_LABEL[pub.status] || pub.status) + '</span>' +
+          '<span class="pub-status pub-status--' + status + '">' + escapeHtml(STATUS_LABEL[status] || status) + '</span>' +
           primaryOpenLink(pub) +
         '</div>' +
         renderTopNetwork() +
         '<p class="pub-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
         renderAbstract(pub) +
+        renderPreDoiNote(pub) +
         renderAssetLinks(pub) +
         renderPdfPreview(pub) +
       '</div>';
@@ -171,15 +202,32 @@
   }
 
   function renderOverview() {
-    var sectionsHTML = TOPICS.map(function (topic) {
-      var pubs = DATA.filter(function (p) { return p.topic === topic.id; });
+    var countItems = sortedTopics().map(function (topic) {
+      var count = DATA.filter(function (p) { return p.topic === topic.id; }).length;
+      if (!count) return '';
+      return '<li>' + escapeHtml(topic.label) + ': <strong>' + count + '</strong></li>';
+    }).filter(Boolean).join('');
+
+    var totalPapers = DATA.length;
+    var countSection =
+      '<section class="pub-topic-group">' +
+        '<h2 class="pub-topic-heading">Paper Counts</h2>' +
+        '<div class="pub-method-card">' +
+          '<p class="pub-card-method">Total papers: <strong>' + totalPapers + '</strong></p>' +
+          '<ul class="pub-card-method" style="margin-top:8px;">' + countItems + '</ul>' +
+        '</div>' +
+      '</section>';
+
+    var sectionsHTML = sortedTopics().map(function (topic) {
+      var pubs = sortedPubsByTitle(DATA.filter(function (p) { return p.topic === topic.id; }));
       if (!pubs.length) return '';
 
       var cards = pubs.map(function (pub) {
+        var status = normalizeStatus(pub.status);
         return '<div class="pub-method-card">' +
           '<div class="pub-card-top">' +
             '<a class="pub-card-title" href="#' + pub.id + '">' + escapeHtml(pub.title) + '</a>' +
-            '<span class="pub-status pub-status--' + pub.status + '">' + escapeHtml(STATUS_LABEL[pub.status] || pub.status) + '</span>' +
+            '<span class="pub-status pub-status--' + status + '">' + escapeHtml(STATUS_LABEL[status] || status) + '</span>' +
             primaryOpenLink(pub) +
           '</div>' +
           '<p class="pub-card-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
@@ -199,6 +247,7 @@
         '<h1>Manuscripts</h1>' +
         renderTopNetwork() +
         sectionsHTML +
+        countSection +
       '</div>';
     window.calyrPubGraphs && window.calyrPubGraphs.refresh();
   }

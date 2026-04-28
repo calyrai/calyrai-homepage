@@ -118,7 +118,8 @@ window.CALYR_DOCS = [
     title: 'API reference',
     pages: [
       { id: 'python',    title: 'Python API',      src: 'docs/api_python.html' },
-      { id: 'cli',       title: 'CLI',             src: 'docs/api_cli.html' }
+      { id: 'cli',       title: 'CLI',             src: 'docs/api_cli.html' },
+      { id: 'connectpaper', title: 'Connectpaper & Zotero', src: 'docs/api_connectpaper.html' }
     ]
   },
 
