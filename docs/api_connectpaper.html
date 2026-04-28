@@ -1,0 +1,111 @@
+<article class="doc-article">
+  <h1>Connectpaper & Zotero</h1>
+  <p class="doc-subtitle">Structured literature search from Nexus CLI with OpenAlex, Semantic Scholar, and Zotero database workflows</p>
+
+  <h2>What this command does</h2>
+  <p>
+    <code>nexus connectpaper</code> runs a boolean literature query across OpenAlex and/or Semantic Scholar,
+    merges and de-duplicates the hits, and lets you export results for local analysis or Zotero database ingestion.
+  </p>
+
+  <h2>Quick start</h2>
+  <pre>nexus connectpaper "sbpa + keratin" --backend both --limit 25</pre>
+  <p>
+    The <code>+</code> symbol is treated as <code>AND</code>.
+    This command prints a ranked table in the terminal.
+  </p>
+
+  <h2>Boolean query syntax</h2>
+  <table class="doc-table">
+    <thead><tr><th>Feature</th><th>Example</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>AND</td><td><code>sbpa AND keratin</code></td><td>Both terms must match</td></tr>
+      <tr><td>OR</td><td><code>keratin OR saxs</code></td><td>Either term may match</td></tr>
+      <tr><td>NOT</td><td><code>saxs NOT review</code></td><td>Exclude results containing a term</td></tr>
+      <tr><td>Parentheses</td><td><code>sbpa AND (keratin OR saxs)</code></td><td>Control precedence</td></tr>
+      <tr><td>Shortcut</td><td><code>sbpa + keratin</code></td><td>Equivalent to <code>sbpa AND keratin</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Backends</h2>
+  <pre>--backend openalex
+--backend semantic
+--backend both</pre>
+  <p>
+    Use <code>both</code> for best recall. If one backend is rate-limited (for example HTTP 429),
+    the command keeps results from the other backend when possible.
+  </p>
+
+  <h2>Output formats</h2>
+  <pre># terminal table (default)
+nexus connectpaper "sbpa AND keratin"
+
+# machine-readable JSON
+nexus connectpaper "sbpa AND keratin" --json --out-json runs/literature/sbpa_keratin.json
+
+# CSV for spreadsheets
+nexus connectpaper "sbpa AND keratin" --out-csv runs/literature/sbpa_keratin.csv</pre>
+
+  <h2>Zotero workflow (recommended)</h2>
+  <h3>1) Export import-file for Zotero</h3>
+  <pre>nexus connectpaper "sbpa AND (keratin OR saxs) NOT review" \
+  --backend both \
+  --limit 50 \
+  --out-zotero-json runs/literature/sbpa_keratin_zotero.json \
+  --tag sbpa --tag keratin --tag nexus</pre>
+  <p>
+    Import that file in Zotero via <strong>File → Import</strong>.
+  </p>
+
+  <h3>2) Direct Zotero API sync</h3>
+  <pre>nexus connectpaper "sbpa AND keratin" \
+  --backend both \
+  --limit 25 \
+  --zotero-sync \
+  --zotero-library-type users \
+  --zotero-library-id &lt;LIBRARY_ID&gt; \
+  --zotero-api-key &lt;API_KEY&gt; \
+  --tag sbpa --tag nexus</pre>
+  <p>
+    This pushes results directly into your Zotero library.
+  </p>
+
+  <h2>Recommended database pattern</h2>
+  <ol>
+    <li>Run broad query and export Zotero JSON.</li>
+    <li>Import into Zotero and curate duplicates/metadata.</li>
+    <li>Tag items by project branch (<code>sbpa</code>, <code>keratin</code>, <code>saxs</code>, <code>spr</code>).</li>
+    <li>Re-run focused queries and sync incrementally.</li>
+    <li>Track final curated sets in Nexus runs folder for reproducibility.</li>
+  </ol>
+
+  <h2>Troubleshooting</h2>
+  <table class="doc-table">
+    <thead><tr><th>Problem</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>Invalid query syntax</code></td>
+        <td>Malformed boolean expression</td>
+        <td>Balance parentheses, use uppercase operators, test with smaller expression first</td>
+      </tr>
+      <tr>
+        <td><code>HTTP 429</code></td>
+        <td>Provider rate limit</td>
+        <td>Retry with <code>--backend openalex</code> or <code>--backend semantic</code>, then run again later</td>
+      </tr>
+      <tr>
+        <td><code>No papers matched</code></td>
+        <td>Query too narrow</td>
+        <td>Remove <code>NOT</code> term, broaden OR group, or increase <code>--limit</code></td>
+      </tr>
+      <tr>
+        <td><code>Zotero sync failed</code></td>
+        <td>Missing or wrong credentials</td>
+        <td>Check <code>--zotero-library-id</code>, <code>--zotero-api-key</code>, and library type</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Command help</h2>
+  <pre>nexus connectpaper --help</pre>
+</article>
