@@ -85,7 +85,7 @@ window.CALYR_EXPLORE = [
       },
       {
         id: 'calyr-architecture',
-        title: 'Calyr Architecture',
+        title: 'calyr.ai.architecture',
         src: 'pages/explore_calyr_architecture.html'
       }
     ]
