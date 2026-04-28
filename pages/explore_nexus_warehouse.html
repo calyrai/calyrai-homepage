@@ -1,0 +1,73 @@
+<style> 
+  .nexus-warehouse-card {
+    background: #000;
+    border-color: rgba(106, 240, 255, 0.14);
+  }
+
+  .nexus-warehouse-stage {
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(160, 196, 255, 0.14);
+  }
+
+  .nexus-warehouse-frame {
+    display: block;
+    width: 100%;
+    height: min(78vh, 1100px);
+    border: 0;
+    background: #000;
+  }
+
+  @media (max-width: 900px) {
+    .explore-hub-article .nexus-warehouse-card {
+      padding: 0;
+      border-width: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .explore-hub-article .nexus-warehouse-card-header {
+      padding: 0 0 12px;
+    }
+
+    .explore-hub-article .nexus-warehouse-card-header .pub-detail-pdf {
+      display: none;
+    }
+
+    .explore-hub-article .nexus-warehouse-stage {
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+    }
+
+    .explore-hub-article .nexus-warehouse-frame {
+      height: 100dvh;
+      min-height: 100svh;
+    }
+  }
+</style>
+<div class="doc-article explore-hub-article">
+  <div class="explore-section-card nexus-warehouse-card">
+    <div class="nexus-warehouse-card-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+      <h2 style="margin:0; color:rgba(232,242,255,0.96)">nexus.warehouse</h2>
+      <button
+        type="button"
+        class="pub-detail-pdf"
+        data-fullscreen-target="nexus-warehouse-explore-stage"
+        style="cursor:pointer; background:rgba(106,240,255,0.08); border:1px solid rgba(106,240,255,0.26); color:rgba(106,240,255,0.9)"
+      >Fullscreen</button>
+    </div>
+    <div id="nexus-warehouse-explore-stage" class="nexus-warehouse-stage">
+      <iframe
+        src="presentations/an-abstract-language-for-data-organization.html?embed=1&immersive=1"
+        title="nexus.warehouse presentation"
+        loading="lazy"
+        allowfullscreen
+        class="nexus-warehouse-frame"
+      ></iframe>
+    </div>
+  </div>
+</div>

@@ -77,6 +77,11 @@ window.CALYR_EXPLORE = [
         id: 'calyr-ai-syntax-concept-and-architecture',
         title: 'calyr.ai.syntax',
         src: 'pages/explore_calyr_ai_syntax.html'
+      },
+      {
+        id: 'nexus-warehouse',
+        title: 'nexus.warehouse',
+        src: 'pages/explore_nexus_warehouse.html'
       }
     ]
   }
