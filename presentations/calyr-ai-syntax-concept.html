@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calyr_ai_syntax: Concept and Architecture</title>
+  <title>calyr.ai.syntax</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Presentation wrapper for the Calyr_ai_syntax concept PDF." />
+  <meta name="description" content="PDF presentation wrapper for calyr.ai.syntax." />
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/components.css" />
   <style>
@@ -12,6 +12,9 @@
       color-scheme: dark;
       --pdf-app-height: 100vh;
       --slide-zoom: 1;
+      --calyr-cyan: #24f3ff;
+      --calyr-magenta: #ff4df5;
+      --calyr-white: #f4fbff;
     }
 
     @supports (height: 100dvh) {
@@ -51,8 +54,11 @@
       justify-content: space-between;
       gap: 18px;
       padding: 18px 24px;
-      border-bottom: 1px solid rgba(106, 240, 255, 0.14);
-      background: rgba(0, 0, 0, 0.92);
+      border-bottom: 1px solid color-mix(in oklab, var(--calyr-cyan) 28%, transparent);
+      background:
+        radial-gradient(1200px 280px at 18% -40%, color-mix(in oklab, var(--calyr-cyan) 20%, transparent), transparent 60%),
+        radial-gradient(1000px 260px at 84% -46%, color-mix(in oklab, var(--calyr-magenta) 18%, transparent), transparent 62%),
+        rgba(0, 0, 0, 0.9);
       backdrop-filter: blur(12px);
     }
 
@@ -65,14 +71,15 @@
       font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(106, 240, 255, 0.62);
+      color: color-mix(in oklab, var(--calyr-cyan) 72%, white 28%);
     }
 
     .pdf-header__title {
       margin: 0;
       font-size: clamp(1.1rem, 1rem + 1.4vw, 2rem);
       line-height: 1.1;
-      color: rgba(232, 242, 255, 0.96);
+      color: var(--calyr-white);
+      text-shadow: 0 0 26px color-mix(in oklab, var(--calyr-cyan) 24%, transparent);
     }
 
     .pdf-actions {
@@ -88,19 +95,33 @@
       display: inline-block;
       padding: 9px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(106, 240, 255, 0.26);
-      color: rgba(106, 240, 255, 0.9);
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 34%, transparent);
+      color: color-mix(in oklab, var(--calyr-cyan) 86%, white 14%);
       text-decoration: none;
       font-size: 0.78rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      background: rgba(106, 240, 255, 0.07);
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 18%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 14%, transparent)
+        );
       font-family: inherit;
     }
 
     .pdf-link:hover {
-      background: rgba(106, 240, 255, 0.14);
-      border-color: rgba(106, 240, 255, 0.48);
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 26%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 22%, transparent)
+        );
+      border-color: color-mix(in oklab, var(--calyr-magenta) 40%, var(--calyr-cyan) 40%);
+    }
+
+    @media (max-width: 900px), (pointer: coarse) {
+      #fullscreen-toggle {
+        display: none;
+      }
     }
 
     .pdf-stage {
@@ -132,7 +153,7 @@
     .pdf-frame {
       width: 100%;
       min-height: calc(var(--pdf-app-height) - 118px);
-      border: 1px solid rgba(160, 196, 255, 0.14);
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 26%, transparent);
       border-radius: 14px;
       background: #000000;
       box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
@@ -269,7 +290,7 @@
     }
 
     .pdf-error {
-      color: rgba(255, 166, 166, 0.9);
+      color: color-mix(in oklab, var(--calyr-magenta) 84%, white 16%);
     }
 
     .pdf-nav-overlay {
@@ -281,7 +302,7 @@
       align-items: center;
       gap: 10px;
       padding: 10px 12px;
-      border: 1px solid rgba(106, 240, 255, 0.18);
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 24%, transparent);
       border-radius: 999px;
       background: rgba(0, 0, 0, 0.72);
       backdrop-filter: blur(10px);
@@ -310,10 +331,14 @@
       cursor: pointer;
       min-width: 42px;
       height: 42px;
-      border: 1px solid rgba(106, 240, 255, 0.26);
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 34%, transparent);
       border-radius: 999px;
-      background: rgba(106, 240, 255, 0.08);
-      color: rgba(232, 242, 255, 0.95);
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 18%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 16%, transparent)
+        );
+      color: var(--calyr-white);
       font: inherit;
       font-size: 1rem;
     }
@@ -326,7 +351,7 @@
     .pdf-nav-status {
       min-width: 68px;
       text-align: center;
-      color: rgba(232, 242, 255, 0.9);
+      color: var(--calyr-white);
       font-size: 0.9rem;
       letter-spacing: 0.04em;
     }
@@ -368,11 +393,11 @@
   <div class="pdf-shell">
     <header class="pdf-header">
       <div>
-        <p class="pdf-header__eyebrow">Nexus / Presentation</p>
-        <h1 class="pdf-header__title">Calyr_ai_syntax: Concept and Architecture</h1>
+        <p class="pdf-header__eyebrow">calyr.ai.syntax / Presentation</p>
+        <h1 class="pdf-header__title">calyr.ai.syntax</h1>
       </div>
       <div class="pdf-actions">
-        <a class="pdf-link" href="../publications.html#calyr-ai-syntax-concept">Back to publications</a>
+        <a class="pdf-link" href="../explore.html#nexus/calyr-ai-syntax-concept-and-architecture">Back to Explore</a>
         <button class="pdf-link" id="fullscreen-toggle" type="button">Fullscreen</button>
       </div>
     </header>
@@ -420,7 +445,7 @@
     let pinchStartZoom = 1;
 
     if (!isEmbed) {
-      window.location.replace('../explore.html#saxs/calyr-ai-syntax-concept-and-architecture');
+      window.location.replace('../explore.html#nexus/calyr-ai-syntax-concept-and-architecture');
     }
 
     if (isEmbed) {
@@ -567,7 +592,7 @@
     async function renderPdf(force = false) {
       try {
         if (!pdfDocumentPromise) {
-          pdfDocumentPromise = pdfjsLib.getDocument('calyr-ai-syntax-concept.pdf').promise;
+          pdfDocumentPromise = pdfjsLib.getDocument('nexus-data-warehouse-concepts-slides.pdf').promise;
         }
 
         const pdf = await pdfDocumentPromise;
