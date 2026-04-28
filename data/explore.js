@@ -74,19 +74,19 @@ window.CALYR_EXPLORE = [
     title: 'Nexus',
     pages: [
       {
+        id: 'calyr-architecture',
+        title: 'calyr.ai.warehouse',
+        src: 'pages/explore_calyr_architecture.html'
+      },
+      {
         id: 'calyr-ai-syntax-concept-and-architecture',
         title: 'calyr.ai.syntax',
         src: 'pages/explore_calyr_ai_syntax.html'
       },
       {
         id: 'nexus-warehouse',
-        title: 'nexus.warehouse',
+        title: 'calyr.ai.nexus.datawarehouse',
         src: 'pages/explore_nexus_warehouse.html'
-      },
-      {
-        id: 'calyr-architecture',
-        title: 'calyr.ai.architecture',
-        src: 'pages/explore_calyr_architecture.html'
       }
     ]
   }
