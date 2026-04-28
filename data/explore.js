@@ -70,11 +70,11 @@ window.CALYR_EXPLORE = [
     ]
   },
   {
-    id: 'nexus',
-    title: 'Nexus',
+    id: 'calyr',
+    title: 'Calyr',
     pages: [
       {
-        id: 'calyr-architecture',
+        id: 'calyr-ai-warehouse',
         title: 'calyr.ai.warehouse',
         src: 'pages/explore_calyr_architecture.html'
       },
@@ -84,7 +84,7 @@ window.CALYR_EXPLORE = [
         src: 'pages/explore_calyr_ai_syntax.html'
       },
       {
-        id: 'nexus-warehouse',
+        id: 'calyr-ai-nexus-datawarehouse',
         title: 'calyr.ai.nexus.datawarehouse',
         src: 'pages/explore_nexus_warehouse.html'
       }

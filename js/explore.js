@@ -52,7 +52,16 @@
   function parseHash() {
     const hash = window.location.hash.replace('#', '').trim();
     if (!hash) return null;
-    const [sectionId, pageId] = hash.split('/');
+    const [sectionIdRaw, pageIdRaw] = hash.split('/');
+    const sectionAliasMap = {
+      'nexus': 'calyr'
+    };
+    const hashAliasMap = {
+      'calyr-architecture': 'calyr-ai-warehouse',
+      'nexus-warehouse': 'calyr-ai-nexus-datawarehouse'
+    };
+    const sectionId = sectionAliasMap[sectionIdRaw] || sectionIdRaw;
+    const pageId = hashAliasMap[pageIdRaw] || pageIdRaw;
     const section = EXPLORE.find(entry => entry.id === sectionId);
     if (!section) return null;
     const page = section.pages.find(entry => entry.id === pageId);
