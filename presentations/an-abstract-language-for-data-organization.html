@@ -2,131 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Calyr.ai – An abstract language for data organization</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nexus.warehouse</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden;
-    }
-    body.fullscreen-mode #controls {
-      display: none;
-    }
-    #controls {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 1000;
-      display: flex;
-      gap: 8px;
-    }
-    button {
-      appearance: none;
-      background: rgba(36, 243, 255, 0.12);
-      border: 1px solid rgba(36, 243, 255, 0.34);
-      color: rgba(36, 243, 255, 0.86);
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-    button:hover {
-      background: rgba(36, 243, 255, 0.22);
-      color: rgba(36, 243, 255, 0.96);
-    }
-    #pdf-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    #pdf-canvas {
-      display: block;
-      max-width: 100%;
-      max-height: 100%;
-    }
-    #loading {
-      color: #24f3ff;
-      position: absolute;
-      font-size: 1rem;
-    }
-  </style>
+  <meta name="description" content="Calyr.ai presentation on an abstract language for scientific data organization and model-driven interpretation." />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
 </head>
-<body>
-  <div id="controls">
-    <button id="fullscreen-btn">Fullscreen</button>
+
+<body class="explore-page explore-standalone">
+<section class="deck-shell" aria-label="Presentation" id="deck-shell">
+  <button class="deck-mobile-menu-btn" id="deck-mobile-menu-btn" type="button" aria-label="Open content and help" aria-expanded="false" aria-controls="deck-mobile-panel">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <aside class="deck-mobile-panel" id="deck-mobile-panel" aria-label="Content and help" hidden>
+    <div class="deck-mobile-panel__header">
+      <button class="deck-mobile-tab active" id="deck-mobile-tab-content" type="button" data-panel-tab="content" aria-pressed="true">Content</button>
+      <button class="deck-mobile-tab" id="deck-mobile-tab-help" type="button" data-panel-tab="help" aria-pressed="false">Help</button>
+    </div>
+    <div class="deck-mobile-panel__body">
+      <div class="deck-mobile-section active" id="deck-mobile-section-content"></div>
+      <div class="deck-mobile-section" id="deck-mobile-section-help">
+        <p>Swipe vertically through the deck on phone.</p>
+        <p>Use Content to jump between sections quickly.</p>
+        <p>Rotate or use fullscreen for a larger presentation view.</p>
+      </div>
+    </div>
+  </aside>
+  <div class="deck-stage">
+    <div class="deck-viewport">
+      <div class="deck-track" id="deck-track"></div>
+    </div>
+    <div class="deck-toc" id="deck-toc" aria-label="Chapter navigation"></div>
   </div>
-  <div id="pdf-container">
-    <div id="loading">Loading PDF…</div>
-    <canvas id="pdf-canvas"></canvas>
-  </div>
+  <nav class="deck-nav" aria-label="Slide navigation">
+    <button class="deck-btn" id="deck-prev" aria-label="Previous">&#8592;</button>
+    <div class="deck-dots" id="deck-dots"></div>
+    <button class="deck-btn" id="deck-next" aria-label="Next">&#8594;</button>
+    <button class="deck-btn deck-btn--fs" id="deck-fs" aria-label="Enter fullscreen">&#x26F6;</button>
+  </nav>
+</section>
 
-  <script type="module">
-    import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
-
-    const canvas = document.getElementById('pdf-canvas');
-    const loadingDiv = document.getElementById('loading');
-    const container = document.getElementById('pdf-container');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    let currentPage = 1;
-    let pdfDoc = null;
-
-    async function renderPage(pageNum) {
-      if (!pdfDoc) return;
-      const page = await pdfDoc.getPage(Math.min(pageNum, pdfDoc.numPages));
-      const scale = Math.min(window.innerWidth / page.getViewport({ scale: 1 }).width, window.innerHeight / page.getViewport({ scale: 1 }).height, 2);
-      const viewport = page.getViewport({ scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      await page.render({ canvasContext: ctx, viewport }).promise;
-    }
-
-    fullscreenBtn.addEventListener('click', async () => {
-      if (!document.fullscreenElement) {
-        await container.requestFullscreen().catch(err => console.error('Fullscreen failed:', err));
-        document.body.classList.add('fullscreen-mode');
-      } else {
-        await document.exitFullscreen();
-        document.body.classList.remove('fullscreen-mode');
-      }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        document.body.classList.remove('fullscreen-mode');
-      }
-    });
-
-    async function init() {
-      try {
-        pdfDoc = await pdfjsLib.getDocument('nexus-data-warehouse-concepts-slides.pdf').promise;
-        loadingDiv.style.display = 'none';
-        canvas.style.display = 'block';
-        await renderPage(1);
-        
-        window.addEventListener('resize', () => renderPage(currentPage));
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowRight') renderPage(++currentPage);
-          else if (e.key === 'ArrowLeft') renderPage(--currentPage);
-        });
-      } catch (err) {
-        loadingDiv.textContent = 'Error loading PDF';
-        console.error(err);
-      }
-    }
-
-    init();
-  </script>
+<script defer src="../data/an-abstract-language-for-data-organization.js"></script>
+<script defer src="../js/deck.js"></script>
 </body>
 </html>

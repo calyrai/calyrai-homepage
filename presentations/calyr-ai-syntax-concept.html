@@ -2,131 +2,853 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>calyr.ai.syntax</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PDF presentation wrapper for calyr.ai.syntax." />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
   <style>
-    html, body {
+    :root {
+      color-scheme: dark;
+      --pdf-app-height: 100vh;
+      --slide-zoom: 1;
+      --calyr-cyan: #24f3ff;
+      --calyr-magenta: #ff4df5;
+      --calyr-white: #f4fbff;
+    }
+
+    @supports (height: 100dvh) {
+      :root {
+        --pdf-app-height: 100dvh;
+      }
+    }
+
+    html {
+      background: #000000;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden;
+      background: #000000;
+      color: #ebeff4;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
-    body.fullscreen-mode #controls {
-      display: none;
-    }
-    #controls {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 1000;
+
+    .pdf-shell {
+      min-height: var(--pdf-app-height);
       display: flex;
-      gap: 8px;
+      flex-direction: column;
     }
-    button {
-      appearance: none;
-      background: rgba(36, 243, 255, 0.12);
-      border: 1px solid rgba(36, 243, 255, 0.34);
-      color: rgba(36, 243, 255, 0.86);
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s ease;
+
+    body.embed-mode .pdf-shell {
+      min-height: 100%;
     }
-    button:hover {
-      background: rgba(36, 243, 255, 0.22);
-      color: rgba(36, 243, 255, 0.96);
+
+    body.embed-mode.mobile-immersive .pdf-shell {
+      min-height: var(--pdf-app-height);
     }
-    #pdf-container {
-      width: 100%;
-      height: 100%;
+
+    .pdf-header {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 24px;
+      border-bottom: 1px solid color-mix(in oklab, var(--calyr-cyan) 28%, transparent);
+      background:
+        radial-gradient(1200px 280px at 18% -40%, color-mix(in oklab, var(--calyr-cyan) 20%, transparent), transparent 60%),
+        radial-gradient(1000px 260px at 84% -46%, color-mix(in oklab, var(--calyr-magenta) 18%, transparent), transparent 62%),
+        rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(12px);
+    }
+
+    .pdf-header__eyebrow {
+      margin: 0 0 4px;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: color-mix(in oklab, var(--calyr-cyan) 72%, white 28%);
+    }
+
+    .pdf-header__title {
+      margin: 0;
+      font-size: clamp(1.1rem, 1rem + 1.4vw, 2rem);
+      line-height: 1.1;
+      color: var(--calyr-white);
+      text-shadow: 0 0 26px color-mix(in oklab, var(--calyr-cyan) 24%, transparent);
+    }
+
+    .pdf-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pdf-link {
+      appearance: none;
+      cursor: pointer;
+      display: inline-block;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 34%, transparent);
+      color: color-mix(in oklab, var(--calyr-cyan) 86%, white 14%);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 18%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 14%, transparent)
+        );
+      font-family: inherit;
+    }
+
+    .pdf-link:hover {
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 26%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 22%, transparent)
+        );
+      border-color: color-mix(in oklab, var(--calyr-magenta) 40%, var(--calyr-cyan) 40%);
+    }
+
+    @media (max-width: 900px), (pointer: coarse) {
+      #fullscreen-toggle {
+        display: none;
+      }
+    }
+
+    .pdf-stage {
+      flex: 1;
+      padding: 18px;
+      background: #000000;
       position: relative;
     }
-    #pdf-canvas {
-      display: block;
-      max-width: 100%;
-      max-height: 100%;
+
+    body.embed-mode .pdf-stage {
+      padding: 0;
+      min-height: var(--pdf-app-height);
     }
-    #loading {
-      color: #24f3ff;
-      position: absolute;
+
+    body.embed-mode.mobile-immersive .pdf-stage {
+      min-height: var(--pdf-app-height);
+    }
+
+    .pdf-stage:fullscreen {
+      padding: 0;
+      background: #000000;
+    }
+
+    .pdf-stage:-webkit-full-screen {
+      padding: 0;
+      background: #000000;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      min-height: calc(var(--pdf-app-height) - 118px);
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 26%, transparent);
+      border-radius: 14px;
+      background: #000000;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+      overflow: auto;
+    }
+
+    .pdf-stage:fullscreen .pdf-frame,
+    .pdf-stage:-webkit-full-screen .pdf-frame {
+      overflow: hidden;
+    }
+
+    body.embed-mode .pdf-frame {
+      min-height: var(--pdf-app-height);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-frame {
+      overflow: hidden;
+    }
+
+    body.landscape-mode .pdf-frame {
+      touch-action: none;
+      overscroll-behavior: contain;
+    }
+
+    .pdf-pages {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      padding: 22px 0 28px;
+      background: #000000;
+    }
+
+    body.embed-mode .pdf-pages {
+      padding: 0;
+      gap: 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-pages {
+      min-height: var(--pdf-app-height);
+    }
+
+    .pdf-page {
+      width: min(100%, 1240px);
+      display: flex;
+      justify-content: center;
+      padding: 0 18px;
+      box-sizing: border-box;
+      background: #000000;
+    }
+
+    .pdf-stage:fullscreen .pdf-page,
+    .pdf-stage:-webkit-full-screen .pdf-page {
+      width: 100%;
+      min-height: var(--pdf-app-height);
+      align-items: center;
+      padding: 20px;
+      display: none;
+    }
+
+    .pdf-stage:fullscreen .pdf-page.pdf-page--active,
+    .pdf-stage:-webkit-full-screen .pdf-page.pdf-page--active {
+      display: flex;
+    }
+
+    body.landscape-mode .pdf-stage:fullscreen .pdf-page,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-page,
+    body.landscape-mode .pdf-stage:fullscreen .pdf-page.pdf-page--active,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-page.pdf-page--active {
+      min-height: var(--pdf-app-height);
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.embed-mode .pdf-page {
+      width: 100%;
+      padding: 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-page {
+      min-height: var(--pdf-app-height);
+      align-items: center;
+      display: none;
+      padding: 12px 0;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-page.pdf-page--active {
+      display: flex;
+    }
+
+    body.landscape-mode .pdf-page {
+      min-height: var(--pdf-app-height);
+      padding: 0;
+    }
+
+    body.landscape-mode .pdf-page.pdf-page--active {
+      transform: scale(var(--slide-zoom));
+      transform-origin: center center;
+    }
+
+    .pdf-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000000;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+    }
+
+    body.embed-mode .pdf-canvas {
+      box-shadow: none;
+    }
+
+    body.landscape-mode .pdf-canvas {
+      width: auto;
+      max-width: 100%;
+      max-height: var(--pdf-app-height);
+    }
+
+    body.landscape-mode .pdf-stage:fullscreen .pdf-canvas,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-canvas {
+      max-height: var(--pdf-app-height);
+    }
+
+    .pdf-loading,
+    .pdf-error {
+      padding: 32px 24px;
+      text-align: center;
+      color: rgba(232, 242, 255, 0.82);
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-error {
+      color: color-mix(in oklab, var(--calyr-magenta) 84%, white 16%);
+    }
+
+    .pdf-nav-overlay {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 40;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 24%, transparent);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .pdf-stage:fullscreen .pdf-nav-overlay,
+    .pdf-stage:-webkit-full-screen .pdf-nav-overlay {
+      display: flex;
+    }
+
+    body.embed-mode.mobile-immersive .pdf-nav-overlay {
+      display: flex;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+      right: 12px;
+    }
+
+    body.embed-mode.mobile-immersive.landscape-mode .pdf-nav-overlay,
+    body.landscape-mode .pdf-stage:fullscreen .pdf-nav-overlay,
+    body.landscape-mode .pdf-stage:-webkit-full-screen .pdf-nav-overlay {
+      display: none;
+    }
+
+    .pdf-nav-btn {
+      appearance: none;
+      cursor: pointer;
+      min-width: 42px;
+      height: 42px;
+      border: 1px solid color-mix(in oklab, var(--calyr-cyan) 34%, transparent);
+      border-radius: 999px;
+      background:
+        linear-gradient(135deg,
+          color-mix(in oklab, var(--calyr-cyan) 18%, transparent),
+          color-mix(in oklab, var(--calyr-magenta) 16%, transparent)
+        );
+      color: var(--calyr-white);
+      font: inherit;
       font-size: 1rem;
+    }
+
+    .pdf-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .pdf-nav-status {
+      min-width: 68px;
+      text-align: center;
+      color: var(--calyr-white);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-stage:fullscreen .pdf-frame,
+    .pdf-stage:-webkit-full-screen .pdf-frame {
+      min-height: var(--pdf-app-height);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    @media (max-width: 820px) {
+      .pdf-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .pdf-stage {
+        padding: 12px;
+      }
+
+      .pdf-frame {
+        min-height: calc(var(--pdf-app-height) - 174px);
+      }
+
+      .pdf-nav-overlay {
+        right: 12px;
+        bottom: 12px;
+      }
+
+      .pdf-page {
+        padding: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="controls">
-    <button id="fullscreen-btn">Fullscreen</button>
+  <div class="pdf-shell">
+    <header class="pdf-header">
+      <div>
+        <p class="pdf-header__eyebrow">calyr.ai.syntax / Presentation</p>
+        <h1 class="pdf-header__title">calyr.ai.syntax</h1>
+      </div>
+      <div class="pdf-actions">
+        <a class="pdf-link" href="../explore.html#nexus/calyr-ai-syntax-concept-and-architecture">Back to Explore</a>
+        <button class="pdf-link" id="fullscreen-toggle" type="button">Fullscreen</button>
+      </div>
+    </header>
+    <main class="pdf-stage" id="pdf-stage">
+      <div class="pdf-frame" id="pdf-frame">
+        <div class="pdf-pages" id="pdf-pages">
+          <div class="pdf-loading" id="pdf-loading">Loading PDF presentation…</div>
+        </div>
+      </div>
+      <div class="pdf-nav-overlay" id="pdf-nav-overlay" aria-label="Presentation navigation">
+        <button class="pdf-nav-btn" id="pdf-prev" type="button" aria-label="Previous page">&#8592;</button>
+        <div class="pdf-nav-status" id="pdf-nav-status">1 / 1</div>
+        <button class="pdf-nav-btn" id="pdf-next" type="button" aria-label="Next page">&#8594;</button>
+      </div>
+    </main>
   </div>
-  <div id="pdf-container">
-    <div id="loading">Loading PDF…</div>
-    <canvas id="pdf-canvas"></canvas>
-  </div>
-
   <script type="module">
     import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs';
+
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
 
-    const canvas = document.getElementById('pdf-canvas');
-    const loadingDiv = document.getElementById('loading');
-    const container = document.getElementById('pdf-container');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    let currentPage = 1;
-    let pdfDoc = null;
+    const stage = document.getElementById('pdf-stage');
+    const button = document.getElementById('fullscreen-toggle');
+    const frame = document.getElementById('pdf-frame');
+    const pagesHost = document.getElementById('pdf-pages');
+    const loadingNode = document.getElementById('pdf-loading');
+    const prevButton = document.getElementById('pdf-prev');
+    const nextButton = document.getElementById('pdf-next');
+    const navStatus = document.getElementById('pdf-nav-status');
+    const params = new URLSearchParams(window.location.search);
+    const isEmbed = params.get('embed') === '1';
+    const wantsImmersive = params.get('immersive') !== '0';
+    const immersiveMedia = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
+    const landscapeMedia = window.matchMedia('(orientation: landscape)');
+    let pageNodes = [];
+    let activePage = 0;
+    let resizeTimer = null;
+    let pdfDocumentPromise = null;
+    let renderedWidth = 0;
+    let touchStartX = null;
+    let touchStartY = null;
+    let swipeLocked = false;
+    let slideZoom = 1;
+    let pinchStartDistance = null;
+    let pinchStartZoom = 1;
 
-    async function renderPage(pageNum) {
-      if (!pdfDoc) return;
-      const page = await pdfDoc.getPage(Math.min(pageNum, pdfDoc.numPages));
-      const scale = Math.min(window.innerWidth / page.getViewport({ scale: 1 }).width, window.innerHeight / page.getViewport({ scale: 1 }).height, 2);
-      const viewport = page.getViewport({ scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      await page.render({ canvasContext: ctx, viewport }).promise;
+    if (!isEmbed) {
+      window.location.replace('../explore.html#nexus/calyr-ai-syntax-concept-and-architecture');
     }
 
-    fullscreenBtn.addEventListener('click', async () => {
-      if (!document.fullscreenElement) {
-        await container.requestFullscreen().catch(err => console.error('Fullscreen failed:', err));
-        document.body.classList.add('fullscreen-mode');
+    if (isEmbed) {
+      document.body.classList.add('embed-mode');
+    }
+
+    const isFullscreen = () => document.fullscreenElement === stage || document.webkitFullscreenElement === stage;
+
+    const isImmersive = () => document.body.classList.contains('mobile-immersive');
+
+    const isLandscapeSlideMode = () => landscapeMedia.matches && (isFullscreen() || isImmersive());
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const setSlideZoom = (zoom) => {
+      slideZoom = clamp(zoom, 0.7, 1.8);
+      document.documentElement.style.setProperty('--slide-zoom', String(slideZoom));
+    };
+
+    const getTouchDistance = (touches) => {
+      if (!touches || touches.length < 2) return 0;
+      const deltaX = touches[0].clientX - touches[1].clientX;
+      const deltaY = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(deltaX, deltaY);
+    };
+
+    const applyImmersiveMode = () => {
+      document.body.classList.toggle('mobile-immersive', isEmbed && wantsImmersive && immersiveMedia.matches && !isFullscreen());
+      document.body.classList.toggle('landscape-mode', isLandscapeSlideMode());
+      if (!isLandscapeSlideMode()) {
+        setSlideZoom(1);
+      }
+    };
+
+    const setViewportHeight = () => {
+      const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--pdf-app-height', `${Math.round(viewportHeight)}px`);
+    };
+
+    const scheduleRender = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        setViewportHeight();
+        applyImmersiveMode();
+        renderPdf();
+      }, 180);
+    };
+
+    const updateButton = () => {
+      if (!button) return;
+      button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
+    };
+
+    const notifyParent = () => {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'calyr-presentation-fullscreen',
+          active: isFullscreen()
+        }, window.location.origin);
+      }
+    };
+
+    const updateNav = () => {
+      const total = pageNodes.length || 1;
+      if (navStatus) navStatus.textContent = `${activePage + 1} / ${total}`;
+      if (prevButton) prevButton.disabled = activePage <= 0;
+      if (nextButton) nextButton.disabled = activePage >= total - 1;
+      pageNodes.forEach((node, index) => {
+        node.classList.toggle('pdf-page--active', index === activePage);
+      });
+    };
+
+    const scrollToPage = (index) => {
+      if (!pageNodes.length) return;
+      activePage = Math.max(0, Math.min(index, pageNodes.length - 1));
+      if (isFullscreen() || isImmersive()) {
+        frame.scrollTop = 0;
       } else {
+        pageNodes[activePage].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updateNav();
+    };
+
+    const syncActivePageFromScroll = () => {
+      if (isFullscreen() || isImmersive()) return;
+      if (!pageNodes.length) return;
+      const frameTop = frame.getBoundingClientRect().top;
+      let bestIndex = activePage;
+      let bestDistance = Number.POSITIVE_INFINITY;
+
+      pageNodes.forEach((node, index) => {
+        const distance = Math.abs(node.getBoundingClientRect().top - frameTop);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+
+      if (bestIndex !== activePage) {
+        activePage = bestIndex;
+        updateNav();
+      }
+    };
+
+    const enterFullscreen = async () => {
+      if (stage.requestFullscreen) {
+        await stage.requestFullscreen();
+        return;
+      }
+      if (stage.webkitRequestFullscreen) {
+        stage.webkitRequestFullscreen();
+      }
+    };
+
+    const exitFullscreen = async () => {
+      if (document.exitFullscreen) {
         await document.exitFullscreen();
-        document.body.classList.remove('fullscreen-mode');
+        return;
       }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        document.body.classList.remove('fullscreen-mode');
+      if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
       }
-    });
+    };
 
-    async function init() {
+    if (button) {
+      button.addEventListener('click', async () => {
+        if (isFullscreen()) {
+          await exitFullscreen();
+        } else {
+          await enterFullscreen();
+        }
+        updateButton();
+      });
+    }
+
+    if (prevButton) {
+      prevButton.addEventListener('click', () => scrollToPage(activePage - 1));
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', () => scrollToPage(activePage + 1));
+    }
+
+    async function renderPdf(force = false) {
       try {
-        pdfDoc = await pdfjsLib.getDocument('calyr-ai-syntax-concept.pdf').promise;
-        loadingDiv.style.display = 'none';
-        canvas.style.display = 'block';
-        await renderPage(1);
-        
-        window.addEventListener('resize', () => renderPage(currentPage));
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowRight') renderPage(++currentPage);
-          else if (e.key === 'ArrowLeft') renderPage(--currentPage);
-        });
-      } catch (err) {
-        loadingDiv.textContent = 'Error loading PDF';
-        console.error(err);
+        if (!pdfDocumentPromise) {
+          pdfDocumentPromise = pdfjsLib.getDocument('nexus-data-warehouse-concepts-slides.pdf').promise;
+        }
+
+        const pdf = await pdfDocumentPromise;
+        const containerWidth = Math.max(stage.clientWidth - (isEmbed ? 0 : 48), 320);
+        const containerHeight = Math.max(stage.clientHeight || window.innerHeight, 240);
+
+        if (!force && pageNodes.length && Math.abs(containerWidth - renderedWidth) < 2) {
+          updateNav();
+          return;
+        }
+
+        renderedWidth = containerWidth;
+        const preservedActivePage = activePage;
+
+        pagesHost.innerHTML = '';
+        pageNodes = [];
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+          const page = await pdf.getPage(pageNumber);
+          const initialViewport = page.getViewport({ scale: 1 });
+          const widthScale = containerWidth / initialViewport.width;
+          const heightScale = containerHeight / initialViewport.height;
+          const scale = isLandscapeSlideMode()
+            ? Math.min(widthScale, heightScale)
+            : widthScale;
+          const viewport = page.getViewport({ scale });
+
+          const pageWrap = document.createElement('div');
+          pageWrap.className = 'pdf-page';
+          pageWrap.dataset.pageNumber = String(pageNumber);
+
+          const canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          const context = canvas.getContext('2d', { alpha: false });
+
+          canvas.width = Math.floor(viewport.width * window.devicePixelRatio);
+          canvas.height = Math.floor(viewport.height * window.devicePixelRatio);
+          canvas.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
+
+          const renderViewport = page.getViewport({ scale: scale * window.devicePixelRatio });
+          await page.render({
+            canvasContext: context,
+            viewport: renderViewport
+          }).promise;
+
+          pageWrap.appendChild(canvas);
+          pagesHost.appendChild(pageWrap);
+          pageNodes.push(pageWrap);
+        }
+
+        activePage = Math.max(0, Math.min(preservedActivePage, pageNodes.length - 1));
+        if (isFullscreen() || isImmersive()) {
+          frame.scrollTop = 0;
+        } else if (pageNodes[activePage]) {
+          pageNodes[activePage].scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+        updateNav();
+      } catch (error) {
+        pagesHost.innerHTML = '<div class="pdf-error">Could not render the embedded PDF presentation.</div>';
+        pageNodes = [];
+        activePage = 0;
+        updateNav();
       }
     }
 
-    init();
+    window.addEventListener('resize', scheduleRender);
+    window.addEventListener('orientationchange', scheduleRender);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleRender);
+    }
+    if (immersiveMedia.addEventListener) {
+      immersiveMedia.addEventListener('change', scheduleRender);
+    } else if (immersiveMedia.addListener) {
+      immersiveMedia.addListener(scheduleRender);
+    }
+    if (landscapeMedia.addEventListener) {
+      landscapeMedia.addEventListener('change', scheduleRender);
+    } else if (landscapeMedia.addListener) {
+      landscapeMedia.addListener(scheduleRender);
+    }
+
+    frame.addEventListener('scroll', syncActivePageFromScroll, { passive: true });
+
+    frame.addEventListener('touchstart', (event) => {
+      if (!isLandscapeSlideMode()) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        pinchStartDistance = null;
+        return;
+      }
+
+      if (event.touches.length === 2) {
+        pinchStartDistance = getTouchDistance(event.touches);
+        pinchStartZoom = slideZoom;
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = true;
+        return;
+      }
+
+      if (event.touches.length !== 1) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        pinchStartDistance = null;
+        return;
+      }
+
+      const touch = event.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      swipeLocked = false;
+    }, { passive: true });
+
+    frame.addEventListener('touchmove', (event) => {
+      if (!isLandscapeSlideMode()) {
+        return;
+      }
+
+      if (event.touches.length === 2 && pinchStartDistance !== null) {
+        event.preventDefault();
+        const currentDistance = getTouchDistance(event.touches);
+        if (currentDistance > 0) {
+          setSlideZoom(pinchStartZoom * (currentDistance / pinchStartDistance));
+        }
+        return;
+      }
+
+      if (touchStartX === null || touchStartY === null || swipeLocked) {
+        return;
+      }
+
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      if (Math.abs(deltaX) < 18) {
+        return;
+      }
+
+      if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    frame.addEventListener('touchend', (event) => {
+      if (!isLandscapeSlideMode()) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        pinchStartDistance = null;
+        pinchStartZoom = slideZoom;
+        return;
+      }
+
+      if (pinchStartDistance !== null) {
+        if (event.touches.length < 2) {
+          pinchStartDistance = null;
+          pinchStartZoom = slideZoom;
+        }
+        if (event.touches.length === 0) {
+          swipeLocked = false;
+        }
+        touchStartX = null;
+        touchStartY = null;
+        return;
+      }
+
+      if (touchStartX === null || touchStartY === null || swipeLocked) {
+        touchStartX = null;
+        touchStartY = null;
+        swipeLocked = false;
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      touchStartX = null;
+      touchStartY = null;
+
+      if (Math.abs(deltaX) < 60 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) {
+        return;
+      }
+
+      swipeLocked = true;
+      if (deltaX < 0) {
+        scrollToPage(activePage + 1);
+      } else {
+        scrollToPage(activePage - 1);
+      }
+
+      window.setTimeout(() => {
+        swipeLocked = false;
+      }, 180);
+    }, { passive: true });
+
+    frame.addEventListener('touchcancel', () => {
+      touchStartX = null;
+      touchStartY = null;
+      swipeLocked = false;
+      pinchStartDistance = null;
+      pinchStartZoom = slideZoom;
+    }, { passive: true });
+
+    document.addEventListener('keydown', (event) => {
+      if (!isFullscreen()) return;
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        scrollToPage(activePage + 1);
+      }
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        scrollToPage(activePage - 1);
+      }
+      if (event.key === 'Home') {
+        event.preventDefault();
+        scrollToPage(0);
+      }
+      if (event.key === 'End') {
+        event.preventDefault();
+        scrollToPage(pageNodes.length - 1);
+      }
+    });
+
+    document.addEventListener('fullscreenchange', updateButton);
+    document.addEventListener('webkitfullscreenchange', updateButton);
+    document.addEventListener('fullscreenchange', notifyParent);
+    document.addEventListener('webkitfullscreenchange', notifyParent);
+    document.addEventListener('fullscreenchange', applyImmersiveMode);
+    document.addEventListener('webkitfullscreenchange', applyImmersiveMode);
+    document.addEventListener('fullscreenchange', scheduleRender);
+    document.addEventListener('webkitfullscreenchange', scheduleRender);
+    setViewportHeight();
+    applyImmersiveMode();
+    updateButton();
+    updateNav();
+
+    window.__calyrPresentation = {
+      isFullscreen,
+      enterFullscreen,
+      exitFullscreen,
+      toggleFullscreen: async () => {
+        if (isFullscreen()) {
+          await exitFullscreen();
+        } else {
+          await enterFullscreen();
+        }
+        updateButton();
+        updateNav();
+      },
+      nextPage: () => scrollToPage(activePage + 1),
+      previousPage: () => scrollToPage(activePage - 1),
+      goToPage: (index) => scrollToPage(index),
+      goToLastPage: () => scrollToPage(pageNodes.length - 1)
+    };
+
+    renderPdf(true);
   </script>
 </body>
 </html>
