@@ -82,6 +82,11 @@ window.CALYR_EXPLORE = [
         id: 'nexus-warehouse',
         title: 'nexus.warehouse',
         src: 'pages/explore_nexus_warehouse.html'
+      },
+      {
+        id: 'calyr-architecture',
+        title: 'Calyr Architecture',
+        src: 'pages/explore_calyr_architecture.html'
       }
     ]
   }
