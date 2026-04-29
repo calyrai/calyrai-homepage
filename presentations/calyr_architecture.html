@@ -232,6 +232,14 @@
       min-height: 100dvh;
     }
 
+    .fullscreen-mode .pdf-header {
+      display: none;
+    }
+
+    .fullscreen-mode .pdf-stage {
+      padding: 0;
+    }
+
     body.mobile-immersive .pdf-header {
       display: none;
     }
@@ -313,8 +321,10 @@
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const baseViewport = page.getViewport({ scale: 1 });
-      const maxWidth = Math.max(pagesHost.clientWidth - 24, 320);
-      const maxHeight = Math.max(pagesHost.clientHeight - 24, 180);
+      const hostWidth = pagesHost.clientWidth || stage.clientWidth || window.innerWidth;
+      const hostHeight = pagesHost.clientHeight || stage.clientHeight || Math.round(window.innerHeight * 0.92);
+      const maxWidth = Math.max(hostWidth - 24, 320);
+      const maxHeight = Math.max(hostHeight - 24, 240);
       const fitScale = Math.min(maxWidth / baseViewport.width, maxHeight / baseViewport.height);
       const cssScale = Math.max(0.1, fitScale) * slideZoom;
       const outputScale = window.devicePixelRatio || 1;
@@ -451,6 +461,9 @@
         loadingNode.remove();
         await initPages(pdf.numPages);
         setupListeners();
+        window.requestAnimationFrame(() => {
+          renderPage(activePage + 1);
+        });
       } catch (err) {
         loadingNode.textContent = 'Error loading presentation.';
         console.error('PDF error:', err);
