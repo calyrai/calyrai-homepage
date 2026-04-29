@@ -288,6 +288,7 @@
     let activePage = 0;
     let pdfDocumentPromise = null;
     let slideZoom = 1;
+    let rerenderTimer = null;
     let touchStartX = null;
     let touchStartY = null;
     let pinchStartDistance = null;
@@ -311,12 +312,21 @@
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const scale = slideZoom * window.devicePixelRatio;
-      const viewport = page.getViewport({ scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+      const baseViewport = page.getViewport({ scale: 1 });
+      const maxWidth = Math.max(pagesHost.clientWidth - 24, 320);
+      const maxHeight = Math.max(pagesHost.clientHeight - 24, 180);
+      const fitScale = Math.min(maxWidth / baseViewport.width, maxHeight / baseViewport.height);
+      const cssScale = Math.max(0.1, fitScale) * slideZoom;
+      const outputScale = window.devicePixelRatio || 1;
 
-      await page.render({ canvasContext: ctx, viewport }).promise;
+      const viewport = page.getViewport({ scale: cssScale });
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+
+      const renderViewport = page.getViewport({ scale: cssScale * outputScale });
+      await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
       container.innerHTML = '';
       container.appendChild(canvas);
     };
@@ -326,7 +336,7 @@
       pageNodes = [];
       for (let i = 0; i < numPages; i++) {
         const div = document.createElement('div');
-        div.style.cssText = 'display: none; background: #000;';
+        div.style.cssText = `display: ${i === 0 ? 'flex' : 'none'}; background: #000;`;
         pagesHost.appendChild(div);
         pageNodes.push(div);
       }
@@ -365,6 +375,7 @@
 
       document.addEventListener('fullscreenchange', () => {
         if (!isFullscreen()) shell.classList.remove('fullscreen-mode');
+        if (pageNodes.length) renderPage(activePage + 1);
       });
 
       prevButton.addEventListener('click', () => goToPage(activePage - 1));
@@ -394,7 +405,7 @@
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
           );
-          slideZoom = Math.max(1, pinchStartZoom * (distance / pinchStartDistance));
+          slideZoom = Math.max(0.7, Math.min(3, pinchStartZoom * (distance / pinchStartDistance)));
           renderPage(activePage + 1);
         }
       });
@@ -418,7 +429,19 @@
         } else {
           document.body.classList.remove('mobile-immersive');
         }
+        if (pageNodes.length) renderPage(activePage + 1);
       });
+
+      const scheduleRerender = () => {
+        window.clearTimeout(rerenderTimer);
+        rerenderTimer = window.setTimeout(() => {
+          if (pageNodes.length) renderPage(activePage + 1);
+        }, 120);
+      };
+
+      window.addEventListener('resize', scheduleRerender);
+      window.addEventListener('orientationchange', scheduleRerender);
+      document.addEventListener('webkitfullscreenchange', scheduleRerender);
     };
 
     (async () => {
