@@ -97,6 +97,11 @@ window.CALYR_EXPLORE = [
         id: 'powerbi-python-calyra',
         title: 'Power BI + Python for Calyra',
         src: 'pages/explore_powerbi_python_calyra.html'
+      },
+      {
+        id: 'python-api-powerbi',
+        title: 'Python + API + Power BI',
+        src: 'pages/explore_python_api_powerbi.html'
       }
     ]
   }
