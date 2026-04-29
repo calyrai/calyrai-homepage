@@ -87,6 +87,11 @@ window.CALYR_EXPLORE = [
         id: 'calyr-ai-nexus-datawarehouse',
         title: 'calyr.ai.nexus.datawarehouse',
         src: 'pages/explore_nexus_warehouse.html'
+      },
+      {
+        id: 'data-warehouse-for-llm',
+        title: 'Data warehouse for LLM coding',
+        src: 'pages/explore_data_warehouse_for_llm.html'
       }
     ]
   }
