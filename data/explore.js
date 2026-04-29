@@ -92,6 +92,11 @@ window.CALYR_EXPLORE = [
         id: 'data-warehouse-for-llm',
         title: 'Data warehouse for LLM coding',
         src: 'pages/explore_data_warehouse_for_llm.html'
+      },
+      {
+        id: 'powerbi-python-calyra',
+        title: 'Power BI + Python for Calyra',
+        src: 'pages/explore_powerbi_python_calyra.html'
       }
     ]
   }
