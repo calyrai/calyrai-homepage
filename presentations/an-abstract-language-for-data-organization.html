@@ -302,6 +302,8 @@
     let pdfDocumentPromise = null;
     let slideZoom = 1;
     let rerenderTimer = null;
+    let renderInProgress = false;
+    let queuedRender = false;
     let touchStartX = null;
     let touchStartY = null;
     let pinchStartDistance = null;
@@ -332,7 +334,7 @@
       const maxHeight = Math.max(hostHeight - 24, 240);
       const fitScale = Math.min(maxWidth / baseViewport.width, maxHeight / baseViewport.height);
       const cssScale = Math.max(0.1, fitScale) * slideZoom;
-      const outputScale = window.devicePixelRatio || 1;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
 
       const viewport = page.getViewport({ scale: cssScale });
       canvas.width = Math.floor(viewport.width * outputScale);
@@ -342,8 +344,28 @@
 
       const renderViewport = page.getViewport({ scale: cssScale * outputScale });
       await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
-      container.innerHTML = '';
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
       container.appendChild(canvas);
+    };
+
+    const requestRender = () => {
+      if (!pageNodes.length) return;
+      if (renderInProgress) {
+        queuedRender = true;
+        return;
+      }
+      renderInProgress = true;
+      renderPage(activePage + 1)
+        .catch(() => {})
+        .finally(() => {
+          renderInProgress = false;
+          if (queuedRender) {
+            queuedRender = false;
+            requestRender();
+          }
+        });
     };
 
     const initPages = async (numPages) => {
@@ -390,7 +412,7 @@
 
       document.addEventListener('fullscreenchange', () => {
         if (!isFullscreen()) shell.classList.remove('fullscreen-mode');
-        if (pageNodes.length) renderPage(activePage + 1);
+        scheduleRerender();
       });
 
       prevButton.addEventListener('click', () => goToPage(activePage - 1));
@@ -420,8 +442,8 @@
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
           );
-          slideZoom = Math.max(0.7, Math.min(3, pinchStartZoom * (distance / pinchStartDistance)));
-          renderPage(activePage + 1);
+          slideZoom = Math.max(0.7, Math.min(2, pinchStartZoom * (distance / pinchStartDistance)));
+          requestRender();
         }
       });
 
@@ -444,14 +466,15 @@
         } else {
           document.body.classList.remove('mobile-immersive');
         }
-        if (pageNodes.length) renderPage(activePage + 1);
+        scheduleRerender();
       });
 
       const scheduleRerender = () => {
         window.clearTimeout(rerenderTimer);
         rerenderTimer = window.setTimeout(() => {
-          if (pageNodes.length) renderPage(activePage + 1);
-        }, 120);
+          rerenderTimer = null;
+          requestRender();
+        }, 300);
       };
 
       window.addEventListener('resize', scheduleRerender);
@@ -467,7 +490,7 @@
         await initPages(pdf.numPages);
         setupListeners();
         window.requestAnimationFrame(() => {
-          renderPage(activePage + 1);
+          requestRender();
         });
       } catch (err) {
         loadingNode.textContent = 'Error loading presentation.';

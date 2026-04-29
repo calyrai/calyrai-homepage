@@ -283,5 +283,20 @@ window.CALYR_PUBLICATIONS = [
     "method": "Field-coupled operator framework for SAXS-driven structural characterisation",
     "abstract": "Field-coupled operators applied to SAXS I(q) curves identify structural hierarchy across length scales without prior knowledge of particle shape or maximum dimension. The FCO layer is placed after standard normalisation and indirect Fourier transform; the resulting structural fingerprint is directly comparable across compound classes. Coupling to Nexus constraints allows multi-instrument validation of the FCO-derived structural state.",
     "description": "FCO framework manuscript."
+  },
+  {
+    "id": "boku-powerbi-semantic-migration",
+    "title": "Von Reporting-Systemen zu semantischen Datenplattformen",
+    "topic": "nexus",
+    "status": "progress",
+    "pdfs": [
+      {
+        "label": "manuscript",
+        "path": "../../docs/publishing/Calyr_ai_publishing/boku-powerbi-semantic-migration/boku_powerbi_semantic_migration.md"
+      }
+    ],
+    "method": "Migration Oracle/SAP BO -> Power BI mit Data-Warehouse- und Semantik-Layer",
+    "abstract": "Die Migration wird als strukturelle Transformation verstanden: Daten, Semantik und Anwendung werden getrennt aufgebaut; das Data Warehouse dient als Grundlage fuer konsistente BI und lokale LLM-Interpretation.",
+    "description": "Strukturierte Migration mit Calyr/Nexus-Architektur als Grundlage fuer lokale LLM-Systeme."
   }
 ];

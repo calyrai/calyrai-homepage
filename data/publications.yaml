@@ -289,3 +289,16 @@ manuscripts:
     pdfs:
       - label: open
         path: ../../docs/publishing/Calyr_ai_publishing/fco_manuscript/fco_manuscript.pdf
+
+  - id: boku-powerbi-semantic-migration
+    title: Von Reporting-Systemen zu semantischen Datenplattformen
+    topic: nexus
+    status: progress
+    method: Migration Oracle/SAP BO -> Power BI mit Data-Warehouse- und Semantik-Layer
+    description: >
+      Strukturierte Migration mit Calyr/Nexus-Architektur als Grundlage fuer lokale LLM-Systeme.
+    abstract: >
+      Die Migration wird als strukturelle Transformation verstanden: Daten, Semantik und Anwendung werden getrennt aufgebaut; das Data Warehouse dient als Grundlage fuer konsistente BI und lokale LLM-Interpretation.
+    pdfs:
+      - label: manuscript
+        path: ../../docs/publishing/Calyr_ai_publishing/boku-powerbi-semantic-migration/boku_powerbi_semantic_migration.md
