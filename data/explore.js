@@ -84,6 +84,11 @@ window.CALYR_EXPLORE = [
         src: 'pages/explore_calyr_ai_syntax.html'
       },
       {
+        id: 'calyr-ai-powerbi',
+        title: 'calyr.ai.powerbi',
+        src: 'pages/explore_calyr_powerbi.html'
+      },
+      {
         id: 'calyr-ai-nexus-datawarehouse',
         title: 'calyr.ai.nexus.datawarehouse',
         src: 'pages/explore_nexus_warehouse.html'

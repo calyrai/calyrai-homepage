@@ -1,0 +1,65 @@
+<style> 
+  .calyr-powerbi-card {
+    background: #000;
+    border-color: rgba(106, 240, 255, 0.14);
+  }
+
+  .calyr-powerbi-stage {
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(160, 196, 255, 0.14);
+  }
+
+  .calyr-powerbi-frame {
+    display: block;
+    width: 100%;
+    height: min(78vh, 1100px);
+    border: 0;
+    background: #000;
+  }
+
+  @media (max-width: 900px) {
+    .explore-hub-article .calyr-powerbi-card {
+      padding: 0;
+      border-width: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .explore-hub-article .calyr-powerbi-card-header {
+      padding: 0 0 12px;
+    }
+
+    .explore-hub-article .calyr-powerbi-card-header .pub-detail-pdf {
+      display: none;
+    }
+
+    .explore-hub-article .calyr-powerbi-stage {
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+    }
+
+    .explore-hub-article .calyr-powerbi-frame {
+      height: 100dvh;
+      min-height: 100svh;
+    }
+  }
+</style>
+<div class="doc-article explore-hub-article">
+  <div class="explore-section-card calyr-powerbi-card">
+    <div class="calyr-powerbi-card-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+      <h2 style="margin:0; color:rgba(232,242,255,0.96)">calyr.ai.powerbi</h2>
+    </div>
+    <div id="calyr-powerbi-explore-stage" class="calyr-powerbi-stage">
+      <iframe
+        src="./presentations/calyr-ai-powerbi.html?embed=1&immersive=1"
+        allowfullscreen
+        class="calyr-powerbi-frame"
+      ></iframe>
+    </div>
+  </div>
+</div>
