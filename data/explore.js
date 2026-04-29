@@ -87,21 +87,6 @@ window.CALYR_EXPLORE = [
         id: 'calyr-ai-nexus-datawarehouse',
         title: 'calyr.ai.nexus.datawarehouse',
         src: 'pages/explore_nexus_warehouse.html'
-      },
-      {
-        id: 'data-warehouse-for-llm',
-        title: 'Data warehouse for LLM coding',
-        src: 'pages/explore_data_warehouse_for_llm.html'
-      },
-      {
-        id: 'powerbi-python-calyra',
-        title: 'Power BI + Python for Calyra',
-        src: 'pages/explore_powerbi_python_calyra.html'
-      },
-      {
-        id: 'python-api-powerbi',
-        title: 'Python + API + Power BI',
-        src: 'pages/explore_python_api_powerbi.html'
       }
     ]
   }
