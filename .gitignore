@@ -13,6 +13,7 @@ __pycache__/
 
 # Local-only content (do not push)
 /private/
+/archive_local/
 
 # Generated outputs
 /public/
