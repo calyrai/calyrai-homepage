@@ -75,7 +75,7 @@ window.CALYR_EXPLORE = [
     pages: [
       {
         id: 'calyr-ai-warehouse',
-        title: 'calyr.ai.warehouse',
+        title: 'calyr architecture',
         src: 'pages/explore_calyr_architecture.html'
       },
       {
