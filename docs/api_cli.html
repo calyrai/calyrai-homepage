@@ -18,11 +18,11 @@
     Use it to ingest literature records, extract structured fields, and build graph-ready
     objects that can be linked back into Nexus/Okto workflows.
   </p>
-  <pre>python -m calyr.gram.cli --help
+  <pre>python -m calyr.gram --help
 
-python -m calyr.gram.cli ingest --id paper_123 --title "SPR-SAXS coupling"
-python -m calyr.gram.cli extract --in literature/paper_123.json
-python -m calyr.gram.cli graph --in literature/paper_123.json</pre>
+python -m calyr.gram ingest --id paper_123 --title "SPR-SAXS coupling"
+python -m calyr.gram extract --in literature/paper_123.json
+python -m calyr.gram graph --in literature/paper_123.json</pre>
 
   <h2>Warehouse commands</h2>
   <pre>nexus warehouse list                     # list all objects
