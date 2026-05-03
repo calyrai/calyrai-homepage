@@ -26,17 +26,18 @@
   }
 
   .calyr-overview .shell {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 0.85rem 1.2rem 2.8rem;
+    max-width: none;
+    margin: 0;
+    padding: 0;
   }
 
   .calyr-overview .hero {
-    padding: 1.35rem 1.2rem 1.1rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: linear-gradient(160deg, rgba(16, 34, 48, 0.95), rgba(9, 24, 35, 0.92));
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+    margin-top: 0;
+    padding: 22px 24px;
+    border: 1px solid rgba(106, 240, 255, 0.16);
+    border-radius: 18px;
+    background: rgba(5, 12, 20, 0.78);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
   }
 
   .calyr-overview .eyebrow {
@@ -121,20 +122,21 @@
   }
 
   .calyr-overview section {
-    margin-top: 1rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: rgba(10, 24, 34, 0.78);
-    padding: 1rem 1.02rem;
+    margin-top: 22px;
+    border: 1px solid rgba(106, 240, 255, 0.16);
+    border-radius: 18px;
+    background: rgba(5, 12, 20, 0.78);
+    padding: 22px 24px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
   }
 
   .calyr-overview h2 {
-    margin: 0;
-    font-size: 0.76rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-soft);
-    font-weight: 600;
+    margin: 0 0 12px;
+    color: #f5fbff;
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 700;
   }
 
   .calyr-overview p {
@@ -211,13 +213,10 @@
   }
 
   @media (max-width: 760px) {
-    .calyr-overview .shell {
-      padding: 0.5rem 0.78rem 1.8rem;
-    }
-
     .calyr-overview .hero,
     .calyr-overview section {
-      border-radius: 11px;
+      border-radius: 14px;
+      padding: 18px;
     }
 
     .calyr-overview .grid {
@@ -226,7 +225,7 @@
   }
 </style>
 
-<article class="doc-article calyr-overview">
+<article class="doc-article explore-hub-article calyr-overview">
   <main class="shell">
     <header class="hero">
       <p class="eyebrow">Calyr Knowledge Architecture</p>
