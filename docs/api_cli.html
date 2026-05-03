@@ -12,6 +12,18 @@
   <h2>Inlining an expression</h2>
   <pre>nexus eval 'd = warehouse["run-042"]; d > saxs > fit@guinier'</pre>
 
+  <h2>Grammateia CLI</h2>
+  <p>
+    <code>calyr.gram</code> is the literature-side CLI for the Grammateia layer.
+    Use it to ingest literature records, extract structured fields, and build graph-ready
+    objects that can be linked back into Nexus/Okto workflows.
+  </p>
+  <pre>python -m calyr.gram.cli --help
+
+python -m calyr.gram.cli ingest --id paper_123 --title "SPR-SAXS coupling"
+python -m calyr.gram.cli extract --in literature/paper_123.json
+python -m calyr.gram.cli graph --in literature/paper_123.json</pre>
+
   <h2>Warehouse commands</h2>
   <pre>nexus warehouse list                     # list all objects
 nexus warehouse list --tag guinier       # filter by tag

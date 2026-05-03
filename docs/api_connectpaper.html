@@ -8,6 +8,31 @@
     merges and de-duplicates the hits, and lets you export results for local analysis or Zotero database ingestion.
   </p>
 
+  <h2>From ConnectPaper to Grammateia</h2>
+  <p>
+    Connected Papers style tools are useful for exploration, but in Calyr this is only the first layer.
+    <strong>Grammateia</strong> extends literature handling into an executable knowledge system:
+    papers become typed objects with concepts, models, assumptions, and constraints that can be linked to
+    experiments and evaluated in the Nexus loop.
+  </p>
+  <table class="doc-table">
+    <thead><tr><th>Capability</th><th>Citation Graph Tools</th><th>Calyr Grammateia</th></tr></thead>
+    <tbody>
+      <tr><td>Citation links</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Similarity browsing</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Concept extraction</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Model and assumption extraction</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Constraint reasoning vs. runs</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Feedback loop into publication</td><td>No</td><td>Yes</td></tr>
+    </tbody>
+  </table>
+
+  <pre>paper -> concepts -> models -> constraints -> experiments -> results</pre>
+  <p>
+    This is why literature in Calyr is treated as an active layer in the architecture,
+    not as a passive bibliography.
+  </p>
+
   <h2>Quick start</h2>
   <pre>nexus connectpaper "sbpa + keratin" --backend both --limit 25</pre>
   <p>
