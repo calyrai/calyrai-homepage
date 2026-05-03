@@ -6,6 +6,64 @@
   max-width: 780px;
 }
 
+.explore-page-layout {
+  max-width: 780px;
+  margin: 0;
+  color: rgba(220, 232, 244, 0.88);
+}
+
+.explore-page-hero,
+.explore-page-section {
+  margin-top: 22px;
+  border-radius: 18px;
+  padding: 22px 24px;
+  border: 1px solid rgba(106, 240, 255, 0.16);
+  background: rgba(5, 12, 20, 0.78);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.explore-page-hero {
+  margin-top: 0;
+}
+
+.explore-page-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(141, 232, 255, 0.92);
+  font-weight: 600;
+}
+
+.explore-page-title {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.8vw, 2.05rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #f3fbff;
+}
+
+.explore-page-lead {
+  margin: 0.75rem 0 0;
+  max-width: 74ch;
+  font-size: 0.93rem;
+  line-height: 1.62;
+  color: rgba(200, 220, 240, 0.84);
+}
+
+.explore-page-section h2 {
+  margin: 0 0 12px;
+  color: #f5fbff;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.explore-page-section p {
+  margin: 0.62rem 0 0;
+  color: rgba(214, 226, 240, 0.8);
+  line-height: 1.72;
+}
+
 .explore-overview-intro {
   margin-bottom: 28px;
 }
@@ -162,6 +220,12 @@
   .explore-main {
     margin-left: 0;
     padding: 24px 20px 80px;
+  }
+
+  .explore-page-hero,
+  .explore-page-section {
+    border-radius: 14px;
+    padding: 18px;
   }
 
   .explore-section-card {

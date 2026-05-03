@@ -1,7 +1,5 @@
 <style>
   .calyr-overview {
-    --bg: #0a141c;
-    --panel: #102230;
     --panel-soft: #0f1d29;
     --ink: #dce9f2;
     --muted: #9eb3c3;
@@ -9,60 +7,10 @@
     --accent: #49d4ff;
     --accent-soft: #8de8ff;
     --good: #83f2d2;
-
-    margin: 0;
-    padding: 0;
-    color: var(--ink);
-    background:
-      radial-gradient(1200px 500px at -10% -15%, rgba(73, 212, 255, 0.15), transparent 55%),
-      radial-gradient(900px 500px at 110% 0%, rgba(131, 242, 210, 0.1), transparent 50%),
-      var(--bg);
-    font-family: inherit;
-    line-height: 1.62;
   }
 
   .calyr-overview * {
     box-sizing: border-box;
-  }
-
-  .calyr-overview .shell {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .calyr-overview .hero {
-    margin-top: 0;
-    padding: 22px 24px;
-    border: 1px solid rgba(106, 240, 255, 0.16);
-    border-radius: 18px;
-    background: rgba(5, 12, 20, 0.78);
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
-  }
-
-  .calyr-overview .eyebrow {
-    margin: 0 0 0.35rem;
-    font-size: 0.74rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent-soft);
-    font-weight: 600;
-  }
-
-  .calyr-overview h1 {
-    margin: 0;
-    font-family: inherit;
-    font-size: clamp(1.3rem, 2.8vw, 2.05rem);
-    letter-spacing: 0.025em;
-    text-transform: uppercase;
-    color: #f3fbff;
-  }
-
-  .calyr-overview .hero p {
-    margin: 0.75rem 0 0;
-    max-width: 74ch;
-    font-size: 0.93rem;
-    color: var(--muted);
   }
 
   .calyr-overview .grid {
@@ -121,27 +69,7 @@
     line-height: 1.45;
   }
 
-  .calyr-overview section {
-    margin-top: 22px;
-    border: 1px solid rgba(106, 240, 255, 0.16);
-    border-radius: 18px;
-    background: rgba(5, 12, 20, 0.78);
-    padding: 22px 24px;
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
-  }
-
-  .calyr-overview h2 {
-    margin: 0 0 12px;
-    color: #f5fbff;
-    font-size: 1.05rem;
-    letter-spacing: 0;
-    text-transform: none;
-    font-weight: 700;
-  }
-
-  .calyr-overview p {
-    margin: 0.62rem 0 0;
-    font-size: 0.92rem;
+  .calyr-overview .explore-page-section p {
     color: var(--muted);
   }
 
@@ -213,25 +141,18 @@
   }
 
   @media (max-width: 760px) {
-    .calyr-overview .hero,
-    .calyr-overview section {
-      border-radius: 14px;
-      padding: 18px;
-    }
-
     .calyr-overview .grid {
       grid-template-columns: 1fr;
     }
   }
 </style>
 
-<article class="doc-article explore-hub-article calyr-overview">
-  <main class="shell">
-    <header class="hero">
-      <p class="eyebrow">Calyr Knowledge Architecture</p>
-      <h1>Calyr Ecosystem Overview</h1>
+<article class="doc-article explore-page-layout calyr-overview">
+  <header class="explore-page-hero">
+    <p class="explore-page-eyebrow">Calyr Knowledge Architecture</p>
+    <h1 class="explore-page-title">Calyr Ecosystem Overview</h1>
 
-      <p>
+      <p class="explore-page-lead">
         SQL organizes rows. Calyr organizes scientific decisions: typed objects, explicit semantic links, immutable versions, and artifact-level traceability in one operating layer.
       </p>
 
@@ -256,7 +177,7 @@
       </div>
     </header>
 
-    <section>
+    <section class="explore-page-section">
       <h2>Why Calyr is necessary</h2>
       <p>
         Scientific workflows rarely fail from missing files alone; they fail when context breaks between data, models, interpretation, and publication. Calyr keeps experiments, model states, literature claims, and deliverables in one linked object space so reasoning survives every iteration.
@@ -266,7 +187,7 @@
       </p>
     </section>
 
-    <section>
+    <section class="explore-page-section">
       <h2>How modules relate</h2>
 
       <div class="diagram-wrap">
@@ -314,7 +235,7 @@
       <p class="caption">Nexus routes information; eval, okto, and literature enrich the shared object layer.</p>
     </section>
 
-    <section>
+    <section class="explore-page-section">
       <h2>Design principles</h2>
       <ul>
         <li>One source of truth: every run, model, claim, and result is registered once and referenced everywhere.</li>
@@ -323,7 +244,7 @@
       </ul>
     </section>
 
-    <section>
+    <section class="explore-page-section">
       <h2>FAIR data requirement</h2>
       <p>
         FAIR is system behavior, not a documentation afterthought: objects are Findable by stable IDs, Accessible via reproducible paths, Interoperable through typed contracts, and Reusable through provenance and lineage.
@@ -332,5 +253,4 @@
         That is why Nexus stores metadata, semantic relations, immutable versions, and artifacts together in one execution model.
       </p>
     </section>
-  </main>
 </article>
