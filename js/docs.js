@@ -127,6 +127,98 @@
     }
   }
 
+  function initFoundingChecker () {
+    const checker = content.querySelector('[data-gruendung-checker]');
+    if (!checker) return;
+
+    const storageKey = checker.dataset.storageKey || 'founding-checker';
+    const inputs = Array.from(checker.querySelectorAll('[data-check-item]'));
+    const phases = Array.from(checker.querySelectorAll('[data-phase]'));
+    const progressBar = checker.querySelector('[data-progress-bar]');
+    const progressLabel = checker.querySelector('[data-progress-label]');
+    const progressText = checker.querySelector('[data-progress-text]');
+    const progressDonut = checker.querySelector('[data-progress-donut]');
+    const progressDonutLabel = checker.querySelector('[data-progress-donut-label]');
+
+    if (progressDonut) {
+      const radius = Number(progressDonut.getAttribute('r')) || 38;
+      const circumference = 2 * Math.PI * radius;
+      progressDonut.style.strokeDasharray = `${circumference}`;
+      progressDonut.style.strokeDashoffset = `${circumference}`;
+      progressDonut.dataset.circumference = String(circumference);
+    }
+
+    let saved = {};
+    try {
+      saved = JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+    } catch {
+      saved = {};
+    }
+
+    inputs.forEach(input => {
+      input.checked = Boolean(saved[input.dataset.checkItem]);
+      input.addEventListener('change', () => {
+        const nextState = Object.fromEntries(
+          inputs.map(entry => [entry.dataset.checkItem, entry.checked])
+        );
+        window.localStorage.setItem(storageKey, JSON.stringify(nextState));
+        updateProgress();
+      });
+    });
+
+    function updateProgress () {
+      const completed = inputs.filter(input => input.checked).length;
+      const total = inputs.length;
+      const percent = total ? Math.round((completed / total) * 100) : 0;
+
+      if (progressBar) progressBar.style.width = `${percent}%`;
+      if (progressLabel) progressLabel.textContent = `${percent}%`;
+      if (progressText) progressText.textContent = `${completed} von ${total} Schritten erledigt`;
+      if (progressDonut && progressDonut.dataset.circumference) {
+        const circumference = Number(progressDonut.dataset.circumference);
+        const offset = circumference * (1 - percent / 100);
+        progressDonut.style.strokeDashoffset = `${offset}`;
+      }
+      if (progressDonutLabel) progressDonutLabel.textContent = `${percent}%`;
+
+      phases.forEach(phase => {
+        const keys = (phase.dataset.phaseItems || '')
+          .split(',')
+          .map(item => item.trim())
+          .filter(Boolean);
+
+        if (!keys.length) return;
+
+        const phaseInputs = keys
+          .map(key => inputs.find(input => input.dataset.checkItem === key))
+          .filter(Boolean);
+
+        if (!phaseInputs.length) return;
+
+        const phaseDone = phaseInputs.filter(input => input.checked).length;
+        const phaseTotal = phaseInputs.length;
+
+        let state = 'open';
+        let label = 'offen';
+        if (phaseDone === phaseTotal) {
+          state = 'done';
+          label = 'erledigt';
+        } else if (phaseDone > 0) {
+          state = 'inprogress';
+          label = 'in Arbeit';
+        }
+
+        phase.classList.remove('founding-phase--open', 'founding-phase--inprogress', 'founding-phase--done');
+        phase.classList.add(`founding-phase--${state}`);
+
+        const status = phase.querySelector('[data-phase-status]');
+        if (status) status.textContent = `${label} (${phaseDone}/${phaseTotal})`;
+      });
+    }
+
+    updateProgress();
+  }
+
   async function loadPage (entry) {
     const { section, page } = entry;
 
@@ -147,6 +239,7 @@
 
     const flat = { ...page, section: section.id };
     content.innerHTML = html + renderNavFooter(flat);
+    initFoundingChecker();
 
     // KaTeX re-render
     if (window.renderMathInElement) {

@@ -1,0 +1,428 @@
+<style>
+  .founding-layout {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+  }
+
+  .founding-main {
+    min-width: 0;
+  }
+
+  .founding-checker {
+    position: sticky;
+    top: 1.5rem;
+    padding: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+  }
+
+  .founding-checker-head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .founding-donut {
+    width: 76px;
+    height: 76px;
+    flex: 0 0 76px;
+  }
+
+  .founding-donut-track {
+    fill: none;
+    stroke: rgba(255,255,255,0.12);
+    stroke-width: 9;
+  }
+
+  .founding-donut-progress {
+    fill: none;
+    stroke: #d4b06a;
+    stroke-width: 9;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 180ms ease;
+  }
+
+  .founding-donut-text {
+    fill: rgba(255,255,255,0.92);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .founding-checker h2 {
+    margin-top: 0;
+    font-size: 1.05rem;
+  }
+
+  .founding-progress-track {
+    width: 100%;
+    height: 0.7rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.08);
+    margin: 0.8rem 0 0.6rem;
+  }
+
+  .founding-progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #d4b06a 0%, #e5d2a1 100%);
+    transition: width 180ms ease;
+  }
+
+  .founding-progress-meta {
+    margin: 0 0 1rem;
+    color: rgba(255,255,255,0.72);
+    font-size: 0.92rem;
+  }
+
+  .founding-phase-title {
+    margin: 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .founding-phase {
+    margin-top: 0.95rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .founding-phase-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .founding-phase-status {
+    font-size: 0.76rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.86);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .founding-phase--open {
+    border-color: rgba(230,80,80,0.42);
+    background: rgba(230,80,80,0.07);
+  }
+
+  .founding-phase--open .founding-phase-status {
+    border-color: rgba(230,80,80,0.46);
+    background: rgba(230,80,80,0.17);
+    color: rgba(255,210,210,0.98);
+  }
+
+  .founding-phase--inprogress {
+    border-color: rgba(228,177,76,0.45);
+    background: rgba(228,177,76,0.09);
+  }
+
+  .founding-phase--inprogress .founding-phase-status {
+    border-color: rgba(228,177,76,0.48);
+    background: rgba(228,177,76,0.18);
+    color: rgba(255,244,211,0.98);
+  }
+
+  .founding-phase--done {
+    border-color: rgba(81,187,113,0.45);
+    background: rgba(81,187,113,0.09);
+  }
+
+  .founding-phase--done .founding-phase-status {
+    border-color: rgba(81,187,113,0.5);
+    background: rgba(81,187,113,0.19);
+    color: rgba(223,255,232,0.98);
+  }
+
+  .founding-checklist {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .founding-check-item {
+    display: grid;
+    grid-template-columns: 1.1rem 1fr;
+    gap: 0.7rem;
+    align-items: start;
+    padding: 0.7rem 0.75rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .founding-check-item input {
+    margin-top: 0.2rem;
+  }
+
+  .founding-check-item strong {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .founding-check-item span {
+    display: block;
+    color: rgba(255,255,255,0.72);
+    font-size: 0.9rem;
+  }
+
+  .founding-note {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.68);
+  }
+
+  @media (max-width: 980px) {
+    .founding-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .founding-checker {
+      position: static;
+      order: -1;
+    }
+  }
+</style>
+
+<article class="doc-article">
+  <div class="founding-layout" data-gruendung-checker data-storage-key="calyr-online-gruendung-at">
+    <div class="founding-main">
+      <h1>Online-Gruendung Oesterreich</h1>
+      <p class="doc-subtitle">Gebuendelte Arbeitsfassung fuer Gruendung, Gewerbe, Finanz und Sozialversicherung - komplett digital</p>
+
+      <h2>1. Zielbild</h2>
+      <p>Diese Seite fasst die relevanten offiziellen Online-Einstiege fuer eine digitale Gruendung in Oesterreich zusammen. Fokus ist ein schlanker Ablauf fuer Einzelunternehmen bzw. EPU, mit Erweiterung Richtung GmbH bei spaeterer Skalierung.</p>
+
+      <h2>2. Empfohlene Reihenfolge</h2>
+      <ol>
+        <li>ID Austria sicherstellen</li>
+        <li>USP bzw. Mein USP aktivieren</li>
+        <li>Gewerbe online anmelden</li>
+        <li>FinanzOnline aktivieren und steuerlich erfassen</li>
+        <li>SVS online anmelden bzw. Versicherung pruefen</li>
+        <li>Geschaeftskonto, Rechnungslogik und laufende Pflichten aufsetzen</li>
+      </ol>
+
+      <h2>3. Digitale Identitaet</h2>
+      <p>Die durchgehende Online-Abwicklung ist am einfachsten mit ID Austria.</p>
+      <ul>
+        <li><a href="https://www.oesterreich.gv.at/id-austria.html" target="_blank" rel="noopener noreferrer">ID Austria Informationen</a></li>
+        <li><a href="https://id-austria.gv.at/" target="_blank" rel="noopener noreferrer">ID Austria Portal</a></li>
+      </ul>
+
+      <h2>4. WKO und Gruendung</h2>
+      <p>Die WKO ist der beste Einstieg fuer Orientierung, Rechtsform und gewerberechtliche Grundfragen.</p>
+      <ul>
+        <li><a href="https://www.wko.at/oe/gruendung/start" target="_blank" rel="noopener noreferrer">WKO: Unternehmen gruenden</a></li>
+        <li><a href="https://www.wko.at/oe/gruendung/gewerbeanmeldung" target="_blank" rel="noopener noreferrer">WKO: Gewerbeanmeldung</a></li>
+        <li><a href="https://www.wko.at/oe/gruendung/uebersicht-rechtsformen" target="_blank" rel="noopener noreferrer">WKO: Rechtsformen</a></li>
+      </ul>
+
+      <h2>5. USP und elektronische Gruendung</h2>
+      <p>Das Unternehmensserviceportal ist der zentrale digitale Zugang zu Unternehmens-Services der Verwaltung.</p>
+      <ul>
+        <li><a href="https://startup.usp.gv.at/index.html" target="_blank" rel="noopener noreferrer">USP Gruendungswelt</a></li>
+        <li><a href="https://startup.usp.gv.at/gruendung" target="_blank" rel="noopener noreferrer">USP: Gruendung</a></li>
+        <li><a href="https://startup.usp.gv.at/gruendung/elektronische-gruendung" target="_blank" rel="noopener noreferrer">USP: Elektronische Gruendung</a></li>
+        <li><a href="https://mein.usp.gv.at/" target="_blank" rel="noopener noreferrer">Mein USP Login</a></li>
+        <li><a href="https://www.usp.gv.at/hilfe-und-support/registrieren.html" target="_blank" rel="noopener noreferrer">USP Registrierung</a></li>
+        <li><a href="https://www.usp.gv.at/services/mein-usp/alle-services.html" target="_blank" rel="noopener noreferrer">USP: Alle Services</a></li>
+      </ul>
+
+      <h2>6. Direkte Gewerbeanmeldung</h2>
+      <p>Wenn das Gewerbe elektronisch eingebracht werden soll, ist das der relevante USP-Service.</p>
+      <ul>
+        <li><a href="https://www.usp.gv.at/services/mein-usp/GISxP.html" target="_blank" rel="noopener noreferrer">USP: Online-Formular zur Gewerbeanmeldung</a></li>
+        <li><a href="https://www.gisa.gv.at/" target="_blank" rel="noopener noreferrer">GISA Portal</a></li>
+        <li><a href="https://www.gisa.gv.at/abfrage" target="_blank" rel="noopener noreferrer">GISA Abfrage</a></li>
+      </ul>
+
+      <h2>7. Finanzamt und FinanzOnline</h2>
+      <p>Nach der Gruendung muss die steuerliche Seite digital sauber eingerichtet werden.</p>
+      <ul>
+        <li><a href="https://finanzonline.bmf.gv.at/" target="_blank" rel="noopener noreferrer">FinanzOnline Start</a></li>
+        <li><a href="https://finanzonline.bmf.gv.at/fon/oautheidlogin.do" target="_blank" rel="noopener noreferrer">FinanzOnline Login mit ID Austria</a></li>
+        <li><a href="https://www.bmf.gv.at/public/informationen/fon-zugangsinformationen.html" target="_blank" rel="noopener noreferrer">BMF: Zugang zu FinanzOnline</a></li>
+        <li><a href="https://service.bmf.gv.at/service/anwend/formulare/" target="_blank" rel="noopener noreferrer">BMF Formularservice</a></li>
+      </ul>
+
+      <h3>Wichtige steuerliche Punkte</h3>
+      <ul>
+        <li>Steuernummer / steuerliche Erfassung</li>
+        <li>Einkommensteuer</li>
+        <li>Umsatzsteuer bzw. Kleinunternehmerregelung</li>
+        <li>laufende Erklaerungen ueber FinanzOnline</li>
+      </ul>
+
+      <h3>Relevant aus dem Formularbereich</h3>
+      <p><strong>Verf24</strong> ist der Fragebogen fuer natuerliche Personen und bei Einzelunternehmen oft der relevante Anker im Formularsystem.</p>
+
+      <h2>8. SVS und Sozialversicherung</h2>
+      <p>Fuer Selbststaendige ist die SVS der zentrale Ansprechpartner fuer Versicherung und Beitraege.</p>
+      <ul>
+        <li><a href="https://www.svs.at/" target="_blank" rel="noopener noreferrer">SVS Start</a></li>
+        <li><a href="https://www.svs.at/cdscontent/?contentid=10007.899587&amp;portal=svsportal" target="_blank" rel="noopener noreferrer">SVS: Online-Versicherungsanmeldung</a></li>
+      </ul>
+
+      <h2>9. Kurzcheckliste fuer den Start</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Schritt</th>
+            <th>Was erledigen</th>
+            <th>Online-Einstieg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>ID Austria aktivieren oder pruefen</td>
+            <td>ID Austria / oesterreich.gv.at</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>USP Konto anlegen bzw. Login pruefen</td>
+            <td>Mein USP</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Gewerbe online anmelden</td>
+            <td>USP GISxP / GISA</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Steuerliche Erfassung vorbereiten</td>
+            <td>FinanzOnline / Verf24</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>SVS Anmeldung und Versicherungsstatus klaeren</td>
+            <td>SVS Online</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Bank, Rechnungen, USt-Logik, Belegstruktur aufsetzen</td>
+            <td>intern</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>10. Praktische Hinweise</h2>
+      <ul>
+        <li>Bei einem einfachen EPU ist der digitale Weg ueber USP, FinanzOnline und SVS meist ausreichend.</li>
+        <li>Bei reglementierten Gewerben musst du zusaetzliche Nachweise hochladen oder vorlegen.</li>
+        <li>Wenn du die Kleinunternehmerregelung nutzen willst, muss die Umsatzsteuer-Logik von Anfang an konsistent sein.</li>
+        <li>Fuer spaetere Skalierung Richtung GmbH bleiben USP und FinanzOnline relevant, aber Notariat und Firmenbuch kommen hinzu.</li>
+      </ul>
+
+      <h2>11. Status dieser Seite</h2>
+      <p>Diese Sammelseite ist lokal erstellt und nicht gepusht. Sie dient als Arbeitsdokument fuer die naechsten Gruendungsschritte.</p>
+    </div>
+
+    <aside class="founding-checker" aria-label="Gruendungsfortschritt">
+      <div class="founding-checker-head">
+        <svg class="founding-donut" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="founding-donut-track" cx="50" cy="50" r="38"></circle>
+          <circle class="founding-donut-progress" cx="50" cy="50" r="38" data-progress-donut></circle>
+          <text class="founding-donut-text" x="50" y="51" data-progress-donut-label>0%</text>
+        </svg>
+        <div>
+          <h2>Gruendungs-Checker</h2>
+          <p class="founding-progress-meta"><strong data-progress-label>0%</strong> abgeschlossen</p>
+        </div>
+      </div>
+
+      <div class="founding-progress-track" aria-hidden="true">
+        <div class="founding-progress-bar" data-progress-bar></div>
+      </div>
+      <div class="founding-progress-meta" data-progress-text>0 von 6 Schritten erledigt</div>
+
+      <section class="founding-phase" data-phase="setup" data-phase-items="id-austria,usp">
+        <div class="founding-phase-head">
+          <p class="founding-phase-title">Phase 1: Setup</p>
+          <span class="founding-phase-status" data-phase-status>offen</span>
+        </div>
+        <div class="founding-checklist">
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="id-austria">
+            <span>
+              <strong>ID Austria aktiv</strong>
+              <span>Digitale Identitaet und Login-Basis stehen.</span>
+            </span>
+          </label>
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="usp">
+            <span>
+              <strong>USP Zugang bereit</strong>
+              <span>Mein USP ist registriert und nutzbar.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section class="founding-phase" data-phase="meldungen" data-phase-items="gewerbe,finanzonline,svs">
+        <div class="founding-phase-head">
+          <p class="founding-phase-title">Phase 2: Meldungen</p>
+          <span class="founding-phase-status" data-phase-status>offen</span>
+        </div>
+        <div class="founding-checklist">
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="gewerbe">
+            <span>
+              <strong>Gewerbe angemeldet</strong>
+              <span>Die Gewerbeanmeldung ist online eingebracht.</span>
+            </span>
+          </label>
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="finanzonline">
+            <span>
+              <strong>FinanzOnline eingerichtet</strong>
+              <span>Zugang und steuerliche Erfassung sind vorbereitet.</span>
+            </span>
+          </label>
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="svs">
+            <span>
+              <strong>SVS geklaert</strong>
+              <span>Versicherung und Anmeldung sind digital erledigt.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section class="founding-phase" data-phase="start" data-phase-items="setup">
+        <div class="founding-phase-head">
+          <p class="founding-phase-title">Phase 3: Operativer Start</p>
+          <span class="founding-phase-status" data-phase-status>offen</span>
+        </div>
+        <div class="founding-checklist">
+          <label class="founding-check-item">
+            <input type="checkbox" data-check-item="setup">
+            <span>
+              <strong>Operativer Start bereit</strong>
+              <span>Konto, Rechnungslogik und Belegstruktur stehen.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <p class="founding-note">Der Stand wird lokal in diesem Browser gespeichert. Es werden keine persoenlichen Daten vorausgesetzt.</p>
+    </aside>
+  </div>
+</article>
