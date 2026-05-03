@@ -269,8 +269,8 @@
     const wrap = document.createElement('div');
     wrap.className = 'doc-search-wrap';
     wrap.innerHTML = `
-      <div class="doc-search-label">Search Explore</div>
-      <input id="explore-search" class="doc-search-input" placeholder="Search overview and presentations" autocomplete="off" spellcheck="false" />
+      <div class="doc-search-label">Search the Explore</div>
+      <input id="explore-search" class="doc-search-input" placeholder="Search the Explore" autocomplete="off" spellcheck="false" />
       <ul id="explore-search-results" class="doc-search-results"></ul>
     `;
     sidebar.prepend(wrap);

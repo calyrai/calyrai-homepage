@@ -47,7 +47,7 @@ slides:
       Pattern 1 — File-based (simplest): Python writes a CSV, Power BI reads it. Works for small datasets and prototypes.
       Pattern 2 — Database (real-world): Python writes to a database, Power BI connects to it. Standard production setup.
       Pattern 3 — API layer (advanced): Python exposes a REST API, Power BI and other consumers query it. Fully decoupled.
-      Pattern 4 — Embedded dashboard: Power BI dashboard embedded into an application such as Calyra. The app controls context; Power BI renders.
+      Pattern 4 — Embedded dashboard: Power BI dashboard embedded into an application such as Calyr. The app controls context; Power BI renders.
     manifesto: API enables multiple consumers.
 
   - type: statement
@@ -62,11 +62,11 @@ slides:
     manifesto: One data model. Many consumers.
 
   - type: statement
-    chapter: Calyra
+    chapter: Calyr
     kicker: Your system
-    headline: "Calyra = Python + API + Data Model.<br>Power BI = Visualization."
+    headline: "Calyr = Python + API + Data Model.<br>Power BI = Visualization."
     body: |
-      This is exactly the Calyra architecture. Calyra Core is Python plus the API layer — it handles data integration, modeling, and structured output. Power BI sits on top and visualizes.
+      This is exactly the Calyr architecture. Calyr Core is Python plus the API layer — it handles data integration, modeling, and structured output. Power BI sits on top and visualizes.
       The same data model that feeds Power BI dashboards also feeds LLM reasoning. The semantic layer is the shared contract for both.
       Multiple tools. One foundation. No logic duplicated.
     manifesto: Python builds it. APIs expose it. Power BI shows it.

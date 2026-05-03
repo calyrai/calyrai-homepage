@@ -1,7 +1,7 @@
 schema_version: 1
 # Slide deck: Power BI + Python for Calyr / Mac Workflow
 # Source of truth — edit here, then regenerate:
-#   python3 scripts/build_deck.py data/powerbi-python-calyra.yaml
+#   python3 scripts/build_deck.py data/powerbi-python-calyr.yaml
 
 slides:
 

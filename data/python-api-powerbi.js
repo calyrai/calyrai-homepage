@@ -38,7 +38,7 @@ window.CALYR_DECK = [
     "chapter": "Integration patterns",
     "kicker": "Four patterns",
     "headline": "File → Database → API → Embedded",
-    "body": "Pattern 1 — File-based (simplest): Python writes a CSV, Power BI reads it. Works for small datasets and prototypes.\nPattern 2 — Database (real-world): Python writes to a database, Power BI connects to it. Standard production setup.\nPattern 3 — API layer (advanced): Python exposes a REST API, Power BI and other consumers query it. Fully decoupled.\nPattern 4 — Embedded dashboard: Power BI dashboard embedded into an application such as Calyra. The app controls context; Power BI renders.\n",
+    "body": "Pattern 1 — File-based (simplest): Python writes a CSV, Power BI reads it. Works for small datasets and prototypes.\nPattern 2 — Database (real-world): Python writes to a database, Power BI connects to it. Standard production setup.\nPattern 3 — API layer (advanced): Python exposes a REST API, Power BI and other consumers query it. Fully decoupled.\nPattern 4 — Embedded dashboard: Power BI dashboard embedded into an application such as Calyr. The app controls context; Power BI renders.\n",
     "manifesto": "API enables multiple consumers."
   },
   {
@@ -51,10 +51,10 @@ window.CALYR_DECK = [
   },
   {
     "type": "statement",
-    "chapter": "Calyra",
+    "chapter": "Calyr",
     "kicker": "Your system",
-    "headline": "Calyra = Python + API + Data Model.<br>Power BI = Visualization.",
-    "body": "This is exactly the Calyra architecture. Calyra Core is Python plus the API layer — it handles data integration, modeling, and structured output. Power BI sits on top and visualizes.\nThe same data model that feeds Power BI dashboards also feeds LLM reasoning. The semantic layer is the shared contract for both.\nMultiple tools. One foundation. No logic duplicated.\n",
+    "headline": "Calyr = Python + API + Data Model.<br>Power BI = Visualization.",
+    "body": "This is exactly the Calyr architecture. Calyr Core is Python plus the API layer — it handles data integration, modeling, and structured output. Power BI sits on top and visualizes.\nThe same data model that feeds Power BI dashboards also feeds LLM reasoning. The semantic layer is the shared contract for both.\nMultiple tools. One foundation. No logic duplicated.\n",
     "manifesto": "Python builds it. APIs expose it. Power BI shows it."
   },
   {
