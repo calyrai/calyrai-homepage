@@ -137,6 +137,44 @@ mkdocs build          # → build/docs_site/</pre>
   <h3>Naming convention</h3>
   <p><code>docs/&lt;section_id&gt;_&lt;page_id&gt;.html</code> — matches the <code>id</code> fields in <code>docs.js</code>.</p>
 
+  <h3>Content addressing standard (structure-first)</h3>
+  <p>
+    For publication surfaces and long-lived content, prefer structure-driven paths over concatenated
+    file names like <code>name_name2_.html</code>. Paths should express meaning and hierarchy.
+  </p>
+  <pre>content/
+  papers/
+    saxs-unified/
+      index.html
+  slides/
+    okto-intro/
+      index.html
+  concepts/
+    pdd-duality/
+      index.html</pre>
+  <p>
+    Rule: each page lives in its own directory with an <code>index.html</code> entrypoint.
+    Use lowercase, hyphen-separated slugs (for example <code>saxs-unified</code>, <code>okto-intro</code>).
+  </p>
+
+  <h3>Object identity for Okto</h3>
+  <p>Store an explicit object identity alongside each content page:</p>
+  <pre>id: paper_saxs_unified
+slug: saxs-unified
+type: paper</pre>
+  <p>
+    Routing can then be generated deterministically via:
+    <code>content/{type}/{slug}/index.html</code>.
+  </p>
+
+  <h3>Migration strategy</h3>
+  <ol>
+    <li>Map legacy names (<code>name_name2_.html</code>) to semantic slugs (<code>saxs-unified</code>).</li>
+    <li>Move into structured folders (for example <code>content/papers/saxs-unified/index.html</code>).</li>
+    <li>Add optional redirect pages for legacy links where external references exist.</li>
+    <li>Mirror the same structure under <code>archive/</code> for clean historical retention.</li>
+  </ol>
+
   <hr class="doc-rule" />
 
   <h2>Keeping both systems in sync</h2>
