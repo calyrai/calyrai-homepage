@@ -1,10 +1,9 @@
 .explore-main {
-  padding-top: 14px;
-  padding-right: clamp(24px, 4vw, 56px);
+  padding: 48px 48px 96px;
 }
 
 .explore-hub-article {
-  max-width: 960px;
+  max-width: 780px;
 }
 
 .explore-overview-intro {
@@ -161,8 +160,8 @@
 
 @media (max-width: 768px) {
   .explore-main {
-    padding-top: 10px;
-    padding-right: 20px;
+    margin-left: 0;
+    padding: 24px 20px 80px;
   }
 
   .explore-section-card {
