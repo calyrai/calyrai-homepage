@@ -132,6 +132,10 @@
     if (!checker) return;
 
     const storageKey = checker.dataset.storageKey || 'founding-checker';
+    const phaseOpenLabel = checker.dataset.phaseOpenLabel || 'offen';
+    const phaseInprogressLabel = checker.dataset.phaseInprogressLabel || 'in Arbeit';
+    const phaseDoneLabel = checker.dataset.phaseDoneLabel || 'erledigt';
+    const progressTemplate = checker.dataset.progressTemplate || '{completed} von {total} Schritten erledigt';
     const inputs = Array.from(checker.querySelectorAll('[data-check-item]'));
     const phases = Array.from(checker.querySelectorAll('[data-phase]'));
     const progressBar = checker.querySelector('[data-progress-bar]');
@@ -173,7 +177,11 @@
 
       if (progressBar) progressBar.style.width = `${percent}%`;
       if (progressLabel) progressLabel.textContent = `${percent}%`;
-      if (progressText) progressText.textContent = `${completed} von ${total} Schritten erledigt`;
+      if (progressText) {
+        progressText.textContent = progressTemplate
+          .replace('{completed}', String(completed))
+          .replace('{total}', String(total));
+      }
       if (progressDonut && progressDonut.dataset.circumference) {
         const circumference = Number(progressDonut.dataset.circumference);
         const offset = circumference * (1 - percent / 100);
@@ -199,13 +207,13 @@
         const phaseTotal = phaseInputs.length;
 
         let state = 'open';
-        let label = 'offen';
+        let label = phaseOpenLabel;
         if (phaseDone === phaseTotal) {
           state = 'done';
-          label = 'erledigt';
+          label = phaseDoneLabel;
         } else if (phaseDone > 0) {
           state = 'inprogress';
-          label = 'in Arbeit';
+          label = phaseInprogressLabel;
         }
 
         phase.classList.remove('founding-phase--open', 'founding-phase--inprogress', 'founding-phase--done');

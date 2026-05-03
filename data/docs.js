@@ -144,6 +144,7 @@ window.CALYR_DOCS = [
     title: '— Internal',
     pages: [
       { id: 'calyr_online_gruendung_at', title: 'Online-Gruendung Oesterreich', src: 'docs/calyr_online_gruendung_at.html' },
+      { id: 'calyr_online_founding_en', title: 'Online Founding Austria (EN)', src: 'docs/calyr_online_founding_en.html' },
       { id: 'calyr_gruendung', title: 'Calyr Gruendung', src: 'docs/calyr_gruendung.html' },
       { id: 'calyr_gruendung_pitch', title: 'Calyr Gruendung (Pitch)', src: 'docs/calyr_gruendung_pitch.html' },
       { id: 'docs_system', title: 'Docs system',   src: 'docs/internal_docs_system.html' }
