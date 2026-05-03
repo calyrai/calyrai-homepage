@@ -1,4 +1,5 @@
 .explore-main {
+  padding-top: 14px;
   padding-right: clamp(24px, 4vw, 56px);
 }
 
@@ -160,6 +161,7 @@
 
 @media (max-width: 768px) {
   .explore-main {
+    padding-top: 10px;
     padding-right: 20px;
   }
 
