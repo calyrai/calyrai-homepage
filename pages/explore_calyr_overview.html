@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calyr Ecosystem — Overview</title>
+  <style>
+    :root {
+      --bg: #0a141c;
+      --panel: #102230;
+      --panel-soft: #0f1d29;
+      --ink: #dce9f2;
+      --muted: #9eb3c3;
+      --line: #274255;
+      --accent: #49d4ff;
+      --accent-soft: #8de8ff;
+      --good: #83f2d2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at -10% -15%, rgba(73, 212, 255, 0.15), transparent 55%),
+        radial-gradient(900px 500px at 110% 0%, rgba(131, 242, 210, 0.1), transparent 50%),
+        var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.62;
+    }
+
+    .shell {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2.2rem 1.2rem 2.8rem;
+    }
+
+    .hero {
+      padding: 1.35rem 1.2rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(16, 34, 48, 0.95), rgba(9, 24, 35, 0.92));
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(1.3rem, 2.8vw, 2.05rem);
+      letter-spacing: 0.025em;
+      text-transform: uppercase;
+      color: #f3fbff;
+    }
+
+    .hero p {
+      margin: 0.75rem 0 0;
+      max-width: 74ch;
+      font-size: 0.93rem;
+      color: var(--muted);
+    }
+
+    .grid {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.95rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.65rem 0.72rem;
+      background: var(--panel-soft);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .chip strong {
+      display: block;
+      color: var(--good);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.24rem;
+      font-weight: 600;
+    }
+
+    section {
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(10, 24, 34, 0.78);
+      padding: 1rem 1.02rem;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0.62rem 0 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .diagram-wrap {
+      margin: 0.9rem 0 0;
+      padding: 0.65rem;
+      display: flex;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(18, 37, 52, 0.92), rgba(11, 25, 36, 0.94));
+    }
+
+    .diagram-wrap svg {
+      width: 100%;
+      max-width: 620px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .node rect {
+      fill: #0e2536;
+      stroke: #35607c;
+      stroke-width: 1.1;
+      rx: 7;
+    }
+
+    .node.hub rect {
+      stroke: var(--accent);
+      stroke-width: 1.7;
+    }
+
+    .node text {
+      fill: #deebf5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 10.7px;
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    .node.hub text {
+      fill: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .edge {
+      stroke: #5c89a6;
+      stroke-width: 1.35;
+      fill: none;
+      marker-end: url(#arr);
+    }
+
+    .caption {
+      margin-top: 0.45rem;
+      font-size: 0.8rem;
+      color: #7fa2ba;
+      text-align: center;
+    }
+
+    ul {
+      margin: 0.62rem 0 0;
+      padding: 0 0 0 1.02rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    li {
+      margin: 0.28rem 0;
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        padding: 1.25rem 0.78rem 1.8rem;
+      }
+
+      .hero,
+      section {
+        border-radius: 11px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Calyr Knowledge Architecture</p>
+      <h1>Calyr Ecosystem Overview</h1>
+
+      <p>
+        SQL organizes data. Calyr organizes knowledge: typed objects, explicit semantic links, immutable versions, and artifact-level traceability in one operational system.
+      </p>
+
+      <div class="grid">
+        <div class="chip"><strong>Core Claim</strong>Nexus subsumes table logic while preserving scientific semantics and provenance.</div>
+        <div class="chip"><strong>Need</strong>Without this layer, data, discussion, models, and outputs fragment and lose interpretability.</div>
+      </div>
+    </header>
+
+    <section>
+      <h2>Why Calyr is necessary</h2>
+      <p>
+        Scientific workflows do not fail because of missing files, they fail because context gets severed. Calyr keeps experiments, model states, literature claims, and published artifacts inside one linked object space so reasoning survives across iterations.
+      </p>
+      <p>
+        Calyr.Nexus is therefore a typed, relational, graph-extended, versioned object system: you do not overwrite state, you evolve it with lineage.
+      </p>
+    </section>
+
+    <section>
+      <h2>How modules relate</h2>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#5c89a6"/>
+        </marker>
+      </defs>
+
+      <!-- edges first (behind nodes) -->
+      <!-- Nexus → Eval -->
+      <line class="edge" x1="200" y1="58" x2="88"  y2="118"/>
+      <!-- Nexus → Okto -->
+      <line class="edge" x1="230" y1="60" x2="230" y2="118"/>
+      <!-- Nexus → Literature -->
+      <line class="edge" x1="260" y1="58" x2="372" y2="118"/>
+      <!-- Eval → Shared Objects -->
+      <line class="edge" x1="88"  y1="142" x2="168" y2="198"/>
+      <!-- Okto → Shared Objects -->
+      <line class="edge" x1="230" y1="142" x2="230" y2="198"/>
+      <!-- Literature → Shared Objects -->
+      <line class="edge" x1="372" y1="142" x2="292" y2="198"/>
+
+      <!-- Nexus (hub) -->
+      <g class="node hub" transform="translate(230,40)">
+        <rect x="-58" y="-18" width="116" height="36"/>
+        <text>Nexus</text>
+      </g>
+
+      <!-- Eval -->
+      <g class="node" transform="translate(88,130)">
+        <rect x="-52" y="-14" width="104" height="28"/>
+        <text>eval</text>
+      </g>
+
+      <!-- Okto -->
+      <g class="node" transform="translate(230,130)">
+        <rect x="-52" y="-14" width="104" height="28"/>
+        <text>okto</text>
+      </g>
+
+      <!-- Literature -->
+      <g class="node" transform="translate(372,130)">
+        <rect x="-52" y="-14" width="104" height="28"/>
+        <text>literature</text>
+      </g>
+
+      <!-- Shared Objects -->
+      <g class="node hub" transform="translate(230,210)">
+        <rect x="-72" y="-16" width="144" height="32"/>
+        <text>shared objects</text>
+      </g>
+        </svg>
+      </div>
+
+      <p class="caption">Nexus routes information; eval, okto, and literature enrich the shared object layer.</p>
+    </section>
+
+    <section>
+      <h2>Design principles</h2>
+      <ul>
+        <li>One source of truth: every run, model, and result is registered once and referenced everywhere.</li>
+        <li>Local first: heavy compute stays local; lightweight surfaces stay portable.</li>
+        <li>Composable: modules can run standalone or chained without workflow lock-in.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>FAIR data requirement</h2>
+      <p>
+        FAIR is treated as system behavior, not a documentation afterthought: objects are Findable by stable IDs, Accessible via reproducible paths, Interoperable through typed contracts, and Reusable through provenance and lineage.
+      </p>
+      <p>
+        This is why Nexus stores object metadata, semantic relations, immutable versions, and artifacts together in one execution model.
+      </p>
+    </section>
+  </main>
+
+</body>
+</html>
