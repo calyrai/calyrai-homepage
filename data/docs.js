@@ -143,6 +143,8 @@ window.CALYR_DOCS = [
     id:    'internal',
     title: '— Internal',
     pages: [
+      { id: 'calyr_gruendung', title: 'Calyr Gruendung', src: 'docs/calyr_gruendung.html' },
+      { id: 'calyr_gruendung_pitch', title: 'Calyr Gruendung (Pitch)', src: 'docs/calyr_gruendung_pitch.html' },
       { id: 'docs_system', title: 'Docs system',   src: 'docs/internal_docs_system.html' }
     ]
   }
