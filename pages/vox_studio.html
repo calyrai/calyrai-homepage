@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.vox — Voice Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: radial-gradient(circle at 0% 0%, #16244b 0, #050918 40%, #02030a 85%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f7f8ff;
+      font-size: 15px;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Layout ── */
+    .vox-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    /* ── Header ── */
+    .vox-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.6rem 0 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      margin-bottom: 2rem;
+    }
+    .vox-logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: #f7f8ff;
+    }
+    .vox-logo span { color: #6db8ff; }
+    .vox-tagline {
+      font-size: .8rem;
+      color: rgba(247,248,255,.45);
+      margin-left: auto;
+    }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      background: rgba(255,255,255,.04);
+      border-radius: 10px;
+      padding: .35rem;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: .55rem 1rem;
+      border: none;
+      background: transparent;
+      color: rgba(247,248,255,.5);
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 500;
+      transition: background .18s, color .18s;
+    }
+    .tab-btn.active {
+      background: rgba(109,184,255,.15);
+      color: #6db8ff;
+    }
+    .tab-btn:hover:not(.active) { background: rgba(255,255,255,.07); color: #f7f8ff; }
+
+    /* ── Panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(247,248,255,.4);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Form elements ── */
+    label { display: block; font-size: .83rem; color: rgba(247,248,255,.6); margin-bottom: .35rem; }
+    input[type=text], input[type=password], input[type=file],
+    textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 7px;
+      color: #f7f8ff;
+      font-size: .9rem;
+      padding: .65rem .9rem;
+      outline: none;
+      transition: border-color .18s;
+    }
+    input[type=text]:focus, input[type=password]:focus,
+    textarea:focus, select:focus {
+      border-color: rgba(109,184,255,.5);
+    }
+    textarea { resize: vertical; min-height: 110px; font-family: inherit; }
+    select option { background: #0d1a35; }
+
+    /* ── Range sliders ── */
+    .slider-row { display: flex; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+    .slider-row label { width: 110px; margin: 0; flex-shrink: 0; }
+    .slider-row input[type=range] { flex: 1; accent-color: #6db8ff; }
+    .slider-val { width: 36px; text-align: right; font-size: .85rem; color: #6db8ff; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .65rem 1.4rem;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-size: .88rem; font-weight: 600;
+      transition: opacity .18s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; }
+    .btn-primary { background: #1450a6; color: #f7f8ff; }
+    .btn-accent  { background: #2f7b7b; color: #f7f8ff; }
+    .btn-amber   { background: #b86e00; color: #f7f8ff; }
+    .btn-ghost   {
+      background: transparent;
+      color: rgba(247,248,255,.6);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.06); color: #f7f8ff; }
+    .btn-row { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-block;
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+    .badge-ok   { background: rgba(47,123,123,.3); color: #7adede; }
+    .badge-warn { background: rgba(184,110,0,.3);  color: #ffc166; }
+    .badge-info { background: rgba(20,80,166,.3);  color: #6db8ff; }
+    .badge-err  { background: rgba(180,40,40,.3);  color: #ff8888; }
+
+    /* ── Log / output ── */
+    .log-box {
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: .78rem;
+      color: rgba(247,248,255,.7);
+      min-height: 80px;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    .log-line-ok   { color: #7adede; }
+    .log-line-warn { color: #ffc166; }
+    .log-line-err  { color: #ff8888; }
+
+    /* ── Audio player ── */
+    audio {
+      width: 100%;
+      margin-top: .8rem;
+      filter: invert(1) hue-rotate(180deg);
+      border-radius: 6px;
+    }
+
+    /* ── Slide builder ── */
+    .slide-list { display: flex; flex-direction: column; gap: .8rem; margin-bottom: 1rem; }
+    .slide-item {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 9px;
+      padding: 1rem 1.1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: .6rem .8rem;
+      align-items: start;
+    }
+    .slide-item-body { display: flex; flex-direction: column; gap: .5rem; }
+    .slide-item input[type=text], .slide-item textarea, .slide-item select {
+      padding: .5rem .75rem;
+      font-size: .83rem;
+    }
+    .slide-item textarea { min-height: 70px; }
+    .slide-remove {
+      background: rgba(180,40,40,.2);
+      border: 1px solid rgba(180,40,40,.3);
+      color: #ff8888;
+      border-radius: 6px;
+      padding: .3rem .55rem;
+      cursor: pointer;
+      font-size: .8rem;
+      align-self: start;
+    }
+    .slide-remove:hover { background: rgba(180,40,40,.35); }
+
+    /* ── Provider selector ── */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+      margin-bottom: 1rem;
+    }
+    .provider-card {
+      border: 2px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+    }
+    .provider-card:hover { background: rgba(109,184,255,.06); }
+    .provider-card.selected { border-color: #6db8ff; background: rgba(109,184,255,.1); }
+    .provider-card h3 { font-size: .95rem; margin-bottom: .3rem; }
+    .provider-card p  { font-size: .78rem; color: rgba(247,248,255,.5); }
+
+    /* ── Voice clone steps ── */
+    .step-list { counter-reset: steps; display: flex; flex-direction: column; gap: .9rem; }
+    .step {
+      counter-increment: steps;
+      display: flex; gap: .9rem; align-items: flex-start;
+    }
+    .step::before {
+      content: counter(steps);
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: rgba(109,184,255,.2);
+      border: 1px solid rgba(109,184,255,.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700; color: #6db8ff;
+    }
+    .step-body { flex: 1; }
+    .step-body h4 { font-size: .9rem; margin-bottom: .3rem; }
+    .step-body p  { font-size: .82rem; color: rgba(247,248,255,.55); line-height: 1.5; }
+
+    /* ── Waveform visualizer ── */
+    #waveform-canvas {
+      width: 100%; height: 60px;
+      border-radius: 6px;
+      background: rgba(0,0,0,.3);
+      margin-top: .6rem;
+    }
+
+    /* ── Recording indicator ── */
+    .rec-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #ff4444;
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .provider-grid { grid-template-columns: 1fr; }
+      .tab-btn { font-size: .75rem; padding: .45rem .5rem; }
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,.07);
+      margin: 1.2rem 0;
+    }
+
+    /* ── Key row ── */
+    .key-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: .6rem;
+      align-items: end;
+    }
+    .key-row .btn { white-space: nowrap; }
+
+    /* ── Hint text ── */
+    .hint { font-size: .78rem; color: rgba(247,248,255,.38); margin-top: .3rem; line-height: 1.5; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: rgba(255,255,255,.07);
+      border-radius: 4px;
+      height: 6px;
+      margin-top: .6rem;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #1450a6, #6db8ff);
+      border-radius: 4px;
+      transition: width .4s;
+      width: 0%;
+    }
+  </style>
+</head>
+<body>
+<div class="vox-shell">
+
+  <!-- Header -->
+  <header class="vox-header">
+    <div class="vox-logo">Calyr.<span>vox</span></div>
+    <div class="vox-tagline">Voice Studio · intern</div>
+    <span id="api-status-badge" class="badge badge-warn">API Keys prüfen</span>
+  </header>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" data-tab="setup"    role="tab">Einrichtung</button>
+    <button class="tab-btn"        data-tab="voice"    role="tab">Stimme einspielen</button>
+    <button class="tab-btn"        data-tab="build"    role="tab">Slides bauen</button>
+    <button class="tab-btn"        data-tab="generate" role="tab">Generieren</button>
+    <button class="tab-btn"        data-tab="export"   role="tab">Export</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ TAB: EINRICHTUNG ══ -->
+  <div class="tab-panel active" id="tab-setup">
+
+    <div class="card">
+      <div class="card-title">TTS Anbieter wählen</div>
+      <div class="provider-grid">
+        <div class="provider-card selected" data-provider="openai" onclick="selectProvider('openai', this)">
+          <h3>OpenAI TTS</h3>
+          <p>Sofort nutzbar · gute Qualität · kein Voice Cloning</p>
+        </div>
+        <div class="provider-card" data-provider="elevenlabs" onclick="selectProvider('elevenlabs', this)">
+          <h3>ElevenLabs</h3>
+          <p>Exzellente Qualität · Voice Cloning · API Key nötig</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="setup-openai">
+      <div class="card-title">OpenAI API Key</div>
+      <div class="key-row">
+        <div>
+          <label for="openai-key">API Key</label>
+          <input type="password" id="openai-key" placeholder="sk-…" autocomplete="off" />
+        </div>
+        <button class="btn btn-primary" onclick="saveKey('openai')">Speichern</button>
+      </div>
+      <p class="hint">Gespeichert nur im localStorage dieses Browsers. Nie an Server gesendet.</p>
+      <hr class="divider" />
+      <div class="card-title">Stimme (OpenAI)</div>
+      <label for="openai-voice">Voice</label>
+      <select id="openai-voice">
+        <option value="onyx">onyx — tief, professionell</option>
+        <option value="echo">echo — klar, neutral</option>
+        <option value="fable">fable — warm, erzählerisch</option>
+        <option value="nova">nova — energetisch</option>
+        <option value="shimmer">shimmer — sanft</option>
+        <option value="alloy">alloy — ausgewogen</option>
+      </select>
+    </div>
+
+    <div class="card" id="setup-elevenlabs" style="display:none;">
+      <div class="card-title">ElevenLabs API Key</div>
+      <div class="key-row">
+        <div>
+          <label for="el-key">API Key</label>
+          <input type="password" id="el-key" placeholder="sk_…" autocomplete="off" />
+        </div>
+        <button class="btn btn-primary" onclick="saveKey('elevenlabs')">Speichern</button>
+      </div>
+      <p class="hint">Gespeichert nur im localStorage.</p>
+      <hr class="divider" />
+      <div class="card-title">Voice ID (nach Clone)</div>
+      <input type="text" id="el-voice-id" placeholder="z.B. abc123xyz" />
+      <p class="hint">Wird automatisch befüllt nach erfolgreichem Voice Clone (Tab "Stimme einspielen").</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Verbindungstest</div>
+      <button class="btn btn-ghost" onclick="testConnection()">Verbindung testen</button>
+      <div class="log-box" id="setup-log" style="margin-top:.8rem;">Noch kein Test durchgeführt.</div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TAB: STIMME ══ -->
+  <div class="tab-panel" id="tab-voice">
+
+    <div class="card">
+      <div class="card-title">Voice Cloning — Anleitung</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-body">
+            <h4>Aufnahme erstellen</h4>
+            <p>Nimm 1–5 Minuten deiner Stimme auf. Ruhige Umgebung, kein Hall. Sprich klar und natürlich — z.B. einen Artikel vorlesen.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <h4>Aufnahme prüfen</h4>
+            <p>Höre die Aufnahme ab und stelle sicher, dass keine Hintergrundgeräusche, Störungen oder Clipping vorhanden sind.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <h4>Zu ElevenLabs hochladen</h4>
+            <p>Datei auswählen und mit Namen "calyr-voice" speichern. Die Voice ID wird danach automatisch hier eingetragen (wenn API Key gesetzt).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <h4>Preview generieren</h4>
+            <p>Kurztest mit eigenem Text — höre die geklonte Stimme direkt hier ab.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Aufnahme</div>
+      <div class="btn-row" style="margin-top:0;margin-bottom:.8rem;">
+        <button class="btn btn-primary" id="rec-start-btn" onclick="startRecording()">Aufnahme starten</button>
+        <button class="btn btn-amber"   id="rec-stop-btn"  onclick="stopRecording()" disabled>
+          <span class="rec-dot"></span> Stoppen
+        </button>
+      </div>
+      <canvas id="waveform-canvas"></canvas>
+      <div id="rec-status" class="hint" style="margin-top:.5rem;">Mikrofon nicht aktiv.</div>
+      <div id="rec-playback" style="display:none;">
+        <hr class="divider" />
+        <div class="card-title">Aufnahme abhören</div>
+        <audio id="rec-audio" controls></audio>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="downloadRecording()">Als .webm herunterladen</button>
+          <button class="btn btn-accent" id="upload-clone-btn" onclick="uploadVoiceClone()" style="display:none;">
+            Zu ElevenLabs hochladen &amp; klon erstellen
+          </button>
+        </div>
+        <div class="log-box" id="clone-log" style="margin-top:.8rem;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Oder: Datei hochladen</div>
+      <label for="voice-file">WAV / MP3 / M4A</label>
+      <input type="file" id="voice-file" accept="audio/*" onchange="handleVoiceFile(this)" />
+      <div id="file-playback" style="display:none; margin-top:.8rem;">
+        <audio id="file-audio" controls></audio>
+        <div class="btn-row">
+          <button class="btn btn-accent" onclick="uploadFileAsClone()">Zu ElevenLabs hochladen &amp; klon erstellen</button>
+        </div>
+        <div class="log-box" id="file-clone-log" style="margin-top:.8rem;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Preview — geklonte Stimme testen</div>
+      <label for="preview-text">Text</label>
+      <textarea id="preview-text">Ich bin Rupert. Dieses System generiert Präsentationen mit meiner Stimme.</textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="previewVoice()">Vorschau generieren</button>
+      </div>
+      <div id="preview-player" style="display:none;">
+        <audio id="preview-audio" controls></audio>
+      </div>
+      <div class="log-box" id="preview-log" style="margin-top:.8rem; display:none;"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TAB: SLIDES ══ -->
+  <div class="tab-panel" id="tab-build">
+
+    <div class="card">
+      <div class="card-title">Slides</div>
+      <div class="slide-list" id="slide-list"></div>
+      <button class="btn btn-ghost" onclick="addSlide()">+ Slide hinzufügen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Import / Export</div>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-ghost" onclick="exportSlidesYaml()">YAML exportieren</button>
+        <button class="btn btn-ghost" onclick="importSlidesYaml()">YAML importieren</button>
+        <button class="btn btn-ghost" onclick="loadExampleSlides()">Beispiel laden</button>
+      </div>
+      <input type="file" id="yaml-import-input" accept=".yaml,.yml,.json" style="display:none;" onchange="handleYamlImport(this)" />
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TAB: GENERIEREN ══ -->
+  <div class="tab-panel" id="tab-generate">
+
+    <div class="card">
+      <div class="card-title">Sprechtext generieren (LLM)</div>
+      <p class="hint" style="margin-bottom:.8rem;">Bullets werden zu natürlichem Sprechtext umgewandelt — nicht 1:1 vorgelesen.</p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-primary" onclick="generateSpeechTexts()">Sprechtext für alle Slides generieren</button>
+        <button class="btn btn-ghost"   onclick="clearSpeechTexts()">Texte zurücksetzen</button>
+      </div>
+      <div class="progress-wrap" id="speech-progress-wrap" style="display:none;">
+        <div class="progress-bar" id="speech-progress-bar"></div>
+      </div>
+      <div class="log-box" id="speech-log" style="margin-top:.8rem;"></div>
+    </div>
+
+    <div class="card" id="speech-results-card" style="display:none;">
+      <div class="card-title">Generierte Sprechtexte</div>
+      <div id="speech-results"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Audio synthetisieren (TTS)</div>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-accent" id="tts-btn" onclick="synthesizeAll()">Audio für alle Slides generieren</button>
+      </div>
+      <div class="progress-wrap" id="tts-progress-wrap" style="display:none;">
+        <div class="progress-bar" id="tts-progress-bar"></div>
+      </div>
+      <div class="log-box" id="tts-log" style="margin-top:.8rem;"></div>
+    </div>
+
+    <div class="card" id="audio-results-card" style="display:none;">
+      <div class="card-title">Generierte Audio-Dateien</div>
+      <div id="audio-results"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TAB: EXPORT ══ -->
+  <div class="tab-panel" id="tab-export">
+
+    <div class="card">
+      <div class="card-title">Export</div>
+      <p class="hint" style="margin-bottom:1rem;">Alle Audio-Dateien werden mit den Slides gepackt. Für das Video ist ffmpeg lokal nötig.</p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-primary" onclick="exportManifestJson()">manifest.json exportieren</button>
+        <button class="btn btn-accent"  onclick="exportVoicedYamls()">Voiced YAMLs exportieren</button>
+        <button class="btn btn-ghost"   onclick="exportAllAudio()">Audio-Dateien herunterladen</button>
+      </div>
+      <hr class="divider" />
+      <div class="card-title">ffmpeg Render Command</div>
+      <div class="log-box" id="ffmpeg-cmd">Generiere zuerst Audio im Tab "Generieren".</div>
+      <button class="btn btn-ghost" style="margin-top:.7rem;" onclick="copyFfmpegCmd()">Command kopieren</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Session Status</div>
+      <div id="session-summary"></div>
+    </div>
+
+  </div>
+
+</div><!-- /vox-shell -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// calyr.vox · Core State
+// ═══════════════════════════════════════════════════════════
+const STORAGE_KEY = 'calyr_vox_v1';
+
+let state = {
+  provider: 'openai',
+  openaiVoice: 'onyx',
+  slides: [],          // [{id, title, bullets[], tone, duration}]
+  speechTexts: {},     // { slide_id: text }
+  audioBlobs: {},      // { slide_id: Blob }
+  audioUrls: {},       // { slide_id: objectURL }
+  voiceId: '',         // ElevenLabs voice_id
+};
+
+let recordingChunks = [];
+let mediaRecorder = null;
+let recBlob = null;
+let fileAudioBlob = null;
+let animFrame = null;
+let audioCtx = null;
+let analyser = null;
+
+// ── Persist ──────────────────────────────────────────────
+function saveState() {
+  const s = { ...state };
+  delete s.audioBlobs;  // Blobs not serializable
+  delete s.audioUrls;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) Object.assign(state, JSON.parse(raw));
+  } catch(e) {}
+  // Restore UI
+  selectProvider(state.provider, document.querySelector(`[data-provider="${state.provider}"]`));
+  const oKey = localStorage.getItem('calyr_vox_oai_key') || '';
+  const eKey = localStorage.getItem('calyr_vox_el_key')  || '';
+  if (oKey) document.getElementById('openai-key').value = oKey;
+  if (eKey) document.getElementById('el-key').value = eKey;
+  if (state.voiceId) document.getElementById('el-voice-id').value = state.voiceId;
+  if (state.openaiVoice) document.getElementById('openai-voice').value = state.openaiVoice;
+  renderSlides();
+  updateApiStatusBadge();
+}
+
+// ── API Key Helpers ───────────────────────────────────────
+function getOpenAIKey() { return localStorage.getItem('calyr_vox_oai_key') || ''; }
+function getELKey()     { return localStorage.getItem('calyr_vox_el_key')  || ''; }
+
+function saveKey(provider) {
+  if (provider === 'openai') {
+    const k = document.getElementById('openai-key').value.trim();
+    localStorage.setItem('calyr_vox_oai_key', k);
+  } else {
+    const k = document.getElementById('el-key').value.trim();
+    localStorage.setItem('calyr_vox_el_key', k);
+  }
+  state.voiceId = document.getElementById('el-voice-id').value.trim();
+  saveState();
+  updateApiStatusBadge();
+  log('setup-log', 'Key gespeichert.', 'ok');
+}
+
+function updateApiStatusBadge() {
+  const badge = document.getElementById('api-status-badge');
+  const ok = state.provider === 'openai' ? !!getOpenAIKey() : (!!getELKey() && !!state.voiceId);
+  badge.textContent = ok ? 'API bereit' : 'API Keys prüfen';
+  badge.className   = ok ? 'badge badge-ok' : 'badge badge-warn';
+}
+
+// ── Tab Navigation ────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'export') renderExport();
+    if (btn.dataset.tab === 'generate') renderSpeechResults();
+  });
+});
+
+// ── Provider Selection ────────────────────────────────────
+function selectProvider(name, el) {
+  document.querySelectorAll('.provider-card').forEach(c => c.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  state.provider = name;
+  document.getElementById('setup-openai').style.display    = name === 'openai'      ? '' : 'none';
+  document.getElementById('setup-elevenlabs').style.display = name === 'elevenlabs' ? '' : 'none';
+  document.getElementById('upload-clone-btn').style.display = name === 'elevenlabs' ? '' : 'none';
+  saveState();
+  updateApiStatusBadge();
+}
+
+// ── Connection Test ───────────────────────────────────────
+async function testConnection() {
+  const logEl = document.getElementById('setup-log');
+  logEl.textContent = '';
+  log('setup-log', 'Teste Verbindung…', 'info');
+  if (state.provider === 'openai') {
+    const key = getOpenAIKey();
+    if (!key) { log('setup-log', 'Kein OpenAI API Key gesetzt.', 'err'); return; }
+    try {
+      const r = await fetch('https://api.openai.com/v1/models', {
+        headers: { Authorization: `Bearer ${key}` }
+      });
+      if (r.ok) log('setup-log', 'OpenAI ✓ Verbindung erfolgreich.', 'ok');
+      else      log('setup-log', `OpenAI Fehler: ${r.status} ${r.statusText}`, 'err');
+    } catch(e) { log('setup-log', 'Netzwerkfehler: ' + e.message, 'err'); }
+  } else {
+    const key = getELKey();
+    if (!key) { log('setup-log', 'Kein ElevenLabs API Key gesetzt.', 'err'); return; }
+    try {
+      const r = await fetch('https://api.elevenlabs.io/v1/voices', {
+        headers: { 'xi-api-key': key }
+      });
+      if (r.ok) {
+        const data = await r.json();
+        const names = data.voices.map(v => v.name).join(', ');
+        log('setup-log', `ElevenLabs ✓ ${data.voices.length} Stimmen gefunden: ${names}`, 'ok');
+      } else {
+        log('setup-log', `ElevenLabs Fehler: ${r.status}`, 'err');
+      }
+    } catch(e) { log('setup-log', 'Netzwerkfehler: ' + e.message, 'err'); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// Voice Recording
+// ═══════════════════════════════════════════════════════════
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new AudioContext();
+    analyser = audioCtx.createAnalyser();
+    audioCtx.createMediaStreamSource(stream).connect(analyser);
+    analyser.fftSize = 256;
+    drawWaveform(analyser);
+
+    recordingChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data.size) recordingChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      recBlob = new Blob(recordingChunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(recBlob);
+      document.getElementById('rec-audio').src = url;
+      document.getElementById('rec-playback').style.display = '';
+      if (state.provider === 'elevenlabs' && getELKey())
+        document.getElementById('upload-clone-btn').style.display = '';
+      cancelAnimationFrame(animFrame);
+      document.getElementById('rec-status').textContent = `Aufnahme beendet · ${(recBlob.size/1024).toFixed(1)} KB`;
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start(250);
+    document.getElementById('rec-start-btn').disabled = true;
+    document.getElementById('rec-stop-btn').disabled  = false;
+    document.getElementById('rec-status').innerHTML = '<span class="rec-dot"></span> Aufnahme läuft…';
+  } catch(e) {
+    document.getElementById('rec-status').textContent = 'Mikrofonzugriff verweigert: ' + e.message;
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  document.getElementById('rec-start-btn').disabled = false;
+  document.getElementById('rec-stop-btn').disabled  = true;
+}
+
+function drawWaveform(analyser) {
+  const canvas = document.getElementById('waveform-canvas');
+  const ctx = canvas.getContext('2d');
+  const buf = new Uint8Array(analyser.frequencyBinCount);
+  function frame() {
+    animFrame = requestAnimationFrame(frame);
+    analyser.getByteTimeDomainData(buf);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#6db8ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const W = canvas.width, H = canvas.height;
+    buf.forEach((v, i) => {
+      const x = (i / buf.length) * W;
+      const y = (v / 128) * H / 2;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  }
+  frame();
+}
+
+function downloadRecording() {
+  if (!recBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(recBlob);
+  a.download = 'calyr_voice_sample.webm';
+  a.click();
+}
+
+function handleVoiceFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  fileAudioBlob = file;
+  const url = URL.createObjectURL(file);
+  document.getElementById('file-audio').src = url;
+  document.getElementById('file-playback').style.display = '';
+}
+
+// ── ElevenLabs Clone Upload ───────────────────────────────
+async function uploadVoiceClone() { await _doCloneUpload(recBlob, 'clone-log', 'calyr-voice'); }
+async function uploadFileAsClone() { await _doCloneUpload(fileAudioBlob, 'file-clone-log', 'calyr-voice'); }
+
+async function _doCloneUpload(blob, logId, voiceName) {
+  const key = getELKey();
+  if (!key) { log(logId, 'Kein ElevenLabs API Key gesetzt.', 'err'); return; }
+  if (!blob) { log(logId, 'Keine Aufnahme vorhanden.', 'err'); return; }
+
+  log(logId, 'Lade zu ElevenLabs hoch…', 'info');
+  const form = new FormData();
+  form.append('name', voiceName);
+  form.append('files', blob, 'sample.webm');
+
+  try {
+    const r = await fetch('https://api.elevenlabs.io/v1/voices/add', {
+      method: 'POST',
+      headers: { 'xi-api-key': key },
+      body: form,
+    });
+    const data = await r.json();
+    if (r.ok && data.voice_id) {
+      state.voiceId = data.voice_id;
+      document.getElementById('el-voice-id').value = data.voice_id;
+      saveState();
+      updateApiStatusBadge();
+      log(logId, `✓ Klon erstellt. Voice ID: ${data.voice_id}`, 'ok');
+    } else {
+      log(logId, `Fehler: ${JSON.stringify(data)}`, 'err');
+    }
+  } catch(e) { log(logId, 'Netzwerkfehler: ' + e.message, 'err'); }
+}
+
+// ── Voice Preview ─────────────────────────────────────────
+async function previewVoice() {
+  const text = document.getElementById('preview-text').value.trim();
+  if (!text) return;
+  document.getElementById('preview-log').style.display = '';
+  log('preview-log', 'Generiere Vorschau…', 'info');
+  const audioBlob = await _synthesizeText(text, 'preview-log');
+  if (!audioBlob) return;
+  const url = URL.createObjectURL(audioBlob);
+  document.getElementById('preview-audio').src = url;
+  document.getElementById('preview-player').style.display = '';
+  log('preview-log', '✓ Vorschau bereit.', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════
+// Slide Builder
+// ═══════════════════════════════════════════════════════════
+function addSlide(data) {
+  const id = data?.id || 'slide_' + Date.now();
+  state.slides.push({
+    id,
+    title:    data?.title    || '',
+    bullets:  data?.bullets  || [''],
+    tone:     data?.tone     || 'professional',
+    duration: data?.duration || '30s',
+  });
+  saveState();
+  renderSlides();
+}
+
+function removeSlide(id) {
+  state.slides = state.slides.filter(s => s.id !== id);
+  delete state.speechTexts[id];
+  delete state.audioBlobs[id];
+  delete state.audioUrls[id];
+  saveState();
+  renderSlides();
+}
+
+function renderSlides() {
+  const list = document.getElementById('slide-list');
+  list.innerHTML = '';
+  state.slides.forEach((slide, idx) => {
+    const item = document.createElement('div');
+    item.className = 'slide-item';
+    item.dataset.id = slide.id;
+    item.innerHTML = `
+      <div class="slide-item-body">
+        <input type="text" placeholder="Titel" value="${esc(slide.title)}"
+          oninput="updateSlideField('${slide.id}','title',this.value)" />
+        <textarea placeholder="Bullets (eine pro Zeile)"
+          oninput="updateSlideField('${slide.id}','bullets',this.value.split('\\n'))"
+        >${esc(slide.bullets.join('\n'))}</textarea>
+        <div style="display:flex;gap:.6rem;">
+          <select style="flex:1;" onchange="updateSlideField('${slide.id}','tone',this.value)">
+            ${['professional','casual','scientific','motivational'].map(t =>
+              `<option value="${t}" ${slide.tone===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+          <input type="text" style="width:80px;" placeholder="30s / 1m / auto"
+            value="${esc(slide.duration)}"
+            oninput="updateSlideField('${slide.id}','duration',this.value)" />
+        </div>
+        ${state.speechTexts[slide.id] ? `<div class="hint" style="color:rgba(122,222,222,.7);">✓ Sprechtext vorhanden</div>` : ''}
+        ${state.audioUrls[slide.id]   ? `<audio controls src="${state.audioUrls[slide.id]}" style="margin-top:.4rem;"></audio>` : ''}
+      </div>
+      <button class="slide-remove" onclick="removeSlide('${slide.id}')">✕</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function updateSlideField(id, field, value) {
+  const s = state.slides.find(s => s.id === id);
+  if (s) { s[field] = value; saveState(); }
+}
+
+function loadExampleSlides() {
+  state.slides = [];
+  [
+    { id:'slide_intro_001',  title:'Introduction', bullets:['Calyr.vox — Voice-over System','Automated presentation pipeline','From YAML to video'], tone:'professional', duration:'20s' },
+    { id:'slide_legacy_001', title:'Legacy Reporting', bullets:['Oracle Warehouse Builder','SAP BusinessObjects','20 years legacy'], tone:'professional', duration:'30s' },
+    { id:'slide_vision_001', title:'Vision', bullets:['10 presentations automatically','Multiple voice styles','Full automation'], tone:'motivational', duration:'25s' },
+  ].forEach(s => state.slides.push(s));
+  saveState();
+  renderSlides();
+}
+
+function exportSlidesYaml() {
+  const lines = state.slides.map(s => [
+    `- id: ${s.id}`,
+    `  title: "${s.title}"`,
+    `  bullets:`,
+    ...s.bullets.map(b => `    - "${b}"`),
+    `  tone: ${s.tone}`,
+    `  duration: ${s.duration}`,
+    '',
+  ].join('\n')).join('\n');
+  downloadText('vox_slides.yaml', lines);
+}
+
+function importSlidesYaml() { document.getElementById('yaml-import-input').click(); }
+
+function handleYamlImport(input) {
+  const file = input.files[0];
+  if (!file) return;
+  file.text().then(txt => {
+    alert('YAML Import erkannt. Für vollen YAML-Parse bitte calyr.vox CLI nutzen:\npython apps/vox/calyr_vox.py all <slides_dir>\n\nDatei liegt bereit: ' + file.name);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// Speech Generation (LLM)
+// ═══════════════════════════════════════════════════════════
+async function generateSpeechTexts() {
+  const key = getOpenAIKey();
+  if (!key) { log('speech-log', 'OpenAI API Key fehlt (für Sprechtext immer OpenAI).', 'err'); return; }
+  if (!state.slides.length) { log('speech-log', 'Keine Slides vorhanden.', 'warn'); return; }
+
+  const wrap = document.getElementById('speech-progress-wrap');
+  const bar  = document.getElementById('speech-progress-bar');
+  wrap.style.display = '';
+  log('speech-log', `Generiere Sprechtext für ${state.slides.length} Slides…`, 'info');
+
+  for (let i = 0; i < state.slides.length; i++) {
+    const slide = state.slides[i];
+    bar.style.width = `${Math.round((i / state.slides.length) * 100)}%`;
+    log('speech-log', `[${i+1}/${state.slides.length}] ${slide.title}…`, 'info');
+
+    const bullets = slide.bullets.filter(b => b.trim()).join('\n- ');
+    const targetWords = parseDurationToWords(slide.duration);
+    const wordHint = targetWords ? `\nTarget length: approximately ${targetWords} words.` : '';
+
+    const prompt = `You are a professional presentation narrator for Calyr. Given a slide's title, bullet points, and tone, write natural spoken commentary. Do NOT read bullets verbatim; synthesize and connect naturally. Output only the spoken text.
+
+Title: ${slide.title}
+Bullets:
+- ${bullets}
+Tone: ${slide.tone}${wordHint}`;
+
+    try {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7,
+        }),
+      });
+      const data = await r.json();
+      if (r.ok) {
+        state.speechTexts[slide.id] = data.choices[0].message.content.trim();
+        log('speech-log', `  ✓ ${slide.title} (${state.speechTexts[slide.id].split(' ').length} Wörter)`, 'ok');
+      } else {
+        log('speech-log', `  ✗ ${slide.title}: ${data.error?.message}`, 'err');
+      }
+    } catch(e) { log('speech-log', `  ✗ Netzwerkfehler: ${e.message}`, 'err'); }
+  }
+
+  bar.style.width = '100%';
+  saveState();
+  renderSlides();
+  renderSpeechResults();
+  log('speech-log', '─ Fertig.', 'ok');
+  setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+}
+
+function clearSpeechTexts() {
+  state.speechTexts = {};
+  saveState();
+  renderSlides();
+  document.getElementById('speech-results-card').style.display = 'none';
+  log('speech-log', 'Sprechtexte zurückgesetzt.', 'warn');
+}
+
+function renderSpeechResults() {
+  const container = document.getElementById('speech-results');
+  const card = document.getElementById('speech-results-card');
+  const ids = Object.keys(state.speechTexts);
+  if (!ids.length) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  container.innerHTML = ids.map(id => {
+    const slide = state.slides.find(s => s.id === id);
+    const text  = state.speechTexts[id];
+    return `<div style="margin-bottom:1rem;">
+      <div class="card-title" style="margin-bottom:.4rem;">${slide ? esc(slide.title) : id}</div>
+      <div style="font-size:.85rem;color:rgba(247,248,255,.75);line-height:1.6;">${esc(text)}</div>
+      <div class="hint">${text.split(' ').length} Wörter · ~${Math.round(text.split(' ').length/150*60)}s</div>
+      <hr class="divider" />
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TTS Synthesis
+// ═══════════════════════════════════════════════════════════
+async function synthesizeAll() {
+  const toProcess = state.slides.filter(s => state.speechTexts[s.id]);
+  if (!toProcess.length) { log('tts-log', 'Kein Sprechtext vorhanden. Zuerst Sprechtexte generieren.', 'warn'); return; }
+
+  const wrap = document.getElementById('tts-progress-wrap');
+  const bar  = document.getElementById('tts-progress-bar');
+  wrap.style.display = '';
+  log('tts-log', `Synthetisiere Audio für ${toProcess.length} Slides via ${state.provider}…`, 'info');
+
+  for (let i = 0; i < toProcess.length; i++) {
+    const slide = toProcess[i];
+    bar.style.width = `${Math.round((i / toProcess.length) * 100)}%`;
+    log('tts-log', `[${i+1}/${toProcess.length}] ${slide.title}…`, 'info');
+
+    const blob = await _synthesizeText(state.speechTexts[slide.id], 'tts-log');
+    if (blob) {
+      state.audioBlobs[slide.id] = blob;
+      if (state.audioUrls[slide.id]) URL.revokeObjectURL(state.audioUrls[slide.id]);
+      state.audioUrls[slide.id] = URL.createObjectURL(blob);
+      log('tts-log', `  ✓ ${slide.title} (${(blob.size/1024).toFixed(0)} KB)`, 'ok');
+    }
+  }
+
+  bar.style.width = '100%';
+  renderSlides();
+  renderAudioResults();
+  log('tts-log', '─ Fertig.', 'ok');
+  setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+}
+
+async function _synthesizeText(text, logId) {
+  if (state.provider === 'openai') {
+    const key = getOpenAIKey();
+    if (!key) { log(logId, 'Kein OpenAI Key.', 'err'); return null; }
+    const voice = document.getElementById('openai-voice').value;
+    try {
+      const r = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'tts-1-hd', voice, input: text, response_format: 'mp3' }),
+      });
+      if (!r.ok) { log(logId, `OpenAI TTS Fehler: ${r.status}`, 'err'); return null; }
+      return await r.blob();
+    } catch(e) { log(logId, 'Netzwerkfehler: ' + e.message, 'err'); return null; }
+
+  } else {
+    const key = getELKey();
+    const vid = state.voiceId || document.getElementById('el-voice-id').value.trim();
+    if (!key || !vid) { log(logId, 'ElevenLabs Key oder Voice ID fehlt.', 'err'); return null; }
+    try {
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vid}`, {
+        method: 'POST',
+        headers: { 'xi-api-key': key, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+        body: JSON.stringify({
+          text,
+          model_id: 'eleven_multilingual_v2',
+          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
+        }),
+      });
+      if (!r.ok) { log(logId, `ElevenLabs TTS Fehler: ${r.status}`, 'err'); return null; }
+      return await r.blob();
+    } catch(e) { log(logId, 'Netzwerkfehler: ' + e.message, 'err'); return null; }
+  }
+}
+
+function renderAudioResults() {
+  const container = document.getElementById('audio-results');
+  const card      = document.getElementById('audio-results-card');
+  const ids = Object.keys(state.audioUrls);
+  if (!ids.length) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  container.innerHTML = ids.map(id => {
+    const slide = state.slides.find(s => s.id === id);
+    return `<div style="margin-bottom:1rem;">
+      <div class="card-title" style="margin-bottom:.3rem;">${slide ? esc(slide.title) : id}</div>
+      <audio controls src="${state.audioUrls[id]}"></audio>
+      <hr class="divider" />
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// Export
+// ═══════════════════════════════════════════════════════════
+function renderExport() {
+  const ok = state.slides.length;
+  const hasText = Object.keys(state.speechTexts).length;
+  const hasAudio = Object.keys(state.audioBlobs).length;
+
+  document.getElementById('session-summary').innerHTML = `
+    <div class="hint" style="line-height:2;">
+      Slides: <span class="badge badge-info">${state.slides.length}</span> &nbsp;
+      Sprechtexte: <span class="badge ${hasText ? 'badge-ok' : 'badge-warn'}">${hasText}</span> &nbsp;
+      Audio-Dateien: <span class="badge ${hasAudio ? 'badge-ok' : 'badge-warn'}">${hasAudio}</span> &nbsp;
+      Anbieter: <span class="badge badge-info">${state.provider}</span>
+    </div>
+  `;
+
+  if (hasAudio) {
+    const cmds = state.slides
+      .filter(s => state.audioUrls[s.id])
+      .map((s, i) => `# Slide ${i+1}: ${s.title}\n# (Audio manuell speichern, dann:)\nffmpeg -loop 1 -i ${s.id}.png -i ${s.id}.mp3 -c:v libx264 -t $(ffprobe -v error -show_entries format=duration -of default=nokey=1 ${s.id}.mp3) -shortest ${s.id}.mp4`)
+      .join('\n\n');
+    const concat = state.slides.filter(s => state.audioUrls[s.id]).map(s => `file '${s.id}.mp4'`).join('\n');
+    document.getElementById('ffmpeg-cmd').textContent =
+      cmds + '\n\n# Zusammenführen:\necho "' + concat + '" > concat.txt\nffmpeg -f concat -safe 0 -i concat.txt -c copy calyr_vox.mp4';
+  }
+}
+
+function exportManifestJson() {
+  const manifest = state.slides
+    .filter(s => state.audioUrls[s.id])
+    .map(s => ({
+      id: s.id,
+      title: s.title,
+      audio: `output/vox/audio/${s.id}.mp3`,
+      image: `output/vox/images/${s.id}.png`,
+      speaker_text: state.speechTexts[s.id] || '',
+    }));
+  downloadText('manifest.json', JSON.stringify(manifest, null, 2));
+}
+
+function exportVoicedYamls() {
+  state.slides.forEach(s => {
+    if (!state.speechTexts[s.id]) return;
+    const yaml = [
+      `id: ${s.id}`,
+      `type: slide`,
+      `title: "${s.title}"`,
+      `bullets:`,
+      ...s.bullets.map(b => `  - "${b}"`),
+      `tone: ${s.tone}`,
+      `duration: ${s.duration}`,
+      `speaker_text: |`,
+      ...state.speechTexts[s.id].split('\n').map(l => `  ${l}`),
+      `estimated_duration_s: ${Math.round(state.speechTexts[s.id].split(' ').length/150*60)}`,
+    ].join('\n');
+    downloadText(`${s.id}_voiced.yaml`, yaml);
+  });
+}
+
+function exportAllAudio() {
+  Object.entries(state.audioBlobs).forEach(([id, blob]) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${id}.mp3`;
+    a.click();
+  });
+}
+
+function copyFfmpegCmd() {
+  const txt = document.getElementById('ffmpeg-cmd').textContent;
+  navigator.clipboard.writeText(txt).then(() => alert('Command kopiert.'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// Utilities
+// ═══════════════════════════════════════════════════════════
+function log(elId, msg, type) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const line = document.createElement('div');
+  line.className = type === 'ok' ? 'log-line-ok' : type === 'err' ? 'log-line-err' : type === 'warn' ? 'log-line-warn' : '';
+  line.textContent = msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function parseDurationToWords(dur) {
+  const s = String(dur).trim().toLowerCase();
+  if (s === 'auto') return null;
+  let secs = 0;
+  if (s.endsWith('m')) secs = parseInt(s) * 60;
+  else if (s.endsWith('s')) secs = parseInt(s);
+  else secs = parseInt(s);
+  return Math.round(secs * 150 / 60);
+}
+
+function downloadText(filename, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  a.download = filename;
+  a.click();
+}
+
+// ─ Init ──────────────────────────────────────────────────
+loadState();
+if (!state.slides.length) loadExampleSlides();
+</script>
+</body>
+</html>

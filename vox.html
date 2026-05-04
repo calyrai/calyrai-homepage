@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.Vox - Internal Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/citizen.css" />
+
+  <script src="js/nav_autohide.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+  <script src="js/vox_gate.js" defer></script>
+
+  <style>
+    .vox-main {
+      display: none;
+      min-height: calc(100vh - 74px);
+      padding: 0;
+      margin: 0;
+    }
+
+    .vox-frame-wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .vox-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(160, 196, 255, 0.15);
+      padding-bottom: 12px;
+    }
+
+    .vox-head h1 {
+      font-size: 1.3rem;
+      color: #e8ecff;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .vox-head p {
+      margin: 0;
+      color: rgba(232, 236, 255, 0.65);
+      font-size: 0.88rem;
+    }
+
+    .vox-badge {
+      display: inline-block;
+      border: 1px solid rgba(36, 243, 255, 0.38);
+      color: #24f3ff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .vox-iframe {
+      width: 100%;
+      min-height: calc(100vh - 170px);
+      border: 1px solid rgba(160, 196, 255, 0.16);
+      border-radius: 10px;
+      background: rgba(10, 14, 39, 0.42);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">Calyr.ai</a>
+      <nav class="nav-core" aria-label="Primary">
+        <a href="explore.html" class="nav-pill">Explore</a>
+        <a href="docs.html" class="nav-pill">Docs</a>
+        <a href="team.html" class="nav-pill">Team</a>
+        <a href="publications.html" class="nav-pill">Publications</a>
+      </nav>
+      <nav class="nav-secondary" aria-label="Secondary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+        <a href="pages/contact.html" class="nav-pill">Contact</a>
+        <button id="logout-btn" class="nav-pill logout-pill" style="display:none;">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <section id="auth-gate" class="auth-gate">
+    <div class="auth-gate-inner">
+      <div class="auth-orbit-logo">
+        <svg viewBox="0 0 200 200" class="orbit-mini" aria-hidden="true">
+          <defs>
+            <linearGradient id="vox-auth-whiteCyan" x1="30" y1="30" x2="170" y2="170">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+              <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="48" stroke="url(#vox-auth-whiteCyan)" stroke-width="22" fill="none" />
+        </svg>
+      </div>
+      <h1>Calyr.Vox Internal</h1>
+      <p>Voice studio is available only after login.</p>
+      <a id="vox-login-btn" href="http://localhost:8000" class="auth-button" target="_blank" rel="noopener">Enter via Login</a>
+      <p class="auth-hint">After authentication, open this page again or return via redirect.</p>
+    </div>
+  </section>
+
+  <main id="vox-main" class="vox-main">
+    <div class="vox-frame-wrap">
+      <div class="vox-head">
+        <div>
+          <h1>Calyr.Vox Studio</h1>
+          <p>Authenticated as <strong id="vox-user-name">Researcher</strong></p>
+        </div>
+        <span class="vox-badge">Internal Surface</span>
+      </div>
+
+      <iframe class="vox-iframe" src="pages/vox_studio.html" title="Calyr Vox Studio"></iframe>
+    </div>
+  </main>
+</body>
+</html>

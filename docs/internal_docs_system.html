@@ -118,6 +118,165 @@ mkdocs build          # → build/docs_site/</pre>
   js/docs.js             ← sidebar builder, hash router, prev/next
   css/docs.css</pre>
 
+  <h3>Topic planner layout (internal scheduling surface)</h3>
+  <p>
+    A dedicated internal UI now exists to define topic work and meaning with circle controls,
+    generate a daily/weekly plan, and sync that plan to Google Calendar through the administration sync script.
+  </p>
+  <pre>apps/homepage/pages/topic_planner.html   ← page shell + planner sections
+apps/homepage/css/topic_planner.css     ← planner-specific visual system
+apps/homepage/js/topic_planner.js       ← circles, scoring, day-plan generation, JSON export
+
+administration/google_calendar_sync.py  ← --sync-topic-plan + --topic-plan-json ingestion
+administration/google_calendar_config.json
+administration/google_calendar_config.example.json</pre>
+
+  <h4>UI sections on topic_planner.html</h4>
+  <table class="doc-table">
+    <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Topic create row</td><td>Add new topics dynamically.</td></tr>
+      <tr><td>Topic cards</td><td>Per-topic circle controls for <code>work</code> and <code>meaning</code>.</td></tr>
+      <tr><td>Planner actions</td><td>Generate plan, export <code>topic_plan.json</code>, copy sync command.</td></tr>
+      <tr><td>Day plan panel</td><td>Shows generated assignments for MO–SU.</td></tr>
+      <tr><td>Calendar sync note</td><td>Operator command to push plan into Google Calendar.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Scheduling logic contract</h4>
+  <ul>
+    <li>Each topic has two values: <code>work</code> (effort) and <code>meaning</code> (importance).</li>
+    <li>Planner score is weighted to keep semantic priority dominant.</li>
+    <li>Output is a <code>topic_plan</code> JSON object with <code>weekday_labels</code>, <code>daily_block</code>, and <code>review_block</code>.</li>
+    <li>Google Calendar sync accepts this JSON directly via <code>--topic-plan-json</code>.</li>
+  </ul>
+
+  <h4>Command path (UI export → Calendar sync)</h4>
+  <pre># 1) Export topic_plan.json from the planner UI
+# 2) Validate without writing to Google
+python administration/google_calendar_sync.py \
+  --config administration/google_calendar_config.json \
+  --sync-topic-plan \
+  --topic-plan-json /path/to/topic_plan.json \
+  --dry-run
+
+# 3) Write recurring events to Google Calendar
+python administration/google_calendar_sync.py \
+  --config administration/google_calendar_config.json \
+  --sync-topic-plan \
+  --topic-plan-json /path/to/topic_plan.json</pre>
+
+  <h3><code>calyr.vox</code> layout (internal synthetic voice-over surface)</h3>
+  <p>
+    A dedicated internal voice system now exists to turn slide snippets into narrated outputs:
+    <code>slides -&gt; speaker text -&gt; TTS audio -&gt; timing -&gt; video export</code>.
+    It is available both as a Python pipeline and as a one-file browser studio.
+  </p>
+  <pre>apps/homepage/vox.html                       ← login-gated internal entrypoint (homepage surface)
+apps/homepage/js/vox_gate.js                ← auth/session gate for Vox page
+apps/homepage/pages/vox_studio.html         ← embedded studio content served from homepage path
+
+apps/vox/vox_studio.html                     ← canonical standalone studio source
+apps/vox/calyr_vox.py                        ← CLI orchestrator (speak, synth, video, all)
+apps/vox/speech_generator.py                 ← LLM speech generation (natural narration)
+apps/vox/tts_engine.py                       ← TTS dispatcher (OpenAI + ElevenLabs)
+apps/vox/timing_engine.py                    ← duration estimation + ffprobe timing
+apps/vox/video_exporter.py                   ← ffmpeg segment render + concat
+apps/vox/README.md                           ← operational usage contract
+
+calyrai_modelling/snippets/slides/*.yaml     ← slide snippet inputs
+output/vox/                                  ← voiced yaml + audio + manifest + final mp4</pre>
+
+  <h4>Voice systems (both supported)</h4>
+  <table class="doc-table">
+    <thead><tr><th>System</th><th>Use case</th><th>Required keys</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Generic voice (OpenAI TTS)</td>
+        <td>Fast default narration for immediate production runs.</td>
+        <td><code>OPENAI_API_KEY</code></td>
+        <td>Stable quality, no cloning required, selectable stock voices.</td>
+      </tr>
+      <tr>
+        <td>Cloned voice (ElevenLabs)</td>
+        <td>Personalized delivery where speaker identity should match your own voice.</td>
+        <td><code>ELEVENLABS_API_KEY</code> + <code>voice_id</code></td>
+        <td>Requires recording upload first; then use returned <code>voice_id</code> for synthesis.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>HTML studio tabs and responsibilities</h4>
+  <table class="doc-table">
+    <thead><tr><th>Tab</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Einrichtung</td><td>Provider selection, API key capture, connection test.</td></tr>
+      <tr><td>Stimme einspielen</td><td>Microphone recording or file upload, ElevenLabs clone creation, preview playback.</td></tr>
+      <tr><td>Slides bauen</td><td>Create/edit snippet-style slides (<code>id</code>, <code>title</code>, <code>bullets</code>, <code>tone</code>, <code>duration</code>).</td></tr>
+      <tr><td>Generieren</td><td>Generate speaker text via LLM, then synthesize per-slide audio via selected provider.</td></tr>
+      <tr><td>Export</td><td>Export voiced YAML/manifests/audio and provide ffmpeg command path for mp4 assembly.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Access mode (internal/login)</h4>
+  <ul>
+    <li>Public homepage links should point to <code>vox.html</code>, not directly to the raw studio file.</li>
+    <li><code>vox.html</code> shows an auth gate and reveals the studio only after login token/session is present.</li>
+    <li>Login handoff follows the same token/session pattern as Citizen (<code>?token=...&amp;user=...</code> or existing local session).</li>
+  </ul>
+
+  <h4>Slide snippet contract for <code>calyr.vox</code></h4>
+  <pre>id: slide_legacy_reporting_001
+type: slide
+title: Legacy Reporting System
+bullets:
+  - Oracle Warehouse Builder
+  - SAP BusinessObjects
+  - 20 years legacy
+tone: professional
+duration: 30s</pre>
+
+  <h4>Speech generation rules (internal contract)</h4>
+  <ul>
+    <li>Do not read bullet points verbatim; synthesize into natural narration.</li>
+    <li>Respect tone (for example professional, scientific, casual, motivational).</li>
+    <li>Honor duration guidance; default timing model assumes ~150 words per minute.</li>
+    <li>Write speaker text back to voiced YAML for reproducible regeneration.</li>
+  </ul>
+
+  <h4>Voice cloning operator path (ElevenLabs)</h4>
+  <pre># 1) Record or upload clean speech sample in the studio
+# 2) Create clone via ElevenLabs endpoint
+POST https://api.elevenlabs.io/v1/voices/add
+
+# 3) Persist returned voice_id
+ELEVENLABS_VOICE_ID=&lt;your_voice_id&gt;
+
+# 4) Synthesize with cloned voice
+python apps/vox/calyr_vox.py all calyrai_modelling/snippets/slides/ \
+  --provider elevenlabs \
+  --voice $ELEVENLABS_VOICE_ID \
+  --out output/vox</pre>
+
+  <h4>CLI path (batch generation)</h4>
+  <pre># Full run: slides -&gt; speech -&gt; audio -&gt; video
+python apps/vox/calyr_vox.py all calyrai_modelling/snippets/slides/ --out output/vox
+
+# Speech only (no TTS/video)
+python apps/vox/calyr_vox.py all calyrai_modelling/snippets/slides/ --dry-run
+
+# Stepwise mode
+python apps/vox/calyr_vox.py speak calyrai_modelling/snippets/slides/slide_legacy_reporting_001.yaml
+python apps/vox/calyr_vox.py synth output/vox/voiced/slide_legacy_reporting_001.yaml --provider openai
+python apps/vox/calyr_vox.py video output/vox/manifest.json</pre>
+
+  <h4>Security and storage notes</h4>
+  <ul>
+    <li>The browser studio stores API keys in local browser storage for internal convenience; do not use shared browser profiles.</li>
+    <li>For production operators, prefer environment variables and CLI execution in a controlled shell.</li>
+    <li>Do not commit API keys, raw samples, or generated tokens into repository history.</li>
+  </ul>
+
   <h3>Adding a page</h3>
   <ol>
     <li>Create <code>apps/homepage/docs/&lt;section&gt;_&lt;page&gt;.html</code>:
