@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr · Scientific Facility Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find the right scientific facility and method for your experiment. Austria-first. EU-ready." />
+  <style>
+    /* ── reset ─────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%;
+      background: radial-gradient(circle at 0% 0%, #16244b 0, #050918 45%, #02030a 90%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f7f8ff;
+      overflow-x: clip;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── nav ────────────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 52px;
+      background: rgba(2,3,10,0.72);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(36,243,255,0.08);
+    }
+    .nav-brand {
+      font-size: 1.05rem; font-weight: 700; letter-spacing: 0.03em;
+      background: linear-gradient(90deg,#24f3ff,#ff4df5);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 1.2rem; font-size: 0.85rem; opacity: 0.7; }
+    .nav-links a:hover { opacity: 1; color: #24f3ff; }
+
+    /* ── hero ───────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 6rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero-badge {
+      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #24f3ff; border: 1px solid rgba(36,243,255,0.3);
+      padding: 0.28rem 0.8rem; border-radius: 999px;
+      margin-bottom: 1.6rem; display: inline-block;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 780px;
+    }
+    .hero h1 span {
+      background: linear-gradient(110deg,#24f3ff 20%,#ff4df5 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 1.2rem; max-width: 560px;
+      font-size: 1.05rem; line-height: 1.65;
+      color: rgba(247,248,255,0.62);
+    }
+
+    /* ── search bar ─────────────────────────────────────────────────────── */
+    .search-wrap {
+      margin-top: 2.8rem; width: 100%; max-width: 640px;
+      position: relative;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 1rem 3.2rem 1rem 1.4rem;
+      border-radius: 12px;
+      border: 1px solid rgba(36,243,255,0.25);
+      background: rgba(255,255,255,0.045);
+      color: #f7f8ff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-wrap input::placeholder { color: rgba(247,248,255,0.35); }
+    .search-wrap input:focus { border-color: rgba(36,243,255,0.6); }
+    .search-wrap button {
+      position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%);
+      background: linear-gradient(110deg,#24f3ff,#1ac0f0);
+      border: none; border-radius: 8px;
+      padding: 0.5rem 1rem; cursor: pointer;
+      color: #02030a; font-weight: 700; font-size: 0.85rem;
+      transition: opacity 0.15s;
+    }
+    .search-wrap button:hover { opacity: 0.82; }
+
+    /* ── suggestion chips ───────────────────────────────────────────────── */
+    .chips {
+      margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    }
+    .chip {
+      font-size: 0.78rem;
+      padding: 0.28rem 0.75rem; border-radius: 999px;
+      border: 1px solid rgba(247,248,255,0.15);
+      color: rgba(247,248,255,0.55);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .chip:hover {
+      border-color: rgba(36,243,255,0.4);
+      color: #24f3ff; background: rgba(36,243,255,0.06);
+    }
+
+    /* ── section ────────────────────────────────────────────────────────── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #ff4df5; margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700; line-height: 1.2; max-width: 600px;
+    }
+    .section-body {
+      margin-top: 0.9rem; max-width: 580px;
+      font-size: 0.97rem; line-height: 1.7;
+      color: rgba(247,248,255,0.62);
+    }
+
+    /* ── how it works ───────────────────────────────────────────────────── */
+    .steps {
+      margin-top: 3rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .step {
+      background: rgba(255,255,255,0.032);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 1.6rem;
+    }
+    .step-num {
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #24f3ff; margin-bottom: 0.9rem;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step p { font-size: 0.88rem; line-height: 1.6; color: rgba(247,248,255,0.55); }
+
+    /* ── facility cards ─────────────────────────────────────────────────── */
+    .facility-grid {
+      margin-top: 3rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.4rem;
+    }
+    .facility-card {
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 1.8rem;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .facility-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg,#24f3ff,#ff4df5);
+      opacity: 0.6;
+    }
+    .facility-card:hover {
+      border-color: rgba(36,243,255,0.22);
+      background: rgba(36,243,255,0.035);
+    }
+    .facility-name {
+      font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem;
+    }
+    .facility-location {
+      font-size: 0.78rem; color: #24f3ff; margin-bottom: 0.9rem; letter-spacing: 0.04em;
+    }
+    .facility-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem;
+    }
+    .tag {
+      font-size: 0.72rem; padding: 0.18rem 0.55rem; border-radius: 999px;
+      background: rgba(36,243,255,0.1); border: 1px solid rgba(36,243,255,0.2);
+      color: #24f3ff;
+    }
+    .tag.method { background: rgba(255,77,245,0.08); border-color: rgba(255,77,245,0.2); color: #ff4df5; }
+    .facility-desc {
+      font-size: 0.85rem; line-height: 1.6; color: rgba(247,248,255,0.55);
+    }
+    .facility-cta {
+      margin-top: 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; color: #24f3ff;
+      border: 1px solid rgba(36,243,255,0.25);
+      padding: 0.35rem 0.85rem; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .facility-cta:hover { background: rgba(36,243,255,0.08); border-color: rgba(36,243,255,0.5); }
+
+    /* ── method objects ─────────────────────────────────────────────────── */
+    .method-card {
+      background: rgba(255,255,255,0.022);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 1.6rem; margin-top: 1.2rem;
+    }
+    .method-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem;
+    }
+    .method-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg,#24f3ff22,#ff4df522);
+      border: 1px solid rgba(36,243,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .method-title { font-weight: 700; font-size: 1rem; }
+    .method-type { font-size: 0.72rem; color: rgba(247,248,255,0.42); letter-spacing: 0.08em; text-transform: uppercase; }
+    .method-fields {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+    }
+    .method-field { }
+    .field-key {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(247,248,255,0.38); margin-bottom: 0.25rem;
+    }
+    .field-val {
+      font-size: 0.85rem; line-height: 1.5; color: rgba(247,248,255,0.75);
+    }
+
+    /* ── chat copilot panel ─────────────────────────────────────────────── */
+    .chat-panel {
+      margin-top: 3rem;
+      background: rgba(255,255,255,0.022);
+      border: 1px solid rgba(36,243,255,0.13);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: rgba(36,243,255,0.04);
+      border-bottom: 1px solid rgba(36,243,255,0.1);
+      padding: 1rem 1.4rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .chat-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #24f3ff; box-shadow: 0 0 8px #24f3ff;
+    }
+    .chat-dot.offline { background: rgba(247,248,255,0.2); box-shadow: none; }
+    .chat-title { font-size: 0.88rem; font-weight: 700; }
+    .chat-subtitle { font-size: 0.76rem; color: rgba(247,248,255,0.42); margin-left: auto; }
+    .chat-messages {
+      padding: 1.4rem; display: flex; flex-direction: column; gap: 1rem;
+      min-height: 280px;
+    }
+    .msg { max-width: 82%; }
+    .msg.agent { align-self: flex-start; }
+    .msg.user { align-self: flex-end; }
+    .msg-bubble {
+      padding: 0.75rem 1rem; border-radius: 12px;
+      font-size: 0.88rem; line-height: 1.6;
+    }
+    .msg.agent .msg-bubble {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .msg.user .msg-bubble {
+      background: rgba(36,243,255,0.12);
+      border: 1px solid rgba(36,243,255,0.2);
+    }
+    .msg-label { font-size: 0.68rem; color: rgba(247,248,255,0.32); margin-bottom: 0.3rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .msg.user .msg-label { text-align: right; }
+    .chat-input-row {
+      padding: 1rem 1.4rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; gap: 0.7rem;
+    }
+    .chat-input-row input {
+      flex: 1; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 0.65rem 1rem;
+      color: #f7f8ff; font-size: 0.9rem; outline: none;
+      transition: border-color 0.15s;
+    }
+    .chat-input-row input:focus { border-color: rgba(36,243,255,0.4); }
+    .chat-input-row input::placeholder { color: rgba(247,248,255,0.3); }
+    .chat-send {
+      background: linear-gradient(110deg,#24f3ff,#1ac0f0);
+      border: none; border-radius: 8px;
+      padding: 0.65rem 1.1rem; cursor: pointer;
+      color: #02030a; font-weight: 700; font-size: 0.85rem;
+      transition: opacity 0.15s;
+    }
+    .chat-send:hover { opacity: 0.82; }
+
+    /* ── rollout ────────────────────────────────────────────────────────── */
+    .rollout-grid {
+      margin-top: 2.8rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .rollout-stage {
+      border-radius: 14px;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.022);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .rollout-stage.primary {
+      border-color: rgba(36,243,255,0.25);
+      background: rgba(36,243,255,0.04);
+    }
+    .stage-label {
+      font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #24f3ff; margin-bottom: 0.6rem;
+    }
+    .stage-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .stage-desc { font-size: 0.85rem; line-height: 1.6; color: rgba(247,248,255,0.52); }
+    .stage-list { margin-top: 0.8rem; padding-left: 1rem; }
+    .stage-list li { font-size: 0.85rem; line-height: 1.8; color: rgba(247,248,255,0.52); }
+
+    /* ── cta section ────────────────────────────────────────────────────── */
+    .cta-section {
+      text-align: center; padding: 6rem 2rem;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      font-weight: 800; margin-bottom: 1rem;
+    }
+    .cta-section p { color: rgba(247,248,255,0.55); max-width: 480px; margin: 0 auto 2rem; font-size: 1rem; line-height: 1.65; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(110deg,#24f3ff,#1ac0f0);
+      color: #02030a; font-weight: 700;
+      padding: 0.8rem 1.8rem; border-radius: 10px;
+      font-size: 0.95rem; cursor: pointer; border: none;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-secondary {
+      color: #f7f8ff; font-weight: 600;
+      padding: 0.8rem 1.8rem; border-radius: 10px;
+      font-size: 0.95rem; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent; transition: all 0.15s;
+    }
+    .btn-secondary:hover { border-color: rgba(36,243,255,0.4); color: #24f3ff; }
+
+    /* ── footer ─────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem; text-align: center;
+      font-size: 0.8rem; color: rgba(247,248,255,0.28);
+    }
+    footer a { color: rgba(36,243,255,0.6); }
+    footer a:hover { color: #24f3ff; }
+
+    /* ── divider ────────────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+      max-width: 1100px; margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── nav ── -->
+<nav class="nav">
+  <span class="nav-brand">Calyr · SciFind</span>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#facilities">Facilities</a>
+    <a href="#methods">Methods</a>
+    <a href="#copilot">Copilot</a>
+    <a href="#rollout">Rollout</a>
+  </div>
+</nav>
+
+<!-- ── hero ── -->
+<div class="hero">
+  <span class="hero-badge">Austria-first · EU-scale</span>
+  <h1>Find the right <span>facility</span> for your science</h1>
+  <p class="hero-sub">
+    Describe your experiment, material, or scientific question.
+    The agent proposes methods, explains trade-offs, and matches you 
+    to the best facility — from cryo-EM to SAXS to NMR.
+  </p>
+  <div class="search-wrap">
+    <input id="hero-search" type="text" placeholder="e.g. &quot;characterise protein aggregation in solution at physiological pH&quot;" autocomplete="off" />
+    <button onclick="handleSearch()">Ask →</button>
+  </div>
+  <div class="chips">
+    <span class="chip" onclick="fillSearch('protein size distribution in solution')">Protein size in solution</span>
+    <span class="chip" onclick="fillSearch('nanoparticle shape characterisation')">Nanoparticle shape</span>
+    <span class="chip" onclick="fillSearch('lipid membrane phase behaviour')">Membrane phase</span>
+    <span class="chip" onclick="fillSearch('polymer chain statistics in bulk')">Polymer chain stats</span>
+    <span class="chip" onclick="fillSearch('single-molecule interaction kinetics')">Binding kinetics</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── how it works ── -->
+<section id="how">
+  <div class="section-label">Workflow</div>
+  <h2 class="section-title">From question to instrument booking in five steps</h2>
+  <p class="section-body">
+    The agent doesn't just list instruments — it reasons about your scientific process, 
+    constructs a structured Method Object, and surfaces the facility that can actually execute it.
+  </p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">Step 01</div>
+      <h3>Describe your problem</h3>
+      <p>Free-text or structured input. Sample type, scale, constraints, prior data.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 02</div>
+      <h3>Method proposal</h3>
+      <p>Agent proposes two or three candidate methods with explicit trade-off reasoning.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 03</div>
+      <h3>Method decomposition</h3>
+      <p>Each method is decomposed into a typed object: setup, preprocessing, fitting, validation, failure modes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 04</div>
+      <h3>Facility matching</h3>
+      <p>Method object is matched against the facility registry. Constraints filter unavailable instruments.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 05</div>
+      <h3>Sequence + record</h3>
+      <p>Agent generates an adaptive experimental sequence and logs the Method Object into the Nexus graph.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── facilities ── -->
+<section id="facilities">
+  <div class="section-label">Facility Registry</div>
+  <h2 class="section-title">Curated Austrian core facilities</h2>
+  <p class="section-body">
+    Each facility entry is a normalized contract: capabilities, constraints, workflow suggestions, 
+    output formats, and availability state. Machine-readable from day one.
+  </p>
+  <div class="facility-grid">
+
+    <div class="facility-card">
+      <div class="facility-name">SAXS / WAXS Beamline</div>
+      <div class="facility-location">DESY · Hamburg / Vienna BioCenter</div>
+      <div class="facility-tags">
+        <span class="tag">Solution SAXS</span>
+        <span class="tag">Protein</span>
+        <span class="tag method">SEC-SAXS</span>
+        <span class="tag method">WAXS</span>
+      </div>
+      <p class="facility-desc">Synchrotron-grade small-angle X-ray scattering for solution samples, nanoparticles, membranes, and polymers. SEC-SAXS coupling for heterogeneous samples.</p>
+      <span class="facility-cta">View method objects →</span>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-name">Cryo-EM Suite</div>
+      <div class="facility-location">IMBA · Vienna</div>
+      <div class="facility-tags">
+        <span class="tag">Single-particle</span>
+        <span class="tag">Tomography</span>
+        <span class="tag method">High-resolution</span>
+      </div>
+      <p class="facility-desc">300 kV Titan Krios for single-particle reconstruction. Sample prep including vitrification screening and grid optimization.</p>
+      <span class="facility-cta">View method objects →</span>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-name">NMR Spectroscopy</div>
+      <div class="facility-location">University of Vienna · NMR Center</div>
+      <div class="facility-tags">
+        <span class="tag">Solution NMR</span>
+        <span class="tag">Solid-state</span>
+        <span class="tag method">HSQC</span>
+        <span class="tag method">Relaxation</span>
+      </div>
+      <p class="facility-desc">Up to 950 MHz field strength. Protein dynamics, ligand binding, metabolomics. Cryoprobe equipped.</p>
+      <span class="facility-cta">View method objects →</span>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-name">SPR / BLI Kinetics</div>
+      <div class="facility-location">CeMM · Vienna</div>
+      <div class="facility-tags">
+        <span class="tag">Binding kinetics</span>
+        <span class="tag">Affinity</span>
+        <span class="tag method">SPR</span>
+        <span class="tag method">BLI</span>
+      </div>
+      <p class="facility-desc">Surface plasmon resonance and biolayer interferometry for label-free interaction analysis. From fragment screening to full ITC complement.</p>
+      <span class="facility-cta">View method objects →</span>
+    </div>
+
+    <div class="facility-card">
+      <div class="facility-name">Mass Spectrometry</div>
+      <div class="facility-location">IMP · Vienna</div>
+      <div class="facility-tags">
+        <span class="tag">Proteomics</span>
+        <span class="tag">Native MS</span>
+        <span class="tag method">HDX-MS</span>
+      </div>
+      <p class="facility-desc">Orbitrap-based platform for proteomics, crosslinking MS, native MS for complex stoichiometry, and HDX for conformational dynamics.</p>
+      <span class="facility-cta">View method objects →</span>
+    </div>
+
+    <div class="facility-card" style="border-style: dashed; opacity: 0.55;">
+      <div class="facility-name">+ Add your facility</div>
+      <div class="facility-location">Open registry</div>
+      <div class="facility-tags">
+        <span class="tag">AT · EU</span>
+      </div>
+      <p class="facility-desc">Facilities submit a normalized capability contract. Indexed, searchable, matched by the agent automatically.</p>
+      <span class="facility-cta">Submit facility →</span>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── method objects ── -->
+<section id="methods">
+  <div class="section-label">Method Objects</div>
+  <h2 class="section-title">Methods as structured, executable objects</h2>
+  <p class="section-body">
+    A Method Object is not a protocol PDF. It is a typed, versioned, executable graph node 
+    that constrains interpretation and enables reuse across experiments.
+  </p>
+
+  <div class="method-card">
+    <div class="method-header">
+      <div class="method-icon">⚗</div>
+      <div>
+        <div class="method-title">Solution SAXS — Rg &amp; P(r) extraction</div>
+        <div class="method-type">Structural biology · X-ray scattering</div>
+      </div>
+    </div>
+    <div class="method-fields">
+      <div class="method-field">
+        <div class="field-key">Measurement setup</div>
+        <div class="field-val">SEC-SAXS inline; 1 mg/mL monodisperse protein; q range 0.01–0.5 Å⁻¹</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Preprocessing</div>
+        <div class="field-val">Buffer subtraction, Kratky check for foldedness, frame averaging</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Fitting</div>
+        <div class="field-val">Guinier (low-q), P(r) via GNOM; Rg, I₀, Dmax</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Statistical assumptions</div>
+        <div class="field-val">Spherical harmonic expansion valid; no inter-particle interference</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Validation</div>
+        <div class="field-val">Cross-validate Rg from Guinier vs P(r); compare to known MW from SEC</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Failure modes</div>
+        <div class="field-val">Aggregation artefacts, radiation damage, insufficient q-low coverage</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="method-card">
+    <div class="method-header">
+      <div class="method-icon">🧠</div>
+      <div>
+        <div class="method-title">ML Shape Classification — latent space embedding</div>
+        <div class="method-type">Machine learning · Representation</div>
+      </div>
+    </div>
+    <div class="method-fields">
+      <div class="method-field">
+        <div class="field-key">Architecture</div>
+        <div class="field-val">1D convolutional encoder; input I(q) curve on fixed q grid</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Loss</div>
+        <div class="field-val">Reconstruction + contrastive on shape class labels</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Training distribution</div>
+        <div class="field-val">Simulated curves from known PDB structures (CRYSOL); experimental fine-tune</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Latent assumptions</div>
+        <div class="field-val">Symmetry prior; no radiation damage; low polydispersity</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Benchmark leakage risk</div>
+        <div class="field-val">PDB homolog contamination — must split by sequence identity ≤ 30%</div>
+      </div>
+      <div class="method-field">
+        <div class="field-key">Reproducibility</div>
+        <div class="field-val">Seed fixed; training data versioned; inference export as ONNX</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── chat copilot ── -->
+<section id="copilot">
+  <div class="section-label">Scientific Chat Copilot</div>
+  <h2 class="section-title">Ask about your experiment. Get a plan.</h2>
+  <p class="section-body">
+    The copilot discusses your scientific problem, proposes methods, explains trade-offs, 
+    matches facilities, and generates an adaptive experimental sequence — all grounded in structured Method Objects.
+  </p>
+
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-dot" id="chat-dot"></div>
+      <span class="chat-title">SciFind Copilot</span>
+      <span class="chat-subtitle" id="chat-status">Demo mode — static preview</span>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg agent">
+        <div class="msg-label">Copilot</div>
+        <div class="msg-bubble">
+          Hello. Describe your sample and what you'd like to learn about it. 
+          I'll propose two or three candidate methods, explain the trade-offs, 
+          and match you to a facility that can run it.
+        </div>
+      </div>
+      <div class="msg user">
+        <div class="msg-label">You</div>
+        <div class="msg-bubble">I have monodisperse IgG antibody at 2 mg/mL. I want to know its hydrodynamic size and whether it's monomeric in solution.</div>
+      </div>
+      <div class="msg agent">
+        <div class="msg-label">Copilot</div>
+        <div class="msg-bubble">
+          Good framing. Three methods are relevant here:<br><br>
+          <strong>1. SEC-SAXS</strong> — gives Rg, P(r), and low-resolution shape simultaneously. Best if you also need structural information. Requires ~200 µL at ≥ 2 mg/mL.<br><br>
+          <strong>2. DLS</strong> — fast hydrodynamic radius, but no structural detail. Good as a quick QC screen before a beamtime application.<br><br>
+          <strong>3. AUC (analytical ultracentrifugation)</strong> — gold standard for sedimentation coefficient; distinguishes monomer/dimer rigorously but slower.<br><br>
+          Given your stated goal of confirming monomericity, I'd recommend <strong>DLS first</strong> (1 h, low sample cost), then <strong>SEC-SAXS</strong> if you need structural confidence. Shall I generate a facility match for SEC-SAXS in Vienna?
+        </div>
+      </div>
+      <div class="msg user">
+        <div class="msg-label">You</div>
+        <div class="msg-bubble">Yes — find me a SEC-SAXS facility in Austria.</div>
+      </div>
+      <div class="msg agent" id="last-agent-msg">
+        <div class="msg-label">Copilot</div>
+        <div class="msg-bubble">
+          Matched: <strong>SAXS / WAXS Beamline, Vienna BioCenter</strong>.<br>
+          Capability contract: SEC-SAXS inline, q range 0.01–0.5 Å⁻¹, 200 µL minimum volume, 
+          automated buffer subtraction, same-day data reduction. 
+          Availability: rolling access via proposal. 
+          I've generated an experimental sequence object — it's in your Nexus graph. Want me to add failure-mode guards for radiation damage?
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" placeholder="Ask about your experiment…" autocomplete="off" />
+      <button class="chat-send" onclick="sendChatMessage()">Send</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── rollout ── -->
+<section id="rollout">
+  <div class="section-label">Rollout Plan</div>
+  <h2 class="section-title">Austria first. Europe next.</h2>
+  <p class="section-body">
+    Structured as a Klarx-style marketplace: facilities register capability contracts, 
+    researchers find what they need, the agent bridges the gap.
+  </p>
+  <div class="rollout-grid">
+    <div class="rollout-stage primary">
+      <div class="stage-label">Stage 1 · Active</div>
+      <div class="stage-title">Austria</div>
+      <p class="stage-desc">Seed registry from Vienna core facilities. Pilot with three facilities and five research groups.</p>
+      <ul class="stage-list">
+        <li>Vienna BioCenter SAXS/Cryo-EM</li>
+        <li>CeMM SPR / BLI</li>
+        <li>IMP Mass Spectrometry</li>
+        <li>University of Vienna NMR Center</li>
+      </ul>
+    </div>
+    <div class="rollout-stage">
+      <div class="stage-label">Stage 2 · Planned</div>
+      <div class="stage-title">EU Core Facilities</div>
+      <p class="stage-desc">Expand to DESY, ESRF, EMBL outposts, and national facility networks in DE, CH, CZ.</p>
+      <ul class="stage-list">
+        <li>DESY EMBL P12 beamline</li>
+        <li>ESRF BM29 BioSAXS</li>
+        <li>Diamond B21 SAXS</li>
+        <li>National bioNMR networks</li>
+      </ul>
+    </div>
+    <div class="rollout-stage">
+      <div class="stage-label">Stage 3 · Vision</div>
+      <div class="stage-title">Cross-region orchestration</div>
+      <p class="stage-desc">Federated method graph across jurisdictions. Proposal co-authoring assist. Multi-facility sequence planning.</p>
+      <ul class="stage-list">
+        <li>Federated facility cards</li>
+        <li>Cross-border proposal assist</li>
+        <li>Multi-method sequence planning</li>
+        <li>Method Object exchange protocol</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── cta ── -->
+<div class="cta-section">
+  <h2>Ready to find your facility?</h2>
+  <p>Register as a researcher or submit your facility to the open registry. The agent does the matching.</p>
+  <div class="cta-buttons">
+    <button class="btn-primary">Start searching</button>
+    <button class="btn-secondary">Submit your facility</button>
+  </div>
+</div>
+
+<!-- ── footer ── -->
+<footer>
+  <p>Calyr · SciFind — an ausklinckbares MVOP by <a href="https://calyr.ai">Calyr.aí</a> · 2026</p>
+</footer>
+
+<!-- ── minimal interactivity ── -->
+<script>
+  function fillSearch(text) {
+    document.getElementById('hero-search').value = text;
+    document.getElementById('hero-search').focus();
+  }
+
+  function handleSearch() {
+    const val = document.getElementById('hero-search').value.trim();
+    if (!val) return;
+    // Scroll to copilot and pre-fill
+    document.getElementById('copilot').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      document.getElementById('chat-input').value = val;
+      document.getElementById('chat-input').focus();
+    }, 600);
+  }
+
+  document.getElementById('hero-search').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSearch();
+  });
+
+  function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const val = input.value.trim();
+    if (!val) return;
+    input.value = '';
+
+    const messages = document.getElementById('chat-messages');
+
+    // add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.innerHTML = `<div class="msg-label">You</div><div class="msg-bubble">${escapeHtml(val)}</div>`;
+    messages.appendChild(userMsg);
+    messages.scrollTop = messages.scrollHeight;
+
+    // simulate agent response
+    setTimeout(() => {
+      const agentMsg = document.createElement('div');
+      agentMsg.className = 'msg agent';
+      agentMsg.innerHTML = `<div class="msg-label">Copilot</div><div class="msg-bubble">
+        <em>(Live agent not yet connected in this MVOP prototype.)</em><br><br>
+        In the live system, I would analyse your query, propose candidate methods, 
+        and match facilities from the registry. 
+        Method Objects would be generated and logged to your Nexus graph.
+      </div>`;
+      messages.appendChild(agentMsg);
+      messages.scrollTop = messages.scrollHeight;
+    }, 700);
+  }
+
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendChatMessage();
+  });
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+
+</body>
+</html>
