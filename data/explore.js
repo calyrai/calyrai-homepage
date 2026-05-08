@@ -27,7 +27,7 @@ window.CALYR_EXPLORE = [
   {
     id: 'nexus',
     title: 'Nexus',
-    alwaysOpen: false,
+    alwaysOpen: true,
     pages: [
       {
         id: 'nexus-semantic-reasoning',
