@@ -5,10 +5,22 @@
   const content = document.getElementById('explore-content');
   const EXPLORE = window.CALYR_EXPLORE;
   let embeddedPresentationState = null;
+  const LANG_KEY = 'calyrExploreLang';
+  let activeLang = (localStorage.getItem(LANG_KEY) || (navigator.language || 'en').toLowerCase()).startsWith('de') ? 'de' : 'en';
 
   if (!sidebar || !content || !EXPLORE) return;
 
   const flatPages = EXPLORE.flatMap(section => section.pages.map(page => ({ ...page, section: section.id })));
+
+  function pageTitle(page) {
+    if (activeLang === 'de') return page.titleDe || page.title;
+    return page.titleEn || page.title;
+  }
+
+  function pageSrc(page) {
+    if (activeLang === 'de') return page.srcDe || page.src || page.srcEn;
+    return page.srcEn || page.src || page.srcDe;
+  }
 
   function buildSidebar() {
     EXPLORE.forEach(section => {
@@ -29,7 +41,7 @@
         const a = document.createElement('a');
         a.className = 'doc-page-link';
         a.href = `#${section.id}/${page.id}`;
-        a.textContent = page.title;
+        a.textContent = pageTitle(page);
         a.dataset.section = section.id;
         a.dataset.page = page.id;
         li.appendChild(a);
@@ -95,14 +107,32 @@
     const next = flatPages[index + 1] || null;
 
     const prevHTML = prev
-      ? `<a class="doc-nav-btn prev" href="#${prev.section}/${prev.id}"><span class="doc-nav-label">← Previous</span><span>${prev.title}</span></a>`
+      ? `<a class="doc-nav-btn prev" href="#${prev.section}/${prev.id}"><span class="doc-nav-label">← ${activeLang === 'de' ? 'Zurueck' : 'Previous'}</span><span>${pageTitle(prev)}</span></a>`
       : '<span></span>';
 
     const nextHTML = next
-      ? `<a class="doc-nav-btn next" href="#${next.section}/${next.id}"><span class="doc-nav-label">Next →</span><span>${next.title}</span></a>`
+      ? `<a class="doc-nav-btn next" href="#${next.section}/${next.id}"><span class="doc-nav-label">${activeLang === 'de' ? 'Weiter' : 'Next'} →</span><span>${pageTitle(next)}</span></a>`
       : '<span></span>';
 
     return `<div class="doc-nav-footer">${prevHTML}${nextHTML}</div>`;
+  }
+
+  function isStandalonePage(src) {
+    return typeof src === 'string' && src.startsWith('pages/');
+  }
+
+  function renderEmbeddedPage(page, navHtml) {
+    content.innerHTML = `
+      <div class="doc-article" style="padding:0;background:transparent;max-width:none">
+        <iframe
+          src="${pageSrc(page)}"
+          title="${pageTitle(page)}"
+          style="width:100%;min-height:78vh;border:1px solid rgba(126,237,255,0.14);border-radius:16px;background:rgba(5,12,24,0.45)"
+          loading="eager"
+        ></iframe>
+      </div>
+      ${navHtml}
+    `;
   }
 
   function initEmbeddedFullscreen() {
@@ -224,17 +254,24 @@
   async function loadPage(entry) {
     const { section, page } = entry;
     setActive(section.id, page.id);
+    const flat = { ...page, section: section.id };
+
+    if (isStandalonePage(page.src)) {
+      renderEmbeddedPage(page, renderNavFooter(flat));
+      initEmbeddedFullscreen();
+      window.scrollTo(0, 0);
+      return;
+    }
 
     let html;
     try {
-      const response = await fetch(page.src);
+      const response = await fetch(pageSrc(page));
       if (!response.ok) throw new Error(response.status);
       html = await response.text();
     } catch (error) {
-      html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">Could not load <code>${page.src}</code> (${error.message}).</p></div>`;
+      html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">${activeLang === 'de' ? 'Konnte Seite nicht laden' : 'Could not load'} <code>${pageSrc(page)}</code> (${error.message}).</p></div>`;
     }
 
-    const flat = { ...page, section: section.id };
     content.innerHTML = html + renderNavFooter(flat);
     initEmbeddedFullscreen();
 
@@ -257,7 +294,7 @@
         sectionId: section.id,
         sectionTitle: section.title,
         pageId: page.id,
-        title: page.title,
+        title: pageTitle(page),
         href: `#${section.id}/${page.id}`
       }))
     );
@@ -269,8 +306,12 @@
     const wrap = document.createElement('div');
     wrap.className = 'doc-search-wrap';
     wrap.innerHTML = `
-      <div class="doc-search-label">Search the Explore</div>
-      <input id="explore-search" class="doc-search-input" placeholder="Search the Explore" autocomplete="off" spellcheck="false" />
+      <div class="doc-search-label">${activeLang === 'de' ? 'Explore durchsuchen' : 'Search the Explore'}</div>
+      <div class="explore-lang-switch" role="group" aria-label="Language switch">
+        <button class="explore-lang-btn${activeLang === 'de' ? ' active' : ''}" data-lang="de" type="button">DE</button>
+        <button class="explore-lang-btn${activeLang === 'en' ? ' active' : ''}" data-lang="en" type="button">EN</button>
+      </div>
+      <input id="explore-search" class="doc-search-input" placeholder="${activeLang === 'de' ? 'Explore durchsuchen' : 'Search the Explore'}" autocomplete="off" spellcheck="false" />
       <ul id="explore-search-results" class="doc-search-results"></ul>
     `;
     sidebar.prepend(wrap);
@@ -278,6 +319,19 @@
     const input = wrap.querySelector('#explore-search');
     const results = wrap.querySelector('#explore-search-results');
     let focusedIndex = -1;
+
+    wrap.querySelectorAll('.explore-lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.lang === 'de' ? 'de' : 'en';
+        if (next === activeLang) return;
+        activeLang = next;
+        localStorage.setItem(LANG_KEY, activeLang);
+        sidebar.innerHTML = '';
+        buildSidebar();
+        setupSearch();
+        loadPage(parseHash() || defaultPage());
+      });
+    });
 
     function clearSearch() {
       input.value = '';

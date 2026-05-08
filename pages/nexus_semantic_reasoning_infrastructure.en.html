@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Semantic Reasoning Infrastructure</title>
+  <style>
+    :root {
+      --panel: rgba(11, 20, 36, 0.82);
+      --panel-border: rgba(126, 237, 255, 0.16);
+      --text: #eaf7ff;
+      --muted: rgba(214, 233, 249, 0.72);
+      --accent: #7edfff;
+      --accent2: #34d399;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: var(--font);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, #172d57 0, #060d1f 38%, #02030a 84%),
+        linear-gradient(180deg, #091326 0%, #02030a 100%);
+      padding: clamp(18px, 2.2vw, 28px);
+      line-height: 1.65;
+    }
+
+    .layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      background: var(--panel);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.35rem);
+      line-height: 1.12;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      color: #f4fcff;
+      font-size: 1.06rem;
+      letter-spacing: 0.01em;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    .stack {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stack li {
+      border: 1px solid rgba(126, 237, 255, 0.14);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(7, 16, 28, 0.72);
+    }
+
+    .stack strong {
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .quote {
+      border-left: 3px solid var(--accent2);
+      padding-left: 12px;
+      margin-top: 6px;
+      color: #dff7ef;
+      font-weight: 600;
+    }
+
+    .mono {
+      color: #dff7ef;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <section class="card">
+      <p class="eyebrow">Nexus Core</p>
+      <h1>Semantic Reasoning Infrastructure instead of AI Application</h1>
+      <p>The core is no longer modeled as a chat interface, but as semantic infrastructure with typing, constraints, transformation rules, and validatable state spaces.</p>
+      <p class="quote">Intelligence does not emerge in the model. It emerges in the structure of the semantic space.</p>
+    </section>
+
+    <section class="card">
+      <h2>Architectural Shift</h2>
+      <ul class="stack">
+        <li><strong>From:</strong> Prompt engineering, chat, unstructured text</li>
+        <li><strong>To:</strong> IRs, types, compiler logic, declarative transformations</li>
+        <li><strong>Interpretation:</strong> Prompt = compiled semantic object</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Unified Domain Model</h2>
+      <div class="grid">
+        <div>
+          <p><strong>Science</strong></p>
+          <p>SAXS, EPR, PCA, MD, and Flux as typed semantic objects with valid state transitions.</p>
+        </div>
+        <div>
+          <p><strong>Enterprise</strong></p>
+          <p>KPIs, reports, governance, and semantic layers as contracts instead of dashboard-embedded logic.</p>
+        </div>
+        <div>
+          <p><strong>AI</strong></p>
+          <p>LLMs, RAG, and agents as projections on top of the same semantic core.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Nexus Runtime Stack</h2>
+      <ul class="stack">
+        <li><strong>1. Nexus IR:</strong> declarative intermediate representation</li>
+        <li><strong>2. Ontology Layer:</strong> Experiment, Signal, Transformation, KPI, Projection, Constraint</li>
+        <li><strong>3. Constraint Engine:</strong> consistency, physics, governance, type relations</li>
+        <li><strong>4. Prompt Compiler:</strong> System Context, Tool Context, Reasoning Scope, Validation Instructions</li>
+        <li><strong>5. Projection Engine:</strong> LLM, Dashboard, Word, PDF, API, Scientific Reports</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Operating Principle</h2>
+      <p class="mono">Nexus = Semantic Intermediate Representation Layer for governed reasoning systems.</p>
+      <p>This turns Explore from a set of isolated tools into a consistent semantic orchestration view.</p>
+    </section>
+  </main>
+</body>
+</html>

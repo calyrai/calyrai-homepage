@@ -31,6 +31,33 @@ nexus warehouse show 3f8a               # display object metadata
 nexus warehouse push result.json        # import an external result
 nexus warehouse export 3f8a output.csv  # export a Fit as CSV</pre>
 
+  <h2>Metabolic method (calyr.matomic)</h2>
+  <p>
+    <code>calyr.matomic</code> is the metabolic analysis CLI for model-level workflows.
+    The method is run in three explicit stages: analyze, inspect cycles, and export.
+  </p>
+  <pre>python -m calyr.matomic.cli --help
+
+# 1) full method run (FBA scenarios -> PCA -> cycle detection -> warehouse export)
+python -m calyr.matomic.cli analyze --model models/ecoli_core.xml --output-dir results/matomic/run_001
+
+# 2) inspect dominant metabolite cycles from a single solution
+python -m calyr.matomic.cli inspect-cycles --model models/ecoli_core.xml --top 15
+
+# 3) export compact artifacts for reporting/sharing
+python -m calyr.matomic.cli export results/matomic/run_001 exports/matomic_bundle</pre>
+
+  <p>
+    If no model path is provided, the CLI uses a default COBRA textbook model.
+    Typical outputs include <code>analysis_summary.json</code>, <code>cycles.json</code>,
+    <code>analysis_warehouse.db</code>, and <code>warehouse_export/*.csv</code>.
+  </p>
+  <p>
+    For step-by-step workflows generated from thought snippets, see
+    <strong>Metabolic how-to (snippets)</strong> and
+    <strong>Metabolic snippet catalog</strong> in the API reference section.
+  </p>
+
   <h2>Operator registry</h2>
   <pre>nexus ops list          # show all registered operators
 nexus ops show fit      # show all variants of 'fit'

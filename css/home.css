@@ -28,6 +28,15 @@
   background:radial-gradient(circle at top,#06091a 0%,#02030a 45%,#000 100%);
 }
 
+/* Keep title hierarchy consistently white on the homepage. */
+.hero h1,
+.hero h2,
+.hero h3,
+.hero-title,
+.glow-title {
+  color: #ffffff;
+}
+
 /* Orbit logo replaces the globe canvas */
 .hero-orbit-logo{
   position:absolute;

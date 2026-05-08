@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calyr Topic Planner</title>
+  <meta name="description" content="Circle Interface fuer Arbeit und Bedeutung mit automatischem Tagesplan und Google Calendar Export." />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/nav.css" />
+  <link rel="stylesheet" href="../css/topic_planner.css" />
+
+  <script src="../js/nav_autohide.js" defer></script>
+  <script src="../js/topic_planner.js" defer></script>
+</head>
+<body class="topic-planner-body">
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">Calyr.ai</a>
+      <nav class="nav-core" aria-label="Primary">
+        <a href="../explore.html" class="nav-pill">Explore</a>
+        <a href="../docs.html" class="nav-pill">Docs</a>
+        <a href="topic_planner.html" class="nav-pill active" aria-current="page">Topic Planner</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="planner-shell">
+    <section class="planner-intro">
+      <h1>Topic Circles</h1>
+      <p>Setze pro Topic Arbeit und Bedeutung. Das MVP erzeugt daraus automatisch einen vernuenftigen Tages- und Wochenplan fuer deinen Fokus.</p>
+    </section>
+
+    <section class="topic-create">
+      <label for="new-topic-name">Neues Topic</label>
+      <div class="topic-create-row">
+        <input id="new-topic-name" type="text" placeholder="z.B. Structural Epistemics" />
+        <button id="add-topic-btn" type="button">Topic hinzufuegen</button>
+      </div>
+    </section>
+
+    <section class="planner-settings">
+      <h2>Plan Settings</h2>
+      <div class="settings-grid">
+        <label>
+          Deep Work Start
+          <input id="daily-start" type="time" value="09:00" />
+        </label>
+        <label>
+          Deep Work Ende
+          <input id="daily-end" type="time" value="10:30" />
+        </label>
+        <label>
+          Review Start
+          <input id="review-start" type="time" value="18:00" />
+        </label>
+        <label>
+          Review Ende
+          <input id="review-end" type="time" value="18:30" />
+        </label>
+      </div>
+    </section>
+
+    <section class="topic-list" id="topic-list" aria-live="polite"></section>
+
+    <section class="planner-actions">
+      <button id="generate-plan-btn" type="button" class="action-primary">Tagesplan erzeugen</button>
+      <button id="download-topic-json-btn" type="button" class="action-secondary">topic_plan.json laden</button>
+      <button id="download-day-json-btn" type="button" class="action-secondary">day_plan.json laden</button>
+      <button id="import-topic-json-btn" type="button" class="action-secondary">topic_plan.json importieren</button>
+      <button id="copy-sync-command-btn" type="button" class="action-secondary">Sync Command kopieren</button>
+      <input id="topic-json-input" type="file" accept="application/json" hidden />
+    </section>
+
+    <section class="plan-output">
+      <h2>Erzeugter Tagesplan</h2>
+      <div id="day-plan" class="day-plan"></div>
+    </section>
+
+    <section class="calendar-note">
+      <h2>Google Calendar Sync</h2>
+      <p>Nach dem Download kannst du den Plan direkt einspielen:</p>
+      <pre id="sync-command">python administration/google_calendar_sync.py --config administration/google_calendar_config.json --sync-topic-plan --topic-plan-json /Pfad/zu/topic_plan.json</pre>
+    </section>
+  </main>
+</body>
+</html>

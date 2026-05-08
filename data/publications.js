@@ -92,6 +92,22 @@ window.CALYR_PUBLICATIONS = [
     "description": "Data-evaluation paper that estimates and validates model parameters from raw SPR response curves."
   },
   {
+    "id": "matomic-reaction-class-network",
+    "title": "mAtomic Reaction Class Network (Interactive)",
+    "topic": "redhuman",
+    "status": "progress",
+    "allow_local_preview": true,
+    "pdfs": [
+      {
+        "label": "interactive",
+        "path": "pages/reaction_class_map.html"
+      }
+    ],
+    "method": "Interactive metabolite-reaction network with class-wise energy distributions and parameterized force layout",
+    "abstract": "This publication entry hosts the live metabolite-reaction workspace generated from the energy-assigned reaction corpus. It includes an interactive force-directed network, per-class energy distribution histograms, and filterable reaction tables with thermodynamic annotations.",
+    "description": "Interactive reaction class map integrated into the Publications layer."
+  },
+  {
     "id": "constraint-coupled-inference",
     "title": "Constraint-Coupled Inference",
     "topic": "nexus",

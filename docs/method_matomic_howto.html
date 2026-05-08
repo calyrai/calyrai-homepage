@@ -1,0 +1,228 @@
+<article class="doc-article">
+    <h1>Metabolic How-To (from thought snippets)</h1>
+    <p class="doc-subtitle">Operational workflow pages generated from snippet YAML definitions.</p>
+
+    <h2>Run the method end-to-end</h2>
+    <pre>python -m calyr.matomic.cli analyze --model models/ecoli_core.xml --output-dir results/matomic/run_001
+python -m calyr.matomic.cli inspect-cycles --model models/ecoli_core.xml --top 15
+python -m calyr.matomic.cli export results/matomic/run_001 exports/matomic_bundle</pre>
+
+    <h2>Source snippet coverage</h2>
+    <p>This page compiles curated method/theory snippets into executable, copy-paste workflows.</p>
+    <p><strong>Generated:</strong> 2026-05-04</p>
+
+
+    <section>
+        <h2>Flux Balance Analysis with COBRApy — standard protocol</h2>
+        <p><em>Snippet ID: method_fba_cobra | Type: method | Source: calyrai_modelling/snippets/method/method_fba_cobra.yaml</em></p>
+        <p>Flux Balance Analysis (FBA) finds a steady-state flux distribution v that
+maximises an objective function (typically biomass) subject to:</p>
+        
+    <h3>Method details</h3>
+    <pre>Flux Balance Analysis (FBA) finds a steady-state flux distribution v that
+maximises an objective function (typically biomass) subject to:
+
+  S · v = 0        (mass balance: stoichiometric matrix S, reactions v)
+  lb ≤ v ≤ ub      (thermodynamic + exchange bounds)
+
+COBRApy implementation:
+
+  import cobra
+  model = cobra.io.load_model(&quot;textbook&quot;)   # or SBML: cobra.io.read_sbml_model(...)
+  solution = model.optimize()
+  # solution.fluxes  → pd.Series, reaction_id → mmol/gDW/h
+  # solution.objective_value  → biomass rate
+
+Key parameters:
+  - Objective: set via model.objective = &quot;BIOMASS_Ecoli_core_w_GAM&quot;
+  - Exchange bounds: model.reactions.EX_glc__D_e.lower_bound = -10  (uptake rate)
+  - Block reactions: reaction.knock_out() or set bounds to (0, 0)</pre>
+        
+        
+    <h3>Context</h3>
+    <p>FBA finds one optimal solution but the feasible space may contain many
+equally optimal solutions (degeneracy). Use FVA (Flux Variability Analysis)
+to bound the range of each reaction at optimality.
+
+cobra.flux_analysis.flux_variability_analysis(model, fraction_of_optimum=0.9)</p>
+        
+        
+        
+    </section>
+
+    <section>
+        <h2>FluxWarehouse — DuckDB-backed flux run storage and comparison</h2>
+        <p><em>Snippet ID: method_flux_warehouse_duckdb | Type: method | Source: calyrai_modelling/snippets/method/method_flux_warehouse_duckdb.yaml</em></p>
+        <p>FluxWarehouse stores FBA solutions (flux_runs + flux_values) in DuckDB.
+DuckDB is an embedded analytical database — no server required.</p>
+        
+    <h3>Method details</h3>
+    <pre>FluxWarehouse stores FBA solutions (flux_runs + flux_values) in DuckDB.
+DuckDB is an embedded analytical database — no server required.
+
+Schema:
+
+  flux_runs(flux_id PK, condition_id, model_id, run_date, objective, status, notes)
+  flux_values(flux_id FK, reaction_id, value, lower_bound, upper_bound, unit)
+
+Usage:
+
+  from engines.metabolic.flux.flux_warehouse import FluxWarehouse
+
+  wh = FluxWarehouse(&quot;data/processed/flux_warehouse.duckdb&quot;)
+
+  # Store
+  wh.store_cobra_solution(
+      flux_id=&quot;run_01&quot;,
+      condition_id=&quot;glucose_aerobic&quot;,
+      solution=cobra_solution,
+  )
+
+  # Retrieve
+  fluxes = wh.get_fluxes(&quot;run_01&quot;)          # → dict[str, float]
+  meta   = wh.get_run_meta(&quot;run_01&quot;)         # → dict
+  runs   = wh.list_runs()                    # → pd.DataFrame
+
+  # Compare two conditions
+  delta  = wh.compare(&quot;run_01&quot;, &quot;run_02&quot;)    # → pd.DataFrame sorted by |delta|
+
+  # Raw SQL access
+  wh.con.execute(&quot;SELECT * FROM flux_values WHERE reaction_id = &#x27;PFK&#x27;&quot;).df()
+
+The warehouse is the single source of truth for all flux runs.
+reaction_data for Escher is derived from wh.get_fluxes() at query time.</pre>
+        
+        
+    <h3>Context</h3>
+    <p>DuckDB can directly query Parquet files alongside the warehouse table:
+  wh.con.execute(&quot;SELECT * FROM &#x27;data/raw/fluxes.parquet&#x27;&quot;)
+This enables hybrid analytical workflows without ETL overhead.
+
+For versioning: use flux_id = f&quot;run_{condition}_{model_version}_{date}&quot;
+to make runs reproducible and traceable.</p>
+        
+        
+        
+    </section>
+
+    <section>
+        <h2>eQuilibrator API: InChI-Based Reaction ΔG Estimation</h2>
+        <p><em>Snippet ID: method_equilibrator_inchi | Type: method | Source: calyrai_modelling/snippets/method_equilibrator_inchi.yaml</em></p>
+        <p>Use ComponentContribution (eQuilibrator Python API) to estimate standard
+Gibbs free energy (ΔG&#x27;°) for arbitrary reactions. Supports BiGG, KEGG,
+ChEBI, MetaNetX, and InChI-based custom compounds. Results include
+uncertainty covariance for robust constraint-based analysis.</p>
+        
+        
+    <h3>Protocol</h3>
+    <ol>
+      <li><strong>Install &amp; initialize</strong><pre>from equilibrator_api import ComponentContribution, Q_
+cc = ComponentContribution()  # ~1.3GB local DB, downloaded once
+cc.p_h = Q_(7.4)
+cc.ionic_strength = Q_(&quot;0.25M&quot;)
+cc.p_mg = Q_(3.0)
+cc.temperature = Q_(&quot;298.15K&quot;)</pre></li>
+      <li><strong>Parse reaction (BiGG IDs)</strong><pre>rxn = cc.parse_reaction_formula(
+    &quot;bigg.metabolite:atp + bigg.metabolite:h2o = &quot;
+    &quot;bigg.metabolite:adp + bigg.metabolite:pi&quot;
+)
+assert rxn.is_balanced()  # Check chemical balance + charge</pre></li>
+      <li><strong>Estimate single reaction</strong><pre>dg_result = cc.standard_dg_prime(rxn)  # Returns Measurement object
+dg_value = dg_result.value.m_as(&quot;kJ/mol&quot;)
+dg_error = dg_result.error.m_as(&quot;kJ/mol&quot;)  # 1σ uncertainty</pre></li>
+      <li><strong>Batch estimation with covariance</strong><pre>reactions = [rxn1, rxn2, rxn3]
+dg_mean, dg_cov = cc.standard_dg_prime_multi(
+    reactions, uncertainty_representation=&quot;cov&quot;
+)  # Returns (Quantity, Quantity) with full covariance matrix</pre></li>
+      <li><strong>Custom compound from InChI</strong><pre>ethanol_inchi = &quot;InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3&quot;
+compound = cc.get_compound_by_inchi(ethanol_inchi)
+# Can now use in reaction formulas</pre></li>
+      <li><strong>Multi-compartment reactions (transport + pH)</strong><pre>dg_transport = cc.multicompartmental_standard_dg_prime(
+    reaction_inner=&quot;...&quot;,  # Cytoplasm
+    reaction_outer=&quot;...&quot;,  # Periplasm
+    e_potential_difference=Q_(&quot;0.15V&quot;),
+    p_h_outer=Q_(6.5),
+)</pre></li>
+    </ol>
+        
+        
+        
+        
+  <h4>Limitations</h4>
+  <ul>
+      <li>InChI-based compounds require equilibrator-assets package + online lookup</li>
+      <li>Group contributions less accurate for novel scaffolds (&gt;5σ error possible)</li>
+      <li>Uncertainties reflect CC method variability, not metabolic conditions</li>
+      <li>Transport reactions require explicit compartment + membrane potential data</li>
+  </ul>
+    </section>
+
+    <section>
+        <h2>Integrating ΔG&#x27;° with FBA: Flux + Thermodynamics Co-Storage</h2>
+        <p><em>Snippet ID: method_thermo_flux_integration | Type: method | Source: calyrai_modelling/snippets/method_thermo_flux_integration.yaml</em></p>
+        <p>Store flux solutions and thermodynamic estimates in a unified schema:
+flux_runs (condition metadata) + flux_values (per-reaction v) + thermo_values
+(per-reaction ΔG&#x27;°, uncertainty, feasibility). Enable joint queries: find
+active reactions that carry unfavorable flux or couple to favorable ones.</p>
+        
+        
+    <h3>Protocol</h3>
+    <ol>
+      <li><strong>Initialize warehouse</strong><pre>from engines.metabolic.flux.flux_warehouse import FluxWarehouse
+wh = FluxWarehouse(&quot;path/to/warehouse.duckdb&quot;)</pre></li>
+      <li><strong>Store flux run</strong><pre>wh.store_cobra_solution(
+    flux_id=&quot;aerobic_baseline&quot;,
+    condition_id=&quot;aerobic&quot;,
+    solution=sol,  # cobra.Solution
+)</pre></li>
+      <li><strong>Estimate &amp; store thermo</strong><pre>from engines.metabolic.thermo.thermo_engine import ThermoEngine
+engine = ThermoEngine(p_h=7.4, ionic_strength=0.25)
+thermo_df = engine.estimate_model_dg(model)
+wh.store_thermo(&quot;aerobic_baseline&quot;, thermo_df)</pre></li>
+      <li><strong>Query merged data (flux + ΔG)</strong><pre>fluxes = wh.get_fluxes(&quot;aerobic_baseline&quot;)
+thermo = wh.get_thermo(&quot;aerobic_baseline&quot;)
+# Join on reaction_id for co-analysis</pre></li>
+      <li><strong>Find coupling relationships</strong><pre># Identify reactions where flux &gt; 0 but ΔG &gt; 0
+# These are energetically unfavorable and require coupling
+merged = thermo.merge(fluxes, on=&#x27;reaction_id&#x27;)
+coupled = merged[(merged[&#x27;dg_prime&#x27;] &gt; 0) &amp; (merged[&#x27;flux&#x27;] &gt; 0)]</pre></li>
+      <li><strong>Export for Escher visualization</strong><pre>from engines.metabolic.thermo.thermo_engine import build_thermo_map
+reaction_data = build_thermo_map(
+    fluxes=fluxes,
+    thermo_df=thermo,
+    coloring_mode=&quot;sign&quot;,  # green&lt;0, red&gt;0, gray=unknown
+)
+builder = escher.Builder(
+    map_name=&quot;e_coli_core.Core metabolism&quot;,
+    reaction_data=reaction_data
+)</pre></li>
+    </ol>
+        
+        
+  <h4>Useful queries</h4>
+  <ul>
+      <li>List active reactions with ΔG &gt; 0 (require coupling)</li>
+      <li>Find cofactor redox couples (NADH/NAD, FADH2/FAD) in pathway</li>
+      <li>Compare thermodynamic feasibility across growth conditions</li>
+      <li>Predict metabolic engineering targets: low-ΔG sinks for product formation</li>
+      <li>Validate flux distributions against thermodynamic constraints</li>
+  </ul>
+        
+        
+    </section>
+
+    <section>
+        <h2>Thermodynamic Constraints on Metabolic Fluxes</h2>
+        <p><em>Snippet ID: theory_thermodynamic_fba | Type: theory | Source: calyrai_modelling/snippets/theory_thermodynamic_fba.yaml</em></p>
+        <p>FBA assumes only stoichiometric constraints (S·v=0), but thermodynamics
+restricts feasible flux distributions further: reactions must satisfy
+ΔG&#x27;° &lt; 0 in the forward direction (spontaneous). Coupling of unfavorable
+(ΔG&#x27;&gt;0) reactions to favorable ones enables metabolic flexibility.</p>
+        
+        
+        
+        
+        
+        
+    </section>
+</article>

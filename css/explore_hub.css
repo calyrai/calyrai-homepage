@@ -1,3 +1,32 @@
+.explore-page,
+.explore-page * {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.explore-lang-switch {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+
+.explore-lang-btn {
+  border: 1px solid rgba(106, 240, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(7, 16, 28, 0.78);
+  color: rgba(214, 233, 249, 0.84);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.explore-lang-btn.active {
+  border-color: rgba(106, 240, 255, 0.78);
+  color: #ffffff;
+  background: rgba(34, 90, 118, 0.68);
+}
+
 .explore-main {
   padding: 48px 48px 96px;
 }

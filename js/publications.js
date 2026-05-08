@@ -75,15 +75,15 @@
   }
 
   function primaryOpenLink(pub) {
-    if (!pub.doi) return '';
     if (!pub.pdfs || !pub.pdfs.length) return '';
+    if (!pub.doi && !pub.allow_local_preview) return '';
     var link = pub.pdfs[0];
     var label = link.label || 'open';
     return '<a class="pub-open-pill" href="' + link.path + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>';
   }
 
   function renderAssetLinks(pub) {
-    if (!pub.doi) return '';
+    if (!pub.doi && !pub.allow_local_preview) return '';
     var links = [];
     if (pub.pdfs && pub.pdfs.length) {
       pub.pdfs.forEach(function (pdf) {
@@ -97,14 +97,21 @@
   }
 
   function renderPdfPreview(pub) {
-    if (!pub.doi) return '';
+    if (!pub.doi && !pub.allow_local_preview) return '';
     if (!pub.pdfs || !pub.pdfs.length) return '';
-    var pdf = pub.pdfs.find(function (item) { return isPdfPath(item.path); });
-    if (!pdf) return '';
+    var primary = pub.pdfs[0];
+    if (!primary || !primary.path) return '';
+    if (isPdfPath(primary.path)) {
+      return '<section class="pub-preview-shell">' +
+        '<div class="pub-preview-head">PDF preview</div>' +
+        '<iframe class="pub-preview-frame" src="' + primary.path + '#view=FitH" title="' + escapeHtml(pub.title) + ' PDF preview" loading="lazy"></iframe>' +
+        '<p class="pub-preview-note">If the preview does not load, open the <a href="' + primary.path + '" target="_blank" rel="noopener">PDF directly</a>.</p>' +
+      '</section>';
+    }
     return '<section class="pub-preview-shell">' +
-      '<div class="pub-preview-head">PDF preview</div>' +
-      '<iframe class="pub-preview-frame" src="' + pdf.path + '#view=FitH" title="' + escapeHtml(pub.title) + ' PDF preview" loading="lazy"></iframe>' +
-      '<p class="pub-preview-note">If the preview does not load, open the <a href="' + pdf.path + '" target="_blank" rel="noopener">PDF directly</a>.</p>' +
+      '<div class="pub-preview-head">Interactive preview</div>' +
+      '<iframe class="pub-preview-frame" src="' + primary.path + '" title="' + escapeHtml(pub.title) + ' interactive preview" loading="lazy"></iframe>' +
+      '<p class="pub-preview-note">Open the interactive page directly: <a href="' + primary.path + '" target="_blank" rel="noopener">launch workspace</a>.</p>' +
     '</section>';
   }
 

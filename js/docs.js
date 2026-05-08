@@ -102,6 +102,24 @@
     return `<div class="doc-nav-footer">${prevHTML}${nextHTML}</div>`;
   }
 
+  function isStandalonePage (src) {
+    return typeof src === 'string' && src.startsWith('pages/');
+  }
+
+  function renderEmbeddedPage (page, navHtml) {
+    content.innerHTML = `
+      <div class="doc-article" style="padding:0;background:transparent;max-width:none">
+        <iframe
+          src="${page.src}"
+          title="${page.title}"
+          style="width:100%;min-height:78vh;border:1px solid rgba(126,237,255,0.14);border-radius:16px;background:rgba(5,12,24,0.45)"
+          loading="eager"
+        ></iframe>
+      </div>
+      ${navHtml}
+    `;
+  }
+
   async function fetchDocHtml (src) {
     try {
       const res = await fetch(src);
@@ -231,6 +249,13 @@
     const { section, page } = entry;
 
     setActive(section.id, page.id);
+    const flat = { ...page, section: section.id };
+
+    if (isStandalonePage(page.src)) {
+      renderEmbeddedPage(page, renderNavFooter(flat));
+      window.scrollTo(0, 0);
+      return;
+    }
 
     // resolve path relative to docs.html (which lives at homepage root)
     const src = page.src;
@@ -245,7 +270,6 @@
       </div>`;
     }
 
-    const flat = { ...page, section: section.id };
     content.innerHTML = html + renderNavFooter(flat);
     initFoundingChecker();
 

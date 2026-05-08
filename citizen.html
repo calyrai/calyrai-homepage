@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.Citizen – Job Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Control simulation jobs and view results in real-time." />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/citizen.css" />
+
+  <!-- Scripts (deferred) -->
+  <script src="js/nav_autohide.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+  <script src="js/citizen.js" defer></script>
+</head>
+
+<body class="citizen-page">
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">Calyr.aí</a>
+      <nav class="nav-core" aria-label="Primary">
+        <a href="explore.html" class="nav-pill">Explore</a>
+        <a href="docs.html" class="nav-pill">Docs</a>
+        <a href="team.html" class="nav-pill">Team</a>
+        <a href="publications.html" class="nav-pill">Publications</a>
+      </nav>
+      <nav class="nav-secondary" aria-label="Secondary">
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+        <a href="pages/contact.html" class="nav-pill">Contact</a>
+        <button id="logout-btn" class="nav-pill logout-pill" style="display:none;">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Auth Gate (Hidden on Login) -->
+  <section id="auth-gate" class="auth-gate">
+    <div class="auth-gate-inner">
+      <div class="auth-orbit-logo">
+        <svg viewBox="0 0 200 200" class="orbit-mini">
+          <defs>
+            <linearGradient id="auth-whiteCyan" x1="30" y1="30" x2="170" y2="170">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+              <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="48" stroke="url(#auth-whiteCyan)" stroke-width="22" fill="none" />
+        </svg>
+      </div>
+      <h1>Calyr.Citizen</h1>
+      <p>Control your simulations in real-time.</p>
+      <a href="http://localhost:8000" class="auth-button" target="_blank" rel="noopener">
+        Enter via Login
+      </a>
+      <p class="auth-hint">You'll be redirected back here after authentication.</p>
+    </div>
+  </section>
+
+  <!-- Main Control Panel (Hidden until Login) -->
+  <main id="citizen-main" class="citizen-main" style="display:none;">
+    
+    <!-- Welcome Header -->
+    <section class="citizen-header">
+      <h1>Welcome, <span id="user-name">Researcher</span> 🧬</h1>
+      <div class="header-status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Ready to compute</span>
+      </div>
+    </section>
+
+    <!-- Action Grid -->
+    <section class="action-grid">
+      
+      <!-- Run Simulation Card -->
+      <div class="action-card run-card">
+        <div class="card-header">
+          <h2>⚙️ Run Simulation</h2>
+          <p class="card-subtitle">Launch a new job</p>
+        </div>
+        <div class="card-content">
+          <form id="run-form">
+            <div class="form-group">
+              <label for="sim-type">Simulation Type:</label>
+              <select id="sim-type" name="type" required>
+                <option value="">-- Select --</option>
+                <option value="saxs">SAXS Scattering</option>
+                <option value="lammps">LAMMPS MD</option>
+                <option value="openfoam">OpenFOAM CFD</option>
+                <option value="alphafold">AlphaFold Structure</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sim-params">Parameters (JSON):</label>
+              <textarea id="sim-params" name="params" rows="4" placeholder='{"temp": 300, "steps": 10000}'></textarea>
+            </div>
+            <button type="submit" class="btn-run">
+              <span>Run</span>
+              <span class="btn-icon">▶</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- View Figures Card -->
+      <div class="action-card figure-card">
+        <div class="card-header">
+          <h2>📊 View Figures</h2>
+          <p class="card-subtitle">Latest results</p>
+        </div>
+        <div class="card-content">
+          <div id="figures-container" class="figures-container">
+            <p class="empty-state">No figures yet. Run a simulation first.</p>
+          </div>
+          <button id="refresh-figures" class="btn-secondary">
+            <span>Refresh</span>
+            <span class="btn-icon">🔄</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Okto Loop Card -->
+      <div class="action-card okto-card">
+        <div class="card-header">
+          <h2>🔁 Okto Loop</h2>
+          <p class="card-subtitle">Publication pipeline</p>
+        </div>
+        <div class="card-content">
+          <div id="okto-status" class="okto-status">
+            <div class="stage" data-stage="extract">
+              <span class="stage-dot"></span>
+              <span class="stage-name">Extract</span>
+            </div>
+            <div class="stage" data-stage="visualize">
+              <span class="stage-dot"></span>
+              <span class="stage-name">Visualize</span>
+            </div>
+            <div class="stage" data-stage="publish">
+              <span class="stage-dot"></span>
+              <span class="stage-name">Publish</span>
+            </div>
+          </div>
+          <button id="trigger-loop" class="btn-okto">
+            <span>Trigger Loop</span>
+            <span class="btn-icon">🚀</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Job Queue -->
+    <section class="job-queue">
+      <h2>Active Jobs</h2>
+      <div id="job-list" class="job-list">
+        <div class="empty-state">No jobs running.</div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

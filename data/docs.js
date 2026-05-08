@@ -119,6 +119,8 @@ window.CALYR_DOCS = [
     pages: [
       { id: 'python',    title: 'Python API',      src: 'docs/api_python.html' },
       { id: 'cli',       title: 'CLI',             src: 'docs/api_cli.html' },
+      { id: 'matomic_howto', title: 'Metabolic how-to (snippets)', src: 'docs/method_matomic_howto.html' },
+      { id: 'matomic_snippets', title: 'Metabolic snippet catalog', src: 'docs/method_matomic_snippets.html' },
       { id: 'connectpaper', title: 'Connectpaper & Zotero', src: 'docs/api_connectpaper.html' }
     ]
   },
@@ -143,6 +145,7 @@ window.CALYR_DOCS = [
     id:    'internal',
     title: '— Internal',
     pages: [
+      { id: 'ai_landscape', title: 'AI Landscape Map', src: 'pages/ai_landscape_map.html?v=20260508-linkedin' },
       { id: 'calyr_online_gruendung_at', title: 'Online-Gruendung Oesterreich', src: 'docs/calyr_online_gruendung_at.html' },
       { id: 'calyr_online_founding_en', title: 'Online Founding Austria (EN)', src: 'docs/calyr_online_founding_en.html' },
       { id: 'calyr_gruendung', title: 'Calyr Gruendung', src: 'docs/calyr_gruendung.html' },
