@@ -5,6 +5,9 @@
   <title>Calyr · Scientific Facility Finder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Find the right scientific facility and method for your experiment. Austria-first. EU-ready." />
+  <!-- data layer -->
+  <script src="data/facilities.js"></script>
+  <script src="data/methods.js"></script>
   <style>
     /* ── reset ─────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -450,80 +453,7 @@
     output formats, and availability state. Machine-readable from day one.
   </p>
   <div class="facility-grid">
-
-    <div class="facility-card">
-      <div class="facility-name">SAXS / WAXS Beamline</div>
-      <div class="facility-location">DESY · Hamburg / Vienna BioCenter</div>
-      <div class="facility-tags">
-        <span class="tag">Solution SAXS</span>
-        <span class="tag">Protein</span>
-        <span class="tag method">SEC-SAXS</span>
-        <span class="tag method">WAXS</span>
-      </div>
-      <p class="facility-desc">Synchrotron-grade small-angle X-ray scattering for solution samples, nanoparticles, membranes, and polymers. SEC-SAXS coupling for heterogeneous samples.</p>
-      <span class="facility-cta">View method objects →</span>
-    </div>
-
-    <div class="facility-card">
-      <div class="facility-name">Cryo-EM Suite</div>
-      <div class="facility-location">IMBA · Vienna</div>
-      <div class="facility-tags">
-        <span class="tag">Single-particle</span>
-        <span class="tag">Tomography</span>
-        <span class="tag method">High-resolution</span>
-      </div>
-      <p class="facility-desc">300 kV Titan Krios for single-particle reconstruction. Sample prep including vitrification screening and grid optimization.</p>
-      <span class="facility-cta">View method objects →</span>
-    </div>
-
-    <div class="facility-card">
-      <div class="facility-name">NMR Spectroscopy</div>
-      <div class="facility-location">University of Vienna · NMR Center</div>
-      <div class="facility-tags">
-        <span class="tag">Solution NMR</span>
-        <span class="tag">Solid-state</span>
-        <span class="tag method">HSQC</span>
-        <span class="tag method">Relaxation</span>
-      </div>
-      <p class="facility-desc">Up to 950 MHz field strength. Protein dynamics, ligand binding, metabolomics. Cryoprobe equipped.</p>
-      <span class="facility-cta">View method objects →</span>
-    </div>
-
-    <div class="facility-card">
-      <div class="facility-name">SPR / BLI Kinetics</div>
-      <div class="facility-location">CeMM · Vienna</div>
-      <div class="facility-tags">
-        <span class="tag">Binding kinetics</span>
-        <span class="tag">Affinity</span>
-        <span class="tag method">SPR</span>
-        <span class="tag method">BLI</span>
-      </div>
-      <p class="facility-desc">Surface plasmon resonance and biolayer interferometry for label-free interaction analysis. From fragment screening to full ITC complement.</p>
-      <span class="facility-cta">View method objects →</span>
-    </div>
-
-    <div class="facility-card">
-      <div class="facility-name">Mass Spectrometry</div>
-      <div class="facility-location">IMP · Vienna</div>
-      <div class="facility-tags">
-        <span class="tag">Proteomics</span>
-        <span class="tag">Native MS</span>
-        <span class="tag method">HDX-MS</span>
-      </div>
-      <p class="facility-desc">Orbitrap-based platform for proteomics, crosslinking MS, native MS for complex stoichiometry, and HDX for conformational dynamics.</p>
-      <span class="facility-cta">View method objects →</span>
-    </div>
-
-    <div class="facility-card" style="border-style: dashed; opacity: 0.55;">
-      <div class="facility-name">+ Add your facility</div>
-      <div class="facility-location">Open registry</div>
-      <div class="facility-tags">
-        <span class="tag">AT · EU</span>
-      </div>
-      <p class="facility-desc">Facilities submit a normalized capability contract. Indexed, searchable, matched by the agent automatically.</p>
-      <span class="facility-cta">Submit facility →</span>
-    </div>
-
+    <!-- populated by JS from data/facilities.js -->
   </div>
 </section>
 
@@ -739,6 +669,57 @@
 
 <!-- ── minimal interactivity ── -->
 <script>
+  /* ── utilities ───────────────────────────────────────────────────────── */
+  function escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ── render facility cards from registry ────────────────────────────── */
+  (function renderFacilities() {
+    const grid = document.querySelector('#facilities .facility-grid');
+    if (!grid || typeof FACILITY_REGISTRY === 'undefined') return;
+    grid.innerHTML = '';
+    FACILITY_REGISTRY.forEach(f => {
+      const isOpen = f.status === 'open_registration';
+      const methodCount = f.method_objects ? f.method_objects.length : 0;
+      const tagHtml = f.capabilities.slice(0,4).map(c =>
+        `<span class="tag">${escapeHtml(c)}</span>`
+      ).join('');
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="facility-card${isOpen ? '" style="border-style:dashed;opacity:0.55' : ''}" data-facility-id="${escapeHtml(f.id)}">
+          <div class="facility-name">${escapeHtml(f.name)}</div>
+          <div class="facility-location">${escapeHtml(f.location)}</div>
+          <div class="facility-tags">${tagHtml}${f.country ? `<span class="tag method">${escapeHtml(f.country)}</span>` : ''}</div>
+          <p class="facility-desc">${escapeHtml(f.description)}</p>
+          <span class="facility-cta" onclick="showFacilityMethods('${escapeHtml(f.id)}')" style="cursor:pointer">
+            ${isOpen ? 'Submit facility →' : `View ${methodCount} method object${methodCount !== 1 ? 's' : ''} →`}
+          </span>
+        </div>`);
+    });
+  })();
+
+  /* ── show facility methods in copilot ───────────────────────────────── */
+  function showFacilityMethods(facilityId) {
+    const f = FACILITY_REGISTRY.find(x => x.id === facilityId);
+    if (!f || !f.method_objects || f.status === 'open_registration') return;
+    document.getElementById('copilot').scrollIntoView({ behavior: 'smooth' });
+    const methods = f.method_objects
+      .map(mid => METHOD_LIBRARY.find(m => m.id === mid))
+      .filter(Boolean);
+    setTimeout(() => {
+      const messages = document.getElementById('chat-messages');
+      const intro = document.createElement('div');
+      intro.className = 'msg agent';
+      intro.innerHTML = `<div class="msg-label">Copilot</div><div class="msg-bubble">
+        Found <strong>${methods.length}</strong> method object${methods.length !== 1 ? 's' : ''} for <strong>${escapeHtml(f.name)}</strong> at ${escapeHtml(f.location)}:
+        ${methods.map(m => renderMethodCard(m)).join('')}
+      </div>`;
+      messages.appendChild(intro);
+      messages.scrollTop = messages.scrollHeight;
+    }, 400);
+  }
+
+  /* ── hero search ─────────────────────────────────────────────────────── */
   function fillSearch(text) {
     document.getElementById('hero-search').value = text;
     document.getElementById('hero-search').focus();
@@ -747,7 +728,6 @@
   function handleSearch() {
     const val = document.getElementById('hero-search').value.trim();
     if (!val) return;
-    // Scroll to copilot and pre-fill
     document.getElementById('copilot').scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => {
       document.getElementById('chat-input').value = val;
@@ -759,43 +739,92 @@
     if (e.key === 'Enter') handleSearch();
   });
 
+  /* ── smart copilot ───────────────────────────────────────────────────── */
+  function buildAgentReply(userText) {
+    const methods = (typeof matchMethods === 'function') ? matchMethods(userText) : [];
+
+    if (methods.length > 0) {
+      const top = methods.slice(0, 2);
+      const facilitySet = new Set(top.flatMap(m => m.compatible_facilities || []));
+      const facilities = [...facilitySet]
+        .map(fid => FACILITY_REGISTRY.find(f => f.id === fid))
+        .filter(Boolean);
+
+      return `
+        <strong>Method match${top.length > 1 ? 'es' : ''}:</strong> I identified <strong>${top.length}</strong> relevant method object${top.length > 1 ? 's' : ''} for your query.
+        ${top.map(m => renderMethodCard(m)).join('')}
+        ${facilities.length ? `<div style="margin-top:0.8rem;font-size:0.82rem"><span style="color:#ff4df5">Recommended facilities:</span> ${facilities.map(f => `<strong>${escapeHtml(f.name)}</strong> (${escapeHtml(f.location)})`).join(', ')}</div>` : ''}
+        <div style="margin-top:0.7rem;font-size:0.8rem;color:rgba(247,248,255,0.45)">To refine: paste a methods section, specify sample type, target MW, or required output format.</div>`;
+    }
+
+    /* Nature Methods paste detection */
+    const wordCount = userText.trim().split(/\s+/).length;
+    if (wordCount > 40) {
+      return `
+        <strong>Methods section detected</strong> (${wordCount} words). I am parsing for structured method elements…<br><br>
+        No exact method template matched. The following fields are expected for a Nature Methods-style layout:<br>
+        <ul style="margin:0.5rem 0 0 1rem;font-size:0.82rem;line-height:1.8">
+          <li><strong>Setup</strong> — instruments, configuration, calibration</li>
+          <li><strong>Sample Prep</strong> — buffer, concentration, quality checks</li>
+          <li><strong>Data Collection</strong> — acquisition parameters, exposure, replicates</li>
+          <li><strong>Processing</strong> — software pipeline, correction steps</li>
+          <li><strong>Analysis</strong> — model, fitting, interpretation</li>
+          <li><strong>Assumptions</strong> — what must hold for the result to be valid</li>
+          <li><strong>Validation</strong> — quantitative pass/fail criteria</li>
+          <li><strong>Failure Modes</strong> — how to diagnose and recover</li>
+          <li><strong>Output</strong> — file formats, reported quantities</li>
+        </ul>
+        <div style="margin-top:0.6rem;font-size:0.8rem;color:rgba(247,248,255,0.45)">Tell me which technique this is (SAXS, cryo-EM, NMR, SPR, HDX-MS, proteomics…) and I will map it to the correct template.</div>`;
+    }
+
+    /* fallback */
+    return `
+      I need a bit more context. Try describing:<br><br>
+      <ul style="margin:0.4rem 0 0 1rem;font-size:0.82rem;line-height:1.8">
+        <li>Your biological question or sample (e.g. "IgG antibody, ~150 kDa")</li>
+        <li>The technique you have in mind (or what you want to find out)</li>
+        <li>Or paste the <em>Methods</em> section from your Nature Methods paper draft</li>
+      </ul>
+      <div style="margin-top:0.6rem;font-size:0.8rem;color:rgba(247,248,255,0.45)">
+        Available method templates: SAXS Rg/P(r), SEC-SAXS subtraction, Cryo-EM SPA, NMR HSQC titration, SPR kinetics, HDX-MS dynamics, DDA proteomics.
+      </div>`;
+  }
+
   function sendChatMessage() {
     const input = document.getElementById('chat-input');
     const val = input.value.trim();
     if (!val) return;
     input.value = '';
-
     const messages = document.getElementById('chat-messages');
 
-    // add user message
+    // user bubble
     const userMsg = document.createElement('div');
     userMsg.className = 'msg user';
     userMsg.innerHTML = `<div class="msg-label">You</div><div class="msg-bubble">${escapeHtml(val)}</div>`;
     messages.appendChild(userMsg);
     messages.scrollTop = messages.scrollHeight;
 
-    // simulate agent response
+    // typing indicator
+    const typing = document.createElement('div');
+    typing.className = 'msg agent';
+    typing.id = 'typing-indicator';
+    typing.innerHTML = `<div class="msg-label">Copilot</div><div class="msg-bubble" style="color:rgba(247,248,255,0.4)">Analysing…</div>`;
+    messages.appendChild(typing);
+    messages.scrollTop = messages.scrollHeight;
+
     setTimeout(() => {
+      typing.remove();
       const agentMsg = document.createElement('div');
       agentMsg.className = 'msg agent';
-      agentMsg.innerHTML = `<div class="msg-label">Copilot</div><div class="msg-bubble">
-        <em>(Live agent not yet connected in this MVOP prototype.)</em><br><br>
-        In the live system, I would analyse your query, propose candidate methods, 
-        and match facilities from the registry. 
-        Method Objects would be generated and logged to your Nexus graph.
-      </div>`;
+      agentMsg.innerHTML = `<div class="msg-label">Copilot</div><div class="msg-bubble">${buildAgentReply(val)}</div>`;
       messages.appendChild(agentMsg);
       messages.scrollTop = messages.scrollHeight;
-    }, 700);
+    }, 750);
   }
 
   document.getElementById('chat-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') sendChatMessage();
   });
-
-  function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
 </script>
 
 </body>
