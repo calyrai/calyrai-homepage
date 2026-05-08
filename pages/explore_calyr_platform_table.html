@@ -65,6 +65,14 @@
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24) inset;
   }
 
+  .platform-tile.tile-clickable {
+    cursor: pointer;
+  }
+
+  .platform-tile.tile-clickable:hover {
+    border-color: rgba(170, 238, 255, 0.52);
+  }
+
   .platform-symbol {
     font-size: 1.4rem;
     line-height: 1;
@@ -560,3 +568,32 @@
     </div>
   </section>
 </article>
+
+<script>
+  (function enableTileNavigation() {
+    const tiles = document.querySelectorAll('.platform-grid .platform-tile');
+    tiles.forEach(tile => {
+      const planLink = tile.querySelector('.platform-plan-link');
+      if (!planLink) return;
+      tile.classList.add('tile-clickable');
+      tile.setAttribute('role', 'link');
+      tile.setAttribute('tabindex', '0');
+
+      const go = () => {
+        window.location.href = planLink.getAttribute('href');
+      };
+
+      tile.addEventListener('click', e => {
+        if (e.target.closest('a')) return;
+        go();
+      });
+
+      tile.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
+      });
+    });
+  })();
+</script>
