@@ -1,32 +1,7 @@
 window.CALYR_EXPLORE = [
   {
-    id: 'calyr',
-    title: 'calyr Ecosystem',
-    alwaysOpen: true,
-    pages: [
-      {
-        id: 'ecosystem',
-        title: 'Ecosystem',
-        titleDe: 'Oekosystem',
-        titleEn: 'Ecosystem',
-        src: 'pages/explore_calyr_platform_table.html?v=20260508-lang',
-        srcDe: 'pages/explore_calyr_platform_table.de.html?v=20260508-lang',
-        srcEn: 'pages/explore_calyr_platform_table.html?v=20260508-lang'
-      },
-      {
-        id: 'overview',
-        title: 'Overview',
-        titleDe: 'Ueberblick',
-        titleEn: 'Overview',
-        src: 'pages/explore_calyr_overview.html?v=20260508-lang',
-        srcDe: 'pages/explore_calyr_overview.de.html?v=20260508-lang',
-        srcEn: 'pages/explore_calyr_overview.html?v=20260508-lang'
-      }
-    ]
-  },
-  {
     id: 'internal',
-    title: 'internal',
+    title: 'Internal',
     alwaysOpen: false,
     pages: [
       {
@@ -46,6 +21,31 @@ window.CALYR_EXPLORE = [
         src: 'pages/ai_landscape_map.html?v=20260508-app-core',
         srcDe: 'pages/ai_landscape_map.html?v=20260508-app-core',
         srcEn: 'pages/ai_landscape_map.html?v=20260508-app-core'
+      }
+    ]
+  },
+  {
+    id: 'calyr',
+    title: 'Calyr Ecosystem',
+    alwaysOpen: true,
+    pages: [
+      {
+        id: 'overview',
+        title: 'Overview',
+        titleDe: 'Ueberblick',
+        titleEn: 'Overview',
+        src: 'pages/explore_calyr_overview.html?v=20260508-lang',
+        srcDe: 'pages/explore_calyr_overview.de.html?v=20260508-lang',
+        srcEn: 'pages/explore_calyr_overview.html?v=20260508-lang'
+      },
+      {
+        id: 'ecosystem',
+        title: 'Ecosystem',
+        titleDe: 'Oekosystem',
+        titleEn: 'Ecosystem',
+        src: 'pages/explore_calyr_platform_table.html?v=20260508-lang',
+        srcDe: 'pages/explore_calyr_platform_table.de.html?v=20260508-lang',
+        srcEn: 'pages/explore_calyr_platform_table.html?v=20260508-lang'
       }
     ]
   }
