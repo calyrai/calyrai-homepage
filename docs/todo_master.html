@@ -1,0 +1,70 @@
+<article class="doc-article">
+  <h1>Master To-Do List</h1>
+  <p class="doc-subtitle">Single execution list for system stabilization and delivery</p>
+
+  <p>
+    This page is the canonical working backlog for the Calyr system. Keep all active work items here,
+    update status in place, and avoid parallel ad-hoc lists.
+  </p>
+
+  <div class="doc-note">
+    <strong>How to use:</strong>
+    1) Work top-to-bottom by priority,
+    2) mark each item with status,
+    3) add links to the implementing file or PR,
+    4) do not duplicate tasks in other docs.
+  </div>
+
+  <h2>Status legend</h2>
+  <ul>
+    <li><strong>[TODO]</strong> not started</li>
+    <li><strong>[DOING]</strong> currently in progress</li>
+    <li><strong>[DONE]</strong> implemented and validated</li>
+    <li><strong>[BLOCKED]</strong> waiting for dependency or decision</li>
+  </ul>
+
+  <h2>P0 — Architecture integrity</h2>
+  <ul>
+    <li><strong>[TODO]</strong> Freeze folder contracts for core areas (<code>apps/</code>, <code>core/</code>, <code>engines/</code>, <code>pipelines/</code>, <code>registry/</code>, <code>results/</code>).</li>
+    <li><strong>[TODO]</strong> Define ownership per major module (Nexus, Eval, Okto, Grammateia, ASC, LAMMPS, AlphaFold, Nomos, Demos, Homepage, Publishing, PublicRelations, Objects).</li>
+    <li><strong>[TODO]</strong> Add a change policy: what requires architecture review before merge.</li>
+    <li><strong>[TODO]</strong> Add one source-of-truth map that links Explore tiles to real code paths.</li>
+  </ul>
+
+  <h2>P0 — Documentation structure hardening</h2>
+  <ul>
+    <li><strong>[TODO]</strong> Keep this page as the only active execution list.</li>
+    <li><strong>[TODO]</strong> Add "Last reviewed" date at the top of this page on every planning session.</li>
+    <li><strong>[TODO]</strong> Ensure each docs page has a clear owner and review cadence.</li>
+    <li><strong>[TODO]</strong> Link each roadmap item to a concrete task in this list.</li>
+  </ul>
+
+  <h2>P1 — Module implementation alignment</h2>
+  <ul>
+    <li><strong>[TODO]</strong> Verify every Explore ecosystem tile links to an existing and accurate module page.</li>
+    <li><strong>[TODO]</strong> Verify each module page has: planned scope, LLM hint, structure idea, first build steps.</li>
+    <li><strong>[TODO]</strong> Create a validation pass for stale module descriptions versus real code state.</li>
+    <li><strong>[TODO]</strong> Add missing tests for module boundary behavior and integration contracts.</li>
+  </ul>
+
+  <h2>P1 — Data and run reproducibility</h2>
+  <ul>
+    <li><strong>[TODO]</strong> Standardize run metadata schema across <code>runs/</code>, <code>results/</code>, and <code>registry/</code>.</li>
+    <li><strong>[TODO]</strong> Add provenance minimum requirements for generated outputs.</li>
+    <li><strong>[TODO]</strong> Define retention and archival policy for generated artifacts.</li>
+    <li><strong>[TODO]</strong> Add reproducibility checks to core pipeline execution paths.</li>
+  </ul>
+
+  <h2>P2 — Operational quality</h2>
+  <ul>
+    <li><strong>[TODO]</strong> Consolidate duplicated scripts and legacy entrypoints into stable interfaces.</li>
+    <li><strong>[TODO]</strong> Define CI quality gates (lint, tests, docs consistency checks).</li>
+    <li><strong>[TODO]</strong> Add release checklist for homepage/docs updates and submodule sync.</li>
+    <li><strong>[TODO]</strong> Add incident playbook for broken docs links or module routing regressions.</li>
+  </ul>
+
+  <h2>Working log</h2>
+  <ul>
+    <li><strong>2026-05-08</strong> — Created canonical master to-do list page and linked it into docs navigation.</li>
+  </ul>
+</article>

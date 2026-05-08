@@ -7,6 +7,7 @@ window.CALYR_DOCS = [
     id: 'start',
     title: 'Getting started',
     pages: [
+      { id: 'master_todo', title: 'Master To-Do List', src: 'docs/todo_master.html' },
       { id: 'overview', title: 'Overview', src: 'docs/start_overview.html' },
       { id: 'quickstart', title: 'Quick start', src: 'docs/start_quickstart.html' }
     ]
