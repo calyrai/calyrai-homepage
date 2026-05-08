@@ -337,99 +337,6 @@
       }
     };
 
-    const MODULES_DE = {
-      nexus: {
-        title: "Nexus",
-        lead: "Semantischer Kern fuer Schema, Provenienz, Constraints und domaeinuebergreifende Vergleichbarkeit.",
-        scope: "Definiert kanonische Objektvertraege, haelt Evidenz-zu-Claim-Verknuepfungen stabil und stellt Query/Validierungs-APIs fuer alle Calyr-Module bereit.",
-        llmHint: "ROLLE: Semantic-Core Copilot\nZIEL: nur schema-sichere Aenderungen erzeugen\nREGELN:\n1) Objektbedeutung nie ohne Migration aendern\n2) Provenienz-Kanten explizit halten\n3) Contract-Tests fuer jeden neuen Typ liefern\nOUTPUT: aktualisiertes Schema, Validator, Migrationshinweise",
-        steps: ["v1 Objektvertrag-Liste einfrieren", "Schema-Validatoren implementieren", "Provenienz-Kantenpruefer ergaenzen", "Modul-Query-API bereitstellen"]
-      },
-      eval: {
-        title: "Eval",
-        lead: "Domain-Feature-Extraktion aus SAXS-, SPR-, Simulations- und Inferenz-Outputs.",
-        scope: "Transformiert Rohdaten in vergleichbare Feature-Vektoren, Qualitaetsflags und Confidence-Summaries.",
-        llmHint: "ROLLE: Evaluation Copilot\nZIEL: Rohdaten in normalisierte Features ueberfuehren\nREGELN:\n1) Extraktion deterministisch halten\n2) Unsicherheit pro Metrik ausweisen\n3) Raw-to-Feature Nachvollziehbarkeit erhalten\nOUTPUT: Extractor-Module, Feature-Schema, Regressionstests",
-        steps: ["Kanonische Feature-Sets pro Modality definieren", "Extraktions-Runner implementieren", "Confidence-Schaetzung anbinden", "Benchmark-Snapshots aufbauen"]
-      },
-      okto: {
-        title: "Okto",
-        lead: "Wissens-Loop, der Forschungsoutput in wiederverwendbare Seiten, Slides und App-Narrative ueberfuehrt.",
-        scope: "Baut eine wiederholbare Pipeline, die strukturierte Wissensobjekte in Publikations- und Kommunikationsartefakte mappt.",
-        llmHint: "ROLLE: Projection Copilot\nZIEL: strukturiertes Wissen in kommunizierbare Artefakte ueberfuehren\nREGELN:\n1) zuerst aus strukturierten Objekten sourcen\n2) Claims an Evidenz koppeln\n3) wiederverwendbare Bloecke fuer Web + Slides erzeugen\nOUTPUT: Content-Block-Graph und Rendering-Templates",
-        steps: ["Wiederverwendbare Content-Bloecke definieren", "Rendering-Templates erstellen", "Source-Object-Links verdrahten", "Preview- und Export-Flow ergaenzen"]
-      },
-      grammateia: {
-        title: "Grammateia (Literatur)",
-        lead: "Literatur-Ingestion und Extraktion in Konzepte, Methoden, Constraints und Evidenz-Knoten.",
-        scope: "Ingestiert Publikationen, parst Methoden- und Ergebnisabschnitte und mappt Entitaeten auf Nexus-konforme Objekte.",
-        llmHint: "ROLLE: Literature Copilot\nZIEL: Konzepte und Methoden aus Publikationen extrahieren\nREGELN:\n1) Zitationsanker erhalten\n2) Confidence + Ambiguitaet markieren\n3) Begriffe auf Nexus-Ontologie mappen\nOUTPUT: extrahierte Entitaeten, Relationsgraph, Liste offener Begriffe",
-        steps: ["Ingestion-Adapter implementieren", "Parser fuer Methoden/Ergebnisse ergaenzen", "Entitaeten an Ontologie anbinden", "Zitationsverankerte Tripel speichern"]
-      },
-      asc: {
-        title: "Asc",
-        lead: "Remote-Compute-Orchestrierung fuer Submit, Status, Logs und Artefakt-Retrieval.",
-        scope: "Stellt eine robuste Ausfuehrungsabstraktion fuer lokale HPC- und Cloud-Runner mit einheitlichem Job-Metadatenmodell bereit.",
-        llmHint: "ROLLE: Execution Copilot\nZIEL: robuste Remote-Job-Orchestrierung\nREGELN:\n1) idempotentes Submit/Retry\n2) explizite Job-State-Machine\n3) strukturierte Logs + Artefakt-Hashes\nOUTPUT: Provider-Adapter und Run-Lifecycle-API",
-        steps: ["Job-Lifecycle-Enum definieren", "Provider-Interface ergaenzen", "Log-Collector implementieren", "Run-Status-API freigeben"]
-      },
-      lammps: {
-        title: "Lammps Local",
-        lead: "Lokale und clusterfaehige LAMMPS-Vorbereitung, Launch und Run-Packaging.",
-        scope: "Standardisiert LAMMPS-Run-Setup und Metadatenaufnahme fuer reproduzierbare und abfragbare Simulationsoutputs.",
-        llmHint: "ROLLE: Simulation Copilot\nZIEL: reproduzierbare LAMMPS-Runs\nREGELN:\n1) Package-Flags im Run-Manifest fixieren\n2) Input-Checksumme + Environment speichern\n3) Post-Run-Parserhooks bereitstellen\nOUTPUT: Run-Manifest, Launch-Wrapper, Parser-Stubs",
-        steps: ["Run-Manifest-Schema erstellen", "Launch-Kommandos kapseln", "Environment-Metadaten speichern", "Thermo/Trajectory-Output parsern"]
-      },
-      alphafold: {
-        title: "AlphaFold Local",
-        lead: "AlphaFold-Execution-Surface mit reproduzierbaren Wrappers und integrierter Output-Auswertung.",
-        scope: "Packt AlphaFold-Ausfuehrung und Output-Handling mit klarer Provenienz fuer Sequenz, Parameter und Modellartefakte.",
-        llmHint: "ROLLE: Prediction Copilot\nZIEL: reproduzierbarer AlphaFold-Workflow\nREGELN:\n1) Modell/DB-Versionen pinnen\n2) Sequenz- und Parameter-Provenienz erhalten\n3) Confidence-Summaries fuer Folge-Module ausgeben\nOUTPUT: Run-Spezifikation, Execution-Adapter, Confidence-Report",
-        steps: ["AF-Run-Spezifikation definieren", "Execution-Profile wrappen", "pLDDT/PAE parsern", "Strukturen an Nexus-Objekte koppeln"]
-      },
-      nomos: {
-        title: "Nomos",
-        lead: "Operative Governance fuer Mail-Automation und Kalender-Synchronisierung.",
-        scope: "Koordiniert Kommunikations-Workflows mit expliziten Policy-Checks, Audit-Logs und sicherem Upsert-Verhalten.",
-        llmHint: "ROLLE: Operations Copilot\nZIEL: sichere Kommunikations-Automation\nREGELN:\n1) Policy-Checks vor Write-Operationen\n2) unveraenderbare Audit-Logs\n3) standardmaessig Dry-Run unterstuetzen\nOUTPUT: Policy-Engine-Integration und auditierte Workflow-Aktionen",
-        steps: ["Policy-Vertrag definieren", "Dry-Run-Modus ergaenzen", "Auditierte Upserts implementieren", "Operator-Dashboard-Endpunkte bereitstellen"]
-      },
-      demos: {
-        title: "Demos",
-        lead: "Packaging- und Sync-Layer fuer publikationsreife Demos und Artefakte.",
-        scope: "Buendelt lauffaehige Artefakte mit Metadaten, Lizenzkontext und Reproduzierbarkeitsnotizen fuer externes Sharing.",
-        llmHint: "ROLLE: Delivery Copilot\nZIEL: reproduzierbare Demo-Artefakte ausliefern\nREGELN:\n1) Metadata-Manifest beilegen\n2) Data-Lineage-Referenzen aufnehmen\n3) Entry-Points validieren\nOUTPUT: Packaging-Bundle, Manifest, Validierungsreport",
-        steps: ["Demo-Manifest-Format definieren", "Packaging-Script bauen", "Entry-Points validieren", "Bundle-Index publizieren"]
-      },
-      homepage: {
-        title: "Homepage",
-        lead: "Oeffentliche Projektionsschicht fuer Explore, Docs, Interfaces und ausgewaehlte Outputs.",
-        scope: "Visualisiert ausgewaehlte Systemfaehigkeiten in klaren Interfaces und bewahrt Links zu Evidenz und Implementierungskontext.",
-        llmHint: "ROLLE: Interface Copilot\nZIEL: Systemfaehigkeiten mit Evidenzlinks kommunizieren\nREGELN:\n1) Seiten source-linked halten\n2) Sprachvarianten erhalten\n3) fuer Scan + Drill-Down optimieren\nOUTPUT: Seitentemplates, Datenverdrahtung, Navigationskarten",
-        steps: ["Seitendatenquellen normalisieren", "Sicherstellen, dass jede Tile ein Ziel hat", "Struktur-/LLM-Hinweise auf Modulseiten pflegen", "Navigationskonsistenz auditieren"]
-      },
-      publishing: {
-        title: "Publishing",
-        lead: "Workspace fuer Papers, Praesentationen, Metadaten und generierte Outputs.",
-        scope: "Integriert Manuskript- und Praesentationspipelines mit nachvollziehbaren Source-Objects und automatisierter Metadatengenerierung.",
-        llmHint: "ROLLE: Publishing Copilot\nZIEL: evidenzgebundene Manuskripte und Slide-Artefakte\nREGELN:\n1) Claims von Narrativstil trennen\n2) Referenzen und Figure-Metadaten automatisiert erzeugen\n3) gegen Source-Object-IDs validieren\nOUTPUT: Publikationspaket, Citation-Map, Figure-Lineage",
-        steps: ["Publikations-Manifest erstellen", "Source-Object-Referenzen verdrahten", "Zitationschecks automatisieren", "Exportziele erzeugen"]
-      },
-      publicrelations: {
-        title: "PublicRelations",
-        lead: "Opportunity-zu-Deliverable-Orchestrierung fuer evidenzbasierte externe Kommunikation.",
-        scope: "Uebersetzt externe Chancen in umsetzbare Deliverables mit Alignments gegen den internen Evidenzzustand.",
-        llmHint: "ROLLE: Comms Copilot\nZIEL: evidenzbasierte externe Kommunikation\nREGELN:\n1) jeden Claim auf Evidenz mappen\n2) Confidence und Risiko klassifizieren\n3) channelspezifische Varianten aus einer Kernbotschaft erzeugen\nOUTPUT: Message-Pack mit Evidenzkarte und Risikolabels",
-        steps: ["Opportunity-Intake-Schema definieren", "Evidenz-Alignment-Checks integrieren", "Channel-Varianten erzeugen", "Outcomes fuer Feedback verfolgen"]
-      },
-      objects: {
-        title: "Objects",
-        lead: "Gemeinsames Objektschema fuer Zustaende, Energien und Features ueber alle wissenschaftlichen Workflows.",
-        scope: "Stellt die stabile Objektschicht bereit, die von Nexus, Eval, Engines und Projektionsflaechen konsumiert wird.",
-        llmHint: "ROLLE: Object-Model Copilot\nZIEL: gemeinsame Objektvertraege stabil und erweiterbar halten\nREGELN:\n1) additive Weiterentwicklung bevorzugen\n2) Deprecations nur mit Migrationshinweisen\n3) jedes Objekt braucht Validatoren und Beispiele\nOUTPUT: Schema-Updates, Fixtures, Kompatibilitaetsreport",
-        steps: ["Aktuelle Objekttypen inventarisieren", "Versionierte Vertraege definieren", "Kompatibilitaetstests ergaenzen", "Migrationsleitfaden publizieren"]
-      }
-    };
 
     const UI_LABELS = {
       en: {
@@ -440,16 +347,6 @@
         codeStructureDesc: "This is the target layout for code, data contracts, and interfaces.",
         firstSteps: "First Build Steps",
         back: "Back to Explore",
-        titlePrefix: "Calyr Nexus · "
-      },
-      de: {
-        plannedScope: "Geplanter Umfang",
-        llmHint: "LLM Hinweis",
-        llmHintDesc: "Nutze diesen Instruktionsblock fuer den Modul-Copilot, damit die Umsetzung konsistent und testbar bleibt.",
-        codeStructure: "Code-Struktur Idee",
-        codeStructureDesc: "Ziel-Layout fuer Code, Datenvertraege und Interfaces.",
-        firstSteps: "Erste Umsetzungsschritte",
-        back: "Zurueck zu Explore",
         titlePrefix: "Calyr Nexus · "
       }
     };
@@ -467,12 +364,7 @@
       return MODULES[raw] ? raw : "homepage";
     }
 
-    function parseLang() {
-      const params = new URLSearchParams(window.location.search);
-      const queryLang = (params.get("lang") || "").toLowerCase();
-      if (queryLang === "de" || queryLang === "en") return queryLang;
-      return (navigator.language || "en").toLowerCase().startsWith("de") ? "de" : "en";
-    }
+    function parseLang() { return "en"; }
 
     function applyUiLabels(lang) {
       const labels = UI_LABELS[lang] || UI_LABELS.en;
@@ -483,18 +375,17 @@
       document.getElementById("label-code-structure-desc").textContent = labels.codeStructureDesc;
       document.getElementById("label-first-steps").textContent = labels.firstSteps;
       document.getElementById("back-link").textContent = labels.back;
-      document.getElementById("back-link").href = lang === "de" ? "../explore.html?lang=de#calyr/ecosystem" : "../explore.html#calyr/ecosystem";
+      document.getElementById("back-link").href = "../explore.html#calyr/ecosystem";
     }
 
-    function renderModule(key, lang) {
+    function renderModule(key) {
       const data = MODULES[key];
-      const dataDe = MODULES_DE[key] || {};
-      const labels = UI_LABELS[lang] || UI_LABELS.en;
-      const title = lang === "de" ? (dataDe.title || data.title) : data.title;
-      const lead = lang === "de" ? (dataDe.lead || data.lead) : data.lead;
-      const scope = lang === "de" ? (dataDe.scope || data.scope) : data.scope;
-      const hint = lang === "de" ? (dataDe.llmHint || data.llmHint) : data.llmHint;
-      const steps = lang === "de" ? (dataDe.steps || data.steps) : data.steps;
+      const labels = UI_LABELS.en;
+      const title = data.title;
+      const lead = data.lead;
+      const scope = data.scope;
+      const hint = data.llmHint;
+      const steps = data.steps;
 
       document.title = labels.titlePrefix + title;
       document.getElementById("module-code").textContent = data.code;
@@ -511,9 +402,8 @@
       stepsEl.innerHTML = steps.map(step => `<li>${escapeHtml(step)}</li>`).join("");
     }
 
-    const lang = parseLang();
-    applyUiLabels(lang);
-    renderModule(parseModule(), lang);
+    applyUiLabels("en");
+    renderModule(parseModule());
   </script>
 </body>
 </html>
