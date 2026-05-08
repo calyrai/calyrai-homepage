@@ -9,9 +9,9 @@ window.CALYR_EXPLORE = [
         title: 'Ecosystem',
         titleDe: 'Oekosystem',
         titleEn: 'Ecosystem',
-        src: 'pages/explore_calyr_platform_table.html?v=20260508-lang',
-        srcDe: 'pages/explore_calyr_platform_table.de.html?v=20260508-lang',
-        srcEn: 'pages/explore_calyr_platform_table.html?v=20260508-lang'
+        src: 'pages/explore_calyr_platform_table.html?v=20260508-sci-anchor',
+        srcDe: 'pages/explore_calyr_platform_table.de.html?v=20260508-sci-anchor',
+        srcEn: 'pages/explore_calyr_platform_table.html?v=20260508-sci-anchor'
       },
       {
         id: 'overview',
