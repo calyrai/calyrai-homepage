@@ -9,7 +9,7 @@
   const NEXUS = {
     name: 'Nexus',
     kicker: 'Semantic Orchestration',
-    role: 'The invariant center. The Zeiger marks its authority.',
+    role: 'The invariant center for meaning, structure, and flow.',
   };
 
   const OUTER = [
@@ -22,6 +22,11 @@
       href: 'docs.html#atlas',
       role: 'Semantic topology and cartography layer.',
       body: 'Atlas decomposes semantic space into navigable regions and records semantic adjacency and stable boundaries.',
+      details: [
+        'Atlas maps semantic terrain into stable regions so complex systems can be explored without losing orientation.',
+        'It captures neighborhood structure, boundary behavior, and transition pathways between concepts, models, and states.',
+        'Use Atlas when you need semantic navigation that remains consistent as the system grows in complexity and scale.',
+      ],
     },
     {
       id: 'calyrai',
@@ -32,6 +37,11 @@
       href: 'docs.html#calyrai',
       role: 'Experiential projection layer.',
       body: 'Calyrai animates transitions and makes semantic gravity perceptible for interaction and perception.',
+      details: [
+        'Calyrai translates abstract semantic structure into perceivable interaction and visual experience.',
+        'It turns state transitions into readable motion, emphasis, and context cues so users can feel system direction.',
+        'Use Calyrai when interpretation must be intuitive while remaining faithful to the underlying semantic logic.',
+      ],
     },
     {
       id: 'pr',
@@ -42,6 +52,11 @@
       href: 'docs.html#pr',
       role: 'Deployment of public semantic surfaces.',
       body: 'PR deploys live semantic projections so internal state can be rendered into public-facing surfaces.',
+      details: [
+        'PR is the public projection runtime that exposes selected semantic state in externally consumable form.',
+        'It ensures published surfaces stay synchronized with the internal model while preserving governance boundaries.',
+        'Use PR for delivery channels where clarity, traceability, and controlled projection are required.',
+      ],
     },
     {
       id: 'runtime',
@@ -52,6 +67,11 @@
       href: 'docs.html#runtime',
       role: 'Internal execution engine. Code assets are not public.',
       body: 'Runtime handles graph evaluation, orchestration, and scheduling while public systems consume projections.',
+      details: [
+        'Runtime executes the internal graph of transformations, constraints, and orchestration rules.',
+        'It handles scheduling, evaluation order, and dependency integrity so semantic operations remain reliable.',
+        'Use Runtime as the protected execution substrate that powers projections without exposing private internals.',
+      ],
     },
     {
       id: 'glabs',
@@ -62,6 +82,11 @@
       href: 'docs.html#glabs',
       role: 'Experimental morphogenesis lab.',
       body: "G'labs || is the unstable region where semantics are stress-tested and evolved before integration.",
+      details: [
+        "G'labs || is the exploratory zone where new semantic behaviors are tested before entering the stable stack.",
+        'It supports rapid experimentation with interaction patterns, coupling structures, and emergent system forms.',
+        'Use G\'labs || to evolve ideas safely, then promote validated patterns back into the coordinated core.',
+      ],
     },
     {
       id: 'projects',
@@ -72,6 +97,11 @@
       href: 'docs.html#projects',
       role: 'Applied project surfaces and use-case execution.',
       body: 'Projects is the applications lane where semantic systems are instantiated for concrete cases, delivery tracks, and user-facing outcomes.',
+      details: [
+        'Projects is the application layer where semantic architecture becomes concrete workflows and deliverables.',
+        'It connects the core model to real use cases, operational tracks, and outcome-focused implementation paths.',
+        'Use Projects to move from semantic capability to measurable execution in product, research, or deployment contexts.',
+      ],
     },
   ];
 
@@ -195,19 +225,30 @@
       heroDetail.innerHTML =
         '<div class="ehd-inline ehd-inline--nexus">' +
         '  <p class="ehd-kicker">Select a semantic pearl</p>' +
-        '  <p class="ehd-body-text">Click any pearl in the line above to load its explanation here in the Nexus field.</p>' +
+        '  <p class="ehd-body-text ehd-body-text--nexus">Nexus is the coordination core of this ecosystem. It keeps one shared semantic frame across data, models, runtime behavior, and user-facing projections, so interpretation stays consistent from first signal to final decision.</p>' +
+        '  <p class="ehd-body-text ehd-body-text--nexus">Think of it as the layer that preserves continuity: relations remain clear, constraints stay attached to context, and transformations remain traceable instead of fragmenting into disconnected tools or views.</p>' +
+        '  <p class="ehd-body-text ehd-body-text--nexus">Each pearl is a specialized region built around that same core. You can explore Atlas, Calyrai, PR, Runtime, G\'labs ||, or Projects independently, but Nexus is what keeps the whole system coherent as one structure.</p>' +
+        '  <p class="ehd-body-text ehd-body-text--nexus">Select any pearl to see how that region extends the core logic into a concrete capability.</p>' +
         '</div>';
       return;
     }
 
     const mag = node.color === 'magenta';
+    const nodeIndex = OUTER.findIndex(function (n) { return n.id === node.id; });
+    const detailRgb = resolvePearlRgb(node, nodeIndex >= 0 ? nodeIndex : 0);
+    const detailParagraphs = (Array.isArray(node.details) && node.details.length ? node.details : [node.body])
+      .map(function (txt) {
+        return '<p class="ehd-body-text ehd-body-text--detail">' + escH(txt) + '</p>';
+      })
+      .join('');
+
     heroDetail.innerHTML =
-      '<div class="ehd-inline ' + (mag ? 'ehd-body--magenta' : 'ehd-body--cyan') + '">' +
+      '<div class="ehd-inline ehd-inline--pearl ' + (mag ? 'ehd-body--magenta' : 'ehd-body--cyan') + '" style="--detail-rgb:' + escH(detailRgb) + '">' +
       '  <button class="ehd-close" aria-label="Close">X</button>' +
       '  <p class="ehd-kicker">' + escH(node.kicker) + '</p>' +
       '  <h3 class="ehd-name">' + escH(node.name) + '</h3>' +
       '  <p class="ehd-role">' + escH(node.role) + '</p>' +
-      '  <p class="ehd-body-text">' + escH(node.body) + '</p>' +
+      detailParagraphs +
       (mag ? '<div class="ehd-boundary"><span class="ehd-b-label">Runtime Boundary</span>Individual code assets are internal. Public surfaces receive projections and rendered outputs only.</div>' : '') +
       (node.href ? '<a class="ehd-cta" href="' + escH(node.href) + '"><span class="ehd-cta-label">Enter this region</span></a>' : '') +
       '</div>';
