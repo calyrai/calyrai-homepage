@@ -2,244 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calyr.a&iacute; – Molecular Deeptech</title>
+  <title>Calyr.a&iacute; - Molecular Deeptech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/nav.css" />
   <link rel="stylesheet" href="css/components.css?v=20260317c" />
   <link rel="stylesheet" href="css/home.css?v=20260319a" />
-  <link rel="stylesheet" href="css/impressum.css" />
-
-  <!-- Scripts (deferred) -->
-  <script src="js/nav_autohide.js" defer></script>
-  <script src="js/analytics.js" defer></script>
-
-  <!-- Safety: ensure pills are visible & clickable on mobile -->
-  <style>
-    @media (hover: none) and (pointer: coarse){
-      .cta-orbit .pill{
-        opacity: 1 !important;
-        pointer-events: auto !important;
-      }
-    }
-  </style>
 </head>
-
 <body>
-<header class="site-header">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-brand">Calyr.a&iacute;</a>
-    <nav class="nav-core" aria-label="Primary">
-      <a href="explore.html" class="nav-pill">Explore</a>
-      <a href="docs.html" class="nav-pill">Docs</a>
-      <a href="team.html" class="nav-pill">Team</a>
-      <a href="publications.html" class="nav-pill">Publications</a>
-    </nav>
-    <nav class="nav-secondary" aria-label="Secondary">
-      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
-      <a href="pages/contact.html" class="nav-pill">Contact</a>
-      <a href="http://localhost:8000" class="nav-pill" target="_blank" rel="noopener">Login</a>
-    </nav>
-  </div>
-</header>
-
 <section class="hero" id="hero">
+  <div class="hero-copy">
+    <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
+    <h1 class="hero-title">Calyr.a&iacute; - dr&iacute;ven</h1>
+    <p class="hero-subtitle">Transforming experimental signals into real-time molecular insight.</p>
+  </div>
+
   <div class="hero-orbit-logo">
     <div class="hero-orbit-stack">
       <div
         data-orbit-logo
         class="orbit-logo"
         id="orbit-logo-home"
-        role="button"
-        tabindex="0"
-        aria-label="Calyr.a&amp;iacute;"
+        role="img"
+        aria-label="Calyr.a&iacute;"
         style="--orbit-size: min(48vmin, 360px); --orbit-accent-rot: 140s;"
       >
-        <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&amp;iacute;" focusable="false">
-        <defs>
-          <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
-            <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96" />
-            <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96" />
-          </linearGradient>
+        <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Calyr.a&iacute;" focusable="false">
+          <defs>
+            <linearGradient id="orbit-logo-home-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+              <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96" />
+              <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96" />
+            </linearGradient>
+            <linearGradient id="orbit-logo-home-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92" />
+              <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22" />
+              <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82" />
+            </linearGradient>
+            <linearGradient id="orbit-logo-home-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+              <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06" />
+              <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22" />
+            </linearGradient>
+            <filter id="orbit-logo-home-glowWhite" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="4.5" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="orbit-logo-home-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.0" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-          <linearGradient id="orbit-logo-home-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92" />
-            <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22" />
-            <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82" />
-          </linearGradient>
-
-          <linearGradient id="orbit-logo-home-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
-            <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06" />
-            <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22" />
-          </linearGradient>
-
-          <filter id="orbit-logo-home-glowWhite" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="4.5" result="b" />
-            <feMerge>
-              <feMergeNode in="b" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          <filter id="orbit-logo-home-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="3.0" result="b" />
-            <feMerge>
-              <feMergeNode in="b" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-        </defs>
-
-        <g class="orbit-logo__ring-c">
-          <circle class="orbit-logo__stroke" cx="100" cy="100" r="84"
-            stroke="url(#orbit-logo-home-soft)" stroke-width="10"
-            stroke-dasharray="420 110" stroke-linecap="round" />
-        </g>
-
-        <g class="orbit-logo__ring-b" filter="url(#orbit-logo-home-glowMagenta)">
-          <circle class="orbit-logo__stroke" cx="100" cy="100" r="66"
-            stroke="url(#orbit-logo-home-magenta)" stroke-width="14"
-            stroke-dasharray="300 114" stroke-linecap="round" />
-        </g>
-
-        <g class="orbit-logo__ring" filter="url(#orbit-logo-home-glowWhite)">
-          <circle class="orbit-logo__stroke" cx="100" cy="100" r="48"
-            stroke="url(#orbit-logo-home-whiteCyan)" stroke-width="22"
-            stroke-dasharray="235 68" stroke-linecap="round" />
-        </g>
-
-        <g class="orbit-logo__accent" filter="url(#orbit-logo-home-glowMagenta)">
-          <g transform="translate(126 98) rotate(-10)">
-            <path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96" />
-            <path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78" />
-            <path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65" />
+          <g class="orbit-logo__ring-c">
+            <circle class="orbit-logo__stroke" cx="100" cy="100" r="84"
+              stroke="url(#orbit-logo-home-soft)" stroke-width="10"
+              stroke-dasharray="420 110" stroke-linecap="round" />
           </g>
-        </g>
-      </svg>
+          <g class="orbit-logo__ring-b" filter="url(#orbit-logo-home-glowMagenta)">
+            <circle class="orbit-logo__stroke" cx="100" cy="100" r="66"
+              stroke="url(#orbit-logo-home-magenta)" stroke-width="14"
+              stroke-dasharray="300 114" stroke-linecap="round" />
+          </g>
+          <g class="orbit-logo__ring" filter="url(#orbit-logo-home-glowWhite)">
+            <circle class="orbit-logo__stroke" cx="100" cy="100" r="48"
+              stroke="url(#orbit-logo-home-whiteCyan)" stroke-width="22"
+              stroke-dasharray="235 68" stroke-linecap="round" />
+          </g>
+          <g class="orbit-logo__accent" filter="url(#orbit-logo-home-glowMagenta)">
+            <g transform="translate(126 98) rotate(-10)">
+              <path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96" />
+              <path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78" />
+              <path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65" />
+            </g>
+          </g>
+        </svg>
       </div>
 
       <a href="explore.html" class="hero-cta hero-cta--orbit glow-button">Explore the Nexus</a>
     </div>
 
-    <div class="hero-characteristics hero-characteristics--orbit">Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces</div>
-  </div>
-
-  <div class="hero-copy">
-    <div class="hero-kicker">TOWARDS MOLECULAR DIGITIZATION</div>
-
-    <h1 class="hero-title">Calyr.a&iacute; — dr&iacute;ven</h1>
-
-    <p class="hero-subtitle">
-      Transforming experimental signals into real-time molecular insight.
-    </p>
-  </div>
-</section>
-<section style="padding: 48px 24px 40px; max-width: 960px; margin: 0 auto; color: #e8ecff;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
-
-    <a href="explore.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(192,132,252,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(192,132,252,0.7); margin-bottom:8px;">Research &amp; Publications</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">Explore</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Projects, active manuscripts, and the interactive research constellation map.</div>
-    </a>
-
-    <a href="pages/nexus.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(36,243,255,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(36,243,255,0.7); margin-bottom:8px;">Platform</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">Nexus</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">The scientific control architecture behind instrument analysis, simulation, and inference.</div>
-    </a>
-
-    <a href="team.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(255,77,245,0.6)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,77,245,0.7); margin-bottom:8px;">People</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">Team</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Who is behind Calyr.ai and the research program.</div>
-    </a>
-
-    <a href="pages/topic_planner.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(255,184,74,0.7)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,184,74,0.9); margin-bottom:8px;">MVP App</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">Topic Planner</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Circle interface for work and meaning, with auto day plan and calendar sync export.</div>
-    </a>
-
-    <a href="vox.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(36,243,255,0.7)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(36,243,255,0.88); margin-bottom:8px;">Internal / Login</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">Vox Studio</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Synthetic voice-over interface (slides → speech → TTS → export), available behind login.</div>
-    </a>
-
-    <a href="matomic_lab.html" style="display:block; padding: 22px 20px; border: 1px solid rgba(160,196,255,0.2); border-radius: 6px; text-decoration: none; color: inherit; transition: border-color 0.2s; background:rgba(7,12,26,0.74);" onmouseover="this.style.borderColor='rgba(122,255,170,0.7)'" onmouseout="this.style.borderColor='rgba(160,196,255,0.2)'">
-      <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(122,255,170,0.9); margin-bottom:8px;">Internal / Login</div>
-      <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#ffffff;">mAtomic Lab</div>
-      <div style="font-size:0.83rem; color:rgba(200,220,255,0.7);">Combined workspace for model-based simulation and structured writing on top of mAtomic models.</div>
-    </a>
-
-  </div>
-</section>
-
-<section style="padding: 10px 24px 52px; max-width: 960px; margin: 0 auto; color: #e8ecff;">
-  <div style="border:1px solid rgba(160,196,255,0.2); border-radius:10px; background:rgba(8,13,27,0.78); padding:22px 20px;">
-    <div style="font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(36,243,255,0.85); margin-bottom:10px;">Core Concept</div>
-    <h2 style="font-size:1.35rem; line-height:1.28; margin:0 0 10px; font-weight:700; color:#ffffff;">AI + Data Warehousing as a Scientific Operating Layer</h2>
-    <p style="font-size:0.92rem; color:rgba(200,220,255,0.86); line-height:1.64; margin:0 0 14px;">
-      Calyr verbindet AI und Data Warehousing nicht als getrennte Tools, sondern als ein gemeinsames System: Daten werden strukturiert,
-      semantisch typisiert und danach in Analyse-, Entscheidungs- und Publikationsfluesse projiziert.
-    </p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
-      <div style="border:1px solid rgba(36,243,255,0.26); border-radius:8px; background:rgba(36,243,255,0.07); padding:12px 12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(36,243,255,0.9); margin-bottom:6px;">AI Layer</div>
-        <div style="font-size:0.86rem; color:rgba(220,236,255,0.9); line-height:1.55;">Modelle, LLM-Workflows und Reasoning laufen auf typisierten Objekten statt auf isolierten Textfragmenten.</div>
-      </div>
-      <div style="border:1px solid rgba(255,77,245,0.26); border-radius:8px; background:rgba(255,77,245,0.07); padding:12px 12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,77,245,0.9); margin-bottom:6px;">Warehouse Layer</div>
-        <div style="font-size:0.86rem; color:rgba(220,236,255,0.9); line-height:1.55;">Runs, Features, Constraints und Ergebnisse bleiben versioniert, nachvollziehbar und fuer Teams wiederverwendbar.</div>
-      </div>
-      <div style="border:1px solid rgba(255,184,74,0.26); border-radius:8px; background:rgba(255,184,74,0.07); padding:12px 12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,184,74,0.95); margin-bottom:6px;">Unified Outcome</div>
-        <div style="font-size:0.86rem; color:rgba(220,236,255,0.9); line-height:1.55;">Ein konsistenter Knowledge-Loop von Experiment zu Modell zu Deliverable, mit klarer Provenienz fuer wissenschaftliches Arbeiten.</div>
-      </div>
+    <div class="hero-characteristics hero-characteristics--orbit">
+      Structural Biology · Thermodynamic Modelling · Nano-Scale Interfaces
     </div>
   </div>
 </section>
-
-<section style="padding: 0 24px 56px; max-width: 960px; margin: 0 auto; color: #e8ecff;">
-  <div style="border:1px solid rgba(126,237,255,0.22); border-radius:10px; background:rgba(7,12,24,0.8); padding:22px 20px;">
-    <div style="font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(126,237,255,0.92); margin-bottom:10px;">Semantic Build</div>
-    <h2 style="font-size:1.32rem; line-height:1.28; margin:0 0 12px; font-weight:700; color:#ffffff;">Homepage as Semantic Projection Layer</h2>
-    <p style="font-size:0.9rem; color:rgba(205,225,246,0.86); line-height:1.64; margin:0 0 12px;">
-      Die Homepage ist nicht nur eine Oberflaeche, sondern eine Projektion auf einem semantischen Kern:
-      Objekte, Beziehungen, Constraints und Versionen werden zuerst im Nexus organisiert und erst danach in UI-Elemente uebersetzt.
-    </p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;">
-      <div style="border:1px solid rgba(126,237,255,0.2); border-radius:8px; background:rgba(126,237,255,0.06); padding:12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.11em; text-transform:uppercase; color:rgba(126,237,255,0.95); margin-bottom:6px;">Semantic Objects</div>
-        <div style="font-size:0.84rem; color:rgba(220,236,255,0.88); line-height:1.55;">Experimente, Signale, Modelle, Reports und Publikationen als typisierte Objekte.</div>
-      </div>
-      <div style="border:1px solid rgba(255,77,245,0.2); border-radius:8px; background:rgba(255,77,245,0.06); padding:12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.11em; text-transform:uppercase; color:rgba(255,77,245,0.95); margin-bottom:6px;">Constraints</div>
-        <div style="font-size:0.84rem; color:rgba(220,236,255,0.88); line-height:1.55;">Physikalische, methodische und Governance-Regeln bleiben als pruefbare Bedingungen erhalten.</div>
-      </div>
-      <div style="border:1px solid rgba(122,255,170,0.2); border-radius:8px; background:rgba(122,255,170,0.06); padding:12px;">
-        <div style="font-size:0.74rem; letter-spacing:0.11em; text-transform:uppercase; color:rgba(122,255,170,0.95); margin-bottom:6px;">Projections</div>
-        <div style="font-size:0.84rem; color:rgba(220,236,255,0.88); line-height:1.55;">Homepage, Explore und Interfaces werden als konsistente Projektionen desselben Kerns aufgebaut.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer id="impressum" class="impressum">
-  <div class="impressum-inner">
-    <h2 class="impressum-title">Impressum</h2>
-    <p><strong><span class="brand-lockup"><span class="brand-word">G<span class="brand-acute" aria-hidden="true">´</span>Labs</span> <span class="brand-hold" aria-hidden="true">⏸</span></span></strong> is a data warehouse research project by Rupert Gelisnig (Vienna).</p>
-    <p>It is currently not a company, involves no commercial activity, offers no services and sells nothing. All content is provided solely for scientific reflection, conceptual exploration and academic exchange.</p>
-    <p class="impressum-contact">Contact: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
-  </div>
-</footer>
-<footer class="site-footer">© 2026 Calyr.ai™ — All rights reserved.</footer>
 </body>
 </html>
