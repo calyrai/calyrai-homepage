@@ -112,6 +112,13 @@
   let resumeTimer = null;
   let heroDetail = null;
   let heroPearls = null;
+  let heroTitle = null;
+
+  function toTitleToken(value) {
+    const clean = String(value || '').trim().toLowerCase();
+    if (!clean) return '';
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  }
 
   function escH(s) {
     return String(s)
@@ -165,6 +172,43 @@
     }, 1800);
   }
 
+  function setHeroTitle(node) {
+    if (!heroTitle) return;
+    if (!node) {
+      heroTitle.textContent = NEXUS.name;
+      return;
+    }
+    heroTitle.textContent = toTitleToken(NEXUS.name) + '.' + toTitleToken(node.id || node.name || '');
+  }
+
+  function setHeroLogoPearl(node) {
+    const logo = hero.querySelector('#orbit-logo-explore');
+    if (!logo) return;
+
+    const slot = logo.querySelector('.hero-logo-pearl-slot');
+    if (!slot) return;
+
+    if (!node) {
+      logo.classList.remove('has-active-pearl');
+      slot.innerHTML = '';
+      return;
+    }
+
+    const nodeIndex = OUTER.findIndex(function (n) { return n.id === node.id; });
+    const pearlRgb = resolvePearlRgb(node, nodeIndex >= 0 ? nodeIndex : 0);
+
+    logo.classList.add('has-active-pearl');
+    slot.innerHTML = '' +
+      '<div class="hero-logo-pearl edisk" style="--pearl-rgb:' + escH(pearlRgb) + '">' +
+      '  <svg class="edisk-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+      '    <circle class="edisk-ring edisk-ring-c" cx="50" cy="50" r="41"></circle>' +
+      '    <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
+      '    <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
+      '  </svg>' +
+      '  <span class="edisk-core">' + escH(toTitleToken(node.name || node.id)) + '</span>' +
+      '</div>';
+  }
+
   function renderHero() {
     hero.innerHTML = '' +
       '<div class="hero-shell">' +
@@ -202,6 +246,7 @@
       '        <g class="orbit-logo__ring" filter="url(#orbit-logo-explore-glowWhite)"><circle class="orbit-logo__stroke" cx="100" cy="100" r="48" stroke="url(#orbit-logo-explore-whiteCyan)" stroke-width="22" stroke-dasharray="235 68" stroke-linecap="round"></circle></g>' +
       '        <g class="orbit-logo__accent" filter="url(#orbit-logo-explore-glowMagenta)"><g transform="translate(126 98) rotate(-10)"><path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96"></path><path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78"></path><path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65"></path></g></g>' +
       '      </svg>' +
+      '      <div class="hero-logo-pearl-slot" aria-hidden="true"></div>' +
       '    </div>' +
       '  </div>' +
       '  <div class="hero-badge">' +
@@ -215,6 +260,9 @@
 
     heroDetail = hero.querySelector('.hero-detail-slot');
     heroPearls = hero.querySelector('#hero-pearls-line');
+    heroTitle = hero.querySelector('.hero-title');
+    setHeroTitle(null);
+    setHeroLogoPearl(null);
     renderHeroDetail(null);
   }
 
@@ -222,6 +270,10 @@
     if (!heroDetail) return;
 
     if (!node) {
+      setHeroTitle(null);
+      setHeroLogoPearl(null);
+      heroDetail.classList.remove('is-active-high');
+      heroDetail.classList.remove('is-drifting-up');
       heroDetail.innerHTML =
         '<div class="ehd-inline ehd-inline--nexus">' +
         '  <p class="ehd-kicker">Select a semantic pearl</p>' +
@@ -230,10 +282,15 @@
         '  <p class="ehd-body-text ehd-body-text--nexus">Each pearl is a specialized region built around that same core. You can explore Atlas, Calyrai, PR, Runtime, G\'labs ||, or Projects independently, but Nexus is what keeps the whole system coherent as one structure.</p>' +
         '  <p class="ehd-body-text ehd-body-text--nexus">Select any pearl to see how that region extends the core logic into a concrete capability.</p>' +
         '</div>';
+      if (heroPearls) {
+        heroPearls.classList.remove('is-hidden');
+      }
       return;
     }
 
     const mag = node.color === 'magenta';
+    setHeroTitle(node);
+    setHeroLogoPearl(node);
     const nodeIndex = OUTER.findIndex(function (n) { return n.id === node.id; });
     const detailRgb = resolvePearlRgb(node, nodeIndex >= 0 ? nodeIndex : 0);
     const detailParagraphs = (Array.isArray(node.details) && node.details.length ? node.details : [node.body])
@@ -253,12 +310,19 @@
       (node.href ? '<a class="ehd-cta" href="' + escH(node.href) + '"><span class="ehd-cta-label">Enter this region</span></a>' : '') +
       '</div>';
 
+    heroDetail.classList.add('is-active-high');
+    if (heroPearls) heroPearls.classList.add('is-hidden');
+
     const closeBtn = heroDetail.querySelector('.ehd-close');
     if (closeBtn) {
       closeBtn.addEventListener('click', function () {
         activeId = null;
         clearActive();
         setLogoPaused(false);
+        resetScatter();
+        if (heroPearls) {
+          heroPearls.classList.remove('is-hidden');
+        }
         renderHeroDetail(null);
       });
     }
@@ -281,6 +345,12 @@
         '</button>';
     }).join('');
 
+    // Reset scatter state on render
+    heroPearls.querySelectorAll('.edisk.is-scattered').forEach(function (btn) {
+      btn.classList.remove('is-scattered');
+      btn.style.removeProperty('--scatter-anim');
+    });
+
     heroPearls.querySelectorAll('.edisk').forEach(function (btn) {
       btn.addEventListener('click', function () {
         const id = btn.getAttribute('data-id');
@@ -291,6 +361,7 @@
         clearActive();
         activeId = null;
         setLogoPaused(false);
+        resetScatter();
         renderHeroDetail(null);
 
         if (isSame) return;
@@ -310,17 +381,132 @@
     });
   }
 
+  function scatterPearls(selectedId) {
+    if (!heroPearls) return;
+    heroPearls.querySelectorAll('.edisk').forEach(function (btn, index) {
+      const btnId = btn.getAttribute('data-id');
+      if (btnId === selectedId) {
+        btn.classList.remove('is-scattered');
+      } else {
+        btn.style.setProperty('--scatter-anim', 'pearl-scatter-' + index);
+        btn.classList.add('is-scattered');
+      }
+    });
+  }
+
+  function resetScatter() {
+    if (!heroPearls) return;
+    heroPearls.querySelectorAll('.edisk.is-scattered').forEach(function (btn) {
+      btn.classList.remove('is-scattered');
+      btn.style.removeProperty('--scatter-anim');
+    });
+  }
+
+  let draggedPearl = null;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let pearlStartX = 0;
+  let pearlStartY = 0;
+
+  function triggerNexusExplosion(pearlNode) {
+    const logo = hero.querySelector('#orbit-logo-explore');
+    if (!logo) return;
+
+    logo.classList.add('is-exploding');
+
+    if (heroDetail) {
+      heroDetail.classList.add('is-expanded-up');
+      setTimeout(function () {
+        heroDetail.classList.remove('is-expanded-up');
+      }, 600);
+    }
+
+    setTimeout(function () {
+      logo.classList.remove('is-exploding');
+    }, 2400);
+
+    if (heroPearls) {
+      heroPearls.classList.remove('is-hidden');
+    }
+    renderHeroDetail(pearlNode);
+  }
+
+  function addDragToPearls() {
+    const pearls = document.querySelectorAll('#hero-pearls-line .edisk');
+    pearls.forEach(function (pearl) {
+      pearl.draggable = true;
+      pearl.style.cursor = 'grab';
+
+      pearl.addEventListener('dragstart', function (e) {
+        draggedPearl = pearl;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        const rect = pearl.getBoundingClientRect();
+        pearlStartX = rect.left;
+        pearlStartY = rect.top;
+        pearl.classList.add('is-dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', pearl.innerHTML);
+      });
+
+      pearl.addEventListener('dragend', function (e) {
+        pearl.classList.remove('is-dragging');
+        if (!draggedPearl) return;
+
+        const logo = hero.querySelector('#orbit-logo-explore');
+        if (!logo) return;
+
+        const logoRect = logo.getBoundingClientRect();
+        const logoCenterX = logoRect.left + logoRect.width / 2;
+        const logoCenterY = logoRect.top + logoRect.height / 2;
+
+        const dragDistance = Math.sqrt(
+          Math.pow(e.clientX - logoCenterX, 2) +
+          Math.pow(e.clientY - logoCenterY, 2)
+        );
+
+        // Collision threshold (pixels)
+        if (dragDistance < 120) {
+          const pearlId = pearl.getAttribute('data-id');
+          const pearlNode = OUTER.find(function (n) { return n.id === pearlId; });
+          if (pearlNode) {
+            triggerNexusExplosion(pearlNode);
+            resetScatter();
+            clearActive();
+            activeId = null;
+          }
+        }
+
+        draggedPearl = null;
+      });
+    });
+  }
+
   document.addEventListener('click', function (e) {
     if (!e.target.closest('#hero-pearls-line') && !e.target.closest('.hero-detail-slot')) {
       activeId = null;
       clearActive();
       setLogoPaused(false);
+      resetScatter();
+      if (heroPearls) {
+        heroPearls.classList.remove('is-hidden');
+      }
       renderHeroDetail(null);
     }
   });
 
   renderHero();
   renderPearlLine();
+  addDragToPearls();
+
+  // Add dragover effect for nexus
+  const logoWrap = hero.querySelector('.hero-logo-wrap');
+  if (logoWrap) {
+    logoWrap.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+  }
 
   disks.setAttribute('hidden', 'true');
   detail.setAttribute('hidden', 'true');
