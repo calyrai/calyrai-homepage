@@ -1,428 +1,286 @@
 (function () {
   'use strict';
 
-  const sidebar = document.getElementById('explore-sidebar');
-  const content = document.getElementById('explore-content');
-  const EXPLORE = window.CALYR_EXPLORE;
-  let embeddedPresentationState = null;
-  const LANG_KEY = 'calyrExploreLang';
-  let activeLang = (localStorage.getItem(LANG_KEY) || (navigator.language || 'en').toLowerCase()).startsWith('de') ? 'de' : 'en';
+  const hero = document.getElementById('explore-hero');
+  const disks = document.getElementById('explore-disks');
+  const detail = document.getElementById('explore-detail');
+  if (!hero || !disks || !detail) return;
 
-  if (!sidebar || !content || !EXPLORE) return;
+  const NEXUS = {
+    name: 'Nexus',
+    kicker: 'Semantic Orchestration',
+    role: 'The invariant center. The Zeiger marks its authority.',
+  };
 
-  const flatPages = EXPLORE.flatMap(section => section.pages.map(page => ({ ...page, section: section.id })));
+  const OUTER = [
+    {
+      id: 'atlas',
+      name: 'Atlas',
+      kicker: 'Semantic Cartography',
+      color: 'cyan',
+      pearlColor: '#24f3ff',
+      href: 'docs.html#atlas',
+      role: 'Semantic topology and cartography layer.',
+      body: 'Atlas decomposes semantic space into navigable regions and records semantic adjacency and stable boundaries.',
+    },
+    {
+      id: 'calyrai',
+      name: 'Calyrai',
+      kicker: 'Experiential Projection',
+      color: 'magenta',
+      pearlColor: '#ff4df5',
+      href: 'docs.html#calyrai',
+      role: 'Experiential projection layer.',
+      body: 'Calyrai animates transitions and makes semantic gravity perceptible for interaction and perception.',
+    },
+    {
+      id: 'pr',
+      name: 'PR',
+      kicker: 'Projection Runtime',
+      color: 'magenta',
+      pearlColor: '#f3f8ff',
+      href: 'docs.html#pr',
+      role: 'Deployment of public semantic surfaces.',
+      body: 'PR deploys live semantic projections so internal state can be rendered into public-facing surfaces.',
+    },
+    {
+      id: 'runtime',
+      name: 'Runtime',
+      kicker: 'Execution Substrate',
+      color: 'cyan',
+      pearlColor: '#9fb4c9',
+      href: 'docs.html#runtime',
+      role: 'Internal execution engine. Code assets are not public.',
+      body: 'Runtime handles graph evaluation, orchestration, and scheduling while public systems consume projections.',
+    },
+    {
+      id: 'glabs',
+      name: "G'labs ||",
+      kicker: 'Experimental Lab',
+      color: 'cyan',
+      pearlColor: '#b28aff',
+      href: 'docs.html#glabs',
+      role: 'Experimental morphogenesis lab.',
+      body: "G'labs || is the unstable region where semantics are stress-tested and evolved before integration.",
+    },
+    {
+      id: 'projects',
+      name: 'Projects',
+      kicker: 'Application Layer',
+      color: 'magenta',
+      pearlColor: '#67f2d6',
+      href: 'docs.html#projects',
+      role: 'Applied project surfaces and use-case execution.',
+      body: 'Projects is the applications lane where semantic systems are instantiated for concrete cases, delivery tracks, and user-facing outcomes.',
+    },
+  ];
 
-  function pageTitle(page) {
-    if (activeLang === 'de') return page.titleDe || page.title;
-    return page.titleEn || page.title;
+  const PEARL_FALLBACK_PALETTE = ['#24f3ff', '#ff4df5', '#f3f8ff', '#9fb4c9', '#b28aff', '#67f2d6'];
+  const PEARL_HARD_FALLBACK_RGB = '36,243,255';
+
+  let activeId = null;
+  let resumeTimer = null;
+  let heroDetail = null;
+  let heroPearls = null;
+
+  function escH(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
-  function pageSrc(page) {
-    if (activeLang === 'de') return page.srcDe || page.src || page.srcEn;
-    return page.srcEn || page.src || page.srcDe;
+  function hexToRgbTriplet(hex) {
+    const match = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(String(hex || '').trim());
+    if (!match) return null;
+    return [
+      parseInt(match[1], 16),
+      parseInt(match[2], 16),
+      parseInt(match[3], 16),
+    ].join(',');
   }
 
-  function buildSidebar() {
-    EXPLORE.forEach(section => {
-      const wrap = document.createElement('div');
-      wrap.className = 'doc-sidebar-section';
-      wrap.dataset.section = section.id;
-
-      const btn = document.createElement('button');
-      btn.className = 'doc-section-toggle' + (section.alwaysOpen ? ' open' : '');
-      btn.innerHTML = `<span>${section.title}</span><span class="arrow">›</span>`;
-      if (section.alwaysOpen) btn.setAttribute('aria-disabled', 'true');
-
-      const ul = document.createElement('ul');
-      ul.className = 'doc-page-list' + (section.alwaysOpen ? ' open' : '');
-
-      section.pages.forEach(page => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.className = 'doc-page-link';
-        a.href = `#${section.id}/${page.id}`;
-        a.textContent = pageTitle(page);
-        a.dataset.section = section.id;
-        a.dataset.page = page.id;
-        li.appendChild(a);
-        ul.appendChild(li);
-      });
-
-      if (!section.alwaysOpen) {
-        btn.addEventListener('click', () => {
-          const open = ul.classList.toggle('open');
-          btn.classList.toggle('open', open);
-        });
-      }
-
-      wrap.appendChild(btn);
-      wrap.appendChild(ul);
-      sidebar.appendChild(wrap);
-    });
+  function normalizeRgbTriplet(value) {
+    const parts = String(value || '').split(',').map(function (p) { return Number(p.trim()); });
+    if (parts.length !== 3 || parts.some(function (n) { return !Number.isFinite(n); })) return null;
+    const clamped = parts.map(function (n) { return Math.max(0, Math.min(255, Math.round(n))); });
+    return clamped.join(',');
   }
 
-  function parseHash() {
-    const hash = window.location.hash.replace('#', '').trim();
-    if (!hash) return null;
-    const [sectionIdRaw, pageIdRaw] = hash.split('/');
-    const sectionAliasMap = {
-      'nexus': 'calyr'
-    };
-    const hashAliasMap = {
-      'calyr-architecture': 'calyr-ai-warehouse',
-      'nexus-warehouse': 'calyr-ai-nexus-datawarehouse'
-    };
-    const sectionId = sectionAliasMap[sectionIdRaw] || sectionIdRaw;
-    const pageId = hashAliasMap[pageIdRaw] || pageIdRaw;
-    const section = EXPLORE.find(entry => entry.id === sectionId);
-    if (!section) return null;
-    const page = section.pages.find(entry => entry.id === pageId);
-    return page ? { section, page } : null;
+  function resolvePearlRgb(node, index) {
+    const source = (node && typeof node.pearlColor === 'string' && node.pearlColor.trim())
+      ? node.pearlColor.trim()
+      : PEARL_FALLBACK_PALETTE[index % PEARL_FALLBACK_PALETTE.length];
+
+    if (source.indexOf('#') === 0) return hexToRgbTriplet(source) || PEARL_HARD_FALLBACK_RGB;
+    return normalizeRgbTriplet(source) || PEARL_HARD_FALLBACK_RGB;
   }
 
-  function defaultPage() {
-    return { section: EXPLORE[0], page: EXPLORE[0].pages[0] };
+  function setLogoPaused(paused) {
+    const logo = hero.querySelector('.orbit-logo');
+    if (!logo) return;
+    logo.classList.toggle('is-paused', paused);
   }
 
-  function setActive(sectionId, pageId) {
-    sidebar.querySelectorAll('.doc-page-link').forEach(link => {
-      const active = link.dataset.section === sectionId && link.dataset.page === pageId;
-      link.classList.toggle('active', active);
-    });
-
-    sidebar.querySelectorAll('.doc-sidebar-section').forEach(wrap => {
-      if (wrap.dataset.section !== sectionId) return;
-      const section = EXPLORE.find(entry => entry.id === sectionId);
-      const list = wrap.querySelector('.doc-page-list');
-      const button = wrap.querySelector('.doc-section-toggle');
-      if (list) list.classList.add('open');
-      if (button) button.classList.add('open');
-      if (section && section.alwaysOpen && button) button.setAttribute('aria-disabled', 'true');
-    });
+  function pauseThenRestartLogo() {
+    if (resumeTimer) {
+      clearTimeout(resumeTimer);
+      resumeTimer = null;
+    }
+    setLogoPaused(true);
+    resumeTimer = setTimeout(function () {
+      setLogoPaused(false);
+      resumeTimer = null;
+    }, 1800);
   }
 
-  function renderNavFooter(page) {
-    const index = flatPages.findIndex(entry => entry.id === page.id && entry.section === page.section);
-    const prev = flatPages[index - 1] || null;
-    const next = flatPages[index + 1] || null;
+  function renderHero() {
+    hero.innerHTML = '' +
+      '<div class="hero-shell">' +
+      '  <div class="hero-logo-wrap" aria-hidden="true">' +
+      '    <div class="orbit-logo" id="orbit-logo-explore" style="--orbit-size: 162px; --orbit-accent-rot: 140s;">' +
+      '      <svg class="orbit-logo__svg" viewBox="0 0 200 200" role="img" aria-label="Nexus logo" focusable="false">' +
+      '        <defs>' +
+      '          <linearGradient id="orbit-logo-explore-whiteCyan" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">' +
+      '            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"></stop>' +
+      '            <stop offset="40%" stop-color="#ffffff" stop-opacity="0.96"></stop>' +
+      '            <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92"></stop>' +
+      '            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.96"></stop>' +
+      '          </linearGradient>' +
+      '          <linearGradient id="orbit-logo-explore-magenta" x1="170" y1="40" x2="35" y2="160" gradientUnits="userSpaceOnUse">' +
+      '            <stop offset="0%" stop-color="#ff4df5" stop-opacity="0.92"></stop>' +
+      '            <stop offset="55%" stop-color="#ffffff" stop-opacity="0.22"></stop>' +
+      '            <stop offset="100%" stop-color="#ff4df5" stop-opacity="0.82"></stop>' +
+      '          </linearGradient>' +
+      '          <linearGradient id="orbit-logo-explore-soft" x1="40" y1="25" x2="160" y2="175" gradientUnits="userSpaceOnUse">' +
+      '            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"></stop>' +
+      '            <stop offset="60%" stop-color="#ffffff" stop-opacity="0.06"></stop>' +
+      '            <stop offset="100%" stop-color="#24f3ff" stop-opacity="0.22"></stop>' +
+      '          </linearGradient>' +
+      '          <filter id="orbit-logo-explore-glowWhite" x="-60%" y="-60%" width="220%" height="220%">' +
+      '            <feGaussianBlur stdDeviation="4.5" result="b"></feGaussianBlur>' +
+      '            <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>' +
+      '          </filter>' +
+      '          <filter id="orbit-logo-explore-glowMagenta" x="-60%" y="-60%" width="220%" height="220%">' +
+      '            <feGaussianBlur stdDeviation="3.0" result="b"></feGaussianBlur>' +
+      '            <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>' +
+      '          </filter>' +
+      '        </defs>' +
+      '        <g class="orbit-logo__ring-c"><circle class="orbit-logo__stroke" cx="100" cy="100" r="84" stroke="url(#orbit-logo-explore-soft)" stroke-width="10" stroke-dasharray="420 110" stroke-linecap="round"></circle></g>' +
+      '        <g class="orbit-logo__ring-b" filter="url(#orbit-logo-explore-glowMagenta)"><circle class="orbit-logo__stroke" cx="100" cy="100" r="66" stroke="url(#orbit-logo-explore-magenta)" stroke-width="14" stroke-dasharray="300 114" stroke-linecap="round"></circle></g>' +
+      '        <g class="orbit-logo__ring" filter="url(#orbit-logo-explore-glowWhite)"><circle class="orbit-logo__stroke" cx="100" cy="100" r="48" stroke="url(#orbit-logo-explore-whiteCyan)" stroke-width="22" stroke-dasharray="235 68" stroke-linecap="round"></circle></g>' +
+      '        <g class="orbit-logo__accent" filter="url(#orbit-logo-explore-glowMagenta)"><g transform="translate(126 98) rotate(-10)"><path d="M 0 -18 L 92 -18 L 76 18 L -16 18 Z" fill="#ff4df5" fill-opacity="0.96"></path><path d="M 6 -22 L 96 -22 L 90 -10 L 0 -10 Z" fill="#24f3ff" fill-opacity="0.78"></path><path d="M -14 -10 L 10 -10 L 4 10 L -20 10 Z" fill="#ffffff" fill-opacity="0.65"></path></g></g>' +
+      '      </svg>' +
+      '    </div>' +
+      '  </div>' +
+      '  <div class="hero-badge">' +
+      '    <p class="hero-kicker">' + escH(NEXUS.kicker) + '</p>' +
+      '    <h1 class="hero-title">' + escH(NEXUS.name) + '</h1>' +
+      '    <p class="hero-sub">' + escH(NEXUS.role) + '</p>' +
+      '    <div id="hero-pearls-line" role="list" aria-label="Semantic regions"></div>' +
+      '    <div class="hero-detail-slot" aria-live="polite" aria-atomic="true"></div>' +
+      '  </div>' +
+      '</div>';
 
-    const prevHTML = prev
-      ? `<a class="doc-nav-btn prev" href="#${prev.section}/${prev.id}"><span class="doc-nav-label">← ${activeLang === 'de' ? 'Zurueck' : 'Previous'}</span><span>${pageTitle(prev)}</span></a>`
-      : '<span></span>';
-
-    const nextHTML = next
-      ? `<a class="doc-nav-btn next" href="#${next.section}/${next.id}"><span class="doc-nav-label">${activeLang === 'de' ? 'Weiter' : 'Next'} →</span><span>${pageTitle(next)}</span></a>`
-      : '<span></span>';
-
-    return `<div class="doc-nav-footer">${prevHTML}${nextHTML}</div>`;
+    heroDetail = hero.querySelector('.hero-detail-slot');
+    heroPearls = hero.querySelector('#hero-pearls-line');
+    renderHeroDetail(null);
   }
 
-  function isStandalonePage(src) {
-    return typeof src === 'string' && src.startsWith('pages/');
-  }
+  function renderHeroDetail(node) {
+    if (!heroDetail) return;
 
-  function renderEmbeddedPage(page, navHtml) {
-    content.innerHTML = `
-      <div class="doc-article" style="padding:0;background:transparent;max-width:none">
-        <iframe
-          src="${pageSrc(page)}"
-          title="${pageTitle(page)}"
-          style="width:100%;min-height:78vh;border:1px solid rgba(126,237,255,0.14);border-radius:16px;background:rgba(5,12,24,0.45)"
-          loading="eager"
-        ></iframe>
-      </div>
-      ${navHtml}
-    `;
-  }
-
-  function initEmbeddedFullscreen() {
-    embeddedPresentationState = null;
-
-    content.querySelectorAll('[data-fullscreen-target]').forEach(button => {
-      if (button.dataset.fullscreenBound === 'true') return;
-      button.dataset.fullscreenBound = 'true';
-
-      var targetId = button.getAttribute('data-fullscreen-target');
-      var target = targetId ? content.querySelector('#' + targetId) : null;
-      var iframe = target ? target.querySelector('iframe') : null;
-      if (!target) return;
-
-      function getEmbeddedApi() {
-        try {
-          return iframe && iframe.contentWindow ? iframe.contentWindow.__calyrPresentation || null : null;
-        } catch (error) {
-          return null;
-        }
-      }
-
-      function isFullscreen() {
-        var embeddedApi = getEmbeddedApi();
-        if (embeddedApi && typeof embeddedApi.isFullscreen === 'function') {
-          return embeddedApi.isFullscreen();
-        }
-        return document.fullscreenElement === target || document.webkitFullscreenElement === target;
-      }
-
-      function updateLabel() {
-        button.textContent = isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen';
-      }
-
-      embeddedPresentationState = {
-        getEmbeddedApi,
-        isFullscreen
-      };
-
-      button.addEventListener('click', async function () {
-        var embeddedApi = getEmbeddedApi();
-        if (embeddedApi && typeof embeddedApi.toggleFullscreen === 'function') {
-          await embeddedApi.toggleFullscreen();
-          updateLabel();
-          return;
-        }
-
-        if (isFullscreen()) {
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          }
-          updateLabel();
-          return;
-        }
-
-        if (target.requestFullscreen) {
-          await target.requestFullscreen();
-        } else if (target.webkitRequestFullscreen) {
-          target.webkitRequestFullscreen();
-        }
-        updateLabel();
-      });
-
-      document.addEventListener('fullscreenchange', updateLabel);
-      document.addEventListener('webkitfullscreenchange', updateLabel);
-      window.addEventListener('message', function (event) {
-        if (event.origin !== window.location.origin) return;
-        if (!event.data || event.data.type !== 'calyr-presentation-fullscreen') return;
-        updateLabel();
-      });
-      if (iframe) {
-        iframe.addEventListener('load', updateLabel);
-      }
-      updateLabel();
-    });
-  }
-
-  document.addEventListener('keydown', function (event) {
-    if (!embeddedPresentationState || typeof embeddedPresentationState.isFullscreen !== 'function') return;
-    if (!embeddedPresentationState.isFullscreen()) return;
-
-    var embeddedApi = embeddedPresentationState.getEmbeddedApi();
-    if (!embeddedApi) return;
-
-    if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
-      if (typeof embeddedApi.nextPage === 'function') {
-        event.preventDefault();
-        embeddedApi.nextPage();
-      }
+    if (!node) {
+      heroDetail.innerHTML =
+        '<div class="ehd-inline ehd-inline--nexus">' +
+        '  <p class="ehd-kicker">Select a semantic pearl</p>' +
+        '  <p class="ehd-body-text">Click any pearl in the line above to load its explanation here in the Nexus field.</p>' +
+        '</div>';
       return;
     }
 
-    if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
-      if (typeof embeddedApi.previousPage === 'function') {
-        event.preventDefault();
-        embeddedApi.previousPage();
-      }
-      return;
-    }
+    const mag = node.color === 'magenta';
+    heroDetail.innerHTML =
+      '<div class="ehd-inline ' + (mag ? 'ehd-body--magenta' : 'ehd-body--cyan') + '">' +
+      '  <button class="ehd-close" aria-label="Close">X</button>' +
+      '  <p class="ehd-kicker">' + escH(node.kicker) + '</p>' +
+      '  <h3 class="ehd-name">' + escH(node.name) + '</h3>' +
+      '  <p class="ehd-role">' + escH(node.role) + '</p>' +
+      '  <p class="ehd-body-text">' + escH(node.body) + '</p>' +
+      (mag ? '<div class="ehd-boundary"><span class="ehd-b-label">Runtime Boundary</span>Individual code assets are internal. Public surfaces receive projections and rendered outputs only.</div>' : '') +
+      (node.href ? '<a class="ehd-cta" href="' + escH(node.href) + '"><span class="ehd-cta-label">Enter this region</span></a>' : '') +
+      '</div>';
 
-    if (event.key === 'Home') {
-      if (typeof embeddedApi.goToPage === 'function') {
-        event.preventDefault();
-        embeddedApi.goToPage(0);
-      }
-      return;
+    const closeBtn = heroDetail.querySelector('.ehd-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        activeId = null;
+        clearActive();
+        setLogoPaused(false);
+        renderHeroDetail(null);
+      });
     }
+  }
 
-    if (event.key === 'End') {
-      if (typeof embeddedApi.goToLastPage === 'function') {
-        event.preventDefault();
-        embeddedApi.goToLastPage();
-      }
+  function renderPearlLine() {
+    if (!heroPearls) return;
+
+    heroPearls.innerHTML = OUTER.map(function (node, index) {
+      const cls = node.color === 'magenta' ? 'edisk edisk--magenta' : 'edisk edisk--cyan';
+      const pearlRgb = resolvePearlRgb(node, index);
+      return '' +
+        '<button class="' + cls + '" style="--pearl-rgb:' + pearlRgb + '" data-id="' + escH(node.id) + '" role="listitem" aria-label="' + escH(node.name) + '">' +
+        '  <svg class="edisk-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+        '    <circle class="edisk-ring edisk-ring-c" cx="50" cy="50" r="41"></circle>' +
+        '    <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
+        '    <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
+        '  </svg>' +
+        '  <span class="edisk-core">' + escH(node.name) + '</span>' +
+        '</button>';
+    }).join('');
+
+    heroPearls.querySelectorAll('.edisk').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const id = btn.getAttribute('data-id');
+        const node = OUTER.find(function (n) { return n.id === id; });
+        if (!node) return;
+
+        const isSame = activeId === node.id;
+        clearActive();
+        activeId = null;
+        setLogoPaused(false);
+        renderHeroDetail(null);
+
+        if (isSame) return;
+
+        btn.classList.add('is-selected');
+        activeId = node.id;
+        pauseThenRestartLogo();
+        renderHeroDetail(node);
+      });
+    });
+  }
+
+  function clearActive() {
+    if (!heroPearls) return;
+    heroPearls.querySelectorAll('.edisk.is-selected').forEach(function (el) {
+      el.classList.remove('is-selected');
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('#hero-pearls-line') && !e.target.closest('.hero-detail-slot')) {
+      activeId = null;
+      clearActive();
+      setLogoPaused(false);
+      renderHeroDetail(null);
     }
   });
 
-  async function loadPage(entry) {
-    const { section, page } = entry;
-    setActive(section.id, page.id);
-    const flat = { ...page, section: section.id };
+  renderHero();
+  renderPearlLine();
 
-    if (isStandalonePage(page.src)) {
-      renderEmbeddedPage(page, renderNavFooter(flat));
-      initEmbeddedFullscreen();
-      window.scrollTo(0, 0);
-      return;
-    }
-
-    let html;
-    try {
-      const response = await fetch(pageSrc(page));
-      if (!response.ok) throw new Error(response.status);
-      html = await response.text();
-    } catch (error) {
-      html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">${activeLang === 'de' ? 'Konnte Seite nicht laden' : 'Could not load'} <code>${pageSrc(page)}</code> (${error.message}).</p></div>`;
-    }
-
-    content.innerHTML = html + renderNavFooter(flat);
-    initEmbeddedFullscreen();
-
-    if (window.renderMathInElement) {
-      renderMathInElement(content, {
-        delimiters: [
-          { left: '$$', right: '$$', display: true },
-          { left: '$', right: '$', display: false }
-        ],
-        throwOnError: false
-      });
-    }
-
-    window.scrollTo(0, 0);
-  }
-
-  function buildSearchIndex() {
-    return EXPLORE.flatMap(section =>
-      section.pages.map(page => ({
-        sectionId: section.id,
-        sectionTitle: section.title,
-        pageId: page.id,
-        title: pageTitle(page),
-        href: `#${section.id}/${page.id}`
-      }))
-    );
-  }
-
-  function setupSearch() {
-    const index = buildSearchIndex();
-
-    const wrap = document.createElement('div');
-    wrap.className = 'doc-search-wrap';
-    wrap.innerHTML = `
-      <div class="doc-search-label">${activeLang === 'de' ? 'Explore durchsuchen' : 'Search the Explore'}</div>
-      <div class="explore-lang-switch" role="group" aria-label="Language switch">
-        <button class="explore-lang-btn${activeLang === 'de' ? ' active' : ''}" data-lang="de" type="button">DE</button>
-        <button class="explore-lang-btn${activeLang === 'en' ? ' active' : ''}" data-lang="en" type="button">EN</button>
-      </div>
-      <input id="explore-search" class="doc-search-input" placeholder="${activeLang === 'de' ? 'Explore durchsuchen' : 'Search the Explore'}" autocomplete="off" spellcheck="false" />
-      <ul id="explore-search-results" class="doc-search-results"></ul>
-    `;
-    sidebar.prepend(wrap);
-
-    const input = wrap.querySelector('#explore-search');
-    const results = wrap.querySelector('#explore-search-results');
-    let focusedIndex = -1;
-
-    wrap.querySelectorAll('.explore-lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const next = btn.dataset.lang === 'de' ? 'de' : 'en';
-        if (next === activeLang) return;
-        activeLang = next;
-        localStorage.setItem(LANG_KEY, activeLang);
-        sidebar.innerHTML = '';
-        buildSidebar();
-        setupSearch();
-        loadPage(parseHash() || defaultPage());
-      });
-    });
-
-    function clearSearch() {
-      input.value = '';
-      results.innerHTML = '';
-      results.classList.remove('open');
-      focusedIndex = -1;
-      sidebar.querySelectorAll('.doc-sidebar-section').forEach(entry => {
-        entry.style.display = '';
-      });
-    }
-
-    function query(raw) {
-      const value = raw.trim().toLowerCase();
-      if (!value) return [];
-      return index.filter(entry =>
-        entry.title.toLowerCase().includes(value) ||
-        entry.sectionTitle.toLowerCase().includes(value) ||
-        entry.href.toLowerCase().includes(value)
-      ).slice(0, 12);
-    }
-
-    function renderResults(matches) {
-      focusedIndex = -1;
-      if (!matches.length) {
-        results.innerHTML = '<li class="doc-search-empty">No results</li>';
-        results.classList.add('open');
-        return;
-      }
-      results.innerHTML = matches.map((match, index) =>
-        `<li class="doc-search-result" data-href="${match.href}" data-idx="${index}"><span class="doc-search-title">${match.title}</span><span class="doc-search-section">${match.sectionTitle}</span></li>`
-      ).join('');
-      results.classList.add('open');
-      results.querySelectorAll('.doc-search-result').forEach(item => {
-        item.addEventListener('mousedown', event => {
-          event.preventDefault();
-          window.location.hash = item.dataset.href.slice(1);
-          clearSearch();
-        });
-      });
-    }
-
-    function moveFocus(direction) {
-      const items = results.querySelectorAll('.doc-search-result');
-      if (!items.length) return;
-      if (focusedIndex >= 0) items[focusedIndex].classList.remove('focused');
-      focusedIndex = (focusedIndex + direction + items.length) % items.length;
-      items[focusedIndex].classList.add('focused');
-      items[focusedIndex].scrollIntoView({ block: 'nearest' });
-    }
-
-    input.addEventListener('input', () => {
-      if (!input.value.trim()) {
-        clearSearch();
-        return;
-      }
-      sidebar.querySelectorAll('.doc-sidebar-section').forEach(entry => {
-        entry.style.display = 'none';
-      });
-      renderResults(query(input.value));
-    });
-
-    input.addEventListener('keydown', event => {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        moveFocus(1);
-      }
-      if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        moveFocus(-1);
-      }
-      if (event.key === 'Escape') {
-        clearSearch();
-        input.blur();
-      }
-      if (event.key === 'Enter') {
-        const hit = results.querySelector('.doc-search-result.focused');
-        if (hit) {
-          window.location.hash = hit.dataset.href.slice(1);
-          clearSearch();
-        }
-      }
-    });
-  }
-
-  function navigate() {
-    const entry = parseHash() || defaultPage();
-    loadPage(entry);
-  }
-
-  buildSidebar();
-  setupSearch();
-  navigate();
-  window.addEventListener('hashchange', navigate);
+  disks.setAttribute('hidden', 'true');
+  detail.setAttribute('hidden', 'true');
 })();
