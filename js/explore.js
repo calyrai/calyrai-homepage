@@ -120,6 +120,24 @@
     return clean.charAt(0).toUpperCase() + clean.slice(1);
   }
 
+  function formatTitleSuffix(node) {
+    const raw = String((node && (node.name || node.id)) || '').trim();
+    if (!raw) return '';
+
+    // Keep symbolic separators (like ||), remove apostrophes, title-case word chunks.
+    return raw
+      .replace(/'/g, '')
+      .split(/(\|\||\s+)/)
+      .map(function (part) {
+        if (!part || /^\s+$/.test(part) || part === '||') return part;
+        const lower = part.toLowerCase();
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      })
+      .join('')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function escH(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -178,7 +196,7 @@
       heroTitle.textContent = NEXUS.name;
       return;
     }
-    heroTitle.textContent = toTitleToken(NEXUS.name) + '.' + toTitleToken(node.id || node.name || '');
+    heroTitle.textContent = toTitleToken(NEXUS.name) + '.' + formatTitleSuffix(node);
   }
 
   function setHeroLogoPearl(node) {
