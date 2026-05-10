@@ -78,7 +78,12 @@
     line-height: 1;
     margin: 0;
     color: rgba(230, 250, 255, 0.98);
-    letter-spacing: 0.02em;
+    font-family: "Noto Sans", "Segoe UI Symbol", "Arial Unicode MS", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    font-variant-ligatures: none;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
   }
 
   .platform-code-link {
@@ -370,103 +375,93 @@
 </style>
 
 <article class="doc-article explore-page-layout">
-  <header class="explore-page-hero">
-    <p class="explore-page-eyebrow">Calyr Knowledge Architecture</p>
-    <h1 class="explore-page-title">Calyr Ecosystem Modules</h1>
-    <p class="explore-page-lead platform-table-lead">
-      Nexus is the shared ordering structure. The programs below are expressed as a Greek-letter table so each part is individually defined but still bound through one semantic space.
-    </p>
-  </header>
-
   <section class="explore-page-section">
-    <h2>Calyr Ecosystem</h2>
-
     <div class="platform-grid">
-      <article class="platform-tile platform-nexus">
+      <article class="platform-tile platform-nexus" id="code-nex">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#nex" title="NEX">ΝΞ</a></p>
         <h3 class="platform-name">Nexus</h3>
         <p class="platform-desc">calyr.nexus: shared semantics, schema, comparability, and provenance.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=nexus">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-control">
+      <article class="platform-tile platform-control" id="code-eval">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#eval" title="EVAL">ΕΛ</a></p>
         <h3 class="platform-name">Eval</h3>
         <p class="platform-desc">Domain feature extraction from SAXS, SPR, simulation, and inference runs.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=eval">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-control">
+      <article class="platform-tile platform-control" id="code-okto">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#okto" title="OKTO">ΟΚ</a></p>
         <h3 class="platform-name">Okto</h3>
         <p class="platform-desc">Knowledge loop for papers, slides, apps, and homepage projection.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=okto">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-control">
+      <article class="platform-tile platform-control" id="code-grammateia">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#lit" title="GRAM">ΓΡ</a></p>
         <h3 class="platform-name">Grammateia (Literature)</h3>
         <p class="platform-desc">ConnectPaper++ layer: ingest/extract literature into concepts, models, and constraints linked to Nexus objects.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=grammateia">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-exec">
+      <article class="platform-tile platform-exec" id="code-asc">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#asc" title="ASC">ΑΣ</a></p>
         <h3 class="platform-name">Asc</h3>
         <p class="platform-desc">Remote compute control: submit, status, logs, fetch.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=asc">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-exec">
+      <article class="platform-tile platform-exec" id="code-lammps">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#lmp" title="LMP">ΛΜ</a></p>
         <h3 class="platform-name">Lammps Local</h3>
         <p class="platform-desc">LAMMPS prep bundle: package flags, MPI launch, Slurm profile.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=lammps">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-exec">
+      <article class="platform-tile platform-exec" id="code-alphafold">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#af" title="AF">ΑΦ</a></p>
         <h3 class="platform-name">AlphaFold Local</h3>
         <p class="platform-desc">AlphaFold prep bundle: wrapper, modules, FASTA, and ASC spec.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=alphafold">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-control">
+      <article class="platform-tile platform-control" id="code-nomos">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#nom" title="NOM">ΝΜ</a></p>
         <h3 class="platform-name">Nomos</h3>
         <p class="platform-desc">Unified control for mail operations and Gmail calendar sync/upsert.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=nomos">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-delivery">
+      <article class="platform-tile platform-delivery" id="code-demos">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#dmo" title="DMO">ΔΜ</a></p>
         <h3 class="platform-name">Demos</h3>
         <p class="platform-desc">CLI packaging and sync interface for publication-ready artifacts.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=demos">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-delivery">
+      <article class="platform-tile platform-delivery" id="code-homepage">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#hub" title="HUB">ΗΒ</a></p>
         <h3 class="platform-name">Homepage</h3>
         <p class="platform-desc">Public projection surface for Explore, interfaces, and selected outputs.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=homepage">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-delivery">
+      <article class="platform-tile platform-delivery" id="code-publishing">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#pub" title="PUB">ΠΒ</a></p>
         <h3 class="platform-name">Publishing</h3>
         <p class="platform-desc">Publishing workspace for papers, presentations, metadata, and generated outputs.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=publishing">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-delivery">
+      <article class="platform-tile platform-delivery" id="code-publicrelations">
         <p class="platform-symbol"><a class="platform-code-link" href="pages/nexus.html#works" title="PR">ΠΡ</a></p>
         <h3 class="platform-name">PublicRelations</h3>
         <p class="platform-desc">nexus.publicrelations: opportunity-to-deliverable orchestration for evidence-grounded external communication.</p>
         <a class="platform-plan-link" href="explore_module_plan.html?module=publicrelations">Nexus →</a>
       </article>
 
-      <article class="platform-tile platform-core">
+      <article class="platform-tile platform-core" id="code-objects">
         <p class="platform-symbol"><a class="platform-code-link" href="../../../docs/hub/ecosystem.md#obj" title="OBJ">ΣΒ</a></p>
         <h3 class="platform-name">Objects</h3>
         <p class="platform-desc">Shared schema for states, energies, features across SAXS, SPR, and PCA.</p>
@@ -474,99 +469,6 @@
       </article>
     </div>
 
-    <div class="platform-key">
-      <span class="core">Core semantics</span>
-      <span class="control">Control loops</span>
-      <span class="exec">Execution surfaces</span>
-      <span class="delivery">Delivery surfaces</span>
-    </div>
-
-    <div class="platform-brief">
-      <h3>Scientific Infrastructure Domain Anchor</h3>
-      <p>
-        New anchor in the ecosystem: <strong>Scientific Infrastructure</strong> as adaptive orchestration layer for scientific measurement capabilities.
-      </p>
-      <div class="platform-capability-list">
-        <span>AI</span>
-        <span>Data</span>
-        <span>Knowledge</span>
-        <span>Infrastructure</span>
-        <span>Scientific Infrastructure</span>
-        <span>Orchestration</span>
-        <span>Visualization</span>
-      </div>
-    </div>
-
-    <div class="platform-brief">
-      <h3>Capability Discovery</h3>
-      <p>
-        Hero Search prompt: <strong>What scientific capability do you need?</strong>
-      </p>
-      <div class="platform-capability-list">
-        <span>SAXS for flexible proteins</span>
-        <span>CryoEM membrane proteins</span>
-        <span>Metabolomics plasma samples</span>
-        <span>EPR radical systems</span>
-      </div>
-    </div>
-
-    <div class="platform-brief">
-      <h3>Adaptive Measurement Orchestration</h3>
-      <p>
-        Differentiator: adaptive sequencing instead of static booking.
-      </p>
-      <div class="platform-sequence">
-        <div class="platform-sequence-step">1. DLS</div>
-        <div class="platform-sequence-step">2. SEC</div>
-        <div class="platform-sequence-step">3. SAXS</div>
-        <div class="platform-sequence-step">4. CryoEM</div>
-        <div class="platform-sequence-step">5. MD refinement</div>
-      </div>
-      <div class="platform-signal-list">
-        <span>Aggregation</span>
-        <span>Concentration</span>
-        <span>Polydispersity</span>
-        <span>Stability</span>
-      </div>
-    </div>
-
-    <div class="platform-brief">
-      <h3>Scientific Workflow Agent</h3>
-      <div class="platform-chat">
-        <p><strong>User:</strong> I need structural characterization for a redox-sensitive membrane protein.</p>
-        <p><strong>Nexus:</strong> Sequence starts with DLS and adapts through SEC, SAXS, CryoEM, and MD refinement based on measured quality signals.</p>
-      </div>
-    </div>
-
-    <div class="platform-brief">
-      <h3>Layer Separation and Bot Extensibility</h3>
-      <div class="platform-split">
-        <div class="platform-split-item">
-          <strong>Nexus | Semantic Core</strong>
-          <p>Matching, IR, constraints, validation, LLM orchestration, measurement graph.</p>
-        </div>
-        <div class="platform-split-item">
-          <strong>Calyrai | Projection Layer</strong>
-          <p>Visualization, tiles, graphs, dashboards, chat views, variable skins.</p>
-        </div>
-      </div>
-      <p>
-        <strong>Skin system:</strong> Skins are variable. Semantics are stable.
-      </p>
-    </div>
-
-    <div class="platform-access">
-      <h3>Internal access routing</h3>
-      <p>
-        Execution modules and operator surfaces should run behind login. Use these entrypoints from Explore so users hit the authenticated flow first.
-      </p>
-      <div class="platform-access-links">
-        <a class="platform-access-link" href="http://localhost:8000" target="_blank" rel="noopener">Nexus Login</a>
-        <a class="platform-access-link" href="citizen.html">Citizen (gated)</a>
-        <a class="platform-access-link" href="vox.html">Vox (gated)</a>
-        <a class="platform-access-link" href="matomic_lab.html">mAtomic Lab (gated)</a>
-      </div>
-    </div>
   </section>
 </article>
 
