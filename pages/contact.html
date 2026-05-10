@@ -124,6 +124,33 @@
       font-size: 0.98rem;
     }
 
+    .intro-links {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .intro-link-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 240, 255, 0.28);
+      background: rgba(7, 13, 28, 0.78);
+      color: rgba(238, 250, 255, 0.92);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .intro-link-pill:hover {
+      border-color: rgba(125, 240, 255, 0.62);
+      background: rgba(10, 22, 34, 0.95);
+    }
+
     .stats {
       display: flex;
       flex-wrap: wrap;
@@ -433,6 +460,11 @@
             <div class="brand">
               <h1 class="title">Breakout Contact</h1>
               <p class="subtitle">Use the contact page as a playable QR surface. Tap once for the full contact QR, tap again to return to play.</p>
+              <p class="subtitle">Team profile and cooperative model are documented on the Team page.</p>
+              <div class="intro-links" aria-label="Team and contact links">
+                <a class="intro-link-pill" href="../team.html">Open team profile</a>
+                <a class="intro-link-pill" href="mailto:rupert.tscheliessnig@calyr.ai">Email directly</a>
+              </div>
             </div>
           </section>
 
@@ -474,6 +506,7 @@
             <span id="mail-queue">Mail queues current score: 0</span>
             <span id="mode-note">Level 1: classic breakout on the bright QR.</span>
             <span id="save-note">Single tap toggles play and QR. Double-tap the QR on phone to store the contact locally.</span>
+            <span>See also: <a href="../team.html">Team profile</a></span>
           </footer>
         </div>
       </div>

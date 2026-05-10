@@ -12,6 +12,116 @@
   <link rel="stylesheet" href="css/nexus.css" />
   <link rel="stylesheet" href="css/impressum.css" />
 
+  <style>
+    .team-profile {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: stretch;
+    }
+
+    .team-profile-main {
+      border: 1px solid rgba(106, 240, 255, 0.2);
+      border-radius: 14px;
+      background: rgba(5, 14, 24, 0.56);
+      padding: 14px 16px;
+    }
+
+    .team-profile-title {
+      margin: 0 0 8px;
+      color: rgba(244, 251, 255, 0.96);
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+    }
+
+    .team-profile-text {
+      margin: 0;
+      color: rgba(214, 232, 244, 0.9);
+      line-height: 1.6;
+    }
+
+    .team-meta {
+      border: 1px solid rgba(106, 240, 255, 0.2);
+      border-radius: 14px;
+      background: rgba(5, 14, 24, 0.56);
+      padding: 14px 16px;
+    }
+
+    .team-meta-label {
+      display: block;
+      margin: 0 0 4px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(106, 240, 255, 0.72);
+    }
+
+    .team-meta-value {
+      margin: 0 0 10px;
+      color: rgba(236, 248, 255, 0.92);
+      line-height: 1.4;
+    }
+
+    .team-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .team-card {
+      border: 1px solid rgba(106, 240, 255, 0.18);
+      border-radius: 14px;
+      background: rgba(5, 14, 24, 0.56);
+      padding: 14px 16px;
+    }
+
+    .team-card h3 {
+      margin: 0 0 8px;
+      color: rgba(236, 248, 255, 0.94);
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .team-list {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(214, 232, 244, 0.86);
+      line-height: 1.55;
+    }
+
+    .team-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .team-link-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(106, 240, 255, 0.35);
+      color: rgba(240, 248, 255, 0.92);
+      background: rgba(7, 17, 30, 0.8);
+      text-decoration: none;
+      font-size: 0.86rem;
+      letter-spacing: 0.04em;
+    }
+
+    .team-link-pill:hover {
+      border-color: rgba(106, 240, 255, 0.72);
+      background: rgba(14, 30, 46, 0.95);
+    }
+
+    @media (max-width: 920px) {
+      .team-profile {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
   <script src="js/collect_hearts.js" defer></script>
   <script src="js/orbit_logo.js" defer></script>
 </head>
@@ -37,21 +147,72 @@
 <main class="explore-page">
   <section class="explore-shell" aria-label="Team">
     <div class="nexus-intro">
-      <section class="nexus-block" aria-label="Team">
+      <section class="nexus-block" aria-label="Team profile">
         <div class="nexus-kicker">Calyr.ai / Team</div>
         <h1 class="nexus-title">Team</h1>
-        <p class="nexus-subtitle">
-          Calyrai is a focused effort at the intersection of structural biophysics and machine learning,
-          centered on building interpretable systems for scientific data analysis.
-        </p>
+        <p class="nexus-subtitle">Scientific systems work led by Rupert Tscheliessnig with a cooperative, research-first collaboration model.</p>
+        <div class="team-profile">
+          <article class="team-profile-main" aria-label="Primary profile">
+            <h3 class="team-profile-title">Primary role</h3>
+            <p class="team-profile-text">
+              Rupert Tscheliessnig is a computational biophysicist and AI systems architect focused on interpretable scientific software.
+              The work combines structural biophysics, data-native modeling, and explainable workflows across SAXS, SPR, and coupled inference.
+            </p>
+          </article>
+          <aside class="team-meta" aria-label="Team metadata">
+            <span class="team-meta-label">Base</span>
+            <p class="team-meta-value">Vienna</p>
+            <span class="team-meta-label">Domain</span>
+            <p class="team-meta-value">Structural biophysics, scientific ML, interpretable systems</p>
+            <span class="team-meta-label">Working style</span>
+            <p class="team-meta-value">Co-design with transparent assumptions and traceable decisions</p>
+          </aside>
+        </div>
       </section>
 
-      <section class="nexus-block" aria-label="Contact">
-        <h2 class="nexus-h2">Contact</h2>
+      <section class="nexus-block" aria-label="Cooperative character">
+        <h2 class="nexus-h2">Cooperative character</h2>
+        <div class="team-grid">
+          <article class="team-card" aria-label="Collaboration protocol">
+            <h3>Collaboration protocol</h3>
+            <ul class="team-list">
+              <li>Start from a shared scientific question, not from tooling.</li>
+              <li>Make model assumptions explicit and jointly reviewable.</li>
+              <li>Iterate in short loops: hypothesis, implementation, interpretation, revision.</li>
+            </ul>
+          </article>
+
+          <article class="team-card" aria-label="Collaboration formats">
+            <h3>Collaboration formats</h3>
+            <ul class="team-list">
+              <li>Research exchange on SAXS and SPR interpretation pipelines.</li>
+              <li>Prototype development for model-based scientific workflows.</li>
+              <li>Technical advisory for interpretable AI in data-intensive labs.</li>
+            </ul>
+          </article>
+
+          <article class="team-card" aria-label="Professional focus">
+            <h3>Professional focus</h3>
+            <ul class="team-list">
+              <li>Semantic workflow design for reproducible scientific analysis.</li>
+              <li>Integration of theory, data, and execution into one model layer.</li>
+              <li>Readable outputs for expert teams and external stakeholders.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="nexus-block" aria-label="Team contact bridge">
+        <h2 class="nexus-h2">Contact routes</h2>
         <p class="nexus-body">
-          For collaboration, research exchange, or hiring discussions:
+          Use the contact page for direct outreach and the playable QR contact surface.
+          For collaboration, research exchange, advisory, or hiring discussions, mail directly:
           <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a>
         </p>
+        <div class="team-links">
+          <a class="team-link-pill" href="pages/contact.html">Open contact page</a>
+          <a class="team-link-pill" href="mailto:rupert.tscheliessnig@calyr.ai">Send email</a>
+        </div>
       </section>
 
       <section class="nexus-block" aria-label="Collected">
