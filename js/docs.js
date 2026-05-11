@@ -6,10 +6,58 @@
   const sidebar  = document.getElementById('doc-sidebar');
   const content  = document.getElementById('doc-content');
   const menuBtn  = document.getElementById('doc-menu-btn');
-  const DOCS     = window.CALYR_DOCS;
+  let DOCS = Array.isArray(window.CALYR_DOCS) ? window.CALYR_DOCS : [];
+  let flatPages = [];
 
-  /* ── Flat page list for prev/next ─────────────────────────── */
-  const flatPages = DOCS.flatMap(s => s.pages.map(p => ({ ...p, section: s.id })));
+  function rebuildFlatPages () {
+    flatPages = DOCS.flatMap(s => s.pages.map(p => ({ ...p, section: s.id })));
+  }
+
+  async function loadDocsConfig () {
+    const yamlUrl = 'data/docs.yaml?v=20260510-docs-yaml';
+
+    function parseYaml (text) {
+      if (!window.jsyaml || typeof window.jsyaml.load !== 'function') return null;
+      const parsed = window.jsyaml.load(text);
+      if (Array.isArray(parsed)) return parsed;
+      if (parsed && Array.isArray(parsed.sections)) return parsed.sections;
+      return null;
+    }
+
+    async function loadText (src) {
+      try {
+        const res = await fetch(src);
+        if (!res.ok) throw new Error(String(res.status));
+        return await res.text();
+      } catch (err) {
+        if (window.location.protocol !== 'file:') throw err;
+        return await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', src, true);
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState !== 4) return;
+            if (xhr.status === 200 || xhr.status === 0) {
+              resolve(xhr.responseText);
+              return;
+            }
+            reject(new Error(String(xhr.status || 'Load failed')));
+          };
+          xhr.onerror = () => reject(new Error('Load failed'));
+          xhr.send();
+        });
+      }
+    }
+
+    try {
+      const text = await loadText(yamlUrl);
+      const parsed = parseYaml(text);
+      if (parsed) return parsed;
+    } catch {
+      // fall through to the compiled fallback below
+    }
+
+    return Array.isArray(window.CALYR_DOCS) ? window.CALYR_DOCS : [];
+  }
 
   /* ── Build sidebar ────────────────────────────────────────── */
   function buildSidebar () {
@@ -120,7 +168,18 @@
     `;
   }
 
-  async function fetchDocHtml (src) {
+  function isMarkdownSource (src) {
+    return typeof src === 'string' && /\.md(?:\?|#|$)/i.test(src);
+  }
+
+  function renderMarkdown (text) {
+    if (window.marked && typeof window.marked.parse === 'function') {
+      return window.marked.parse(text);
+    }
+    return `<pre class="doc-code">${String(text).replace(/[&<>]/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[match]))}</pre>`;
+  }
+
+  async function fetchDocText (src) {
     try {
       const res = await fetch(src);
       if (!res.ok) throw new Error(String(res.status));
@@ -262,7 +321,8 @@
 
     let html;
     try {
-      html = await fetchDocHtml(src);
+      const text = await fetchDocText(src);
+      html = isMarkdownSource(src) ? renderMarkdown(text) : text;
     } catch (e) {
       html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">
         Could not load <code>${src}</code> (${e.message}).</p>
@@ -407,9 +467,13 @@
   }
 
   /* ── Init ─────────────────────────────────────────────────── */
-  buildSidebar();
-  setupSearch();
-  navigate();
-  window.addEventListener('hashchange', navigate);
+  (async function init () {
+    DOCS = await loadDocsConfig();
+    rebuildFlatPages();
+    buildSidebar();
+    setupSearch();
+    navigate();
+    window.addEventListener('hashchange', navigate);
+  }());
 
 }());

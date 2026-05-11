@@ -1,0 +1,275 @@
+- id: start
+  title: Getting started
+  pages:
+    - id: master_todo
+      title: Master To-Do List
+      src: docs/todo_master.md
+    - id: overview
+      title: Overview
+      src: docs/start_overview.md
+    - id: quickstart
+      title: Quick start
+      src: docs/start_quickstart.md
+
+- id: tilemap
+  title: Tile map
+  pages:
+    - id: scientific_infrastructure
+      title: Scientific infrastructure orchestration
+      src: docs/ecosystem_scientific_infrastructure.md
+
+- id: ai
+  title: AI
+  pages:
+    - id: narrative
+      title: Nexus narrative
+      src: docs/nexus_narrative.md
+    - id: ai_landscape
+      title: AI landscape map
+      src: pages/ai_landscape_map.md?v=20260508-linkedin
+
+- id: data
+  title: Data
+  pages:
+    - id: archive
+      title: Archive
+      src: docs/archive.md
+    - id: warehouse
+      title: Warehouse
+      src: docs/warehouse.md
+    - id: connectpaper
+      title: Connectpaper and Zotero
+      src: docs/api_connectpaper.md
+
+- id: knowledge
+  title: Knowledge
+  pages:
+    - id: core
+      title: Nexus philosophy
+      src: docs/philosophy_core.md
+    - id: syntax
+      title: Syntax
+      src: docs/language_syntax.md
+    - id: semantics
+      title: Semantics
+      src: docs/language_semantics.md
+    - id: types
+      title: Type system
+      src: docs/types.md
+    - id: constraints
+      title: Constraint system
+      src: docs/constraints.md
+
+- id: infrastructure
+  title: Infrastructure
+  pages:
+    - id: modules
+      title: Module system
+      src: docs/modules.md
+    - id: model
+      title: Execution model
+      src: docs/execution_model.md
+    - id: graph
+      title: Graph and cache
+      src: docs/execution_graph.md
+    - id: saxs
+      title: SAXS
+      src: docs/inst_saxs.md
+    - id: spr
+      title: SPR
+      src: docs/inst_spr.md
+    - id: itc
+      title: ITC
+      src: docs/inst_itc.md
+    - id: chrom
+      title: Chromatography
+      src: docs/inst_chrom.md
+    - id: md
+      title: MD and LAMMPS
+      src: docs/inst_md.md
+
+- id: nexus
+  title: Nexus
+  pages:
+    - id: overview
+      title: Nexus · Overview
+      src: docs/nexus_overview.md
+    - id: concept
+      title: Nexus · Concept
+      src: docs/nexus_concept.md
+    - id: coupling
+      title: Nexus · Coupling
+      src: docs/nexus_coupling.md
+
+- id: visualization
+  title: Visualization
+  pages:
+    - id: examples
+      title: Example scripts
+      src: docs/examples.md
+    - id: python
+      title: Python API
+      src: docs/api_python.md
+    - id: matomic_howto
+      title: Metabolic how-to snippets
+      src: docs/method_matomic_howto.md
+    - id: matomic_snippets
+      title: Metabolic snippet catalog
+      src: docs/method_matomic_snippets.md
+    - id: roadmap
+      title: Roadmap
+      src: docs/roadmap.md
+
+- id: theory
+  title: Theory
+  pages:
+    - id: overview
+      title: Theory · Overview
+      src: docs/atlas_overview.md
+
+- id: calyrai
+  title: Calyrai
+  pages:
+    - id: overview
+      title: Calyrai · Overview
+      src: docs/calyrai_overview.md
+    - id: ai_narrative
+      title: AI · Nexus narrative
+      src: docs/nexus_narrative.md
+    - id: ai_landscape
+      title: AI · Landscape map
+      src: pages/ai_landscape_map.md?v=20260508-linkedin
+    - id: knowledge_philosophy
+      title: Knowledge · Nexus philosophy
+      src: docs/philosophy_core.md
+    - id: knowledge_syntax
+      title: Knowledge · Syntax
+      src: docs/language_syntax.md
+    - id: knowledge_semantics
+      title: Knowledge · Semantics
+      src: docs/language_semantics.md
+    - id: knowledge_types
+      title: Knowledge · Type system
+      src: docs/types.md
+    - id: knowledge_constraints
+      title: Knowledge · Constraint system
+      src: docs/constraints.md
+    - id: viz_examples
+      title: Visualization · Example scripts
+      src: docs/examples.md
+    - id: viz_python
+      title: Visualization · Python API
+      src: docs/api_python.md
+    - id: viz_matomic_howto
+      title: Visualization · Metabolic how-to
+      src: docs/method_matomic_howto.md
+    - id: viz_matomic_snippets
+      title: Visualization · Metabolic snippets
+      src: docs/method_matomic_snippets.md
+
+- id: access
+  title: Access
+  pages:
+    - id: overview
+      title: Access · Overview
+      src: docs/relay_overview.md
+    - id: start_master_todo
+      title: Getting started · Master To-Do
+      src: docs/todo_master.md
+    - id: start_overview
+      title: Getting started · Overview
+      src: docs/start_overview.md
+    - id: start_quickstart
+      title: Getting started · Quick start
+      src: docs/start_quickstart.md
+
+- id: engine
+  title: Engine
+  pages:
+    - id: overview
+      title: Engine · Overview
+      src: docs/runtime_overview.md
+    - id: infra_modules
+      title: Infrastructure · Module system
+      src: docs/modules.md
+    - id: infra_model
+      title: Infrastructure · Execution model
+      src: docs/execution_model.md
+    - id: infra_graph
+      title: Infrastructure · Graph and cache
+      src: docs/execution_graph.md
+    - id: infra_saxs
+      title: Infrastructure · SAXS
+      src: docs/inst_saxs.md
+    - id: infra_spr
+      title: Infrastructure · SPR
+      src: docs/inst_spr.md
+    - id: infra_itc
+      title: Infrastructure · ITC
+      src: docs/inst_itc.md
+    - id: infra_chrom
+      title: Infrastructure · Chromatography
+      src: docs/inst_chrom.md
+    - id: infra_md
+      title: Infrastructure · MD and LAMMPS
+      src: docs/inst_md.md
+
+- id: sandbox
+  title: G'labs (Sandbox)
+  pages:
+    - id: overview
+      title: G'labs (Sandbox) · Overview
+      src: docs/glabs_overview.md
+    - id: roadmap
+      title: G'labs || · Roadmap
+      src: docs/roadmap.md
+    - id: internal_online_gruendung_at
+      title: Internal · Online-Gruendung Oesterreich
+      src: docs/calyr_online_gruendung_at.md
+    - id: internal_online_founding_en
+      title: Internal · Online founding Austria (EN)
+      src: docs/calyr_online_founding_en.md
+    - id: internal_calyr_gruendung
+      title: Internal · Calyr Gruendung
+      src: docs/calyr_gruendung.md
+    - id: internal_gruendung_pitch
+      title: Internal · Calyr Gruendung (Pitch)
+      src: docs/calyr_gruendung_pitch.md
+    - id: internal_docs_system
+      title: Internal · Docs system
+      src: docs/internal_docs_system.md
+
+- id: gallery
+  title: Gallery
+  pages:
+    - id: blog_index
+      title: Gallery · Blog
+      src: docs/projects_blog_index.md
+    - id: post_saxs_sasview
+      title: Gallery · SAS Opsis
+      src: docs/projects_post_saxs_sasview.md
+    - id: post_saxs_igm
+      title: Gallery · SAXS IGM
+      src: docs/projects_post_saxs_igm.md
+    - id: post_spr_data
+      title: Gallery · SPR extended theory
+      src: docs/projects_post_spr_data.md
+
+- id: internal
+  title: Internal operations
+  pages:
+    - id: calyr_online_gruendung_at
+      title: Online-Gruendung Oesterreich
+      src: docs/calyr_online_gruendung_at.md
+    - id: calyr_online_founding_en
+      title: Online founding Austria (EN)
+      src: docs/calyr_online_founding_en.md
+    - id: calyr_gruendung
+      title: Calyr Gruendung
+      src: docs/calyr_gruendung.md
+    - id: calyr_gruendung_pitch
+      title: Calyr Gruendung (Pitch)
+      src: docs/calyr_gruendung_pitch.md
+    - id: docs_system
+      title: Docs system
+      src: docs/internal_docs_system.md
