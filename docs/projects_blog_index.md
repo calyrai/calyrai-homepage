@@ -6,8 +6,14 @@ Application-layer work organized as project posts (latest first)
 
 ## Latest posts
 
-1. [SAS Opsis](#gallery/post_saxs_sasview)
+- [AI Opportunity Workflow — Shared Proposal Approach (Job + Research)](#gallery/post_ai_job_proposal_approach)
 
-2. [SAXS IGM](#gallery/post_saxs_igm)
+- [AI Opportunity Workflow — Application Process](#gallery/post_ai_application_process)
 
-3. [SPR extended theory](#gallery/post_spr_data)
+- [SAS Opsis](#gallery/post_saxs_sasview)
+
+- [SPR extended theory](#gallery/post_spr_data)
+
+- [SBPA — Structural Bayesian Protein Assembly](#gallery/post_sbpa)
+
+Shared proposal approach (job + research), application operations, and evaluation/ranking methods are intentionally documented as separate tracks.
