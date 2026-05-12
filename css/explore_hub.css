@@ -16,6 +16,9 @@
 
 #explore-hero {
   margin: 0 20px 18px;
+  position: sticky;
+  top: 64px;
+  z-index: 80;
 }
 
 .hero-shell {
@@ -24,12 +27,12 @@
   background: radial-gradient(circle at 26% 8%, rgba(22, 96, 130, 0.18), rgba(2, 8, 22, 0.92) 42%, rgba(0, 3, 14, 0.98) 70%, #000 100%);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
   padding: 22px 24px;
-  padding-right: 140px;
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
   align-items: start;
+  justify-items: center;
 }
 
 .hero-logo-wrap {
@@ -44,6 +47,12 @@
 
 .hero-badge {
   grid-column: 1;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  display: grid;
+  justify-items: center;
 }
 
 .hero-logo-wrap .orbit-logo {
@@ -395,10 +404,17 @@
 #hero-pearls-line {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: repeat(6, minmax(82px, 100px));
-  justify-content: start;
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(94px, 112px));
+  grid-template-rows: repeat(3, auto);
+  justify-content: center;
+  gap: 10px 14px;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.edisk-cell {
+  display: grid;
+  justify-items: center;
+  gap: 0;
 }
 
 #hero-pearls-line.is-hidden {
@@ -571,12 +587,12 @@
 }
 
 /* Individual pearl variations so each ring feels distinct */
-#explore-disks .edisk:nth-child(1) { --rot-a: 15s; --rot-b: 23s; --rot-c: 34s; --dash-a: 118 64; --dash-b: 166 90; --dash-c: 206 100; --delay-a: -2.5s; --delay-b: -7s; --delay-c: -11s; }
-#explore-disks .edisk:nth-child(2) { --rot-a: 17s; --rot-b: 27s; --rot-c: 38s; --dash-a: 124 70; --dash-b: 174 96; --dash-c: 214 108; --delay-a: -6s; --delay-b: -1.75s; --delay-c: -14s; }
-#explore-disks .edisk:nth-child(3) { --rot-a: 14s; --rot-b: 21s; --rot-c: 31s; --dash-a: 112 62; --dash-b: 160 88; --dash-c: 200 98; --delay-a: -4.25s; --delay-b: -9s; --delay-c: -3.5s; }
-#explore-disks .edisk:nth-child(4) { --rot-a: 19s; --rot-b: 29s; --rot-c: 41s; --dash-a: 126 72; --dash-b: 178 100; --dash-c: 220 112; --delay-a: -8s; --delay-b: -4s; --delay-c: -15s; }
-#explore-disks .edisk:nth-child(5) { --rot-a: 16s; --rot-b: 25s; --rot-c: 36s; --dash-a: 120 68; --dash-b: 170 94; --dash-c: 210 104; --delay-a: -1.25s; --delay-b: -10.5s; --delay-c: -5.75s; }
-#explore-disks .edisk:nth-child(6) { --rot-a: 18s; --rot-b: 26s; --rot-c: 39s; --dash-a: 122 70; --dash-b: 172 96; --dash-c: 216 108; --delay-a: -9.5s; --delay-b: -3s; --delay-c: -12.5s; }
+#hero-pearls-line .edisk-cell:nth-child(1) .edisk { --rot-a: 15s; --rot-b: 23s; --rot-c: 34s; --dash-a: 118 64; --dash-b: 166 90; --dash-c: 206 100; --delay-a: -2.5s; --delay-b: -7s; --delay-c: -11s; }
+#hero-pearls-line .edisk-cell:nth-child(2) .edisk { --rot-a: 17s; --rot-b: 27s; --rot-c: 38s; --dash-a: 124 70; --dash-b: 174 96; --dash-c: 214 108; --delay-a: -6s; --delay-b: -1.75s; --delay-c: -14s; }
+#hero-pearls-line .edisk-cell:nth-child(3) .edisk { --rot-a: 14s; --rot-b: 21s; --rot-c: 31s; --dash-a: 112 62; --dash-b: 160 88; --dash-c: 200 98; --delay-a: -4.25s; --delay-b: -9s; --delay-c: -3.5s; }
+#hero-pearls-line .edisk-cell:nth-child(4) .edisk { --rot-a: 19s; --rot-b: 29s; --rot-c: 41s; --dash-a: 126 72; --dash-b: 178 100; --dash-c: 220 112; --delay-a: -8s; --delay-b: -4s; --delay-c: -15s; }
+#hero-pearls-line .edisk-cell:nth-child(5) .edisk { --rot-a: 16s; --rot-b: 25s; --rot-c: 36s; --dash-a: 120 68; --dash-b: 170 94; --dash-c: 210 104; --delay-a: -1.25s; --delay-b: -10.5s; --delay-c: -5.75s; }
+#hero-pearls-line .edisk-cell:nth-child(6) .edisk { --rot-a: 18s; --rot-b: 26s; --rot-c: 39s; --dash-a: 122 70; --dash-b: 172 96; --dash-c: 216 108; --delay-a: -9.5s; --delay-b: -3s; --delay-c: -12.5s; }
 
 @keyframes pearl-rot-a {
   from { transform: rotate(0deg); }
@@ -884,8 +900,10 @@
   }
 
   #hero-pearls-line {
-    grid-template-columns: repeat(3, minmax(80px, 96px));
+    grid-template-columns: repeat(2, minmax(84px, 102px));
+    grid-template-rows: repeat(3, auto);
     justify-content: center;
+    gap: 10px 12px;
   }
 }
 
@@ -901,7 +919,8 @@
   }
 
   #hero-pearls-line {
-    grid-template-columns: repeat(2, minmax(80px, 96px));
+    grid-template-columns: repeat(2, minmax(78px, 94px));
+    grid-template-rows: repeat(3, auto);
     justify-content: center;
     gap: 10px;
   }

@@ -179,6 +179,342 @@
     return `<pre class="doc-code">${String(text).replace(/[&<>]/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[match]))}</pre>`;
   }
 
+  function ensureFoundingStyles () {
+    if (document.getElementById('founding-checker-styles')) return;
+
+    const style = document.createElement('style');
+    style.id = 'founding-checker-styles';
+    style.textContent = `
+      .founding-layout {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+
+      .founding-main {
+        min-width: 0;
+      }
+
+      .founding-checker {
+        position: sticky;
+        top: 1.5rem;
+        padding: 1.1rem;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 16px;
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(10px);
+      }
+
+      .founding-checker-head {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .founding-donut {
+        width: 76px;
+        height: 76px;
+        flex: 0 0 76px;
+      }
+
+      .founding-donut-track {
+        fill: none;
+        stroke: rgba(255,255,255,0.12);
+        stroke-width: 9;
+      }
+
+      .founding-donut-progress {
+        fill: none;
+        stroke: #d4b06a;
+        stroke-width: 9;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 180ms ease;
+      }
+
+      .founding-donut-text {
+        fill: rgba(255,255,255,0.92);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+
+      .founding-checker h2 {
+        margin-top: 0;
+        font-size: 1.05rem;
+      }
+
+      .founding-progress-track {
+        width: 100%;
+        height: 0.7rem;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.08);
+        margin: 0.8rem 0 0.6rem;
+      }
+
+      .founding-progress-bar {
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d4b06a 0%, #e5d2a1 100%);
+        transition: width 180ms ease;
+      }
+
+      .founding-progress-meta {
+        margin: 0 0 1rem;
+        color: rgba(255,255,255,0.72);
+        font-size: 0.92rem;
+      }
+
+      .founding-phase-title {
+        margin: 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.62);
+      }
+
+      .founding-phase {
+        margin-top: 0.95rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.09);
+        background: rgba(255,255,255,0.02);
+      }
+
+      .founding-phase-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.7rem;
+        margin-bottom: 0.55rem;
+      }
+
+      .founding-phase-status {
+        font-size: 0.76rem;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 0.2rem 0.55rem;
+        border: 1px solid rgba(255,255,255,0.25);
+        color: rgba(255,255,255,0.86);
+        background: rgba(255,255,255,0.06);
+      }
+
+      .founding-phase--open {
+        border-color: rgba(230,80,80,0.42);
+        background: rgba(230,80,80,0.07);
+      }
+
+      .founding-phase--open .founding-phase-status {
+        border-color: rgba(230,80,80,0.46);
+        background: rgba(230,80,80,0.17);
+        color: rgba(255,210,210,0.98);
+      }
+
+      .founding-phase--inprogress {
+        border-color: rgba(228,177,76,0.45);
+        background: rgba(228,177,76,0.09);
+      }
+
+      .founding-phase--inprogress .founding-phase-status {
+        border-color: rgba(228,177,76,0.48);
+        background: rgba(228,177,76,0.18);
+        color: rgba(255,244,211,0.98);
+      }
+
+      .founding-phase--done {
+        border-color: rgba(81,187,113,0.45);
+        background: rgba(81,187,113,0.09);
+      }
+
+      .founding-phase--done .founding-phase-status {
+        border-color: rgba(81,187,113,0.5);
+        background: rgba(81,187,113,0.19);
+        color: rgba(223,255,232,0.98);
+      }
+
+      .founding-checklist {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .founding-check-item {
+        display: grid;
+        grid-template-columns: 1.1rem 1fr;
+        gap: 0.7rem;
+        align-items: start;
+        padding: 0.7rem 0.75rem;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+      }
+
+      .founding-check-item input {
+        margin-top: 0.2rem;
+      }
+
+      .founding-check-item strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+
+      .founding-check-item span {
+        display: block;
+        color: rgba(255,255,255,0.72);
+        font-size: 0.9rem;
+      }
+
+      .founding-note {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.68);
+      }
+
+      @media (max-width: 980px) {
+        .founding-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .founding-checker {
+          position: static;
+          order: -1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function renderFoundingChecker () {
+    return `
+      <aside class="founding-checker" aria-label="Founding Progress">
+        <div class="founding-checker-head">
+          <svg class="founding-donut" viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="founding-donut-track" cx="50" cy="50" r="38"></circle>
+            <circle class="founding-donut-progress" cx="50" cy="50" r="38" data-progress-donut></circle>
+            <text class="founding-donut-text" x="50" y="51" data-progress-donut-label>0%</text>
+          </svg>
+          <div>
+            <h2>Founding Checker</h2>
+            <p class="founding-progress-meta"><strong data-progress-label>0%</strong> completed</p>
+          </div>
+        </div>
+
+        <div class="founding-progress-track" aria-hidden="true">
+          <div class="founding-progress-bar" data-progress-bar></div>
+        </div>
+        <div class="founding-progress-meta" data-progress-text>0 of 6 steps completed</div>
+
+        <section class="founding-phase" data-phase="setup" data-phase-items="id-austria,gisa-route">
+          <div class="founding-phase-head">
+            <p class="founding-phase-title">Phase 1: Setup</p>
+            <span class="founding-phase-status" data-phase-status>open</span>
+          </div>
+          <div class="founding-checklist">
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="id-austria">
+              <span>
+                <strong>ID Austria active</strong>
+                <span>Digital identity and login baseline are in place.</span>
+              </span>
+            </label>
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="gisa-route">
+              <span>
+                <strong>GISA route confirmed</strong>
+                <span>Direct filing path through the GISA server is available.</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <section class="founding-phase" data-phase="filings" data-phase-items="gewerbe,finanzonline,svs">
+          <div class="founding-phase-head">
+            <p class="founding-phase-title">Phase 2: Filings</p>
+            <span class="founding-phase-status" data-phase-status>open</span>
+          </div>
+          <div class="founding-checklist">
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="gewerbe">
+              <span>
+                <strong>GISA filing submitted</strong>
+                <span>The online trade registration has been filed through the GISA server.</span>
+              </span>
+            </label>
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="finanzonline">
+              <span>
+                <strong>FinanzOnline configured</strong>
+                <span>Access and tax registration setup are prepared.</span>
+              </span>
+            </label>
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="svs">
+              <span>
+                <strong>SVS confirmed</strong>
+                <span>Insurance and registration are completed digitally.</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <section class="founding-phase" data-phase="start" data-phase-items="setup">
+          <div class="founding-phase-head">
+            <p class="founding-phase-title">Phase 3: Operational Start</p>
+            <span class="founding-phase-status" data-phase-status>open</span>
+          </div>
+          <div class="founding-checklist">
+            <label class="founding-check-item">
+              <input type="checkbox" data-check-item="setup">
+              <span>
+                <strong>Operations ready</strong>
+                <span>Banking, invoicing logic, and document flow are in place.</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <p class="founding-note">Progress is stored locally in your browser. No personal data is required in this page content.</p>
+      </aside>
+    `;
+  }
+
+  function enhanceFoundingPage (entry) {
+    if (!entry || entry.src !== 'docs/calyr_online_founding_en.md') return;
+
+    ensureFoundingStyles();
+
+    const nav = content.querySelector('.doc-nav-footer');
+    if (!nav) return;
+
+    const main = document.createElement('div');
+    main.className = 'founding-main doc-article';
+
+    let cursor = content.firstChild;
+    while (cursor && cursor !== nav) {
+      const next = cursor.nextSibling;
+      main.appendChild(cursor);
+      cursor = next;
+    }
+
+    const layout = document.createElement('div');
+    layout.className = 'founding-layout';
+    layout.setAttribute('data-gruendung-checker', '');
+    layout.setAttribute('data-storage-key', 'calyr-online-founding-en');
+    layout.setAttribute('data-phase-open-label', 'open');
+    layout.setAttribute('data-phase-inprogress-label', 'in progress');
+    layout.setAttribute('data-phase-done-label', 'done');
+    layout.setAttribute('data-progress-template', '{completed} of {total} steps completed');
+
+    layout.appendChild(main);
+    layout.insertAdjacentHTML('beforeend', renderFoundingChecker());
+
+    content.insertBefore(layout, nav);
+  }
+
   async function fetchDocText (src) {
     try {
       const res = await fetch(src);
@@ -322,7 +658,11 @@
     let html;
     try {
       const text = await fetchDocText(src);
-      html = isMarkdownSource(src) ? renderMarkdown(text) : text;
+      if (isMarkdownSource(src)) {
+        html = `<article class="doc-article">${renderMarkdown(text)}</article>`;
+      } else {
+        html = text;
+      }
     } catch (e) {
       html = `<div class="doc-article"><p style="color:rgba(255,120,120,0.8)">
         Could not load <code>${src}</code> (${e.message}).</p>
@@ -331,6 +671,7 @@
     }
 
     content.innerHTML = html + renderNavFooter(flat);
+    enhanceFoundingPage(page);
     initFoundingChecker();
 
     // KaTeX re-render

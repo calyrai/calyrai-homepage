@@ -1,49 +1,41 @@
-# CALYR - Pitch Perspektive
+# CALYR - Founding Pitch
 
-Kompakte Fassung fuer Investor:innen, Partner und strategische Gespraeche
+Compact version for investors, partners, and strategic conversations.
 
 ## Problem
 
-Wissenschaftliche und analytische Workflows verlieren Kontext zwischen Daten, Modellierung, Interpretation und Publikation.
+Scientific and analytical workflows lose context between data, modeling, interpretation, and publication.
 
-## Loesung
+## Solution
 
-Calyr verbindet diese Ebenen in einem rekursiven System:
+Calyr connects these layers in one recursive system:
 
-- **eval** fuer Analyse und Modellierung
+- **eval** for analysis and modeling
+- **okto** for execution-publication-knowledge loops
+- **grammateia** for structured literature as a constraint layer
+- **nexus** as the shared object and integration structure
 
-- **okto** fuer Execution-Publication-Knowledge Loops
+## Why Now
 
-- **grammateia** fuer strukturierte Literatur als Constraint-Layer
+- AI-supported knowledge work needs robust structure, not isolated scripts.
+- Reproducibility and governance are becoming both regulatory and economic priorities.
 
-- **nexus** als gemeinsame Objekt- und Integrationsstruktur
+## Value Proposition
 
-## Warum jetzt
-
-- AI-gestuetzte Wissensarbeit benoetigt belastbare Strukturen statt isolierter Einzelskripte
-
-- Reproduzierbarkeit und Governance werden regulatorisch und wirtschaftlich wichtiger
-
-## Wertversprechen
-
-- hoehere Reproduzierbarkeit
-
-- schnelleres Wissenstransfering zwischen Teams
-
-- bessere Modellqualitaet durch integrierte Constraint-Logik
+- higher reproducibility
+- faster knowledge transfer across teams
+- better model quality through integrated constraint logic
 
 ## Go-to-Market
 
-- Analyseprojekte und methodische Beratung als Start
+- start with analysis projects and methodological consulting
+- expand step by step toward a platform
+- grow into scalable AI-driven knowledge systems as a long-term product
 
-- schrittweiser Ausbau zur Plattform
+## Legal Form
 
-- skalierbare AI-driven knowledge systems als langfristiges Produkt
+**Phase 1:** sole proprietorship. **Phase 2:** GmbH when scaling.
 
-## Unternehmensform
+## Core Statement
 
-**Phase 1:** Einzelunternehmen. **Phase 2:** GmbH bei Skalierung.
-
-## Kernsatz
-
-**Calyr ist eine Infrastruktur fuer Erkenntnis - nicht nur ein weiteres Tool.**
+**Calyr is infrastructure for insight, not just another tool.**

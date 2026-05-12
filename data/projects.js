@@ -113,6 +113,13 @@ window.CALYR_PROJECTS = [
     "color": "#ffd36b"
   },
   {
+    "id": "ai_proposal_warehouse",
+    "title": "AI Proposal Warehouse",
+    "subtitle": "Unified interface for job, research and funding proposals",
+    "url": "pages/ai_landscape_map.md",
+    "color": "#7dd3ff"
+  },
+  {
     "id": "paper-spr-kinetic-modes",
     "title": "SPR Kinetic Modes",
     "subtitle": "Manuscript · active",
@@ -167,5 +174,12 @@ window.CALYR_PROJECTS = [
     "subtitle": "Public conceptual publication",
     "url": "projects/research_program_head.html",
     "color": "#7dd3ff"
+  },
+  {
+    "id": "nexus-biokitchen",
+    "title": "Nexus BioKitchen",
+    "subtitle": "Smart Kitchen Bioprocesses · semantic fermentation and extraction states",
+    "url": "projects/nexus_brew.html",
+    "color": "#67f2d6"
   }
 ];

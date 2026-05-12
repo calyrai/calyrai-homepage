@@ -113,6 +113,13 @@ window.CALYR_PROJECTS = [
     "color": "#ffd36b"
   },
   {
+    "id": "ai_proposal_warehouse",
+    "title": "AI Proposal Warehouse",
+    "subtitle": "Unified interface for job, research and funding proposals",
+    "url": "pages/ai_landscape_map.md",
+    "color": "#7dd3ff"
+  },
+  {
     "id": "paper-spr-kinetic-modes",
     "title": "SPR Kinetic Modes",
     "subtitle": "Manuscript · active",

@@ -2,6 +2,8 @@ Calyr · AI Landscape Map
 
 Who works in AI — live via OpenAlex
 
+Status: currently used for internal evaluation only. Target state is a public-facing proposal warehouse interface.
+
 ## Filters
 
 Domain
@@ -82,21 +84,21 @@ DetailApplications
 
  Click an institution to see details, concept profile, and links.
 
-Opportunity Mode
+Opportunity Interface
 
-Pick one mode. Sources, fields, and scoring profile adjust automatically.
+Single proposal interface. All proposal types are normalized into one warehouse stream.
 
 Type
 
-JobsStartupsAFU/FFG ProposalsAusschreibungenPublications
+Proposals (Jobs + Research + Funding Calls)
 
 [🔗 Search on LinkedIn Jobs ↗](#)
 
 ↻ Remote Jobs (Remotive)
 
-Application Core Feed
+Proposal Warehouse Feed
 
-No direct dataset loaded yet. Source links above are search launchers; all records are normalized into one scientific application core for ranking and action pipelines.
+No direct dataset loaded yet. Source links above are launchers; all proposal records are normalized into one warehouse core for ranking and action pipelines.
 
 Export JSONExport SQL batchCopy loader commandCopy feedCopy ranking JSONCopy packet JSONSuggest keyword refinementApply suggested keywords
 
@@ -106,9 +108,9 @@ Loader command will appear here.
 
 No keyword refinement suggestion yet.
 
-Manual Application Intake
+Manual Proposal Intake
 
-Paste details to feed structured records for downstream ranking and action packets.
+Paste details to feed structured proposal records for downstream ranking and action packets.
 
 Title
 
@@ -140,4 +142,16 @@ Scoring Config
 
 Apply scoring configReset default config
 
-Click "Remote Jobs" to load live listings, or use LinkedIn search above.
+Use source launchers above, then store everything in the single proposals warehouse mode.
+
+## Backend project (Nexus)
+
+Unified data warehousing runtime for this page:
+
+- `nexus/projects/ai_opportunity_warehouse/`
+
+Orchestrated run command:
+
+- `python3 nexus/projects/ai_opportunity_warehouse/scripts/orchestrate_proposals.py --mode proposals --data-root nexus/projects/ai_opportunity_warehouse/data`
+
+Explore placement: listed under Projects as **AI Proposal Warehouse**.

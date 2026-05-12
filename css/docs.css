@@ -227,6 +227,29 @@
 .doc-article p  { margin: 0 0 16px; }
 .doc-article ul { margin: 0 0 16px; padding-left: 24px; }
 .doc-article li { margin-bottom: 6px; }
+.doc-article a {
+  color: rgba(106, 240, 255, 0.9);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(106, 240, 255, 0.35);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.doc-article a:hover {
+  color: #d8f9ff;
+  border-color: rgba(106, 240, 255, 0.72);
+}
+.doc-article hr {
+  border: 0;
+  border-top: 1px solid rgba(106, 240, 255, 0.14);
+  margin: 28px 0;
+}
+.doc-article blockquote {
+  margin: 20px 0;
+  padding: 12px 18px;
+  border-left: 3px solid rgba(106, 240, 255, 0.5);
+  background: rgba(106, 240, 255, 0.07);
+  border-radius: 0 6px 6px 0;
+  color: rgba(200, 228, 255, 0.8);
+}
 
 /* Keep KaTeX inline/display text on the same docs font family. */
 .doc-article .katex .text,
@@ -290,13 +313,15 @@
 .doc-note strong { color: rgba(106, 240, 255, 0.9); }
 
 /* ── Table ────────────────────────────────────────────────────────── */
-.doc-table {
+.doc-table,
+.doc-article table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
   font-size: 0.93em;
 }
-.doc-table th {
+.doc-table th,
+.doc-article table th {
   text-align: left;
   padding: 8px 14px;
   background: rgba(106, 240, 255, 0.1);
@@ -307,12 +332,14 @@
   text-transform: uppercase;
   border-bottom: 1px solid rgba(106, 240, 255, 0.2);
 }
-.doc-table td {
+.doc-table td,
+.doc-article table td {
   padding: 8px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   color: rgba(200, 220, 240, 0.85);
 }
-.doc-table tr:hover td { background: rgba(106,240,255,0.035); }
+.doc-table tr:hover td,
+.doc-article table tr:hover td { background: rgba(106,240,255,0.035); }
 
 /* ── Prev / Next footer ───────────────────────────────────────────── */
 .doc-nav-footer {

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.ai – Parvotec</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/nav.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="../css/project_page.css" />
+  <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/impressum.css" />
+  <style>
+    .private-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 168, 110, 0.45);
+      color: rgba(255, 214, 186, 0.92);
+      background: rgba(46, 20, 8, 0.44);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .interactive-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .interactive-tab {
+      border: 1px solid rgba(164, 228, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(8, 20, 36, 0.62);
+      color: rgba(220, 243, 255, 0.86);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .interactive-tab[aria-selected="true"] {
+      border-color: rgba(255, 108, 205, 0.52);
+      box-shadow: 0 0 20px rgba(255, 108, 205, 0.24);
+      background: rgba(50, 10, 44, 0.58);
+      color: rgba(255, 228, 249, 0.96);
+    }
+
+    .interactive-panel {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(145, 225, 255, 0.2);
+      background: rgba(5, 14, 26, 0.66);
+      display: none;
+    }
+
+    .interactive-panel.active {
+      display: block;
+    }
+
+    .milestone-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .milestone-item {
+      border: 1px solid rgba(165, 230, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(4, 11, 21, 0.58);
+      overflow: hidden;
+    }
+
+    .milestone-toggle {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      color: rgba(226, 244, 255, 0.92);
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .milestone-content {
+      display: none;
+      padding: 0 14px 14px;
+      color: rgba(205, 236, 255, 0.78);
+    }
+
+    .milestone-item.open .milestone-content {
+      display: block;
+    }
+  </style>
+</head>
+
+<body data-project-id="">
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="../team.html" class="nav-pill glow-nav">Team</a>
+      <a href="../docs.html" class="nav-pill glow-nav">Docs</a>
+      <a href="../proposals.html" class="nav-pill glow-nav">Proposals</a>
+    </div>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Parvotec" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main class="explore-page nexus-page project-home-page">
+  <section class="explore-shell" aria-label="Parvotec">
+    <div class="nexus-intro project-shell-inner">
+      <section class="nexus-hero project-hero" aria-label="Hero">
+        <div class="nexus-kicker">Calyr.ai / Project</div>
+        <div class="private-badge">Private internal page</div>
+        <h1 class="nexus-title">Parvotec</h1>
+        <p class="nexus-subtitle">Closed-loop AAV capsid design with benchmarked ML baselines and adaptive refinement.</p>
+
+        <div class="project-actions">
+          <a class="glow-btn" href="../projects.html">Back to Projects</a>
+          <a class="glow-btn glow-btn-ghost" href="../explore.html">Explore Map</a>
+        </div>
+      </section>
+
+      <nav class="nexus-outline project-outline" aria-label="Project sections">
+        <a class="nexus-outline-link" href="#overview">Overview</a>
+        <a class="nexus-outline-link" href="#architecture">Closed-Loop Architecture</a>
+        <a class="nexus-outline-link" href="#benchmark">Fit4Function Baseline</a>
+        <a class="nexus-outline-link" href="#interactive">Interactive Workstreams</a>
+        <a class="nexus-outline-link" href="#roadmap">Roadmap</a>
+      </nav>
+
+      <section class="nexus-block project-map-block" id="map">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">Constellation Context</h2>
+            <p class="nexus-body">Parvotec is framed as a model-governed design loop where sequence proposals, experimental evidence and optimization policy stay structurally coupled.</p>
+          </div>
+          <a class="nexus-inline-link" href="../explore.html">Open Full Explore Map</a>
+        </div>
+
+        <div class="project-stage-wrap">
+          <div id="project-stage" class="explore-stage" aria-label="Interactive navigation stage">
+            <svg id="project-svg" class="explore-svg" role="img" aria-label="Interactive node chain"></svg>
+          </div>
+          <div class="explore-links project-links" aria-label="Quick links"></div>
+        </div>
+      </section>
+
+      <div id="project-content" class="project-content-anchor project-home-content">
+        <section id="overview" class="nexus-block project-section">
+          <h3>Overview</h3>
+          <p>Parvotec is a closed-loop capsid engineering framework that links sequence libraries, screening readouts, supervised prediction and constrained proposal generation in one adaptive cycle.</p>
+          <p>The system objective is not one-off scoring. It iteratively updates a belief over sequence space and re-allocates exploration toward high-performing regions while preserving discovery diversity.</p>
+        </section>
+
+        <section id="architecture" class="nexus-block project-section">
+          <h3>Closed-Loop Architecture</h3>
+          <p>The operational loop is organized into five layers: input libraries, experimental screening, machine-learning inference, multi-objective optimization and validation feedback.</p>
+          <p>A state-aware correction layer is applied so statistically plausible but biophysically inconsistent candidates are downranked before experimental escalation.</p>
+        </section>
+
+        <section id="benchmark" class="nexus-block project-section">
+          <h3>Fit4Function Baseline</h3>
+          <p>Within Parvotec, Fit4Function is treated as the benchmark reference framework for supervised multi-trait capsid modelling, reproducibility checks and comparative evaluation of new methods.</p>
+          <p>New constrained or generative approaches are evaluated against this baseline before integration into production design loops across assay and tissue contexts.</p>
+        </section>
+
+        <section id="interactive" class="nexus-block project-section">
+          <h3>Interactive Workstreams</h3>
+          <p>Switch between model tracks and open each milestone for details. This keeps the page readable while still exposing the full internal structure.</p>
+
+          <div class="interactive-tabs" role="tablist" aria-label="Parvotec workstreams">
+            <button class="interactive-tab" role="tab" aria-selected="true" aria-controls="panel-mvp" id="tab-mvp">MVP (Weeks 1-8)</button>
+            <button class="interactive-tab" role="tab" aria-selected="false" aria-controls="panel-baseline" id="tab-baseline">Nature Baseline</button>
+            <button class="interactive-tab" role="tab" aria-selected="false" aria-controls="panel-phase2" id="tab-phase2">Phase 2</button>
+          </div>
+
+          <div class="interactive-panel active" role="tabpanel" id="panel-mvp" aria-labelledby="tab-mvp">
+            <p>Execution sequence: 7-mer design and controls, wet-lab run, NGS and QC, then manufacturability ranking output.</p>
+            <div class="milestone-list">
+              <article class="milestone-item open">
+                <button class="milestone-toggle" type="button">Weeks 1-2: Design freeze and slot booking</button>
+                <div class="milestone-content">Finalize library and controls, order oligos, align cloning path, reserve one production slot and one NGS lane.</div>
+              </article>
+              <article class="milestone-item">
+                <button class="milestone-toggle" type="button">Weeks 3-4: Build and sequencing execution</button>
+                <div class="milestone-content">Execute cloning, small-batch AAV production, genome extraction, amplicon PCR and sequencing run.</div>
+              </article>
+              <article class="milestone-item">
+                <button class="milestone-toggle" type="button">Weeks 5-8: Analysis and ranked oracle delivery</button>
+                <div class="milestone-content">Run QC, train and validate model, perform enrichment versus controls, deliver ranked manufacturability output.</div>
+              </article>
+            </div>
+          </div>
+
+          <div class="interactive-panel" role="tabpanel" id="panel-baseline" aria-labelledby="tab-baseline">
+            <p>External anchor: Fit4Function/MultiFunction results from Nature Communications 2024 (doi:10.1038/s41467-024-50555-y) as baseline before extension.</p>
+            <ul>
+              <li>Reproduce released notebooks and dataset references.</li>
+              <li>Validate baseline performance before adding constrained or generative layers.</li>
+              <li>Benchmark all downstream methods against the same baseline metrics.</li>
+            </ul>
+          </div>
+
+          <div class="interactive-panel" role="tabpanel" id="panel-phase2" aria-labelledby="tab-phase2">
+            <p>After MVP validation, Phase 2 extends toward constrained generation and biophysical guards.</p>
+            <ul>
+              <li>State-aware correction to downrank biophysically inconsistent candidates.</li>
+              <li>Multi-objective optimization under production and assay constraints.</li>
+              <li>Tighter closed-loop feedback between screening and proposal generation.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="roadmap" class="nexus-block project-section">
+          <h3>Roadmap</h3>
+          <p>Phase 1 focuses on reproducible infrastructure hardening: dependency stability, validated execution paths and explicit interfaces for extension.</p>
+          <p>Subsequent phases extend to higher-fidelity biophysical modelling, constraint-aware generative exploration and tighter experimental feedback integration.</p>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="impressum" class="impressum">
+  <div class="impressum-inner">
+    <h2 class="impressum-title">Impressum</h2>
+    <p><strong><span class="brand-lockup"><span class="brand-word">G<span class="brand-acute" aria-hidden="true">´</span>Labs</span> <span class="brand-hold" aria-hidden="true">⏸</span></span></strong> is a data warehouse research project by Rupert Tscheliessnig (Gelising), Vienna.</p>
+    <p>All scientific and operational layers are orchestrated through Nexus.</p>
+    <p>Since 6 May 2026, it operates as a company. Content is provided for scientific reflection, conceptual exploration, academic exchange, and company communication.</p>
+    <p class="impressum-contact">Contact: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
+  </div>
+</footer>
+
+<footer class="site-footer">© 2026 Calyr.ai™ — MIT License — <a href="/license.html">License</a></footer>
+
+<script src="../data/projects.js"></script>
+<script src="../js/project_map.js"></script>
+<script>
+  (function () {
+    const tabs = Array.from(document.querySelectorAll('.interactive-tab'));
+    const panels = Array.from(document.querySelectorAll('.interactive-panel'));
+    const milestoneButtons = Array.from(document.querySelectorAll('.milestone-toggle'));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('aria-controls');
+        tabs.forEach((t) => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+        panels.forEach((p) => p.classList.toggle('active', p.id === target));
+      });
+    });
+
+    milestoneButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.milestone-item');
+        if (item) item.classList.toggle('open');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -16,6 +16,7 @@
     {
       id: 'atlas',
       name: 'Theory',
+      brailleDot: 1,
       kicker: 'Semantic Cartography',
       color: 'cyan',
       pearlColor: '#24f3ff',
@@ -31,6 +32,7 @@
     {
       id: 'calyrai',
       name: 'Calyrai',
+      brailleDot: 4,
       kicker: 'Experiential Projection',
       color: 'magenta',
       pearlColor: '#ff4df5',
@@ -46,6 +48,7 @@
     {
       id: 'pr',
       name: 'Access',
+      brailleDot: 2,
       kicker: 'Public Relay',
       color: 'magenta',
       pearlColor: '#f3f8ff',
@@ -61,6 +64,7 @@
     {
       id: 'runtime',
       name: 'Engine',
+      brailleDot: 5,
       kicker: 'Execution Substrate',
       color: 'cyan',
       pearlColor: '#9fb4c9',
@@ -76,6 +80,7 @@
     {
       id: 'glabs',
       name: "G'labs (Sandbox)",
+      brailleDot: 3,
       kicker: 'Experimental Lab',
       color: 'cyan',
       pearlColor: '#b28aff',
@@ -91,6 +96,7 @@
     {
       id: 'projects',
       name: 'Gallery',
+      brailleDot: 6,
       kicker: 'Application Layer',
       color: 'magenta',
       pearlColor: '#67f2d6',
@@ -352,15 +358,20 @@
     heroPearls.innerHTML = OUTER.map(function (node, index) {
       const cls = node.color === 'magenta' ? 'edisk edisk--magenta' : 'edisk edisk--cyan';
       const pearlRgb = resolvePearlRgb(node, index);
+      const dot = Number(node.brailleDot) || (index + 1);
+      const col = dot <= 3 ? 1 : 2;
+      const row = dot <= 3 ? dot : (dot - 3);
       return '' +
-        '<button class="' + cls + '" style="--pearl-rgb:' + pearlRgb + '" data-id="' + escH(node.id) + '" role="listitem" aria-label="' + escH(node.name) + '">' +
-        '  <svg class="edisk-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
-        '    <circle class="edisk-ring edisk-ring-c" cx="50" cy="50" r="41"></circle>' +
-        '    <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
-        '    <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
-        '  </svg>' +
-        '  <span class="edisk-core">' + escH(node.name) + '</span>' +
-        '</button>';
+        '<div class="edisk-cell" role="listitem" style="grid-column:' + col + ';grid-row:' + row + ';">' +
+        '  <button class="' + cls + '" style="--pearl-rgb:' + pearlRgb + '" data-id="' + escH(node.id) + '" aria-label="' + escH(node.name) + '">' +
+        '    <svg class="edisk-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+        '      <circle class="edisk-ring edisk-ring-c" cx="50" cy="50" r="41"></circle>' +
+        '      <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
+        '      <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
+        '    </svg>' +
+        '    <span class="edisk-core">' + escH(node.name) + '</span>' +
+        '  </button>' +
+        '</div>';
     }).join('');
 
     // Reset scatter state on render

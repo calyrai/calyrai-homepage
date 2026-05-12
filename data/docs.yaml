@@ -223,17 +223,11 @@
     - id: roadmap
       title: G'labs || · Roadmap
       src: docs/roadmap.md
-    - id: internal_online_gruendung_at
-      title: Internal · Online-Gruendung Oesterreich
-      src: docs/calyr_online_gruendung_at.md
     - id: internal_online_founding_en
-      title: Internal · Online founding Austria (EN)
+      title: Internal · Online founding Austria
       src: docs/calyr_online_founding_en.md
-    - id: internal_calyr_gruendung
-      title: Internal · Calyr Gruendung
-      src: docs/calyr_gruendung.md
     - id: internal_gruendung_pitch
-      title: Internal · Calyr Gruendung (Pitch)
+      title: Internal · Calyr Founding Pitch
       src: docs/calyr_gruendung_pitch.md
     - id: internal_docs_system
       title: Internal · Docs system
@@ -248,27 +242,27 @@
     - id: post_saxs_sasview
       title: Gallery · SAS Opsis
       src: docs/projects_post_saxs_sasview.md
-    - id: post_saxs_igm
-      title: Gallery · SAXS IGM
-      src: docs/projects_post_saxs_igm.md
     - id: post_spr_data
       title: Gallery · SPR extended theory
       src: docs/projects_post_spr_data.md
+    - id: post_sbpa
+      title: Gallery · SBPA — Structural Bayesian Protein Assembly
+      src: docs/projects_post_sbpa.md
+    - id: post_ai_application_process
+      title: Gallery · AI Opportunity Workflow — Application Process
+      src: docs/projects_post_ai_application_process.md
+    - id: post_ai_job_proposal_approach
+      title: Gallery · AI Opportunity Workflow — Shared Proposal Approach (Job + Research)
+      src: docs/projects_post_ai_job_proposal_approach.md
 
 - id: internal
   title: Internal operations
   pages:
-    - id: calyr_online_gruendung_at
-      title: Online-Gruendung Oesterreich
-      src: docs/calyr_online_gruendung_at.md
     - id: calyr_online_founding_en
-      title: Online founding Austria (EN)
+      title: Online founding Austria
       src: docs/calyr_online_founding_en.md
-    - id: calyr_gruendung
-      title: Calyr Gruendung
-      src: docs/calyr_gruendung.md
     - id: calyr_gruendung_pitch
-      title: Calyr Gruendung (Pitch)
+      title: Calyr Founding Pitch
       src: docs/calyr_gruendung_pitch.md
     - id: docs_system
       title: Docs system

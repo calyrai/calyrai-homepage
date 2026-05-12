@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calyr.ai – Proposals Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/nexus.css" />
+  <link rel="stylesheet" href="css/impressum.css" />
+
+  <style>
+    .proposals-header {
+      padding: 28px 16px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .proposals-title {
+      font-size: clamp(2rem, 3vw + 0.8rem, 2.8rem);
+      margin-bottom: 10px;
+      color: #f3fbff;
+    }
+
+    .proposals-subtitle {
+      color: rgba(210, 240, 255, 0.72);
+      margin-bottom: 12px;
+    }
+
+    .proposals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px 16px 32px;
+    }
+
+    .proposal-card {
+      border: 1px solid rgba(150, 225, 255, 0.25);
+      border-radius: 20px;
+      background: rgba(4, 14, 26, 0.64);
+      padding: 20px;
+      transition: all 0.2s ease-out;
+    }
+
+    .proposal-card:hover {
+      border-color: rgba(255, 108, 205, 0.45);
+      box-shadow: 0 0 28px rgba(255, 108, 205, 0.20);
+      transform: translateY(-4px);
+    }
+
+    .proposal-card-kicker {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(160, 221, 255, 0.82);
+      margin-bottom: 6px;
+    }
+
+    .proposal-card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 0 0 8px;
+      color: rgba(241, 251, 255, 0.96);
+    }
+
+    .proposal-card-subtitle {
+      font-size: 0.92rem;
+      color: rgba(200, 230, 255, 0.75);
+      margin-bottom: 12px;
+    }
+
+    .proposal-card-body {
+      font-size: 0.9rem;
+      color: rgba(210, 236, 255, 0.80);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .proposal-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+    }
+
+    .proposal-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 108, 205, 0.10);
+      color: rgba(255, 200, 240, 0.88);
+      border: 1px solid rgba(255, 108, 205, 0.25);
+    }
+
+    .proposal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .proposal-link {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 225, 255, 0.25);
+      background: transparent;
+      color: rgba(210, 240, 255, 0.88);
+      text-decoration: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .proposal-link:hover {
+      border-color: rgba(255, 108, 205, 0.50);
+      color: rgba(255, 220, 250, 0.96);
+      background: rgba(255, 108, 205, 0.06);
+    }
+
+    .proposal-section {
+      margin-top: 28px;
+      padding: 0 16px;
+    }
+
+    .proposal-section-title {
+      max-width: 1180px;
+      margin: 0 auto 12px;
+      font-size: 1.2rem;
+      color: rgba(241, 251, 255, 0.92);
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 860px) {
+      .proposals-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="team.html" class="nav-pill glow-nav">Team</a>
+      <a href="docs.html" class="nav-pill glow-nav">Docs</a>
+      <a href="proposals.html" class="nav-pill glow-nav">Proposals</a>
+    </div>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="mailto:rupert.tscheliessnig@calyr.ai?subject=Proposals" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="proposals-header">
+    <h1 class="proposals-title">Proposals Gallery</h1>
+    <p class="proposals-subtitle">Collection of active proposal tracks and project concepts across hardware, infrastructure, and scientific systems.</p>
+  </section>
+
+  <section class="proposal-section" id="active">
+    <h2 class="proposal-section-title">Active Proposals</h2>
+    <div class="proposals-grid">
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Infrastructure</div>
+        <h3 class="proposal-card-title">CALYR-AFLOW</h3>
+        <p class="proposal-card-subtitle">ASC-Integrated Computational-Tomographic Flow System</p>
+        <p class="proposal-card-body">Established computational-experimental framework for flow, thrombogenicity, and validation in cardiovascular device environments. Combines HPC execution on ASC, OpenFOAM CFD, ALMMSP coupling, tomographic validation, and Calyr stack integration.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">FFG / EU</span>
+          <span class="proposal-tag">CFD</span>
+          <span class="proposal-tag">Multi-Scale</span>
+        </div>
+        <div class="proposal-actions">
+          <a href="projects/aorta.html" class="proposal-link">View AORTA Track</a>
+          <a href="https://localhost:8001/docs/publishing/proposals/CALYR-AFLOW_ASC/" class="proposal-link">Files</a>
+        </div>
+      </article>
+
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Hardware</div>
+        <h3 class="proposal-card-title">Adaptive Holographic Instrumentation</h3>
+        <p class="proposal-card-subtitle">Real-Time Ensemble-State Reconstruction and Photonic Manipulation</p>
+        <p class="proposal-card-body">Adaptive holographic optical/scattering instrumentation for ensemble-state reconstruction across soft matter, colloids, flocs, and biomolecular assemblies. Photonic manipulation with real-time feedback integration.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">Horizon Cluster 4</span>
+          <span class="proposal-tag">Photonics</span>
+          <span class="proposal-tag">Deep-Tech</span>
+        </div>
+        <div class="proposal-actions">
+          <a href="https://localhost:8001/docs/publishing/proposals/ADAPTIVE_HOLOGRAPHIC_INSTRUMENTATION/" class="proposal-link">Files</a>
+        </div>
+      </article>
+
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Scientific Framework</div>
+        <h3 class="proposal-card-title">SBPA Ensemble-First Methodology</h3>
+        <p class="proposal-card-subtitle">Structure-Based Potential Analysis via Ensemble Constraint</p>
+        <p class="proposal-card-body">Structural object redefinition: dynamic ensemble as primary object rather than single PDB. Ensemble-first methodology combining AlphaFold prior, MD ensemble expansion, SAXS constraint, and cryo-EM validation within Nexus runtime.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">COST</span>
+          <span class="proposal-tag">Structural Biology</span>
+          <span class="proposal-tag">Nexus Runtime</span>
+        </div>
+        <div class="proposal-actions">
+          <a href="https://localhost:8001/nexus/projects/sbpa_qty_slayer_project/" class="proposal-link">Project</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="proposal-section" id="planning">
+    <h2 class="proposal-section-title">Funding Strategy & Roadmap</h2>
+    <div class="proposals-grid">
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Short-term</div>
+        <h3 class="proposal-card-title">FFG Basisprogramm 2026</h3>
+        <p class="proposal-card-body">Realistic entry point for Austrian funding. Open topic, MVP scope, deep-tech suitable, hardware development enabled. Best for: holographic microscope MVP, runtime, optics, scattering integration.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">Austria</span>
+          <span class="proposal-tag">MVP</span>
+        </div>
+      </article>
+
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Medium-term</div>
+        <h3 class="proposal-card-title">Horizon Europe Cluster 4</h3>
+        <p class="proposal-card-body">Digital, emerging technologies, photonics focus. Relevant for: holographic systems, adaptive optics, AI + photonics, imaging, scientific runtime systems. GPU/control integration.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">EU</span>
+          <span class="proposal-tag">Photonics</span>
+        </div>
+      </article>
+
+      <article class="proposal-card">
+        <div class="proposal-card-kicker">Long-term</div>
+        <h3 class="proposal-card-title">Horizon Research Infrastructures</h3>
+        <p class="proposal-card-body">Complete platform deployment for europawide infrastructure and multimodal scientific runtime systems. HORIZON-INFRA-2026-01 focus: scientific instrumentation, infrastructures, networking.</p>
+        <div class="proposal-card-meta">
+          <span class="proposal-tag">EU</span>
+          <span class="proposal-tag">Infrastructure</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer id="impressum" class="impressum">
+  <div class="impressum-inner">
+    <h2 class="impressum-title">Impressum</h2>
+    <p><strong>Calyr.ai</strong> is a data warehouse research project by Rupert Tscheliessnig (Gelising), Vienna.</p>
+    <p>All scientific and operational layers are orchestrated through Nexus.</p>
+    <p>Since 6 May 2026, it operates as a company. Content is provided for scientific reflection, conceptual exploration, academic exchange, and company communication.</p>
+    <p class="impressum-contact">Contact: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
+  </div>
+</footer>
+
+<footer class="site-footer">© 2026 Calyr.ai™ – MIT License – <a href="license.html">License</a></footer>
+
+</body>
+</html>
