@@ -91,9 +91,13 @@ loadGetBezierPath();
 
   function brailleMarkup(bits, accent) {
     const safe = String(bits || '000000').padEnd(6, '0').slice(0, 6);
-    return safe.split('').map(function (bit, index) {
+    // Render in row-major grid order while preserving braille dot numbering:
+    // visual cells [1,4,2,5,3,6] map back to bit indices [0,3,1,4,2,5].
+    const gridOrder = [0, 3, 1, 4, 2, 5];
+    return gridOrder.map(function (bitIndex, index) {
+      const bit = safe[bitIndex];
       const cls = ['braille-dot', bit === '1' ? 'is-on' : '', accent || 'cyan'].filter(Boolean).join(' ');
-      return html`<span key=${'dot-' + index + '-' + safe} className=${cls}></span>`;
+      return html`<span key=${'dot-' + index + '-' + bitIndex + '-' + safe} className=${cls}></span>`;
     });
   }
 
@@ -199,31 +203,31 @@ loadGetBezierPath();
     {
       id: 'input',
       type: 'braille',
-      position: { x: 80, y: 180 },
+      position: { x: 84, y: 224 },
       data: { name: 'FASTA Input', shortLabel: 'FASTA', description: 'Primary FASTA sequence intake', bits: '100000', accent: 'cyan', semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0.0, cycleDuration: 24 }
     },
     {
       id: 'parse',
       type: 'braille',
-      position: { x: 320, y: 180 },
+      position: { x: 314, y: 148 },
       data: { name: 'QTY Transform', shortLabel: 'QTY', description: 'Semantic QTY transformation', bits: '110000', accent: 'cyan', semanticDomain: 'ai-transform', coherence: 0.82, relayDelay: 5.28, cycleDuration: 24 }
     },
     {
       id: 'mask',
       type: 'braille',
-      position: { x: 560, y: 180 },
+      position: { x: 564, y: 112 },
       data: { name: 'Domain Segmentation', shortLabel: 'Domain', description: 'Domain-aware segmentation and masking', bits: '111000', accent: 'magenta', semanticDomain: 'ai-transform', coherence: 0.78, relayDelay: 10.56, cycleDuration: 24 }
     },
     {
       id: 'build',
       type: 'braille',
-      position: { x: 800, y: 180 },
+      position: { x: 814, y: 148 },
       data: { name: 'AF3 Payload Builder', shortLabel: 'AF3 Build', description: 'Compile AF3 submission payload', bits: '111100', accent: 'white', semanticDomain: 'runtime-hpc', coherence: 0.85, relayDelay: 15.84, cycleDuration: 24 }
     },
     {
       id: 'submit',
       type: 'braille',
-      position: { x: 1040, y: 180 },
+      position: { x: 1044, y: 224 },
       data: { name: 'ASC Submission', shortLabel: 'ASC Submit', description: 'Dispatch runtime payload to ASC cluster', bits: '111110', accent: 'cyan', semanticDomain: 'runtime-hpc', coherence: 0.80, relayDelay: 21.12, cycleDuration: 24 }
     }
   ];
@@ -332,19 +336,19 @@ loadGetBezierPath();
     function layoutNodesForWidth(width) {
       if (width <= 780) {
         return [
-          { id: 'input', position: { x: 34, y: 36 } },
-          { id: 'parse', position: { x: 204, y: 144 } },
-          { id: 'mask', position: { x: 34, y: 252 } },
-          { id: 'build', position: { x: 204, y: 360 } },
-          { id: 'submit', position: { x: 34, y: 468 } }
+          { id: 'input', position: { x: 44, y: 44 } },
+          { id: 'parse', position: { x: 212, y: 168 } },
+          { id: 'mask', position: { x: 44, y: 292 } },
+          { id: 'build', position: { x: 212, y: 416 } },
+          { id: 'submit', position: { x: 44, y: 540 } }
         ];
       }
       return [
-        { id: 'input', position: { x: 72, y: 36 } },
-        { id: 'parse', position: { x: 150, y: 248 } },
-        { id: 'mask', position: { x: 500, y: 248 } },
-        { id: 'build', position: { x: 850, y: 248 } },
-        { id: 'submit', position: { x: 920, y: 472 } }
+        { id: 'input', position: { x: 84, y: 224 } },
+        { id: 'parse', position: { x: 314, y: 148 } },
+        { id: 'mask', position: { x: 564, y: 112 } },
+        { id: 'build', position: { x: 814, y: 148 } },
+        { id: 'submit', position: { x: 1044, y: 224 } }
       ];
     }
 
@@ -366,6 +370,11 @@ loadGetBezierPath();
     function focusNodeForEditing(nodeId) {
       setActiveNodeId(nodeId);
       setWorkspaceMode('editor');
+    }
+
+    function clearNodeSelection() {
+      setActiveNodeId(null);
+      setWorkspaceMode('flow');
     }
 
     function restoreFlowCanvasLayout() {
@@ -393,6 +402,9 @@ loadGetBezierPath();
     }
 
     const setWorkspaceMode = function (mode) {
+      if (mode !== 'flow' && !activeNodeId) {
+        mode = 'flow';
+      }
       const nextFlowHidden = mode === 'editor';
       const nextInspectorHidden = mode === 'flow';
 
@@ -406,6 +418,12 @@ loadGetBezierPath();
 
     const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
     const editorMode = currentViewMode === 'editor';
+
+    useEffect(function () {
+      if (!activeNodeId && currentViewMode !== 'flow') {
+        setWorkspaceMode('flow');
+      }
+    }, [activeNodeId, currentViewMode]);
 
     const relayNodeId = useMemo(function () {
       if (handoffState.phase !== 'node') return null;
@@ -449,7 +467,8 @@ loadGetBezierPath();
     }, [handoffState]);
 
     const activeNode = useMemo(function () {
-      return nodes.find(function (n) { return n.id === activeNodeId; }) || nodes[0] || null;
+      if (!activeNodeId) return null;
+      return nodes.find(function (n) { return n.id === activeNodeId; }) || null;
     }, [nodes, activeNodeId]);
 
     useEffect(function () {
@@ -930,6 +949,7 @@ loadGetBezierPath();
                 onInit=${setFlowInstance}
                 onNodesChange=${onNodesChange}
                 onNodeClick=${function (_event, node) { focusNodeForEditing(node.id); }}
+                onPaneClick=${clearNodeSelection}
                 fitView=${true}
                 fitViewOptions=${{ padding: 0.2 }}
                 nodesDraggable=${true}
