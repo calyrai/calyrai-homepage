@@ -275,9 +275,9 @@
       '      </svg>' +
       '      <div class="hero-logo-pearl-slot" aria-hidden="true"></div>' +
       '    </div>' +
-      '    <button class="hero-logo-droplet-hit" type="button" aria-label="Droplet meaning">' +
+      '    <span class="hero-logo-droplet-hit" tabindex="0" role="note" aria-label="Droplet meaning">' +
       '      <span class="hero-logo-droplet-tip">Droplet: the catalytic seed where semantic structure condenses into directed action.</span>' +
-      '    </button>' +
+      '    </span>' +
       '  </div>' +
       '  <div class="hero-badge">' +
       '    <p class="hero-kicker">' + escH(NEXUS.kicker) + '</p>' +
