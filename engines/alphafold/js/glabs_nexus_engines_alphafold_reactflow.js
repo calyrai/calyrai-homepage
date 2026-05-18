@@ -4,6 +4,7 @@ import htm from 'https://esm.sh/htm@3.1.1';
 import ReactFlow, {
   applyNodeChanges,
   Background,
+  Controls,
   Handle,
   MiniMap,
   MarkerType,
@@ -418,6 +419,14 @@ loadGetBezierPath();
 
     const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
     const editorMode = currentViewMode === 'editor';
+
+    useEffect(function () {
+      if (typeof window === 'undefined') return;
+      if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+        setFlowHidden(false);
+        setInspectorHidden(true);
+      }
+    }, []);
 
     useEffect(function () {
       if (!activeNodeId && currentViewMode !== 'flow') {
@@ -966,6 +975,11 @@ loadGetBezierPath();
                 maxZoom=${8}
               >
                 <${Background} gap=${18} size=${1} color="rgba(120,180,220,0.18)" />
+                <${Controls}
+                  className="af-flow-controls"
+                  position="top-right"
+                  showInteractive=${false}
+                />
                 <${MiniMap}
                   className="af-overview-minimap"
                   pannable=${true}

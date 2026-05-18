@@ -818,12 +818,10 @@
 
 .af-flow-overlay {
   position: absolute;
-  bottom: 0.8rem;
-  left: 0.8rem;
+  top: 0.8rem;
+  left: calc(0.8rem + 180px + 0.6rem);
   z-index: 30;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: block;
 }
 
 .af-reset-symbol {
@@ -882,8 +880,25 @@
   border: 1px solid rgba(117, 169, 219, 0.3);
   background: rgba(7, 18, 30, 0.95);
   overflow: hidden;
+  top: 0.8rem !important;
   left: 0.8rem !important;
-  bottom: 5.3rem !important;
+  bottom: auto !important;
+}
+
+.af-flow-controls {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(93, 200, 255, 0.2);
+}
+
+.af-flow-controls button {
+  background: rgba(8, 25, 40, 0.92) !important;
+  border-bottom: 1px solid rgba(117, 169, 219, 0.22) !important;
+  color: #d9eeff !important;
+}
+
+.af-flow-controls button:hover {
+  background: rgba(16, 40, 62, 0.94) !important;
 }
 
 .af-overview-minimap .react-flow__minimap-mask {
@@ -1898,6 +1913,109 @@
 
   .af-inspector-panel {
     border-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  body.af-simple-page {
+    min-height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .af-simple-main {
+    padding: 0.75rem 0.75rem 1.5rem;
+  }
+
+  .glabs-os-shell {
+    padding: 14px 10px 28px;
+  }
+
+  .alphafold-shell,
+  .af-editor-shell {
+    overflow: visible;
+  }
+
+  .af-simple-grid,
+  .af-main-grid,
+  .af-main-grid-job,
+  .af-main-grid-job .af-canvas-panel,
+  .af-main-grid-job .af-inspector-panel {
+    overflow: visible;
+  }
+
+  .af-editor-shell {
+    display: block;
+  }
+
+  .af-toolbar {
+    padding: 0.7rem 0.55rem;
+  }
+
+  .af-main-grid,
+  .af-main-grid-job,
+  .af-main-grid-job.is-inspector-hidden,
+  .af-main-grid-job.is-flow-hidden {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 1fr;
+    min-height: auto;
+    height: auto;
+  }
+
+  .af-main-grid-job {
+    gap: 16px;
+  }
+
+  .af-main-grid-job .af-canvas-panel,
+  .af-main-grid-job .af-inspector-panel {
+    grid-column: 1;
+    width: 100%;
+    flex: 0 0 auto;
+
+  .af-flow-overlay {
+    top: 0.8rem;
+    left: calc(0.8rem + 180px + 0.4rem);
+  }
+    max-height: none;
+    overflow: visible;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .af-main-grid-job .af-canvas-panel {
+    order: 1;
+    border-bottom: 1px solid rgba(117, 169, 219, 0.16);
+    min-height: 360px;
+  }
+
+  .af-main-grid-job .af-inspector-panel,
+  .af-main-grid-job.is-flow-hidden .af-inspector-panel {
+    order: 2;
+    grid-column: 1;
+    margin-top: 10px;
+    padding-top: 0.2rem;
+    border-top: 0;
+  }
+
+  .af-resize-handle {
+    display: none;
+  }
+
+  .af-flow-root {
+    min-height: 360px;
+  }
+
+  .af-flow-root .react-flow,
+  .af-flow-root .react-flow__renderer,
+  .af-flow-root .react-flow__pane {
+    touch-action: none;
+  }
+
+  .af-flow-controls {
+    transform: scale(1.08);
+    transform-origin: top right;
   }
 }
 
