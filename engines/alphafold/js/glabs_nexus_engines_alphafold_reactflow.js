@@ -1,0 +1,1101 @@
+import React, { useEffect, useMemo, useRef, useState } from 'https://esm.sh/react@18.3.1';
+import { createRoot } from 'https://esm.sh/react-dom@18.3.1/client';
+import htm from 'https://esm.sh/htm@3.1.1';
+import ReactFlow, {
+  applyNodeChanges,
+  Background,
+  Handle,
+  MiniMap,
+  MarkerType,
+  Position
+} from 'https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1';
+
+const html = htm.bind(React.createElement);
+
+// Resolve getBezierPath lazily from the ReactFlow namespace import
+// to avoid named import destructuring issues in some environments
+let _getBezierPath = null;
+async function loadGetBezierPath() {
+  if (_getBezierPath) return;
+  const rf = await import('https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1');
+  _getBezierPath = rf.getBezierPath;
+}
+loadGetBezierPath();
+
+(function () {
+  'use strict';
+
+  const appRoot = document.getElementById('af-app-root');
+  if (!appRoot) return;
+
+  function accentRgb(accent) {
+    if (accent === 'magenta') return '255, 72, 196';
+    if (accent === 'white') return '255, 255, 255';
+    return '93, 200, 255';
+  }
+
+  // Semantic domain → RGB triple (field glow color)
+  function domainGlowRgb(domain) {
+    if (domain === 'structural-biology') return '60, 130, 255';
+    if (domain === 'reciprocal-space')   return '255, 165, 50';
+    if (domain === 'ai-transform')       return '160, 80, 255';
+    if (domain === 'runtime-hpc')        return '60, 210, 120';
+    if (domain === 'topology')           return '60, 220, 220';
+    if (domain === 'error')              return '255, 60, 70';
+    return '93, 200, 255';
+  }
+
+  // 1.2 — Semantic pulse edge: white coherent pulses travel source→target
+  function PulseEdge(props) {
+    const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data, markerEnd, style } = props;
+    const edgePath = _getBezierPath
+      ? _getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition, curvature: 0.12 })[0]
+      : 'M ' + sourceX + ' ' + sourceY + ' C ' + (sourceX + 50) + ' ' + sourceY + ', ' + (targetX - 50) + ' ' + targetY + ', ' + targetX + ' ' + targetY;
+    const runtime = (data && data.runtime) || 'idle';
+    const cycleDuration = ((data && data.cycleDuration) || 7.2) + 's';
+    const pulseStart = data && data.pulseStart != null ? data.pulseStart : 0.06;
+    const pulseEnd = data && data.pulseEnd != null ? data.pulseEnd : 0.18;
+    const pulseOpacityTimes = [
+      '0',
+      String(Math.max(0, pulseStart - 0.012)),
+      String(pulseStart),
+      String(pulseEnd),
+      '1'
+    ].join(';');
+    const pulseOpacityValues = '0;0;1;1;0';
+    const pulseMotionTimes = ['0', String(pulseStart), String(pulseEnd), '1'].join(';');
+    const pulseStyle = {
+      '--pulse-rgb': (data && data.pulseRgb) || '255, 255, 255'
+    };
+    return html`
+      <g className=${'pulse-edge-group pulse-edge-group--' + runtime}>
+        <path
+          id=${id}
+          className="react-flow__edge-path pulse-edge-base"
+          d=${edgePath}
+          markerEnd=${markerEnd}
+          style=${style}
+        />
+        <g className=${'pulse-edge-pulse pulse-edge-pulse--' + runtime} style=${pulseStyle}>
+          <ellipse className="pulse-edge-drop pulse-edge-drop-tail" cx="-3.6" cy="0" rx="2.2" ry="1.5" />
+          <ellipse className="pulse-edge-drop pulse-edge-drop-core" cx="0" cy="0" rx="2.7" ry="2.25" />
+          <circle className="pulse-edge-drop pulse-edge-drop-head" cx="3.4" cy="0" r="1" />
+          <animateMotion dur=${cycleDuration} repeatCount="indefinite" rotate="auto" keyPoints="0;0;1;1" keyTimes=${pulseMotionTimes} calcMode="linear">
+            <mpath href=${'#' + id}></mpath>
+          </animateMotion>
+          <animate attributeName="opacity" dur=${cycleDuration} repeatCount="indefinite" keyTimes=${pulseOpacityTimes} values=${pulseOpacityValues} calcMode="linear"></animate>
+        </g>
+      </g>
+    `;
+  }
+
+  function brailleMarkup(bits, accent) {
+    const safe = String(bits || '000000').padEnd(6, '0').slice(0, 6);
+    return safe.split('').map(function (bit, index) {
+      const cls = ['braille-dot', bit === '1' ? 'is-on' : '', accent || 'cyan'].filter(Boolean).join(' ');
+      return html`<span key=${'dot-' + index + '-' + safe} className=${cls}></span>`;
+    });
+  }
+
+  function bitsToBrailleChar(bits) {
+    var safe = String(bits || '000000').padEnd(6, '0').slice(0, 6);
+    var weights = [1, 2, 4, 8, 16, 32];
+    var value = 0;
+    for (var i = 0; i < 6; i += 1) {
+      if (safe[i] === '1') value += weights[i];
+    }
+    return String.fromCharCode(0x2800 + value);
+  }
+
+  function BraillePearl(props) {
+    const className = [
+      'braille-pearl',
+      props.mini ? 'is-mini' : '',
+      'is-' + (props.accent || 'cyan'),
+      props.active ? 'is-active' : '',
+      props.relayEnabled === false ? 'is-relay-off' : ''
+    ].filter(Boolean).join(' ');
+
+    const motionStyle = {
+      '--pearl-rgb': accentRgb(props.accent),
+      '--ring-a-duration': '20s',
+      '--ring-b-duration': '28s',
+      '--ring-c-duration': '36s',
+      '--ring-a-delay': '0s',
+      '--ring-b-delay': '0s',
+      '--ring-c-delay': '0s',
+      '--relay-cycle': String(props.cycleDuration || 7.2) + 's',
+      '--relay-delay': String(props.relayDelay || 0) + 's',
+      '--handoff-node-dwell': String(props.nodeDwell || 3.2) + 's',
+      '--relay-enabled': props.relayEnabled === false ? '0' : '1'
+    };
+
+    return html`
+      <div className=${className} style=${motionStyle}>
+        <div className="braille-pearl-halo"></div>
+        <div className="braille-ring braille-ring-a"></div>
+        <div className="braille-ring braille-ring-b"></div>
+        <div className="braille-ring braille-ring-c"></div>
+        <div className="af-node-relay-orbit"></div>
+        <div className="af-node-relay-core"></div>
+        <div className="af-node-light-orbit">
+          <div className="af-node-light-bulb"></div>
+        </div>
+        <div className="braille-pearl-core"></div>
+        <div className="braille-pearl-label">
+          <span className="braille-pearl-label-line">${String(props.label || 'Node')}</span>
+        </div>
+        <div className="braille-pearl-braille">
+          <span className="braille-row">${brailleMarkup(props.bits || '000000', props.accent || 'cyan')}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function BrailleNode(props) {
+    const data = props.data || {};
+    const className = [
+      'rf-braille-node',
+      'is-' + (data.accent || 'cyan'),
+      data.isActive ? 'is-focused' : '',
+      data.progressState ? 'is-progress-' + data.progressState : ''
+    ].filter(Boolean).join(' ');
+
+    const coherence = data.coherence != null ? data.coherence : 1;
+    const domainStyle = {
+      '--domain-rgb': domainGlowRgb(data.semanticDomain),
+      '--domain-coherence': String(coherence),
+      '--domain-glow-alpha': String((coherence * 0.42).toFixed(2))
+    };
+
+    return html`
+      <div className=${className} style=${domainStyle} onClick=${function () { data.onSelect(props.id); }}>
+        <${Handle} className="node-handle node-handle-target" type="target" position=${Position.Left} isConnectable=${false} />
+        <${Handle} className="node-handle node-handle-source" type="source" position=${Position.Right} isConnectable=${false} />
+        <div className="rf-node-wrap">
+          <${BraillePearl}
+            label=${data.shortLabel || data.name}
+            bits=${data.bits || '000000'}
+            accent=${data.accent || 'cyan'}
+            active=${data.isActive}
+            relayDelay=${data.relayDelay}
+            cycleDuration=${data.cycleDuration}
+            nodeDwell=${data.nodeDwell}
+            relayEnabled=${data.relayEnabled}
+          />
+          ${data.note ? html`<div className="workflow-note-chip" title=${data.note}>note</div>` : null}
+        </div>
+      </div>
+    `;
+  }
+
+  const nodeTypes = { braille: BrailleNode };
+  const edgeTypes = { pulse: PulseEdge };
+  const workflowNodeOrder = ['input', 'parse', 'mask', 'build', 'submit'];
+  const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
+  const HANDOFF_NODE_DWELL_SECONDS = 2.4;
+
+  const baseNodes = [
+    {
+      id: 'input',
+      type: 'braille',
+      position: { x: 80, y: 180 },
+      data: { name: 'FASTA Input', shortLabel: 'FASTA', description: 'Primary FASTA sequence intake', bits: '100000', accent: 'cyan', semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0.0, cycleDuration: 24 }
+    },
+    {
+      id: 'parse',
+      type: 'braille',
+      position: { x: 320, y: 180 },
+      data: { name: 'QTY Transform', shortLabel: 'QTY', description: 'Semantic QTY transformation', bits: '110000', accent: 'cyan', semanticDomain: 'ai-transform', coherence: 0.82, relayDelay: 5.28, cycleDuration: 24 }
+    },
+    {
+      id: 'mask',
+      type: 'braille',
+      position: { x: 560, y: 180 },
+      data: { name: 'Domain Segmentation', shortLabel: 'Domain', description: 'Domain-aware segmentation and masking', bits: '111000', accent: 'magenta', semanticDomain: 'ai-transform', coherence: 0.78, relayDelay: 10.56, cycleDuration: 24 }
+    },
+    {
+      id: 'build',
+      type: 'braille',
+      position: { x: 800, y: 180 },
+      data: { name: 'AF3 Payload Builder', shortLabel: 'AF3 Build', description: 'Compile AF3 submission payload', bits: '111100', accent: 'white', semanticDomain: 'runtime-hpc', coherence: 0.85, relayDelay: 15.84, cycleDuration: 24 }
+    },
+    {
+      id: 'submit',
+      type: 'braille',
+      position: { x: 1040, y: 180 },
+      data: { name: 'ASC Submission', shortLabel: 'ASC Submit', description: 'Dispatch runtime payload to ASC cluster', bits: '111110', accent: 'cyan', semanticDomain: 'runtime-hpc', coherence: 0.80, relayDelay: 21.12, cycleDuration: 24 }
+    }
+  ];
+
+  const initialEdges = [
+    { id: 'e1', type: 'pulse', source: 'input', target: 'parse', data: { runtime: 'idle', cycleDuration: 24, pulseStart: 0.08, pulseEnd: 0.20, pulseRgb: '60, 130, 255' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', type: 'pulse', source: 'parse', target: 'mask', data: { runtime: 'idle', cycleDuration: 24, pulseStart: 0.30, pulseEnd: 0.42, pulseRgb: '160, 80, 255' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', type: 'pulse', source: 'mask', target: 'build', data: { runtime: 'idle', cycleDuration: 24, pulseStart: 0.52, pulseEnd: 0.64, pulseRgb: '160, 80, 255' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', type: 'pulse', source: 'build', target: 'submit', data: { runtime: 'idle', cycleDuration: 24, pulseStart: 0.74, pulseEnd: 0.86, pulseRgb: '60, 210, 120' }, markerEnd: { type: MarkerType.ArrowClosed } }
+  ];
+
+  const initialRegistry = {
+    input: { step: 'input_fasta_sequence', accepts: 'fasta_amino_acid_string' },
+    parse: { step: 'qty_transform', semanticClass: 'nexus.qty.transform' },
+    mask: { step: 'domain_segmentation', policies: ['withheld', 'transformed'] },
+    build: { step: 'af3_payload_builder', version: 1 },
+    submit: { step: 'asc_submission', target: 'asc.cluster.local' }
+  };
+
+  function App() {
+    const [activeNodeId, setActiveNodeId] = useState('input');
+    const [handoffState, setHandoffState] = useState({ phase: 'edge', edgeIndex: 0 });
+    const [flowRenderKey, setFlowRenderKey] = useState(0);
+    const [flowHidden, setFlowHidden] = useState(false);
+    const [inspectorHidden, setInspectorHidden] = useState(false);
+    const [collapsedSections, setCollapsedSections] = useState({});
+    const [graphNodes, setGraphNodes] = useState(baseNodes);
+    const [hasUserMovedNodes, setHasUserMovedNodes] = useState(false);
+    const [flowSize, setFlowSize] = useState({ width: 1280, height: 560 });
+    const [digestingNodeId, setDigestingNodeId] = useState(null);
+    const [registryData, setRegistryData] = useState(initialRegistry);
+    const [workflowNotes, setWorkflowNotes] = useState({});
+    const [sequence, setSequence] = useState('MGAGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGA');
+    const [jobName, setJobName] = useState('NX-AF3-001');
+    const [chainId, setChainId] = useState('A');
+    const [seedsText, setSeedsText] = useState('1');
+    const [apiBase, setApiBase] = useState(window.location.protocol + '//' + window.location.hostname + ':8000');
+    const [activity, setActivity] = useState(['workflow ready']);
+    const [busy, setBusy] = useState(false);
+    const [jobState, setJobState] = useState({ jobId: '', status: 'idle', progress: 0 });
+    const [lastPayload, setLastPayload] = useState(null);
+
+    const [flowInstance, setFlowInstance] = useState(null);
+    const flowShellRef = useRef(null);
+    const resizeHandleRef = useRef(null);
+    const rulerSliderRef = useRef(null);
+    const digestTimeoutRef = useRef(null);
+    const resetLockRef = useRef(false);
+    const flowToggleLockRef = useRef(false);
+    const initialAutoLayoutDoneRef = useRef(false);
+
+    useEffect(function () {
+      return function () {
+        if (digestTimeoutRef.current) {
+          clearTimeout(digestTimeoutRef.current);
+        }
+      };
+    }, []);
+
+    useEffect(function () {
+      const durationMs = (handoffState.phase === 'edge' ? HANDOFF_EDGE_TRAVEL_SECONDS : HANDOFF_NODE_DWELL_SECONDS) * 1000;
+      const timer = setTimeout(function () {
+        setHandoffState(function (current) {
+          if (current.phase === 'edge') {
+            return { phase: 'node', edgeIndex: current.edgeIndex };
+          }
+          return {
+            phase: 'edge',
+            edgeIndex: (current.edgeIndex + 1) % initialEdges.length
+          };
+        });
+      }, durationMs);
+      return function () {
+        clearTimeout(timer);
+      };
+    }, [handoffState]);
+
+    useEffect(function () {
+      if (!flowShellRef.current || typeof ResizeObserver === 'undefined') return;
+      const element = flowShellRef.current;
+      const observer = new ResizeObserver(function (entries) {
+        const rect = entries && entries[0] && entries[0].contentRect ? entries[0].contentRect : null;
+        if (!rect) return;
+        const nextWidth = Math.round(rect.width);
+        const nextHeight = Math.round(rect.height);
+        // During hide/show transitions ReactFlow can briefly report tiny heights.
+        // Ignoring those prevents destructive clamping of node positions.
+        if (nextHeight < 380) return;
+        setFlowSize({
+          width: Math.max(320, nextWidth),
+          height: Math.max(440, nextHeight)
+        });
+      });
+      observer.observe(element);
+      return function () {
+        observer.disconnect();
+      };
+    }, []);
+
+
+    const handleNodeDragStop = function () {
+      setHasUserMovedNodes(true);
+      // Keep moved nodes fully visible and avoid clipping at panel edges.
+      fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.3 : 0.26);
+    };
+    function layoutNodesForWidth(width) {
+      if (width <= 780) {
+        return [
+          { id: 'input', position: { x: 34, y: 36 } },
+          { id: 'parse', position: { x: 204, y: 144 } },
+          { id: 'mask', position: { x: 34, y: 252 } },
+          { id: 'build', position: { x: 204, y: 360 } },
+          { id: 'submit', position: { x: 34, y: 468 } }
+        ];
+      }
+      return [
+        { id: 'input', position: { x: 72, y: 36 } },
+        { id: 'parse', position: { x: 150, y: 248 } },
+        { id: 'mask', position: { x: 500, y: 248 } },
+        { id: 'build', position: { x: 850, y: 248 } },
+        { id: 'submit', position: { x: 920, y: 472 } }
+      ];
+    }
+
+    useEffect(function () {
+      if (hasUserMovedNodes || initialAutoLayoutDoneRef.current) return;
+      var byId = {};
+      layoutNodesForWidth(flowSize.width).forEach(function (item) {
+        byId[item.id] = item.position;
+      });
+      setGraphNodes(function (currentNodes) {
+        return currentNodes.map(function (node) {
+          if (!byId[node.id]) return node;
+          return { ...node, position: byId[node.id] };
+        });
+      });
+      initialAutoLayoutDoneRef.current = true;
+    }, [flowSize.width, hasUserMovedNodes]);
+
+    function focusNodeForEditing(nodeId) {
+      setActiveNodeId(nodeId);
+      setWorkspaceMode('editor');
+    }
+
+    function restoreFlowCanvasLayout() {
+      flowToggleLockRef.current = true;
+      var applyLayout = function () {
+        var byId = {};
+        layoutNodesForWidth(flowSize.width).forEach(function (item) {
+          byId[item.id] = item.position;
+        });
+        setGraphNodes(function (currentNodes) {
+          return currentNodes.map(function (node) {
+            if (!byId[node.id]) return node;
+            return { ...node, position: { x: byId[node.id].x, y: byId[node.id].y } };
+          });
+        });
+      };
+
+      applyLayout();
+      requestAnimationFrame(applyLayout);
+      setTimeout(applyLayout, 360);
+      setTimeout(function () {
+        flowToggleLockRef.current = false;
+      }, 1200);
+      setFlowRenderKey(function (value) { return value + 1; });
+    }
+
+    const setWorkspaceMode = function (mode) {
+      const nextFlowHidden = mode === 'editor';
+      const nextInspectorHidden = mode === 'flow';
+
+      if (flowHidden && !nextFlowHidden) {
+        restoreFlowCanvasLayout();
+      }
+
+      setFlowHidden(nextFlowHidden);
+      setInspectorHidden(nextInspectorHidden);
+    };
+
+    const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
+    const editorMode = currentViewMode === 'editor';
+
+    const relayNodeId = useMemo(function () {
+      if (handoffState.phase !== 'node') return null;
+      const edge = initialEdges[handoffState.edgeIndex];
+      return edge ? edge.target : null;
+    }, [handoffState]);
+
+    const nodes = useMemo(function () {
+      return graphNodes.map(function (node) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            isActive: node.id === activeNodeId,
+            progressState: node.id === digestingNodeId ? 'active' : 'pending',
+            note: workflowNotes[node.id] || '',
+            relayEnabled: node.id === relayNodeId,
+            nodeDwell: HANDOFF_NODE_DWELL_SECONDS,
+            onSelect: focusNodeForEditing
+          }
+        };
+      });
+    }, [activeNodeId, graphNodes, digestingNodeId, workflowNotes, relayNodeId]);
+
+    const edges = useMemo(function () {
+      return initialEdges.map(function (edge) {
+        const edgeIndex = initialEdges.findIndex(function (candidate) { return candidate.id === edge.id; });
+        const isActiveEdge = handoffState.phase === 'edge' && edgeIndex === handoffState.edgeIndex;
+        const runtime = isActiveEdge ? 'active' : 'complete';
+        return {
+          ...edge,
+          data: {
+            ...(edge.data || {}),
+            cycleDuration: HANDOFF_EDGE_TRAVEL_SECONDS,
+            pulseStart: 0,
+            pulseEnd: 0.985,
+            runtime: runtime
+          }
+        };
+      });
+    }, [handoffState]);
+
+    const activeNode = useMemo(function () {
+      return nodes.find(function (n) { return n.id === activeNodeId; }) || nodes[0] || null;
+    }, [nodes, activeNodeId]);
+
+    useEffect(function () {
+      if (!editorMode) return;
+      const target = flowShellRef.current ? document.querySelector('.af-inspector-panel .af-json') : null;
+      if (!target) return;
+      requestAnimationFrame(function () {
+        if (typeof target.focus === 'function') target.focus();
+        if (typeof target.scrollIntoView === 'function') {
+          target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
+      });
+    }, [editorMode, activeNodeId]);
+
+    function runDigestPulse(nodeId, durationMs) {
+      if (digestTimeoutRef.current) {
+        clearTimeout(digestTimeoutRef.current);
+      }
+      setDigestingNodeId(nodeId);
+      digestTimeoutRef.current = setTimeout(function () {
+        setDigestingNodeId(function (current) {
+          return current === nodeId ? null : current;
+        });
+        digestTimeoutRef.current = null;
+      }, durationMs || 1200);
+    }
+
+    function updateRegistryJson(nodeId, text) {
+      try {
+        const parsed = JSON.parse(text);
+        setRegistryData(function (current) {
+          return { ...current, [nodeId]: parsed };
+        });
+      } catch (_error) {
+        setActivity(function (lines) {
+          return lines.concat('[registry] invalid JSON for ' + nodeId + ', changes not committed');
+        });
+      }
+    }
+
+    function updateSelectedNodeNote(text) {
+      if (!activeNode) return;
+      setWorkflowNotes(function (current) {
+        return { ...current, [activeNode.id]: String(text || '') };
+      });
+    }
+
+    function toggleInspectorSection(sectionId) {
+      setCollapsedSections(function (current) {
+        return { ...current, [sectionId]: !current[sectionId] };
+      });
+    }
+
+    function renderInspectorSection(sectionId, title, content) {
+      const isCollapsed = !!collapsedSections[sectionId];
+      return html`
+        <section className=${'af-collapsible-section' + (isCollapsed ? ' is-collapsed' : '')}>
+          <button
+            className="af-section-toggle"
+            type="button"
+            aria-expanded=${!isCollapsed}
+            onClick=${function () { toggleInspectorSection(sectionId); }}
+          >
+            <span>${title}</span>
+            <span className="af-section-toggle-icon" aria-hidden="true">${isCollapsed ? '▸' : '▾'}</span>
+          </button>
+          ${isCollapsed ? null : html`<div className="af-section-body">${content}</div>`}
+        </section>
+      `;
+    }
+
+    const workflowBrailleSummary = useMemo(function () {
+      return nodes.map(function (node) {
+        return {
+          id: node.id,
+          name: node.data.name,
+          bits: node.data.bits,
+          note: workflowNotes[node.id] || ''
+        };
+      });
+    }, [nodes, workflowNotes]);
+
+    const workflowDocumentation = useMemo(function () {
+      return {
+        title: 'AlphaFold workflow braille notes',
+        generatedAt: new Date().toISOString(),
+        steps: workflowBrailleSummary
+      };
+    }, [workflowBrailleSummary]);
+
+    function updateActiveNodeDataJson(text) {
+      if (!activeNode) return;
+      try {
+        const parsed = JSON.parse(text);
+        setGraphNodes(function (currentNodes) {
+          return currentNodes.map(function (node) {
+            if (node.id !== activeNode.id) return node;
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                name: String(parsed.name != null ? parsed.name : node.data.name),
+                shortLabel: String(parsed.shortLabel != null ? parsed.shortLabel : (parsed.name != null ? parsed.name : node.data.shortLabel)),
+                description: String(parsed.description != null ? parsed.description : node.data.description),
+                bits: String(parsed.bits != null ? parsed.bits : node.data.bits),
+                accent: String(parsed.accent != null ? parsed.accent : node.data.accent)
+              },
+              position: {
+                x: Number.isFinite(Number(parsed.x)) ? Number(parsed.x) : node.position.x,
+                y: Number.isFinite(Number(parsed.y)) ? Number(parsed.y) : node.position.y
+              }
+            };
+          });
+        });
+      } catch (_error) {
+        setActivity(function (lines) {
+          return lines.concat('[inspector] invalid node JSON, changes not committed');
+        });
+      }
+    }
+
+    function buildPayload() {
+      runDigestPulse('build', 1400);
+      const next = {
+        name: jobName || 'NX-AF3-001',
+        modelSeeds: seedsText.split(',').map(function (s) { return Number(String(s).trim()); }).filter(function (n) { return Number.isFinite(n); }),
+        sequences: [{ chain_id: chainId || 'A', sequence: sequence || '' }],
+        pipeline: nodes.map(function (n) {
+          return {
+            id: n.id,
+            label: n.data.name,
+            settings: registryData[n.id] || {}
+          };
+        })
+      };
+      setLastPayload(next);
+      setActivity(function (lines) {
+        return lines.concat('payload built: ' + next.name);
+      });
+      return next;
+    }
+
+    async function enterManualSubmissionMode(payload, reason) {
+      setJobState(function (current) {
+        return {
+          jobId: current.jobId,
+          status: 'manual-submit-required',
+          progress: current.progress || 0
+        };
+      });
+      setActivity(function (lines) {
+        var next = lines.slice();
+        next.push('manual mode: AlphaFold Server web upload required');
+        if (reason) next.push('reason: ' + reason);
+        next.push('next: open https://alphafoldserver.com and import/paste payload JSON');
+        return next;
+      });
+
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+        setActivity(function (lines) {
+          return lines.concat('payload copied to clipboard for manual submit');
+        });
+      } catch (_error) {
+        setActivity(function (lines) {
+          return lines.concat('clipboard unavailable: copy payload from Output panel');
+        });
+      }
+    }
+
+    async function submitToBackend() {
+      if (busy) return;
+      const payload = lastPayload || buildPayload();
+      setBusy(true);
+      setDigestingNodeId('submit');
+      setActivity(function (lines) { return lines.concat('submitting AlphaFold request...'); });
+
+      try {
+        const response = await fetch(String(apiBase).replace(/\/$/, '') + '/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'alphafold',
+            params: payload,
+            user: 'homepage'
+          })
+        });
+        const payloadData = await response.json();
+        if (!response.ok) {
+          throw new Error(payloadData.detail || 'submit failed');
+        }
+        setJobState({
+          jobId: String(payloadData.job_id || ''),
+          status: String(payloadData.status || 'queued'),
+          progress: Number(payloadData.progress || 0)
+        });
+        setActivity(function (lines) {
+          return lines.concat('submitted: job ' + String(payloadData.job_id || 'unknown'));
+        });
+      } catch (error) {
+        await enterManualSubmissionMode(payload, String((error && error.message) || 'submission failed'));
+      } finally {
+        setBusy(false);
+        if (digestingNodeId === 'submit') {
+          setDigestingNodeId(null);
+        } else {
+          setDigestingNodeId(function (current) {
+            return current === 'submit' ? null : current;
+          });
+        }
+      }
+    }
+
+    async function refreshJob() {
+      const jobId = String(jobState.jobId || '').trim();
+      if (busy) return;
+      if (!jobId) {
+        setActivity(function (lines) {
+          return lines.concat('refresh: no backend job id. Track progress in AlphaFold Server history for manual submissions.');
+        });
+        return;
+      }
+      setBusy(true);
+      setDigestingNodeId('submit');
+      try {
+        const response = await fetch(String(apiBase).replace(/\/$/, '') + '/jobs/' + encodeURIComponent(jobId));
+        const payloadData = await response.json();
+        if (!response.ok) {
+          throw new Error(payloadData.detail || 'status fetch failed');
+        }
+        setJobState(function (current) {
+          return {
+            jobId: current.jobId,
+            status: String(payloadData.status || current.status),
+            progress: Number(payloadData.progress || current.progress || 0)
+          };
+        });
+        setActivity(function (lines) {
+          return lines.concat('job ' + jobId + ': ' + String(payloadData.status || 'unknown') + ' (' + String(payloadData.progress || 0) + '%)');
+        });
+      } catch (error) {
+        setActivity(function (lines) {
+          return lines.concat('error: ' + String((error && error.message) || 'status failed'));
+        });
+      } finally {
+        setBusy(false);
+        setDigestingNodeId(function (current) {
+          return current === 'submit' ? null : current;
+        });
+      }
+    }
+
+    const onNodesChange = function (changes) {
+      if ((resetLockRef.current || flowToggleLockRef.current) && Array.isArray(changes)) {
+        changes = changes.filter(function (change) {
+          return !(change && change.type === 'position');
+        });
+      }
+      if (Array.isArray(changes)) {
+        changes = changes.filter(function (change) {
+          return !(change && change.type === 'position' && change.dragging !== true);
+        });
+      }
+      setGraphNodes(function (currentNodes) {
+        return applyNodeChanges(changes, currentNodes);
+      });
+    };
+
+    const toggleFlowPanel = function () {
+      setWorkspaceMode(flowHidden ? 'split' : 'editor');
+    };
+
+    const toggleInspectorPanel = function () {
+      setInspectorHidden(function (current) {
+        const next = !current;
+        if (next && flowHidden) {
+          setFlowHidden(false);
+        }
+        return next;
+      });
+    };
+
+    const startResize = function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      const mainGrid = document.querySelector('.af-main-grid-job');
+      if (!mainGrid) return;
+      
+      const startX = e.clientX;
+      const startTemplate = mainGrid.style.gridTemplateColumns;
+      
+      const doResize = function (moveEvent) {
+        const deltaX = moveEvent.clientX - startX;
+        const mainRect = mainGrid.getBoundingClientRect();
+        const totalWidth = mainRect.width;
+        const newWidth = Math.max(300, Math.min(totalWidth - 320, totalWidth * 0.618 + deltaX));
+        const ratio = (newWidth / totalWidth * 100).toFixed(1);
+        mainGrid.style.gridTemplateColumns = ratio + '% ' + (100 - ratio) + '%';
+      };
+      
+      const stopResize = function () {
+        document.removeEventListener('mousemove', doResize);
+        document.removeEventListener('mouseup', stopResize);
+      };
+      
+      document.addEventListener('mousemove', doResize);
+      document.addEventListener('mouseup', stopResize);
+    };
+
+    const startRulerDrag = function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      const slider = rulerSliderRef.current;
+      if (!slider) return;
+
+      const wrapper = slider.parentElement;
+      const wrapperRect = wrapper.getBoundingClientRect();
+
+      const doRulerDrag = function (moveEvent) {
+        const x = moveEvent.clientX - wrapperRect.left;
+        const ratio = Math.max(0, Math.min(1, x / wrapperRect.width));
+
+        if (ratio < 0.33) {
+          setWorkspaceMode('flow');
+        } else if (ratio < 0.67) {
+          setWorkspaceMode('split');
+        } else {
+          setWorkspaceMode('editor');
+        }
+      };
+
+      const stopRulerDrag = function () {
+        slider.classList.remove('is-dragging');
+        document.removeEventListener('mousemove', doRulerDrag);
+        document.removeEventListener('mouseup', stopRulerDrag);
+      };
+
+      slider.classList.add('is-dragging');
+      document.addEventListener('mousemove', doRulerDrag);
+      document.addEventListener('mouseup', stopRulerDrag);
+    };
+
+    useEffect(function () {
+      const slider = rulerSliderRef.current;
+      if (!slider) return;
+      
+      let position = 0;
+      if (currentViewMode === 'flow') {
+        position = 0;
+        slider.className = 'af-ruler-slider is-flow';
+      } else if (currentViewMode === 'split') {
+        position = 50;
+        slider.className = 'af-ruler-slider is-split';
+      } else {
+        position = 100;
+        slider.className = 'af-ruler-slider is-editor';
+      }
+      
+      slider.style.left = position + '%';
+    }, [currentViewMode]);
+
+    const fitCanvasToViewport = function (duration, padding) {
+      if (!flowInstance || typeof flowInstance.fitView !== 'function') return;
+      flowInstance.fitView({
+        duration: duration,
+        padding: padding,
+        maxZoom: 1.6
+      });
+    };
+
+    useEffect(function () {
+      if (flowHidden) return;
+      const frameId = requestAnimationFrame(function () {
+        fitCanvasToViewport(520, currentViewMode === 'flow' ? 0.28 : 0.24);
+      });
+      const timerId = setTimeout(function () {
+        fitCanvasToViewport(520, currentViewMode === 'flow' ? 0.28 : 0.24);
+      }, 420);
+      return function () {
+        cancelAnimationFrame(frameId);
+        clearTimeout(timerId);
+      };
+    }, [currentViewMode, flowHidden, flowInstance, flowRenderKey]);
+
+    const resetNodesLayout = function () {
+      resetLockRef.current = true;
+      const layout = layoutNodesForWidth(flowSize.width);
+      const byId = {};
+      layout.forEach(function (item) {
+        byId[item.id] = item.position;
+      });
+
+      setGraphNodes(function (currentNodes) {
+        return currentNodes.map(function (node) {
+          var nextPosition = byId[node.id];
+          if (!nextPosition) return node;
+          return { ...node, position: { x: nextPosition.x, y: nextPosition.y } };
+        });
+      });
+
+      setHasUserMovedNodes(false);
+      setFlowHidden(false);
+      setInspectorHidden(false);
+      setFlowRenderKey(function (current) {
+        return current + 1;
+      });
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          resetLockRef.current = false;
+        });
+      });
+      setActivity(function (lines) {
+        return lines.concat('nodes reset to default layout');
+      });
+    };
+
+    const recenterCanvas = function () {
+      fitCanvasToViewport(360, 0.24);
+      setActivity(function (lines) {
+        return lines.concat('canvas recentered');
+      });
+    };
+
+    return html`
+      <div className="af-editor-shell">
+        <section className="af-toolbar">
+          <div className="af-mode-ruler">
+            <div className="af-ruler-wrapper">
+              <div className="af-ruler-track"></div>
+              <div className="af-ruler-markers">
+                <button
+                  className=${'af-ruler-marker af-mode-button af-mode-flow' + (currentViewMode === 'flow' ? ' is-active' : '')}
+                  type="button"
+                  onClick=${function () { setWorkspaceMode('flow'); }}
+                  aria-label="Switch to Flow layout"
+                >
+                  <span className="af-mode-button-cell" aria-hidden="true"></span>
+                  <span className="af-ruler-marker-label">Flow</span>
+                </button>
+                <button
+                  className=${'af-ruler-marker af-mode-button af-mode-split' + (currentViewMode === 'split' ? ' is-active' : '')}
+                  type="button"
+                  onClick=${function () { setWorkspaceMode('split'); }}
+                  aria-label="Switch to Split layout"
+                >
+                  <span className="af-mode-button-cell" aria-hidden="true"></span>
+                  <span className="af-ruler-marker-label">Split</span>
+                </button>
+                <button
+                  className=${'af-ruler-marker af-mode-button af-mode-editor' + (currentViewMode === 'editor' ? ' is-active' : '')}
+                  type="button"
+                  onClick=${function () { setWorkspaceMode('editor'); }}
+                  aria-label="Switch to Editor layout"
+                >
+                  <span className="af-mode-button-cell" aria-hidden="true"></span>
+                  <span className="af-ruler-marker-label">Editor</span>
+                </button>
+              </div>
+              <div className="af-ruler-slider" ref=${rulerSliderRef} onMouseDown=${startRulerDrag}>
+                <div className="af-ruler-label"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+
+        <div className=${'af-main-grid af-main-grid-job' + (flowHidden ? ' is-flow-hidden' : '') + (inspectorHidden ? ' is-inspector-hidden' : '')}>
+
+          <section className=${'af-canvas-panel' + (flowHidden ? ' is-hidden' : '')}>
+            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '')} ref=${flowShellRef}>
+              <${ReactFlow}
+                key=${'reactflow-' + flowRenderKey}
+                nodes=${nodes}
+                edges=${edges}
+                nodeTypes=${nodeTypes}
+                edgeTypes=${edgeTypes}
+                onInit=${setFlowInstance}
+                onNodesChange=${onNodesChange}
+                onNodeClick=${function (_event, node) { focusNodeForEditing(node.id); }}
+                fitView=${true}
+                fitViewOptions=${{ padding: 0.2 }}
+                nodesDraggable=${true}
+                nodesConnectable=${false}
+                elementsSelectable=${false}
+                onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
+                panOnDrag=${true}
+                panOnScroll=${true}
+                zoomOnScroll=${true}
+                zoomOnPinch=${true}
+                zoomOnDoubleClick=${true}
+                preventScrolling=${false}
+                minZoom=${0.05}
+                maxZoom=${8}
+              >
+                <${Background} gap=${18} size=${1} color="rgba(120,180,220,0.18)" />
+                <${MiniMap}
+                  className="af-overview-minimap"
+                  pannable=${true}
+                  zoomable=${true}
+                  nodeBorderRadius=${999}
+                  nodeColor=${function (node) {
+                    const rgb = domainGlowRgb(node.data && node.data.semanticDomain);
+                    const alpha = node.id === activeNodeId ? 0.95 : 0.72;
+                    return 'rgba(' + rgb + ', ' + alpha + ')';
+                  }}
+                  nodeStrokeColor=${function (node) {
+                    return node.id === activeNodeId ? '#5dc8ff' : 'transparent';
+                  }}
+                  nodeStrokeWidth=${3}
+                  nodeClassName=${function (node) {
+                    return node.id === activeNodeId ? 'af-mm-active' : '';
+                  }}
+                  maskColor="rgba(2, 7, 12, 0.62)"
+                />
+              </${ReactFlow}>
+              <div className="af-flow-overlay">
+                <button className="af-reset-symbol" type="button" onClick=${resetNodesLayout} title="Reset Nodes Layout">⟲</button>
+              </div>
+            </div>
+          </section>
+
+          <div className="af-resize-handle" ref=${resizeHandleRef} onMouseDown=${startResize} title="Drag to resize panels" />
+
+          ${inspectorHidden ? html`<aside className="af-panel af-inspector-panel is-hidden"></aside>` : html`
+          <aside className=${'af-panel af-inspector-panel' + (editorMode ? ' is-editor-mode' : '')}>
+            <div className="af-inspector-head">
+              <h2>${editorMode ? 'Node Editor' : 'Job'}</h2>
+            </div>
+            ${editorMode ? html`
+              <div className="af-editor-banner">
+                <strong>${activeNode ? activeNode.data.shortLabel || activeNode.data.name : 'Node'}</strong>
+                <span>Editing ${activeNode ? activeNode.data.name : 'selected node'}</span>
+              </div>
+            ` : null}
+            <div className="af-inline-status">
+              <div className="af-status-item">
+                <span className="af-status-label">Job</span>
+                <strong className="af-status-value">${jobState.jobId || '-'}</strong>
+              </div>
+              <div className="af-status-item">
+                <span className="af-status-label">Status</span>
+                <strong className="af-status-value">${jobState.status}</strong>
+              </div>
+              <div className="af-status-item">
+                <span className="af-status-label">Progress</span>
+                <strong className="af-status-value">${jobState.progress}%</strong>
+              </div>
+            </div>
+            ${renderInspectorSection('workflow', 'Workflow', html`
+              <div className="af-braille-line" aria-label="Workflow braille symbols">
+                ${workflowBrailleSummary.map(function (item) {
+                  const isActive = item.id === activeNodeId;
+                  return html`
+                    <button
+                      key=${'workflow-braille-symbol-' + item.id}
+                      className=${'af-braille-symbol' + (isActive ? ' is-active' : '')}
+                      title=${item.name + ' ' + item.bits}
+                      type="button"
+                      onClick=${function () { setActiveNodeId(item.id); }}
+                    >
+                      ${bitsToBrailleChar(item.bits)}
+                    </button>
+                  `;
+                })}
+              </div>
+            `)}
+
+            ${renderInspectorSection('active-node', 'Active Node', activeNode ? html`
+              <textarea
+                className="af-input af-json"
+                value=${JSON.stringify({
+                  id: activeNode.id,
+                  name: activeNode.data.name,
+                  shortLabel: activeNode.data.shortLabel,
+                  description: activeNode.data.description,
+                  bits: activeNode.data.bits,
+                  accent: activeNode.data.accent,
+                  x: Math.round(activeNode.position.x),
+                  y: Math.round(activeNode.position.y)
+                }, null, 2)}
+                onInput=${function (e) { updateActiveNodeDataJson(e.currentTarget.value); }}
+              ></textarea>
+            ` : html`<textarea className="af-input af-json" disabled>Select a node to inspect data.</textarea>`)}
+
+            ${renderInspectorSection('node-config', 'Node Config', activeNode ? html`
+              <textarea
+                className="af-input af-json"
+                value=${JSON.stringify(registryData[activeNode.id] || {}, null, 2)}
+                onInput=${function (e) { updateRegistryJson(activeNode.id, e.currentTarget.value); }}
+              ></textarea>
+            ` : html`<textarea className="af-input af-json" disabled>No node selected.</textarea>`)}
+
+            ${renderInspectorSection('workflow-note', 'Workflow Note', activeNode ? html`
+              <textarea
+                className="af-input af-json"
+                placeholder="Add workflow note for selected node..."
+                value=${workflowNotes[activeNode.id] || ''}
+                onInput=${function (e) { updateSelectedNodeNote(e.currentTarget.value); }}
+              ></textarea>
+            ` : html`<textarea className="af-input af-json" disabled>Select a node to add note.</textarea>`)}
+
+            ${renderInspectorSection('run-inputs', 'Run Inputs', html`
+              <div className="af-row af-row-run-main">
+                <div className="af-field">
+                  <span>Backend API</span>
+                  <input className="af-input" value=${apiBase} onInput=${function (e) { setApiBase(e.currentTarget.value); }} />
+                </div>
+                <div className="af-field">
+                  <span>Sequence</span>
+                  <textarea className="af-input af-textarea-code" value=${sequence} onInput=${function (e) { setSequence(e.currentTarget.value); }}></textarea>
+                </div>
+                <div className="af-field">
+                  <span>Job</span>
+                  <input className="af-input" value=${jobName} onInput=${function (e) { setJobName(e.currentTarget.value); }} />
+                </div>
+              </div>
+              <div className="af-row af-row-run-meta">
+                <div className="af-field">
+                  <span>Chain</span>
+                  <input className="af-input" value=${chainId} onInput=${function (e) { setChainId(e.currentTarget.value); }} />
+                </div>
+                <div className="af-field">
+                  <span>Seeds</span>
+                  <input className="af-input" value=${seedsText} onInput=${function (e) { setSeedsText(e.currentTarget.value); }} />
+                </div>
+              </div>
+            `)}
+
+            ${renderInspectorSection('output', 'Output', html`
+              <pre className="af-term">${lastPayload ? JSON.stringify(lastPayload, null, 2) : '[build payload to preview output]'}</pre>
+            `)}
+
+            ${renderInspectorSection('workflow-documentation', 'Workflow Documentation', html`
+              <pre className="af-term">${JSON.stringify(workflowDocumentation, null, 2)}</pre>
+            `)}
+
+            ${renderInspectorSection('activity', 'Activity', html`
+              <pre className="af-term">${activity.join('\n')}</pre>
+            `)}
+          </aside>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  createRoot(appRoot).render(html`<${App} />`);
+})();

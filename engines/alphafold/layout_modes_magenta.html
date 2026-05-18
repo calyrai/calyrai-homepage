@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaFold Layout Modes</title>
+    <style>
+        body {
+            background: #08111a;
+            margin: 0;
+            padding: 60px 40px;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 1600px;
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff00ff;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+        .screen-container {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .mode-section {
+            flex: 1;
+            height: 400px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(255, 0, 255, 0.15);
+        }
+        .mode-flow {
+            border: 3px solid #3bd6bf;
+            background: rgba(59, 214, 191, 0.08);
+        }
+        .mode-split {
+            border: 3px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.08);
+        }
+        .mode-editor {
+            border: 3px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.08);
+        }
+        .mode-label {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .mode-flow .mode-label {
+            color: #3bd6bf;
+        }
+        .mode-split .mode-label {
+            color: #ff00ff;
+        }
+        .mode-editor .mode-label {
+            color: #ff00ff;
+        }
+        .mode-subtitle {
+            font-size: 11px;
+            opacity: 0;
+            margin-bottom: 16px;
+        }
+        .mode-flow .mode-subtitle {
+            color: #7fd3ff;
+        }
+        .mode-split .mode-subtitle {
+            color: #b366ff;
+        }
+        .mode-editor .mode-subtitle {
+            color: #b366ff;
+        }
+        .visualization {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .panel-box {
+            flex: 1;
+            border-radius: 6px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+        }
+        .mode-flow .panel-box {
+            border-color: #3bd6bf;
+            color: #3bd6bf;
+            background: rgba(59, 214, 191, 0.12);
+        }
+        .mode-split .panel-box {
+            border-color: #ff00ff;
+            color: #ff00ff;
+            background: rgba(255, 0, 255, 0.12);
+        }
+        .mode-editor .panel-box {
+            border-color: #ff00ff;
+            color: #ff00ff;
+            background: rgba(255, 0, 255, 0.12);
+        }
+        .panel-hidden {
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Layout Modes – Horizontal Screen View</div>
+        
+        <div class="screen-container">
+            <!-- Flow Mode -->
+            <div class="mode-section mode-flow">
+                <div>
+                    <div class="mode-label">Flow</div>
+                    <div class="mode-subtitle">Canvas Full</div>
+                </div>
+                <div class="visualization">
+                    <div class="panel-box" style="flex: 1;">Canvas</div>
+                </div>
+            </div>
+
+            <!-- Split Mode -->
+            <div class="mode-section mode-split">
+                <div>
+                    <div class="mode-label">Split</div>
+                    <div class="mode-subtitle">Canvas + Inspector</div>
+                </div>
+                <div class="visualization">
+                    <div class="panel-box" style="flex: 0.62;">Canvas</div>
+                    <div class="panel-box" style="flex: 0.38;">Inspector</div>
+                </div>
+            </div>
+
+            <!-- Editor Mode -->
+            <div class="mode-section mode-editor">
+                <div>
+                    <div class="mode-label">Editor</div>
+                    <div class="mode-subtitle">Inspector Full</div>
+                </div>
+                <div class="visualization">
+                    <div class="panel-box" style="flex: 1;">Inspector</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{
+  "engine": "glabs.nexus.engines.alphafold",
+  "engine_alias": "nexus.engines.alphafold",
+  "engine_id": "glabs_nexus_engines_alphafold",
+  "version": 1,
+  "description": "JSON definition for the AlphaFold engine interface composition.",
+  "alphafoldServerUrl": "https://alphafoldserver.com",
+  "tiles": [
+    {
+      "id": "registry",
+      "type": "registry",
+      "panelId": "panel-registry",
+      "rootId": "backpack-panel-root",
+      "title": "Registry",
+      "subtitle": "Engine identity and layout metadata",
+      "order": 1
+    },
+    {
+      "id": "input",
+      "type": "input",
+      "panelId": "panel-compose",
+      "rootId": "braille-input-root",
+      "title": "Input Tile",
+      "subtitle": "Primary sequence and split-definition JSON",
+      "order": 2
+    },
+    {
+      "id": "computation",
+      "type": "computation",
+      "panelId": "panel-graph",
+      "rootId": "glabs-flow-root",
+      "title": "Computation Tile",
+      "subtitle": "AlphaFold input JSON output and launch",
+      "order": 3
+    },
+    {
+      "id": "selection",
+      "type": "selection",
+      "panelId": "panel-selection",
+      "rootId": "active-node-panel-root",
+      "title": "Runtime Selection",
+      "subtitle": "Job metadata and status",
+      "order": 4
+    },
+    {
+      "id": "segments",
+      "type": "segments",
+      "panelId": "panel-linked",
+      "rootId": "connected-list-root",
+      "title": "Segments",
+      "subtitle": "Split segments and masking policy",
+      "order": 5
+    },
+    {
+      "id": "flow",
+      "type": "flow",
+      "panelId": "panel-contents",
+      "rootId": "content-outline-root",
+      "title": "Flow",
+      "subtitle": "Pipeline steps and execution order",
+      "order": 6
+    },
+    {
+      "id": "terminal",
+      "type": "terminal",
+      "panelId": "panel-terminal",
+      "rootId": "terminal-panel-root",
+      "title": "Terminal",
+      "subtitle": "Engine logs and command stream",
+      "order": 7
+    },
+    {
+      "id": "split_json",
+      "type": "split_json",
+      "panelId": "panel-comment",
+      "rootId": "comment-panel-root",
+      "title": "Split JSON",
+      "subtitle": "Raw editable split-definition payload",
+      "order": 8
+    }
+  ],
+  "defaults": {
+    "jobName": "NX-AF3-001",
+    "chainId": "A",
+    "modelSeeds": [1],
+    "sequence": "MAGAQVNDYNKISGYA",
+    "splitDefinition": {
+      "object_id": "Scientific/SBPA/Nexus_QTY_JSON_001",
+      "segments": [
+        {
+          "segment_id": "core_domain",
+          "name": "Core Domain",
+          "start": 1,
+          "end": 10,
+          "policy": {
+            "semantic_tags": ["core", "stable"],
+            "mask_policy": "transformed",
+            "runtime_bindings": ["alphafold"],
+            "sensitivity": "internal"
+          }
+        },
+        {
+          "segment_id": "sensitive_motif",
+          "name": "Sensitive Motif",
+          "start": 11,
+          "end": 16,
+          "policy": {
+            "semantic_tags": ["interface", "sensitive"],
+            "mask_policy": "withheld",
+            "runtime_bindings": ["alphafold"],
+            "sensitivity": "restricted"
+          }
+        }
+      ]
+    }
+  }
+}
