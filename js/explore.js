@@ -68,7 +68,7 @@
       kicker: 'Execution Substrate',
       color: 'cyan',
       pearlColor: '#9fb4c9',
-      href: 'docs.html#engine/overview',
+      href: 'engines/alphafold/glabs_nexus_engines_alphafold.html?v=43&refresh=now',
       role: 'Internal execution engine. Code assets are not public.',
       body: 'Engine handles graph evaluation, orchestration, and scheduling while public systems consume projections.',
       details: [
@@ -220,6 +220,8 @@
 
     const nodeIndex = OUTER.findIndex(function (n) { return n.id === node.id; });
     const pearlRgb = resolvePearlRgb(node, nodeIndex >= 0 ? nodeIndex : 0);
+    const bits = brailleBitsForNode(node, nodeIndex >= 0 ? nodeIndex : 0);
+    const accent = node.color === 'magenta' ? 'magenta' : 'cyan';
 
     logo.classList.add('has-active-pearl');
     slot.innerHTML = '' +
@@ -229,7 +231,8 @@
       '    <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
       '    <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
       '  </svg>' +
-      '  <span class="edisk-core">' + escH(toTitleToken(node.name || node.id)) + '</span>' +
+      '  <span class="edisk-core"></span>' +
+      '  <span class="edisk-braille edisk-braille--visible">' + brailleMarkup(bits, accent) + '</span>' +
       '</div>';
   }
 
@@ -272,6 +275,9 @@
       '      </svg>' +
       '      <div class="hero-logo-pearl-slot" aria-hidden="true"></div>' +
       '    </div>' +
+      '    <button class="hero-logo-droplet-hit" type="button" aria-label="Droplet meaning">' +
+      '      <span class="hero-logo-droplet-tip">Droplet: the catalytic seed where semantic structure condenses into directed action.</span>' +
+      '    </button>' +
       '  </div>' +
       '  <div class="hero-badge">' +
       '    <p class="hero-kicker">' + escH(NEXUS.kicker) + '</p>' +
@@ -359,6 +365,8 @@
       const cls = node.color === 'magenta' ? 'edisk edisk--magenta' : 'edisk edisk--cyan';
       const pearlRgb = resolvePearlRgb(node, index);
       const dot = Number(node.brailleDot) || (index + 1);
+      const bits = brailleBitsForNode(node, index);
+      const accent = node.color === 'magenta' ? 'magenta' : 'cyan';
       const col = dot <= 3 ? 1 : 2;
       const row = dot <= 3 ? dot : (dot - 3);
       return '' +
@@ -369,7 +377,9 @@
         '      <circle class="edisk-ring edisk-ring-b" cx="50" cy="50" r="31"></circle>' +
         '      <circle class="edisk-ring edisk-ring-a" cx="50" cy="50" r="22"></circle>' +
         '    </svg>' +
-        '    <span class="edisk-core">' + escH(node.name) + '</span>' +
+        '    <span class="edisk-core"></span>' +
+        '    <span class="edisk-braille">' + brailleMarkup(bits, accent) + '</span>' +
+        '    <span class="edisk-name">' + nodeNameMarkup(node.name) + '</span>' +
         '  </button>' +
         '</div>';
     }).join('');
@@ -401,6 +411,35 @@
         renderHeroDetail(node);
       });
     });
+  }
+
+  function brailleBitsForNode(node, index) {
+    const dot = Number(node && node.brailleDot) || (index + 1);
+    const bits = ['0', '0', '0', '0', '0', '0'];
+    const normalized = Math.max(1, Math.min(6, dot));
+    bits[normalized - 1] = '1';
+    return bits.join('');
+  }
+
+  function brailleMarkup(bits, accent) {
+    return '<span class="braille-row">' + bits.split('').map(function (bit) {
+      const className = bit === '1' ? 'braille-dot is-on ' + accent : 'braille-dot';
+      return '<span class="' + className + '"></span>';
+    }).join('') + '</span>';
+  }
+
+  function nodeNameMarkup(label) {
+    return nodeLabelLines(label).map(function (line) {
+      return '<span class="edisk-name-line">' + escH(line) + '</span>';
+    }).join('');
+  }
+
+  function nodeLabelLines(label) {
+    const words = String(label || '').trim().split(/\s+/).filter(Boolean);
+    if (words.length <= 1) return [String(label || '')];
+    if (words.length === 2) return words;
+    const midpoint = Math.ceil(words.length / 2);
+    return [words.slice(0, midpoint).join(' '), words.slice(midpoint).join(' ')];
   }
 
   function clearActive() {
