@@ -933,6 +933,10 @@
   bottom: auto !important;
 }
 
+.af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) {
+  gap: 0;
+}
+
 .af-overview-minimap .react-flow__minimap-mask {
   fill: transparent;
 }
@@ -2076,7 +2080,7 @@
   }
 
   .af-main-grid-job {
-    gap: 16px;
+    gap: 0;
   }
 
   .af-main-grid-job .af-canvas-panel,
@@ -2112,8 +2116,8 @@
   .af-main-grid-job.is-flow-hidden .af-inspector-panel {
     order: 2;
     grid-column: 1;
-    margin-top: 14px;
-    padding-top: 0.4rem;
+    margin-top: 0;
+    padding-top: 0;
     border-top: 0;
   }
 
