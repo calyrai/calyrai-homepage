@@ -203,6 +203,17 @@ loadGetBezierPath();
   const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
   const HANDOFF_NODE_DWELL_SECONDS = 2.4;
 
+  // Craft.js-style palette — node templates available to drag/click onto canvas
+  const NODE_TEMPLATES = [
+    { id: 'input',    type: 'braille', data: { name: 'FASTA Input',          shortLabel: 'FASTA',       description: 'Primary FASTA sequence intake',             bits: '100000', accent: 'cyan',    semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'parse',    type: 'braille', data: { name: 'QTY Transform',         shortLabel: 'QTY',         description: 'Semantic QTY transformation',               bits: '110000', accent: 'cyan',    semanticDomain: 'ai-transform',       coherence: 0.82, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'mask',     type: 'braille', data: { name: 'Domain Segmentation',    shortLabel: 'Domain',      description: 'Domain-aware segmentation and masking',     bits: '111000', accent: 'magenta', semanticDomain: 'ai-transform',       coherence: 0.78, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'build',    type: 'braille', data: { name: 'AF3 Payload Builder',    shortLabel: 'AF3 Build',   description: 'Compile AF3 submission payload',            bits: '111100', accent: 'white',   semanticDomain: 'runtime-hpc',        coherence: 0.85, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'submit',   type: 'braille', data: { name: 'ASC Submission',         shortLabel: 'ASC Submit',  description: 'Dispatch runtime payload to ASC cluster',   bits: '111110', accent: 'cyan',    semanticDomain: 'runtime-hpc',        coherence: 0.80, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'annotate', type: 'braille', data: { name: 'Annotation Step',        shortLabel: 'Annotate',    description: 'Manual annotation checkpoint',              bits: '010101', accent: 'cyan',    semanticDomain: 'topology',           coherence: 0.75, relayDelay: 0, cycleDuration: 24 } },
+    { id: 'custom',   type: 'braille', data: { name: 'Custom Step',            shortLabel: 'Custom',      description: 'User-defined workflow step',                bits: '101010', accent: 'magenta', semanticDomain: 'topology',           coherence: 0.70, relayDelay: 0, cycleDuration: 24 } }
+  ];
+
   const baseNodes = [
     {
       id: 'input',
@@ -275,6 +286,9 @@ loadGetBezierPath();
     const [busy, setBusy] = useState(false);
     const [jobState, setJobState] = useState({ jobId: '', status: 'idle', progress: 0 });
     const [lastPayload, setLastPayload] = useState(null);
+    const [paletteVisible, setPaletteVisible] = useState(false);
+    const [canUndo, setCanUndo] = useState(false);
+    const [canRedo, setCanRedo] = useState(false);
 
     const [flowInstance, setFlowInstance] = useState(null);
     const flowShellRef = useRef(null);
@@ -285,6 +299,8 @@ loadGetBezierPath();
     const flowToggleLockRef = useRef(false);
     const initialAutoLayoutDoneRef = useRef(false);
     const initialViewportFitDoneRef = useRef(false);
+    const historyRef = useRef({ stack: [baseNodes.map(function(n) { return Object.assign({}, n); })], index: 0 });
+    const nodeCounterRef = useRef(0);
 
     useEffect(function () {
       var nextCount = 0;
@@ -355,6 +371,81 @@ loadGetBezierPath();
       // Keep moved nodes fully visible and avoid clipping at panel edges.
       fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.08 : 0.12);
     };
+
+    // ── Craft.js-style history, palette & layer helpers ──────────────────────
+    function setNodesWithHistory(updater) {
+      setGraphNodes(function(current) {
+        const next = typeof updater === 'function' ? updater(current) : updater;
+        const h = historyRef.current;
+        h.stack = h.stack.slice(0, h.index + 1).concat([next.map(function(n) { return Object.assign({}, n); })]);
+        h.index = h.stack.length - 1;
+        setCanUndo(true);
+        setCanRedo(false);
+        return next;
+      });
+    }
+
+    function undo() {
+      const h = historyRef.current;
+      if (h.index <= 0) return;
+      h.index -= 1;
+      setGraphNodes(h.stack[h.index].map(function(n) { return Object.assign({}, n); }));
+      setCanUndo(h.index > 0);
+      setCanRedo(true);
+    }
+
+    function redo() {
+      const h = historyRef.current;
+      if (h.index >= h.stack.length - 1) return;
+      h.index += 1;
+      setGraphNodes(h.stack[h.index].map(function(n) { return Object.assign({}, n); }));
+      setCanUndo(true);
+      setCanRedo(h.index < h.stack.length - 1);
+    }
+
+    function addNodeFromTemplate(template, position) {
+      nodeCounterRef.current += 1;
+      const newId = template.id + '-c' + nodeCounterRef.current;
+      const newNode = {
+        id: newId,
+        type: template.type,
+        position: position || {
+          x: 160 + ((nodeCounterRef.current * 52) % 360),
+          y: 160 + ((nodeCounterRef.current * 40) % 200)
+        },
+        data: Object.assign({}, template.data)
+      };
+      setNodesWithHistory(function(current) { return current.concat(newNode); });
+      setHasUserMovedNodes(true);
+      setActivity(function(lines) { return lines.concat('added: ' + template.data.name); });
+    }
+
+    function removeNode(nodeId) {
+      setNodesWithHistory(function(current) {
+        return current.filter(function(n) { return n.id !== nodeId; });
+      });
+      setActiveNodeId(function(current) { return current === nodeId ? null : current; });
+      setActivity(function(lines) { return lines.concat('removed: ' + nodeId); });
+    }
+
+    const onDrop = function(e) {
+      e.preventDefault();
+      const templateId = e.dataTransfer ? e.dataTransfer.getData('application/af-node-template') : null;
+      if (!templateId || !flowInstance) return;
+      const template = NODE_TEMPLATES.find(function(t) { return t.id === templateId; });
+      if (!template) return;
+      const position = typeof flowInstance.screenToFlowPosition === 'function'
+        ? flowInstance.screenToFlowPosition({ x: e.clientX, y: e.clientY })
+        : { x: e.clientX, y: e.clientY };
+      addNodeFromTemplate(template, position);
+    };
+
+    const onDragOver = function(e) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+    };
+    // ─────────────────────────────────────────────────────────────────────────
+
     function layoutNodesForWidth(width, viewMode) {
       if (viewMode === 'split') {
         var splitSpacing = Math.max(190, Math.min(250, Math.round(width * 0.23)));
@@ -1071,6 +1162,33 @@ loadGetBezierPath();
     return html`
       <div className="af-editor-shell">
         <section className="af-toolbar">
+          <div className="af-toolbar-actions">
+            <button
+              className=${'af-action-btn af-palette-toggle' + (paletteVisible ? ' is-active' : '')}
+              type="button"
+              onClick=${function() { setPaletteVisible(function(v) { return !v; }); }}
+              title="Toggle node palette"
+              aria-label="Toggle node palette"
+            >
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
+                <rect x="2" y="4" width="5" height="5" rx="1" fill="currentColor"/>
+                <rect x="2" y="11" width="5" height="5" rx="1" fill="currentColor"/>
+                <rect x="2" y="17" width="5" height="4" rx="1" fill="currentColor"/>
+                <line x1="10" y1="6.5" x2="22" y2="6.5" stroke="currentColor" stroke-width="1.8"/>
+                <line x1="10" y1="13.5" x2="22" y2="13.5" stroke="currentColor" stroke-width="1.8"/>
+                <line x1="10" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="1.8"/>
+              </svg>
+              Palette
+            </button>
+            <button className="af-action-btn af-undo-btn" type="button" disabled=${!canUndo} onClick=${undo} title="Undo" aria-label="Undo">
+              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="currentColor"/></svg>
+              Undo
+            </button>
+            <button className="af-action-btn af-redo-btn" type="button" disabled=${!canRedo} onClick=${redo} title="Redo" aria-label="Redo">
+              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 15.7c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 15.5h9V6.5l-3.6 4.1z" fill="currentColor"/></svg>
+              Redo
+            </button>
+          </div>
           <div className="af-mode-ruler">
             <div className="af-ruler-wrapper">
               <div className="af-ruler-track"></div>
@@ -1114,6 +1232,33 @@ loadGetBezierPath();
         <div className=${'af-main-grid af-main-grid-job' + (flowHidden ? ' is-flow-hidden' : '') + (inspectorHidden ? ' is-inspector-hidden' : '')}>
 
           <section className=${'af-canvas-panel' + (flowHidden ? ' is-hidden' : '')}>
+            ${paletteVisible ? html`
+              <aside className="af-palette-panel">
+                <div className="af-palette-head">Components</div>
+                <div className="af-palette-body">
+                  ${NODE_TEMPLATES.map(function(tpl) {
+                    return html`
+                      <div
+                        key=${tpl.id}
+                        className="af-palette-item"
+                        draggable=${true}
+                        onDragStart=${function(e) {
+                          if (e.dataTransfer) {
+                            e.dataTransfer.setData('application/af-node-template', tpl.id);
+                            e.dataTransfer.effectAllowed = 'copy';
+                          }
+                        }}
+                        onClick=${function() { addNodeFromTemplate(tpl); }}
+                        title=${'Add ' + tpl.data.name}
+                      >
+                        <span className=${'af-palette-dot is-' + tpl.data.accent}></span>
+                        <span className="af-palette-label">${tpl.data.shortLabel}</span>
+                      </div>
+                    `;
+                  })}
+                </div>
+              </aside>
+            ` : null}
             <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef}>
               <${ReactFlow}
                 key=${'reactflow-' + flowRenderKey}
@@ -1127,6 +1272,8 @@ loadGetBezierPath();
                 onPaneClick=${clearNodeSelection}
                 fitView=${false}
                 fitViewOptions=${{ padding: 0.1 }}
+                onDrop=${onDrop}
+                onDragOver=${onDragOver}
                 nodesDraggable=${moveModeEnabled}
                 nodesConnectable=${false}
                 elementsSelectable=${false}
@@ -1229,6 +1376,30 @@ loadGetBezierPath();
                     >
                       ${bitsToBrailleChar(item.bits)}
                     </button>
+                  `;
+                })}
+              </div>
+            `)}
+
+            ${renderInspectorSection('layers', 'Layers', html`
+              <div className="af-layers-list">
+                ${graphNodes.slice().reverse().map(function(node) {
+                  const isActive = node.id === activeNodeId;
+                  return html`
+                    <div
+                      key=${node.id}
+                      className=${'af-layer-item' + (isActive ? ' is-active' : '')}
+                      onClick=${function() { setActiveNodeId(node.id); }}
+                    >
+                      <span className=${'af-layer-dot is-' + (node.data.accent || 'cyan')}></span>
+                      <span className="af-layer-name">${node.data.shortLabel || node.data.name}</span>
+                      <button
+                        className="af-layer-delete"
+                        type="button"
+                        title="Remove node"
+                        onClick=${function(e) { e.stopPropagation(); removeNode(node.id); }}
+                      >×</button>
+                    </div>
                   `;
                 })}
               </div>

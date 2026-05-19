@@ -2400,3 +2400,218 @@
 .af-ruler-slider.is-editor .af-ruler-label::before {
   content: 'Editor →';
 }
+
+/* ── Craft.js-style toolbar action buttons ──────────────────────────────── */
+.af-toolbar-actions {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 10;
+}
+
+.af-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.22rem 0.6rem;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(143, 198, 255, 0.72);
+  background: rgba(6, 14, 26, 0.72);
+  border: 1px solid rgba(117, 169, 219, 0.22);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: color 180ms, background 180ms, border-color 180ms, opacity 180ms;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.af-action-btn:hover {
+  color: #8fc6ff;
+  background: rgba(93, 200, 255, 0.08);
+  border-color: rgba(93, 200, 255, 0.38);
+}
+
+.af-action-btn.is-active,
+.af-action-btn.is-active:hover {
+  color: #5dc8ff;
+  background: rgba(93, 200, 255, 0.14);
+  border-color: rgba(93, 200, 255, 0.55);
+}
+
+.af-action-btn:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.af-action-btn svg {
+  flex-shrink: 0;
+  opacity: 0.88;
+}
+
+/* ── Palette panel ───────────────────────────────────────────────────────── */
+.af-canvas-panel {
+  position: relative;
+}
+
+.af-palette-panel {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 50;
+  width: 170px;
+  background: rgba(6, 14, 26, 0.88);
+  border: 1px solid rgba(117, 169, 219, 0.22);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
+}
+
+.af-palette-head {
+  padding: 0.45rem 0.7rem 0.38rem;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(117, 169, 219, 0.55);
+  border-bottom: 1px solid rgba(117, 169, 219, 0.14);
+}
+
+.af-palette-body {
+  padding: 0.3rem 0;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(93, 200, 255, 0.2) transparent;
+}
+
+.af-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.7rem;
+  cursor: grab;
+  transition: background 140ms;
+  border-radius: 0;
+}
+
+.af-palette-item:hover {
+  background: rgba(93, 200, 255, 0.08);
+}
+
+.af-palette-item:active {
+  cursor: grabbing;
+}
+
+.af-palette-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.af-palette-dot.is-cyan,
+.af-layer-dot.is-cyan {
+  background: #5dc8ff;
+  box-shadow: 0 0 4px rgba(93, 200, 255, 0.5);
+}
+
+.af-palette-dot.is-magenta,
+.af-layer-dot.is-magenta {
+  background: #ff48c4;
+  box-shadow: 0 0 4px rgba(255, 72, 196, 0.5);
+}
+
+.af-palette-dot.is-white,
+.af-layer-dot.is-white {
+  background: #e8f2ff;
+  box-shadow: 0 0 4px rgba(232, 242, 255, 0.35);
+}
+
+.af-palette-label {
+  font-size: 11px;
+  font-weight: 450;
+  color: rgba(232, 242, 255, 0.82);
+  letter-spacing: 0.02em;
+}
+
+/* ── Layers list (in inspector) ──────────────────────────────────────────── */
+.af-layers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.af-layer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 140ms;
+  user-select: none;
+}
+
+.af-layer-item:hover {
+  background: rgba(93, 200, 255, 0.06);
+}
+
+.af-layer-item.is-active {
+  background: rgba(93, 200, 255, 0.12);
+}
+
+.af-layer-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.af-layer-name {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 450;
+  color: rgba(232, 242, 255, 0.82);
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.af-layer-delete {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1;
+  color: rgba(143, 198, 255, 0.4);
+  background: none;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 140ms, background 140ms;
+}
+
+.af-layer-item:hover .af-layer-delete {
+  display: flex;
+}
+
+.af-layer-delete:hover {
+  color: #ff48c4;
+  background: rgba(255, 72, 196, 0.1);
+}
