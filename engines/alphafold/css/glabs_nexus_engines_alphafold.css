@@ -1295,6 +1295,10 @@
   transition: grid-template-columns 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) {
+  margin-top: -34px;
+}
+
 .af-main-grid-job.is-inspector-hidden {
   grid-template-columns: minmax(0, 1fr) 0;
 }
@@ -2056,6 +2060,7 @@
     grid-template-columns: 1fr;
     min-height: auto;
     height: auto;
+    margin-top: 28px;
   }
 
   .af-main-grid-job {
@@ -2095,8 +2100,8 @@
   .af-main-grid-job.is-flow-hidden .af-inspector-panel {
     order: 2;
     grid-column: 1;
-    margin-top: 120px;
-    padding-top: 3.2rem;
+    margin-top: 14px;
+    padding-top: 0.4rem;
     border-top: 0;
   }
 
