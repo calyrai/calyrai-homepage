@@ -87,6 +87,9 @@
     - id: md
       title: MD and LAMMPS
       src: docs/inst_md.md
+    - id: calyr_interface_contract
+      title: Calyr interface contract
+      src: docs/calyr_interface_contract.md
 
 - id: nexus
   title: Nexus
@@ -116,6 +119,9 @@
     - id: matomic_snippets
       title: Metabolic snippet catalog
       src: docs/method_matomic_snippets.md
+    - id: s_layer_reconstruction_howto
+      title: S-layer reconstruction how-to
+      src: docs/method_s_layer_reconstruction_howto.md
     - id: roadmap
       title: Roadmap
       src: docs/roadmap.md
@@ -239,11 +245,14 @@
     - id: blog_index
       title: Gallery · Blog
       src: docs/projects_blog_index.md
+    - id: post_privacy_preserving_structural_inference
+      title: Gallery · Privacy-Preserving Structural Inference
+      src: docs/projects_post_privacy_preserving_structural_inference.md
     - id: post_saxs_sasview
       title: Gallery · SAS Opsis
       src: docs/projects_post_saxs_sasview.md
     - id: post_spr_data
-      title: Gallery · SPR extended theory
+      title: Gallery · SPR
       src: docs/projects_post_spr_data.md
     - id: post_sbpa
       title: Gallery · SBPA — Structural Bayesian Protein Assembly

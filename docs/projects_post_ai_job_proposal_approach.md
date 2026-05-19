@@ -4,6 +4,8 @@ Project post
 
  This post is focused on a **shared proposal approach**: job proposals and research proposals run under the same proposal system, with mode-specific packet fields.
 
+ Context note: this proposal layer completes the warehousing approach for job applications by standardizing proposal artifacts as reusable records linked to the same operational pipeline.
+
  Current phase: private/internal use for evaluation.
  Release direction: public-facing interface once the workflow is validated.
 
@@ -14,24 +16,24 @@ Project post
 
 ## Proposal strategy
 
-1. Opportunity framing
+- Opportunity framing
    Define the proposal target as a problem-impact pair: what pain exists, for whom, and why now.
 
-2. Fit statement
+- Fit statement
    Write a concise fit argument linking the role or call to concrete evidence:
    domain proof, delivery proof, and collaboration proof.
 
-3. Value map
+- Value map
    Present expected outcomes in measurable terms (time-to-result, quality uplift, risk reduction, reproducibility gain).
 
-4. Execution design
+- Execution design
    Include a practical delivery path:
    scope slices, milestones, dependencies, and review cadence.
 
-5. Risk and mitigation
+- Risk and mitigation
    Pre-commit to risk handling with explicit fallback paths and decision points.
 
-6. Closing signal
+- Closing signal
    End with a clear next-step request: interview slot, technical discussion, or scoped pilot proposal.
 
 ## One framework, two proposal modes
@@ -63,6 +65,22 @@ Research mode adds:
 - **Proposal approach** asks: "How do we articulate value and execution clearly enough to win?"
 - **Application process** asks: "How do we operate submissions consistently?"
 - **Evaluation layer** asks: "How are opportunities scored and ranked computationally?"
+
+## Apply this now
+
+- Write a one-line problem-impact framing for the target role or call.
+- Draft a short fit statement with three proofs: domain proof, delivery proof, collaboration proof.
+- Add a value map with measurable outcomes: speed, quality, risk reduction, reproducibility.
+- Attach a compact execution path: scope slices, milestones, dependencies, review cadence.
+- Add one risk table with fallback decisions before submission.
+- End with one explicit next-step request: interview, technical call, or scoped pilot.
+
+## Submission-ready artifacts
+
+- Role or call alignment brief.
+- Targeted CV variant.
+- 30-60-90 plan or work package outline.
+- Optional evidence appendix with links to prior outcomes.
 
 ## Related runtime
 

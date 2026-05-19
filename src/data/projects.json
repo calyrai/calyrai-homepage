@@ -23,6 +23,20 @@
     "url": "projects/saxs_interface.html"
   },
   {
+    "id": "redhuman",
+    "title": "mAtomic",
+    "subtitle": "Metabolic modelling and thermodynamic consistency",
+    "url": "matomic_lab.html",
+    "color": "#ff9a7a"
+  },
+  {
+    "id": "saxs_keratin",
+    "title": "Keratin",
+    "subtitle": "Fibrous protein SAS and structural analysis",
+    "url": "publications.html#keratin-modelling",
+    "color": "#ffd36b"
+  },
+  {
     "id": "epistemic-damage",
     "title": "Epistemic Damage",
     "url": "projects/epistemic_damage.html"
@@ -44,7 +58,7 @@
   },
   {
     "id": "spr-data",
-    "title": "SPR – Binding State Surfaces",
+    "title": "SPR",
     "url": "projects/spr_data.html"
   },
   {
@@ -76,9 +90,9 @@
   },
   {
     "id": "spr-kinetic-modes",
-    "title": "SPR Kinetic Modes & Modelling",
+    "title": "SPR Modes",
     "subtitle": "Gillespie simulation · PCA basis · constraint inference",
-    "url": "projects/spr_kinetic_modes.html",
+    "url": "publications.html#spr-kinetic-modes",
     "color": "#24f3ff"
   },
   {
@@ -96,13 +110,6 @@
     "color": "#ffd36b"
   },
   {
-    "id": "saxs_keratin",
-    "title": "SAXS Keratin",
-    "subtitle": "Fibrous protein scattering and structural analysis",
-    "url": "projects/saxs_keratin.html",
-    "color": "#ffd36b"
-  },
-  {
     "id": "saxs_sbpa",
     "title": "SAXS SBPA",
     "subtitle": "Structure-based potential analysis with SAXS validation",
@@ -111,14 +118,14 @@
   },
   {
     "id": "paper-spr-kinetic-modes",
-    "title": "SPR Kinetic Modes",
+    "title": "SPR Modes Paper",
     "subtitle": "Manuscript · active",
     "url": "publications.html#spr-kinetic-modes",
     "color": "#c084fc"
   },
   {
     "id": "paper-spr-evaluation",
-    "title": "SPR Evaluation Concept",
+    "title": "SPR Eval",
     "subtitle": "Manuscript · active",
     "url": "publications.html#spr-evaluation-concept",
     "color": "#c084fc"

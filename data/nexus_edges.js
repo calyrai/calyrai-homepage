@@ -29,7 +29,15 @@ window.CALYR_NEXUS_EDGES = [
   },
   {
     "from": "saxs_state_inference",
+    "to": "redhuman"
+  },
+  {
+    "from": "saxs_state_inference",
     "to": "redgem"
+  },
+  {
+    "from": "saxs_state_inference",
+    "to": "saxs_keratin"
   },
   {
     "from": "saxs_state_inference",

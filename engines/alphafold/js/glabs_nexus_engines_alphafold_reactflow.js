@@ -4,6 +4,7 @@ import htm from 'https://esm.sh/htm@3.1.1';
 import ReactFlow, {
   applyNodeChanges,
   Background,
+  ControlButton,
   Controls,
   Handle,
   MiniMap,
@@ -163,6 +164,7 @@ loadGetBezierPath();
       'rf-braille-node',
       'is-' + (data.accent || 'cyan'),
       data.isActive ? 'is-focused' : '',
+      data.isLoadEntry ? 'is-load-entry' : '',
       data.progressState ? 'is-progress-' + data.progressState : ''
     ].filter(Boolean).join(' ');
 
@@ -170,7 +172,8 @@ loadGetBezierPath();
     const domainStyle = {
       '--domain-rgb': domainGlowRgb(data.semanticDomain),
       '--domain-coherence': String(coherence),
-      '--domain-glow-alpha': String((coherence * 0.42).toFixed(2))
+      '--domain-glow-alpha': String((coherence * 0.42).toFixed(2)),
+      '--entry-delay': String(Math.max(0, Number(data.loadOrder || 0)) * 0.16) + 's'
     };
 
     return html`
@@ -204,31 +207,31 @@ loadGetBezierPath();
     {
       id: 'input',
       type: 'braille',
-      position: { x: 84, y: 224 },
+      position: { x: 84, y: 118 },
       data: { name: 'FASTA Input', shortLabel: 'FASTA', description: 'Primary FASTA sequence intake', bits: '100000', accent: 'cyan', semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0.0, cycleDuration: 24 }
     },
     {
       id: 'parse',
       type: 'braille',
-      position: { x: 314, y: 148 },
+      position: { x: 314, y: 92 },
       data: { name: 'QTY Transform', shortLabel: 'QTY', description: 'Semantic QTY transformation', bits: '110000', accent: 'cyan', semanticDomain: 'ai-transform', coherence: 0.82, relayDelay: 5.28, cycleDuration: 24 }
     },
     {
       id: 'mask',
       type: 'braille',
-      position: { x: 564, y: 112 },
+      position: { x: 564, y: 76 },
       data: { name: 'Domain Segmentation', shortLabel: 'Domain', description: 'Domain-aware segmentation and masking', bits: '111000', accent: 'magenta', semanticDomain: 'ai-transform', coherence: 0.78, relayDelay: 10.56, cycleDuration: 24 }
     },
     {
       id: 'build',
       type: 'braille',
-      position: { x: 814, y: 148 },
+      position: { x: 814, y: 92 },
       data: { name: 'AF3 Payload Builder', shortLabel: 'AF3 Build', description: 'Compile AF3 submission payload', bits: '111100', accent: 'white', semanticDomain: 'runtime-hpc', coherence: 0.85, relayDelay: 15.84, cycleDuration: 24 }
     },
     {
       id: 'submit',
       type: 'braille',
-      position: { x: 1044, y: 224 },
+      position: { x: 1044, y: 118 },
       data: { name: 'ASC Submission', shortLabel: 'ASC Submit', description: 'Dispatch runtime payload to ASC cluster', bits: '111110', accent: 'cyan', semanticDomain: 'runtime-hpc', coherence: 0.80, relayDelay: 21.12, cycleDuration: 24 }
     }
   ];
@@ -249,7 +252,9 @@ loadGetBezierPath();
   };
 
   function App() {
-    const [activeNodeId, setActiveNodeId] = useState('input');
+    const [activeNodeId, setActiveNodeId] = useState(null);
+    const [moveModeEnabled, setMoveModeEnabled] = useState(false);
+    const [nodeVisibleCount, setNodeVisibleCount] = useState(0);
     const [handoffState, setHandoffState] = useState({ phase: 'edge', edgeIndex: 0 });
     const [flowRenderKey, setFlowRenderKey] = useState(0);
     const [flowHidden, setFlowHidden] = useState(false);
@@ -279,6 +284,22 @@ loadGetBezierPath();
     const resetLockRef = useRef(false);
     const flowToggleLockRef = useRef(false);
     const initialAutoLayoutDoneRef = useRef(false);
+    const initialViewportFitDoneRef = useRef(false);
+
+    useEffect(function () {
+      var nextCount = 0;
+      setNodeVisibleCount(0);
+      var timerId = setTimeout(function step() {
+        nextCount += 1;
+        setNodeVisibleCount(nextCount);
+        if (nextCount < workflowNodeOrder.length) {
+          timerId = setTimeout(step, 280);
+        }
+      }, 240);
+      return function () {
+        clearTimeout(timerId);
+      };
+    }, []);
 
     useEffect(function () {
       return function () {
@@ -332,7 +353,7 @@ loadGetBezierPath();
     const handleNodeDragStop = function () {
       setHasUserMovedNodes(true);
       // Keep moved nodes fully visible and avoid clipping at panel edges.
-      fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.3 : 0.26);
+      fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.08 : 0.12);
     };
     function layoutNodesForWidth(width) {
       if (width <= 780) {
@@ -345,11 +366,11 @@ loadGetBezierPath();
         ];
       }
       return [
-        { id: 'input', position: { x: 84, y: 224 } },
-        { id: 'parse', position: { x: 314, y: 148 } },
-        { id: 'mask', position: { x: 564, y: 112 } },
-        { id: 'build', position: { x: 814, y: 148 } },
-        { id: 'submit', position: { x: 1044, y: 224 } }
+        { id: 'input', position: { x: 84, y: 118 } },
+        { id: 'parse', position: { x: 314, y: 92 } },
+        { id: 'mask', position: { x: 564, y: 76 } },
+        { id: 'build', position: { x: 814, y: 92 } },
+        { id: 'submit', position: { x: 1044, y: 118 } }
       ];
     }
 
@@ -403,9 +424,6 @@ loadGetBezierPath();
     }
 
     const setWorkspaceMode = function (mode) {
-      if (mode !== 'flow' && !activeNodeId) {
-        mode = 'flow';
-      }
       const nextFlowHidden = mode === 'editor';
       const nextInspectorHidden = mode === 'flow';
 
@@ -429,9 +447,7 @@ loadGetBezierPath();
     }, []);
 
     useEffect(function () {
-      if (!activeNodeId && currentViewMode !== 'flow') {
-        setWorkspaceMode('flow');
-      }
+      if (!activeNodeId) return;
     }, [activeNodeId, currentViewMode]);
 
     const relayNodeId = useMemo(function () {
@@ -441,7 +457,11 @@ loadGetBezierPath();
     }, [handoffState]);
 
     const nodes = useMemo(function () {
-      return graphNodes.map(function (node) {
+      return graphNodes
+      .filter(function (node) {
+        return workflowNodeOrder.indexOf(node.id) < nodeVisibleCount;
+      })
+      .map(function (node) {
         return {
           ...node,
           data: {
@@ -450,15 +470,21 @@ loadGetBezierPath();
             progressState: node.id === digestingNodeId ? 'active' : 'pending',
             note: workflowNotes[node.id] || '',
             relayEnabled: node.id === relayNodeId,
+            loadOrder: workflowNodeOrder.indexOf(node.id),
+            isLoadEntry: true,
             nodeDwell: HANDOFF_NODE_DWELL_SECONDS,
             onSelect: focusNodeForEditing
           }
         };
       });
-    }, [activeNodeId, graphNodes, digestingNodeId, workflowNotes, relayNodeId]);
+    }, [activeNodeId, graphNodes, digestingNodeId, workflowNotes, relayNodeId, nodeVisibleCount]);
 
     const edges = useMemo(function () {
-      return initialEdges.map(function (edge) {
+      return initialEdges
+      .filter(function (edge) {
+        return workflowNodeOrder.indexOf(edge.source) < nodeVisibleCount && workflowNodeOrder.indexOf(edge.target) < nodeVisibleCount;
+      })
+      .map(function (edge) {
         const edgeIndex = initialEdges.findIndex(function (candidate) { return candidate.id === edge.id; });
         const isActiveEdge = handoffState.phase === 'edge' && edgeIndex === handoffState.edgeIndex;
         const runtime = isActiveEdge ? 'active' : 'complete';
@@ -473,7 +499,7 @@ loadGetBezierPath();
           }
         };
       });
-    }, [handoffState]);
+    }, [handoffState, nodeVisibleCount]);
 
     const activeNode = useMemo(function () {
       if (!activeNodeId) return null;
@@ -794,15 +820,48 @@ loadGetBezierPath();
       if (!slider) return;
 
       const wrapper = slider.parentElement;
-      const wrapperRect = wrapper.getBoundingClientRect();
+      const resolveStops = function () {
+        var wrapperRect = wrapper.getBoundingClientRect();
+        var width = Math.max(1, wrapperRect.width);
+        var centerFor = function (selector) {
+          var el = wrapper.querySelector(selector);
+          if (!el) return null;
+          var rect = el.getBoundingClientRect();
+          return rect.left - wrapperRect.left + rect.width / 2;
+        };
+
+        var flowX = centerFor('.af-mode-flow .af-mode-button-cell');
+        var splitX = centerFor('.af-mode-split .af-mode-button-cell');
+        var editorX = centerFor('.af-mode-editor .af-mode-button-cell');
+
+        if (![flowX, splitX, editorX].every(function (value) { return Number.isFinite(value); })) {
+          var markers = wrapper.querySelector('.af-ruler-markers');
+          var markersRect = markers ? markers.getBoundingClientRect() : wrapperRect;
+          var left = Math.max(0, markersRect.left - wrapperRect.left);
+          var laneWidth = Math.max(1, markersRect.width);
+          flowX = left;
+          splitX = left + laneWidth / 2;
+          editorX = left + laneWidth;
+        }
+
+        return {
+          flowX: flowX,
+          splitX: splitX,
+          editorX: editorX,
+          thresholdFlowSplit: (flowX + splitX) / 2,
+          thresholdSplitEditor: (splitX + editorX) / 2,
+          width: width
+        };
+      };
 
       const doRulerDrag = function (moveEvent) {
-        const x = moveEvent.clientX - wrapperRect.left;
-        const ratio = Math.max(0, Math.min(1, x / wrapperRect.width));
+        const stops = resolveStops();
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const x = Math.max(0, Math.min(stops.width, moveEvent.clientX - wrapperRect.left));
 
-        if (ratio < 0.33) {
+        if (x < stops.thresholdFlowSplit) {
           setWorkspaceMode('flow');
-        } else if (ratio < 0.67) {
+        } else if (x < stops.thresholdSplitEditor) {
           setWorkspaceMode('split');
         } else {
           setWorkspaceMode('editor');
@@ -823,16 +882,46 @@ loadGetBezierPath();
     useEffect(function () {
       const slider = rulerSliderRef.current;
       if (!slider) return;
+
+      const wrapper = slider.parentElement;
+      if (!wrapper) return;
+
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const wrapperWidth = Math.max(1, wrapperRect.width);
+      const centerFor = function (selector) {
+        const el = wrapper.querySelector(selector);
+        if (!el) return null;
+        const rect = el.getBoundingClientRect();
+        return rect.left - wrapperRect.left + rect.width / 2;
+      };
+
+      var flowX = centerFor('.af-mode-flow .af-mode-button-cell');
+      var splitX = centerFor('.af-mode-split .af-mode-button-cell');
+      var editorX = centerFor('.af-mode-editor .af-mode-button-cell');
+
+      if (![flowX, splitX, editorX].every(function (value) { return Number.isFinite(value); })) {
+        const markers = wrapper.querySelector('.af-ruler-markers');
+        const markersRect = markers ? markers.getBoundingClientRect() : wrapperRect;
+        const left = Math.max(0, markersRect.left - wrapperRect.left);
+        const laneWidth = Math.max(1, markersRect.width);
+        flowX = left;
+        splitX = left + laneWidth / 2;
+        editorX = left + laneWidth;
+      }
+
+      var flowStop = (flowX / wrapperWidth) * 100;
+      var splitStop = (splitX / wrapperWidth) * 100;
+      var editorStop = (editorX / wrapperWidth) * 100;
       
       let position = 0;
       if (currentViewMode === 'flow') {
-        position = 0;
+        position = flowStop;
         slider.className = 'af-ruler-slider is-flow';
       } else if (currentViewMode === 'split') {
-        position = 50;
+        position = splitStop;
         slider.className = 'af-ruler-slider is-split';
       } else {
-        position = 100;
+        position = editorStop;
         slider.className = 'af-ruler-slider is-editor';
       }
       
@@ -840,25 +929,70 @@ loadGetBezierPath();
     }, [currentViewMode]);
 
     const fitCanvasToViewport = function (duration, padding) {
-      if (!flowInstance || typeof flowInstance.fitView !== 'function') return;
-      flowInstance.fitView({
-        duration: duration,
-        padding: padding,
-        maxZoom: 1.6
-      });
+      if (!flowInstance) return;
+      const normalizedPadding = Math.max(0.03, Math.min(0.2, Number(padding || 0.08)));
+
+      const bounds = (function () {
+        if (!Array.isArray(graphNodes) || graphNodes.length === 0) return null;
+        var minX = Infinity;
+        var minY = Infinity;
+        var maxX = -Infinity;
+        var maxY = -Infinity;
+        graphNodes.forEach(function (node) {
+          var x = Number(node && node.position && node.position.x);
+          var y = Number(node && node.position && node.position.y);
+          if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+          // Approximate pearl node footprint so fit bounds uses actual visual extents.
+          var left = x - 46;
+          var top = y - 38;
+          var right = x + 202;
+          var bottom = y + 126;
+          minX = Math.min(minX, left);
+          minY = Math.min(minY, top);
+          maxX = Math.max(maxX, right);
+          maxY = Math.max(maxY, bottom);
+        });
+        if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) {
+          return null;
+        }
+        return {
+          x: minX,
+          y: minY,
+          width: Math.max(1, maxX - minX),
+          height: Math.max(1, maxY - minY)
+        };
+      }());
+
+      if (bounds && typeof flowInstance.fitBounds === 'function') {
+        flowInstance.fitBounds(bounds, {
+          duration: duration,
+          padding: normalizedPadding,
+          minZoom: 0.12,
+          maxZoom: 1.95
+        });
+        return;
+      }
+
+      if (typeof flowInstance.fitView === 'function') {
+        flowInstance.fitView({
+          duration: duration,
+          padding: normalizedPadding,
+          minZoom: 0.12,
+          maxZoom: 1.9,
+          includeHiddenNodes: false
+        });
+      }
     };
 
     useEffect(function () {
       if (flowHidden) return;
       const frameId = requestAnimationFrame(function () {
-        fitCanvasToViewport(520, currentViewMode === 'flow' ? 0.28 : 0.24);
+        var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
+        fitCanvasToViewport(fitDuration, currentViewMode === 'flow' ? 0.03 : 0.07);
+        initialViewportFitDoneRef.current = true;
       });
-      const timerId = setTimeout(function () {
-        fitCanvasToViewport(520, currentViewMode === 'flow' ? 0.28 : 0.24);
-      }, 420);
       return function () {
         cancelAnimationFrame(frameId);
-        clearTimeout(timerId);
       };
     }, [currentViewMode, flowHidden, flowInstance, flowRenderKey]);
 
@@ -944,11 +1078,10 @@ loadGetBezierPath();
         </section>
 
 
-
         <div className=${'af-main-grid af-main-grid-job' + (flowHidden ? ' is-flow-hidden' : '') + (inspectorHidden ? ' is-inspector-hidden' : '')}>
 
           <section className=${'af-canvas-panel' + (flowHidden ? ' is-hidden' : '')}>
-            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '')} ref=${flowShellRef}>
+            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef}>
               <${ReactFlow}
                 key=${'reactflow-' + flowRenderKey}
                 nodes=${nodes}
@@ -959,13 +1092,13 @@ loadGetBezierPath();
                 onNodesChange=${onNodesChange}
                 onNodeClick=${function (_event, node) { focusNodeForEditing(node.id); }}
                 onPaneClick=${clearNodeSelection}
-                fitView=${true}
-                fitViewOptions=${{ padding: 0.2 }}
-                nodesDraggable=${true}
+                fitView=${false}
+                fitViewOptions=${{ padding: 0.1 }}
+                nodesDraggable=${moveModeEnabled}
                 nodesConnectable=${false}
                 elementsSelectable=${false}
                 onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
-                panOnDrag=${true}
+                panOnDrag=${moveModeEnabled}
                 panOnScroll=${true}
                 zoomOnScroll=${true}
                 zoomOnPinch=${true}
@@ -979,7 +1112,23 @@ loadGetBezierPath();
                   className="af-flow-controls"
                   position="top-right"
                   showInteractive=${false}
-                />
+                >
+                  <${ControlButton}
+                    className=${'af-move-toggle-btn' + (moveModeEnabled ? ' is-active' : '')}
+                    title=${moveModeEnabled ? 'Move mode active' : 'Move mode inactive'}
+                    aria-label=${moveModeEnabled ? 'Move mode active' : 'Move mode inactive'}
+                    onClick=${function () { setMoveModeEnabled(function (value) { return !value; }); }}
+                  >
+                    ${moveModeEnabled
+                      ? html`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                          <path d="M12 3l2.6 2.6-1.1 1.1h-3V3h1.5zm0 18h-1.5v-3h3l1.1 1.1L12 21zm9-9v1.5h-3v-3l1.1-1.1L21 12zM3 12l2.6-2.6 1.1 1.1v3h-3V12zm9-4.5L8.9 10.6 10 11.7 12 9.7l2 2 1.1-1.1L12 7.5zM12 16.5l3.1-3.1-1.1-1.1-2 2-2-2-1.1 1.1L12 16.5z" fill="currentColor"/>
+                        </svg>`
+                      : html`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                          <path d="M12 3l2.6 2.6-1.1 1.1h-3V3h1.5zm0 18h-1.5v-3h3l1.1 1.1L12 21zm9-9v1.5h-3v-3l1.1-1.1L21 12zM3 12l2.6-2.6 1.1 1.1v3h-3V12z" fill="currentColor" opacity="0.55"/>
+                          <path d="M5 5l14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>`}
+                  </${ControlButton}>
+                </${Controls}>
                 <${MiniMap}
                   className="af-overview-minimap"
                   pannable=${true}
@@ -997,7 +1146,7 @@ loadGetBezierPath();
                   nodeClassName=${function (node) {
                     return node.id === activeNodeId ? 'af-mm-active' : '';
                   }}
-                  maskColor="rgba(2, 7, 12, 0.62)"
+                  maskColor="rgba(2, 7, 12, 0)"
                 />
               </${ReactFlow}>
               <div className="af-flow-overlay">

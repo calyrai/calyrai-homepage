@@ -39,6 +39,9 @@ echo "→ building site pages"
 echo "→ building nexus YAML artifacts"
 "$VENV_PY" scripts/build_nexus_yaml.py
 
+echo "→ building interface YAML artifacts"
+"$VENV_PY" scripts/build_interfaces_yaml.py
+
 echo "→ building epistemic damage homepage metadata"
 "$VENV_PY" scripts/build_epistemic_damage_homepage.py
 

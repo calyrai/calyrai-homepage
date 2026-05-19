@@ -59,7 +59,7 @@ window.CALYR_PUBLICATION_NETWORK = {
 window.CALYR_PUBLICATIONS = [
   {
     "id": "spr-kinetic-modes",
-    "title": "SPR Model Paper (Working Set)",
+    "title": "SPR Model",
     "topic": "spr",
     "status": "progress",
     "pdfs": [
@@ -74,7 +74,7 @@ window.CALYR_PUBLICATIONS = [
   },
   {
     "id": "spr-evaluation-concept",
-    "title": "SPR Data Evaluation (Working Set)",
+    "title": "SPR Eval",
     "topic": "spr",
     "status": "progress",
     "pdfs": [
@@ -90,22 +90,6 @@ window.CALYR_PUBLICATIONS = [
     "method": "Data-evaluation layer for SPR model via latent-space inference",
     "abstract": "Raw SPR response curves encode association and dissociation rate constants in a geometry that classical fitting does not expose. A latent-space encoder trained on Gillespie-generated sensorgram ensembles maps experimental curves into a kinetic-basis space where rate constants are directly separable. The encoder output is a typed KineticBasis object ready for constraint coupling across independent experimental series.",
     "description": "Data-evaluation paper that estimates and validates model parameters from raw SPR response curves."
-  },
-  {
-    "id": "matomic-reaction-class-network",
-    "title": "mAtomic Reaction Class Network (Interactive)",
-    "topic": "redhuman",
-    "status": "progress",
-    "allow_local_preview": true,
-    "pdfs": [
-      {
-        "label": "interactive",
-        "path": "pages/reaction_class_map.html"
-      }
-    ],
-    "method": "Interactive metabolite-reaction network with class-wise energy distributions and parameterized force layout",
-    "abstract": "This publication entry hosts the live metabolite-reaction workspace generated from the energy-assigned reaction corpus. It includes an interactive force-directed network, per-class energy distribution histograms, and filterable reaction tables with thermodynamic annotations.",
-    "description": "Interactive reaction class map integrated into the Publications layer."
   },
   {
     "id": "constraint-coupled-inference",

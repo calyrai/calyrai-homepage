@@ -41,7 +41,7 @@ network:
 manuscripts:
 
   - id: spr-kinetic-modes
-    title: SPR Model Paper (Working Set)
+    title: SPR Model
     topic: spr
     status: progress
     # doi: 10.xxxx/xxxxxxx
@@ -63,7 +63,7 @@ manuscripts:
         path: ../../docs/publishing/Calyr_ai_publishing/nexus_spr_kinetic_modes/nexus_spr_kinetic_modes.pdf
 
   - id: spr-evaluation-concept
-    title: SPR Data Evaluation (Working Set)
+    title: SPR Eval
     topic: spr
     status: progress
     # doi: 10.xxxx/xxxxxxx

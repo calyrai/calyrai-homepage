@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime
 import asyncio
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -67,9 +68,16 @@ class AgoraSyncRequest(BaseModel):
     strict: bool = False
     check_only: bool = False
 
+
+class ShellCommandRequest(BaseModel):
+    session_id: str
+    command: str
+    shell: Optional[str] = None
+
 # ========== IN-MEMORY JOB STORE ==========
 jobs_db: Dict[str, Dict] = {}
 figures_db: Dict[str, List[FigureResponse]] = {}
+shell_sessions_db: Dict[str, Dict[str, str]] = {}
 
 
 def _find_workspace_root() -> Path:
@@ -149,6 +157,47 @@ def _agora_paths() -> tuple[Path, Path, Path]:
     return script, dest_dir, manifest
 
 
+def _resolve_shell(shell_name: Optional[str] = None) -> str:
+    candidates = []
+    if shell_name:
+        normalized = shell_name.strip().lower().replace("/bin/", "")
+        if normalized == "zsh":
+            candidates.append("/bin/zsh")
+        elif normalized == "bash":
+            candidates.append("/bin/bash")
+        elif normalized == "sh":
+            candidates.append("/bin/sh")
+    candidates.extend(["/bin/zsh", "/bin/bash", "/bin/sh"])
+    for candidate in candidates:
+        if Path(candidate).exists():
+            return candidate
+    return "/bin/sh"
+
+
+def _shell_session(session_id: str, shell_name: Optional[str] = None) -> Dict[str, str]:
+    session = shell_sessions_db.setdefault(
+        session_id,
+        {
+            "cwd": str(_find_workspace_root()),
+            "shell": _resolve_shell(shell_name),
+        },
+    )
+    if shell_name:
+        session["shell"] = _resolve_shell(shell_name)
+    return session
+
+
+def _resolve_cwd(current_cwd: str, target: str) -> Path:
+    raw_target = target.strip() or "~"
+    candidate = Path(raw_target).expanduser()
+    if not candidate.is_absolute():
+        candidate = Path(current_cwd) / candidate
+    candidate = candidate.resolve()
+    if not candidate.exists() or not candidate.is_dir():
+        raise HTTPException(status_code=400, detail=f"Directory not found: {raw_target}")
+    return candidate
+
+
 def _read_agora_manifest(manifest: Path) -> List[str]:
     if not manifest.exists():
         return []
@@ -166,6 +215,80 @@ def _read_agora_manifest(manifest: Path) -> List[str]:
 async def health():
     """Health check endpoint"""
     return {"status": "healthy"}
+
+
+@app.post("/shell")
+async def run_shell_command(request: ShellCommandRequest):
+    """Execute one shell command inside a lightweight persistent shell session."""
+    command = request.command.strip()
+    if not command:
+        return {
+            "ok": True,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "cwd": _shell_session(request.session_id, request.shell)["cwd"],
+            "shell": Path(_shell_session(request.session_id, request.shell)["shell"]).name,
+        }
+
+    session = _shell_session(request.session_id, request.shell)
+    shell_path = session["shell"]
+
+    if command in {"exit", "logout"}:
+        shell_sessions_db.pop(request.session_id, None)
+        return {
+            "ok": True,
+            "exit_code": 0,
+            "stdout": "Shell session closed.",
+            "stderr": "",
+            "cwd": str(_find_workspace_root()),
+            "shell": Path(shell_path).name,
+        }
+
+    if command == "pwd":
+        return {
+            "ok": True,
+            "exit_code": 0,
+            "stdout": session["cwd"],
+            "stderr": "",
+            "cwd": session["cwd"],
+            "shell": Path(shell_path).name,
+        }
+
+    if command == "cd" or command.startswith("cd "):
+        destination = command[2:].strip()
+        next_cwd = _resolve_cwd(session["cwd"], destination)
+        session["cwd"] = str(next_cwd)
+        return {
+            "ok": True,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "cwd": session["cwd"],
+            "shell": Path(shell_path).name,
+        }
+
+    try:
+        result = subprocess.run(
+            [shell_path, "-lc", command],
+            cwd=session["cwd"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+            env={**os.environ, "TERM": "xterm-256color"},
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise HTTPException(status_code=504, detail=f"Command timed out after {exc.timeout} seconds")
+
+    return {
+        "ok": result.returncode == 0,
+        "exit_code": result.returncode,
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "cwd": session["cwd"],
+        "shell": Path(shell_path).name,
+    }
 
 @app.post("/login")
 async def login(user: str):
@@ -497,6 +620,7 @@ async def root():
         "version": "0.1.0",
         "endpoints": {
             "POST /run": "Launch simulation job",
+            "POST /shell": "Execute one shell command in a zsh-compatible session",
             "GET /matomic/models": "List mAtomic model files",
             "GET /matomic/models/{model_id}": "Get one mAtomic model",
             "GET /jobs": "List all jobs",

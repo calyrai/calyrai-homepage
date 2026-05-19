@@ -717,7 +717,7 @@
 .af-simple-main {
   max-width: 1520px;
   margin: 0 auto;
-  padding: 1rem 1rem 1.5rem;
+  padding: 0.2rem 1rem 1rem;
 }
 
 .af-simple-header h1 {
@@ -801,7 +801,7 @@
   min-height: 440px;
   border-radius: 0;
   border: 0;
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   flex-shrink: 1;
   z-index: 1;
@@ -818,8 +818,8 @@
 
 .af-flow-overlay {
   position: absolute;
-  top: 0.2rem;
-  left: calc(0.45rem + 90px + 0.45rem);
+  top: 0.72rem;
+  left: calc(0.6rem + 112px + 0.4rem);
   z-index: 30;
   display: block;
 }
@@ -874,14 +874,14 @@
 }
 
 .af-overview-minimap {
-  width: 90px !important;
-  height: 62px !important;
+  width: 112px !important;
+  height: 76px !important;
   border-radius: 8px;
   border: 1px solid rgba(117, 169, 219, 0.3);
   background: rgba(7, 18, 30, 0.95);
   overflow: hidden;
-  top: 0.2rem !important;
-  left: 0.45rem !important;
+  top: 0.72rem !important;
+  left: 0.6rem !important;
   bottom: auto !important;
 }
 
@@ -901,8 +901,19 @@
   background: rgba(16, 40, 62, 0.94) !important;
 }
 
+.af-flow-controls .af-move-toggle-btn svg {
+  display: block;
+}
+
+.af-flow-controls .af-move-toggle-btn.is-active {
+  background: rgba(16, 40, 62, 0.94) !important;
+  border-color: rgba(93, 200, 255, 0.92);
+  box-shadow: 0 0 12px rgba(93, 200, 255, 0.28);
+  color: #f2f9ff;
+}
+
 .af-overview-minimap .react-flow__minimap-mask {
-  fill: rgba(2, 7, 12, 0.62);
+  fill: transparent;
 }
 
 .af-overview-minimap .react-flow__minimap-node {
@@ -1097,8 +1108,10 @@
   border: 1px solid rgba(117, 169, 219, 0.24);
   border-radius: 12px;
   background: rgba(6, 14, 26, 0.84);
-  overflow: hidden;
+  overflow: visible;
   display: block;
+  position: relative;
+  isolation: isolate;
 }
 
 .af-toolbar {
@@ -1106,10 +1119,14 @@
   justify-content: center;
   align-items: center;
   gap: 1.1rem;
-  padding: 0.7rem 0.8rem;
-  border-bottom: 1px solid rgba(117, 169, 219, 0.2);
-  position: relative;
-  z-index: 20;
+  padding: 0.06rem 0.8rem 0;
+  border-bottom: 0;
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  z-index: 120;
+  pointer-events: auto;
 }
 
 .af-toolbar strong {
@@ -1124,8 +1141,6 @@
   font-size: 0.74rem;
 }
 
-
-
 .af-panel-controls {
   display: none;
 }
@@ -1134,8 +1149,9 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0.15rem 0 0.1rem;
+  padding: 0;
   flex: 0 0 auto;
+  pointer-events: auto;
 }
 
 .af-split-button {
@@ -1145,8 +1161,8 @@
   border-radius: 0;
   overflow: visible;
   background: transparent;
-  height: 48px;
-  min-height: 48px;
+  height: 40px;
+  min-height: 40px;
   align-items: center;
   width: 100%;
   max-width: 400px;
@@ -1270,6 +1286,7 @@
 
 .af-main-grid-job {
   grid-template-columns: minmax(0, 61.8%) minmax(320px, 38.2%);
+  margin-top: -86px;
   transition: grid-template-columns 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -1279,6 +1296,20 @@
 
 .af-main-grid-job.is-flow-hidden {
   grid-template-columns: 0 minmax(0, 1fr);
+  margin-top: -14px;
+}
+
+.af-main-grid-job.is-flow-hidden .af-canvas-panel {
+  min-height: 0;
+  height: 0;
+  padding: 0;
+  border-right: 0;
+  overflow: hidden;
+}
+
+.af-main-grid-job.is-flow-hidden .af-flow-root {
+  min-height: 0;
+  height: 0;
 }
 
 .af-left-panel {
@@ -1315,13 +1346,38 @@
   grid-column: 1;
   border-right: 1px solid rgba(117, 169, 219, 0.16);
   position: relative;
-  z-index: 1;
-  overflow: hidden;
+  z-index: 30;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   padding: 0;
   min-width: 0;
   transition: border-color 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Nodes render above all other layers including toolbar. */
+.af-main-grid-job .af-canvas-panel .react-flow {
+  z-index: 100;
+  position: relative;
+}
+
+/* Extend visible flow area upward so nodes do not vanish before reaching the top window edge. */
+.af-main-grid-job .af-canvas-panel .react-flow__renderer {
+  clip-path: inset(-36px 0 0 0);
+}
+
+/* Show grab hand only when user is actually over/dragging the graph pane. */
+.af-main-grid-job .af-canvas-panel .react-flow__pane {
+  cursor: default !important;
+}
+
+.af-flow-root.is-move-mode .react-flow:hover .react-flow__pane {
+  cursor: grab !important;
+}
+
+.af-flow-root.is-move-mode .react-flow__pane.dragging,
+.af-flow-root.is-move-mode .react-flow__pane:active {
+  cursor: grabbing !important;
 }
 
 .af-main-grid-job .af-canvas-panel.is-hidden {
@@ -1679,6 +1735,15 @@
   transition: filter 400ms ease;
 }
 
+.rf-braille-node.is-load-entry .rf-node-wrap {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(1.22);
+  filter: blur(1.8px) saturate(0.72);
+  animation: af-node-protein-condense 980ms cubic-bezier(0.22, 0.78, 0.18, 1) forwards;
+  animation-delay: var(--entry-delay, 0s);
+  transform-origin: 50% 50%;
+}
+
 .rf-braille-node:hover {
   filter: drop-shadow(0 0 11px rgba(var(--domain-rgb), 0.62));
 }
@@ -1882,6 +1947,29 @@
   }
 }
 
+@keyframes af-node-protein-condense {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(1.24);
+    filter: blur(2.4px) saturate(0.66);
+  }
+  42% {
+    opacity: 0.9;
+    transform: translate3d(0, 5px, 0) scale(0.92);
+    filter: blur(0.45px) saturate(1.08);
+  }
+  72% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.03);
+    filter: blur(0) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0) saturate(1);
+  }
+}
+
 @media (max-width: 1280px) {
   .af-main-grid {
     grid-template-columns: 1fr;
@@ -1975,8 +2063,8 @@
     flex: 0 0 auto;
 
   .af-flow-overlay {
-    top: 0.2rem;
-    left: calc(0.45rem + 90px + 0.35rem);
+    top: 0.72rem;
+    left: calc(0.6rem + 112px + 0.35rem);
   }
     max-height: none;
     overflow: visible;
@@ -2119,19 +2207,12 @@
 .af-ruler-wrapper {
   position: relative;
   width: 330px;
-  height: 110px;
+  height: 44px;
   margin: 0;
 }
 
 .af-ruler-track {
-  position: absolute;
-  top: 72%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: rgba(117, 169, 219, 0.5);
-  transform: translateY(-50%);
-  z-index: 1;
+  display: none;
 }
 
 .af-ruler-markers {
@@ -2139,7 +2220,7 @@
   top: 0;
   left: 22px;
   right: 22px;
-  height: 52px;
+  height: 34px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -2186,14 +2267,6 @@
 .af-mode-flow .af-mode-button-cell {
   background:
     radial-gradient(circle at 12px 12px, rgba(222, 240, 255, 0.96) 0 2px, transparent 2.2px),
-    rgba(8, 17, 26, 0.72);
-}
-
-.af-mode-split .af-mode-button-cell {
-  background:
-    radial-gradient(circle at 21px 10px, rgba(191, 223, 255, 0.92) 0 2px, transparent 2.2px),
-    radial-gradient(circle at 21px 21px, rgba(191, 223, 255, 0.76) 0 2px, transparent 2.2px),
-    radial-gradient(circle at 21px 32px, rgba(191, 223, 255, 0.92) 0 2px, transparent 2.2px),
     rgba(8, 17, 26, 0.72);
 }
 
@@ -2284,10 +2357,6 @@
 
 .af-ruler-slider.is-flow .af-ruler-label::before {
   content: '← Flow';
-}
-
-.af-ruler-slider.is-split .af-ruler-label::before {
-  content: 'Split';
 }
 
 .af-ruler-slider.is-editor .af-ruler-label::before {

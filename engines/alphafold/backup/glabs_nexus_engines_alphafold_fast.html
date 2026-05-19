@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AlphaFold Server Interface - Calyr.ai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fast AlphaFold Server interface for sequence submission and payload composition." />
+
+  <link rel="stylesheet" href="../../css/base.css?v=20260508-landing-font" />
+  <link rel="stylesheet" href="../../css/nav.css?v=20260508-landing-font" />
+  <link rel="stylesheet" href="css/glabs_nexus_engines_alphafold_fast.css?v=20260518-r1" />
+
+  <script src="../../js/nav_autohide.js" defer></script>
+  <script src="../../js/analytics.js" defer></script>
+  <script src="js/glabs_nexus_engines_alphafold_fast.js?v=20260518-r1" defer></script>
+</head>
+<body class="af-simple-page">
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-brand">Calyr.a&iacute;</a>
+    <nav class="nav-core" aria-label="Primary">
+      <a href="../../explore.html" class="nav-pill">Explore</a>
+      <a href="../../glabs_os.html" class="nav-pill active" aria-current="page">Nexus</a>
+      <a href="../../docs.html" class="nav-pill">Docs</a>
+      <a href="../../publications.html" class="nav-pill">Publications</a>
+    </nav>
+    <nav class="nav-secondary" aria-label="Secondary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+      <a href="../../pages/contact.html" class="nav-pill">Contact</a>
+      <a href="http://localhost:8000" class="nav-pill" target="_blank" rel="noopener">Login</a>
+    </nav>
+  </div>
+</header>
+
+<main class="af-simple-main">
+  <section class="af-simple-header">
+    <h1>AlphaFold Server Interface <span class="af-title-version">v2.0 fast</span></h1>
+    <p class="af-subtitle">Quick sequence submission flow with instant payload preview and zero heavy framework boot on first paint.</p>
+  </section>
+
+  <section class="af-simple-grid" aria-label="AlphaFold Server composer">
+    <article class="af-card">
+      <h2>Sequence Input</h2>
+      <label class="af-field" for="af-sequence">Protein Sequence</label>
+      <textarea id="af-sequence" class="af-textarea" rows="6" placeholder="Paste amino acid sequence"></textarea>
+
+      <div class="af-row-grid">
+        <div>
+          <label class="af-field" for="af-job-name">Job Name</label>
+          <input id="af-job-name" class="af-input" type="text" value="NX-AF3-001" />
+        </div>
+        <div>
+          <label class="af-field" for="af-chain-id">Chain ID</label>
+          <input id="af-chain-id" class="af-input" type="text" value="A" maxlength="1" />
+        </div>
+        <div>
+          <label class="af-field" for="af-model-seeds">Model Seeds</label>
+          <input id="af-model-seeds" class="af-input" type="text" value="1" />
+        </div>
+      </div>
+
+      <div class="af-actions">
+        <button id="af-generate" class="af-btn af-btn-primary" type="button">Generate Payload</button>
+        <button id="af-copy" class="af-btn" type="button">Copy JSON</button>
+        <a id="af-open-server" class="af-btn" href="https://alphafoldserver.com" target="_blank" rel="noopener">Open AlphaFold Server</a>
+      </div>
+    </article>
+
+    <article class="af-card">
+      <h2>AlphaFold 3 Payload</h2>
+      <pre id="af-payload" class="af-code" aria-live="polite"></pre>
+    </article>
+
+    <article class="af-card">
+      <h2>Status</h2>
+      <ul id="af-log" class="af-log" aria-live="polite"></ul>
+      <button id="af-load-legacy" class="af-btn" type="button">Load Legacy Workflow Editor</button>
+      <p class="af-note">Legacy mode loads the heavier ReactFlow editor only when requested.</p>
+
+      <div id="af-legacy-root" class="af-legacy-root" hidden>
+        <div id="af-app-root"></div>
+      </div>
+    </article>
+  </section>
+</main>
+
+</body>
+</html>

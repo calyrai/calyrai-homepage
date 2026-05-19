@@ -1,4 +1,4 @@
-# SPR extended theory
+# SPR
 
 Project post
 

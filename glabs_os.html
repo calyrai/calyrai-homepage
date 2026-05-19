@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nexus Interface - Calyr.ai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Safari-runnable Nexus interface with braille nodes, code views, and terminal execution." />
+
+  <link rel="stylesheet" href="css/base.css?v=20260508-landing-font" />
+  <link rel="stylesheet" href="css/nav.css?v=20260508-landing-font" />
+  <link rel="stylesheet" href="https://unpkg.com/reactflow@11.11.4/dist/style.css" />
+  <link rel="stylesheet" href="css/glabs_os.css?v=20260516-alphafold-components-r17" />
+
+  <script src="js/nav_autohide.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+  <script type="module" src="js/glabs_os_reactflow.js?v=20260516-alphafold-components-r17"></script>
+</head>
+<body class="nexus-os-page">
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">Calyr.a&iacute;</a>
+    <nav class="nav-core" aria-label="Primary">
+      <a href="explore.html" class="nav-pill">Explore</a>
+      <a href="glabs_os.html" class="nav-pill active" aria-current="page">Nexus</a>
+      <a href="docs.html" class="nav-pill">Docs</a>
+      <a href="publications.html" class="nav-pill">Publications</a>
+    </nav>
+    <nav class="nav-secondary" aria-label="Secondary">
+      <a href="pages/contact.html" class="nav-pill">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="nexus-os-shell">
+  <section class="sandbox-shell" id="nexus-stage" aria-label="Nexus sandbox">
+    <header class="sandbox-topbar">
+      <div class="sandbox-brand-block">
+        <p class="sandbox-eyebrow">Open Code Workspace</p>
+        <h1>Nexus Workspace</h1>
+        <p>Composable graph surface for a smaller set of curated modules.</p>
+      </div>
+      <div class="sandbox-divider" aria-hidden="true"></div>
+      <div class="sandbox-topbar-meta">
+        <nav class="sandbox-tabs" aria-label="Sandbox sections">
+          <button class="sandbox-tab is-active" type="button" data-section="workspace">Workspace</button>
+          <button class="sandbox-tab" type="button" data-section="components">Components</button>
+          <button class="sandbox-tab" type="button" data-section="registry">Registry</button>
+        </nav>
+        <div class="sandbox-topbar-actions">
+          <button class="panel-button" id="components-push-workspace" type="button" hidden>Push Selected To Workspace</button>
+        </div>
+        <div class="sandbox-structure-hint" id="sandbox-structure-hint">
+          <p class="sandbox-structure-hint-title">Workflow View</p>
+          <p class="sandbox-structure-hint-copy">Graph-centered execution workspace with active workflow panels.</p>
+        </div>
+        <aside class="sandbox-status">
+          <h2>Workspace Status</h2>
+          <p><span class="status-dot"></span> Online</p>
+          <p>Nodes active <strong>6 / 24</strong></p>
+        </aside>
+      </div>
+    </header>
+
+    <aside class="panel-menu" id="panel-menu" aria-label="Minimized windows"></aside>
+
+    <section class="panel-dock" id="panel-dock" aria-label="Collapsed windows"></section>
+
+    <div class="sandbox-main">
+      <aside class="sandbox-leftpanel">
+        <section id="panel-registry" class="tool-panel sidebar-panel is-collapsed" data-panel-window data-panel-size="compact" data-panel-group="input">
+          <div class="panel-heading"></div>
+          <div class="panel-tile-pins">
+            <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+            <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+            <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+          </div>
+          <div class="panel-tile-summary">
+            <div class="panel-tile-info">
+              <h2>Registry</h2>
+              <p>Saved patterns & seeds</p>
+            </div>
+          </div>
+          <p class="panel-copy">Saved braille patterns and reusable module seeds.</p>
+          <div id="backpack-panel-root"></div>
+        </section>
+
+        <section id="panel-compose" class="tool-panel sidebar-panel is-collapsed" data-panel-window data-panel-size="compact" data-panel-group="input">
+          <div class="panel-heading"></div>
+          <div class="panel-tile-pins">
+            <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+            <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+            <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+          </div>
+          <div class="panel-tile-summary">
+            <div class="panel-tile-info">
+              <h2>Compose</h2>
+              <p>Draft & activate patterns</p>
+            </div>
+          </div>
+          <p class="panel-copy">Draft a new braille pattern and activate it into the workspace.</p>
+          <div id="braille-input-root"></div>
+        </section>
+      </aside>
+
+      <section class="sandbox-centerpanel">
+        <div id="panel-graph" class="canvas-shell" data-panel-window data-panel-size="wide" data-panel-group="graph">
+          <div class="panel-heading"></div>
+          <div class="panel-tile-pins">
+            <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+            <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+            <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+          </div>
+          <div class="panel-tile-summary">
+            <div class="panel-tile-info">
+              <h2>Curated Modules</h2>
+              <p>Composable graph surface</p>
+            </div>
+          </div>
+          <p class="panel-copy">Movable network surface for curated modules, connections, and active selection.</p>
+          <div class="nexus-flow-root" id="nexus-flow-root" aria-label="Braille graph nodes"></div>
+        </div>
+      </section>
+
+      <aside class="sandbox-rightpanel">
+        <section id="panel-selection" class="info-panel active-braille-panel sidebar-panel" data-panel-window data-panel-size="compact" data-panel-group="graph">
+          <div class="panel-heading"></div>
+          <div class="panel-tile-pins">
+            <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+            <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+            <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+          </div>
+          <div class="panel-tile-summary">
+            <div class="panel-tile-info">
+              <h2>Selection</h2>
+              <p>Active module metadata</p>
+            </div>
+          </div>
+          <p class="panel-copy">Active module metadata, braille signature, and current role.</p>
+          <div class="workspace-window-tools" id="workspace-window-tools" aria-label="Window arrange controls">
+            <p class="workspace-window-tools-title">Move &amp; Resize</p>
+            <div class="workspace-window-tools-grid workspace-window-tools-grid-top">
+              <button type="button" class="workspace-window-tool is-magenta" data-layout-action="left" title="Left half" aria-label="Left half"></button>
+              <button type="button" class="workspace-window-tool is-cyan" data-layout-action="right" title="Right half" aria-label="Right half"></button>
+              <button type="button" class="workspace-window-tool is-white" data-layout-action="top" title="Top half" aria-label="Top half"></button>
+              <button type="button" class="workspace-window-tool is-magenta" data-layout-action="bottom" title="Bottom half" aria-label="Bottom half"></button>
+            </div>
+            <p class="workspace-window-tools-title">Fill &amp; Arrange</p>
+            <div class="workspace-window-tools-grid">
+              <button type="button" class="workspace-window-tool is-cyan" data-layout-action="maximize" title="Maximize" aria-label="Maximize"></button>
+              <button type="button" class="workspace-window-tool is-white" data-layout-action="center" title="Centered" aria-label="Centered"></button>
+              <button type="button" class="workspace-window-tool is-magenta" data-layout-action="columns" title="Two columns" aria-label="Two columns"></button>
+              <button type="button" class="workspace-window-tool is-cyan" data-layout-action="grid" title="2 by 2 grid" aria-label="2 by 2 grid"></button>
+            </div>
+          </div>
+          <div id="active-node-panel-root"></div>
+        </section>
+
+        <section id="panel-linked" class="info-panel sidebar-panel" data-panel-window data-panel-size="compact" data-panel-group="graph">
+          <div class="panel-heading"></div>
+          <div class="panel-tile-pins">
+            <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+            <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+            <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+          </div>
+          <div class="panel-tile-summary">
+            <div class="panel-tile-info">
+              <h2>Linked Modules</h2>
+              <p>Dependencies & adjacencies</p>
+            </div>
+          </div>
+          <p class="panel-copy">Direct dependencies and semantic adjacencies from the selected module.</p>
+          <div class="connected-list" id="connected-list-root"></div>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="sandbox-bottom">
+      <section id="panel-contents" class="info-panel bottom-panel bottom-contents-panel is-collapsed" data-panel-window data-panel-size="medium" data-panel-group="content">
+        <div class="panel-heading"></div>
+        <div class="panel-tile-pins">
+          <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+          <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+          <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+        </div>
+        <div class="panel-tile-summary">
+          <div class="panel-tile-info">
+            <h2>Contents</h2>
+            <p>Module outline & materials</p>
+          </div>
+        </div>
+        <p class="panel-copy">Navigate the active module outline, linked materials, and available surfaces.</p>
+        <div id="content-outline-root"></div>
+      </section>
+
+      <section id="panel-terminal" class="terminal-panel bottom-panel bottom-content-window" data-panel-window data-panel-size="wide" data-panel-group="content">
+        <div class="panel-heading"></div>
+        <div class="panel-tile-pins">
+          <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+          <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+          <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+        </div>
+        <div class="panel-tile-summary">
+          <div class="panel-tile-info">
+            <h2>Terminal</h2>
+            <p>Shell & code execution</p>
+          </div>
+        </div>
+        <p class="panel-copy">Runtime shell, graph inspection, code browser, and output surface.</p>
+        <div id="terminal-panel-root"></div>
+      </section>
+
+      <section id="panel-comment" class="info-panel bottom-panel bottom-comment-panel" data-panel-window data-panel-size="medium" data-panel-group="content">
+        <div class="panel-heading"></div>
+        <div class="panel-tile-pins">
+          <button class="panel-pin" data-pin="close" aria-label="Close panel"></button>
+          <button class="panel-pin" data-pin="maximize" aria-label="Maximize panel"></button>
+          <button class="panel-pin" data-pin="minimize" aria-label="Minimize panel"></button>
+        </div>
+        <div class="panel-tile-summary">
+          <div class="panel-tile-info">
+            <h2>Comments</h2>
+            <p>Workspace notes & ideas</p>
+          </div>
+        </div>
+        <p class="panel-copy">Markdown comments for the current workspace state, ideas, and next edits.</p>
+        <div id="comment-panel-root"></div>
+      </section>
+    </footer>
+    <section class="panel-overlay" id="panel-overlay" aria-hidden="true"></section>
+  </section>
+</main>
+
+</body>
+</html>

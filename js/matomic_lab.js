@@ -4,6 +4,9 @@
   const API_BASE = "http://localhost:8000";
   const SESSION_KEY = "citizen_session";
   const USER_KEY = "citizen_user";
+  const INTERFACE_REGISTRY = window.CALYR_INTERFACES || {};
+  const INTERFACE_CONFIG = (INTERFACE_REGISTRY.interfaces || {}).matomic_lab || {};
+  const COPY = INTERFACE_CONFIG.copy || {};
 
   const authGate = document.getElementById("auth-gate");
   const mainPanel = document.getElementById("matomic-main");
@@ -30,6 +33,50 @@
 
   let sessionUser = "Researcher";
   let models = [];
+
+  function copyText(key, fallback) {
+    return COPY[key] || fallback;
+  }
+
+  function setText(id, value) {
+    const node = document.getElementById(id);
+    if (node && value) node.textContent = value;
+  }
+
+  function setHtml(id, value) {
+    const node = document.getElementById(id);
+    if (node && value) node.innerHTML = value;
+  }
+
+  function applyInterfaceCopy() {
+    if (INTERFACE_CONFIG.page_title) {
+      document.title = INTERFACE_CONFIG.page_title;
+    }
+
+    setText("matomic-gate-intro", copyText("gate_intro", "A combined workspace for simulation and scientific writing."));
+    setText("matomic-gate-login-hint", copyText("gate_login_hint", "After login, the mAtomic Lab opens with model access."));
+    setHtml("matomic-gate-rationale", copyText("gate_rationale", "Why <strong>Calyr</strong>? Calyr names the user-facing application surface. Nexus remains the internal runtime and orchestration layer underneath."));
+    setText("matomic-main-subtitle", copyText("main_subtitle", "simulation and writing on one surface"));
+    setText("matomic-backend-label", copyText("backend_label", "Backend"));
+    setText("matomic-simulate-title", copyText("simulate_title", "Simulate with mAtomic models"));
+    setText("matomic-model-label", copyText("model_label", "Model"));
+    setText("model-info", copyText("model_info_empty", "No model loaded."));
+    setText("refresh-models", copyText("model_reload", "Reload models"));
+    setText("matomic-agora-title", copyText("agora_title", "AGORA2 Sync (Calyr Standard)"));
+    setText("agora-status", copyText("agora_status_empty", "Status: not loaded yet."));
+    setText("matomic-sim-type-label", copyText("simulation_type_label", "Simulation type"));
+    setText("matomic-extra-params-label", copyText("extra_params_label", "Extra parameters (JSON)"));
+    setText("run-matomic", copyText("run_button", "Start simulation"));
+    setText("matomic-notes-title", copyText("notes_title", "Write notes and open Vox"));
+    setText("matomic-note-title-label", copyText("notes_title_label", "Title"));
+    setText("matomic-note-body-label", copyText("notes_body_label", "Notes"));
+    setText("open-vox", copyText("open_vox", "Open Vox Studio"));
+    setText("matomic-notes-hint", copyText("notes_hint", "This surface combines simulation runs with a writing flow for session notes and Vox access."));
+
+    if (noteBody) {
+      noteBody.placeholder = copyText("notes_placeholder", "Hypothesis, observation, next step...");
+    }
+  }
 
   function log(el, msg) {
     const line = document.createElement("div");
@@ -94,7 +141,7 @@
   }
 
   async function loadModels() {
-    modelSelect.innerHTML = "<option>Lade Modelle...</option>";
+    modelSelect.innerHTML = `<option>${copyText("loading_models", "Loading models...")}</option>`;
     modelInfo.textContent = "";
     try {
       const data = await fetchJson(`${API_BASE}/matomic/models`);
@@ -104,9 +151,9 @@
       if (!models.length) {
         const opt = document.createElement("option");
         opt.value = "";
-        opt.textContent = "Keine Modelle gefunden";
+        opt.textContent = copyText("no_models_found", "No models found");
         modelSelect.appendChild(opt);
-        modelInfo.textContent = "Keine mAtomic-Modelle im Backend-Scan gefunden.";
+        modelInfo.textContent = copyText("no_backend_models", "No mAtomic models were found in the backend scan.");
         return;
       }
 
@@ -117,11 +164,11 @@
         modelSelect.appendChild(opt);
       }
       renderModelInfo();
-      log(simLog, `Modelle geladen: ${models.length}`);
+      log(simLog, `${copyText("models_loaded", "Models loaded")}: ${models.length}`);
     } catch (err) {
-      modelSelect.innerHTML = "<option>Fehler beim Laden</option>";
-      modelInfo.textContent = `Backend nicht erreichbar: ${err.message}`;
-      log(simLog, `Fehler Modelle: ${err.message}`);
+      modelSelect.innerHTML = `<option>${copyText("load_error", "Load error")}</option>`;
+      modelInfo.textContent = `${copyText("backend_unreachable", "Backend unreachable")}: ${err.message}`;
+      log(simLog, `${copyText("model_error", "Model error")}: ${err.message}`);
     }
   }
 
@@ -129,14 +176,14 @@
     if (!agoraStatus) return;
     try {
       const data = await fetchJson(`${API_BASE}/matomic/agora2/status`);
-      const base = `AGORA2: ${data.present_count}/${data.manifest_count} lokal`;
+      const base = `${copyText("agora_status_prefix", "AGORA2")}: ${data.present_count}/${data.manifest_count} local`;
       if (data.missing_count > 0) {
-        agoraStatus.textContent = `${base} | fehlend: ${data.missing_count}`;
+        agoraStatus.textContent = `${base} | ${copyText("agora_missing", "missing")}: ${data.missing_count}`;
       } else {
-        agoraStatus.textContent = `${base} | komplett`;
+        agoraStatus.textContent = `${base} | ${copyText("agora_complete", "complete")}`;
       }
     } catch (err) {
-      agoraStatus.textContent = `AGORA2 Status-Fehler: ${err.message}`;
+      agoraStatus.textContent = `${copyText("agora_status_error", "AGORA2 status error")}: ${err.message}`;
     }
   }
 
@@ -156,7 +203,7 @@
       await loadAgoraStatus();
       await loadModels();
     } catch (err) {
-      log(simLog, `AGORA2 Aktion fehlgeschlagen: ${err.message}`);
+      log(simLog, `${copyText("agora_action_failed", "AGORA2 action failed")}: ${err.message}`);
     } finally {
       if (btn) btn.disabled = false;
     }
@@ -166,16 +213,16 @@
     const id = modelSelect.value;
     const model = models.find((m) => m.id === id);
     if (!model) {
-      modelInfo.textContent = "Kein Modell ausgewaehlt.";
+      modelInfo.textContent = copyText("no_model_selected", "No model selected.");
       return;
     }
-    modelInfo.textContent = `Pfad: ${model.path} | Typ: ${model.ext} | Quelle: ${model.source}`;
+    modelInfo.textContent = `${copyText("model_path_label", "Path")}: ${model.path} | ${copyText("model_type_label", "Type")}: ${model.ext} | ${copyText("model_source_label", "Source")}: ${model.source}`;
   }
 
   async function runSimulation() {
     const modelId = modelSelect.value;
     if (!modelId) {
-      log(simLog, "Bitte zuerst ein Modell waehlen.");
+      log(simLog, copyText("model_select_first", "Select a model first."));
       return;
     }
 
@@ -183,7 +230,7 @@
     try {
       extraParams = simParams.value.trim() ? JSON.parse(simParams.value) : {};
     } catch {
-      log(simLog, "Parameter sind kein valides JSON.");
+      log(simLog, copyText("invalid_json", "Parameters are not valid JSON."));
       return;
     }
 
@@ -197,16 +244,16 @@
     };
 
     runBtn.disabled = true;
-    log(simLog, `Starte Job fuer Modell: ${modelId}`);
+    log(simLog, `${copyText("starting_job", "Starting job for model")}: ${modelId}`);
     try {
       const data = await fetchJson(`${API_BASE}/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      log(simLog, `Job gestartet: ${data.job_id} (${data.type})`);
+      log(simLog, `${copyText("job_started", "Job started")}: ${data.job_id} (${data.type})`);
     } catch (err) {
-      log(simLog, `Run-Fehler: ${err.message}`);
+      log(simLog, `${copyText("run_error", "Run error")}: ${err.message}`);
     } finally {
       runBtn.disabled = false;
     }
@@ -278,6 +325,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    applyInterfaceCopy();
     initLoginLink();
 
     logoutBtn.addEventListener("click", logout);

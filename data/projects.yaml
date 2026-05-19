@@ -30,6 +30,24 @@
   link_label: "Open project"
   url: "projects/saxs_interface.html"
 
+- id: redhuman
+  visibility: public
+  title: "mAtomic"
+  subtitle: "Metabolic modelling and thermodynamic consistency"
+  description: "The main metabolic application surface for model selection, simulation, notes, and export in one workspace."
+  color: "#ff9a7a"
+  link_label: "Open app"
+  url: "matomic_lab.html"
+
+- id: saxs_keratin
+  visibility: public
+  title: "Keratin"
+  subtitle: "Fibrous protein SAS and structural analysis"
+  description: "A keratin-focused application track linking modelling, signal-space evaluation, and working publication surfaces."
+  color: "#ffd36b"
+  link_label: "Open project"
+  url: "publications.html#keratin-modelling"
+
 - id: redgem
   visibility: public
   title: "RedGEM"
@@ -60,7 +78,7 @@
 
 - id: spr-data
   visibility: public
-  title: "SPR – Binding State Surfaces"
+  title: "SPR"
   subtitle: "Response traces as controlled kinetic data"
   description: "A dedicated Nexus page for surface plasmon resonance, kinetic state mapping and provenance-linked response analysis."
   color: "#8fe7ff"
@@ -106,15 +124,6 @@
   color: "#86b7ff"
   link_label: "Open project"
   url: "projects/cryo_em.html"
-
-- id: redhuman
-  visibility: public
-  title: "Redhuman"
-  subtitle: "Human metabolic reconstruction and thermodynamic consistency"
-  description: "A project node for Redhuman network reconstruction, pathway curation and thermodynamically constrained flux analysis."
-  color: "#ff9a7a"
-  link_label: "Open project"
-  url: "projects/redhuman.html"
 
 - id: saxs_sasview
   visibility: public

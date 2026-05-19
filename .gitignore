@@ -20,6 +20,34 @@ __pycache__/
 /dist/
 /backup_root/
 
+# Local databases / runtime dumps
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+
+# Secrets and credentials
+.env
+.env.*
+*.key
+*.pem
+*secret*
+*token*
+*credential*
+
+# Internal-only working data
+/data/private/
+/data/internal/
+/backend/local_data/
+/backend/tmp/
+/backend/logs/
+
+# Proposal warehouse private feeds should never be published
+/nexus/projects/ai_opportunity_warehouse/data/raw/
+/nexus/projects/ai_opportunity_warehouse/data/derived/
+/nexus/projects/ai_opportunity_warehouse/data/outputs/
+/nexus/projects/ai_opportunity_warehouse/data/warehouse/
+
 # Build-time safety artifacts (should never be published)
 /src/_root_conflicts/
 

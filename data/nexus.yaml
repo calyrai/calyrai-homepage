@@ -32,6 +32,16 @@ projects:
   - id: saxs-interface
     title: SAXS Interface
     url: projects/saxs_interface.html
+  - id: redhuman
+    title: mAtomic
+    subtitle: Metabolic modelling and thermodynamic consistency
+    color: "#ff9a7a"
+    url: matomic_lab.html
+  - id: saxs_keratin
+    title: Keratin
+    subtitle: Fibrous protein SAS and structural analysis
+    color: "#ffd36b"
+    url: publications.html#keratin-modelling
   - id: epistemic-damage
     title: Epistemic Damage
     url: projects/epistemic_damage.html
@@ -45,7 +55,7 @@ projects:
     title: ITC – Thermodynamic State Mapping
     url: projects/itc_data.html
   - id: spr-data
-    title: SPR – Binding State Surfaces
+    title: SPR
     url: projects/spr_data.html
   - id: vaults
     title: Vaults – Mail & Calendar Organiser
@@ -65,10 +75,10 @@ projects:
     color: "#ffd36b"
     url: projects/saxs_hdl_ldl.html
   - id: spr-kinetic-modes
-    title: "SPR Kinetic Modes & Modelling"
+    title: "SPR Modes"
     subtitle: "Gillespie simulation \u00b7 PCA basis \u00b7 constraint inference"
     color: "#24f3ff"
-    url: projects/spr_kinetic_modes.html
+    url: publications.html#spr-kinetic-modes
   - id: saxs_igm
     title: SAXS IgG / IgM
     subtitle: Immunoglobulin mixture modelling from scattering
@@ -79,23 +89,18 @@ projects:
     subtitle: Nexus-controlled SasView fitting and report pipeline
     color: "#ffd36b"
     url: projects/saxs_sasview.html
-  - id: saxs_keratin
-    title: SAXS Keratin
-    subtitle: Fibrous protein scattering and structural analysis
-    color: "#ffd36b"
-    url: projects/saxs_keratin.html
   - id: saxs_sbpa
     title: SAXS SBPA
     subtitle: Structure-based potential analysis with SAXS validation
     color: "#ffd36b"
     url: projects/saxs_sbpa.html
   - id: paper-spr-kinetic-modes
-    title: SPR Kinetic Modes
+    title: SPR Modes Paper
     subtitle: "Manuscript · active"
     color: "#c084fc"
     url: publications.html#spr-kinetic-modes
   - id: paper-spr-evaluation
-    title: SPR Evaluation Concept
+    title: SPR Eval
     subtitle: "Manuscript · active"
     color: "#c084fc"
     url: publications.html#spr-evaluation-concept
@@ -148,7 +153,11 @@ nexus:
     - from: saxs_state_inference
       to: spr-data
     - from: saxs_state_inference
+      to: redhuman
+    - from: saxs_state_inference
       to: redgem
+    - from: saxs_state_inference
+      to: saxs_keratin
     - from: saxs_state_inference
       to: saxs-interface
     - from: saxs_state_inference

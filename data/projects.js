@@ -26,6 +26,20 @@ window.CALYR_PROJECTS = [
     "url": "projects/saxs_interface.html"
   },
   {
+    "id": "redhuman",
+    "title": "mAtomic",
+    "subtitle": "Metabolic modelling and thermodynamic consistency",
+    "url": "matomic_lab.html",
+    "color": "#ff9a7a"
+  },
+  {
+    "id": "saxs_keratin",
+    "title": "Keratin",
+    "subtitle": "Fibrous protein SAS and structural analysis",
+    "url": "publications.html#keratin-modelling",
+    "color": "#ffd36b"
+  },
+  {
     "id": "epistemic-damage",
     "title": "Epistemic Damage",
     "url": "projects/epistemic_damage.html"
@@ -47,7 +61,7 @@ window.CALYR_PROJECTS = [
   },
   {
     "id": "spr-data",
-    "title": "SPR – Binding State Surfaces",
+    "title": "SPR",
     "url": "projects/spr_data.html"
   },
   {
@@ -79,9 +93,9 @@ window.CALYR_PROJECTS = [
   },
   {
     "id": "spr-kinetic-modes",
-    "title": "SPR Kinetic Modes & Modelling",
+    "title": "SPR Modes",
     "subtitle": "Gillespie simulation · PCA basis · constraint inference",
-    "url": "projects/spr_kinetic_modes.html",
+    "url": "publications.html#spr-kinetic-modes",
     "color": "#24f3ff"
   },
   {
@@ -99,13 +113,6 @@ window.CALYR_PROJECTS = [
     "color": "#ffd36b"
   },
   {
-    "id": "saxs_keratin",
-    "title": "SAXS Keratin",
-    "subtitle": "Fibrous protein scattering and structural analysis",
-    "url": "projects/saxs_keratin.html",
-    "color": "#ffd36b"
-  },
-  {
     "id": "saxs_sbpa",
     "title": "SAXS SBPA",
     "subtitle": "Structure-based potential analysis with SAXS validation",
@@ -113,22 +120,15 @@ window.CALYR_PROJECTS = [
     "color": "#ffd36b"
   },
   {
-    "id": "ai_proposal_warehouse",
-    "title": "AI Proposal Warehouse",
-    "subtitle": "Unified interface for job, research and funding proposals",
-    "url": "pages/ai_landscape_map.md",
-    "color": "#7dd3ff"
-  },
-  {
     "id": "paper-spr-kinetic-modes",
-    "title": "SPR Kinetic Modes",
+    "title": "SPR Modes Paper",
     "subtitle": "Manuscript · active",
     "url": "publications.html#spr-kinetic-modes",
     "color": "#c084fc"
   },
   {
     "id": "paper-spr-evaluation",
-    "title": "SPR Evaluation Concept",
+    "title": "SPR Eval",
     "subtitle": "Manuscript · active",
     "url": "publications.html#spr-evaluation-concept",
     "color": "#c084fc"
@@ -174,12 +174,5 @@ window.CALYR_PROJECTS = [
     "subtitle": "Public conceptual publication",
     "url": "projects/research_program_head.html",
     "color": "#7dd3ff"
-  },
-  {
-    "id": "nexus-biokitchen",
-    "title": "Nexus BioKitchen",
-    "subtitle": "Smart Kitchen Bioprocesses · semantic fermentation and extraction states",
-    "url": "projects/nexus_brew.html",
-    "color": "#67f2d6"
   }
 ];

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calyr.mAtomic Lab - Simulieren + Schreiben</title>
+  <title>Calyr.mAtomic Lab - Simulation and Writing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="stylesheet" href="css/base.css" />
@@ -12,6 +12,7 @@
 
   <script src="js/nav_autohide.js" defer></script>
   <script src="js/analytics.js" defer></script>
+  <script src="data/interfaces.js?v=20260514-interface-registry" defer></script>
   <script src="js/matomic_lab.js" defer></script>
 
   <style>
@@ -143,6 +144,68 @@
       font-size: 0.82rem;
     }
 
+    .orbit-mini {
+      width: 132px;
+      height: 132px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .matomic-login-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .matomic-login-symbol:hover {
+      transform: scale(1.04);
+      filter: brightness(1.08);
+    }
+
+    .matomic-login-symbol:focus-visible {
+      outline: 2px solid rgba(36, 243, 255, 0.9);
+      outline-offset: 6px;
+    }
+
+    .matomic-orbit-core {
+      transform-origin: 110px 110px;
+      animation: matomic-orbit-spin 16s linear infinite;
+    }
+
+    .matomic-orbit-core--reverse {
+      animation-direction: reverse;
+      animation-duration: 11s;
+    }
+
+    .matomic-orbit-pulse {
+      transform-origin: 110px 110px;
+      animation: matomic-orbit-pulse 3.6s ease-in-out infinite;
+    }
+
+    @keyframes matomic-orbit-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes matomic-orbit-pulse {
+      0%, 100% {
+        opacity: 0.72;
+        transform: scale(0.985);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.03);
+      }
+    }
+
     @media (max-width: 980px) {
       .matomic-grid {
         grid-template-columns: 1fr;
@@ -170,21 +233,44 @@
 
   <section id="auth-gate" class="auth-gate">
     <div class="auth-gate-inner">
-      <div class="auth-orbit-logo">
-        <svg viewBox="0 0 200 200" class="orbit-mini" aria-hidden="true">
+      <a id="matomic-login-btn" class="matomic-login-symbol" href="http://localhost:8000" target="_blank" rel="noopener" aria-label="Enter via login using the rotating symbol">
+        <svg viewBox="0 0 220 220" class="orbit-mini" aria-label="Animated open circles symbol" role="img">
+          <title>Animated open circles symbol</title>
           <defs>
-            <linearGradient id="matomic-auth-whiteCyan" x1="30" y1="30" x2="170" y2="170">
+            <linearGradient id="matomic-orbit-stroke" x1="42" y1="34" x2="180" y2="176">
               <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
               <stop offset="68%" stop-color="#24f3ff" stop-opacity="0.92" />
             </linearGradient>
+            <filter id="matomic-orbit-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
-          <circle cx="100" cy="100" r="48" stroke="url(#matomic-auth-whiteCyan)" stroke-width="22" fill="none" />
+
+          <g class="matomic-orbit-pulse" filter="url(#matomic-orbit-glow)">
+            <circle cx="110" cy="110" r="28" fill="none" stroke="url(#matomic-orbit-stroke)" stroke-width="12" stroke-linecap="round" stroke-dasharray="126 62" />
+
+            <g class="matomic-orbit-core">
+              <circle cx="110" cy="110" r="52" fill="none" stroke="url(#matomic-orbit-stroke)" stroke-width="10" stroke-linecap="round" stroke-dasharray="170 92" />
+            </g>
+
+            <g class="matomic-orbit-core matomic-orbit-core--reverse">
+              <circle cx="110" cy="110" r="78" fill="none" stroke="url(#matomic-orbit-stroke)" stroke-width="9" stroke-linecap="round" stroke-dasharray="230 110" opacity="0.92" />
+            </g>
+
+            <g class="matomic-orbit-core">
+              <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="6" stroke-linecap="round" stroke-dasharray="280 180" opacity="0.78" />
+            </g>
+          </g>
         </svg>
-      </div>
+      </a>
       <h1>Calyr.mAtomic Lab</h1>
-      <p>Interne Kombi-Flaeche fuer Simulation und Schreiben.</p>
-      <a id="matomic-login-btn" href="http://localhost:8000" class="auth-button" target="_blank" rel="noopener">Enter via Login</a>
-      <p class="auth-hint">Nach Login startet die mAtomic-Lab-Flaeche mit Modellzugriff.</p>
+      <p id="matomic-gate-intro">A combined workspace for simulation and scientific writing.</p>
+      <p id="matomic-gate-login-hint" class="auth-hint">After login, the mAtomic Lab opens with model access.</p>
+      <p id="matomic-gate-rationale" class="auth-hint">Why <strong>Calyr</strong>? Calyr names the user-facing application surface. Nexus remains the internal runtime and orchestration layer underneath.</p>
     </div>
   </section>
 
@@ -192,36 +278,36 @@
     <div class="matomic-header">
       <div>
         <h1>mAtomic Lab</h1>
-        <p>Authenticated as <strong id="matomic-user-name">Researcher</strong> | Simulieren + Schreiben auf einem Surface</p>
+        <p>Authenticated as <strong id="matomic-user-name">Researcher</strong> | <span id="matomic-main-subtitle">simulation and writing on one surface</span></p>
       </div>
-      <div class="muted">Backend: localhost:8000</div>
+      <div class="muted"><span id="matomic-backend-label">Backend</span>: localhost:8000</div>
     </div>
 
     <div class="matomic-grid">
       <section class="matomic-card">
-        <h2>Simulieren (mit mAtomic-Modellen)</h2>
+        <h2 id="matomic-simulate-title">Simulate with mAtomic models</h2>
 
         <div class="matomic-field">
-          <label for="model-select">Modell</label>
+          <label id="matomic-model-label" for="model-select">Model</label>
           <select id="model-select"></select>
-          <div id="model-info" class="muted">Kein Modell geladen.</div>
+          <div id="model-info" class="muted">No model loaded.</div>
         </div>
 
         <div class="matomic-row" style="margin-bottom: 10px;">
-          <button id="refresh-models" class="matomic-btn">Modelle neu laden</button>
+          <button id="refresh-models" class="matomic-btn">Reload models</button>
         </div>
 
         <div class="matomic-card" style="padding: 12px; margin-bottom: 12px; background: rgba(12, 26, 45, 0.55);">
-          <h2 style="font-size: 0.94rem; margin-bottom: 8px;">AGORA2 Sync (Calyr Standard)</h2>
+          <h2 id="matomic-agora-title" style="font-size: 0.94rem; margin-bottom: 8px;">AGORA2 Sync (Calyr Standard)</h2>
           <div class="matomic-row" style="margin-bottom: 8px;">
             <button id="agora-check" class="matomic-btn">AGORA2 Check</button>
             <button id="agora-sync" class="matomic-btn">AGORA2 Download/Sync</button>
           </div>
-          <div id="agora-status" class="muted">Status: noch nicht geladen.</div>
+          <div id="agora-status" class="muted">Status: not loaded yet.</div>
         </div>
 
         <div class="matomic-field">
-          <label for="sim-type">Simulationstyp</label>
+          <label id="matomic-sim-type-label" for="sim-type">Simulation type</label>
           <select id="sim-type">
             <option value="saxs">SAXS</option>
             <option value="lammps">LAMMPS</option>
@@ -231,38 +317,38 @@
         </div>
 
         <div class="matomic-field">
-          <label for="sim-params">Zusatzparameter (JSON)</label>
+          <label id="matomic-extra-params-label" for="sim-params">Extra parameters (JSON)</label>
           <textarea id="sim-params" placeholder='{"temperature": 300, "steps": 10000}'></textarea>
         </div>
 
         <div class="matomic-row">
-          <button id="run-matomic" class="matomic-btn matomic-btn-primary">Simulation starten</button>
+          <button id="run-matomic" class="matomic-btn matomic-btn-primary">Start simulation</button>
         </div>
 
         <div id="sim-log" class="matomic-log"></div>
       </section>
 
       <section class="matomic-card">
-        <h2>Schreiben (Session Notes + Vox)</h2>
+        <h2 id="matomic-notes-title">Write notes and open Vox</h2>
 
         <div class="matomic-field">
-          <label for="note-title">Titel</label>
+          <label id="matomic-note-title-label" for="note-title">Title</label>
           <input id="note-title" type="text" value="mAtomic Session" />
         </div>
 
         <div class="matomic-field">
-          <label for="note-body">Notizen</label>
-          <textarea id="note-body" placeholder="Hypothese, Beobachtung, naechster Schritt..."></textarea>
+          <label id="matomic-note-body-label" for="note-body">Notes</label>
+          <textarea id="note-body" placeholder="Hypothesis, observation, next step..."></textarea>
         </div>
 
         <div class="matomic-row">
           <button id="export-md" class="matomic-btn">Export .md</button>
           <button id="export-yaml" class="matomic-btn">Export .yaml</button>
-          <button id="open-vox" class="matomic-btn">Vox Studio oeffnen</button>
+          <button id="open-vox" class="matomic-btn">Open Vox Studio</button>
         </div>
 
-        <p class="muted" style="margin-top: 10px;">
-          Hinweis: Dieses Surface kombiniert Simulation (Model-Run) und Schreibfluss (session notes + vox access).
+        <p id="matomic-notes-hint" class="muted" style="margin-top: 10px;">
+          This surface combines simulation runs with a writing flow for session notes and Vox access.
         </p>
       </section>
     </div>
