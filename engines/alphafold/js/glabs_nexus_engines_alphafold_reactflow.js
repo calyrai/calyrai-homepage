@@ -355,7 +355,19 @@ loadGetBezierPath();
       // Keep moved nodes fully visible and avoid clipping at panel edges.
       fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.08 : 0.12);
     };
-    function layoutNodesForWidth(width) {
+    function layoutNodesForWidth(width, viewMode) {
+      if (viewMode === 'split') {
+        var splitSpacing = Math.max(190, Math.min(250, Math.round(width * 0.23)));
+        var splitStartX = Math.max(24, Math.round((width - (splitSpacing * 4)) / 2));
+        var splitY = width <= 780 ? 164 : 98;
+        return [
+          { id: 'input', position: { x: splitStartX, y: splitY } },
+          { id: 'parse', position: { x: splitStartX + splitSpacing, y: splitY } },
+          { id: 'mask', position: { x: splitStartX + (splitSpacing * 2), y: splitY } },
+          { id: 'build', position: { x: splitStartX + (splitSpacing * 3), y: splitY } },
+          { id: 'submit', position: { x: splitStartX + (splitSpacing * 4), y: splitY } }
+        ];
+      }
       if (width <= 780) {
         var triangleWidth = Math.max(220, Math.min(300, Math.round(width * 0.64)));
         var leftX = Math.max(24, Math.round((width - triangleWidth) / 2));
@@ -381,7 +393,7 @@ loadGetBezierPath();
     useEffect(function () {
       if (hasUserMovedNodes || initialAutoLayoutDoneRef.current) return;
       var byId = {};
-      layoutNodesForWidth(flowSize.width).forEach(function (item) {
+      layoutNodesForWidth(flowSize.width, currentViewMode).forEach(function (item) {
         byId[item.id] = item.position;
       });
       setGraphNodes(function (currentNodes) {
@@ -391,7 +403,21 @@ loadGetBezierPath();
         });
       });
       initialAutoLayoutDoneRef.current = true;
-    }, [flowSize.width, hasUserMovedNodes]);
+    }, [flowSize.width, hasUserMovedNodes, currentViewMode]);
+
+    useEffect(function () {
+      if (hasUserMovedNodes || currentViewMode === 'editor') return;
+      var byId = {};
+      layoutNodesForWidth(flowSize.width, currentViewMode).forEach(function (item) {
+        byId[item.id] = item.position;
+      });
+      setGraphNodes(function (currentNodes) {
+        return currentNodes.map(function (node) {
+          if (!byId[node.id]) return node;
+          return { ...node, position: byId[node.id] };
+        });
+      });
+    }, [currentViewMode, flowSize.width, hasUserMovedNodes]);
 
     function focusNodeForEditing(nodeId) {
       setActiveNodeId(nodeId);
@@ -407,7 +433,7 @@ loadGetBezierPath();
       flowToggleLockRef.current = true;
       var applyLayout = function () {
         var byId = {};
-        layoutNodesForWidth(flowSize.width).forEach(function (item) {
+        layoutNodesForWidth(flowSize.width, currentViewMode).forEach(function (item) {
           byId[item.id] = item.position;
         });
         setGraphNodes(function (currentNodes) {
@@ -1005,7 +1031,7 @@ loadGetBezierPath();
 
     const resetNodesLayout = function () {
       resetLockRef.current = true;
-      const layout = layoutNodesForWidth(flowSize.width);
+      const layout = layoutNodesForWidth(flowSize.width, currentViewMode);
       const byId = {};
       layout.forEach(function (item) {
         byId[item.id] = item.position;
