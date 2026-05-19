@@ -1394,6 +1394,7 @@
   grid-column: 2;
   border-right: 0;
   border-left: 1px solid rgba(117, 169, 219, 0.16);
+  padding-top: 4.2rem;
   max-height: 85vh;
   overflow-y: auto;
   overflow-x: hidden;
