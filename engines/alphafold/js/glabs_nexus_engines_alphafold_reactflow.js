@@ -472,12 +472,15 @@ loadGetBezierPath();
           { id: 'submit', position: { x: centerX, y: 424 } }
         ];
       }
+      // Wide layout (width > 780): center nodes horizontally with responsive spacing
+      var wideSpacing = Math.max(240, Math.min(300, Math.round(width * 0.18)));
+      var wideStartX = Math.max(24, Math.round((width - (wideSpacing * 4)) / 2));
       return [
-        { id: 'input', position: { x: 84, y: 98 } },
-        { id: 'parse', position: { x: 334, y: 98 } },
-        { id: 'mask', position: { x: 584, y: 98 } },
-        { id: 'build', position: { x: 834, y: 98 } },
-        { id: 'submit', position: { x: 1084, y: 98 } }
+        { id: 'input', position: { x: wideStartX, y: 98 } },
+        { id: 'parse', position: { x: wideStartX + wideSpacing, y: 98 } },
+        { id: 'mask', position: { x: wideStartX + (wideSpacing * 2), y: 98 } },
+        { id: 'build', position: { x: wideStartX + (wideSpacing * 3), y: 98 } },
+        { id: 'submit', position: { x: wideStartX + (wideSpacing * 4), y: 98 } }
       ];
     }
 
