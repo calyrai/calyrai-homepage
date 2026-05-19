@@ -917,6 +917,22 @@
   color: #f2f9ff;
 }
 
+/* In split layout keep floating flow UI at the top so it never overlaps inspector content. */
+.af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-overlay {
+  top: 0.72rem;
+  bottom: auto;
+}
+
+.af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-overview-minimap {
+  top: 0.72rem !important;
+  bottom: auto !important;
+}
+
+.af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-controls {
+  top: 0.72rem !important;
+  bottom: auto !important;
+}
+
 .af-overview-minimap .react-flow__minimap-mask {
   fill: transparent;
 }
