@@ -2071,8 +2071,14 @@
   }
 
   .af-flow-overlay {
-    top: var(--af-floating-ui-top);
+    top: auto;
+    bottom: 0.9rem;
     left: calc(0.6rem + 112px + 0.35rem);
+  }
+
+  .af-overview-minimap {
+    top: auto !important;
+    bottom: 0.9rem !important;
   }
 
   .af-main-grid-job .af-canvas-panel {
@@ -2109,7 +2115,9 @@
 
   .af-flow-controls {
     transform: scale(1.08);
-    transform-origin: top right;
+    transform-origin: bottom right;
+    top: auto !important;
+    bottom: 0.9rem !important;
   }
 }
 
