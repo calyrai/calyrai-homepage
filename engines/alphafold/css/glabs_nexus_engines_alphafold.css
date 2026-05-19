@@ -917,20 +917,20 @@
   color: #f2f9ff;
 }
 
-/* In split layout keep floating flow UI at the top so it never overlaps inspector content. */
+/* In split layout place floating flow UI in the lower part of the flow canvas. */
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-overlay {
-  top: 0.72rem;
-  bottom: auto;
+  top: auto;
+  bottom: 2.2rem;
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-overview-minimap {
-  top: 0.72rem !important;
-  bottom: auto !important;
+  top: auto !important;
+  bottom: 2.2rem !important;
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-controls {
-  top: 0.72rem !important;
-  bottom: auto !important;
+  top: auto !important;
+  bottom: 2.2rem !important;
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) {
