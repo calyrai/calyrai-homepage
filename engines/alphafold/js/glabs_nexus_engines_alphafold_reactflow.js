@@ -357,24 +357,23 @@ loadGetBezierPath();
     };
     function layoutNodesForWidth(width) {
       if (width <= 780) {
-        var triangleWidth = Math.max(180, Math.min(240, Math.round(width * 0.52)));
-        var leftX = Math.max(26, Math.round((width - triangleWidth) / 2));
-        var rightX = leftX + triangleWidth;
-        var centerX = leftX + Math.round(triangleWidth / 2);
+        var spacing = 182;
+        var startX = Math.max(24, Math.round((width - (spacing * 4)) / 2));
+        var centerY = 210;
         return [
-          { id: 'input', position: { x: leftX, y: 74 } },
-          { id: 'parse', position: { x: rightX, y: 74 } },
-          { id: 'mask', position: { x: leftX + 24, y: 232 } },
-          { id: 'build', position: { x: rightX - 24, y: 232 } },
-          { id: 'submit', position: { x: centerX, y: 398 } }
+          { id: 'input', position: { x: startX, y: centerY } },
+          { id: 'parse', position: { x: startX + spacing, y: centerY } },
+          { id: 'mask', position: { x: startX + (spacing * 2), y: centerY } },
+          { id: 'build', position: { x: startX + (spacing * 3), y: centerY } },
+          { id: 'submit', position: { x: startX + (spacing * 4), y: centerY } }
         ];
       }
       return [
-        { id: 'input', position: { x: 84, y: 118 } },
-        { id: 'parse', position: { x: 314, y: 92 } },
-        { id: 'mask', position: { x: 564, y: 76 } },
-        { id: 'build', position: { x: 814, y: 92 } },
-        { id: 'submit', position: { x: 1044, y: 118 } }
+        { id: 'input', position: { x: 84, y: 98 } },
+        { id: 'parse', position: { x: 334, y: 98 } },
+        { id: 'mask', position: { x: 584, y: 98 } },
+        { id: 'build', position: { x: 834, y: 98 } },
+        { id: 'submit', position: { x: 1084, y: 98 } }
       ];
     }
 
