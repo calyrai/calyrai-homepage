@@ -947,17 +947,15 @@
   transition: filter 320ms ease;
 }
 
-/* ReactFlow 11 sets stroke='#5dc8ff' on the active node rect via nodeStrokeColor prop */
-.af-overview-minimap .react-flow__minimap-node[stroke="#5dc8ff"],
-.af-overview-minimap .react-flow__minimap-node[stroke="#7fd3ff"],
+/* Keep active minimap node readable regardless of per-domain stroke color. */
 .af-overview-minimap .react-flow__minimap-node.af-mm-active {
-  filter: drop-shadow(0 0 2px rgba(93, 200, 255, 0.6)) drop-shadow(0 0 6px rgba(93, 200, 255, 0.3));
+  filter: drop-shadow(0 0 2px rgba(220, 242, 255, 0.65)) drop-shadow(0 0 6px rgba(220, 242, 255, 0.35));
   animation: af-mm-node-pulse 2.2s ease-in-out infinite;
 }
 
 @keyframes af-mm-node-pulse {
-  0%, 100% { filter: drop-shadow(0 0 2px rgba(93,200,255,0.6)) drop-shadow(0 0 6px rgba(93,200,255,0.3)); }
-  50%       { filter: drop-shadow(0 0 4px rgba(93,200,255,0.8)) drop-shadow(0 0 10px rgba(93,200,255,0.5)); }
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(220,242,255,0.65)) drop-shadow(0 0 6px rgba(220,242,255,0.35)); }
+  50%       { filter: drop-shadow(0 0 4px rgba(220,242,255,0.85)) drop-shadow(0 0 10px rgba(220,242,255,0.55)); }
 }
 
 /* minimap border + panel border glow when a node is active */
@@ -2469,8 +2467,6 @@
   background: rgba(6, 14, 26, 0.88);
   border: 1px solid rgba(117, 169, 219, 0.22);
   border-radius: 8px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.38);
   overflow: hidden;
 }
@@ -2535,6 +2531,42 @@
 .af-layer-dot.is-white {
   background: #e8f2ff;
   box-shadow: 0 0 4px rgba(232, 242, 255, 0.35);
+}
+
+.af-palette-dot.is-domain-structural-biology,
+.af-layer-dot.is-domain-structural-biology {
+  background: #3c82ff;
+  box-shadow: 0 0 4px rgba(60, 130, 255, 0.5);
+}
+
+.af-palette-dot.is-domain-ai-transform,
+.af-layer-dot.is-domain-ai-transform {
+  background: #a050ff;
+  box-shadow: 0 0 4px rgba(160, 80, 255, 0.5);
+}
+
+.af-palette-dot.is-domain-runtime-hpc,
+.af-layer-dot.is-domain-runtime-hpc {
+  background: #3cd278;
+  box-shadow: 0 0 4px rgba(60, 210, 120, 0.5);
+}
+
+.af-palette-dot.is-domain-topology,
+.af-layer-dot.is-domain-topology {
+  background: #3cdcdc;
+  box-shadow: 0 0 4px rgba(60, 220, 220, 0.5);
+}
+
+.af-palette-dot.is-domain-reciprocal-space,
+.af-layer-dot.is-domain-reciprocal-space {
+  background: #ffa552;
+  box-shadow: 0 0 4px rgba(255, 165, 82, 0.5);
+}
+
+.af-palette-dot.is-domain-error,
+.af-layer-dot.is-domain-error {
+  background: #ff3c46;
+  box-shadow: 0 0 4px rgba(255, 60, 70, 0.5);
 }
 
 .af-palette-label {

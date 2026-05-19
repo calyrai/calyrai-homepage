@@ -47,6 +47,20 @@ loadGetBezierPath();
     return '93, 200, 255';
   }
 
+  function domainHex(domain) {
+    if (domain === 'structural-biology') return '#3c82ff';
+    if (domain === 'reciprocal-space')   return '#ffa552';
+    if (domain === 'ai-transform')       return '#a050ff';
+    if (domain === 'runtime-hpc')        return '#3cd278';
+    if (domain === 'topology')           return '#3cdcdc';
+    if (domain === 'error')              return '#ff3c46';
+    return '#5dc8ff';
+  }
+
+  function domainClass(domain) {
+    return String(domain || 'structural-biology').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
   // 1.2 — Semantic pulse edge: white coherent pulses travel source→target
   function PulseEdge(props) {
     const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data, markerEnd, style } = props;
@@ -1254,7 +1268,7 @@ loadGetBezierPath();
                         onClick=${function() { addNodeFromTemplate(tpl); }}
                         title=${'Add ' + tpl.data.name}
                       >
-                        <span className=${'af-palette-dot is-' + tpl.data.accent}></span>
+                        <span className=${'af-palette-dot is-domain-' + domainClass(tpl.data.semanticDomain)}></span>
                         <span className="af-palette-label">${tpl.data.shortLabel}</span>
                       </div>
                     `;
@@ -1323,7 +1337,9 @@ loadGetBezierPath();
                     return 'rgba(' + rgb + ', ' + alpha + ')';
                   }}
                   nodeStrokeColor=${function (node) {
-                    return node.id === activeNodeId ? '#5dc8ff' : 'transparent';
+                    return node.id === activeNodeId
+                      ? domainHex(node.data && node.data.semanticDomain)
+                      : 'transparent';
                   }}
                   nodeStrokeWidth=${3}
                   nodeClassName=${function (node) {
@@ -1394,7 +1410,7 @@ loadGetBezierPath();
                       className=${'af-layer-item' + (isActive ? ' is-active' : '')}
                       onClick=${function() { setActiveNodeId(node.id); }}
                     >
-                      <span className=${'af-layer-dot is-' + (node.data.accent || 'cyan')}></span>
+                      <span className=${'af-layer-dot is-domain-' + domainClass(node.data.semanticDomain)}></span>
                       <span className="af-layer-name">${node.data.shortLabel || node.data.name}</span>
                       <button
                         className="af-layer-delete"
