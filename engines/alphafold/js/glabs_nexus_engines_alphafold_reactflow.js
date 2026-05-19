@@ -390,6 +390,9 @@ loadGetBezierPath();
       ];
     }
 
+    const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
+    const editorMode = currentViewMode === 'editor';
+
     useEffect(function () {
       if (hasUserMovedNodes || initialAutoLayoutDoneRef.current) return;
       var byId = {};
@@ -464,9 +467,6 @@ loadGetBezierPath();
       setFlowHidden(nextFlowHidden);
       setInspectorHidden(nextInspectorHidden);
     };
-
-    const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
-    const editorMode = currentViewMode === 'editor';
 
     useEffect(function () {
       if (typeof window === 'undefined') return;
