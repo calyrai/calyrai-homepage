@@ -797,6 +797,7 @@
 }
 
 .af-flow-root {
+  --af-floating-ui-top: 0.72rem;
   height: 100%;
   min-height: 440px;
   border-radius: 0;
@@ -818,7 +819,7 @@
 
 .af-flow-overlay {
   position: absolute;
-  top: 0.72rem;
+  top: var(--af-floating-ui-top);
   left: calc(0.6rem + 112px + 0.4rem);
   z-index: 30;
   display: block;
@@ -880,12 +881,14 @@
   border: 1px solid rgba(117, 169, 219, 0.3);
   background: rgba(7, 18, 30, 0.95);
   overflow: hidden;
-  top: 0.72rem !important;
+  top: var(--af-floating-ui-top) !important;
   left: 0.6rem !important;
   bottom: auto !important;
 }
 
 .af-flow-controls {
+  top: var(--af-floating-ui-top) !important;
+  right: 0.6rem !important;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 12px rgba(93, 200, 255, 0.2);
@@ -2068,7 +2071,7 @@
   }
 
   .af-flow-overlay {
-    top: 0.72rem;
+    top: var(--af-floating-ui-top);
     left: calc(0.6rem + 112px + 0.35rem);
   }
 
@@ -2093,6 +2096,7 @@
   }
 
   .af-flow-root {
+    --af-floating-ui-top: 5.2rem;
     min-height: 100%;
     height: 100%;
   }
