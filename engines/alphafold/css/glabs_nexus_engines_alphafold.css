@@ -876,8 +876,8 @@
 }
 
 .af-overview-minimap {
-  width: 112px !important;
-  height: 76px !important;
+  width: 172px !important;
+  height: 116px !important;
   border-radius: 8px;
   border: 1px solid rgba(117, 169, 219, 0.3);
   background: rgba(7, 18, 30, 0.95);
@@ -938,7 +938,9 @@
 }
 
 .af-overview-minimap .react-flow__minimap-mask {
-  fill: transparent;
+  fill: rgba(93, 200, 255, 0.12);
+  stroke: rgba(143, 198, 255, 0.55);
+  stroke-width: 1.1;
 }
 
 .af-overview-minimap .react-flow__minimap-node {

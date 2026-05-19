@@ -486,9 +486,11 @@ loadGetBezierPath();
           { id: 'submit', position: { x: centerX, y: 424 } }
         ];
       }
-      // Wide layout (width > 780): center nodes horizontally with responsive spacing
-      var wideSpacing = Math.max(240, Math.min(300, Math.round(width * 0.18)));
-      var wideStartX = Math.max(24, Math.round((width - (wideSpacing * 4)) / 2));
+      // Wide layout (width > 780): distribute nodes across the available canvas width.
+      var sidePadding = Math.max(32, Math.round(width * 0.065));
+      var usableWidth = Math.max(620, width - (sidePadding * 2));
+      var wideSpacing = Math.max(160, Math.round(usableWidth / 4));
+      var wideStartX = Math.round((width - (wideSpacing * 4)) / 2);
       return [
         { id: 'input', position: { x: wideStartX, y: 98 } },
         { id: 'parse', position: { x: wideStartX + wideSpacing, y: 98 } },
@@ -1105,7 +1107,7 @@ loadGetBezierPath();
         flowInstance.fitBounds(bounds, {
           duration: duration,
           padding: normalizedPadding,
-          minZoom: 0.12,
+          minZoom: 0.24,
           maxZoom: 1.95
         });
         return;
@@ -1115,7 +1117,7 @@ loadGetBezierPath();
         flowInstance.fitView({
           duration: duration,
           padding: normalizedPadding,
-          minZoom: 0.12,
+          minZoom: 0.24,
           maxZoom: 1.9,
           includeHiddenNodes: false
         });
@@ -1127,8 +1129,8 @@ loadGetBezierPath();
       const frameId = requestAnimationFrame(function () {
         var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
         var fitPadding = flowSize.width <= 780
-          ? (currentViewMode === 'flow' ? 0.01 : 0.03)
-          : (currentViewMode === 'flow' ? 0.03 : 0.07);
+          ? (currentViewMode === 'flow' ? 0.005 : 0.02)
+          : (currentViewMode === 'flow' ? 0.01 : 0.04);
         fitCanvasToViewport(fitDuration, fitPadding);
         initialViewportFitDoneRef.current = true;
       });
@@ -1345,7 +1347,7 @@ loadGetBezierPath();
                   nodeClassName=${function (node) {
                     return node.id === activeNodeId ? 'af-mm-active' : '';
                   }}
-                  maskColor="rgba(2, 7, 12, 0)"
+                  maskColor="rgba(93, 200, 255, 0.14)"
                 />
               </${ReactFlow}>
               <div className="af-flow-overlay">
