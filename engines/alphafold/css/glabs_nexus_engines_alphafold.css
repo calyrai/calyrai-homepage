@@ -2095,8 +2095,8 @@
   .af-main-grid-job.is-flow-hidden .af-inspector-panel {
     order: 2;
     grid-column: 1;
-    margin-top: 64px;
-    padding-top: 2.4rem;
+    margin-top: 120px;
+    padding-top: 3.2rem;
     border-top: 0;
   }
 
