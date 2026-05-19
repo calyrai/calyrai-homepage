@@ -920,17 +920,17 @@
 /* In split layout place floating flow UI in the lower part of the flow canvas. */
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-overlay {
   top: auto;
-  bottom: 2.2rem;
+  bottom: clamp(0.55rem, 1.4vh, 1rem);
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-overview-minimap {
   top: auto !important;
-  bottom: 2.2rem !important;
+  bottom: clamp(0.55rem, 1.4vh, 1rem) !important;
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) .af-flow-controls {
   top: auto !important;
-  bottom: 2.2rem !important;
+  bottom: clamp(0.55rem, 1.4vh, 1rem) !important;
 }
 
 .af-main-grid-job:not(.is-inspector-hidden):not(.is-flow-hidden) {
