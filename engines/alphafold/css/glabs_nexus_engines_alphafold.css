@@ -2078,8 +2078,8 @@
   .af-main-grid-job .af-canvas-panel {
     order: 1;
     border-bottom: 1px solid rgba(117, 169, 219, 0.16);
-    min-height: 62dvh;
-    height: clamp(420px, 64dvh, 760px);
+    min-height: 72dvh;
+    height: clamp(560px, 78dvh, 980px);
   }
 
   .af-main-grid-job .af-inspector-panel,

@@ -358,11 +358,11 @@ loadGetBezierPath();
     function layoutNodesForWidth(width) {
       if (width <= 780) {
         return [
-          { id: 'input', position: { x: 44, y: 44 } },
-          { id: 'parse', position: { x: 212, y: 168 } },
-          { id: 'mask', position: { x: 44, y: 292 } },
-          { id: 'build', position: { x: 212, y: 416 } },
-          { id: 'submit', position: { x: 44, y: 540 } }
+          { id: 'input', position: { x: 92, y: 40 } },
+          { id: 'parse', position: { x: 92, y: 190 } },
+          { id: 'mask', position: { x: 92, y: 340 } },
+          { id: 'build', position: { x: 92, y: 490 } },
+          { id: 'submit', position: { x: 92, y: 640 } }
         ];
       }
       return [
@@ -988,13 +988,16 @@ loadGetBezierPath();
       if (flowHidden) return;
       const frameId = requestAnimationFrame(function () {
         var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
-        fitCanvasToViewport(fitDuration, currentViewMode === 'flow' ? 0.03 : 0.07);
+        var fitPadding = flowSize.width <= 780
+          ? (currentViewMode === 'flow' ? 0.01 : 0.03)
+          : (currentViewMode === 'flow' ? 0.03 : 0.07);
+        fitCanvasToViewport(fitDuration, fitPadding);
         initialViewportFitDoneRef.current = true;
       });
       return function () {
         cancelAnimationFrame(frameId);
       };
-    }, [currentViewMode, flowHidden, flowInstance, flowRenderKey]);
+    }, [currentViewMode, flowHidden, flowInstance, flowRenderKey, flowSize.width]);
 
     const resetNodesLayout = function () {
       resetLockRef.current = true;
