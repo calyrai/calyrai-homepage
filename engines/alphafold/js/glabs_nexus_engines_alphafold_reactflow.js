@@ -357,15 +357,16 @@ loadGetBezierPath();
     };
     function layoutNodesForWidth(width) {
       if (width <= 780) {
-        var spacing = 182;
-        var startX = Math.max(24, Math.round((width - (spacing * 4)) / 2));
-        var centerY = 210;
+        var triangleWidth = Math.max(220, Math.min(300, Math.round(width * 0.64)));
+        var leftX = Math.max(24, Math.round((width - triangleWidth) / 2));
+        var rightX = leftX + triangleWidth;
+        var centerX = leftX + Math.round(triangleWidth / 2);
         return [
-          { id: 'input', position: { x: startX, y: centerY } },
-          { id: 'parse', position: { x: startX + spacing, y: centerY } },
-          { id: 'mask', position: { x: startX + (spacing * 2), y: centerY } },
-          { id: 'build', position: { x: startX + (spacing * 3), y: centerY } },
-          { id: 'submit', position: { x: startX + (spacing * 4), y: centerY } }
+          { id: 'input', position: { x: leftX, y: 64 } },
+          { id: 'parse', position: { x: rightX, y: 64 } },
+          { id: 'mask', position: { x: leftX + 34, y: 236 } },
+          { id: 'build', position: { x: rightX - 34, y: 236 } },
+          { id: 'submit', position: { x: centerX, y: 424 } }
         ];
       }
       return [
