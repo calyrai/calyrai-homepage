@@ -173,6 +173,12 @@
   justify-content: center;
 }
 
+/* Keep homepage hero to a single CTA only: Explore the Nexus. */
+.hero-secondary-actions,
+.hero-secondary-link {
+  display: none !important;
+}
+
 .hero-secondary-link {
   display: inline-flex;
   align-items: center;
