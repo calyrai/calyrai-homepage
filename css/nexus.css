@@ -405,6 +405,38 @@
   font-size: 1rem;
 }
 
+.nexus-profile-shell {
+  margin-top: 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.nexus-profile-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(124, 238, 255, 0.86);
+}
+
+.nexus-profile-select {
+  min-width: 190px;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid rgba(106, 240, 255, 0.24);
+  background: rgba(7, 16, 24, 0.82);
+  color: #f3fbff;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.nexus-profile-select:focus-visible {
+  outline: 2px solid rgba(77, 235, 255, 0.5);
+  outline-offset: 1px;
+}
+
 .nexus-bullets-tight {
   margin-top: 12px;
 }

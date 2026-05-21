@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nexus.Engine Systems - Calyr.ai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nexus.Engine systems overview for multi-iPhone LiDAR capture, transport, semantic projection, and browser visualization." />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/nav.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/explore.css" />
+  <link rel="stylesheet" href="../css/nexus.css" />
+  <link rel="stylesheet" href="../css/impressum.css" />
+
+  <script src="../js/collect_hearts.js" defer></script>
+  <script src="../js/orbit_logo.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+</head>
+
+<body>
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="nav-left-row">
+      <a href="../index.html" class="nav-pill glow-nav">Calyr.ai – platform technology</a>
+      <a href="../explore.html" class="nav-pill glow-nav">Explore</a>
+      <a href="../team.html" class="nav-pill glow-nav">Team</a>
+      <a href="../docs.html" class="nav-pill glow-nav">Docs</a>
+    </div>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill glow-nav">Follow</a>
+      <a href="contact.html" class="nav-pill glow-nav">Contact</a>
+      <a href="#impressum" class="nav-pill glow-nav">Impressum</a>
+    </nav>
+  </div>
+</header>
+
+<main class="explore-page nexus-page">
+  <section class="explore-shell" aria-label="Nexus.Engine systems">
+    <div class="nexus-intro">
+      <section class="nexus-hero" aria-label="Hero">
+        <div class="nexus-kicker">Calyr.ai / Nexus.Engine</div>
+        <h1 class="nexus-title">Nexus.Engine systems for LiDAR, transport, and semantic projection</h1>
+        <p class="nexus-subtitle">This surface shows the MVP system structure: multiple iPhones, shared coordinate alignment, WebSocket/API bridge, semantic projection, browser visualization, and adaptive feedback. It is the runtime scaffold behind the LiDAR MVP, not the device connection itself.</p>
+        <div class="nexus-hero-grid">
+          <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Capture</div>
+            <div class="nexus-stat-value">Phones</div>
+            <p class="nexus-stat-body">Motion, camera, depth, pose, and touch streams enter from multiple iPhones or iPads.</p>
+          </article>
+          <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Bridge</div>
+            <div class="nexus-stat-value">API</div>
+            <p class="nexus-stat-body">WebSocket or HTTP routes move data into Nexus.Engine.</p>
+          </article>
+          <article class="nexus-stat-card">
+            <div class="nexus-stat-label">Projection</div>
+            <div class="nexus-stat-value">Web</div>
+            <p class="nexus-stat-body">SVG, Three.js, and dashboard views render the system state.</p>
+          </article>
+        </div>
+      </section>
+
+      <nav class="nexus-outline" aria-label="Nexus.Engine sections">
+        <a class="nexus-outline-link" href="#profile">Profile switch</a>
+        <a class="nexus-outline-link" href="#concept">System concept</a>
+        <a class="nexus-outline-link" href="#layers">Runtime layers</a>
+        <a class="nexus-outline-link" href="#systems">System cards</a>
+        <a class="nexus-outline-link" href="#flow">MVP flow</a>
+        <a class="nexus-outline-link" href="#map">Runtime map</a>
+      </nav>
+
+      <section id="profile" class="nexus-block">
+        <h2 class="nexus-h2">SAS interface: profile switch</h2>
+        <p class="nexus-body">Switch between runtime profiles to preview session scope, alignment mode, and device topology before starting the backend runtime.</p>
+
+        <div class="nexus-profile-shell">
+          <label class="nexus-profile-label" for="profileSelect">Runtime profile</label>
+          <select id="profileSelect" class="nexus-profile-select" aria-label="Select LiDAR collaboration profile">
+            <option value="mvp">mvp</option>
+            <option value="lab">lab</option>
+            <option value="demo">demo</option>
+          </select>
+        </div>
+
+        <div class="nexus-dual-grid">
+          <article class="nexus-dual-card">
+            <div class="nexus-integration-label">Session</div>
+            <h3 id="profileSession">lidar-session-mvp</h3>
+            <p id="profileAlignment" class="nexus-stat-body">Alignment: arkit_collaboration</p>
+            <p id="profileConfig" class="nexus-stat-body">Config: nexus/engines/lidar/configs/multi_device_mvp.json</p>
+          </article>
+          <article class="nexus-dual-card">
+            <div class="nexus-integration-label">Topology</div>
+            <h3 id="profileTopology">3 sensor nodes -> central_nexus_server -> shared_scene_node</h3>
+            <p id="profileNodes" class="nexus-stat-body">Nodes: 5 | Edges: 4</p>
+            <ul id="profileDeviceList" class="nexus-bullets nexus-bullets-tight">
+              <li>iPhone 1 (websocket)</li>
+              <li>iPhone 2 (websocket)</li>
+              <li>iPhone 3 (websocket)</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="concept" class="nexus-block">
+        <h2 class="nexus-h2">System concept</h2>
+        <pre id="conceptFlow" class="nexus-math">3 SENSOR NODES -> NETWORK -> CENTRAL_NEXUS_SERVER -> SHARED_SCENE_NODE</pre>
+        <p class="nexus-body">Nexus.Engine is the orchestration layer that turns raw sensing into governed runtime states. The MVP should remain narrow: phone motion and capture signals go in, the browser shows live state out, and the server merges them into one world.</p>
+        <p class="nexus-body">The LiDAR module now exists as a structural runtime scaffold in <code>nexus/engines/lidar</code>; this page is the user-facing system overview for that scaffold.</p>
+      </section>
+
+      <section id="layers" class="nexus-block">
+        <h2 class="nexus-h2">Runtime layers</h2>
+        <div class="nexus-flow">
+          <div class="nexus-flow-node">
+            <span class="nexus-flow-step">1</span>
+            <strong>Multi-phone capture</strong>
+            <span>LiDAR, motion, camera, touch, position, and button events are acquired on several devices in the same room.</span>
+          </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+            <span class="nexus-flow-step">2</span>
+            <strong>Shared world alignment</strong>
+            <span>ARKit collaborative sessions or reference points keep devices in one coordinate system.</span>
+          </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+            <span class="nexus-flow-step">3</span>
+            <strong>WebSocket / API bridge</strong>
+            <span>Transport relays the merged stream to the backend and keeps the UI decoupled from the devices.</span>
+          </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+            <span class="nexus-flow-step">4</span>
+            <strong>Semantic projection</strong>
+            <span>Raw frames become capture states, geometry states, and interface states.</span>
+          </div>
+          <div class="nexus-flow-arrow"></div>
+          <div class="nexus-flow-node">
+            <span class="nexus-flow-step">5</span>
+            <strong>Web visualization</strong>
+            <span>React, SVG, or Three.js surfaces show the system and allow interaction.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="systems" class="nexus-block">
+        <h2 class="nexus-h2">System cards</h2>
+        <div class="nexus-integration-grid">
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Phone</div>
+            <h3>LiDAR / Camera Capture</h3>
+            <p>ARKit acquisition on a real iPhone or iPad with LiDAR support.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Bridge</div>
+            <h3>WebSocket / FastAPI</h3>
+            <p>Transport and control-plane bridge for real-time system messages from multiple devices.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Alignment</div>
+            <h3>Shared Coordinate System</h3>
+            <p>ARKit collaboration or explicit reference points keep the geometry consistent across phones.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Runtime</div>
+            <h3>Nexus.Engine</h3>
+            <p>Semantic orchestration, graph assembly, and runtime state management.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Projection</div>
+            <h3>SVG / Three.js</h3>
+            <p>Visual surfaces for geometry, system status, and semantic objects.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">Future</div>
+            <h3>Adaptive Twin</h3>
+            <p>Recursive updates from experiment and simulation back into the interface.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="flow" class="nexus-block">
+        <h2 class="nexus-h2">MVP flow</h2>
+        <p class="nexus-body">The first useful prototype does not need perfect synchronization or full LiDAR processing. It only needs several phone streams, a backend relay, and a browser that reacts in real time.</p>
+        <pre id="mvpFlowLine" class="nexus-math">iPhone 1 + iPhone 2 + iPhone 3 -> network -> central Nexus.Engine server -> shared scene</pre>
+        <p class="nexus-body">That is the interface you asked to see: the systems behind the MVP, not the device link implementation itself.</p>
+      </section>
+
+      <section id="map" class="nexus-block">
+        <div class="nexus-section-head">
+          <div>
+            <h2 class="nexus-h2">Runtime map</h2>
+            <p class="nexus-body">The LiDAR runtime is one node in the broader Nexus engine surface. The graph below shows how the system is meant to stay modular.</p>
+          </div>
+          <a class="nexus-inline-link" href="../explore.html">Open full explore map</a>
+        </div>
+        <div class="nexus-integration-grid">
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">nexus.engine.lidar</div>
+            <h3>Capture + Projection</h3>
+            <p>Structural scaffold for multi-phone sensing, transport, semantic projection, and browser output.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">nexus.engine.alphafold</div>
+            <h3>Prediction Runtime</h3>
+            <p>Existing engine pattern that shows how runtime nodes are kept separate but composable.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">nexus.engine.qty</div>
+            <h3>Semantic Packaging</h3>
+            <p>Another runtime pattern that the LiDAR engine mirrors in structure and governance style.</p>
+          </article>
+          <article class="nexus-integration-card">
+            <div class="nexus-integration-label">nexus.engine.sbpa</div>
+            <h3>Dry-run Job Plan</h3>
+            <p>Template for how the engine can stay executable without mixing in the transport connection itself.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="nexus-block" aria-label="Contact">
+        <h2 class="nexus-h2">Contact</h2>
+        <p class="nexus-body">Rupert Tscheliessnig<br>Scientific ML & Structural Biophysics</p>
+        <p class="nexus-body"><a href="mailto:rupert.tscheliessnig@calyr.ai" class="glow-link">rupert.tscheliessnig@calyr.ai</a></p>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script defer src="../data/projects.js"></script>
+<script defer src="../js/explore_map.js"></script>
+<script>
+  const PROFILE_PRESETS = {
+    mvp: {
+      sessionId: "lidar-session-mvp",
+      alignment: "arkit_collaboration",
+      configPath: "nexus/engines/lidar/configs/multi_device_mvp.json",
+      centralServer: "central_nexus_server",
+      sharedScene: "shared_scene_node",
+      devices: [
+        { label: "iPhone 1", transport: "websocket" },
+        { label: "iPhone 2", transport: "websocket" },
+        { label: "iPhone 3", transport: "websocket" }
+      ]
+    },
+    lab: {
+      sessionId: "lidar-session-lab",
+      alignment: "reference_points",
+      configPath: "nexus/engines/lidar/configs/multi_device_lab.json",
+      centralServer: "lab_nexus_server",
+      sharedScene: "lab_shared_scene",
+      devices: [
+        { label: "iPad Lab 1", transport: "websocket" },
+        { label: "iPhone Lab 2", transport: "websocket" },
+        { label: "iPhone Lab 3", transport: "webrtc" },
+        { label: "iPhone Lab 4", transport: "webrtc" }
+      ]
+    },
+    demo: {
+      sessionId: "lidar-session-demo",
+      alignment: "manual_alignment",
+      configPath: "nexus/engines/lidar/configs/multi_device_demo.json",
+      centralServer: "demo_nexus_server",
+      sharedScene: "demo_scene",
+      devices: [
+        { label: "iPhone Demo 1", transport: "websocket" },
+        { label: "iPhone Demo 2", transport: "http" }
+      ]
+    }
+  };
+
+  function renderProfile(profileKey) {
+    const profile = PROFILE_PRESETS[profileKey] || PROFILE_PRESETS.mvp;
+    const sensorCount = profile.devices.length;
+    const nodes = sensorCount + 2;
+    const edges = sensorCount + 1;
+    const deviceLine = profile.devices.map((device) => device.label).join(" + ");
+
+    document.getElementById("profileSession").textContent = profile.sessionId;
+    document.getElementById("profileAlignment").textContent = "Alignment: " + profile.alignment;
+    document.getElementById("profileConfig").textContent = "Config: " + profile.configPath;
+    document.getElementById("profileTopology").textContent = sensorCount + " sensor nodes -> " + profile.centralServer + " -> " + profile.sharedScene;
+    document.getElementById("profileNodes").textContent = "Nodes: " + nodes + " | Edges: " + edges;
+
+    const conceptFlow = sensorCount + " SENSOR NODES -> NETWORK -> " + profile.centralServer.toUpperCase() + " -> " + profile.sharedScene.toUpperCase();
+    document.getElementById("conceptFlow").textContent = conceptFlow;
+    document.getElementById("mvpFlowLine").textContent = deviceLine + " -> network -> " + profile.centralServer + " -> " + profile.sharedScene;
+
+    const list = document.getElementById("profileDeviceList");
+    list.innerHTML = "";
+    profile.devices.forEach((device) => {
+      const item = document.createElement("li");
+      item.textContent = device.label + " (" + device.transport + ")";
+      list.appendChild(item);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const select = document.getElementById("profileSelect");
+    if (!select) {
+      return;
+    }
+    renderProfile(select.value);
+    select.addEventListener("change", (event) => {
+      renderProfile(event.target.value);
+    });
+  });
+</script>
+<footer id="impressum" class="impressum">
+  <div class="impressum-inner">© 2026 Calyr.ai™ — MIT License — <a href="../license.html">License</a></div>
+</footer>
+</body>
+</html>
