@@ -7,7 +7,7 @@ window.CALYR_DECK = [
     "type": "title",
     "kicker": "BOKU · User Training",
     "headline": "Nexus CLI:<br>From Data to Decision",
-    "tagline": "Rupert Tscheliessnig"
+    "tagline": "Rupert Glisnig"
   },
   {
     "type": "statement",

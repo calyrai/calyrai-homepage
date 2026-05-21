@@ -4,7 +4,7 @@ schema_version: 1
 # Used by: scripts/build_nexus_yaml.py
 
 identity:
-  name: Rupert Tscheliessnig
+  name: Rupert Glisnig
   role: Scientific ML & Structural Biophysics
   focus: SAXS, PCA, Representation Learning
   contact:
