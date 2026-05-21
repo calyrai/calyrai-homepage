@@ -123,13 +123,95 @@
   min-height: auto;
   padding: 12px 16px 44px;
   border: 1px solid rgba(255, 255, 255, 0.32);
-  border-radius: 10px;
+  border-radius: 0;
   background: #050505;
+}
+
+.pub-daily-sheet .doc-article {
+  max-width: none;
+  color: #e8e8e8;
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.56;
+  column-count: 4;
+  column-gap: 20px;
+  column-rule: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.pub-daily-sheet .doc-article > h1,
+.pub-daily-sheet .doc-article > .doc-subtitle,
+.pub-daily-sheet .pub-network-shell,
+.pub-daily-sheet .pub-topic-heading,
+.pub-daily-sheet .pub-nav-footer,
+.pub-daily-sheet .doc-nav-footer {
+  column-span: all;
+}
+
+.pub-daily-sheet .pub-topic-group,
+.pub-daily-sheet .pub-method-card,
+.pub-daily-sheet .pub-network-shell,
+.pub-daily-sheet .pub-card-top,
+.pub-daily-sheet .pub-card-method,
+.pub-daily-sheet .pub-abstract-area,
+.pub-daily-sheet .pub-abstract,
+.pub-daily-sheet .pub-preview-shell,
+.pub-daily-sheet .pub-graph-container,
+.pub-daily-sheet .pub-card-detail h1,
+.pub-daily-sheet .pub-card-detail .doc-subtitle {
+  break-inside: avoid;
+}
+
+.pub-daily-sheet .pub-topic-heading {
+  color: #ff4df5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.pub-daily-sheet .pub-method-card {
+  padding: 10px 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.pub-daily-sheet .pub-card-title {
+  font-size: 1.02rem;
+  color: #f1f1f1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.pub-daily-sheet .pub-card-method {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 0.9rem;
+  color: rgba(232, 232, 232, 0.84);
+}
+
+.pub-daily-sheet .pub-network-shell,
+.pub-daily-sheet .pub-preview-shell {
+  border-radius: 0;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: #070707;
+}
+
+.pub-daily-sheet .pub-abstract {
+  font-size: 0.9rem;
+  line-height: 1.62;
+  color: rgba(232, 232, 232, 0.82);
+  -webkit-mask-image: none;
+  mask-image: none;
+  padding-bottom: 8px;
 }
 
 @media (max-width: 1100px) {
   .pub-status-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pub-daily-sheet .doc-article {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 920px) {
+  .pub-daily-sheet .doc-article {
+    column-count: 2;
   }
 }
 
@@ -153,6 +235,10 @@
 
   .pub-daily-sheet .doc-main {
     padding: 10px 10px 30px;
+  }
+
+  .pub-daily-sheet .doc-article {
+    column-count: 1;
   }
 }
 
