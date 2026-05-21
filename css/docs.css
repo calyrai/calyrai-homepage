@@ -401,7 +401,7 @@ body {
 
 .docs-review-shell {
   width: min(calc(100% - 26px), 1380px);
-  margin: 58px auto 18px;
+  margin: 44px auto 16px;
 }
 
 .docs-sheet {
@@ -586,7 +586,7 @@ body {
 @media (max-width: 720px) {
   .docs-review-shell {
     width: min(calc(100% - 14px), 1380px);
-    margin-top: 68px;
+    margin-top: 56px;
   }
 
   .docs-sheet {
