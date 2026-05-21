@@ -64,6 +64,15 @@
   font-weight: 700;
 }
 
+.pub-masthead-whisper {
+  margin-top: 4px;
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: rgba(255, 77, 245, 0.85);
+  font-style: italic;
+}
+
 .pub-strip {
   margin-top: 6px;
   padding: 7px 8px;
@@ -165,6 +174,171 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.35);
 }
 
+.pub-daily-sheet .pub-front-hero,
+.pub-daily-sheet .pub-editorial-deck,
+.pub-daily-sheet .pub-semantic-nav,
+.pub-daily-sheet .pub-front-metrics {
+  break-inside: avoid;
+  column-span: all;
+}
+
+.pub-front-heading {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ff4df5;
+}
+
+.pub-front-hero {
+  margin: 4px 0 18px;
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(255, 77, 245, 0.4);
+  background:
+    radial-gradient(130% 180% at 100% 0%, rgba(255, 77, 245, 0.2), rgba(9, 9, 9, 0) 54%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+.pub-front-kicker {
+  font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 235, 252, 0.9);
+}
+
+.pub-front-hero h2 {
+  margin: 6px 0 10px;
+  font-family: "Times New Roman", "Georgia", serif;
+  font-size: clamp(1.9rem, 5vw, 3.8rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.pub-front-hero h2 a {
+  color: #f8f8f8;
+  text-decoration: none;
+}
+
+.pub-front-hero h2 a:hover {
+  color: #ff9ff9;
+}
+
+.pub-front-hero p {
+  margin: 0;
+  max-width: 76ch;
+  font-size: 0.96rem;
+  line-height: 1.62;
+  color: rgba(232, 232, 232, 0.9);
+}
+
+.pub-editorial-deck {
+  margin: 0 0 14px;
+}
+
+.pub-editorial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.9fr);
+  gap: 12px;
+}
+
+.pub-editorial-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.pub-editorial-card {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #090909;
+  padding: 10px 12px 12px;
+}
+
+.pub-editorial-card--lead {
+  background:
+    linear-gradient(180deg, rgba(255, 77, 245, 0.09), rgba(255, 77, 245, 0) 60%),
+    #090909;
+}
+
+.pub-editorial-card .pub-card-title {
+  font-size: 1rem;
+}
+
+.pub-editorial-card--lead .pub-card-title {
+  font-size: 1.28rem;
+  line-height: 1.2;
+}
+
+.pub-semantic-nav {
+  margin: 0 0 18px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.pub-pathway {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pub-pathway a {
+  color: #f1f1f1;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.34);
+}
+
+.pub-pathway a:hover {
+  color: #ff9ff9;
+  border-bottom-color: rgba(255, 159, 249, 0.8);
+}
+
+.pub-path-arrow {
+  color: rgba(255, 77, 245, 0.8);
+  font-size: 0.92rem;
+  line-height: 1;
+}
+
+.pub-live-mode {
+  margin: 0 0 14px;
+  break-inside: avoid;
+  column-span: all;
+}
+
+.pub-live-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pub-live-card {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.015);
+  padding: 9px 10px;
+}
+
+.pub-live-card h3 {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 220, 252, 0.9);
+}
+
+.pub-live-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.52;
+  color: rgba(228, 228, 228, 0.85);
+}
+
 .pub-daily-sheet .pub-method-card {
   padding: 10px 0 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
@@ -207,6 +381,14 @@
   .pub-daily-sheet .doc-article {
     column-count: 3;
   }
+
+  .pub-editorial-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pub-live-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 920px) {
@@ -239,6 +421,23 @@
 
   .pub-daily-sheet .doc-article {
     column-count: 1;
+  }
+
+  .pub-front-hero {
+    padding: 10px 10px 12px;
+  }
+
+  .pub-front-hero h2 {
+    font-size: clamp(1.45rem, 9vw, 2.2rem);
+  }
+
+  .pub-pathway {
+    font-size: 0.72rem;
+    gap: 6px;
+  }
+
+  .pub-live-grid {
+    grid-template-columns: 1fr;
   }
 }
 

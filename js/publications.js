@@ -12,10 +12,15 @@
   var TOPICS = [
     { id: 'nexus', label: 'Nexus' },
     { id: 'spr', label: 'SPR' },
-    { id: 'saxs', label: 'SAXS' },
+    { id: 'saxs', label: 'SAS' },
     { id: 'purification', label: 'Thoughts on Purification' },
     { id: 'redhuman', label: 'RED HUMAN' }
   ];
+
+  var TOPIC_LABEL = TOPICS.reduce(function (acc, topic) {
+    acc[topic.id] = topic.label;
+    return acc;
+  }, {});
 
   function sortedTopics() {
     return TOPICS.slice().sort(function (a, b) {
@@ -45,6 +50,55 @@
       .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&#39;');
+  }
+
+  function normalizeTerminology(value) {
+    return String(value == null ? '' : value).replace(/\bSAXS\b/g, 'SAS');
+  }
+
+  function text(value) {
+    return escapeHtml(normalizeTerminology(value));
+  }
+
+  function byId(id) {
+    return DATA.find(function (pub) { return pub.id === id; }) || null;
+  }
+
+  function primaryDateValue(pub) {
+    return Date.parse(pub && (pub.updated_at || pub.date || pub.created_at) || '') || 0;
+  }
+
+  function pickFeaturedPublication() {
+    if (!DATA.length) return null;
+    return DATA.slice().sort(function (a, b) {
+      function score(pub) {
+        var s = 0;
+        var hay = (pub.title || '') + ' ' + (pub.method || '') + ' ' + (pub.description || '');
+        if (/ai|orchestrated|semantic|runtime/i.test(hay)) s += 4;
+        if (/structural|biology|sbpa|nexus/i.test(hay)) s += 3;
+        if (pub.doi) s += 2;
+        if (normalizeStatus(pub.status) === 'active') s += 3;
+        if (pub.pdfs && pub.pdfs.length) s += 1;
+        s += primaryDateValue(pub) / 100000000000000;
+        return s;
+      }
+      var diff = score(b) - score(a);
+      if (diff) return diff;
+      return String(a.title || '').localeCompare(String(b.title || ''));
+    })[0];
+  }
+
+  function pickLatest(limit) {
+    return DATA.slice().sort(function (a, b) {
+      var dateDiff = primaryDateValue(b) - primaryDateValue(a);
+      if (dateDiff) return dateDiff;
+      return String(a.title || '').localeCompare(String(b.title || ''));
+    }).slice(0, limit);
+  }
+
+  function pickSectionItems(config) {
+    var items = DATA.filter(config.filterFn);
+    return items.slice(0, config.max || items.length);
   }
 
   function cpLink(pub) {
@@ -119,8 +173,8 @@
     return '<section class="pub-network-shell">' +
       '<div class="pub-network-head">' +
         '<div class="doc-subtitle">Nexus / Publications</div>' +
-        '<h2 class="pub-network-title">' + escapeHtml(NETWORK.title || 'Publication Network') + '</h2>' +
-        '<p class="pub-network-subtitle">' + escapeHtml(NETWORK.subtitle || '') + '</p>' +
+        '<h2 class="pub-network-title">' + text(NETWORK.title || 'Publication Network') + '</h2>' +
+        '<p class="pub-network-subtitle">' + text(NETWORK.subtitle || '') + '</p>' +
       '</div>' +
       '<div class="pub-network-stage pub-graph-container" id="pub-network" aria-label="Publication network"></div>' +
     '</section>';
@@ -128,7 +182,92 @@
 
   function renderAbstract(pub) {
     if (!pub.abstract) return '';
-    return '<div class="pub-abstract-area"><p class="pub-abstract">' + escapeHtml(pub.abstract) + '</p></div>';
+    return '<div class="pub-abstract-area"><p class="pub-abstract">' + text(pub.abstract) + '</p></div>';
+  }
+
+  function renderEditorialCard(pub, mode) {
+    var status = normalizeStatus(pub.status);
+    var cardClass = mode === 'lead' ? 'pub-editorial-card pub-editorial-card--lead' : 'pub-editorial-card';
+    return '<article class="' + cardClass + '">' +
+      '<div class="pub-card-top">' +
+        '<a class="pub-card-title" href="#' + pub.id + '">' + text(pub.title) + '</a>' +
+        '<span class="pub-status pub-status--' + status + '">' + text(STATUS_LABEL[status] || status) + '</span>' +
+      '</div>' +
+      '<p class="pub-card-method">' + text(pub.method || pub.description || '') + '</p>' +
+      (mode === 'lead' ? renderAbstract(pub) : '') +
+    '</article>';
+  }
+
+  function renderSemanticPathway() {
+    var edges = (NETWORK && NETWORK.edges) ? NETWORK.edges.slice(0, 5) : [];
+    var chain = [];
+    edges.forEach(function (edge) {
+      var from = byId(edge.from);
+      var to = byId(edge.to);
+      if (from && chain.indexOf(from) === -1) chain.push(from);
+      if (to && chain.indexOf(to) === -1) chain.push(to);
+    });
+    if (!chain.length) chain = pickLatest(4);
+
+    var nodes = chain.slice(0, 4).map(function (pub) {
+      return '<a href="#' + pub.id + '">' + text(pub.title).toUpperCase() + '</a>';
+    }).join('<span class="pub-path-arrow">↘</span>');
+
+    return '<section class="pub-semantic-nav">' +
+      '<h2 class="pub-front-heading">Semantic Navigation</h2>' +
+      '<div class="pub-pathway">' + nodes + '</div>' +
+    '</section>';
+  }
+
+  function renderEditorialDeck(title, pubs) {
+    if (!pubs.length) return '';
+    var lead = pubs[0];
+    var compact = pubs.slice(1).map(function (pub) { return renderEditorialCard(pub, 'compact'); }).join('');
+    return '<section class="pub-editorial-deck">' +
+      '<h2 class="pub-front-heading">' + text(title) + '</h2>' +
+      '<div class="pub-editorial-grid">' +
+        renderEditorialCard(lead, 'lead') +
+        '<div class="pub-editorial-stack">' + compact + '</div>' +
+      '</div>' +
+    '</section>';
+  }
+
+  function renderFrontHero(pub) {
+    if (!pub) return '';
+    var heroTitle = text(pub.title).toUpperCase();
+    return '<section class="pub-front-hero">' +
+      '<div class="pub-front-kicker">Featured</div>' +
+      '<h2><a href="#' + pub.id + '">' + heroTitle + '</a></h2>' +
+      '<p>' + text(pub.method || pub.description || '') + '</p>' +
+      '<div class="pub-badge-row">' +
+        '<span class="pub-status pub-status--' + normalizeStatus(pub.status) + '">' + text(STATUS_LABEL[normalizeStatus(pub.status)] || pub.status) + '</span>' +
+        primaryOpenLink(pub) +
+      '</div>' +
+    '</section>';
+  }
+
+  function renderLiveMode() {
+    return '<section class="pub-live-mode">' +
+      '<h2 class="pub-front-heading">Live Newspaper Mode</h2>' +
+      '<div class="pub-live-grid">' +
+        '<article class="pub-live-card">' +
+          '<h3>AI summaries</h3>' +
+          '<p>Semantic compression of active manuscript streams, staged for editorial review.</p>' +
+        '</article>' +
+        '<article class="pub-live-card">' +
+          '<h3>Science headlines</h3>' +
+          '<p>Constraint-linked signals from current structural systems and runtime outputs.</p>' +
+        '</article>' +
+        '<article class="pub-live-card">' +
+          '<h3>Europe feed</h3>' +
+          '<p>A continental desk layer for research context, methods, and translational links.</p>' +
+        '</article>' +
+        '<article class="pub-live-card">' +
+          '<h3>Multilingual rendering</h3>' +
+          '<p>Parallel publication captions and summaries for cross-lab circulation.</p>' +
+        '</article>' +
+      '</div>' +
+    '</section>';
   }
 
   function renderPreDoiNote(pub) {
@@ -192,14 +331,14 @@
     var status = normalizeStatus(pub.status);
     main.innerHTML =
       '<div class="doc-article pub-card-detail">' +
-        '<p class="doc-subtitle">' + escapeHtml((pub.topic || '').toUpperCase()) + '</p>' +
-        '<h1>' + escapeHtml(pub.title) + '</h1>' +
+        '<p class="doc-subtitle">' + text((TOPIC_LABEL[pub.topic] || pub.topic || '').toUpperCase()) + '</p>' +
+        '<h1>' + text(pub.title) + '</h1>' +
         '<div class="pub-badge-row">' +
-          '<span class="pub-status pub-status--' + status + '">' + escapeHtml(STATUS_LABEL[status] || status) + '</span>' +
+          '<span class="pub-status pub-status--' + status + '">' + text(STATUS_LABEL[status] || status) + '</span>' +
           primaryOpenLink(pub) +
         '</div>' +
         renderTopNetwork() +
-        '<p class="pub-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
+        '<p class="pub-method">' + text(pub.method || pub.description || '') + '</p>' +
         renderAbstract(pub) +
         renderPreDoiNote(pub) +
         renderAssetLinks(pub) +
@@ -212,49 +351,69 @@
     var countItems = sortedTopics().map(function (topic) {
       var count = DATA.filter(function (p) { return p.topic === topic.id; }).length;
       if (!count) return '';
-      return '<li>' + escapeHtml(topic.label) + ': <strong>' + count + '</strong></li>';
+      return '<li>' + text(topic.label) + ': <strong>' + count + '</strong></li>';
     }).filter(Boolean).join('');
 
     var totalPapers = DATA.length;
-    var countSection =
-      '<section class="pub-topic-group">' +
-        '<h2 class="pub-topic-heading">Paper Counts</h2>' +
-        '<div class="pub-method-card">' +
-          '<p class="pub-card-method">Total papers: <strong>' + totalPapers + '</strong></p>' +
-          '<ul class="pub-card-method" style="margin-top:8px;">' + countItems + '</ul>' +
-        '</div>' +
-      '</section>';
+    var featured = pickFeaturedPublication();
+    var latest = pickLatest(4).filter(function (pub) { return !featured || pub.id !== featured.id; });
 
-    var sectionsHTML = sortedTopics().map(function (topic) {
-      var pubs = sortedPubsByTitle(DATA.filter(function (p) { return p.topic === topic.id; }));
-      if (!pubs.length) return '';
+    var sectionConfigs = [
+      {
+        title: 'Systems',
+        filterFn: function (pub) { return pub.topic === 'nexus' || pub.topic === 'spr'; },
+        max: 4
+      },
+      {
+        title: 'AI',
+        filterFn: function (pub) {
+          var hay = (pub.title || '') + ' ' + (pub.method || '') + ' ' + (pub.description || '');
+          return /ai|latent|runtime|orchestrated|inference/i.test(hay);
+        },
+        max: 4
+      },
+      {
+        title: 'Structural Biology',
+        filterFn: function (pub) { return pub.topic === 'saxs'; },
+        max: 4
+      },
+      {
+        title: 'Commentary',
+        filterFn: function (pub) { return pub.topic === 'purification' || pub.topic === 'redhuman'; },
+        max: 4
+      },
+      {
+        title: 'G-Labs',
+        filterFn: function (pub) {
+          var hay = (pub.title || '') + ' ' + (pub.method || '') + ' ' + (pub.description || '');
+          return /g-labs|nexus|builder|publication network/i.test(hay);
+        },
+        max: 4
+      }
+    ];
 
-      var cards = pubs.map(function (pub) {
-        var status = normalizeStatus(pub.status);
-        return '<div class="pub-method-card">' +
-          '<div class="pub-card-top">' +
-            '<a class="pub-card-title" href="#' + pub.id + '">' + escapeHtml(pub.title) + '</a>' +
-            '<span class="pub-status pub-status--' + status + '">' + escapeHtml(STATUS_LABEL[status] || status) + '</span>' +
-            primaryOpenLink(pub) +
-          '</div>' +
-          '<p class="pub-card-method">' + escapeHtml(pub.method || pub.description || '') + '</p>' +
-          renderAbstract(pub) +
-        '</div>';
-      }).join('');
-
-      return '<div class="pub-topic-group">' +
-        '<h2 class="pub-topic-heading">' + escapeHtml(topic.label) + '</h2>' +
-        cards +
-      '</div>';
+    var sectionsHTML = sectionConfigs.map(function (config) {
+      var pubs = sortedPubsByTitle(pickSectionItems(config)).filter(function (pub) { return !featured || pub.id !== featured.id; });
+      return renderEditorialDeck(config.title, pubs);
     }).join('');
 
     main.innerHTML =
       '<div class="doc-article">' +
-        '<p class="doc-subtitle">Calyr.aí – Publications</p>' +
-        '<h1>Manuscripts</h1>' +
+        '<p class="doc-subtitle">Calyr.aí - Publications</p>' +
+        '<h1>Living Publication System</h1>' +
+        renderFrontHero(featured) +
+        renderLiveMode() +
+        renderEditorialDeck('Latest', latest) +
+        renderSemanticPathway() +
         renderTopNetwork() +
         sectionsHTML +
-        countSection +
+        '<section class="pub-topic-group pub-front-metrics">' +
+          '<h2 class="pub-front-heading">Archive Metrics</h2>' +
+          '<div class="pub-method-card">' +
+            '<p class="pub-card-method">Total papers: <strong>' + totalPapers + '</strong></p>' +
+            '<ul class="pub-card-method" style="margin-top:8px;">' + countItems + '</ul>' +
+          '</div>' +
+        '</section>' +
       '</div>';
     window.calyrPubGraphs && window.calyrPubGraphs.refresh();
   }
