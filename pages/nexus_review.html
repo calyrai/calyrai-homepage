@@ -34,6 +34,16 @@
         repeating-linear-gradient(180deg, rgba(138, 227, 255, 0.03) 0 1px, rgba(138, 227, 255, 0.0) 1px 4px),
         var(--paper);
       font: 17px/1.56 "Georgia", "Times New Roman", serif;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(36, 243, 255, 0.035), rgba(36, 243, 255, 0) 35%);
+      pointer-events: none;
+      mix-blend-mode: screen;
     }
 
     .sheet {
@@ -61,6 +71,38 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-size: 0.72rem;
+      font-weight: 700;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+    }
+
+    .status-strip {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .status-card {
+      border: 1px solid var(--rule);
+      background: linear-gradient(180deg, rgba(36, 243, 255, 0.08), rgba(36, 243, 255, 0.02));
+      padding: 8px 10px;
+    }
+
+    .status-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      font-size: 0.62rem;
+      font-weight: 700;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+    }
+
+    .status-value {
+      margin-top: 3px;
+      color: var(--accent-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.8rem;
       font-weight: 700;
     }
 
@@ -111,6 +153,17 @@
       font-weight: 800;
       letter-spacing: 0.01em;
       text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .red-strip::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, rgba(234, 248, 255, 0.12) 0 1px, rgba(234, 248, 255, 0) 1px 7px);
+      opacity: 0.25;
+      pointer-events: none;
     }
 
     .lead {
@@ -229,6 +282,7 @@
       font-size: 1.18rem;
       line-height: 1.16;
       text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
     }
 
     .article-intro {
@@ -276,6 +330,10 @@
     }
 
     @media (max-width: 1200px) {
+      .status-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .page-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -290,6 +348,10 @@
     }
 
     @media (max-width: 840px) {
+      .status-strip {
+        grid-template-columns: 1fr;
+      }
+
       .lead-subgrid {
         grid-template-columns: 1fr;
       }
@@ -362,6 +424,25 @@
     <div class="red-strip">
       Special edition: semantic core to projection layer, from systems runtime to research front page
     </div>
+
+    <section class="status-strip" aria-label="Edition telemetry">
+      <div class="status-card">
+        <div class="status-label">Edition Mode</div>
+        <div class="status-value">Technical Review</div>
+      </div>
+      <div class="status-card">
+        <div class="status-label">Columns</div>
+        <div class="status-value">03 Active Desks</div>
+      </div>
+      <div class="status-card">
+        <div class="status-label">Projection Targets</div>
+        <div class="status-value">Web PDF Proposal</div>
+      </div>
+      <div class="status-card">
+        <div class="status-label">Sync State</div>
+        <div class="status-value">Online Pipeline Ready</div>
+      </div>
+    </section>
 
     <section class="lead">
       <h2>A unified semantic publication core can project one truth into nine editorial surfaces</h2>
