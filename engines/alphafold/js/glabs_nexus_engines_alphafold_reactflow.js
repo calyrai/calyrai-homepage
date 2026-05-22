@@ -331,6 +331,46 @@ loadGetBezierPath();
     return Math.round(Number(value || 0) / step) * step;
   }
 
+  const DEFAULT_SUMMARY_ROWS = [['NODE'], ['JOB', 'STATUS', 'PROGRESS']];
+  const SUMMARY_CELL_KEYS = { NODE: true, JOB: true, STATUS: true, PROGRESS: true };
+
+  function parseSummaryLayoutMarkdown(markdown) {
+    try {
+      if (!markdown || typeof markdown !== 'string') return DEFAULT_SUMMARY_ROWS;
+      var rowsMap = {};
+      markdown.split(/\r?\n/).forEach(function (line) {
+        var trimmed = String(line || '').trim();
+        if (!trimmed || trimmed.charAt(0) !== '|') return;
+        var cells = trimmed.split('|').map(function (part) { return part.trim(); }).filter(function (part) { return !!part; });
+        if (cells.length < 2) return;
+        if (String(cells[0]).toLowerCase() === 'row') return;
+        if (/^:?-{2,}:?$/.test(String(cells[0])) || /^:?-{2,}:?$/.test(String(cells[1]))) return;
+
+        var rowIndex = Number(cells[0]);
+        if (!Number.isFinite(rowIndex)) return;
+
+        var entries = String(cells[1])
+          .split(',')
+          .map(function (entry) { return String(entry || '').trim().toUpperCase(); })
+          .filter(function (entry) { return !!SUMMARY_CELL_KEYS[entry]; });
+
+        if (entries.length > 0) {
+          rowsMap[rowIndex] = entries;
+        }
+      });
+
+      var orderedRows = Object.keys(rowsMap)
+        .map(function (k) { return Number(k); })
+        .filter(function (k) { return Number.isFinite(k); })
+        .sort(function (a, b) { return a - b; })
+        .map(function (k) { return rowsMap[k]; });
+
+      return orderedRows.length ? orderedRows : DEFAULT_SUMMARY_ROWS;
+    } catch (_err) {
+      return DEFAULT_SUMMARY_ROWS;
+    }
+  }
+
   // Craft.js-style palette — node templates available to drag/click onto canvas
   const NODE_TEMPLATES = [
     { id: 'input',    type: 'braille', data: { name: 'FASTA Input',          shortLabel: 'FASTA',       description: 'Primary FASTA sequence intake',             bits: '100000', accent: 'cyan',    semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0, cycleDuration: 24 } },
@@ -395,7 +435,7 @@ loadGetBezierPath();
     const localLayoutTuningEnabled = false;
 
     const [activeNodeId, setActiveNodeId] = useState(null);
-    const [moveModeEnabled, setMoveModeEnabled] = useState(false);
+    const [moveModeEnabled, setMoveModeEnabled] = useState(true);
     const [nodeVisibleCount, setNodeVisibleCount] = useState(workflowNodeOrder.length);
     const [handoffState, setHandoffState] = useState({ phase: 'edge', edgeIndex: 0 });
     const [flowRenderKey, setFlowRenderKey] = useState(0);
@@ -425,6 +465,7 @@ loadGetBezierPath();
     const [panelResizeEnabled, setPanelResizeEnabled] = useState(true);
     const [panelOffsets, setPanelOffsets] = useState(createInitialPanelOffsetState);
     const [panelSizes, setPanelSizes] = useState(createInitialPanelSizeState);
+    const [summaryRows, setSummaryRows] = useState(DEFAULT_SUMMARY_ROWS);
 
     const [flowInstance, setFlowInstance] = useState(null);
     const flowShellRef = useRef(null);
@@ -453,6 +494,20 @@ loadGetBezierPath();
     useEffect(function () {
       panelSizesRef.current = panelSizes;
     }, [panelSizes]);
+
+    useEffect(function () {
+      fetch('layout/summary-layout.md')
+        .then(function (response) {
+          if (!response.ok) throw new Error('summary layout md not found');
+          return response.text();
+        })
+        .then(function (markdown) {
+          setSummaryRows(parseSummaryLayoutMarkdown(markdown));
+        })
+        .catch(function () {
+          setSummaryRows(DEFAULT_SUMMARY_ROWS);
+        });
+    }, []);
 
     useEffect(function () {
       if (!localLayoutTuningEnabled) return;
@@ -602,7 +657,7 @@ loadGetBezierPath();
     const handleNodeDragStop = function () {
       setHasUserMovedNodes(true);
       // Keep moved nodes fully visible and avoid clipping at panel edges.
-      fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.08 : 0.12);
+      fitCanvasToViewport(260, currentViewMode === 'flow' ? 0.14 : 0.16);
     };
 
     // ── Craft.js-style history, palette & layer helpers ──────────────────────
@@ -1143,7 +1198,7 @@ loadGetBezierPath();
         const deltaX = moveEvent.clientX - startX;
         const mainRect = mainGrid.getBoundingClientRect();
         const totalWidth = mainRect.width;
-        const newWidth = Math.max(300, Math.min(totalWidth - 320, totalWidth * 0.618 + deltaX));
+        const newWidth = Math.max(320, Math.min(totalWidth - 260, totalWidth * 0.7 + deltaX));
         const ratio = (newWidth / totalWidth * 100).toFixed(1);
         mainGrid.style.gridTemplateColumns = ratio + '% ' + (100 - ratio) + '%';
       };
@@ -1630,6 +1685,46 @@ loadGetBezierPath();
       '--af-right-panel-shift-y': clampDrag(panelDrag.right && panelDrag.right.y, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max) + 'px'
     };
 
+    function renderSummaryCell(cellId) {
+      if (cellId === 'NODE') {
+        return html`
+          <div className="af-editor-banner af-summary-cell af-summary-cell-node">
+            <strong>${activeNode ? activeNode.data.shortLabel || activeNode.data.name : 'NODE'}</strong>
+            <span>Editing ${activeNode ? activeNode.data.name : 'selected node'}</span>
+          </div>
+        `;
+      }
+
+      if (cellId === 'JOB') {
+        return html`
+          <div className="af-status-item af-summary-cell">
+            <span className="af-status-label">Job</span>
+            <strong className="af-status-value">${jobState.jobId || '-'}</strong>
+          </div>
+        `;
+      }
+
+      if (cellId === 'STATUS') {
+        return html`
+          <div className="af-status-item af-summary-cell">
+            <span className="af-status-label">Status</span>
+            <strong className="af-status-value">${jobState.status}</strong>
+          </div>
+        `;
+      }
+
+      if (cellId === 'PROGRESS') {
+        return html`
+          <div className="af-status-item af-summary-cell">
+            <span className="af-status-label">Progress</span>
+            <strong className="af-status-value">${jobState.progress}%</strong>
+          </div>
+        `;
+      }
+
+      return null;
+    }
+
     return html`
       <div className=${'af-editor-shell' + (localLayoutTuningEnabled && layoutEditEnabled ? ' is-layout-edit' : '') + (localLayoutTuningEnabled && layoutEditEnabled && panelResizeEnabled ? ' is-layout-resize' : '')}>
         <section className="af-toolbar af-layout-editable" data-panel-label="Toolbar Panel" style=${getPanelOffsetStyle('toolbar')}>
@@ -1766,11 +1861,11 @@ loadGetBezierPath();
                   fitViewOptions=${{ padding: 0.1 }}
                   onDrop=${onDrop}
                   onDragOver=${onDragOver}
-                  nodesDraggable=${moveModeEnabled}
+                  nodesDraggable=${true}
                   nodesConnectable=${false}
-                  elementsSelectable=${false}
+                  elementsSelectable=${true}
                   onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
-                  panOnDrag=${moveModeEnabled}
+                  panOnDrag=${true}
                   panOnScroll=${true}
                   zoomOnScroll=${true}
                   zoomOnPinch=${true}
@@ -1821,28 +1916,21 @@ loadGetBezierPath();
 
           ${inspectorHidden ? html`<aside className="af-panel af-inspector-panel is-hidden"></aside>` : html`
           <aside className=${'af-panel af-inspector-panel af-layout-editable' + (editorMode ? ' is-editor-mode' : '')} data-panel-label="Inspector Panel" ref=${function (el) { panelElementRefs.current.inspector = el; }} style=${getPanelOffsetStyle('inspector')}>
-            <div className="af-inspector-head">
-              <h2>${editorMode ? 'Node Editor' : 'Job'}</h2>
-            </div>
-            ${editorMode ? html`
-              <div className="af-editor-banner">
-                <strong>${activeNode ? activeNode.data.shortLabel || activeNode.data.name : 'Node'}</strong>
-                <span>Editing ${activeNode ? activeNode.data.name : 'selected node'}</span>
-              </div>
-            ` : null}
-            <div className="af-inline-status">
-              <div className="af-status-item">
-                <span className="af-status-label">Job</span>
-                <strong className="af-status-value">${jobState.jobId || '-'}</strong>
-              </div>
-              <div className="af-status-item">
-                <span className="af-status-label">Status</span>
-                <strong className="af-status-value">${jobState.status}</strong>
-              </div>
-              <div className="af-status-item">
-                <span className="af-status-label">Progress</span>
-                <strong className="af-status-value">${jobState.progress}%</strong>
-              </div>
+            <div className="af-summary-layout" role="table" aria-label="Summary layout">
+              ${summaryRows.map(function (row, rowIndex) {
+                var rowClass = 'af-summary-row';
+                if (row.length === 1) rowClass += ' is-single';
+                if (row.length === 2) rowClass += ' is-double';
+                if (row.length >= 3) rowClass += ' is-triple';
+
+                return html`
+                  <div key=${'summary-row-' + rowIndex} className=${rowClass} role="row">
+                    ${row.map(function (cellId, cellIndex) {
+                      return html`<div key=${'summary-cell-' + rowIndex + '-' + cellIndex} role="cell">${renderSummaryCell(cellId)}</div>`;
+                    })}
+                  </div>
+                `;
+              })}
             </div>
             ${renderInspectorSection('workflow', 'Workflow', html`
               <div className="af-braille-line" aria-label="Workflow braille symbols">

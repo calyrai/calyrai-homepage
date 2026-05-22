@@ -1,0 +1,232 @@
+.af-schematic-page {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(86, 170, 255, 0.13), transparent 46%),
+    radial-gradient(circle at 84% 28%, rgba(255, 148, 61, 0.13), transparent 44%),
+    linear-gradient(180deg, #05101a 0%, #03090f 100%);
+  color: #dbe8f4;
+}
+
+.af-schematic-main {
+  width: min(1500px, 96vw);
+  margin: 110px auto 48px;
+}
+
+.af-schematic-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.2vw, 2.15rem);
+}
+
+.af-schematic-header p {
+  margin: 8px 0 0;
+  color: rgba(218, 232, 246, 0.74);
+}
+
+.af-schematic-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.af-schematic-controls,
+.af-schematic-stage-wrap {
+  border: 1px solid rgba(125, 189, 233, 0.22);
+  border-radius: 14px;
+  background: rgba(5, 12, 20, 0.76);
+  backdrop-filter: blur(6px);
+}
+
+.af-schematic-controls {
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.af-control-group {
+  display: grid;
+  gap: 7px;
+}
+
+.af-control-group label {
+  font-size: 0.85rem;
+  color: rgba(214, 230, 247, 0.8);
+}
+
+.af-control-group select,
+#af-layout-target,
+#af-layout-json {
+  width: 100%;
+  border: 1px solid rgba(130, 186, 226, 0.28);
+  background: rgba(10, 20, 33, 0.95);
+  color: #dcebfa;
+  border-radius: 9px;
+}
+
+.af-control-group select {
+  height: 34px;
+  padding: 0 10px;
+}
+
+#af-layout-target {
+  height: 34px;
+  padding: 0 10px;
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  font-size: 0.74rem;
+}
+
+#af-target-homepage,
+#af-target-alphafold {
+  border: 1px solid rgba(140, 197, 237, 0.32);
+  background: linear-gradient(180deg, rgba(19, 35, 56, 0.92), rgba(10, 18, 30, 0.95));
+  color: #e0effa;
+  border-radius: 8px;
+  height: 30px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+#af-layout-json {
+  min-height: 220px;
+  padding: 10px;
+  resize: vertical;
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.af-control-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.af-filter-group > span {
+  font-size: 0.85rem;
+  color: rgba(214, 230, 247, 0.82);
+}
+
+.af-filter-group .af-control-inline {
+  gap: 10px;
+}
+
+.af-control-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.af-control-actions button {
+  border: 1px solid rgba(140, 197, 237, 0.32);
+  background: linear-gradient(180deg, rgba(19, 35, 56, 0.92), rgba(10, 18, 30, 0.95));
+  color: #e0effa;
+  border-radius: 8px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.af-layout-status {
+  min-height: 22px;
+  font-size: 0.78rem;
+  color: rgba(204, 255, 216, 0.9);
+}
+
+.af-layout-status.is-error {
+  color: rgba(255, 153, 153, 0.92);
+}
+
+.af-schematic-stage-wrap {
+  padding: 12px;
+}
+
+.af-schematic-stage-head {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(210, 228, 244, 0.78);
+  font-size: 0.82rem;
+  margin-bottom: 8px;
+}
+
+.af-schematic-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(620px, 78vh, 1080px);
+  min-height: 620px;
+  border-radius: 12px;
+  border: 1px solid rgba(126, 190, 234, 0.25);
+  background:
+    linear-gradient(rgba(93, 200, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(93, 200, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 18, 30, 0.82), rgba(6, 12, 22, 0.94));
+  background-size: 16px 16px, 16px 16px, auto;
+  overflow: hidden;
+}
+
+.af-schematic-stage.is-raster-hidden {
+  background:
+    linear-gradient(180deg, rgba(10, 18, 30, 0.82), rgba(6, 12, 22, 0.94));
+}
+
+.af-schematic-panel {
+  position: absolute;
+  border: 1px solid rgba(155, 211, 252, 0.5);
+  border-radius: 10px;
+  background: rgba(15, 28, 44, 0.86);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+  min-width: 72px;
+  min-height: 38px;
+  user-select: none;
+}
+
+.af-schematic-panel.is-floating {
+  border-style: dashed;
+  background: rgba(25, 30, 54, 0.82);
+}
+
+.af-schematic-panel-handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding: 0 8px;
+  border-bottom: 1px solid rgba(141, 198, 238, 0.24);
+  cursor: grab;
+  font-size: 0.74rem;
+}
+
+.af-schematic-panel-handle:active {
+  cursor: grabbing;
+}
+
+.af-schematic-panel-meta {
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  color: rgba(212, 232, 247, 0.84);
+}
+
+.af-schematic-panel[data-tone='canvas'] { border-color: rgba(122, 200, 255, 0.55); }
+.af-schematic-panel[data-tone='inspector'] { border-color: rgba(255, 174, 107, 0.55); }
+.af-schematic-panel[data-tone='toolbar'] { border-color: rgba(131, 226, 173, 0.55); }
+.af-schematic-panel[data-tone='floating'] { border-color: rgba(204, 166, 255, 0.55); }
+
+.af-panel-list {
+  margin-top: 10px;
+  border-top: 1px solid rgba(124, 186, 229, 0.2);
+  padding-top: 10px;
+  display: grid;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: rgba(211, 228, 243, 0.85);
+}
+
+.af-panel-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) repeat(4, auto);
+  gap: 8px;
+}
+
+@media (max-width: 1080px) {
+  .af-schematic-grid {
+    grid-template-columns: 1fr;
+  }
+}
