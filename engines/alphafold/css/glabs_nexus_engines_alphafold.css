@@ -1306,12 +1306,12 @@
   display: grid;
   grid-template-columns: 260px minmax(600px, 1fr) 340px;
   gap: 0;
-  min-height: 85vh;
+  min-height: 0;
 }
 
 .af-main-grid-job {
   grid-template-columns: minmax(0, 61.8%) minmax(320px, 38.2%);
-  margin-top: -86px;
+  margin-top: 0;
   transition: grid-template-columns 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -1321,7 +1321,7 @@
 
 .af-main-grid-job.is-flow-hidden {
   grid-template-columns: 0 minmax(0, 1fr);
-  margin-top: -14px;
+  margin-top: 0;
 }
 
 .af-main-grid-job.is-flow-hidden .af-canvas-panel {
@@ -1340,9 +1340,8 @@
 .af-left-panel {
   grid-column: 1;
   border-right: 1px solid rgba(117, 169, 219, 0.16);
-  max-height: 72vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: none;
+  overflow: visible;
 }
 
 .af-left-panel-mini {
@@ -1414,10 +1413,9 @@
   grid-column: 2;
   border-right: 0;
   border-left: 1px solid rgba(117, 169, 219, 0.16);
-  padding-top: 4.2rem;
-  max-height: 85vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding-top: 0.8rem;
+  max-height: none;
+  overflow: visible;
   position: relative;
   z-index: 10;
   transition: border-color 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -1444,7 +1442,7 @@
 .af-panel {
   padding: 0.65rem;
   border-right: 1px solid rgba(117, 169, 219, 0.16);
-  overflow: auto;
+  overflow: visible;
 }
 
 .af-inspector-panel {
@@ -1677,7 +1675,7 @@
 }
 
 .af-canvas {
-  height: calc(72vh - 70px);
+  height: auto;
   min-height: 440px;
 }
 
@@ -2082,7 +2080,7 @@
     grid-template-columns: 1fr;
     min-height: auto;
     height: auto;
-    margin-top: 28px;
+    margin-top: 0;
   }
 
   .af-main-grid-job {
@@ -2114,8 +2112,8 @@
   .af-main-grid-job .af-canvas-panel {
     order: 1;
     border-bottom: 1px solid rgba(117, 169, 219, 0.16);
-    min-height: 72dvh;
-    height: clamp(500px, 72dvh, 860px);
+    min-height: 420px;
+    height: auto;
   }
 
   .af-main-grid-job .af-inspector-panel,
@@ -2188,12 +2186,12 @@
   .af-main-grid-job,
   .af-main-grid-job.is-inspector-hidden,
   .af-main-grid-job.is-flow-hidden {
-    margin-top: 16px;
+    margin-top: 0;
   }
 
   .af-main-grid-job .af-canvas-panel {
-    min-height: 64dvh;
-    height: clamp(420px, 66dvh, 720px);
+    min-height: 380px;
+    height: auto;
   }
 
   .af-flow-root {
