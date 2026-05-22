@@ -2067,6 +2067,12 @@
     padding: 0.7rem 0.55rem;
   }
 
+  .af-split-button {
+    max-width: none;
+    width: 100%;
+    min-height: 44px;
+  }
+
   .af-main-grid,
   .af-main-grid-job,
   .af-main-grid-job.is-inspector-hidden,
@@ -2109,7 +2115,7 @@
     order: 1;
     border-bottom: 1px solid rgba(117, 169, 219, 0.16);
     min-height: 72dvh;
-    height: clamp(560px, 78dvh, 980px);
+    height: clamp(500px, 72dvh, 860px);
   }
 
   .af-main-grid-job .af-inspector-panel,
@@ -2131,6 +2137,29 @@
     height: 100%;
   }
 
+  .af-flow-overlay,
+  .af-overview-minimap {
+    opacity: 0.92;
+  }
+
+  .af-input,
+  .af-textarea,
+  .registry-step-editor,
+  .registry-doc-editor {
+    font-size: 16px;
+  }
+
+  .af-btn,
+  .af-btn-compact,
+  .af-step-button,
+  .af-show-inspector-btn {
+    min-height: 44px;
+  }
+
+  .af-step-button {
+    padding: 0.58rem 0.62rem;
+  }
+
   .af-flow-root .react-flow,
   .af-flow-root .react-flow__renderer,
   .af-flow-root .react-flow__pane {
@@ -2142,6 +2171,73 @@
     transform-origin: bottom right;
     top: auto !important;
     bottom: 0.9rem !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .af-simple-main {
+    padding: 0.55rem 0.5rem 1.1rem;
+  }
+
+  .af-simple-header h1 {
+    margin-bottom: 0.8rem;
+    line-height: 1.15;
+  }
+
+  .af-main-grid,
+  .af-main-grid-job,
+  .af-main-grid-job.is-inspector-hidden,
+  .af-main-grid-job.is-flow-hidden {
+    margin-top: 16px;
+  }
+
+  .af-main-grid-job .af-canvas-panel {
+    min-height: 64dvh;
+    height: clamp(420px, 66dvh, 720px);
+  }
+
+  .af-flow-root {
+    --af-floating-ui-bottom: 5.9rem;
+  }
+
+  .af-overview-panel {
+    width: 154px;
+    padding: 0.38rem 0.4rem;
+  }
+
+  .af-overview-minimap {
+    width: 146px !important;
+    height: 94px !important;
+    left: 0.45rem !important;
+    bottom: 0.75rem !important;
+  }
+
+  .af-flow-overlay {
+    left: calc(0.45rem + 146px + 0.28rem);
+    bottom: 0.75rem;
+  }
+
+  .af-flow-controls {
+    right: 0.45rem !important;
+    bottom: 0.75rem !important;
+    transform: scale(1.02);
+  }
+}
+
+@media (max-width: 420px) {
+  .af-overview-panel,
+  .af-overview-minimap,
+  .af-flow-overlay {
+    display: none !important;
+  }
+
+  .af-flow-root {
+    --af-floating-ui-bottom: 3.9rem;
+  }
+
+  .af-flow-controls {
+    right: 0.4rem !important;
+    bottom: 0.6rem !important;
   }
 }
 
