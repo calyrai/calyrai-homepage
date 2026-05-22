@@ -1127,11 +1127,29 @@ loadGetBezierPath();
     useEffect(function () {
       if (flowHidden) return;
       const frameId = requestAnimationFrame(function () {
+        var isPhoneViewport = flowSize.width <= 560;
+        var isTabletViewport = flowSize.width <= 780;
         var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
-        var fitPadding = flowSize.width <= 780
-          ? (currentViewMode === 'flow' ? 0.005 : 0.02)
+        var fitPadding = isPhoneViewport
+          ? (currentViewMode === 'flow' ? 0.085 : 0.11)
+          : isTabletViewport
+          ? (currentViewMode === 'flow' ? 0.05 : 0.075)
           : (currentViewMode === 'flow' ? 0.01 : 0.04);
         fitCanvasToViewport(fitDuration, fitPadding);
+
+        if (isPhoneViewport && typeof flowInstance.setViewport === 'function') {
+          try {
+            var viewport = flowInstance.getViewport && flowInstance.getViewport();
+            if (viewport && Number.isFinite(viewport.zoom)) {
+              var mobileZoom = Math.min(1.15, Math.max(0.42, viewport.zoom));
+              if (Math.abs(mobileZoom - viewport.zoom) > 0.001) {
+                flowInstance.setViewport({ x: viewport.x, y: viewport.y, zoom: mobileZoom }, { duration: 240 });
+              }
+            }
+          } catch (_err) {
+            // keep silent; fitView still applies even if viewport read/write is unavailable
+          }
+        }
         initialViewportFitDoneRef.current = true;
       });
       return function () {
