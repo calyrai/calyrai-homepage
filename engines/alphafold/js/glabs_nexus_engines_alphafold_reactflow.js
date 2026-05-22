@@ -285,8 +285,8 @@ loadGetBezierPath();
       middleInset: 34
     },
     wide: {
-      sidePaddingMin: 32,
-      sidePaddingRatio: 0.065,
+      sidePaddingMin: 120,
+      sidePaddingRatio: 0.12,
       usableWidthMin: 620,
       spacingMin: 160,
       y: 74
@@ -1330,10 +1330,10 @@ loadGetBezierPath();
           var y = Number(node && node.position && node.position.y);
           if (!Number.isFinite(x) || !Number.isFinite(y)) return;
           // Approximate pearl node footprint so fit bounds uses actual visual extents.
-          var left = x - 46;
-          var top = y - 38;
-          var right = x + 202;
-          var bottom = y + 126;
+          var left = x - 64;
+          var top = y - 54;
+          var right = x + 236;
+          var bottom = y + 152;
           minX = Math.min(minX, left);
           minY = Math.min(minY, top);
           maxX = Math.max(maxX, right);
@@ -1378,10 +1378,10 @@ loadGetBezierPath();
         var isTabletViewport = flowSize.width <= 780;
         var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
         var fitPadding = isPhoneViewport
-          ? (currentViewMode === 'flow' ? 0.085 : 0.11)
+          ? (currentViewMode === 'flow' ? 0.11 : 0.13)
           : isTabletViewport
-          ? (currentViewMode === 'flow' ? 0.05 : 0.075)
-          : (currentViewMode === 'flow' ? 0.01 : 0.04);
+          ? (currentViewMode === 'flow' ? 0.09 : 0.11)
+          : (currentViewMode === 'flow' ? 0.07 : 0.09);
         fitCanvasToViewport(fitDuration, fitPadding);
 
         if (isPhoneViewport && flowInstance && typeof flowInstance.setViewport === 'function') {
