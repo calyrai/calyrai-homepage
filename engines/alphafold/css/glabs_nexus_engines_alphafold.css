@@ -1685,8 +1685,7 @@
 
 .af-summary-cell-node {
   grid-column: 1 / -1;
-  width: min(100%, calc(100% - var(--af-mode-ruler-reserve)));
-  max-width: 408px;
+  width: min(calc(((100% - 1rem) * 2 / 3) + 0.5rem), calc(100% - var(--af-mode-ruler-reserve)));
 }
 
 @media (max-width: 820px) {
@@ -1696,7 +1695,6 @@
 
   .af-summary-cell-node {
     width: 100%;
-    max-width: none;
   }
 }
 
