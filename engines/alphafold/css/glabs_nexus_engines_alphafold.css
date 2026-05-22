@@ -2102,13 +2102,13 @@
 
   .af-flow-overlay {
     top: auto;
-    bottom: 1.6rem;
+    bottom: 3.2rem;
     left: calc(0.6rem + 112px + 0.35rem);
   }
 
   .af-overview-minimap {
     top: auto !important;
-    bottom: 1.6rem !important;
+    bottom: 3.2rem !important;
   }
 
   .af-main-grid-job .af-canvas-panel {
@@ -2170,7 +2170,7 @@
     transform: scale(1.08);
     transform-origin: bottom right;
     top: auto !important;
-    bottom: 1.6rem !important;
+    bottom: 3.2rem !important;
   }
 }
 
@@ -2210,18 +2210,18 @@
     height: 94px !important;
     left: 50% !important;
     transform: translateX(-50%);
-    bottom: 1.35rem !important;
+    bottom: 2.5rem !important;
   }
 
   .af-flow-overlay {
     left: 50%;
     transform: translateX(-50%);
-    bottom: 1.35rem;
+    bottom: 2.5rem;
   }
 
   .af-flow-controls {
     right: 0.45rem !important;
-    bottom: 1.35rem !important;
+    bottom: 2.5rem !important;
     transform: scale(1.02);
   }
 }
@@ -2239,7 +2239,7 @@
 
   .af-flow-controls {
     right: 0.4rem !important;
-    bottom: 1rem !important;
+    bottom: 1.6rem !important;
   }
 }
 
