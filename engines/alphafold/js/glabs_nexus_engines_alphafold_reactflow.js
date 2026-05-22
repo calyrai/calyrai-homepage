@@ -4,10 +4,7 @@ import htm from 'https://esm.sh/htm@3.1.1';
 import ReactFlow, {
   applyNodeChanges,
   Background,
-  ControlButton,
-  Controls,
   Handle,
-  MiniMap,
   MarkerType,
   Position
 } from 'https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1';
@@ -29,6 +26,7 @@ loadGetBezierPath();
 
   const appRoot = document.getElementById('af-app-root');
   if (!appRoot) return;
+  const layoutTuning = window.NexusLayoutTuning || null;
 
   function accentRgb(accent) {
     if (accent === 'magenta') return '255, 72, 196';
@@ -216,12 +214,121 @@ loadGetBezierPath();
   const workflowNodeOrder = ['input', 'parse', 'mask', 'build', 'submit'];
   const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
   const HANDOFF_NODE_DWELL_SECONDS = 2.4;
-  const PANEL_DRAG_STORAGE_KEY = 'af.workflow.panelDrag.v1';
+  const WORKFLOW_LAYOUT = {
+    panels: {
+      minimapClassName: 'af-overview-minimap',
+      controlsClassName: 'af-flow-controls',
+      controlsPosition: 'top-right',
+      overlayClassName: 'af-flow-overlay',
+      resetButtonClassName: 'af-reset-symbol'
+    },
+    floating: {
+      dragHandles: [
+        {
+          side: 'left',
+          className: 'af-float-drag-handle af-float-drag-handle--left',
+          title: 'Drag left floating panel',
+          label: '↕'
+        },
+        {
+          side: 'right',
+          className: 'af-float-drag-handle af-float-drag-handle--right',
+          title: 'Drag right floating panel',
+          label: '↕'
+        }
+      ]
+    },
+    panelDrag: {
+      storageKey: 'af.workflow.panelDrag.v2',
+      min: -240,
+      max: 240
+    },
+    panelEdit: {
+      storageKey: 'af.workflow.layoutPanelOffsets.v4',
+      sizeStorageKey: 'af.workflow.layoutPanelSizes.v4',
+      snap: 16,
+      min: -280,
+      max: 280,
+      editable: [
+        { id: 'toolbar', label: 'Toolbar', minW: 520, minH: 52 },
+        { id: 'modeRuler', label: 'Mode Ruler', minW: 360, minH: 44 },
+        { id: 'canvas', label: 'Canvas', minW: 520, minH: 360 },
+        { id: 'inspector', label: 'Inspector', minW: 360, minH: 320 },
+        { id: 'palette', label: 'Palette', minW: 160, minH: 120 }
+      ]
+    },
+    basePositions: {
+      input: { x: 84, y: 118 },
+      parse: { x: 314, y: 92 },
+      mask: { x: 564, y: 76 },
+      build: { x: 814, y: 92 },
+      submit: { x: 1044, y: 118 }
+    },
+    split: {
+      spacingMin: 190,
+      spacingMax: 250,
+      spacingRatio: 0.23,
+      startXMin: 24,
+      narrowY: 136,
+      wideY: 74,
+      narrowBreakpoint: 780
+    },
+    mobile: {
+      breakpoint: 780,
+      triangleMin: 220,
+      triangleMax: 300,
+      triangleRatio: 0.64,
+      leftMin: 24,
+      topY: 44,
+      middleY: 206,
+      bottomY: 384,
+      middleInset: 34
+    },
+    wide: {
+      sidePaddingMin: 32,
+      sidePaddingRatio: 0.065,
+      usableWidthMin: 620,
+      spacingMin: 160,
+      y: 74
+    }
+  };
+
+  function createInitialPanelDragState() {
+    return WORKFLOW_LAYOUT.floating.dragHandles.reduce(function (state, handle) {
+      state[handle.side] = { x: 0, y: 0 };
+      return state;
+    }, {});
+  }
+
+  function createInitialPanelOffsetState() {
+    return {
+      toolbar: { x: 0, y: 0 },
+      modeRuler: { x: 0, y: 0 },
+      canvas: { x: 0, y: 0 },
+      inspector: { x: 0, y: 0 },
+      palette: { x: 0, y: 0 }
+    };
+  }
+
+  function createInitialPanelSizeState() {
+    return {
+      toolbar: { w: null, h: null },
+      modeRuler: { w: null, h: null },
+      canvas: { w: null, h: 440 },
+      inspector: { w: null, h: 440 },
+      palette: { w: null, h: null }
+    };
+  }
 
   function clampDrag(value, min, max) {
     var v = Number(value);
     if (!Number.isFinite(v)) return 0;
     return Math.max(min, Math.min(max, v));
+  }
+
+  function snapToRaster(value) {
+    var step = Number(WORKFLOW_LAYOUT.panelEdit.snap) || 16;
+    return Math.round(Number(value || 0) / step) * step;
   }
 
   // Craft.js-style palette — node templates available to drag/click onto canvas
@@ -239,31 +346,31 @@ loadGetBezierPath();
     {
       id: 'input',
       type: 'braille',
-      position: { x: 84, y: 118 },
+      position: { ...WORKFLOW_LAYOUT.basePositions.input },
       data: { name: 'FASTA Input', shortLabel: 'FASTA', description: 'Primary FASTA sequence intake', bits: '100000', accent: 'cyan', semanticDomain: 'structural-biology', coherence: 0.90, relayDelay: 0.0, cycleDuration: 24 }
     },
     {
       id: 'parse',
       type: 'braille',
-      position: { x: 314, y: 92 },
+      position: { ...WORKFLOW_LAYOUT.basePositions.parse },
       data: { name: 'QTY Transform', shortLabel: 'QTY', description: 'Semantic QTY transformation', bits: '110000', accent: 'cyan', semanticDomain: 'ai-transform', coherence: 0.82, relayDelay: 5.28, cycleDuration: 24 }
     },
     {
       id: 'mask',
       type: 'braille',
-      position: { x: 564, y: 76 },
+      position: { ...WORKFLOW_LAYOUT.basePositions.mask },
       data: { name: 'Domain Segmentation', shortLabel: 'Domain', description: 'Domain-aware segmentation and masking', bits: '111000', accent: 'magenta', semanticDomain: 'ai-transform', coherence: 0.78, relayDelay: 10.56, cycleDuration: 24 }
     },
     {
       id: 'build',
       type: 'braille',
-      position: { x: 814, y: 92 },
+      position: { ...WORKFLOW_LAYOUT.basePositions.build },
       data: { name: 'AF3 Payload Builder', shortLabel: 'AF3 Build', description: 'Compile AF3 submission payload', bits: '111100', accent: 'white', semanticDomain: 'runtime-hpc', coherence: 0.85, relayDelay: 15.84, cycleDuration: 24 }
     },
     {
       id: 'submit',
       type: 'braille',
-      position: { x: 1044, y: 118 },
+      position: { ...WORKFLOW_LAYOUT.basePositions.submit },
       data: { name: 'ASC Submission', shortLabel: 'ASC Submit', description: 'Dispatch runtime payload to ASC cluster', bits: '111110', accent: 'cyan', semanticDomain: 'runtime-hpc', coherence: 0.80, relayDelay: 21.12, cycleDuration: 24 }
     }
   ];
@@ -284,13 +391,16 @@ loadGetBezierPath();
   };
 
   function App() {
+    // Disable local pane tuning so startup layout stays fixed and predictable.
+    const localLayoutTuningEnabled = false;
+
     const [activeNodeId, setActiveNodeId] = useState(null);
     const [moveModeEnabled, setMoveModeEnabled] = useState(false);
-    const [nodeVisibleCount, setNodeVisibleCount] = useState(0);
+    const [nodeVisibleCount, setNodeVisibleCount] = useState(workflowNodeOrder.length);
     const [handoffState, setHandoffState] = useState({ phase: 'edge', edgeIndex: 0 });
     const [flowRenderKey, setFlowRenderKey] = useState(0);
     const [flowHidden, setFlowHidden] = useState(false);
-    const [inspectorHidden, setInspectorHidden] = useState(false);
+    const [inspectorHidden, setInspectorHidden] = useState(true);
     const [collapsedSections, setCollapsedSections] = useState({});
     const [graphNodes, setGraphNodes] = useState(baseNodes);
     const [hasUserMovedNodes, setHasUserMovedNodes] = useState(false);
@@ -310,10 +420,11 @@ loadGetBezierPath();
     const [paletteVisible, setPaletteVisible] = useState(false);
     const [canUndo, setCanUndo] = useState(false);
     const [canRedo, setCanRedo] = useState(false);
-    const [panelDrag, setPanelDrag] = useState({
-      left: { x: 0, y: 0 },
-      right: { x: 0, y: 0 }
-    });
+    const [panelDrag, setPanelDrag] = useState(createInitialPanelDragState);
+    const [layoutEditEnabled, setLayoutEditEnabled] = useState(false);
+    const [panelResizeEnabled, setPanelResizeEnabled] = useState(true);
+    const [panelOffsets, setPanelOffsets] = useState(createInitialPanelOffsetState);
+    const [panelSizes, setPanelSizes] = useState(createInitialPanelSizeState);
 
     const [flowInstance, setFlowInstance] = useState(null);
     const flowShellRef = useRef(null);
@@ -325,6 +436,9 @@ loadGetBezierPath();
     const initialAutoLayoutDoneRef = useRef(false);
     const initialViewportFitDoneRef = useRef(false);
     const panelDragRef = useRef(panelDrag);
+    const panelOffsetsRef = useRef(panelOffsets);
+    const panelSizesRef = useRef(panelSizes);
+    const panelElementRefs = useRef({});
     const historyRef = useRef({ stack: [baseNodes.map(function(n) { return Object.assign({}, n); })], index: 0 });
     const nodeCounterRef = useRef(0);
 
@@ -333,48 +447,108 @@ loadGetBezierPath();
     }, [panelDrag]);
 
     useEffect(function () {
+      panelOffsetsRef.current = panelOffsets;
+    }, [panelOffsets]);
+
+    useEffect(function () {
+      panelSizesRef.current = panelSizes;
+    }, [panelSizes]);
+
+    useEffect(function () {
+      if (!localLayoutTuningEnabled) return;
       try {
-        var raw = window.localStorage.getItem(PANEL_DRAG_STORAGE_KEY);
+        var raw = window.localStorage.getItem(WORKFLOW_LAYOUT.panelDrag.storageKey);
         if (!raw) return;
         var parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return;
-        setPanelDrag({
-          left: {
-            x: clampDrag(parsed.left && parsed.left.x, -240, 240),
-            y: clampDrag(parsed.left && parsed.left.y, -240, 240)
-          },
-          right: {
-            x: clampDrag(parsed.right && parsed.right.x, -240, 240),
-            y: clampDrag(parsed.right && parsed.right.y, -240, 240)
-          }
+        setPanelDrag(function (current) {
+          var next = { ...current };
+          WORKFLOW_LAYOUT.floating.dragHandles.forEach(function (handle) {
+            var side = handle.side;
+            next[side] = {
+              x: clampDrag(parsed[side] && parsed[side].x, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max),
+              y: clampDrag(parsed[side] && parsed[side].y, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max)
+            };
+          });
+          return next;
         });
       } catch (_err) {
         // ignore invalid stored drag state
       }
-    }, []);
+    }, [localLayoutTuningEnabled]);
 
     useEffect(function () {
+      if (!localLayoutTuningEnabled) return;
       try {
-        window.localStorage.setItem(PANEL_DRAG_STORAGE_KEY, JSON.stringify(panelDrag));
+        window.localStorage.setItem(WORKFLOW_LAYOUT.panelDrag.storageKey, JSON.stringify(panelDrag));
       } catch (_err) {
         // localStorage can fail in private contexts; keep runtime state only
       }
-    }, [panelDrag]);
+    }, [panelDrag, localLayoutTuningEnabled]);
 
     useEffect(function () {
-      var nextCount = 0;
-      setNodeVisibleCount(0);
-      var timerId = setTimeout(function step() {
-        nextCount += 1;
-        setNodeVisibleCount(nextCount);
-        if (nextCount < workflowNodeOrder.length) {
-          timerId = setTimeout(step, 280);
-        }
-      }, 240);
-      return function () {
-        clearTimeout(timerId);
-      };
-    }, []);
+      if (!localLayoutTuningEnabled) return;
+      try {
+        var raw = window.localStorage.getItem(WORKFLOW_LAYOUT.panelEdit.storageKey);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        setPanelOffsets(function (current) {
+          var next = { ...current };
+          WORKFLOW_LAYOUT.panelEdit.editable.forEach(function (panel) {
+            next[panel.id] = {
+              x: clampDrag(parsed[panel.id] && parsed[panel.id].x, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max),
+              y: clampDrag(parsed[panel.id] && parsed[panel.id].y, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max)
+            };
+          });
+          return next;
+        });
+      } catch (_err) {
+        // ignore invalid panel offset state
+      }
+    }, [localLayoutTuningEnabled]);
+
+    useEffect(function () {
+      if (!localLayoutTuningEnabled) return;
+      try {
+        window.localStorage.setItem(WORKFLOW_LAYOUT.panelEdit.storageKey, JSON.stringify(panelOffsets));
+      } catch (_err) {
+        // localStorage can fail in private contexts; keep runtime state only
+      }
+    }, [panelOffsets, localLayoutTuningEnabled]);
+
+    useEffect(function () {
+      if (!localLayoutTuningEnabled) return;
+      try {
+        var raw = window.localStorage.getItem(WORKFLOW_LAYOUT.panelEdit.sizeStorageKey);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        setPanelSizes(function (current) {
+          var next = { ...current };
+          WORKFLOW_LAYOUT.panelEdit.editable.forEach(function (panel) {
+            var w = Number(parsed[panel.id] && parsed[panel.id].w);
+            var h = Number(parsed[panel.id] && parsed[panel.id].h);
+            next[panel.id] = {
+              w: Number.isFinite(w) ? w : null,
+              h: Number.isFinite(h) ? h : null
+            };
+          });
+          return next;
+        });
+      } catch (_err) {
+        // ignore invalid panel size state
+      }
+    }, [localLayoutTuningEnabled]);
+
+    useEffect(function () {
+      if (!localLayoutTuningEnabled) return;
+      try {
+        window.localStorage.setItem(WORKFLOW_LAYOUT.panelEdit.sizeStorageKey, JSON.stringify(panelSizes));
+      } catch (_err) {
+        // localStorage can fail in private contexts; keep runtime state only
+      }
+    }, [panelSizes, localLayoutTuningEnabled]);
 
     useEffect(function () {
       return function () {
@@ -506,46 +680,37 @@ loadGetBezierPath();
     // ─────────────────────────────────────────────────────────────────────────
 
     function layoutNodesForWidth(width, viewMode) {
-      if (viewMode === 'split') {
-        var splitSpacing = Math.max(190, Math.min(250, Math.round(width * 0.23)));
-        var splitStartX = Math.max(24, Math.round((width - (splitSpacing * 4)) / 2));
-        var splitY = width <= 780 ? 164 : 98;
-        return [
-          { id: 'input', position: { x: splitStartX, y: splitY } },
-          { id: 'parse', position: { x: splitStartX + splitSpacing, y: splitY } },
-          { id: 'mask', position: { x: splitStartX + (splitSpacing * 2), y: splitY } },
-          { id: 'build', position: { x: splitStartX + (splitSpacing * 3), y: splitY } },
-          { id: 'submit', position: { x: splitStartX + (splitSpacing * 4), y: splitY } }
-        ];
-      }
-      if (width <= 780) {
-        var triangleWidth = Math.max(220, Math.min(300, Math.round(width * 0.64)));
-        var leftX = Math.max(24, Math.round((width - triangleWidth) / 2));
+      if (width <= WORKFLOW_LAYOUT.mobile.breakpoint) {
+        var triangleWidth = Math.max(
+          WORKFLOW_LAYOUT.mobile.triangleMin,
+          Math.min(WORKFLOW_LAYOUT.mobile.triangleMax, Math.round(width * WORKFLOW_LAYOUT.mobile.triangleRatio))
+        );
+        var leftX = Math.max(WORKFLOW_LAYOUT.mobile.leftMin, Math.round((width - triangleWidth) / 2));
         var rightX = leftX + triangleWidth;
         var centerX = leftX + Math.round(triangleWidth / 2);
         return [
-          { id: 'input', position: { x: leftX, y: 64 } },
-          { id: 'parse', position: { x: rightX, y: 64 } },
-          { id: 'mask', position: { x: leftX + 34, y: 236 } },
-          { id: 'build', position: { x: rightX - 34, y: 236 } },
-          { id: 'submit', position: { x: centerX, y: 424 } }
+          { id: 'input', position: { x: leftX, y: WORKFLOW_LAYOUT.mobile.topY } },
+          { id: 'parse', position: { x: rightX, y: WORKFLOW_LAYOUT.mobile.topY } },
+          { id: 'mask', position: { x: leftX + WORKFLOW_LAYOUT.mobile.middleInset, y: WORKFLOW_LAYOUT.mobile.middleY } },
+          { id: 'build', position: { x: rightX - WORKFLOW_LAYOUT.mobile.middleInset, y: WORKFLOW_LAYOUT.mobile.middleY } },
+          { id: 'submit', position: { x: centerX, y: WORKFLOW_LAYOUT.mobile.bottomY } }
         ];
       }
       // Wide layout (width > 780): distribute nodes across the available canvas width.
-      var sidePadding = Math.max(32, Math.round(width * 0.065));
-      var usableWidth = Math.max(620, width - (sidePadding * 2));
-      var wideSpacing = Math.max(160, Math.round(usableWidth / 4));
+      var sidePadding = Math.max(WORKFLOW_LAYOUT.wide.sidePaddingMin, Math.round(width * WORKFLOW_LAYOUT.wide.sidePaddingRatio));
+      var usableWidth = Math.max(WORKFLOW_LAYOUT.wide.usableWidthMin, width - (sidePadding * 2));
+      var wideSpacing = Math.max(WORKFLOW_LAYOUT.wide.spacingMin, Math.round(usableWidth / 4));
       var wideStartX = Math.round((width - (wideSpacing * 4)) / 2);
       return [
-        { id: 'input', position: { x: wideStartX, y: 98 } },
-        { id: 'parse', position: { x: wideStartX + wideSpacing, y: 98 } },
-        { id: 'mask', position: { x: wideStartX + (wideSpacing * 2), y: 98 } },
-        { id: 'build', position: { x: wideStartX + (wideSpacing * 3), y: 98 } },
-        { id: 'submit', position: { x: wideStartX + (wideSpacing * 4), y: 98 } }
+        { id: 'input', position: { x: wideStartX, y: WORKFLOW_LAYOUT.wide.y } },
+        { id: 'parse', position: { x: wideStartX + wideSpacing, y: WORKFLOW_LAYOUT.wide.y } },
+        { id: 'mask', position: { x: wideStartX + (wideSpacing * 2), y: WORKFLOW_LAYOUT.wide.y } },
+        { id: 'build', position: { x: wideStartX + (wideSpacing * 3), y: WORKFLOW_LAYOUT.wide.y } },
+        { id: 'submit', position: { x: wideStartX + (wideSpacing * 4), y: WORKFLOW_LAYOUT.wide.y } }
       ];
     }
 
-    const currentViewMode = flowHidden ? 'editor' : (inspectorHidden ? 'flow' : 'split');
+    const currentViewMode = flowHidden ? 'editor' : 'flow';
     const editorMode = currentViewMode === 'editor';
 
     useEffect(function () {
@@ -613,7 +778,7 @@ loadGetBezierPath();
 
     const setWorkspaceMode = function (mode) {
       const nextFlowHidden = mode === 'editor';
-      const nextInspectorHidden = mode === 'flow';
+      const nextInspectorHidden = !nextFlowHidden;
 
       if (flowHidden && !nextFlowHidden) {
         restoreFlowCanvasLayout();
@@ -958,17 +1123,11 @@ loadGetBezierPath();
     };
 
     const toggleFlowPanel = function () {
-      setWorkspaceMode(flowHidden ? 'split' : 'editor');
+      setWorkspaceMode(flowHidden ? 'flow' : 'editor');
     };
 
     const toggleInspectorPanel = function () {
-      setInspectorHidden(function (current) {
-        const next = !current;
-        if (next && flowHidden) {
-          setFlowHidden(false);
-        }
-        return next;
-      });
+      setWorkspaceMode(inspectorHidden ? 'editor' : 'flow');
     };
 
     const startResize = function (e) {
@@ -1016,25 +1175,21 @@ loadGetBezierPath();
         };
 
         var flowX = centerFor('.af-mode-flow .af-mode-button-cell');
-        var splitX = centerFor('.af-mode-split .af-mode-button-cell');
         var editorX = centerFor('.af-mode-editor .af-mode-button-cell');
 
-        if (![flowX, splitX, editorX].every(function (value) { return Number.isFinite(value); })) {
+        if (![flowX, editorX].every(function (value) { return Number.isFinite(value); })) {
           var markers = wrapper.querySelector('.af-ruler-markers');
           var markersRect = markers ? markers.getBoundingClientRect() : wrapperRect;
           var left = Math.max(0, markersRect.left - wrapperRect.left);
           var laneWidth = Math.max(1, markersRect.width);
           flowX = left;
-          splitX = left + laneWidth / 2;
           editorX = left + laneWidth;
         }
 
         return {
           flowX: flowX,
-          splitX: splitX,
           editorX: editorX,
-          thresholdFlowSplit: (flowX + splitX) / 2,
-          thresholdSplitEditor: (splitX + editorX) / 2,
+          thresholdFlowEditor: (flowX + editorX) / 2,
           width: width
         };
       };
@@ -1044,10 +1199,8 @@ loadGetBezierPath();
         const wrapperRect = wrapper.getBoundingClientRect();
         const x = Math.max(0, Math.min(stops.width, moveEvent.clientX - wrapperRect.left));
 
-        if (x < stops.thresholdFlowSplit) {
+        if (x < stops.thresholdFlowEditor) {
           setWorkspaceMode('flow');
-        } else if (x < stops.thresholdSplitEditor) {
-          setWorkspaceMode('split');
         } else {
           setWorkspaceMode('editor');
         }
@@ -1081,30 +1234,24 @@ loadGetBezierPath();
       };
 
       var flowX = centerFor('.af-mode-flow .af-mode-button-cell');
-      var splitX = centerFor('.af-mode-split .af-mode-button-cell');
       var editorX = centerFor('.af-mode-editor .af-mode-button-cell');
 
-      if (![flowX, splitX, editorX].every(function (value) { return Number.isFinite(value); })) {
+      if (![flowX, editorX].every(function (value) { return Number.isFinite(value); })) {
         const markers = wrapper.querySelector('.af-ruler-markers');
         const markersRect = markers ? markers.getBoundingClientRect() : wrapperRect;
         const left = Math.max(0, markersRect.left - wrapperRect.left);
         const laneWidth = Math.max(1, markersRect.width);
         flowX = left;
-        splitX = left + laneWidth / 2;
         editorX = left + laneWidth;
       }
 
       var flowStop = (flowX / wrapperWidth) * 100;
-      var splitStop = (splitX / wrapperWidth) * 100;
       var editorStop = (editorX / wrapperWidth) * 100;
       
       let position = 0;
       if (currentViewMode === 'flow') {
         position = flowStop;
         slider.className = 'af-ruler-slider is-flow';
-      } else if (currentViewMode === 'split') {
-        position = splitStop;
-        slider.className = 'af-ruler-slider is-split';
       } else {
         position = editorStop;
         slider.className = 'af-ruler-slider is-editor';
@@ -1182,7 +1329,7 @@ loadGetBezierPath();
           : (currentViewMode === 'flow' ? 0.01 : 0.04);
         fitCanvasToViewport(fitDuration, fitPadding);
 
-        if (isPhoneViewport && typeof flowInstance.setViewport === 'function') {
+        if (isPhoneViewport && flowInstance && typeof flowInstance.setViewport === 'function') {
           try {
             var viewport = flowInstance.getViewport && flowInstance.getViewport();
             if (viewport && Number.isFinite(viewport.zoom)) {
@@ -1258,11 +1405,10 @@ loadGetBezierPath();
 
         setPanelDrag(function (current) {
           var next = {
-            x: clampDrag(start.x + dx, -240, 240),
-            y: clampDrag(start.y + dy, -240, 240)
+            x: clampDrag(start.x + dx, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max),
+            y: clampDrag(start.y + dy, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max)
           };
-          if (side === 'left') return { left: next, right: current.right };
-          return { left: current.left, right: next };
+          return { ...current, [side]: next };
         });
       };
 
@@ -1275,207 +1421,406 @@ loadGetBezierPath();
       window.addEventListener('pointerup', onUp);
     };
 
+    function getPanelOffsetStyle(panelId) {
+      if (!localLayoutTuningEnabled || !layoutEditEnabled) return null;
+      var offset = panelOffsets && panelOffsets[panelId] ? panelOffsets[panelId] : { x: 0, y: 0 };
+      var size = panelSizes && panelSizes[panelId] ? panelSizes[panelId] : { w: null, h: null };
+      var panelDef = WORKFLOW_LAYOUT.panelEdit.editable.find(function (p) { return p.id === panelId; }) || {};
+      return {
+        transform: 'translate(' + clampDrag(offset.x, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max) + 'px, ' + clampDrag(offset.y, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max) + 'px)',
+        width: Number.isFinite(size.w) ? Math.max(panelDef.minW || 120, size.w) + 'px' : undefined,
+        height: Number.isFinite(size.h) ? Math.max(panelDef.minH || 44, size.h) + 'px' : undefined
+      };
+    }
+
+    function resetPanelOffsets() {
+      setPanelOffsets(createInitialPanelOffsetState());
+      setPanelSizes(createInitialPanelSizeState());
+      setActivity(function (lines) {
+        return lines.concat('layout edit: panel offsets/sizes reset');
+      });
+    }
+
+    function resetFloatingUi() {
+      setPanelDrag(createInitialPanelDragState());
+      setActivity(function (lines) {
+        return lines.concat('layout edit: floating orientation/zoom panels reset');
+      });
+    }
+
+    function buildLayoutSnapshot() {
+      return {
+        panelOffsets: panelOffsetsRef.current,
+        floatingOffsets: panelDragRef.current,
+        viewMode: currentViewMode,
+        storageKeys: {
+          panelOffsets: WORKFLOW_LAYOUT.panelEdit.storageKey,
+          floatingOffsets: WORKFLOW_LAYOUT.panelDrag.storageKey
+        }
+      };
+    }
+
+    function downloadLayoutJson(filename, payload) {
+      if (layoutTuning && layoutTuning.downloadJson) {
+        return layoutTuning.downloadJson(filename, payload);
+      }
+      try {
+        var blob = new Blob([payload], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(url);
+        return true;
+      } catch (_err) {
+        return false;
+      }
+    }
+
+    function copyLayoutJson() {
+      var payload = JSON.stringify(buildLayoutSnapshot(), null, 2);
+      if (layoutTuning && layoutTuning.copyText) {
+        layoutTuning.copyText(payload);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).catch(function () {
+          // Clipboard can fail in restricted contexts.
+        });
+      }
+      console.log('AlphaFold layout JSON:', payload);
+      setActivity(function (lines) {
+        return lines.concat('layout edit: copied JSON snapshot');
+      });
+    }
+
+    function saveLayoutJson() {
+      var snapshot = buildLayoutSnapshot();
+      var payload = JSON.stringify(snapshot, null, 2);
+      if (layoutTuning && layoutTuning.saveSnapshot) {
+        layoutTuning.saveSnapshot({
+          payload: snapshot,
+          filename: 'alphafold_layout_offsets.json',
+          storageKey: WORKFLOW_LAYOUT.panelEdit.storageKey,
+          lastExportKey: 'af.workflow.layout.lastExport.v1'
+        }).then(function (result) {
+          setActivity(function (lines) {
+            return lines.concat(result.downloaded ? 'layout edit: saved alphafold_layout_offsets.json' : 'layout edit: saved snapshot to local state');
+          });
+        });
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).catch(function () {
+          // Clipboard can fail in restricted contexts.
+        });
+      }
+      var downloaded = downloadLayoutJson('alphafold_layout_offsets.json', payload);
+      setActivity(function (lines) {
+        return lines.concat(downloaded ? 'layout edit: saved alphafold_layout_offsets.json' : 'layout edit: saved snapshot to local state');
+      });
+    }
+
+    function startPanelOffsetDrag(panelId, event) {
+      if (!localLayoutTuningEnabled || !layoutEditEnabled || !event) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      var startX = Number(event.clientX) || 0;
+      var startY = Number(event.clientY) || 0;
+      var start = panelOffsetsRef.current && panelOffsetsRef.current[panelId]
+        ? panelOffsetsRef.current[panelId]
+        : { x: 0, y: 0 };
+
+      var onMove = function (moveEvent) {
+        var dx = (Number(moveEvent.clientX) || 0) - startX;
+        var dy = (Number(moveEvent.clientY) || 0) - startY;
+
+        setPanelOffsets(function (current) {
+          return {
+            ...current,
+            [panelId]: {
+              x: snapToRaster(clampDrag(start.x + dx, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max)),
+              y: snapToRaster(clampDrag(start.y + dy, WORKFLOW_LAYOUT.panelEdit.min, WORKFLOW_LAYOUT.panelEdit.max))
+            }
+          };
+        });
+      };
+
+      var onUp = function () {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    }
+
+    function startPanelResize(panelId, event) {
+      if (!localLayoutTuningEnabled || !layoutEditEnabled || !panelResizeEnabled || !event) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      var panelDef = WORKFLOW_LAYOUT.panelEdit.editable.find(function (p) { return p.id === panelId; }) || {};
+      var target = panelElementRefs.current && panelElementRefs.current[panelId];
+      var rect = target && target.getBoundingClientRect ? target.getBoundingClientRect() : { width: panelDef.minW || 220, height: panelDef.minH || 120 };
+      var currentSize = panelSizesRef.current && panelSizesRef.current[panelId] ? panelSizesRef.current[panelId] : { w: null, h: null };
+      var startW = Number.isFinite(currentSize.w) ? currentSize.w : rect.width;
+      var startH = Number.isFinite(currentSize.h) ? currentSize.h : rect.height;
+      var startX = Number(event.clientX) || 0;
+      var startY = Number(event.clientY) || 0;
+
+      var onMove = function (moveEvent) {
+        var dx = (Number(moveEvent.clientX) || 0) - startX;
+        var dy = (Number(moveEvent.clientY) || 0) - startY;
+        var maxW = Math.max(window.innerWidth - 24, (panelDef.minW || 120));
+        var maxH = Math.max(window.innerHeight - 24, (panelDef.minH || 80));
+
+        setPanelSizes(function (current) {
+          return {
+            ...current,
+            [panelId]: {
+              w: snapToRaster(clampDrag(startW + dx, panelDef.minW || 120, maxW)),
+              h: snapToRaster(clampDrag(startH + dy, panelDef.minH || 80, maxH))
+            }
+          };
+        });
+      };
+
+      var onUp = function () {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    }
+
+    function renderPanelGrip(panelId, label) {
+      if (!localLayoutTuningEnabled || !layoutEditEnabled) return null;
+      return html`
+        <button
+          className="af-layout-panel-grip"
+          type="button"
+          title=${'Drag ' + label}
+          onPointerDown=${function (event) { startPanelOffsetDrag(panelId, event); }}
+        >${label}</button>
+      `;
+    }
+
+    function renderPanelResizeGrip(panelId) {
+      if (!localLayoutTuningEnabled || !layoutEditEnabled || !panelResizeEnabled) return null;
+      return html`
+        <button
+          className="af-layout-panel-resize"
+          type="button"
+          title="Resize panel"
+          onPointerDown=${function (event) { startPanelResize(panelId, event); }}
+        >◢</button>
+      `;
+    }
+
     var flowRootStyle = {
-      '--af-left-panel-shift-x': clampDrag(panelDrag.left && panelDrag.left.x, -240, 240) + 'px',
-      '--af-left-panel-shift-y': clampDrag(panelDrag.left && panelDrag.left.y, -240, 240) + 'px',
-      '--af-right-panel-shift-x': clampDrag(panelDrag.right && panelDrag.right.x, -240, 240) + 'px',
-      '--af-right-panel-shift-y': clampDrag(panelDrag.right && panelDrag.right.y, -240, 240) + 'px'
+      '--af-left-panel-shift-x': clampDrag(panelDrag.left && panelDrag.left.x, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max) + 'px',
+      '--af-left-panel-shift-y': clampDrag(panelDrag.left && panelDrag.left.y, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max) + 'px',
+      '--af-right-panel-shift-x': clampDrag(panelDrag.right && panelDrag.right.x, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max) + 'px',
+      '--af-right-panel-shift-y': clampDrag(panelDrag.right && panelDrag.right.y, WORKFLOW_LAYOUT.panelDrag.min, WORKFLOW_LAYOUT.panelDrag.max) + 'px'
     };
 
     return html`
-      <div className="af-editor-shell">
-        <section className="af-toolbar">
+      <div className=${'af-editor-shell' + (localLayoutTuningEnabled && layoutEditEnabled ? ' is-layout-edit' : '') + (localLayoutTuningEnabled && layoutEditEnabled && panelResizeEnabled ? ' is-layout-resize' : '')}>
+        <section className="af-toolbar af-layout-editable" data-panel-label="Toolbar Panel" style=${getPanelOffsetStyle('toolbar')}>
           <div className="af-toolbar-actions">
-            <button
-              className=${'af-action-btn af-palette-toggle' + (paletteVisible ? ' is-active' : '')}
-              type="button"
-              onClick=${function() { setPaletteVisible(function(v) { return !v; }); }}
-              title="Toggle node palette"
-              aria-label="Toggle node palette"
-            >
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
-                <rect x="2" y="4" width="5" height="5" rx="1" fill="currentColor"/>
-                <rect x="2" y="11" width="5" height="5" rx="1" fill="currentColor"/>
-                <rect x="2" y="17" width="5" height="4" rx="1" fill="currentColor"/>
-                <line x1="10" y1="6.5" x2="22" y2="6.5" stroke="currentColor" stroke-width="1.8"/>
-                <line x1="10" y1="13.5" x2="22" y2="13.5" stroke="currentColor" stroke-width="1.8"/>
-                <line x1="10" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="1.8"/>
-              </svg>
-              Palette
-            </button>
-            <button className="af-action-btn af-undo-btn" type="button" disabled=${!canUndo} onClick=${undo} title="Undo" aria-label="Undo">
-              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="currentColor"/></svg>
-              Undo
-            </button>
-            <button className="af-action-btn af-redo-btn" type="button" disabled=${!canRedo} onClick=${redo} title="Redo" aria-label="Redo">
-              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 15.7c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 15.5h9V6.5l-3.6 4.1z" fill="currentColor"/></svg>
-              Redo
-            </button>
-          </div>
-          <div className="af-mode-ruler">
-            <div className="af-ruler-wrapper">
-              <div className="af-ruler-track"></div>
-              <div className="af-ruler-markers">
-                <button
-                  className=${'af-ruler-marker af-mode-button af-mode-flow' + (currentViewMode === 'flow' ? ' is-active' : '')}
-                  type="button"
-                  onClick=${function () { setWorkspaceMode('flow'); }}
-                  aria-label="Switch to Flow layout"
-                >
-                  <span className="af-mode-button-cell" aria-hidden="true"></span>
-                  <span className="af-ruler-marker-label">Flow</span>
-                </button>
-                <button
-                  className=${'af-ruler-marker af-mode-button af-mode-split' + (currentViewMode === 'split' ? ' is-active' : '')}
-                  type="button"
-                  onClick=${function () { setWorkspaceMode('split'); }}
-                  aria-label="Switch to Split layout"
-                >
-                  <span className="af-mode-button-cell" aria-hidden="true"></span>
-                  <span className="af-ruler-marker-label">Split</span>
-                </button>
-                <button
-                  className=${'af-ruler-marker af-mode-button af-mode-editor' + (currentViewMode === 'editor' ? ' is-active' : '')}
-                  type="button"
-                  onClick=${function () { setWorkspaceMode('editor'); }}
-                  aria-label="Switch to Editor layout"
-                >
-                  <span className="af-mode-button-cell" aria-hidden="true"></span>
-                  <span className="af-ruler-marker-label">Editor</span>
-                </button>
+            ${localLayoutTuningEnabled ? html`
+              <div className="af-toolbar-pane af-toolbar-pane-layout" role="group" aria-label="Layout controls">
+                <div className="af-toolbar-pane-label">Layout</div>
+                <div className="af-toolbar-pane-actions">
+                  <button
+                    className=${'af-action-btn af-layout-edit-toggle' + (layoutEditEnabled ? ' is-active' : '')}
+                    type="button"
+                    onClick=${function () {
+                      setLayoutEditEnabled(function (value) {
+                        var next = !value;
+                        if (next) {
+                          setWorkspaceMode('flow');
+                        }
+                        return next;
+                      });
+                    }}
+                    title="Toggle layout edit mode"
+                    aria-label="Toggle layout edit mode"
+                  >
+                    Layout
+                  </button>
+                  <button
+                    className=${'af-action-btn af-layout-resize-toggle' + (panelResizeEnabled ? ' is-active' : '')}
+                    type="button"
+                    onClick=${function () { setPanelResizeEnabled(function (value) { return !value; }); }}
+                    title="Toggle panel resize handles"
+                    aria-label="Toggle panel resize handles"
+                  >
+                    Resize
+                  </button>
+                </div>
               </div>
-              <div className="af-ruler-slider" ref=${rulerSliderRef} onMouseDown=${startRulerDrag}>
-                <div className="af-ruler-label"></div>
+              <div className="af-toolbar-pane af-toolbar-pane-reset" role="group" aria-label="Reset controls">
+                <div className="af-toolbar-pane-label">Reset</div>
+                <div className="af-toolbar-pane-actions">
+                  <button
+                    className="af-action-btn af-layout-reset"
+                    type="button"
+                    onClick=${resetPanelOffsets}
+                    title="Reset panel layout offsets"
+                    aria-label="Reset panel layout offsets"
+                  >
+                    Reset Panels
+                  </button>
+                  <button
+                    className="af-action-btn af-layout-reset-float"
+                    type="button"
+                    onClick=${resetFloatingUi}
+                    title="Reset orientation/zoom panel positions"
+                    aria-label="Reset orientation and zoom panel positions"
+                  >
+                    Reset Float UI
+                  </button>
+                </div>
               </div>
-            </div>
+              <div className="af-toolbar-pane af-toolbar-pane-state" role="group" aria-label="Layout snapshots">
+                <div className="af-toolbar-pane-label">Snapshot</div>
+                <div className="af-toolbar-pane-actions">
+                  <button
+                    className="af-action-btn af-layout-save"
+                    type="button"
+                    onClick=${saveLayoutJson}
+                    title="Save current layout snapshot"
+                    aria-label="Save current layout snapshot"
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="af-action-btn af-layout-copy"
+                    type="button"
+                    onClick=${copyLayoutJson}
+                    title="Copy current layout JSON"
+                    aria-label="Copy current layout JSON"
+                  >
+                    Copy JSON
+                  </button>
+                </div>
+              </div>
+            ` : null}
           </div>
+          ${renderPanelGrip('toolbar', 'Toolbar')}
         </section>
+
+        <div className="af-mode-ruler af-layout-editable" data-panel-label="Mode Panel" ref=${function (el) { panelElementRefs.current.modeRuler = el; }} style=${getPanelOffsetStyle('modeRuler')}>
+          <div className="af-ruler-wrapper">
+            <div className="af-ruler-track"></div>
+            <div className="af-ruler-markers">
+              <button
+                className=${'af-ruler-marker af-mode-button af-mode-flow' + (currentViewMode === 'flow' ? ' is-active' : '')}
+                type="button"
+                onClick=${function () { setWorkspaceMode('flow'); }}
+                aria-label="Switch to Flow layout"
+              >
+                <span className="af-mode-button-cell" aria-hidden="true"></span>
+                <span className="af-ruler-marker-label">Flow</span>
+              </button>
+              <button
+                className=${'af-ruler-marker af-mode-button af-mode-editor' + (currentViewMode === 'editor' ? ' is-active' : '')}
+                type="button"
+                onClick=${function () { setWorkspaceMode('editor'); }}
+                aria-label="Switch to Editor layout"
+              >
+                <span className="af-mode-button-cell" aria-hidden="true"></span>
+                <span className="af-ruler-marker-label">Editor</span>
+              </button>
+            </div>
+            <div className="af-ruler-slider" ref=${rulerSliderRef} onMouseDown=${startRulerDrag}></div>
+          </div>
+          ${renderPanelGrip('modeRuler', 'Mode')}
+          ${renderPanelResizeGrip('modeRuler')}
+        </div>
 
 
         <div className=${'af-main-grid af-main-grid-job' + (flowHidden ? ' is-flow-hidden' : '') + (inspectorHidden ? ' is-inspector-hidden' : '')}>
 
-          <section className=${'af-canvas-panel' + (flowHidden ? ' is-hidden' : '')}>
-            ${paletteVisible ? html`
-              <aside className="af-palette-panel">
-                <div className="af-palette-head">Components</div>
-                <div className="af-palette-body">
-                  ${NODE_TEMPLATES.map(function(tpl) {
-                    return html`
-                      <div
-                        key=${tpl.id}
-                        className="af-palette-item"
-                        draggable=${true}
-                        onDragStart=${function(e) {
-                          if (e.dataTransfer) {
-                            e.dataTransfer.setData('application/af-node-template', tpl.id);
-                            e.dataTransfer.effectAllowed = 'copy';
-                          }
-                        }}
-                        onClick=${function() { addNodeFromTemplate(tpl); }}
-                        title=${'Add ' + tpl.data.name}
-                      >
-                        <span className=${'af-palette-dot is-domain-' + domainClass(tpl.data.semanticDomain)}></span>
-                        <span className="af-palette-label">${tpl.data.shortLabel}</span>
-                      </div>
-                    `;
-                  })}
-                </div>
-              </aside>
-            ` : null}
-            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
-              <${ReactFlow}
-                key=${'reactflow-' + flowRenderKey}
-                nodes=${nodes}
-                edges=${edges}
-                nodeTypes=${nodeTypes}
-                edgeTypes=${edgeTypes}
-                onInit=${setFlowInstance}
-                onNodesChange=${onNodesChange}
-                onNodeClick=${function (_event, node) { focusNodeForEditing(node.id); }}
-                onPaneClick=${clearNodeSelection}
-                fitView=${false}
-                fitViewOptions=${{ padding: 0.1 }}
-                onDrop=${onDrop}
-                onDragOver=${onDragOver}
-                nodesDraggable=${moveModeEnabled}
-                nodesConnectable=${false}
-                elementsSelectable=${false}
-                onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
-                panOnDrag=${moveModeEnabled}
-                panOnScroll=${true}
-                zoomOnScroll=${true}
-                zoomOnPinch=${true}
-                zoomOnDoubleClick=${true}
-                preventScrolling=${false}
-                minZoom=${0.05}
-                maxZoom=${8}
-              >
-                <${Background} gap=${18} size=${1} color="rgba(120,180,220,0.18)" />
-                <${Controls}
-                  className="af-flow-controls"
-                  position="top-right"
-                  showInteractive=${false}
+          <section className=${'af-canvas-panel af-layout-editable' + (flowHidden ? ' is-hidden' : '')} data-panel-label="Canvas Panel" ref=${function (el) { panelElementRefs.current.canvas = el; }} style=${getPanelOffsetStyle('canvas')}>
+            <div className="af-canvas-stage">
+              <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
+                <${ReactFlow}
+                  key=${'reactflow-' + flowRenderKey}
+                  nodes=${nodes}
+                  edges=${edges}
+                  nodeTypes=${nodeTypes}
+                  edgeTypes=${edgeTypes}
+                  onInit=${setFlowInstance}
+                  onNodesChange=${onNodesChange}
+                  onNodeClick=${function (_event, node) { focusNodeForEditing(node.id); }}
+                  onPaneClick=${clearNodeSelection}
+                  fitView=${false}
+                  fitViewOptions=${{ padding: 0.1 }}
+                  onDrop=${onDrop}
+                  onDragOver=${onDragOver}
+                  nodesDraggable=${moveModeEnabled}
+                  nodesConnectable=${false}
+                  elementsSelectable=${false}
+                  onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
+                  panOnDrag=${moveModeEnabled}
+                  panOnScroll=${true}
+                  zoomOnScroll=${true}
+                  zoomOnPinch=${true}
+                  zoomOnDoubleClick=${true}
+                  preventScrolling=${false}
+                  minZoom=${0.05}
+                  maxZoom=${8}
                 >
-                  <${ControlButton}
-                    className=${'af-move-toggle-btn' + (moveModeEnabled ? ' is-active' : '')}
-                    title=${moveModeEnabled ? 'Move mode active' : 'Move mode inactive'}
-                    aria-label=${moveModeEnabled ? 'Move mode active' : 'Move mode inactive'}
-                    onClick=${function () { setMoveModeEnabled(function (value) { return !value; }); }}
-                  >
-                    ${moveModeEnabled
-                      ? html`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-                          <path d="M12 3l2.6 2.6-1.1 1.1h-3V3h1.5zm0 18h-1.5v-3h3l1.1 1.1L12 21zm9-9v1.5h-3v-3l1.1-1.1L21 12zM3 12l2.6-2.6 1.1 1.1v3h-3V12zm9-4.5L8.9 10.6 10 11.7 12 9.7l2 2 1.1-1.1L12 7.5zM12 16.5l3.1-3.1-1.1-1.1-2 2-2-2-1.1 1.1L12 16.5z" fill="currentColor"/>
-                        </svg>`
-                      : html`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-                          <path d="M12 3l2.6 2.6-1.1 1.1h-3V3h1.5zm0 18h-1.5v-3h3l1.1 1.1L12 21zm9-9v1.5h-3v-3l1.1-1.1L21 12zM3 12l2.6-2.6 1.1 1.1v3h-3V12z" fill="currentColor" opacity="0.55"/>
-                          <path d="M5 5l14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>`}
-                  </${ControlButton}>
-                </${Controls}>
-                <${MiniMap}
-                  className="af-overview-minimap"
-                  pannable=${true}
-                  zoomable=${true}
-                  nodeBorderRadius=${999}
-                  nodeColor=${function (node) {
-                    const rgb = domainGlowRgb(node.data && node.data.semanticDomain);
-                    const alpha = node.id === activeNodeId ? 0.95 : 0.72;
-                    return 'rgba(' + rgb + ', ' + alpha + ')';
-                  }}
-                  nodeStrokeColor=${function (node) {
-                    return node.id === activeNodeId
-                      ? domainHex(node.data && node.data.semanticDomain)
-                      : 'transparent';
-                  }}
-                  nodeStrokeWidth=${3}
-                  nodeClassName=${function (node) {
-                    return node.id === activeNodeId ? 'af-mm-active' : '';
-                  }}
-                  maskColor="rgba(93, 200, 255, 0.14)"
-                />
-              </${ReactFlow}>
-              <div className="af-flow-overlay">
-                <button className="af-reset-symbol" type="button" onClick=${resetNodesLayout} title="Reset Nodes Layout">⟲</button>
+                  <${Background} gap=${18} size=${1} color="rgba(120,180,220,0.18)" />
+                </${ReactFlow}>
               </div>
-              <button
-                className="af-float-drag-handle af-float-drag-handle--left"
-                type="button"
-                title="Drag left floating panel"
-                onPointerDown=${function (e) { startPanelDrag('left', e); }}
-              >↕</button>
-              <button
-                className="af-float-drag-handle af-float-drag-handle--right"
-                type="button"
-                title="Drag right floating panel"
-                onPointerDown=${function (e) { startPanelDrag('right', e); }}
-              >↕</button>
+
+              ${paletteVisible ? html`
+                <aside className="af-palette-panel af-layout-editable" data-panel-label="Palette Panel" style=${getPanelOffsetStyle('palette')}>
+                  <div className="af-palette-head">Components</div>
+                  <div className="af-palette-body">
+                    ${NODE_TEMPLATES.map(function(tpl) {
+                      return html`
+                        <div
+                          key=${tpl.id}
+                          className="af-palette-item"
+                          draggable=${true}
+                          onDragStart=${function(e) {
+                            if (e.dataTransfer) {
+                              e.dataTransfer.setData('application/af-node-template', tpl.id);
+                              e.dataTransfer.effectAllowed = 'copy';
+                            }
+                          }}
+                          onClick=${function() { addNodeFromTemplate(tpl); }}
+                          title=${'Add ' + tpl.data.name}
+                        >
+                          <span className=${'af-palette-dot is-domain-' + domainClass(tpl.data.semanticDomain)}></span>
+                          <span className="af-palette-label">${tpl.data.shortLabel}</span>
+                        </div>
+                      `;
+                    })}
+                  </div>
+                  ${renderPanelGrip('palette', 'Palette')}
+                </aside>
+              ` : null}
+
             </div>
+            ${renderPanelGrip('canvas', 'Canvas')}
+            ${renderPanelResizeGrip('canvas')}
           </section>
 
           <div className="af-resize-handle" ref=${resizeHandleRef} onMouseDown=${startResize} title="Drag to resize panels" />
 
           ${inspectorHidden ? html`<aside className="af-panel af-inspector-panel is-hidden"></aside>` : html`
-          <aside className=${'af-panel af-inspector-panel' + (editorMode ? ' is-editor-mode' : '')}>
+          <aside className=${'af-panel af-inspector-panel af-layout-editable' + (editorMode ? ' is-editor-mode' : '')} data-panel-label="Inspector Panel" ref=${function (el) { panelElementRefs.current.inspector = el; }} style=${getPanelOffsetStyle('inspector')}>
             <div className="af-inspector-head">
               <h2>${editorMode ? 'Node Editor' : 'Job'}</h2>
             </div>
@@ -1513,30 +1858,6 @@ loadGetBezierPath();
                     >
                       ${bitsToBrailleChar(item.bits)}
                     </button>
-                  `;
-                })}
-              </div>
-            `)}
-
-            ${renderInspectorSection('layers', 'Layers', html`
-              <div className="af-layers-list">
-                ${graphNodes.slice().reverse().map(function(node) {
-                  const isActive = node.id === activeNodeId;
-                  return html`
-                    <div
-                      key=${node.id}
-                      className=${'af-layer-item' + (isActive ? ' is-active' : '')}
-                      onClick=${function() { setActiveNodeId(node.id); }}
-                    >
-                      <span className=${'af-layer-dot is-domain-' + domainClass(node.data.semanticDomain)}></span>
-                      <span className="af-layer-name">${node.data.shortLabel || node.data.name}</span>
-                      <button
-                        className="af-layer-delete"
-                        type="button"
-                        title="Remove node"
-                        onClick=${function(e) { e.stopPropagation(); removeNode(node.id); }}
-                      >×</button>
-                    </div>
                   `;
                 })}
               </div>
@@ -1614,6 +1935,8 @@ loadGetBezierPath();
             ${renderInspectorSection('activity', 'Activity', html`
               <pre className="af-term">${activity.join('\n')}</pre>
             `)}
+            ${renderPanelGrip('inspector', 'Inspector')}
+            ${renderPanelResizeGrip('inspector')}
           </aside>
           `}
         </div>
