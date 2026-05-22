@@ -216,12 +216,6 @@ loadGetBezierPath();
   const workflowNodeOrder = ['input', 'parse', 'mask', 'build', 'submit'];
   const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
   const HANDOFF_NODE_DWELL_SECONDS = 2.4;
-  const MOBILE_PANEL_STORAGE_KEY = 'af.mobilePanelOffsets.v1';
-  const DEFAULT_MOBILE_PANEL_BOTTOM = 52;
-
-  function clampPanelBottom(value) {
-    return Math.max(12, Math.min(180, Number(value) || DEFAULT_MOBILE_PANEL_BOTTOM));
-  }
 
   // Craft.js-style palette — node templates available to drag/click onto canvas
   const NODE_TEMPLATES = [
@@ -309,10 +303,6 @@ loadGetBezierPath();
     const [paletteVisible, setPaletteVisible] = useState(false);
     const [canUndo, setCanUndo] = useState(false);
     const [canRedo, setCanRedo] = useState(false);
-    const [mobilePanelOffsets, setMobilePanelOffsets] = useState({
-      left: DEFAULT_MOBILE_PANEL_BOTTOM,
-      right: DEFAULT_MOBILE_PANEL_BOTTOM
-    });
 
     const [flowInstance, setFlowInstance] = useState(null);
     const flowShellRef = useRef(null);
@@ -348,32 +338,6 @@ loadGetBezierPath();
         }
       };
     }, []);
-
-    useEffect(function () {
-      try {
-        var raw = window.localStorage.getItem(MOBILE_PANEL_STORAGE_KEY);
-        if (!raw) return;
-        var parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object') return;
-        setMobilePanelOffsets({
-          left: clampPanelBottom(parsed.left),
-          right: clampPanelBottom(parsed.right)
-        });
-      } catch (_err) {
-        // ignore invalid local state
-      }
-    }, []);
-
-    useEffect(function () {
-      try {
-        window.localStorage.setItem(MOBILE_PANEL_STORAGE_KEY, JSON.stringify({
-          left: clampPanelBottom(mobilePanelOffsets.left),
-          right: clampPanelBottom(mobilePanelOffsets.right)
-        }));
-      } catch (_err) {
-        // local storage might be unavailable; keep in-memory control
-      }
-    }, [mobilePanelOffsets.left, mobilePanelOffsets.right]);
 
     useEffect(function () {
       const durationMs = (handoffState.phase === 'edge' ? HANDOFF_EDGE_TRAVEL_SECONDS : HANDOFF_NODE_DWELL_SECONDS) * 1000;
@@ -1232,26 +1196,6 @@ loadGetBezierPath();
       });
     };
 
-    const updateMobilePanelOffset = function (side, nextValue) {
-      var value = clampPanelBottom(nextValue);
-      setMobilePanelOffsets(function (current) {
-        if (side === 'left') return { left: value, right: current.right };
-        return { left: current.left, right: value };
-      });
-    };
-
-    const resetMobilePanelOffsets = function () {
-      setMobilePanelOffsets({
-        left: DEFAULT_MOBILE_PANEL_BOTTOM,
-        right: DEFAULT_MOBILE_PANEL_BOTTOM
-      });
-    };
-
-    var flowRootStyle = {
-      '--af-left-floating-bottom': clampPanelBottom(mobilePanelOffsets.left) + 'px',
-      '--af-right-floating-bottom': clampPanelBottom(mobilePanelOffsets.right) + 'px'
-    };
-
     return html`
       <div className="af-editor-shell">
         <section className="af-toolbar">
@@ -1319,32 +1263,6 @@ loadGetBezierPath();
               </div>
             </div>
           </div>
-
-          <div className="af-mobile-panel-tuner" aria-label="Mobile panel position controls">
-            <label className="af-mobile-panel-tuner-field">
-              <span>Left panel</span>
-              <input
-                type="range"
-                min="12"
-                max="180"
-                step="1"
-                value=${String(clampPanelBottom(mobilePanelOffsets.left))}
-                onInput=${function (e) { updateMobilePanelOffset('left', e.currentTarget.value); }}
-              />
-            </label>
-            <label className="af-mobile-panel-tuner-field">
-              <span>Right panel</span>
-              <input
-                type="range"
-                min="12"
-                max="180"
-                step="1"
-                value=${String(clampPanelBottom(mobilePanelOffsets.right))}
-                onInput=${function (e) { updateMobilePanelOffset('right', e.currentTarget.value); }}
-              />
-            </label>
-            <button className="af-action-btn af-mobile-panel-tuner-reset" type="button" onClick=${resetMobilePanelOffsets}>Reset</button>
-          </div>
         </section>
 
 
@@ -1378,7 +1296,7 @@ loadGetBezierPath();
                 </div>
               </aside>
             ` : null}
-            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
+            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef}>
               <${ReactFlow}
                 key=${'reactflow-' + flowRenderKey}
                 nodes=${nodes}
