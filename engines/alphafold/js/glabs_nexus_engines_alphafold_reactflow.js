@@ -216,6 +216,13 @@ loadGetBezierPath();
   const workflowNodeOrder = ['input', 'parse', 'mask', 'build', 'submit'];
   const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
   const HANDOFF_NODE_DWELL_SECONDS = 2.4;
+  const PANEL_DRAG_STORAGE_KEY = 'af.workflow.panelDrag.v1';
+
+  function clampDrag(value, min, max) {
+    var v = Number(value);
+    if (!Number.isFinite(v)) return 0;
+    return Math.max(min, Math.min(max, v));
+  }
 
   // Craft.js-style palette — node templates available to drag/click onto canvas
   const NODE_TEMPLATES = [
@@ -303,6 +310,10 @@ loadGetBezierPath();
     const [paletteVisible, setPaletteVisible] = useState(false);
     const [canUndo, setCanUndo] = useState(false);
     const [canRedo, setCanRedo] = useState(false);
+    const [panelDrag, setPanelDrag] = useState({
+      left: { x: 0, y: 0 },
+      right: { x: 0, y: 0 }
+    });
 
     const [flowInstance, setFlowInstance] = useState(null);
     const flowShellRef = useRef(null);
@@ -313,8 +324,42 @@ loadGetBezierPath();
     const flowToggleLockRef = useRef(false);
     const initialAutoLayoutDoneRef = useRef(false);
     const initialViewportFitDoneRef = useRef(false);
+    const panelDragRef = useRef(panelDrag);
     const historyRef = useRef({ stack: [baseNodes.map(function(n) { return Object.assign({}, n); })], index: 0 });
     const nodeCounterRef = useRef(0);
+
+    useEffect(function () {
+      panelDragRef.current = panelDrag;
+    }, [panelDrag]);
+
+    useEffect(function () {
+      try {
+        var raw = window.localStorage.getItem(PANEL_DRAG_STORAGE_KEY);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        setPanelDrag({
+          left: {
+            x: clampDrag(parsed.left && parsed.left.x, -240, 240),
+            y: clampDrag(parsed.left && parsed.left.y, -240, 240)
+          },
+          right: {
+            x: clampDrag(parsed.right && parsed.right.x, -240, 240),
+            y: clampDrag(parsed.right && parsed.right.y, -240, 240)
+          }
+        });
+      } catch (_err) {
+        // ignore invalid stored drag state
+      }
+    }, []);
+
+    useEffect(function () {
+      try {
+        window.localStorage.setItem(PANEL_DRAG_STORAGE_KEY, JSON.stringify(panelDrag));
+      } catch (_err) {
+        // localStorage can fail in private contexts; keep runtime state only
+      }
+    }, [panelDrag]);
 
     useEffect(function () {
       var nextCount = 0;
@@ -1196,6 +1241,47 @@ loadGetBezierPath();
       });
     };
 
+    const startPanelDrag = function (side, event) {
+      if (!event) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      var startX = Number(event.clientX) || 0;
+      var startY = Number(event.clientY) || 0;
+      var start = panelDragRef.current && panelDragRef.current[side]
+        ? panelDragRef.current[side]
+        : { x: 0, y: 0 };
+
+      var onMove = function (moveEvent) {
+        var dx = (Number(moveEvent.clientX) || 0) - startX;
+        var dy = (Number(moveEvent.clientY) || 0) - startY;
+
+        setPanelDrag(function (current) {
+          var next = {
+            x: clampDrag(start.x + dx, -240, 240),
+            y: clampDrag(start.y + dy, -240, 240)
+          };
+          if (side === 'left') return { left: next, right: current.right };
+          return { left: current.left, right: next };
+        });
+      };
+
+      var onUp = function () {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    };
+
+    var flowRootStyle = {
+      '--af-left-panel-shift-x': clampDrag(panelDrag.left && panelDrag.left.x, -240, 240) + 'px',
+      '--af-left-panel-shift-y': clampDrag(panelDrag.left && panelDrag.left.y, -240, 240) + 'px',
+      '--af-right-panel-shift-x': clampDrag(panelDrag.right && panelDrag.right.x, -240, 240) + 'px',
+      '--af-right-panel-shift-y': clampDrag(panelDrag.right && panelDrag.right.y, -240, 240) + 'px'
+    };
+
     return html`
       <div className="af-editor-shell">
         <section className="af-toolbar">
@@ -1296,7 +1382,7 @@ loadGetBezierPath();
                 </div>
               </aside>
             ` : null}
-            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef}>
+            <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
               <${ReactFlow}
                 key=${'reactflow-' + flowRenderKey}
                 nodes=${nodes}
@@ -1371,6 +1457,18 @@ loadGetBezierPath();
               <div className="af-flow-overlay">
                 <button className="af-reset-symbol" type="button" onClick=${resetNodesLayout} title="Reset Nodes Layout">⟲</button>
               </div>
+              <button
+                className="af-float-drag-handle af-float-drag-handle--left"
+                type="button"
+                title="Drag left floating panel"
+                onPointerDown=${function (e) { startPanelDrag('left', e); }}
+              >↕</button>
+              <button
+                className="af-float-drag-handle af-float-drag-handle--right"
+                type="button"
+                title="Drag right floating panel"
+                onPointerDown=${function (e) { startPanelDrag('right', e); }}
+              >↕</button>
             </div>
           </section>
 
