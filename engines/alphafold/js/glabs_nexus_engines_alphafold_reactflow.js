@@ -1388,11 +1388,35 @@ loadGetBezierPath();
           try {
             var viewportAfterFit = flowInstance.getViewport();
             if (viewportAfterFit && Number.isFinite(viewportAfterFit.x) && Number.isFinite(viewportAfterFit.y) && Number.isFinite(viewportAfterFit.zoom)) {
-              var verticalLift = isTabletViewport ? 14 : 24;
+              var verticalLift = isTabletViewport ? 10 : 16;
               flowInstance.setViewport(
                 { x: viewportAfterFit.x, y: viewportAfterFit.y - verticalLift, zoom: viewportAfterFit.zoom },
                 { duration: Math.max(140, Math.round(fitDuration * 0.55)) }
               );
+
+              var liftedViewport = flowInstance.getViewport && flowInstance.getViewport();
+              if (liftedViewport && Array.isArray(graphNodes) && graphNodes.length > 0) {
+                var minNodeY = Infinity;
+                graphNodes.forEach(function (node) {
+                  var y = Number(node && node.position && node.position.y);
+                  if (Number.isFinite(y)) minNodeY = Math.min(minNodeY, y);
+                });
+
+                if (Number.isFinite(minNodeY)) {
+                  var minTopClearance = isTabletViewport ? 18 : 24;
+                  var screenTop = (minNodeY * liftedViewport.zoom) + liftedViewport.y;
+                  if (screenTop < minTopClearance) {
+                    flowInstance.setViewport(
+                      {
+                        x: liftedViewport.x,
+                        y: liftedViewport.y + (minTopClearance - screenTop),
+                        zoom: liftedViewport.zoom
+                      },
+                      { duration: 120 }
+                    );
+                  }
+                }
+              }
             }
           } catch (_err) {
             // keep silent; default fit is still valid if viewport read/write fails
