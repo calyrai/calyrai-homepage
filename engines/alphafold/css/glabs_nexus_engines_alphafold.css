@@ -2678,7 +2678,7 @@
 .af-ruler-wrapper {
   position: relative;
   width: 100%;
-  height: 44px;
+  height: 38px;
   margin: 0;
   display: flex;
   align-items: center;
@@ -2696,7 +2696,7 @@
   top: 0;
   left: auto;
   right: auto;
-  height: 44px;
+  height: 38px;
   width: 178px;
   flex: 0 0 178px;
   display: flex;
@@ -2723,8 +2723,8 @@
 }
 
 .af-mode-button-cell {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   border: 1px solid rgba(117, 169, 219, 0.3);
   background: rgba(8, 17, 26, 0.72);
