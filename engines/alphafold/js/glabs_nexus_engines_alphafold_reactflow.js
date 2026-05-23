@@ -289,7 +289,7 @@ loadGetBezierPath();
       sidePaddingRatio: 0.12,
       usableWidthMin: 620,
       spacingMin: 160,
-      y: 24
+      y: 74
     }
   };
 
