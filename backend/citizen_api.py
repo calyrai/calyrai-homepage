@@ -5,7 +5,7 @@ Integrates calyr.eval, calyr.apo, and calyr.okto for real-time job control.
 
 from fastapi import FastAPI, HTTPException, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import uuid
@@ -20,6 +20,8 @@ import hashlib
 import secrets
 import base64
 import time
+import smtplib
+from email.message import EmailMessage
 
 app = FastAPI(title="Calyr.Citizen", version="0.1.0")
 
@@ -28,6 +30,21 @@ CSRF_COOKIE = "calyr_csrf"
 SESSION_TTL_SECONDS = int(os.getenv("CALYR_SESSION_TTL_SECONDS", "43200"))
 SESSION_SECRET = os.getenv("CALYR_SESSION_SECRET", "dev-only-change-me")
 COOKIE_SECURE = os.getenv("CALYR_COOKIE_SECURE", "false").lower() == "true"
+ENABLE_PASSWORD_LOGIN = os.getenv("CALYR_ENABLE_PASSWORD_LOGIN", "false").lower() == "true"
+MAGIC_LINK_TTL_SECONDS = int(os.getenv("CALYR_MAGIC_LINK_TTL_SECONDS", "900"))
+PUBLIC_BASE_URL = os.getenv("CALYR_PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/")
+MAGIC_LINK_DEV_MODE = os.getenv("CALYR_MAGIC_LINK_DEV_MODE", "true").lower() == "true"
+MAGIC_EMAIL_FROM = os.getenv("CALYR_MAGIC_EMAIL_FROM", "Calyr Citizen <no-reply@calyr.ai>")
+SMTP_HOST = os.getenv("CALYR_SMTP_HOST", "")
+SMTP_PORT = int(os.getenv("CALYR_SMTP_PORT", "587"))
+SMTP_USER = os.getenv("CALYR_SMTP_USER", "")
+SMTP_PASSWORD = os.getenv("CALYR_SMTP_PASSWORD", "")
+SMTP_USE_TLS = os.getenv("CALYR_SMTP_USE_TLS", "true").lower() == "true"
+ALLOWED_LOGIN_EMAILS = {
+    v.strip().lower()
+    for v in os.getenv("CALYR_AUTH_ALLOWED_EMAILS", "").split(",")
+    if v.strip()
+}
 
 # Development default user. Override via environment in non-dev setups.
 AUTH_USER = os.getenv("CALYR_AUTH_USER", "researcher")
@@ -105,12 +122,19 @@ class LoginRequest(BaseModel):
     password: str
     csrf: str
 
+
+class MagicLinkRequest(BaseModel):
+    email: str
+    csrf: str
+    next: Optional[str] = "/citizen.html"
+
 # ========== IN-MEMORY JOB STORE ==========
 jobs_db: Dict[str, Dict] = {}
 figures_db: Dict[str, List[FigureResponse]] = {}
 shell_sessions_db: Dict[str, Dict[str, str]] = {}
 auth_sessions_db: Dict[str, Dict[str, str]] = {}
 login_attempts_db: Dict[str, List[float]] = {}
+magic_links_db: Dict[str, Dict[str, str]] = {}
 
 
 def _hash_password(password: str, salt: bytes) -> str:
@@ -204,6 +228,85 @@ def _clear_failed_attempts(key: str) -> None:
 def _get_request_client_key(request: Request, username: str = "") -> str:
     ip = request.client.host if request.client else "unknown"
     return "{}:{}".format(ip, username or "anon")
+
+
+def _safe_next_path(next_path: str) -> str:
+    candidate = (next_path or "").strip()
+    if not candidate.startswith("/"):
+        return "/citizen.html"
+    if candidate.startswith("//"):
+        return "/citizen.html"
+    return candidate
+
+
+def _normalize_email(value: str) -> str:
+    return (value or "").strip().lower()
+
+
+def _valid_email(value: str) -> bool:
+    email = _normalize_email(value)
+    if not email or "@" not in email:
+        return False
+    local, _, domain = email.partition("@")
+    return bool(local and domain and "." in domain)
+
+
+def _email_allowed(email: str) -> bool:
+    if not ALLOWED_LOGIN_EMAILS:
+        return True
+    return email in ALLOWED_LOGIN_EMAILS
+
+
+def _hash_magic_token(raw_token: str) -> str:
+    return hashlib.sha256((raw_token + SESSION_SECRET).encode("utf-8")).hexdigest()
+
+
+def _purge_expired_magic_links() -> None:
+    now = int(time.time())
+    expired = [key for key, meta in magic_links_db.items() if int(meta.get("expiry", 0)) <= now]
+    for key in expired:
+        magic_links_db.pop(key, None)
+
+
+def _create_magic_link(email: str, next_path: str) -> str:
+    raw = secrets.token_urlsafe(32)
+    token_hash = _hash_magic_token(raw)
+    expiry = int(time.time()) + MAGIC_LINK_TTL_SECONDS
+    magic_links_db[token_hash] = {
+        "email": email,
+        "next": _safe_next_path(next_path),
+        "expiry": str(expiry),
+        "created": str(int(time.time())),
+    }
+    return "{}/auth/magic/consume?token={}".format(PUBLIC_BASE_URL, raw)
+
+
+def _send_magic_link_email(recipient: str, link: str) -> None:
+    friendly = recipient.split("@", 1)[0].replace(".", " ").replace("_", " ").strip() or "researcher"
+    subject = "Your secure Calyr sign-in link"
+    text = (
+        "Hello {},\n\n"
+        "Use this one-time sign-in link to access Calyr Citizen:\n{}\n\n"
+        "This link expires in {} minutes and can be used once.\n"
+        "If you did not request this, you can ignore this email.\n"
+    ).format(friendly, link, max(1, MAGIC_LINK_TTL_SECONDS // 60))
+
+    if not SMTP_HOST:
+        print("[magic-link] SMTP not configured; generated link for {}: {}".format(recipient, link))
+        return
+
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = MAGIC_EMAIL_FROM
+    message["To"] = recipient
+    message.set_content(text)
+
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as smtp:
+        if SMTP_USE_TLS:
+            smtp.starttls()
+        if SMTP_USER:
+            smtp.login(SMTP_USER, SMTP_PASSWORD)
+        smtp.send_message(message)
 
 
 def _csrf_from_header(request: Request) -> str:
@@ -410,6 +513,9 @@ async def auth_session(request: Request, response: Response):
 
 @app.post("/auth/login")
 async def auth_login(payload: LoginRequest, request: Request, response: Response):
+    if not ENABLE_PASSWORD_LOGIN:
+        raise HTTPException(status_code=404, detail="Password login disabled")
+
         cookie_csrf = request.cookies.get(CSRF_COOKIE, "")
         if not cookie_csrf or not hmac.compare_digest(cookie_csrf, payload.csrf):
                 raise HTTPException(status_code=403, detail="CSRF validation failed")
@@ -432,6 +538,61 @@ async def auth_login(payload: LoginRequest, request: Request, response: Response
         return {"authenticated": True, "user": payload.username}
 
 
+    @app.post("/auth/magic/request")
+    async def auth_magic_request(payload: MagicLinkRequest, request: Request):
+        cookie_csrf = request.cookies.get(CSRF_COOKIE, "")
+        if not cookie_csrf or not hmac.compare_digest(cookie_csrf, payload.csrf):
+            raise HTTPException(status_code=403, detail="CSRF validation failed")
+
+        email = _normalize_email(payload.email)
+        if not _valid_email(email):
+            raise HTTPException(status_code=400, detail="Enter a valid email address")
+
+        client_key = _get_request_client_key(request, email)
+        if _is_rate_limited("magic:" + client_key, limit=6, window_seconds=300):
+            raise HTTPException(status_code=429, detail="Too many requests. Please retry later.")
+
+        _record_failed_attempt("magic:" + client_key)
+        _purge_expired_magic_links()
+
+        # Return generic success even if email is not authorized to avoid account enumeration.
+        if not _email_allowed(email):
+            return {"ok": True, "delivered": True}
+
+        next_path = _safe_next_path(payload.next or "/citizen.html")
+        link = _create_magic_link(email, next_path)
+        _send_magic_link_email(email, link)
+
+        if MAGIC_LINK_DEV_MODE and not SMTP_HOST:
+            return {"ok": True, "delivered": True, "debug_link": link}
+        return {"ok": True, "delivered": True}
+
+
+    @app.get("/auth/magic/consume")
+    async def auth_magic_consume(token: str, response: Response):
+        _purge_expired_magic_links()
+        token_hash = _hash_magic_token(token)
+        entry = magic_links_db.pop(token_hash, None)
+        if not entry:
+            raise HTTPException(status_code=400, detail="Magic link is invalid or expired")
+
+        email = entry.get("email", "")
+        next_path = _safe_next_path(entry.get("next", "/citizen.html"))
+        nonce = secrets.token_urlsafe(16)
+        expiry = int(time.time()) + SESSION_TTL_SECONDS
+        session_token = _signed_session(email, nonce, expiry)
+        csrf = secrets.token_urlsafe(24)
+        auth_sessions_db[session_token] = {
+            "user": email,
+            "expiry": str(expiry),
+            "created": str(int(time.time())),
+        }
+
+        redirect = RedirectResponse(url=next_path, status_code=303)
+        _set_auth_cookies(redirect, session_token, csrf)
+        return redirect
+
+
 @app.post("/auth/logout")
 async def auth_logout(request: Request, response: Response):
         token = request.cookies.get(SESSION_COOKIE, "")
@@ -444,9 +605,9 @@ async def auth_logout(request: Request, response: Response):
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-        """Small local login form for development/private routes."""
+    """Magic-link login form for development/private routes."""
         next_path = request.query_params.get("next", "/citizen.html")
-        safe_next = next_path if next_path.startswith("/") else "/citizen.html"
+    safe_next = _safe_next_path(next_path)
         html = f"""
 <!DOCTYPE html>
 <html lang=\"en\">
@@ -466,11 +627,10 @@ async def login_page(request: Request):
 <body>
     <form class=\"card\" id=\"login-form\">
         <h2>Calyr Secure Login</h2>
-        <label>Username</label>
-        <input id=\"username\" autocomplete=\"username\" required />
-        <label>Password</label>
-        <input id=\"password\" type=\"password\" autocomplete=\"current-password\" required />
-        <button type=\"submit\">Login</button>
+        <p>Enter your email and we send you a one-time secure sign-in link.</p>
+        <label>Email</label>
+        <input id=\"email\" type=\"email\" autocomplete=\"email\" required />
+        <button type=\"submit\">Send Magic Link</button>
         <div class=\"err\" id=\"error\"></div>
     </form>
     <script>
@@ -483,15 +643,14 @@ async def login_page(request: Request):
             let csrf = await getCsrf();
             document.getElementById('login-form').addEventListener('submit', async function(e) {{
                 e.preventDefault();
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value;
+                const email = document.getElementById('email').value.trim();
                 const err = document.getElementById('error');
                 err.textContent = '';
-                const res = await fetch('/auth/login', {{
+                const res = await fetch('/auth/magic/request', {{
                     method:'POST',
                     credentials:'include',
                     headers:{{'Content-Type':'application/json'}},
-                    body: JSON.stringify({{ username, password, csrf }})
+                    body: JSON.stringify({{ email, csrf, next: {json.dumps(safe_next)} }})
                 }});
                 if (!res.ok) {{
                     const data = await res.json().catch(() => ({{ detail:'Login failed' }}));
@@ -499,7 +658,12 @@ async def login_page(request: Request):
                     csrf = await getCsrf();
                     return;
                 }}
-                window.location.href = {json.dumps(safe_next)};
+                const payload = await res.json().catch(() => ({{}}));
+                if (payload.debug_link) {{
+                    err.innerHTML = 'Magic link generated (dev mode): <a href="' + payload.debug_link + '">open sign-in link</a>';
+                    return;
+                }}
+                err.textContent = 'Check your email for a personalized sign-in link.';
             }});
         }})();
     </script>
