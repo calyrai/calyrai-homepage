@@ -1210,9 +1210,9 @@
 
 /* Minimal AI workflow editor override */
 .af-editor-shell {
-  --af-mode-ruler-top: 26px;
-  --af-mode-ruler-clearance: 32px;
-  --af-mode-ruler-reserve: 216px;
+  --af-mode-ruler-top: 0px;
+  --af-mode-ruler-clearance: 0px;
+  --af-mode-ruler-reserve: 0px;
   border: 1px solid rgba(117, 169, 219, 0.24);
   border-radius: 12px;
   background: rgba(6, 14, 26, 0.84);
@@ -1294,13 +1294,14 @@
 }
 
 .af-editor-shell > .af-mode-ruler {
-  position: absolute;
-  top: var(--af-mode-ruler-top);
-  left: 12px;
-  right: 12px;
-  width: auto;
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
   margin: 0;
-  z-index: 122;
+  padding: 0 12px;
+  z-index: 20;
 }
 
 .af-split-button {
@@ -1436,7 +1437,7 @@
 
 .af-main-grid-job {
   grid-template-columns: minmax(0, 70%) minmax(260px, 30%);
-  margin-top: calc(var(--af-mode-ruler-top) + var(--af-mode-ruler-clearance));
+  margin-top: 0;
   transition: grid-template-columns 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -1446,7 +1447,7 @@
 
 .af-main-grid-job.is-flow-hidden {
   grid-template-columns: 0 minmax(0, 1fr);
-  margin-top: calc(var(--af-mode-ruler-top) + var(--af-mode-ruler-clearance));
+  margin-top: 0;
 }
 
 .af-main-grid-job.is-flow-hidden .af-canvas-panel {
@@ -1526,14 +1527,14 @@
   flex-direction: column;
   padding: 0;
   min-width: 0;
-  min-height: 520px;
+  min-height: 420px;
   transition: border-color 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .af-canvas-stage {
   position: relative;
   flex: 1 1 auto;
-  min-height: 520px;
+  min-height: 420px;
   overflow: hidden;
 }
 
@@ -1599,7 +1600,7 @@
 
 .af-main-grid-job .af-canvas-panel > .af-canvas-stage > .af-flow-root {
   flex: 1 1 auto;
-  min-height: 520px;
+  min-height: 420px;
   height: 100%;
 }
 

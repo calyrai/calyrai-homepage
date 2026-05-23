@@ -289,7 +289,7 @@ loadGetBezierPath();
       sidePaddingRatio: 0.12,
       usableWidthMin: 620,
       spacingMin: 160,
-      y: 74
+      y: 24
     }
   };
 
@@ -1378,10 +1378,10 @@ loadGetBezierPath();
         var isTabletViewport = flowSize.width <= 780;
         var fitDuration = initialViewportFitDoneRef.current ? 520 : 0;
         var fitPadding = isPhoneViewport
-          ? (currentViewMode === 'flow' ? 0.11 : 0.13)
-          : isTabletViewport
           ? (currentViewMode === 'flow' ? 0.09 : 0.11)
-          : (currentViewMode === 'flow' ? 0.07 : 0.09);
+          : isTabletViewport
+          ? (currentViewMode === 'flow' ? 0.07 : 0.09)
+          : (currentViewMode === 'flow' ? 0.04 : 0.06);
         fitCanvasToViewport(fitDuration, fitPadding);
 
         if (isPhoneViewport && flowInstance && typeof flowInstance.setViewport === 'function') {
