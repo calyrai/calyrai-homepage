@@ -1538,6 +1538,19 @@
   overflow: hidden;
 }
 
+.af-canvas-stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(93, 200, 255, 0.12), rgba(93, 200, 255, 0.42), rgba(93, 200, 255, 0.12));
+  box-shadow: 0 0 10px rgba(93, 200, 255, 0.24);
+  pointer-events: none;
+  z-index: 112;
+}
+
 /* Nodes render above all other layers including toolbar. */
 .af-main-grid-job .af-canvas-panel .react-flow {
   z-index: 100;
