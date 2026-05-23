@@ -1544,9 +1544,10 @@
   position: relative;
 }
 
-/* Extend visible flow area upward so nodes do not vanish before reaching the top window edge. */
+/* Let the panel itself define clipping boundaries. */
 .af-main-grid-job .af-canvas-panel .react-flow__renderer {
-  clip-path: inset(-64px -28px -84px -28px);
+  clip-path: none;
+  overflow: visible;
 }
 
 /* Show grab hand only when user is actually over/dragging the graph pane. */
