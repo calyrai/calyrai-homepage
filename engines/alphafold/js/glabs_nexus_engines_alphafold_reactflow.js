@@ -1384,6 +1384,21 @@ loadGetBezierPath();
           : (currentViewMode === 'flow' ? 0.04 : 0.06);
         fitCanvasToViewport(fitDuration, fitPadding);
 
+        if (!isPhoneViewport && flowInstance && typeof flowInstance.getViewport === 'function' && typeof flowInstance.setViewport === 'function') {
+          try {
+            var viewportAfterFit = flowInstance.getViewport();
+            if (viewportAfterFit && Number.isFinite(viewportAfterFit.x) && Number.isFinite(viewportAfterFit.y) && Number.isFinite(viewportAfterFit.zoom)) {
+              var verticalLift = isTabletViewport ? 14 : 24;
+              flowInstance.setViewport(
+                { x: viewportAfterFit.x, y: viewportAfterFit.y - verticalLift, zoom: viewportAfterFit.zoom },
+                { duration: Math.max(140, Math.round(fitDuration * 0.55)) }
+              );
+            }
+          } catch (_err) {
+            // keep silent; default fit is still valid if viewport read/write fails
+          }
+        }
+
         if (isPhoneViewport && flowInstance && typeof flowInstance.setViewport === 'function') {
           try {
             var viewport = flowInstance.getViewport && flowInstance.getViewport();
