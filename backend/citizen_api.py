@@ -3,7 +3,7 @@ Calyr.Citizen Backend - Job Control & Figure Rendering API
 Integrates calyr.eval, calyr.apo, and calyr.okto for real-time job control.
 """
 
-from fastapi import FastAPI, HTTPException, Request, Response, Depends
+from fastapi import FastAPI, HTTPException, Request, Response, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
@@ -53,6 +53,7 @@ ALLOWED_GITHUB_USERS = {
     for v in os.getenv("CALYR_AUTH_ALLOWED_GITHUB_USERS", "").split(",")
     if v.strip()
 }
+ALPHAFOLD_LINK_TOKEN = os.getenv("CALYR_ALPHAFOLD_LINK_TOKEN", "calyr-alpha-private-link")
 
 # Development default user. Override via environment in non-dev setups.
 AUTH_USER = os.getenv("CALYR_AUTH_USER", "researcher")
@@ -653,9 +654,9 @@ async def auth_logout(request: Request, response: Response):
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     """Magic-link login form for development/private routes."""
-        next_path = request.query_params.get("next", "/citizen.html")
+    next_path = request.query_params.get("next", "/citizen.html")
     safe_next = _safe_next_path(next_path)
-        html = f"""
+    html = f"""
 <!DOCTYPE html>
 <html lang=\"en\">
 <head>
@@ -720,7 +721,7 @@ async def login_page(request: Request):
 </body>
 </html>
 """
-        return HTMLResponse(content=html)
+    return HTMLResponse(content=html)
 
 
 @app.post("/shell")
@@ -796,6 +797,47 @@ async def run_shell_command(request: ShellCommandRequest, _auth: Dict[str, str] 
         "shell": Path(shell_path).name,
     }
 
+
+def _create_job_record(sim_request: SimulationRequest, *, visibility: str) -> str:
+    job_id = str(uuid.uuid4())[:8]
+    job = {
+        "id": job_id,
+        "type": sim_request.type,
+        "status": "queued",
+        "progress": 0,
+        "user": sim_request.user,
+        "params": sim_request.params,
+        "model_id": sim_request.params.get("model_id") if isinstance(sim_request.params, dict) else None,
+        "created": datetime.now().isoformat(),
+        "started": None,
+        "completed": None,
+        "visibility": visibility,
+    }
+    jobs_db[job_id] = job
+    return job_id
+
+
+def _strip_private_transform(params: Dict) -> Dict:
+    safe = dict(params or {})
+    safe["privacy_mode"] = "public_prediction"
+
+    pipeline = safe.get("pipeline")
+    if isinstance(pipeline, list):
+        safe["pipeline"] = [
+            step for step in pipeline
+            if str(step.get("id", "")) not in {"parse", "mask"}
+        ]
+
+    for key in ["transformed_sequence", "split_definition", "mask_policy", "segment_map", "qty_transform"]:
+        safe.pop(key, None)
+    return safe
+
+
+def _verify_alphafold_link(access: str) -> None:
+    token = str(access or "").strip()
+    if not token or not hmac.compare_digest(token, ALPHAFOLD_LINK_TOKEN):
+        raise HTTPException(status_code=403, detail="Invalid access link")
+
 @app.post("/run")
 async def run_simulation(request: SimulationRequest, _auth: Dict[str, str] = Depends(require_auth)):
     """
@@ -807,22 +849,7 @@ async def run_simulation(request: SimulationRequest, _auth: Dict[str, str] = Dep
     - openfoam: CFD simulation
     - alphafold: Protein structure prediction
     """
-    job_id = str(uuid.uuid4())[:8]
-    
-    # Create job record
-    job = {
-        "id": job_id,
-        "type": request.type,
-        "status": "queued",
-        "progress": 0,
-        "user": request.user,
-        "params": request.params,
-        "model_id": request.params.get("model_id") if isinstance(request.params, dict) else None,
-        "created": datetime.now().isoformat(),
-        "started": None,
-        "completed": None,
-    }
-    jobs_db[job_id] = job
+    job_id = _create_job_record(request, visibility="private")
     
     # TODO: Integrate with calyr.eval
     # call_eval_runner(job_id, request.type, request.params)
@@ -833,6 +860,53 @@ async def run_simulation(request: SimulationRequest, _auth: Dict[str, str] = Dep
     return JobResponse(
         job_id=job_id,
         type=request.type,
+        status="queued",
+        progress=0,
+    )
+
+
+@app.post("/public/alphafold/run")
+async def run_public_alphafold(request: SimulationRequest):
+    """Public AlphaFold prediction entrypoint. Private transform fields are stripped server-side."""
+    if request.type != "alphafold":
+        raise HTTPException(status_code=400, detail="Public endpoint supports type='alphafold' only")
+
+    params = request.params if isinstance(request.params, dict) else {}
+    public_request = SimulationRequest(
+        type="alphafold",
+        params=_strip_private_transform(params),
+        user=request.user or "public",
+    )
+    job_id = _create_job_record(public_request, visibility="public")
+    asyncio.create_task(simulate_job_execution(job_id, "alphafold"))
+
+    return JobResponse(
+        job_id=job_id,
+        type="alphafold",
+        status="queued",
+        progress=0,
+    )
+
+
+@app.post("/public/alphafold/link/run")
+async def run_link_alphafold(request: SimulationRequest, access: str = Query(default="")):
+    """Private-transform AlphaFold entrypoint unlocked only by a particular access link."""
+    _verify_alphafold_link(access)
+    if request.type != "alphafold":
+        raise HTTPException(status_code=400, detail="Link endpoint supports type='alphafold' only")
+
+    params = request.params if isinstance(request.params, dict) else {}
+    link_request = SimulationRequest(
+        type="alphafold",
+        params=dict(params),
+        user=request.user or "link",
+    )
+    job_id = _create_job_record(link_request, visibility="link")
+    asyncio.create_task(simulate_job_execution(job_id, "alphafold"))
+
+    return JobResponse(
+        job_id=job_id,
+        type="alphafold",
         status="queued",
         progress=0,
     )
@@ -942,6 +1016,45 @@ async def get_job(job_id: str, _auth: Dict[str, str] = Depends(require_auth)):
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
     job = jobs_db[job_id]
+    return JobStatus(
+        id=job["id"],
+        type=job["type"],
+        status=job["status"],
+        progress=job["progress"],
+        created=job["created"],
+    )
+
+
+@app.get("/public/alphafold/jobs/{job_id}")
+async def get_public_alphafold_job(job_id: str):
+    """Public status endpoint for public AlphaFold jobs only."""
+    if job_id not in jobs_db:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    job = jobs_db[job_id]
+    if job.get("visibility") != "public" or job.get("type") != "alphafold":
+        raise HTTPException(status_code=403, detail="Job is not public")
+
+    return JobStatus(
+        id=job["id"],
+        type=job["type"],
+        status=job["status"],
+        progress=job["progress"],
+        created=job["created"],
+    )
+
+
+@app.get("/public/alphafold/link/jobs/{job_id}")
+async def get_link_alphafold_job(job_id: str, access: str = Query(default="")):
+    """Status endpoint for access-link AlphaFold jobs only."""
+    _verify_alphafold_link(access)
+    if job_id not in jobs_db:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    job = jobs_db[job_id]
+    if job.get("visibility") != "link" or job.get("type") != "alphafold":
+        raise HTTPException(status_code=403, detail="Job is not available for link access")
+
     return JobStatus(
         id=job["id"],
         type=job["type"],

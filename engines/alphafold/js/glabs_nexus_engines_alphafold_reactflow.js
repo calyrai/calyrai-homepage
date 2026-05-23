@@ -213,6 +213,9 @@ loadGetBezierPath();
   const nodeTypes = { braille: BrailleNode };
   const edgeTypes = { pulse: PulseEdge };
   const workflowNodeOrder = ['input', 'parse', 'mask', 'build', 'submit'];
+  const privateWorkflowSteps = new Set(['parse', 'mask']);
+  const linkAccessToken = String(new URLSearchParams(window.location.search).get('access') || '').trim();
+  const hasLinkAccess = linkAccessToken.length > 0;
   const HANDOFF_EDGE_TRAVEL_SECONDS = 8.2;
   const HANDOFF_NODE_DWELL_SECONDS = 2.4;
   const WORKFLOW_LAYOUT = {
@@ -455,6 +458,8 @@ loadGetBezierPath();
     const [seedsText, setSeedsText] = useState('1');
     const [apiBase, setApiBase] = useState(window.location.protocol + '//' + window.location.hostname + ':8000');
     const [activity, setActivity] = useState(['workflow ready']);
+    const [authChecked, setAuthChecked] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [busy, setBusy] = useState(false);
     const [jobState, setJobState] = useState({ jobId: '', status: 'idle', progress: 0 });
     const [lastPayload, setLastPayload] = useState(null);
@@ -495,6 +500,44 @@ loadGetBezierPath();
     useEffect(function () {
       panelSizesRef.current = panelSizes;
     }, [panelSizes]);
+
+    useEffect(function () {
+      var base = String(apiBase || '').replace(/\/$/, '');
+      if (!base) {
+        setAuthChecked(true);
+        setIsAuthenticated(false);
+        return;
+      }
+
+      fetch(base + '/auth/session', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (response) {
+          if (!response.ok) return { authenticated: false };
+          return response.json();
+        })
+        .then(function (session) {
+          var authed = !!(session && session.authenticated);
+          setIsAuthenticated(authed);
+          setAuthChecked(true);
+          setActivity(function (lines) {
+            var next = lines.slice();
+            next.push(authed
+              ? 'private transform mode enabled (authenticated)'
+              : 'public prediction mode enabled (transform bypassed)');
+            return next;
+          });
+        })
+        .catch(function () {
+          setIsAuthenticated(false);
+          setAuthChecked(true);
+          setActivity(function (lines) {
+            return lines.concat('auth check failed; using public prediction mode');
+          });
+        });
+    }, [apiBase]);
 
     useEffect(function () {
       fetch('layout/summary-layout.md')
@@ -1033,21 +1076,31 @@ loadGetBezierPath();
 
     function buildPayload() {
       runDigestPulse('build', 1400);
+      var hasPrivateAccess = isAuthenticated || hasLinkAccess;
+      var publicMode = !hasPrivateAccess;
+      var pipelineNodes = nodes.filter(function (n) {
+        if (!publicMode) return true;
+        return !privateWorkflowSteps.has(n.id);
+      });
       const next = {
         name: jobName || 'NX-AF3-001',
         modelSeeds: seedsText.split(',').map(function (s) { return Number(String(s).trim()); }).filter(function (n) { return Number.isFinite(n); }),
         sequences: [{ chain_id: chainId || 'A', sequence: sequence || '' }],
-        pipeline: nodes.map(function (n) {
+        pipeline: pipelineNodes.map(function (n) {
           return {
             id: n.id,
             label: n.data.name,
             settings: registryData[n.id] || {}
           };
-        })
+        }),
+        privacy_mode: publicMode ? 'public_prediction' : 'authenticated_transform'
       };
       setLastPayload(next);
       setActivity(function (lines) {
-        return lines.concat('payload built: ' + next.name);
+        return lines.concat(
+          'payload built: ' + next.name +
+          (publicMode ? ' (public mode, transform bypassed)' : ' (private transform mode)')
+        );
       });
       return next;
     }
@@ -1083,18 +1136,30 @@ loadGetBezierPath();
     async function submitToBackend() {
       if (busy) return;
       const payload = lastPayload || buildPayload();
+      const base = String(apiBase).replace(/\/$/, '');
+      const hasPrivateAccess = isAuthenticated || hasLinkAccess;
+      const runPath = isAuthenticated
+        ? '/run'
+        : (hasLinkAccess
+          ? '/public/alphafold/link/run?access=' + encodeURIComponent(linkAccessToken)
+          : '/public/alphafold/run');
       setBusy(true);
       setDigestingNodeId('submit');
-      setActivity(function (lines) { return lines.concat('submitting AlphaFold request...'); });
+      setActivity(function (lines) {
+        return lines.concat(
+          'submitting AlphaFold request (' + (hasPrivateAccess ? 'private transform mode' : 'public prediction mode') + ')...'
+        );
+      });
 
       try {
-        const response = await fetch(String(apiBase).replace(/\/$/, '') + '/run', {
+        const response = await fetch(base + runPath, {
           method: 'POST',
+          credentials: isAuthenticated ? 'include' : 'omit',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             type: 'alphafold',
             params: payload,
-            user: 'homepage'
+            user: isAuthenticated ? 'homepage-authenticated' : (hasLinkAccess ? 'homepage-link' : 'homepage-public')
           })
         });
         const payloadData = await response.json();
@@ -1135,7 +1200,16 @@ loadGetBezierPath();
       setBusy(true);
       setDigestingNodeId('submit');
       try {
-        const response = await fetch(String(apiBase).replace(/\/$/, '') + '/jobs/' + encodeURIComponent(jobId));
+        const base = String(apiBase).replace(/\/$/, '');
+        const hasPrivateAccess = isAuthenticated || hasLinkAccess;
+        const path = isAuthenticated
+          ? '/jobs/' + encodeURIComponent(jobId)
+          : (hasLinkAccess
+            ? '/public/alphafold/link/jobs/' + encodeURIComponent(jobId) + '?access=' + encodeURIComponent(linkAccessToken)
+            : '/public/alphafold/jobs/' + encodeURIComponent(jobId));
+        const response = await fetch(base + path, {
+          credentials: isAuthenticated ? 'include' : 'omit'
+        });
         const payloadData = await response.json();
         if (!response.ok) {
           throw new Error(payloadData.detail || 'status fetch failed');
@@ -1769,6 +1843,23 @@ loadGetBezierPath();
       <div className=${'af-editor-shell' + (localLayoutTuningEnabled && layoutEditEnabled ? ' is-layout-edit' : '') + (localLayoutTuningEnabled && layoutEditEnabled && panelResizeEnabled ? ' is-layout-resize' : '')}>
         <section className="af-toolbar af-layout-editable" data-panel-label="Toolbar Panel" style=${getPanelOffsetStyle('toolbar')}>
           <div className="af-toolbar-actions">
+            <div className="af-toolbar-pane af-toolbar-pane-state" role="group" aria-label="Access mode">
+              <div className="af-toolbar-pane-label">Access</div>
+              <div className="af-toolbar-pane-actions">
+                <span className="af-action-btn" aria-live="polite">
+                  ${!authChecked
+                    ? 'Checking session...'
+                    : (isAuthenticated ? 'Private Transform Mode' : (hasLinkAccess ? 'Private Link Mode' : 'Public Prediction Mode'))}
+                </span>
+                ${!(isAuthenticated || hasLinkAccess) ? html`
+                  <a
+                    className="af-action-btn"
+                    href=${String(apiBase).replace(/\/$/, '') + '/login?next=/engines/alphafold/glabs_nexus_engines_alphafold.html'}
+                    title="Login to enable transform stage"
+                  >Login</a>
+                ` : null}
+              </div>
+            </div>
             ${localLayoutTuningEnabled ? html`
               <div className="af-toolbar-pane af-toolbar-pane-layout" role="group" aria-label="Layout controls">
                 <div className="af-toolbar-pane-label">Layout</div>
