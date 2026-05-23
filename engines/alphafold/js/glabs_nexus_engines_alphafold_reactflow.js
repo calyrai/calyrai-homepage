@@ -6,6 +6,7 @@ import ReactFlow, {
   Background,
   Handle,
   MarkerType,
+  PanOnScrollMode,
   Position
 } from 'https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1';
 
@@ -1907,10 +1908,11 @@ loadGetBezierPath();
                   onNodeDragStop=${function () { setHasUserMovedNodes(true); }}
                   panOnDrag=${true}
                   panOnScroll=${true}
+                  panOnScrollMode=${PanOnScrollMode.Vertical}
                   zoomOnScroll=${true}
                   zoomOnPinch=${true}
                   zoomOnDoubleClick=${true}
-                  preventScrolling=${false}
+                  preventScrolling=${true}
                   minZoom=${0.05}
                   maxZoom=${8}
                 >
