@@ -279,9 +279,9 @@ loadGetBezierPath();
       triangleMax: 300,
       triangleRatio: 0.64,
       leftMin: 24,
-      topY: 44,
-      middleY: 206,
-      bottomY: 384,
+      topY: 96,
+      middleY: 258,
+      bottomY: 436,
       middleInset: 34
     },
     wide: {
@@ -1846,7 +1846,7 @@ loadGetBezierPath();
 
           <section className=${'af-canvas-panel af-layout-editable' + (flowHidden ? ' is-hidden' : '')} data-panel-label="Canvas Panel" ref=${function (el) { panelElementRefs.current.canvas = el; }} style=${getPanelOffsetStyle('canvas')}>
             <div className="af-canvas-stage">
-              <div className=${'af-flow-root af-canvas nexus-flow-root' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
+              <div className=${'af-flow-root af-canvas' + (activeNodeId ? ' has-active-node' : '') + (moveModeEnabled ? ' is-move-mode' : '')} ref=${flowShellRef} style=${flowRootStyle}>
                 <${ReactFlow}
                   key=${'reactflow-' + flowRenderKey}
                   nodes=${nodes}
