@@ -22,6 +22,8 @@ import base64
 import time
 import smtplib
 from email.message import EmailMessage
+from urllib import request as urlrequest
+from urllib import error as urlerror
 
 app = FastAPI(title="Calyr.Citizen", version="0.1.0")
 
@@ -43,6 +45,12 @@ SMTP_USE_TLS = os.getenv("CALYR_SMTP_USE_TLS", "true").lower() == "true"
 ALLOWED_LOGIN_EMAILS = {
     v.strip().lower()
     for v in os.getenv("CALYR_AUTH_ALLOWED_EMAILS", "").split(",")
+    if v.strip()
+}
+REQUIRE_GITHUB_ACCOUNT = os.getenv("CALYR_REQUIRE_GITHUB_ACCOUNT", "true").lower() == "true"
+ALLOWED_GITHUB_USERS = {
+    v.strip().lower()
+    for v in os.getenv("CALYR_AUTH_ALLOWED_GITHUB_USERS", "").split(",")
     if v.strip()
 }
 
@@ -125,6 +133,7 @@ class LoginRequest(BaseModel):
 
 class MagicLinkRequest(BaseModel):
     email: str
+    github_username: Optional[str] = None
     csrf: str
     next: Optional[str] = "/citizen.html"
 
@@ -243,6 +252,10 @@ def _normalize_email(value: str) -> str:
     return (value or "").strip().lower()
 
 
+def _normalize_github_username(value: str) -> str:
+    return (value or "").strip().lower().lstrip("@")
+
+
 def _valid_email(value: str) -> bool:
     email = _normalize_email(value)
     if not email or "@" not in email:
@@ -255,6 +268,33 @@ def _email_allowed(email: str) -> bool:
     if not ALLOWED_LOGIN_EMAILS:
         return True
     return email in ALLOWED_LOGIN_EMAILS
+
+
+def _github_user_allowed(username: str) -> bool:
+    if not ALLOWED_GITHUB_USERS:
+        return True
+    return username in ALLOWED_GITHUB_USERS
+
+
+def _github_user_exists(username: str) -> bool:
+    if not username:
+        return False
+    req = urlrequest.Request(
+        "https://api.github.com/users/{}".format(username),
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "Calyr-Citizen-Auth",
+        },
+    )
+    try:
+        with urlrequest.urlopen(req, timeout=4) as resp:
+            return resp.status == 200
+    except urlerror.HTTPError as exc:
+        if exc.code in {401, 403, 404}:
+            return False
+        return False
+    except Exception:
+        return False
 
 
 def _hash_magic_token(raw_token: str) -> str:
@@ -545,8 +585,15 @@ async def auth_login(payload: LoginRequest, request: Request, response: Response
             raise HTTPException(status_code=403, detail="CSRF validation failed")
 
         email = _normalize_email(payload.email)
+        github_username = _normalize_github_username(payload.github_username or "")
         if not _valid_email(email):
             raise HTTPException(status_code=400, detail="Enter a valid email address")
+
+        if REQUIRE_GITHUB_ACCOUNT and not github_username:
+            raise HTTPException(status_code=400, detail="GitHub username is required")
+
+        if github_username and not _github_user_exists(github_username):
+            raise HTTPException(status_code=403, detail="GitHub account not found")
 
         client_key = _get_request_client_key(request, email)
         if _is_rate_limited("magic:" + client_key, limit=6, window_seconds=300):
@@ -555,8 +602,8 @@ async def auth_login(payload: LoginRequest, request: Request, response: Response
         _record_failed_attempt("magic:" + client_key)
         _purge_expired_magic_links()
 
-        # Return generic success even if email is not authorized to avoid account enumeration.
-        if not _email_allowed(email):
+        # Return generic success even if account is not authorized to avoid account enumeration.
+        if not _email_allowed(email) or (github_username and not _github_user_allowed(github_username)):
             return {"ok": True, "delivered": True}
 
         next_path = _safe_next_path(payload.next or "/citizen.html")
@@ -627,7 +674,9 @@ async def login_page(request: Request):
 <body>
     <form class=\"card\" id=\"login-form\">
         <h2>Calyr Secure Login</h2>
-        <p>Enter your email and we send you a one-time secure sign-in link.</p>
+        <p>Enter your GitHub account and email to receive a one-time secure sign-in link.</p>
+        <label>GitHub Username</label>
+        <input id=\"github\" autocomplete=\"username\" placeholder=\"e.g. octocat\" required />
         <label>Email</label>
         <input id=\"email\" type=\"email\" autocomplete=\"email\" required />
         <button type=\"submit\">Send Magic Link</button>
@@ -643,6 +692,7 @@ async def login_page(request: Request):
             let csrf = await getCsrf();
             document.getElementById('login-form').addEventListener('submit', async function(e) {{
                 e.preventDefault();
+                const github_username = document.getElementById('github').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const err = document.getElementById('error');
                 err.textContent = '';
@@ -650,7 +700,7 @@ async def login_page(request: Request):
                     method:'POST',
                     credentials:'include',
                     headers:{{'Content-Type':'application/json'}},
-                    body: JSON.stringify({{ email, csrf, next: {json.dumps(safe_next)} }})
+                    body: JSON.stringify({{ email, github_username, csrf, next: {json.dumps(safe_next)} }})
                 }});
                 if (!res.ok) {{
                     const data = await res.json().catch(() => ({{ detail:'Login failed' }}));
