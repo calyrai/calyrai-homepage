@@ -7,6 +7,35 @@
   const body = document.body;
   const header = document.querySelector(".site-header");
   const navInner = header ? header.querySelector(".nav-inner") : null;
+  const currentScript = document.currentScript;
+
+  function loadGlobalLayoutEditor() {
+    if (!currentScript || !currentScript.src) return;
+
+    const rootPath = currentScript.src.replace(/js\/nav_autohide\.js(?:\?.*)?$/, "");
+    if (!rootPath) return;
+
+    const cssHref = rootPath + "css/layout_editor.css";
+    const jsSrc = rootPath + "js/global_layout_editor.js";
+
+    if (!document.querySelector('link[data-global-layout-editor="css"]')) {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = cssHref;
+      css.setAttribute("data-global-layout-editor", "css");
+      document.head.appendChild(css);
+    }
+
+    if (!document.querySelector('script[data-global-layout-editor="js"]')) {
+      const js = document.createElement("script");
+      js.src = jsSrc;
+      js.defer = true;
+      js.setAttribute("data-global-layout-editor", "js");
+      document.head.appendChild(js);
+    }
+  }
+
+  loadGlobalLayoutEditor();
 
   if (!header || !navInner) return;
 
