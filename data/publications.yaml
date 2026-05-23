@@ -4,6 +4,7 @@ schema_version: 1
 #   python3 scripts/build_publications.py
 #
 # status values: active | progress | staged
+# published: true -> visible on public publications/newspaper page
 # pdfs:  list of { label, path } — path relative to homepage root
 # doi:   DOI string e.g. "10.1000/xyz123"  — enables Connected Papers link
 # arxiv: arXiv ID e.g. "2401.12345"        — shown alongside doi

@@ -114,7 +114,14 @@
 
   /* ── Build one global graph into the top container ───────────────────── */
   function buildGraph(container) {
-    var publications = window.CALYR_PUBLICATIONS || [];
+    function isPublished(pub) {
+      if (!pub || typeof pub !== 'object') return false;
+      if (pub.published === true) return true;
+      var release = String(pub.release || pub.visibility || '').trim().toLowerCase();
+      return release === 'published' || release === 'public';
+    }
+
+    var publications = (window.CALYR_PUBLICATIONS || []).filter(isPublished);
     var network = window.CALYR_PUBLICATION_NETWORK || {};
     if (!publications.length) return null;
 
@@ -126,7 +133,13 @@
     var gnodes = publications.map(function (pub) {
       return { id: pub.id, label: pub.title };
     });
-    var gedges = Array.isArray(network.edges) ? network.edges : [];
+    var nodeIds = {};
+    gnodes.forEach(function (n) { nodeIds[n.id] = true; });
+    var gedges = Array.isArray(network.edges)
+      ? network.edges.filter(function (edge) {
+          return edge && nodeIds[edge.from] && nodeIds[edge.to];
+        })
+      : [];
     var W = 860, H = 260, padX = 92, padY = 42;
     var pos = layerLayout(gnodes, gedges, W, H, padX, padY);
     var pid = 'publication-network';

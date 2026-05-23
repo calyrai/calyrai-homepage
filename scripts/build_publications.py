@@ -95,6 +95,10 @@ def _validate(idx: int, m: Any) -> dict[str, Any]:
         "status": status,
         "pdfs":   [{"label": str(p["label"]), "path": str(p["path"])} for p in pdfs],
     }
+    if "published" in m:
+        if not isinstance(m["published"], bool):
+            _die(f"manuscripts[{idx}].published must be a boolean when present")
+        out["published"] = m["published"]
     for optional in ("doi", "arxiv", "archive_url", "method", "abstract"):
         value = m.get(optional)
         if isinstance(value, str) and value.strip():

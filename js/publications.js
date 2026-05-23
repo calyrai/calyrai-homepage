@@ -6,7 +6,14 @@
   var sidebar = document.getElementById('pub-sidebar');
   var main = document.getElementById('pub-main');
   var menuBtn = document.getElementById('pub-menu-btn');
-  var DATA = window.CALYR_PUBLICATIONS || [];
+  var RAW_DATA = window.CALYR_PUBLICATIONS || [];
+  function isPublished(pub) {
+    if (!pub || typeof pub !== 'object') return false;
+    if (pub.published === true) return true;
+    var release = String(pub.release || pub.visibility || '').trim().toLowerCase();
+    return release === 'published' || release === 'public';
+  }
+  var DATA = RAW_DATA.filter(isPublished);
   var NETWORK = window.CALYR_PUBLICATION_NETWORK || { title: 'Publication Network', subtitle: '', edges: [] };
 
   var TOPICS = [
@@ -348,6 +355,17 @@
   }
 
   function renderOverview() {
+    if (!DATA.length) {
+      main.innerHTML =
+        '<div class="doc-article">' +
+          '<p class="doc-subtitle">Calyr.aí - Publications</p>' +
+          '<h1>Nexus Monthly</h1>' +
+          '<p>No published work is online at the moment.</p>' +
+          '<p>This surface only renders entries explicitly marked as published.</p>' +
+        '</div>';
+      return;
+    }
+
     var countItems = sortedTopics().map(function (topic) {
       var count = DATA.filter(function (p) { return p.topic === topic.id; }).length;
       if (!count) return '';
@@ -427,6 +445,13 @@
         renderDetail(pub);
         return;
       }
+      main.innerHTML =
+        '<div class="doc-article">' +
+          '<p class="doc-subtitle">Calyr.aí - Publications</p>' +
+          '<h1>Not Available Online</h1>' +
+          '<p>The requested entry is not published on the public Newspaper surface.</p>' +
+        '</div>';
+      return;
     }
     renderOverview();
   }
