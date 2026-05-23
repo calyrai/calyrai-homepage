@@ -1214,6 +1214,7 @@
   --af-mode-ruler-clearance: 0px;
   --af-mode-ruler-reserve: 0px;
   border: 1px solid rgba(117, 169, 219, 0.24);
+  border-bottom-color: transparent;
   border-radius: 12px;
   background: rgba(6, 14, 26, 0.84);
   overflow: visible;
