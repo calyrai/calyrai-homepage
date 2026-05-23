@@ -1520,7 +1520,7 @@
 
 .af-main-grid-job .af-canvas-panel {
   grid-column: 1;
-  border-right: 1px solid rgba(117, 169, 219, 0.16);
+  border-right: 0;
   position: relative;
   z-index: 30;
   overflow: hidden;
