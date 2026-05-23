@@ -1890,6 +1890,7 @@ loadGetBezierPath();
                   key=${'reactflow-' + flowRenderKey}
                   nodes=${nodes}
                   edges=${edges}
+                  proOptions=${{ hideAttribution: true }}
                   nodeTypes=${nodeTypes}
                   edgeTypes=${edgeTypes}
                   onInit=${setFlowInstance}
