@@ -2,7 +2,7 @@
 
 (function() {
   const API_BASE = 'http://localhost:8000';
-  const STATE_KEY = 'citizen_session';
+  let csrfToken = '';
   
   // DOM Elements
   const authGate = document.getElementById('auth-gate');
@@ -27,34 +27,30 @@
 
   // ========== INIT ==========
   document.addEventListener('DOMContentLoaded', () => {
-    checkLoginStatus();
     setupEventListeners();
-    if (session.authenticated) {
-      startPolling();
-    }
+    checkLoginStatus().then(() => {
+      if (session.authenticated) {
+        startPolling();
+      }
+    });
   });
 
   // ========== LOGIN CHECK ==========
-  function checkLoginStatus() {
-    // Check if user came back from login
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const userName = params.get('user');
-
-    if (token || localStorage.getItem(STATE_KEY)) {
+  async function checkLoginStatus() {
+    const auth = await callAPI('/auth/session', 'GET', null, false);
+    if (auth && auth.authenticated) {
       session.authenticated = true;
-      session.userName = userName || localStorage.getItem('citizen_user') || 'Researcher';
-      localStorage.setItem(STATE_KEY, JSON.stringify(session));
-      localStorage.setItem('citizen_user', session.userName);
+      session.userName = auth.user || 'Researcher';
+      csrfToken = auth.csrf || csrfToken;
       revealPanel();
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else {
-      // Demo mode: check for dev flag
-      if (localStorage.getItem('citizen_demo')) {
-        session.authenticated = true;
-        session.userName = 'Demo Researcher';
-        revealPanel();
-      }
+      return;
+    }
+
+    // Demo mode remains available for local UI development.
+    if (localStorage.getItem('citizen_demo')) {
+      session.authenticated = true;
+      session.userName = 'Demo Researcher';
+      revealPanel();
     }
   }
 
@@ -74,9 +70,9 @@
     triggerLoopBtn.addEventListener('click', handleTriggerLoop);
   }
 
-  function logout() {
-    localStorage.removeItem(STATE_KEY);
-    localStorage.removeItem('citizen_user');
+  async function logout() {
+    await callAPI('/auth/logout', 'POST', {}, true);
+    localStorage.removeItem('citizen_demo');
     session.authenticated = false;
     authGate.style.display = 'flex';
     citizenMain.style.display = 'none';
@@ -95,12 +91,17 @@
   }
 
   // ========== API CALLS ==========
-  async function callAPI(endpoint, method = 'GET', data = null) {
+  async function callAPI(endpoint, method = 'GET', data = null, needsCsrf = false) {
     try {
       const options = {
         method,
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
       };
+
+      if (needsCsrf && csrfToken) {
+        options.headers['X-CSRF-Token'] = csrfToken;
+      }
       
       if (data) {
         options.body = JSON.stringify(data);
@@ -112,7 +113,11 @@
         throw new Error(`API Error: ${response.status}`);
       }
 
-      return await response.json();
+      const payload = await response.json();
+      if (payload && payload.csrf) {
+        csrfToken = payload.csrf;
+      }
+      return payload;
     } catch (error) {
       console.error('API Call Failed:', error);
       setStatus('Connection error', 'error');
@@ -148,7 +153,7 @@
       type: simType,
       params: params,
       user: session.userName,
-    });
+    }, true);
 
     if (result) {
       showNotification(`Job ${result.job_id} started`, 'success');
@@ -251,7 +256,7 @@
     
     const result = await callAPI('/loop', 'POST', {
       user: session.userName,
-    });
+    }, true);
 
     if (result) {
       showNotification('Okto loop started', 'success');
@@ -330,7 +335,7 @@
     
     cancelJob: (jobId) => {
       console.log('Cancel job:', jobId);
-      callAPI(`/cancel/${jobId}`, 'POST').then(r => {
+      callAPI(`/cancel/${jobId}`, 'POST', {}, true).then(r => {
         if (r) {
           showNotification(`Job ${jobId} cancelled`, 'success');
           session.jobs = session.jobs.filter(j => j.id !== jobId);

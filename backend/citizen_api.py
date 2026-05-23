@@ -3,8 +3,9 @@ Calyr.Citizen Backend - Job Control & Figure Rendering API
 Integrates calyr.eval, calyr.apo, and calyr.okto for real-time job control.
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import uuid
@@ -14,13 +15,37 @@ import json
 import os
 import subprocess
 from pathlib import Path
+import hmac
+import hashlib
+import secrets
+import base64
+import time
 
 app = FastAPI(title="Calyr.Citizen", version="0.1.0")
+
+SESSION_COOKIE = "calyr_session"
+CSRF_COOKIE = "calyr_csrf"
+SESSION_TTL_SECONDS = int(os.getenv("CALYR_SESSION_TTL_SECONDS", "43200"))
+SESSION_SECRET = os.getenv("CALYR_SESSION_SECRET", "dev-only-change-me")
+COOKIE_SECURE = os.getenv("CALYR_COOKIE_SECURE", "false").lower() == "true"
+
+# Development default user. Override via environment in non-dev setups.
+AUTH_USER = os.getenv("CALYR_AUTH_USER", "researcher")
+AUTH_PASSWORD = os.getenv("CALYR_AUTH_PASSWORD", "citizen-change-me")
+PBKDF2_ITERATIONS = int(os.getenv("CALYR_AUTH_PBKDF2_ITERS", "320000"))
+
+DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8123",
+    "http://127.0.0.1:8123",
+]
+ALLOW_ORIGINS = [o.strip() for o in os.getenv("CALYR_ALLOW_ORIGINS", ",".join(DEFAULT_ALLOWED_ORIGINS)).split(",") if o.strip()]
 
 # Enable CORS for homepage integration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOW_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,10 +99,151 @@ class ShellCommandRequest(BaseModel):
     command: str
     shell: Optional[str] = None
 
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+    csrf: str
+
 # ========== IN-MEMORY JOB STORE ==========
 jobs_db: Dict[str, Dict] = {}
 figures_db: Dict[str, List[FigureResponse]] = {}
 shell_sessions_db: Dict[str, Dict[str, str]] = {}
+auth_sessions_db: Dict[str, Dict[str, str]] = {}
+login_attempts_db: Dict[str, List[float]] = {}
+
+
+def _hash_password(password: str, salt: bytes) -> str:
+    derived = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, PBKDF2_ITERATIONS)
+    return base64.b64encode(derived).decode("ascii")
+
+
+def _encode_auth_secret(password: str) -> str:
+    salt = secrets.token_bytes(16)
+    return "{}${}".format(base64.b64encode(salt).decode("ascii"), _hash_password(password, salt))
+
+
+AUTH_SECRET = _encode_auth_secret(AUTH_PASSWORD)
+
+
+def _verify_password(password: str, encoded_secret: str) -> bool:
+    try:
+      salt_b64, expected = encoded_secret.split("$", 1)
+      salt = base64.b64decode(salt_b64.encode("ascii"))
+      candidate = _hash_password(password, salt)
+      return hmac.compare_digest(candidate, expected)
+    except Exception:
+      return False
+
+
+def _signed_session(user: str, nonce: str, expiry: int) -> str:
+    payload = "{}|{}|{}".format(user, nonce, expiry)
+    signature = hmac.new(SESSION_SECRET.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    return base64.urlsafe_b64encode((payload + "|" + signature).encode("utf-8")).decode("ascii")
+
+
+def _verify_signed_session(token: str) -> Optional[Dict[str, str]]:
+    try:
+        raw = base64.urlsafe_b64decode(token.encode("ascii")).decode("utf-8")
+        user, nonce, expiry_raw, signature = raw.split("|", 3)
+        payload = "{}|{}|{}".format(user, nonce, expiry_raw)
+        expected = hmac.new(SESSION_SECRET.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(expected, signature):
+            return None
+        expiry = int(expiry_raw)
+        now = int(time.time())
+        if now >= expiry:
+            return None
+        return {"user": user, "nonce": nonce, "expiry": expiry}
+    except Exception:
+        return None
+
+
+def _purge_expired_sessions() -> None:
+    now = int(time.time())
+    expired = [sid for sid, meta in auth_sessions_db.items() if int(meta.get("expiry", 0)) <= now]
+    for sid in expired:
+        auth_sessions_db.pop(sid, None)
+
+
+def _set_auth_cookies(response: Response, token: str, csrf: str) -> None:
+    cookie_kwargs = {
+        "httponly": True,
+        "secure": COOKIE_SECURE,
+        "samesite": "lax",
+        "max_age": SESSION_TTL_SECONDS,
+        "path": "/",
+    }
+    response.set_cookie(SESSION_COOKIE, token, **cookie_kwargs)
+    response.set_cookie(CSRF_COOKIE, csrf, httponly=False, secure=COOKIE_SECURE, samesite="lax", max_age=SESSION_TTL_SECONDS, path="/")
+
+
+def _clear_auth_cookies(response: Response) -> None:
+    response.delete_cookie(SESSION_COOKIE, path="/")
+    response.delete_cookie(CSRF_COOKIE, path="/")
+
+
+def _is_rate_limited(key: str, limit: int = 5, window_seconds: int = 300) -> bool:
+    now = time.time()
+    attempts = [ts for ts in login_attempts_db.get(key, []) if now - ts < window_seconds]
+    login_attempts_db[key] = attempts
+    return len(attempts) >= limit
+
+
+def _record_failed_attempt(key: str) -> None:
+    now = time.time()
+    attempts = [ts for ts in login_attempts_db.get(key, []) if now - ts < 300]
+    attempts.append(now)
+    login_attempts_db[key] = attempts
+
+
+def _clear_failed_attempts(key: str) -> None:
+    login_attempts_db.pop(key, None)
+
+
+def _get_request_client_key(request: Request, username: str = "") -> str:
+    ip = request.client.host if request.client else "unknown"
+    return "{}:{}".format(ip, username or "anon")
+
+
+def _csrf_from_header(request: Request) -> str:
+    return request.headers.get("x-csrf-token", "")
+
+
+def _ensure_csrf_cookie(response: Response, request: Request) -> str:
+    existing = request.cookies.get(CSRF_COOKIE)
+    token = existing or secrets.token_urlsafe(24)
+    if not existing:
+        response.set_cookie(CSRF_COOKIE, token, httponly=False, secure=COOKIE_SECURE, samesite="lax", max_age=SESSION_TTL_SECONDS, path="/")
+    return token
+
+
+def _authenticate_request(request: Request) -> Dict[str, str]:
+    _purge_expired_sessions()
+    token = request.cookies.get(SESSION_COOKIE, "")
+    verified = _verify_signed_session(token)
+    if not verified:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    session_id = token
+    db_session = auth_sessions_db.get(session_id)
+    if not db_session:
+        raise HTTPException(status_code=401, detail="Session not found")
+
+    if db_session.get("user") != verified["user"]:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    return {"session_id": session_id, "user": verified["user"]}
+
+
+def require_auth(request: Request) -> Dict[str, str]:
+    auth = _authenticate_request(request)
+    if request.method.upper() in {"POST", "PUT", "PATCH", "DELETE"}:
+        cookie_csrf = request.cookies.get(CSRF_COOKIE, "")
+        header_csrf = _csrf_from_header(request)
+        if not cookie_csrf or not header_csrf or not hmac.compare_digest(cookie_csrf, header_csrf):
+            raise HTTPException(status_code=403, detail="CSRF validation failed")
+    return auth
 
 
 def _find_workspace_root() -> Path:
@@ -217,8 +383,134 @@ async def health():
     return {"status": "healthy"}
 
 
+@app.get("/auth/csrf")
+async def get_csrf(request: Request, response: Response):
+        token = _ensure_csrf_cookie(response, request)
+        return {"csrf": token}
+
+
+@app.get("/auth/session")
+async def auth_session(request: Request, response: Response):
+        token = request.cookies.get(SESSION_COOKIE, "")
+        verified = _verify_signed_session(token)
+        if not verified:
+                _clear_auth_cookies(response)
+                csrf = _ensure_csrf_cookie(response, request)
+                return {"authenticated": False, "user": None, "csrf": csrf}
+
+        db_session = auth_sessions_db.get(token)
+        if not db_session:
+                _clear_auth_cookies(response)
+                csrf = _ensure_csrf_cookie(response, request)
+                return {"authenticated": False, "user": None, "csrf": csrf}
+
+        csrf = _ensure_csrf_cookie(response, request)
+        return {"authenticated": True, "user": verified["user"], "csrf": csrf}
+
+
+@app.post("/auth/login")
+async def auth_login(payload: LoginRequest, request: Request, response: Response):
+        cookie_csrf = request.cookies.get(CSRF_COOKIE, "")
+        if not cookie_csrf or not hmac.compare_digest(cookie_csrf, payload.csrf):
+                raise HTTPException(status_code=403, detail="CSRF validation failed")
+
+        client_key = _get_request_client_key(request, payload.username)
+        if _is_rate_limited(client_key):
+                raise HTTPException(status_code=429, detail="Too many failed login attempts. Please retry later.")
+
+        if payload.username != AUTH_USER or not _verify_password(payload.password, AUTH_SECRET):
+                _record_failed_attempt(client_key)
+                raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        _clear_failed_attempts(client_key)
+        nonce = secrets.token_urlsafe(16)
+        expiry = int(time.time()) + SESSION_TTL_SECONDS
+        token = _signed_session(payload.username, nonce, expiry)
+        csrf = secrets.token_urlsafe(24)
+        auth_sessions_db[token] = {"user": payload.username, "expiry": str(expiry), "created": str(int(time.time()))}
+        _set_auth_cookies(response, token, csrf)
+        return {"authenticated": True, "user": payload.username}
+
+
+@app.post("/auth/logout")
+async def auth_logout(request: Request, response: Response):
+        token = request.cookies.get(SESSION_COOKIE, "")
+        if token:
+                auth_sessions_db.pop(token, None)
+        _clear_auth_cookies(response)
+        _ensure_csrf_cookie(response, request)
+        return {"ok": True}
+
+
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+        """Small local login form for development/private routes."""
+        next_path = request.query_params.get("next", "/citizen.html")
+        safe_next = next_path if next_path.startswith("/") else "/citizen.html"
+        html = f"""
+<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+    <meta charset=\"UTF-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+    <title>Calyr Login</title>
+    <style>
+        body {{ font-family: system-ui, -apple-system, sans-serif; background:#070c16; color:#eaf6ff; min-height:100vh; margin:0; display:grid; place-items:center; }}
+        .card {{ width:min(92vw,380px); background:#0f1726; border:1px solid #1f2d43; border-radius:12px; padding:1rem; }}
+        input, button {{ width:100%; box-sizing:border-box; margin-top:0.5rem; border-radius:8px; border:1px solid #2a3b56; padding:0.7rem; }}
+        input {{ background:#0b1320; color:#eaf6ff; }}
+        button {{ background:#24f3ff; color:#06202d; font-weight:700; cursor:pointer; }}
+        .err {{ color:#ff99ad; min-height:1.2rem; margin-top:0.6rem; }}
+    </style>
+</head>
+<body>
+    <form class=\"card\" id=\"login-form\">
+        <h2>Calyr Secure Login</h2>
+        <label>Username</label>
+        <input id=\"username\" autocomplete=\"username\" required />
+        <label>Password</label>
+        <input id=\"password\" type=\"password\" autocomplete=\"current-password\" required />
+        <button type=\"submit\">Login</button>
+        <div class=\"err\" id=\"error\"></div>
+    </form>
+    <script>
+        (async function() {{
+            async function getCsrf() {{
+                const r = await fetch('/auth/csrf', {{ credentials:'include' }});
+                const j = await r.json();
+                return j.csrf;
+            }}
+            let csrf = await getCsrf();
+            document.getElementById('login-form').addEventListener('submit', async function(e) {{
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const err = document.getElementById('error');
+                err.textContent = '';
+                const res = await fetch('/auth/login', {{
+                    method:'POST',
+                    credentials:'include',
+                    headers:{{'Content-Type':'application/json'}},
+                    body: JSON.stringify({{ username, password, csrf }})
+                }});
+                if (!res.ok) {{
+                    const data = await res.json().catch(() => ({{ detail:'Login failed' }}));
+                    err.textContent = data.detail || 'Login failed';
+                    csrf = await getCsrf();
+                    return;
+                }}
+                window.location.href = {json.dumps(safe_next)};
+            }});
+        }})();
+    </script>
+</body>
+</html>
+"""
+        return HTMLResponse(content=html)
+
+
 @app.post("/shell")
-async def run_shell_command(request: ShellCommandRequest):
+async def run_shell_command(request: ShellCommandRequest, _auth: Dict[str, str] = Depends(require_auth)):
     """Execute one shell command inside a lightweight persistent shell session."""
     command = request.command.strip()
     if not command:
@@ -290,17 +582,8 @@ async def run_shell_command(request: ShellCommandRequest):
         "shell": Path(shell_path).name,
     }
 
-@app.post("/login")
-async def login(user: str):
-    """Placeholder login endpoint - redirects back to citizen.html with token"""
-    token = str(uuid.uuid4())
-    return {
-        "token": token,
-        "redirect": f"/citizen.html?token={token}&user={user}",
-    }
-
 @app.post("/run")
-async def run_simulation(request: SimulationRequest):
+async def run_simulation(request: SimulationRequest, _auth: Dict[str, str] = Depends(require_auth)):
     """
     Run a new simulation job.
     
@@ -341,7 +624,7 @@ async def run_simulation(request: SimulationRequest):
     )
 
 @app.get("/jobs")
-async def list_jobs():
+async def list_jobs(_auth: Dict[str, str] = Depends(require_auth)):
     """Get all active jobs"""
     jobs = list(jobs_db.values())
     return {
@@ -360,7 +643,7 @@ async def list_jobs():
 
 
 @app.get("/matomic/models")
-async def list_matomic_models():
+async def list_matomic_models(_auth: Dict[str, str] = Depends(require_auth)):
     """List discoverable mAtomic model files available to simulation workflows."""
     models = _scan_matomic_models()
     return {
@@ -370,7 +653,7 @@ async def list_matomic_models():
 
 
 @app.get("/matomic/models/{model_id}")
-async def get_matomic_model(model_id: str):
+async def get_matomic_model(model_id: str, _auth: Dict[str, str] = Depends(require_auth)):
     """Get one model record by id."""
     models = _scan_matomic_models()
     for model in models:
@@ -380,7 +663,7 @@ async def get_matomic_model(model_id: str):
 
 
 @app.get("/matomic/agora2/status")
-async def agora2_status():
+async def agora2_status(_auth: Dict[str, str] = Depends(require_auth)):
     """Return AGORA2 manifest coverage and local file status."""
     script, dest_dir, manifest = _agora_paths()
     entries = _read_agora_manifest(manifest)
@@ -406,7 +689,7 @@ async def agora2_status():
 
 
 @app.post("/matomic/agora2/sync")
-async def agora2_sync(request: AgoraSyncRequest):
+async def agora2_sync(request: AgoraSyncRequest, _auth: Dict[str, str] = Depends(require_auth)):
     """Run the standard AGORA2 download procedure used by Calyr.ai."""
     script, _dest_dir, _manifest = _agora_paths()
     if not script.exists():
@@ -439,7 +722,7 @@ async def agora2_sync(request: AgoraSyncRequest):
     }
 
 @app.get("/jobs/{job_id}")
-async def get_job(job_id: str):
+async def get_job(job_id: str, _auth: Dict[str, str] = Depends(require_auth)):
     """Get status of a specific job"""
     if job_id not in jobs_db:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
@@ -454,7 +737,7 @@ async def get_job(job_id: str):
     )
 
 @app.post("/cancel/{job_id}")
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str, _auth: Dict[str, str] = Depends(require_auth)):
     """Cancel a running job"""
     if job_id not in jobs_db:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
@@ -463,7 +746,7 @@ async def cancel_job(job_id: str):
     return {"status": "cancelled", "job_id": job_id}
 
 @app.get("/figures")
-async def get_figures(job_id: Optional[str] = None):
+async def get_figures(job_id: Optional[str] = None, _auth: Dict[str, str] = Depends(require_auth)):
     """
     Get rendered figures.
     Calls calyr.apo to render latest simulation outputs as SVG.
@@ -492,7 +775,7 @@ async def get_figures(job_id: Optional[str] = None):
     }
 
 @app.post("/render")
-async def render_figure(job_id: str, figure_type: str):
+async def render_figure(job_id: str, figure_type: str, _auth: Dict[str, str] = Depends(require_auth)):
     """
     Manually trigger figure rendering for a job.
     Calls calyr.apo renderer with job output data.
@@ -522,7 +805,7 @@ async def render_figure(job_id: str, figure_type: str):
     return fig
 
 @app.post("/loop")
-async def trigger_okto_loop(request: OktoLoopRequest):
+async def trigger_okto_loop(request: OktoLoopRequest, _auth: Dict[str, str] = Depends(require_auth)):
     """
     Trigger the Okto publication loop:
     1. Extract features from latest job outputs (calyr.eval)
@@ -547,7 +830,7 @@ async def trigger_okto_loop(request: OktoLoopRequest):
     }
 
 @app.post("/extract")
-async def extract_features(job_id: str, feature_config: Optional[Dict] = None):
+async def extract_features(job_id: str, feature_config: Optional[Dict] = None, _auth: Dict[str, str] = Depends(require_auth)):
     """
     Extract structural/thermodynamic features from job output.
     Calls calyr.eval.
@@ -614,29 +897,32 @@ async def simulate_okto_execution(loop_id: str):
 
 @app.get("/")
 async def root():
-    """API documentation"""
-    return {
-        "name": "Calyr.Citizen API",
-        "version": "0.1.0",
-        "endpoints": {
-            "POST /run": "Launch simulation job",
-            "POST /shell": "Execute one shell command in a zsh-compatible session",
-            "GET /matomic/models": "List mAtomic model files",
-            "GET /matomic/models/{model_id}": "Get one mAtomic model",
-            "GET /jobs": "List all jobs",
-            "GET /jobs/{job_id}": "Get job status",
-            "POST /cancel/{job_id}": "Cancel job",
-            "GET /figures": "Get rendered figures",
-            "POST /render": "Manually render figure",
-            "POST /loop": "Trigger Okto publication loop",
-            "POST /extract": "Extract features from job",
-        },
-        "integrations": [
-            "calyr.eval - Feature extraction",
-            "calyr.apo - Figure rendering",
-            "calyr.okto - Publication loop",
-        ],
-    }
+        """Login gateway for existing links to localhost:8000."""
+        return HTMLResponse(
+                content="""
+<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+    <meta charset=\"UTF-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+    <title>Calyr.Citizen API</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background:#070c16; color:#eaf6ff; min-height:100vh; margin:0; display:grid; place-items:center; }
+        .card { width:min(92vw,460px); background:#0f1726; border:1px solid #1f2d43; border-radius:12px; padding:1rem; }
+        a { display:inline-block; margin-top:0.8rem; color:#0d2b38; background:#24f3ff; text-decoration:none; padding:0.6rem 0.9rem; border-radius:8px; font-weight:700; }
+        code { background:#0b1320; padding:0.1rem 0.35rem; border-radius:6px; }
+    </style>
+</head>
+<body>
+    <div class=\"card\">
+        <h2>Calyr.Citizen API</h2>
+        <p>Secure login is available at <code>/login</code>.</p>
+        <a href=\"/login?next=/citizen.html\">Open Login</a>
+    </div>
+</body>
+</html>
+                """
+        )
 
 # ========== MAIN ==========
 
