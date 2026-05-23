@@ -257,7 +257,7 @@
 .infra-section {
   max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(1.8rem, 3.4vw, 2.8rem) 0;
+  padding: clamp(1.55rem, 3vw, 2.45rem) 0;
   border-top: 1px solid rgba(170, 210, 235, 0.16);
 }
 
@@ -284,17 +284,17 @@
 }
 
 .infra-copy {
-  max-width: 72ch;
-  margin: 0.95rem 0 0;
+  max-width: 66ch;
+  margin: 0.78rem 0 0;
   color: rgba(216, 233, 245, 0.9);
-  font-size: clamp(0.98rem, 1.5vw, 1.12rem);
-  line-height: 1.65;
+  font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+  line-height: 1.58;
 }
 
 .infra-grid {
   display: grid;
   gap: 1rem;
-  margin-top: 1.2rem;
+  margin-top: 1rem;
 }
 
 .infra-grid--two {
@@ -309,10 +309,17 @@
   position: relative;
   border: 1px solid rgba(140, 185, 210, 0.22);
   border-radius: 14px;
-  padding: 1rem 1rem 1.05rem;
+  padding: 0.92rem 0.92rem 0.96rem;
   background:
     linear-gradient(170deg, rgba(10, 17, 30, 0.82) 0%, rgba(5, 10, 19, 0.72) 100%),
     radial-gradient(circle at 100% 0, rgba(255, 77, 245, 0.08), transparent 44%);
+  transition: border-color 0.24s ease, transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.infra-card:hover {
+  border-color: rgba(170, 223, 249, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
 }
 
 .infra-card h3 {
@@ -323,10 +330,10 @@
 }
 
 .infra-card p {
-  margin: 0.6rem 0 0;
+  margin: 0.48rem 0 0;
   color: rgba(208, 226, 239, 0.88);
-  font-size: 0.95rem;
-  line-height: 1.58;
+  font-size: 0.9rem;
+  line-height: 1.52;
 }
 
 .endorsement-row {
@@ -404,10 +411,34 @@
 }
 
 .infra-cta-row {
-  margin-top: 1.15rem;
+  margin-top: 0.95rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
+}
+
+/* reveal system for infra sections/cards */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.52s ease, transform 0.52s ease;
+  will-change: opacity, transform;
+}
+
+.reveal-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item,
+  .reveal-item.is-visible,
+  .infra-card,
+  .infra-card:hover {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .infra-cta-row .hero-secondary-link {
