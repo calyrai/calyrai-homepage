@@ -124,9 +124,9 @@
       window.setTimeout(function () {
         var bounceFrames = [
           { transform: 'rotate(' + lockDeg + 'deg)' },
-          { transform: 'rotate(' + (lockDeg + 56) + 'deg)', offset: 0.34 },
-          { transform: 'rotate(' + (lockDeg - 22) + 'deg)', offset: 0.66 },
-          { transform: 'rotate(' + (lockDeg + 10) + 'deg)', offset: 0.86 },
+          { transform: 'rotate(' + (lockDeg + 78) + 'deg)', offset: 0.34 },
+          { transform: 'rotate(' + (lockDeg - 34) + 'deg)', offset: 0.66 },
+          { transform: 'rotate(' + (lockDeg + 16) + 'deg)', offset: 0.86 },
           { transform: 'rotate(' + lockDeg + 'deg)' }
         ];
 
