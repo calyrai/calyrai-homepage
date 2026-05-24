@@ -120,7 +120,7 @@
         accent.style.transform = 'rotate(' + lockDeg + 'deg)';
       }, 640);
 
-      // Roll only the logo out of the viewport (keep surrounding text untouched).
+      // Roll only after the pointer has fully rotated and locked in place.
       window.setTimeout(function () {
         var vector = chooseRollVector();
         var dxPx = vector.x === '0px' ? 0 : (vector.x.indexOf('-') === 0 ? -1.25 : 1.25) * window.innerWidth;
@@ -154,7 +154,7 @@
             fill: 'forwards'
           }
         );
-      }, 220);
+      }, 760);
 
       window.setTimeout(function () {
         try {
@@ -163,7 +163,7 @@
           // Ignore storage failures; navigation should still proceed.
         }
         window.location.href = targetUrl;
-      }, 620);
+      }, 1120);
     });
   }
 
