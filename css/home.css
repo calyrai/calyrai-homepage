@@ -130,7 +130,7 @@
   margin: 0 auto;
   text-align: center;
   padding: 5.5rem 1.5rem 3rem;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .hero-kicker {
