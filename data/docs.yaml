@@ -139,6 +139,27 @@
     - id: overview
       title: Calyrai · Overview
       src: docs/calyrai_overview.md
+    - id: core_identity
+      title: Calyrai · Core identity
+      src: docs/calyrai_core_identity.md
+    - id: core_philosophy
+      title: Calyrai · Core philosophy
+      src: docs/calyrai_core_philosophy.md
+    - id: ecosystem_structure
+      title: Calyrai · Ecosystem structure
+      src: docs/calyrai_ecosystem_structure.md
+    - id: aesthetic_brand
+      title: Calyrai · Aesthetic and brand direction
+      src: docs/calyrai_aesthetic_brand.md
+    - id: naming_layer
+      title: Calyrai · Naming layer
+      src: docs/calyrai_naming_layer.md
+    - id: overall_positioning
+      title: Calyrai · Overall positioning
+      src: docs/calyrai_overall_positioning.md
+    - id: nexus_engine
+      title: Calyrai · Nexus Engine
+      src: docs/calyrai_nexus_engine.md
     - id: ai_narrative
       title: AI · Nexus narrative
       src: docs/nexus_narrative.md

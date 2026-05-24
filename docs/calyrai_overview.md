@@ -1,19 +1,26 @@
 # Calyrai
 
-Experiential projection of semantic state
+AI-assisted design and engineering for BioNanoTechnology and MedTech.
 
- Calyrai translates abstract semantic structure into perceivable interaction. It turns state transitions into readable motion and context cues, preserving fidelity to the underlying orchestration logic.
+## Calyrai map
 
-## Primary role
+- [Core identity](#calyrai/core_identity)
+- [Core philosophy](#calyrai/core_philosophy)
+- [Ecosystem structure](#calyrai/ecosystem_structure)
+- [Aesthetic and brand direction](#calyrai/aesthetic_brand)
+- [Naming layer](#calyrai/naming_layer)
+- [Overall positioning](#calyrai/overall_positioning)
+- [Nexus Engine](#calyrai/nexus_engine)
 
-- Render semantic dynamics as clear visual behavior.
+## Docs and review organization
 
-- Expose changing confidence and relevance in context.
-
-- Keep interpretation intuitive without sacrificing rigor.
+- [Docs start overview](#start/overview)
+- [Nexus Daily review page](pages/nexus_review.html)
+- [Nexus Magnify publication review](publications.html)
+- [Engine overview](#engine/overview)
 
 ## Related
 
-- [Relay overview](#relay/overview)
-
-- [Runtime overview](#runtime/overview)
+- [AI landscape](#calyrai/ai_landscape)
+- [Nexus overview](#nexus/overview)
+- [Theory overview](#theory/overview)

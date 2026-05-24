@@ -359,7 +359,7 @@
       main.innerHTML =
         '<div class="doc-article">' +
           '<p class="doc-subtitle">Calyr.aí - Publications</p>' +
-          '<h1>Nexus Monthly</h1>' +
+          '<h1>Nexus Magnify</h1>' +
           '<p>No published work is online at the moment.</p>' +
           '<p>This surface only renders entries explicitly marked as published.</p>' +
         '</div>';

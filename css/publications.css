@@ -1,5 +1,9 @@
 /* css/publications.css — pub-specific components (layout from docs.css) */
 
+:root {
+  --pub-font-sans: "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
 /* ── Nexus Daily publications shell ─────────────────────────────── */
 .pub-daily-shell {
   width: min(calc(100% - 26px), 1380px);
@@ -13,6 +17,7 @@
     0 18px 48px rgba(0, 0, 0, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   padding: 14px 16px 18px;
+  font-family: var(--pub-font-sans);
 }
 
 .pub-paper-meta {
@@ -51,7 +56,7 @@
   line-height: 0.92;
   text-transform: uppercase;
   font-weight: 900;
-  font-family: "Times New Roman", "Georgia", serif;
+  font-family: var(--pub-font-sans);
   color: #f7f7f7;
 }
 
@@ -139,11 +144,22 @@
 .pub-daily-sheet .doc-article {
   max-width: none;
   color: #e8e8e8;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: var(--pub-font-sans);
   line-height: 1.56;
   column-count: 4;
   column-gap: 20px;
   column-rule: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.pub-daily-sheet .doc-article ul,
+.pub-daily-sheet .doc-article ol {
+  list-style-position: outside;
+  margin: 0 0 14px;
+  padding-left: 1.3rem;
+}
+
+.pub-daily-sheet .doc-article ol {
+  list-style-type: disc;
 }
 
 .pub-daily-sheet .doc-article > h1,
@@ -211,7 +227,7 @@
 
 .pub-front-hero h2 {
   margin: 6px 0 10px;
-  font-family: "Times New Roman", "Georgia", serif;
+  font-family: var(--pub-font-sans);
   font-size: clamp(1.9rem, 5vw, 3.8rem);
   line-height: 0.92;
   letter-spacing: 0.01em;
