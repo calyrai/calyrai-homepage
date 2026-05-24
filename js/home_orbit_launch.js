@@ -79,16 +79,16 @@
       void orbit.offsetHeight;
 
       if (ringA) {
-        ringA.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
-        ringA.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
+        ringA.style.transition = 'transform 190ms cubic-bezier(0.16, 0.96, 0.22, 1)';
+        ringA.style.transform = 'rotate(' + (lockDeg + 96) + 'deg)';
       }
       if (ringB) {
-        ringB.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
-        ringB.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
+        ringB.style.transition = 'transform 190ms cubic-bezier(0.16, 0.96, 0.22, 1)';
+        ringB.style.transform = 'rotate(' + (lockDeg + 96) + 'deg)';
       }
       if (ringC) {
-        ringC.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
-        ringC.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
+        ringC.style.transition = 'transform 190ms cubic-bezier(0.16, 0.96, 0.22, 1)';
+        ringC.style.transform = 'rotate(' + (lockDeg + 96) + 'deg)';
       }
 
       // Final snap-in (einrasten) to exact lock angle.
@@ -105,7 +105,7 @@
           ringC.style.transition = 'transform 760ms cubic-bezier(0.18, 0.7, 0.24, 1)';
           ringC.style.transform = 'rotate(' + lockDeg + 'deg)';
         }
-      }, 240);
+      }, 160);
 
       // Then let the zeiger move into the exact same lock angle.
       window.setTimeout(function () {
@@ -118,28 +118,33 @@
         if (!accent) return;
         accent.style.transition = 'transform 760ms cubic-bezier(0.18, 0.72, 0.24, 1)';
         accent.style.transform = 'rotate(' + lockDeg + 'deg)';
-      }, 640);
+      }, 560);
 
       // Roll only after the pointer has fully rotated and locked in place.
       window.setTimeout(function () {
         var vector = chooseRollVector();
         // Pointer-driven coupling: the locked pointer angle drives full-structure rollout rotation.
         var pointerDriveDeg = lockDeg <= 180 ? lockDeg : lockDeg - 360;
-        var finalRot = pointerDriveDeg * 2.4;
+        var finalRot = pointerDriveDeg * 3.6;
         finalRot = Math.max(-760, Math.min(760, finalRot));
-        if (Math.abs(finalRot) < 240) {
-          finalRot = finalRot < 0 ? -240 : 240;
+        if (Math.abs(finalRot) < 300) {
+          finalRot = finalRot < 0 ? -300 : 300;
         }
-        var midRot = finalRot * 0.32;
+        var midRot = finalRot * 0.44;
         orbit.style.willChange = 'transform, opacity';
         orbit.style.transition = 'none';
         orbit.animate(
           [
             { transform: 'translate3d(0, 0, 0) rotate(0deg)', opacity: 1 },
             {
-              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + midRot + 'deg)',
+              transform: 'translate3d(0, 0, 0) rotate(' + midRot + 'deg)',
+              opacity: 0.84,
+              offset: 0.42
+            },
+            {
+              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-30vw' : '30vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-24vh' : '24vh')) + ') rotate(' + (midRot + (finalRot - midRot) * 0.26) + 'deg)',
               opacity: 0.7,
-              offset: 0.22
+              offset: 0.66
             },
             {
               transform: 'translate(' + vector.x + ', ' + vector.y + ') rotate(' + finalRot + 'deg)',
@@ -147,7 +152,7 @@
             }
           ],
           {
-            duration: 10800,
+            duration: 2200,
             easing: 'cubic-bezier(0.2, 0.86, 0.2, 1)',
             fill: 'forwards'
           }
@@ -161,7 +166,7 @@
           // Ignore storage failures; navigation should still proceed.
         }
         window.location.href = targetUrl;
-      }, 1120);
+      }, 1980);
     });
   }
 
