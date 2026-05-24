@@ -66,7 +66,7 @@
     overview: 'Overview',
     methods: 'Methods',
     demo: 'Interactive',
-    publications: 'Publications',
+    publications: 'Magnify',
     links: 'Links',
   };
 
