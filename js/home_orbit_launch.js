@@ -120,7 +120,28 @@
         accent.style.transform = 'rotate(' + lockDeg + 'deg)';
       }, 560);
 
-      // Roll only after the pointer has fully rotated and locked in place.
+      // After pointer lock: all open circles rotate together with a short bounce.
+      window.setTimeout(function () {
+        var bounceFrames = [
+          { transform: 'rotate(' + lockDeg + 'deg)' },
+          { transform: 'rotate(' + (lockDeg + 42) + 'deg)', offset: 0.32 },
+          { transform: 'rotate(' + (lockDeg - 16) + 'deg)', offset: 0.62 },
+          { transform: 'rotate(' + (lockDeg + 6) + 'deg)', offset: 0.82 },
+          { transform: 'rotate(' + lockDeg + 'deg)' }
+        ];
+
+        [ringA, ringB, ringC].forEach(function (ring) {
+          if (!ring) return;
+          ring.style.transition = 'none';
+          ring.animate(bounceFrames, {
+            duration: 420,
+            easing: 'cubic-bezier(0.2, 0.9, 0.28, 1)',
+            fill: 'forwards'
+          });
+        });
+      }, 640);
+
+      // Roll only after pointer lock and common circle bounce are complete.
       window.setTimeout(function () {
         var vector = chooseRollVector();
         // Pointer-driven coupling: the locked pointer angle drives full-structure rollout rotation.
@@ -157,7 +178,7 @@
             fill: 'forwards'
           }
         );
-      }, 760);
+      }, 1040);
 
       window.setTimeout(function () {
         try {
@@ -166,7 +187,7 @@
           // Ignore storage failures; navigation should still proceed.
         }
         window.location.href = targetUrl;
-      }, 1980);
+      }, 2260);
     });
   }
 
