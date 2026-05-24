@@ -14,10 +14,10 @@
 
   function chooseRollVector() {
     var options = [
-      { x: '-125vw', y: '0px', rot: '-420deg' },
-      { x: '125vw', y: '0px', rot: '420deg' },
-      { x: '0px', y: '-120vh', rot: '-420deg' },
-      { x: '0px', y: '120vh', rot: '420deg' }
+      { x: '-125vw', y: '0px', rot: '-140deg' },
+      { x: '125vw', y: '0px', rot: '140deg' },
+      { x: '0px', y: '-120vh', rot: '-140deg' },
+      { x: '0px', y: '120vh', rot: '140deg' }
     ];
     return options[randomInt(options.length)];
   }
@@ -130,7 +130,7 @@
             { transform: 'translate3d(0, 0, 0) rotate(0deg)', opacity: 1 },
             {
               transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-34vw' : '34vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-28vh' : '28vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-70deg' : '70deg') + ')',
-              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-120deg' : '120deg') + ')',
+              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-40deg' : '40deg') + ')',
               opacity: 0.7,
               offset: 0.22
             },
