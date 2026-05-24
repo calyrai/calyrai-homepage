@@ -14,10 +14,10 @@
 
   function chooseRollVector() {
     var options = [
-      { x: '-125vw', y: '0px', rot: '-720deg' },
-      { x: '125vw', y: '0px', rot: '720deg' },
-      { x: '0px', y: '-120vh', rot: '-720deg' },
-      { x: '0px', y: '120vh', rot: '720deg' }
+      { x: '-125vw', y: '0px', rot: '-420deg' },
+      { x: '125vw', y: '0px', rot: '420deg' },
+      { x: '0px', y: '-120vh', rot: '-420deg' },
+      { x: '0px', y: '120vh', rot: '420deg' }
     ];
     return options[randomInt(options.length)];
   }
@@ -79,15 +79,15 @@
       void orbit.offsetHeight;
 
       if (ringA) {
-        ringA.style.transition = 'transform 720ms cubic-bezier(0.22, 0.64, 0.2, 1)';
+        ringA.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
         ringA.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
       }
       if (ringB) {
-        ringB.style.transition = 'transform 720ms cubic-bezier(0.22, 0.64, 0.2, 1)';
+        ringB.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
         ringB.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
       }
       if (ringC) {
-        ringC.style.transition = 'transform 720ms cubic-bezier(0.22, 0.64, 0.2, 1)';
+        ringC.style.transition = 'transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1)';
         ringC.style.transform = 'rotate(' + (lockDeg + 3) + 'deg)';
       }
 
@@ -105,20 +105,20 @@
           ringC.style.transition = 'transform 760ms cubic-bezier(0.18, 0.7, 0.24, 1)';
           ringC.style.transform = 'rotate(' + lockDeg + 'deg)';
         }
-      }, 620);
+      }, 240);
 
       // Then let the zeiger move into the exact same lock angle.
       window.setTimeout(function () {
         if (!accent) return;
         accent.style.transition = 'transform 1400ms cubic-bezier(0.22, 0.66, 0.2, 1)';
         accent.style.transform = 'rotate(' + (lockDeg + 4) + 'deg)';
-      }, 700);
+      }, 280);
 
       window.setTimeout(function () {
         if (!accent) return;
         accent.style.transition = 'transform 760ms cubic-bezier(0.18, 0.72, 0.24, 1)';
         accent.style.transform = 'rotate(' + lockDeg + 'deg)';
-      }, 1320);
+      }, 640);
 
       // Roll only the logo out of the viewport (keep surrounding text untouched).
       window.setTimeout(function () {
@@ -129,9 +129,10 @@
           [
             { transform: 'translate3d(0, 0, 0) rotate(0deg)', opacity: 1 },
             {
-              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-36vh' : '36vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-300deg' : '300deg') + ')',
+              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-34vw' : '34vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-28vh' : '28vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-70deg' : '70deg') + ')',
+              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-120deg' : '120deg') + ')',
               opacity: 0.7,
-              offset: 0.16
+              offset: 0.22
             },
             {
               transform: 'translate(' + vector.x + ', ' + vector.y + ') rotate(' + vector.rot + ')',
@@ -139,8 +140,8 @@
             }
           ],
           {
-            duration: 6800,
-            easing: 'cubic-bezier(0.07, 0.92, 0.24, 1)',
+            duration: 2400,
+            easing: 'cubic-bezier(0.2, 0.86, 0.2, 1)',
             fill: 'forwards'
           }
         );
@@ -153,7 +154,7 @@
           // Ignore storage failures; navigation should still proceed.
         }
         window.location.href = targetUrl;
-      }, 800);
+      }, 620);
     });
   }
 
