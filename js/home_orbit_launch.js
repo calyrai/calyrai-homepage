@@ -14,10 +14,10 @@
 
   function chooseRollVector() {
     var options = [
-      { x: '-125vw', y: '0px', rot: '-140deg' },
-      { x: '125vw', y: '0px', rot: '140deg' },
-      { x: '0px', y: '-120vh', rot: '-140deg' },
-      { x: '0px', y: '120vh', rot: '140deg' }
+      { x: '-125vw', y: '0px', spinSign: -1 },
+      { x: '125vw', y: '0px', spinSign: 1 },
+      { x: '0px', y: '-120vh', spinSign: -1 },
+      { x: '0px', y: '120vh', spinSign: 1 }
     ];
     return options[randomInt(options.length)];
   }
@@ -123,24 +123,33 @@
       // Roll only the logo out of the viewport (keep surrounding text untouched).
       window.setTimeout(function () {
         var vector = chooseRollVector();
+        var dxPx = vector.x === '0px' ? 0 : (vector.x.indexOf('-') === 0 ? -1.25 : 1.25) * window.innerWidth;
+        var dyPx = vector.y === '0px' ? 0 : (vector.y.indexOf('-') === 0 ? -1.2 : 1.2) * window.innerHeight;
+        var travelPx = Math.hypot(dxPx, dyPx);
+        // Rolling relation: theta = s / r, converted to degrees.
+        var orbitSizePx = Math.min(0.48 * Math.min(window.innerWidth, window.innerHeight), 360);
+        var effectiveRadiusPx = Math.max(orbitSizePx * 0.52, 120);
+        var rotMagnitude = (travelPx / effectiveRadiusPx) * (180 / Math.PI);
+        rotMagnitude = Math.max(260, Math.min(760, rotMagnitude));
+        var finalRot = (vector.spinSign < 0 ? -1 : 1) * rotMagnitude;
+        var midRot = finalRot * 0.32;
         orbit.style.willChange = 'transform, opacity';
         orbit.style.transition = 'none';
         orbit.animate(
           [
             { transform: 'translate3d(0, 0, 0) rotate(0deg)', opacity: 1 },
             {
-              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-34vw' : '34vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-28vh' : '28vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-70deg' : '70deg') + ')',
-              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + (vector.rot.indexOf('-') === 0 ? '-40deg' : '40deg') + ')',
+              transform: 'translate(' + (vector.x === '0px' ? '0px' : (vector.x.indexOf('-') === 0 ? '-42vw' : '42vw')) + ', ' + (vector.y === '0px' ? '0px' : (vector.y.indexOf('-') === 0 ? '-34vh' : '34vh')) + ') rotate(' + midRot + 'deg)',
               opacity: 0.7,
               offset: 0.22
             },
             {
-              transform: 'translate(' + vector.x + ', ' + vector.y + ') rotate(' + vector.rot + ')',
+              transform: 'translate(' + vector.x + ', ' + vector.y + ') rotate(' + finalRot + 'deg)',
               opacity: 0
             }
           ],
           {
-            duration: 14400,
+            duration: 10800,
             easing: 'cubic-bezier(0.2, 0.86, 0.2, 1)',
             fill: 'forwards'
           }
