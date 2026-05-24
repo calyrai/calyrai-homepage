@@ -123,15 +123,13 @@
       // Roll only after the pointer has fully rotated and locked in place.
       window.setTimeout(function () {
         var vector = chooseRollVector();
-        var dxPx = vector.x === '0px' ? 0 : (vector.x.indexOf('-') === 0 ? -1.25 : 1.25) * window.innerWidth;
-        var dyPx = vector.y === '0px' ? 0 : (vector.y.indexOf('-') === 0 ? -1.2 : 1.2) * window.innerHeight;
-        var travelPx = Math.hypot(dxPx, dyPx);
-        // Rolling relation: theta = s / r, converted to degrees.
-        var orbitSizePx = Math.min(0.48 * Math.min(window.innerWidth, window.innerHeight), 360);
-        var effectiveRadiusPx = Math.max(orbitSizePx * 0.52, 120);
-        var rotMagnitude = (travelPx / effectiveRadiusPx) * (180 / Math.PI);
-        rotMagnitude = Math.max(260, Math.min(760, rotMagnitude));
-        var finalRot = (vector.spinSign < 0 ? -1 : 1) * rotMagnitude;
+        // Pointer-driven coupling: the locked pointer angle drives full-structure rollout rotation.
+        var pointerDriveDeg = lockDeg <= 180 ? lockDeg : lockDeg - 360;
+        var finalRot = pointerDriveDeg * 2.4;
+        finalRot = Math.max(-760, Math.min(760, finalRot));
+        if (Math.abs(finalRot) < 240) {
+          finalRot = finalRot < 0 ? -240 : 240;
+        }
         var midRot = finalRot * 0.32;
         orbit.style.willChange = 'transform, opacity';
         orbit.style.transition = 'none';
