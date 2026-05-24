@@ -152,7 +152,7 @@
             }
           ],
           {
-            duration: 2200,
+            duration: 2800,
             easing: 'cubic-bezier(0.2, 0.86, 0.2, 1)',
             fill: 'forwards'
           }
