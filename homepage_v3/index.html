@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Calyr.aí - Molecular Deeptech</title>
+  <link rel="stylesheet" href="../calyrai_font/out/calyrai-sans.css" />
+  <script src="../vendor/gsap/gsap.min.js"></script>
+  <style>
+		:root {
+			--bg: #0b0b0b;
+			--fg: #ffffff;
+			--frame-width: min(100% - 48px, 1280px);
+			--frame-gutter: max(24px, calc((100vw - var(--frame-width)) / 2));
+		}
+		* { box-sizing: border-box; }
+		body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Avenir Next", "Segoe UI", Arial, sans-serif; }
+		.layout-grid { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.9; }
+		.hero { position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }
+		.hero-copy { width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }
+		.hero-title { margin: 0; font-size: clamp(2rem, 4.2vw, 3.8rem); }
+		.hero-subtitle { margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }
+		.hero-acute { color: #ff4df5; }
+		.hero-slogan { margin: 0.85rem 0 0; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.88; }
+		.corner-menu-toggle { position: fixed; top: 26px; right: var(--frame-gutter); width: 72px; height: 54px; border: 1px solid rgba(255,255,255,0.9); background: transparent; z-index: 20; }
+		.corner-menu-line { display: block; width: 30px; height: 1px; margin: 6px auto; background: #fff; }
+		.corner-menu-panel { position: fixed; top: 72px; right: var(--frame-gutter); min-width: 260px; max-height: min(72vh, 640px); overflow: auto; padding: 14px; background: rgba(8,8,8,0.98); border: 1px solid rgba(255,255,255,0.26); z-index: 25; }
+		.corner-menu-panel[hidden] { display: none; }
+		.corner-menu-link { display: block; color: #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
+		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }
+		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
+		.study-section { border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		.study-trigger { width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; display: block; }
+		.tile-open-state { display: none; height: 100%; padding: 0.72rem; text-align: left; overflow: hidden; }
+		.tile-open-state-glyph { display: none; padding: 0; }
+		.glyph-surface { width: 100%; height: 100%; display: grid; place-items: center; border: 1px solid rgba(255,255,255,0.28); background: rgba(0,0,0,0.34); }
+		.glyph-surface svg { width: min(78%, 280px); height: min(78%, 280px); }
+		.study-heading { margin: 0 0 0.48rem; font-size: clamp(1.05rem, 1.8vw, 1.6rem); }
+		.study-teaser { margin: 0 0 0.64rem; font-size: 0.94rem; opacity: 0.86; }
+		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; }
+		.study-paragraph { margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }
+		.study-section.is-collapsed { grid-column: span 2; grid-row: span 2; border-color: rgba(255, 255, 255, 0.38); background: linear-gradient(135deg, rgba(53, 231, 255, 0.82) 0%, rgba(255, 63, 209, 0.84) 100%); box-shadow: 0 0 18px rgba(53, 231, 255, 0.18), 0 0 24px rgba(255, 63, 209, 0.16); }
+		.study-section.tile-1.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%); }
+		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%); }
+		.study-section.tile-3.is-collapsed { grid-column: span 3; grid-row: span 3; background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%); }
+		.study-section.tile-4.is-collapsed { grid-column: span 5; grid-row: span 2; background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%); }
+		.study-section.tile-5.is-collapsed { grid-column: span 4; grid-row: span 3; background: linear-gradient(135deg, rgba(22, 210, 191, 0.86) 0%, rgba(39, 128, 238, 0.86) 100%); }
+		.study-section.is-collapsed .tile-open-state { display: none; }
+		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(255,255,255,0.18); background: rgba(0,0,0,0.26); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.24); backdrop-filter: blur(6px); }
+		.study-section.tile-1.is-open[data-tile-kind="text"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-2.is-open[data-tile-kind="text"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-3.is-open[data-tile-kind="text"] { grid-column: span 5; grid-row: span 4; }
+		.study-section.tile-4.is-open[data-tile-kind="text"] { grid-column: span 8; grid-row: span 4; }
+		.study-section.tile-5.is-open[data-tile-kind="text"] { grid-column: span 6; grid-row: span 6; }
+		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"] { grid-column: span 7; grid-row: span 5; z-index: 3; }
+		.study-section.tile-4.is-open.is-expanded[data-tile-kind="text"] { grid-column: span 10; grid-row: span 5; z-index: 3; }
+		.study-section.tile-5.is-open.is-expanded[data-tile-kind="text"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
+		.study-section.is-open .tile-open-state { display: flex; flex-direction: column; }
+		.study-section.is-open.is-expanded { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 14px 36px rgba(0,0,0,0.34); }
+		.study-content.has-expanded-open .study-section.is-collapsed { transform: scale(0.96); opacity: 0.84; filter: saturate(0.85); }
+		.study-content[data-density="compact"] .study-section.is-collapsed { grid-column: span 2; grid-row: span 1; }
+		.study-content[data-density="dense"] .study-section.is-collapsed { grid-column: span 1; grid-row: span 1; }
+		.study-section[data-tile-kind="glyph"].is-open .tile-open-state-glyph { display: grid; }
+		@media (max-width: 940px) {
+			:root { --frame-width: min(100% - 36px, 1280px); }
+			.study-layout { max-height: none; overflow: visible; }
+			.study-content { min-height: auto; max-height: none; overflow: visible; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 44px; }
+			.study-section.is-collapsed { grid-column: span 2 !important; grid-row: span 2 !important; }
+			.study-section.is-open { grid-column: span 6 !important; grid-row: span 5 !important; min-height: 300px; }
+		}
+	</style>
+</head>
+<body>
+	<svg class="layout-grid" aria-hidden="true"></svg>
+	<button class="corner-menu-toggle" type="button" aria-label="Open navigation" aria-controls="corner-menu-panel" aria-expanded="false">
+		<span class="corner-menu-line"></span>
+		<span class="corner-menu-line"></span>
+		<span class="corner-menu-line"></span>
+	</button>
+	<nav class="corner-menu-panel" id="corner-menu-panel" hidden>
+		<a class="corner-menu-link" href="#theory">Theory</a>
+		<a class="corner-menu-link" href="#calyrai">Calyrai</a>
+		<a class="corner-menu-link" href="#access">Access</a>
+		<a class="corner-menu-link" href="#engine">Engine</a>
+		<a class="corner-menu-link" href="#lisnig-impressum">Ǵlisnig Impressum</a>
+		<a class="corner-menu-link" href="https://calyr.ai/explore.html?v=20260524-blend-r1">Explore the Nexus</a>
+	</nav>
+	<section class="hero" data-template="calyr_titlepage_orbit">
+		<div class="hero-copy">
+			
+			<h1 class="hero-title">Calyr.a<span class="hero-acute" tabindex="0">í</span></h1>
+			<p class="hero-subtitle">AI-assisted molecular design and reasoning for reproducible predictive oracles.</p>
+			<p class="hero-slogan" aria-live="polite">Molecular Intelligence · Adaptive Systems · Reproducible Oracles</p>
+		</div>
+	</section>
+	<main class="study-layout" id="explore">
+	<div class="study-content">
+		<section class="study-section tile-1 is-open" id="theory" data-tile-kind="text" data-tile-index="1">
+		<button class="study-trigger" type="button" aria-expanded="true" aria-controls="detail-theory">
+			<div class="tile-open-state">
+				<h2 class="study-heading">Theory</h2>
+				<p class="study-teaser">Molecular intelligence is the core framing of the Calyr.ai page.</p>
+				<div class="study-fulltext" id="detail-theory">
+				<p class="study-paragraph">Molecular intelligence is the core framing of the Calyr.ai page.</p>
+				<p class="study-paragraph">It combines material-system understanding with machine intelligence.</p>
+				<p class="study-paragraph">Use this layer to translate complex physical behavior into computable representations.</p>
+				</div>
+			</div>
+		</button>
+	</section>
+		<section class="study-section tile-2 is-collapsed" id="calyrai" data-tile-kind="text" data-tile-index="2">
+		<button class="study-trigger" type="button" aria-expanded="false" aria-controls="detail-calyrai">
+			<div class="tile-open-state">
+				<h2 class="study-heading">Calyrai</h2>
+				<p class="study-teaser">Learning systems continuously update how structure, data, and interpretation connect.</p>
+				<div class="study-fulltext" id="detail-calyrai">
+				<p class="study-paragraph">Learning systems continuously update how structure, data, and interpretation connect.</p>
+				<p class="study-paragraph">They support adaptive model behavior rather than static one-time fitting.</p>
+				<p class="study-paragraph">Use this layer when iterative improvement and semantic consistency are required.</p>
+				</div>
+			</div>
+		</button>
+	</section>
+		<section class="study-section tile-3 is-collapsed" id="access" data-tile-kind="text" data-tile-index="3">
+		<button class="study-trigger" type="button" aria-expanded="false" aria-controls="detail-access">
+			<div class="tile-open-state">
+				<h2 class="study-heading">Access</h2>
+				<p class="study-teaser">Reproducible oracles are the public promise of the system.</p>
+				<div class="study-fulltext" id="detail-access">
+				<p class="study-paragraph">Reproducible oracles are the public promise of the system.</p>
+				<p class="study-paragraph">Predictions and outputs must remain traceable, repeatable, and interpretable.</p>
+				<p class="study-paragraph">Use this layer for reliable decision surfaces that preserve scientific trust.</p>
+				</div>
+			</div>
+		</button>
+	</section>
+		<section class="study-section tile-4 is-collapsed" id="engine" data-tile-kind="text" data-tile-index="4">
+		<button class="study-trigger" type="button" aria-expanded="false" aria-controls="detail-engine">
+			<div class="tile-open-state">
+				<h2 class="study-heading">Engine</h2>
+				<p class="study-teaser">Explore the Nexus provides the operational entry point for deeper interaction.</p>
+				<div class="study-fulltext" id="detail-engine">
+				<p class="study-paragraph">Explore the Nexus provides the operational entry point for deeper interaction.</p>
+				<p class="study-paragraph">It connects the conceptual framing with navigable workspace structures.</p>
+				<p class="study-paragraph">Use this layer to move from homepage narrative to executable exploration.</p>
+				</div>
+			</div>
+		</button>
+	</section>
+		<section class="study-section tile-5 is-collapsed" id="lisnig-impressum" data-tile-kind="text" data-tile-index="5">
+		<button class="study-trigger" type="button" aria-expanded="false" aria-controls="detail-lisnig-impressum">
+			<div class="tile-open-state">
+				<h2 class="study-heading">Ǵlisnig Impressum</h2>
+				<p class="study-teaser">Impressum</p>
+				<div class="study-fulltext" id="detail-lisnig-impressum">
+				<p class="study-paragraph">For legal inquiries, use the contact channels listed above.</p>
+				</div>
+			</div>
+		</button>
+	</section>
+	</div>
+</main>
+	<script>
+(() => {
+	const menuToggle = document.querySelector('.corner-menu-toggle');
+	const menuPanel = document.querySelector('.corner-menu-panel');
+	if (menuToggle && menuPanel) {
+		const closeMenu = () => {
+			menuPanel.hidden = true;
+			document.body.classList.remove('menu-open');
+			menuToggle.setAttribute('aria-expanded', 'false');
+		};
+		const openMenu = () => {
+			menuPanel.hidden = false;
+			document.body.classList.add('menu-open');
+			menuToggle.setAttribute('aria-expanded', 'true');
+		};
+		menuToggle.addEventListener('click', (event) => {
+			event.preventDefault();
+			menuPanel.hidden ? openMenu() : closeMenu();
+		});
+	}
+
+	const sections = Array.from(document.querySelectorAll('.study-section'));
+	const studyContent = document.querySelector('.study-content');
+	let activeTextSection = sections.find((section) => section.dataset.tileKind === 'text') || null;
+	let openIsExpanded = false;
+
+	const updateDensityMode = () => {
+		if (!(studyContent instanceof HTMLElement)) return;
+		const textTileCount = sections.filter((section) => section.dataset.tileKind === 'text').length;
+		const density = textTileCount >= 16 ? 'dense' : textTileCount >= 10 ? 'compact' : 'normal';
+		studyContent.dataset.density = density;
+	};
+
+	const setExpanded = (section, expanded, expandedMode = false) => {
+		if (!(section instanceof HTMLElement)) return;
+		section.classList.toggle('is-open', expanded);
+		section.classList.toggle('is-collapsed', !expanded);
+		section.classList.toggle('is-expanded', expanded && expandedMode && section.dataset.tileKind === 'text');
+		const trigger = section.querySelector('.study-trigger');
+		if (trigger instanceof HTMLElement) {
+			trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+		}
+	};
+
+	const enforceMondrianState = () => {
+		if (!(activeTextSection instanceof HTMLElement) || activeTextSection.dataset.tileKind !== 'text') {
+			activeTextSection = sections.find((section) => section.dataset.tileKind === 'text') || null;
+		}
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			const isActive = section === activeTextSection;
+			setExpanded(section, isActive, isActive && openIsExpanded);
+		}
+		if (studyContent instanceof HTMLElement) {
+			const hasExpandedOpen = Boolean(activeTextSection) && openIsExpanded;
+			studyContent.classList.toggle('has-expanded-open', hasExpandedOpen);
+		}
+	};
+
+	const activateById = (id) => {
+		if (!id) return;
+		const target = document.getElementById(id);
+		if (!(target instanceof HTMLElement)) return;
+		if (target.dataset.tileKind === 'text') {
+			activeTextSection = target;
+			openIsExpanded = false;
+			enforceMondrianState();
+		}
+		target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+	};
+
+	updateDensityMode();
+	enforceMondrianState();
+
+	if (studyContent instanceof HTMLElement) {
+		studyContent.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const trigger = target.closest('.study-trigger');
+			if (!(trigger instanceof HTMLElement)) return;
+			const section = trigger.closest('.study-section');
+			if (!(section instanceof HTMLElement)) return;
+			if (section.dataset.tileKind === 'text') {
+				if (section === activeTextSection) {
+					openIsExpanded = !openIsExpanded;
+				} else {
+					activeTextSection = section;
+					openIsExpanded = false;
+				}
+			}
+			enforceMondrianState();
+		});
+
+		studyContent.addEventListener('dblclick', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const trigger = target.closest('.study-trigger');
+			if (!(trigger instanceof HTMLElement)) return;
+			const section = trigger.closest('.study-section');
+			if (!(section instanceof HTMLElement)) return;
+			event.preventDefault();
+			if (section.dataset.tileKind === 'text') {
+				if (section === activeTextSection) {
+					openIsExpanded = !openIsExpanded;
+				} else {
+					activeTextSection = section;
+					openIsExpanded = true;
+				}
+			}
+			enforceMondrianState();
+		});
+	}
+
+	document.querySelectorAll('.corner-menu-link[href^="#"]').forEach((link) => {
+		if (!(link instanceof HTMLAnchorElement)) return;
+		link.addEventListener('click', (event) => {
+			event.preventDefault();
+			const targetId = link.getAttribute('href')?.replace(/^#/, '') || '';
+			activateById(targetId);
+			if (targetId) history.replaceState(null, '', `#${targetId}`);
+		});
+	});
+
+	if (window.location.hash) {
+		activateById(window.location.hash.replace(/^#/, ''));
+	}
+
+	window.addEventListener('hashchange', () => {
+		activateById(window.location.hash.replace(/^#/, ''));
+	});
+
+})();
+</script>
+	<script>
+(() => {
+	const grid = document.querySelector('.layout-grid');
+	if (!grid) return;
+	const CFG = {"grid_spacing_px": 30, "grid_major_step": 4, "grid_base_r_major": 1.25, "grid_base_r_minor": 0.42, "grid_max_r_major": 6.2, "grid_max_r_minor": 1.9, "grid_hover_radius_px": 88, "grid_base_op_major": 0.62, "grid_base_op_minor": 0.16, "grid_max_op_major": 0.96, "grid_max_op_minor": 0.34, "label_hover_radius_px": 22, "label_reveal_ms": 2000, "label_font_px": 6, "label_visible_opacity": 0.72, "label_color": "#ffffff", "label_mode": "hover"};
+	const cfgNum = (key, fallback) => {
+		const value = Number(CFG[key]);
+		return Number.isFinite(value) ? value : fallback;
+	};
+	const cfgStr = (key, fallback) => {
+		const value = CFG[key];
+		return typeof value === 'string' && value.length ? value : fallback;
+	};
+
+	const ensureDots = () => {
+		let dots = Array.from(grid.querySelectorAll('circle'));
+		if (dots.length) return dots;
+
+		const spacing = cfgNum('grid_spacing_px', 30);
+		const majorStep = Math.max(1, Math.floor(cfgNum('grid_major_step', 4)));
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		grid.setAttribute('viewBox', `0 0 ${width} ${height}`);
+		grid.setAttribute('preserveAspectRatio', 'none');
+		grid.querySelectorAll('.grid-labels').forEach((node) => node.remove());
+
+		const frag = document.createDocumentFragment();
+		const labelsLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		labelsLayer.setAttribute('class', 'grid-labels');
+		labelsLayer.setAttribute('fill', cfgStr('label_color', '#24f3ff'));
+		labelsLayer.setAttribute('opacity', '1');
+		labelsLayer.setAttribute('font-size', String(cfgNum('label_font_px', 6)));
+		labelsLayer.setAttribute('font-family', 'system-ui, -apple-system, Segoe UI, sans-serif');
+		labelsLayer.setAttribute('font-weight', '500');
+
+		const toAlpha = (index) => {
+			let value = index + 1;
+			let out = '';
+			while (value > 0) {
+				const rem = (value - 1) % 26;
+				out = String.fromCharCode(65 + rem) + out;
+				value = Math.floor((value - 1) / 26);
+			}
+			return out;
+		};
+		let row = 0;
+		for (let y = spacing * 0.5; y < height; y += spacing, row += 1) {
+			let col = 0;
+			for (let x = spacing * 0.5; x < width; x += spacing, col += 1) {
+				const major = row % majorStep === 0 && col % majorStep === 0;
+				const pt = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+				pt.setAttribute('cx', String(x));
+				pt.setAttribute('cy', String(y));
+				pt.setAttribute('data-major', major ? '1' : '0');
+				frag.appendChild(pt);
+				if (major) {
+					const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+					const majorCol = Math.floor(col / majorStep);
+					const majorRow = Math.floor(row / majorStep) + 1;
+					label.textContent = `${toAlpha(majorCol)}${majorRow}`;
+					label.setAttribute('x', String(x + 5));
+					label.setAttribute('y', String(y - 5));
+					label.setAttribute('data-cx', String(x));
+					label.setAttribute('data-cy', String(y));
+					label.setAttribute('data-major-label', '1');
+					label.setAttribute('style', 'paint-order:stroke;stroke:rgba(1,10,32,0.75);stroke-width:0.8;opacity:0;transition:opacity 120ms linear;');
+					labelsLayer.appendChild(label);
+				}
+			}
+		}
+		grid.appendChild(frag);
+		grid.appendChild(labelsLayer);
+		return Array.from(grid.querySelectorAll('circle'));
+	};
+
+	const BASE_R_MAJOR = cfgNum('grid_base_r_major', 1.25);
+	const BASE_R_MINOR = cfgNum('grid_base_r_minor', 0.42);
+	const MAX_R_MAJOR = cfgNum('grid_max_r_major', 6.2);
+	const MAX_R_MINOR = cfgNum('grid_max_r_minor', 1.9);
+	const HOVER_R = cfgNum('grid_hover_radius_px', 88);
+	const BASE_OP_MAJOR = cfgNum('grid_base_op_major', 0.62);
+	const BASE_OP_MINOR = cfgNum('grid_base_op_minor', 0.16);
+	const MAX_OP_MAJOR = cfgNum('grid_max_op_major', 0.96);
+	const MAX_OP_MINOR = cfgNum('grid_max_op_minor', 0.34);
+	const LABEL_HOVER_R = cfgNum('label_hover_radius_px', 22);
+	const LABEL_REVEAL_MS = cfgNum('label_reveal_ms', 2000);
+	const LABEL_VISIBLE_OPACITY = cfgNum('label_visible_opacity', 0.72);
+	const LABEL_MODE = cfgStr('label_mode', 'hover').toLowerCase();
+	const RING_DURATION_MS = cfgNum('ring_duration_ms', 2600);
+	const RING_STROKE = cfgNum('ring_stroke_px', 1.4);
+	const ACUTE_FALL_MS = cfgNum('acute_fall_ms', 980);
+	const MAJOR_CLICK_SNAP_PX = cfgNum('major_click_snap_px', 14);
+	const ACUTE_GLOW = cfgStr('acute_glow', 'drop-shadow(0 0 8px rgba(255,255,255,0.95)) drop-shadow(0 0 16px rgba(255,255,255,0.8)) drop-shadow(0 0 28px rgba(255,255,255,0.5))');
+
+	let dots = ensureDots().map((pt) => {
+		const major = pt.getAttribute('data-major') === '1';
+		pt.setAttribute('fill', '#ffffff');
+		pt.setAttribute('r', String(major ? BASE_R_MAJOR : BASE_R_MINOR));
+		pt.setAttribute('opacity', String(major ? BASE_OP_MAJOR : BASE_OP_MINOR));
+		pt.setAttribute('style', major
+			? 'filter:drop-shadow(0 0 1.2px rgba(255,255,255,0.95)) drop-shadow(0 0 4px rgba(255,255,255,0.58));'
+			: 'filter:drop-shadow(0 0 0.8px rgba(255,255,255,0.48));');
+		return {
+			pt,
+			major,
+			cx: parseFloat(pt.getAttribute('cx') || '0'),
+			cy: parseFloat(pt.getAttribute('cy') || '0')
+		};
+	});
+
+	let labels = Array.from(grid.querySelectorAll('.grid-labels text')).map((node) => ({
+		node,
+		cx: parseFloat(node.getAttribute('data-cx') || '0'),
+		cy: parseFloat(node.getAttribute('data-cy') || '0'),
+		hoverSince: null,
+	}));
+	const dotByNode = new Map(dots.map((d) => [d.pt, d]));
+	const activeAcuteDots = new Set();
+	let waves = [];
+
+	const ensureFxLayers = () => {
+		let ringsLayer = grid.querySelector('.grid-rings');
+		if (!ringsLayer) {
+			ringsLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+			ringsLayer.setAttribute('class', 'grid-rings');
+			ringsLayer.setAttribute('fill', 'none');
+			grid.appendChild(ringsLayer);
+		}
+		let acutesLayer = grid.querySelector('.grid-acutes');
+		if (!acutesLayer) {
+			acutesLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+			acutesLayer.setAttribute('class', 'grid-acutes');
+			grid.appendChild(acutesLayer);
+		}
+		return { ringsLayer, acutesLayer };
+	};
+
+	const spawnRingWave = (x, y) => {
+		const { ringsLayer } = ensureFxLayers();
+		const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		ring.setAttribute('cx', String(x));
+		ring.setAttribute('cy', String(y));
+		ring.setAttribute('r', '2');
+		ring.setAttribute('stroke', 'rgba(255, 255, 255, 0.9)');
+		ring.setAttribute('stroke-width', String(RING_STROKE));
+		ring.setAttribute('opacity', '0.85');
+		ringsLayer.appendChild(ring);
+		waves.push({
+			node: ring,
+			start: performance.now(),
+			duration: RING_DURATION_MS,
+			maxR: Math.hypot(window.innerWidth, window.innerHeight) * 0.58,
+		});
+		requestRender();
+	};
+
+	const transformMajorDotToAcute = (dot) => {
+		if (!dot || !dot.major) return;
+		if (activeAcuteDots.has(dot.pt)) return;
+		activeAcuteDots.add(dot.pt);
+		dot.pt.setAttribute('r', '0.01');
+		dot.pt.setAttribute('opacity', '0');
+		dot.pt.setAttribute('fill', 'transparent');
+		dot.pt.style.pointerEvents = 'none';
+
+		const { acutesLayer } = ensureFxLayers();
+		const acute = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+		acute.textContent = '\u00B4';
+		acute.setAttribute('x', String(dot.cx));
+		acute.setAttribute('y', String(dot.cy));
+		acute.setAttribute('text-anchor', 'middle');
+		acute.setAttribute('dominant-baseline', 'central');
+		acute.setAttribute('fill', '#ffffff');
+		acute.setAttribute('font-size', '26');
+		acute.setAttribute('font-family', 'Avenir Next, Segoe UI, sans-serif');
+		acute.setAttribute('font-weight', '700');
+		acute.setAttribute('style', `filter:${ACUTE_GLOW};pointer-events:none;`);
+		acutesLayer.appendChild(acute);
+		acute.animate(
+			[
+				{ transform: 'translate(0, -14px) scale(1.06)', opacity: 0 },
+				{ transform: 'translate(0, 0px) scale(1)', opacity: 1, offset: 0.38 },
+				{ transform: 'translate(0, 8px) scale(0.74)', opacity: 0 },
+			],
+			{
+				duration: ACUTE_FALL_MS,
+				easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+			}
+		);
+
+		spawnRingWave(dot.cx, dot.cy);
+
+		window.setTimeout(() => {
+			acute.remove();
+			dot.pt.style.display = '';
+			dot.pt.setAttribute('fill', '#ffffff');
+			dot.pt.setAttribute('opacity', String(BASE_OP_MAJOR));
+			dot.pt.style.pointerEvents = '';
+			activeAcuteDots.delete(dot.pt);
+			requestRender();
+		}, ACUTE_FALL_MS + 24);
+	};
+
+	let mouseX = -1e9;
+	let mouseY = -1e9;
+	let ticking = false;
+
+	function render() {
+		ticking = false;
+		const now = performance.now();
+		let needsFollowUp = false;
+		for (const d of dots) {
+			if (activeAcuteDots.has(d.pt)) continue;
+			const dx = mouseX - d.cx;
+			const dy = mouseY - d.cy;
+			const dist = Math.hypot(dx, dy);
+			const t = Math.max(0, 1 - dist / HOVER_R);
+			const baseR = d.major ? BASE_R_MAJOR : BASE_R_MINOR;
+			const maxR = d.major ? MAX_R_MAJOR : MAX_R_MINOR;
+			const baseOp = d.major ? BASE_OP_MAJOR : BASE_OP_MINOR;
+			const maxOp = d.major ? MAX_OP_MAJOR : MAX_OP_MINOR;
+			const r = baseR + (maxR - baseR) * t;
+			const op = baseOp + (maxOp - baseOp) * t;
+			d.pt.setAttribute('r', r.toFixed(2));
+			d.pt.setAttribute('opacity', op.toFixed(3));
+		}
+
+		for (const label of labels) {
+			if (LABEL_MODE === 'always') {
+				label.node.style.opacity = String(LABEL_VISIBLE_OPACITY);
+				label.hoverSince = null;
+				continue;
+			}
+			const dx = mouseX - label.cx;
+			const dy = mouseY - label.cy;
+			const dist = Math.hypot(dx, dy);
+			if (dist <= LABEL_HOVER_R) {
+				if (label.hoverSince === null) label.hoverSince = now;
+				const visible = now - label.hoverSince >= LABEL_REVEAL_MS;
+				label.node.style.opacity = visible ? String(LABEL_VISIBLE_OPACITY) : '0';
+				if (!visible) needsFollowUp = true;
+			} else {
+				label.hoverSince = null;
+				label.node.style.opacity = '0';
+			}
+		}
+
+		if (waves.length) {
+			const nextWaves = [];
+			for (const wave of waves) {
+				const t = (now - wave.start) / wave.duration;
+				if (t >= 1) {
+					wave.node.remove();
+					continue;
+				}
+				const radius = 2 + wave.maxR * t;
+				const opacity = Math.max(0, (1 - t) * 0.82);
+				const strokeW = Math.max(0.45, RING_STROKE * (1 - 0.55 * t));
+				wave.node.setAttribute('r', radius.toFixed(2));
+				wave.node.setAttribute('opacity', opacity.toFixed(3));
+				wave.node.setAttribute('stroke-width', strokeW.toFixed(2));
+				nextWaves.push(wave);
+			}
+			waves = nextWaves;
+			if (waves.length) needsFollowUp = true;
+		}
+
+		if (needsFollowUp) requestRender();
+	}
+
+	function requestRender() {
+		if (ticking) return;
+		ticking = true;
+		requestAnimationFrame(render);
+	}
+
+	window.addEventListener('pointermove', (e) => {
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		requestRender();
+	}, { passive: true });
+
+	window.addEventListener('pointerleave', () => {
+		mouseX = -1e9;
+		mouseY = -1e9;
+		requestRender();
+	});
+
+	grid.addEventListener('click', (event) => {
+		const target = event.target;
+		if (!(target instanceof SVGCircleElement)) return;
+		if (target.getAttribute('data-major') !== '1') return;
+		transformMajorDotToAcute(dotByNode.get(target));
+	});
+
+	document.addEventListener('click', (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		if (target.closest('a, button, input, textarea, select, .study-trigger, .corner-menu-toggle, .corner-menu-link')) return;
+
+		let best = null;
+		let bestDist = MAJOR_CLICK_SNAP_PX;
+		for (const dot of dots) {
+			if (!dot.major) continue;
+			if (activeAcuteDots.has(dot.pt)) continue;
+			const dx = event.clientX - dot.cx;
+			const dy = event.clientY - dot.cy;
+			const dist = Math.hypot(dx, dy);
+			if (dist < bestDist) {
+				bestDist = dist;
+				best = dot;
+			}
+		}
+		if (!best) return;
+		transformMajorDotToAcute(best);
+	});
+
+	window.addEventListener('resize', () => {
+		grid.querySelectorAll('circle').forEach((node) => node.remove());
+		grid.querySelectorAll('.grid-labels, .grid-rings, .grid-acutes').forEach((node) => node.remove());
+		dots = ensureDots().map((pt) => ({
+			pt,
+			major: pt.getAttribute('data-major') === '1',
+			cx: parseFloat(pt.getAttribute('cx') || '0'),
+			cy: parseFloat(pt.getAttribute('cy') || '0')
+		}));
+		dotByNode.clear();
+		for (const d of dots) dotByNode.set(d.pt, d);
+		activeAcuteDots.clear();
+		waves = [];
+		labels = Array.from(grid.querySelectorAll('.grid-labels text')).map((node) => ({
+			node,
+			cx: parseFloat(node.getAttribute('data-cx') || '0'),
+			cy: parseFloat(node.getAttribute('data-cy') || '0'),
+			hoverSince: null,
+		}));
+		requestRender();
+	}, { passive: true });
+
+	render();
+})();
+</script>
+</body>
+</html>
