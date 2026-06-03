@@ -419,6 +419,7 @@
 			if (!sections.length) {
 				return;
 			}
+			const indexLinks = Array.from(document.querySelectorAll('.detail-index-link'));
 
 			const linksById = new Map(
 				Array.from(document.querySelectorAll('.detail-index-link')).map((link) => [
@@ -437,6 +438,7 @@
 			let lastAutoOpenId = '';
 			let switchCandidateId = '';
 			let switchCandidateSince = 0;
+			let scrollSettleTimer = 0;
 
 			sections.forEach((section) => {
 				const toggle = section.querySelector('.detail-section-toggle');
@@ -540,7 +542,7 @@
 							switchCandidateSince = now;
 						}
 						const elapsed = now - switchCandidateSince;
-						if (elapsed >= 170) {
+						if (elapsed >= 340) {
 							lastAutoOpenId = switchCandidateId;
 							autoOpenId = switchCandidateId;
 							switchCandidateId = '';
@@ -608,10 +610,38 @@
 
 			window.addEventListener('scroll', () => {
 				hasScrolled = true;
-				requestUpdate(true);
+				requestUpdate(false);
+				if (scrollSettleTimer) {
+					window.clearTimeout(scrollSettleTimer);
+				}
+				scrollSettleTimer = window.setTimeout(() => {
+					requestUpdate(true);
+				}, 220);
 			}, { passive: true });
 			window.addEventListener('resize', () => requestUpdate(hasScrolled));
 			window.addEventListener('orientationchange', () => requestUpdate(hasScrolled));
+
+			indexLinks.forEach((link) => {
+				if (!(link instanceof HTMLAnchorElement)) return;
+				link.addEventListener('click', (event) => {
+					const hash = link.getAttribute('href') || '';
+					if (!hash.startsWith('#')) return;
+					const id = hash.slice(1);
+					const target = document.getElementById(id);
+					if (!(target instanceof HTMLElement)) return;
+					event.preventDefault();
+					manualPinnedId = id;
+					const targetY = target.getBoundingClientRect().top + window.scrollY - 20;
+					window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+					requestUpdate(false);
+					if (scrollSettleTimer) {
+						window.clearTimeout(scrollSettleTimer);
+					}
+					scrollSettleTimer = window.setTimeout(() => {
+						requestUpdate(true);
+					}, 260);
+				});
+			});
 			updateFocus(false);
 		})();
 	</script>
