@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-  <meta name="theme-color" content="#050816" />
+  <meta name="theme-color" content="#06142d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Breakout</title>
   <style>
     :root {
-      --bg: #050816;
-      --panel: rgba(8, 15, 34, 0.92);
+      --bg: #06142d;
+      --panel: rgba(10, 28, 58, 0.92);
       --ink: #eefaff;
       --cyan: #ffffff;
-      --magenta: #ff4df5;
+      --magenta: #7eaeff;
       --line: rgba(255, 255, 255, 0.24);
       --glow: 0 0 24px rgba(255, 255, 255, 0.16);
     }
@@ -55,9 +55,9 @@
       border-radius: 26px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       background:
-        radial-gradient(circle at top right, rgba(253, 84, 255, 0.14), transparent 28%),
-        radial-gradient(circle at top left, rgba(31, 230, 255, 0.14), transparent 24%),
-        linear-gradient(180deg, rgba(7, 18, 26, 0.74), rgba(7, 18, 26, 0.42));
+        radial-gradient(circle at top right, rgba(128, 192, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top left, rgba(186, 220, 255, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(10, 28, 58, 0.82), rgba(8, 22, 46, 0.58));
       box-shadow:
         0 0 22px rgba(0, 0, 0, 0.65),
         inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -250,9 +250,9 @@
     }
 
     .action-pill-primary {
-      background: linear-gradient(90deg, rgba(255, 77, 245, 0.95), rgba(255, 255, 255, 0.9));
-      color: #050816;
-      box-shadow: 0 0 22px rgba(255, 77, 245, 0.22);
+      background: linear-gradient(90deg, rgba(126, 174, 255, 0.95), rgba(255, 255, 255, 0.9));
+      color: #06142d;
+      box-shadow: 0 0 22px rgba(126, 174, 255, 0.22);
     }
 
     .footer {
@@ -463,7 +463,7 @@
 
     body {
       overflow: hidden;
-      background: #050816;
+      background: #06142d;
     }
 
     .explore-page.nexus-page,
@@ -488,7 +488,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: transparent;
+      background: #06142d;
       box-shadow: none;
       align-items: center;
     }
@@ -964,7 +964,7 @@
       const moduleSize = (qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
       const radius = Math.max(2.4, moduleSize * 0.34);
 
-      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
       ctx.lineWidth = 1.6;
@@ -1997,12 +1997,12 @@
 
       const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
       ctx.save();
-      ctx.fillStyle = "#050816";
+      ctx.fillStyle = "#06142d";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!state.initialized) {
         ctx.save();
-        ctx.fillStyle = "rgba(6, 12, 28, 0.96)";
+        ctx.fillStyle = "rgba(10, 28, 58, 0.96)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
         ctx.font = '24px "SF Mono", "Fira Code", ui-monospace, monospace';
@@ -2018,7 +2018,7 @@
         return;
       }
 
-      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#06111a");
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
       ctx.lineWidth = 1.6;
