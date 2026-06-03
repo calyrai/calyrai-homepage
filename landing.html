@@ -42,6 +42,7 @@
 		.study-detail-link { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }
 		.study-detail-link:hover,
 		.study-detail-link:focus-visible { border-color: rgba(255,255,255,0.96); background: rgba(12, 22, 40, 0.98); }
+		.study-detail-link.tile-detail-footer { margin-top: 0.8rem; align-self: flex-end; }
 		.tile-open-state { display: none; height: 100%; padding: 0.72rem; text-align: left; overflow: hidden; }
 		.tile-open-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
 		.tile-open-copy { min-width: 0; flex: 1 1 auto; }
@@ -554,6 +555,18 @@
 		});
 		return qrLibraryPromise;
 	};
+
+	const moveDetailLinksToTileEnd = () => {
+		document.querySelectorAll('.tile-open-state').forEach((state) => {
+			if (!(state instanceof HTMLElement)) return;
+			const link = state.querySelector('.tile-open-head .study-detail-link');
+			if (!(link instanceof HTMLElement)) return;
+			state.appendChild(link);
+			link.classList.add('tile-detail-footer');
+		});
+	};
+
+	moveDetailLinksToTileEnd();
 
 	const buildFallbackMatrix = (size = 29) => {
 		const matrix = Array.from({ length: size }, () => Array(size).fill(0));
