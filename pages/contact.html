@@ -966,6 +966,19 @@
           };
       const moduleSize = (qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
       const radius = Math.max(2.4, moduleSize * 0.34);
+      const centerRow = (qrSize - 1) / 2;
+      const centerCol = (qrSize - 1) / 2;
+      let markedCell = null;
+
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const dist = (row - centerRow) ** 2 + (col - centerCol) ** 2;
+          if (!markedCell || dist < markedCell.dist) {
+            markedCell = { row, col, dist };
+          }
+        }
+      }
 
       drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
 
@@ -993,17 +1006,27 @@
       ctx.restore();
 
       ctx.save();
-      ctx.fillStyle = "#ffffff";
-      ctx.shadowBlur = 7;
-      ctx.shadowColor = "rgba(255, 255, 255, 0.26)";
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!qrMatrix[row][col]) continue;
           const x = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
           const y = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fill();
+          const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
+          drawHalfOpenDisk(
+            x,
+            y,
+            radius,
+            isMarked ? "#ff4df5" : "#ffffff",
+            isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.26)",
+            row * 0.37 + col * 0.21
+          );
+          if (isMarked) {
+            ctx.fillStyle = "#ff4df5";
+            ctx.font = `${Math.max(9, Math.floor(radius * 2))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("\u00D7", x, y + 0.5);
+          }
         }
       }
       ctx.restore();
@@ -1414,6 +1437,7 @@
             spinSpeed: catcherSpinSpeed(row, col, seed),
             splitter: false,
             pendingBlast: false,
+            mulMark: false,
           };
           state.bricks.push(brick);
           if (brick.row >= 0 && brick.col >= 0 && !isQrReservedCell(row, col, qrSize)) {
@@ -1425,6 +1449,19 @@
       splitterCandidates.sort((a, b) => a.rank - b.rank);
       for (let i = 0; i < Math.min(SPLITTER_BRICK_MAX, splitterCandidates.length); i += 1) {
         splitterCandidates[i].brick.splitter = true;
+      }
+
+      const centerRow = (qrSize - 1) / 2;
+      const centerCol = (qrSize - 1) / 2;
+      const markCandidate = state.bricks
+        .filter((brick) => brick.row >= 0 && brick.col >= 0 && !brick.catcher)
+        .map((brick) => ({
+          brick,
+          dist: (brick.row - centerRow) ** 2 + (brick.col - centerCol) ** 2,
+        }))
+        .sort((a, b) => a.dist - b.dist)[0];
+      if (markCandidate?.brick) {
+        markCandidate.brick.mulMark = true;
       }
 
       const textBrickSize = Math.max(5, moduleSize - 2);
@@ -1671,19 +1708,44 @@
       ctx.fill();
     }
 
+    function drawHalfOpenDisk(cx, cy, radius, strokeStyle, shadowColor, phase = 0) {
+      const gap = Math.PI * 0.72;
+      const rotation = (phase || 0) * 0.35;
+      const start = rotation + gap * 0.5;
+      const end = rotation + Math.PI * 2 - gap * 0.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, start, end);
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = Math.max(1.6, radius * 0.38);
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = shadowColor;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
       if (state.contactOpen) {
-        const radius = Math.max(3, Math.min(w, h) * 0.36);
+        const radius = Math.max(3, Math.min(w, h) * 0.34);
         const cx = x + w / 2;
         const cy = y + h / 2;
         ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = "rgba(255, 255, 255, 0.28)";
-        ctx.fill();
+        const isMarked = !!brick.mulMark;
+        drawHalfOpenDisk(
+          cx,
+          cy,
+          radius,
+          isMarked ? "#ff4df5" : "#ffffff",
+          isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.28)",
+          brick.phase
+        );
+        if (isMarked) {
+          ctx.fillStyle = "#ff4df5";
+          ctx.font = `${Math.max(9, Math.floor(radius * 1.8))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("\u00D7", cx, cy + 0.5);
+        }
         ctx.restore();
         return;
       }
@@ -1715,11 +1777,22 @@
 
       ctx.save();
       ctx.globalAlpha = blink;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fillStyle = cyan;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      const isMarked = !!brick.mulMark;
+      drawHalfOpenDisk(
+        cx,
+        cy,
+        radius,
+        isMarked ? magenta : cyan,
+        isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
+        brick.phase
+      );
+      if (isMarked) {
+        ctx.fillStyle = magenta;
+        ctx.font = `${Math.max(9, Math.floor(radius * 1.8))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("\u00D7", cx, cy + 0.5);
+      }
       ctx.restore();
     }
 
