@@ -819,6 +819,10 @@
     }
 
     function getContactCardTextLines(layout) {
+      const landscapePhone =
+        window.matchMedia("(orientation: landscape)").matches &&
+        window.matchMedia("(max-width: 900px)").matches;
+
       return [
         {
           text: PERSON_NAME,
@@ -834,7 +838,7 @@
           x: layout.textX,
           y: layout.line2Y,
           fontSize: 16,
-          color: "#ff4df5",
+          color: landscapePhone ? "#f7fbff" : "#ff4df5",
         },
         {
           text: "rupert.tscheliessnig@calyr.ai",
