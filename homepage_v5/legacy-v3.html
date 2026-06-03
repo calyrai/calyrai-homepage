@@ -335,7 +335,7 @@
 			</div>
 		</button>
 	</section>
-		<section class="study-section tile-2 is-open" id="theory" data-node-id="theory" data-keywords="knowledge,graph,atlas,innovation,topology,business-model" data-neighbors="projects,calyrai,access,engine" data-search-text="theory knowledge architecture for innovation. calyr.aí is a knowledge architecture company. it organizes knowledge into atlases from which tools, interfaces, and innovation can emerge. open the business model page for the full theory, market framing, and semantic product logic. knowledge graph atlas innovation topology business-model" data-tile-kind="text" data-tile-index="2">
+		<section class="study-section tile-2 is-collapsed" id="theory" data-node-id="theory" data-keywords="knowledge,graph,atlas,innovation,topology,business-model" data-neighbors="projects,calyrai,access,engine" data-search-text="theory knowledge architecture for innovation. calyr.aí is a knowledge architecture company. it organizes knowledge into atlases from which tools, interfaces, and innovation can emerge. open the business model page for the full theory, market framing, and semantic product logic. knowledge graph atlas innovation topology business-model" data-tile-kind="text" data-tile-index="2">
 		<button class="study-trigger" type="button" aria-expanded="true" aria-controls="detail-theory">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -484,7 +484,7 @@
 			</div>
 		</button>
 	</section>
-		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="10">
+		<section class="study-section tile-1 is-open" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="10">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-lisnig-impressum">
 			<div class="tile-open-state tile-open-state-visit-card">
 				<iframe class="visit-embed-frame" src="../pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
@@ -522,7 +522,7 @@
 	const sectionByNode = new Map(
 		sections.map((section) => [section.dataset.nodeId || section.id, section])
 	);
-		const defaultOpenId = "theory";
+		const defaultOpenId = "lisnig-impressum";
 		const activeTextSections = new Set();
 	let openIsExpanded = false;
 	const QR_LIBRARY_URL = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
