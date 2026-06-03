@@ -616,13 +616,16 @@
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
     const CONTACT_CARD_QR_SCALE = 0.76;
     const QR_RENDER_SCALE = 0.84;
-    const MAX_LEVEL = 4;
-    const LEVEL_TARGETS = {
-      1: 200,
-      2: 400,
-      3: 400,
-      4: 1000,
-    };
+    const SINGLE_LEVEL_ONLY = true;
+    const MAX_LEVEL = SINGLE_LEVEL_ONLY ? 1 : 4;
+    const LEVEL_TARGETS = SINGLE_LEVEL_ONLY
+      ? { 1: 200 }
+      : {
+          1: 200,
+          2: 400,
+          3: 400,
+          4: 1000,
+        };
     const LEVEL_UP_LIFE_BONUS = 1;
     const PERIMETER_SCORE_PENALTY = 180;
     const PERIMETER_DROP_LEVEL = 3;
@@ -1039,6 +1042,9 @@
     }
 
     function currentModeNote() {
+      if (SINGLE_LEVEL_ONLY) {
+        return `Level 1 only: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits, then Level 1 resets.`;
+      }
       if (isPerimeterChallengeActive()) {
         return "Level 4: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
       }
@@ -2085,6 +2091,19 @@
     }
 
     function nextLevel() {
+      if (SINGLE_LEVEL_ONLY) {
+        state.level = 1;
+        state.patternHits = 0;
+        state.levelHits = 0;
+        state.periodicModeUnlocked = false;
+        resetBricks();
+        resetBallAndPaddle();
+        syncHud();
+        state.paused = true;
+        syncGameUi();
+        return;
+      }
+
       if (state.level < MAX_LEVEL) {
         state.level += 1;
         state.patternHits = 0;
