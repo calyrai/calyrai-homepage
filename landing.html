@@ -782,7 +782,7 @@
 			activeTextSections.add(defaultSection);
 		}
 	}
-	if (!window.location.hash && defaultOpenId) {
+	if (defaultOpenId) {
 		history.replaceState(null, '', `#${defaultOpenId}`);
 	}
 	enforceMondrianState();
@@ -815,10 +815,6 @@
 			if (targetId) history.replaceState(null, '', `#${targetId}`);
 		});
 	});
-
-	if (window.location.hash) {
-		activateById(window.location.hash.replace(/^#/, ''));
-	}
 
 	window.addEventListener('resize', () => {
 		buildInterfaceMap();
