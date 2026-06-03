@@ -522,7 +522,7 @@
 	const sectionByNode = new Map(
 		sections.map((section) => [section.dataset.nodeId || section.id, section])
 	);
-		const defaultOpenId = "lisnig-impressum";
+		const defaultOpenId = "access";
 		const activeTextSections = new Set();
 	let openIsExpanded = false;
 	const QR_LIBRARY_URL = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
@@ -781,6 +781,9 @@
 		if (defaultSection instanceof HTMLElement) {
 			activeTextSections.add(defaultSection);
 		}
+	}
+	if (!window.location.hash && defaultOpenId) {
+		history.replaceState(null, '', `#${defaultOpenId}`);
 	}
 	enforceMondrianState();
 	if (graphSearchInput instanceof HTMLInputElement) {
