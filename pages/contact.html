@@ -1710,7 +1710,7 @@
 
     function drawHalfOpenDisk(cx, cy, radius, strokeStyle, shadowColor, phase = 0) {
       const gap = Math.PI * 0.72;
-      const rotation = (phase || 0) * 0.35;
+      const rotation = state.blinkTime * 1.6 + (phase || 0) * 0.35;
       const start = rotation + gap * 0.5;
       const end = rotation + Math.PI * 2 - gap * 0.5;
       ctx.beginPath();
@@ -2554,15 +2554,17 @@
     }
 
     function frame(ts) {
-      if (!state.running) {
-        draw();
-        return;
-      }
-
       if (!state.lastTime) state.lastTime = ts;
       const dt = Math.min(0.02, (ts - state.lastTime) / 1000);
       state.lastTime = ts;
       state.blinkTime += dt;
+
+      if (!state.running) {
+        draw();
+        requestAnimationFrame(frame);
+        return;
+      }
+
       updateExplosions(dt);
 
       if (!state.paused) {
@@ -2593,7 +2595,6 @@
       state.paused = false;
       syncGameUi();
       state.lastTime = 0;
-      requestAnimationFrame(frame);
     }
 
     window.addEventListener("keydown", (event) => {
@@ -2878,6 +2879,7 @@
         draw();
       }
       void showContactQr();
+      requestAnimationFrame(frame);
     }
 
     bootWhenReady(true);
