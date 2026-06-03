@@ -1,7 +1,0 @@
-phase: internal-evaluation
-visibility: mixed
-public_release_ready: false
-notes:
-  - Public repository can contain approved docs and interfaces.
-  - Keep runtime data, private feeds, and credentials excluded.
-  - Switch public_release_ready to true only after checklist completion.

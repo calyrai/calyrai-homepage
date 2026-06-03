@@ -1,0 +1,31 @@
+id: current-projects-page
+title: Current Projects Page
+tile_kind: text
+open_by_default: false
+open_span:
+  cols: 7
+  rows: 5
+closed_span:
+  cols: 3
+  rows: 2
+closed_gradient: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184,
+  255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%)
+color: '#f3fcff'
+teaser: Inspect the current projects detail page in the same layout style.
+detail_label: Open current projects page
+detail_href: pages/calyr-current-projects.html
+keywords:
+- inspect
+- projects-page
+- layout
+- detail
+neighbors:
+- projects
+- theory
+- engine
+node_id: current-projects-page
+body: 'Open the current projects detail page directly from this tile.
+
+  This tile exists for inspection and keeps the same detail layout style.
+
+  Use it to verify content, index behavior, and section rendering.'

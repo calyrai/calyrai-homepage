@@ -7,13 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Breakout</title>
-  <link rel="stylesheet" href="../css/base.css" />
-  <link rel="stylesheet" href="../css/nav.css" />
-  <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/explore.css" />
-  <link rel="stylesheet" href="../css/nexus.css" />
-  <link rel="stylesheet" href="../css/impressum.css" />
-
   <style>
     :root {
       --bg: #050816;
@@ -124,33 +117,6 @@
       font-size: 0.98rem;
     }
 
-    .intro-links {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .intro-link-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(125, 240, 255, 0.28);
-      background: rgba(7, 13, 28, 0.78);
-      color: rgba(238, 250, 255, 0.92);
-      text-decoration: none;
-      letter-spacing: 0.06em;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-    }
-
-    .intro-link-pill:hover {
-      border-color: rgba(125, 240, 255, 0.62);
-      background: rgba(10, 22, 34, 0.95);
-    }
-
     .stats {
       display: flex;
       flex-wrap: wrap;
@@ -208,6 +174,13 @@
       justify-content: center;
       align-items: center;
       gap: 12px;
+      position: fixed;
+      left: 50%;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 30;
+      width: auto;
+      max-width: calc(100vw - 20px);
     }
 
     body.mail-available .contact-actions {
@@ -238,6 +211,42 @@
       text-transform: uppercase;
       cursor: pointer;
       box-shadow: 0 0 18px rgba(57, 231, 255, 0.12);
+    }
+
+    #mail-btn {
+      width: auto;
+      min-width: 168px;
+      height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(142, 244, 255, 0.42);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(57, 231, 255, 0.08), transparent 38%),
+        linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
+      box-shadow:
+        0 0 16px rgba(57, 231, 255, 0.2),
+        inset 0 0 18px rgba(57, 231, 255, 0.07);
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #f7fbff;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+
+    #mail-btn .mail-icon {
+      width: 18px;
+      height: 18px;
+      display: block;
+      filter: drop-shadow(0 0 6px rgba(142, 244, 255, 0.42));
+    }
+
+    #mail-btn .mail-label {
+      font-size: 0.92rem;
+      line-height: 1;
     }
 
     .action-pill-primary {
@@ -322,7 +331,7 @@
       }
     }
 
-    @media (max-width: 900px), (hover: none), (pointer: coarse) {
+    @media (max-width: 900px) and (hover: none) and (pointer: coarse) {
       .landscape-controls {
         position: absolute;
         inset: 0;
@@ -367,7 +376,7 @@
       }
     }
 
-    @media (max-width: 900px) and (orientation: landscape) {
+    @media (max-width: 900px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
       body {
         overflow: hidden;
       }
@@ -430,22 +439,90 @@
         background: rgba(7, 13, 28, 0.78);
         backdrop-filter: blur(8px);
       }
+
+      #mail-btn {
+        min-width: 168px;
+        height: 48px;
+        padding: 0 20px;
+      }
+
+      #mail-btn .mail-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      #mail-btn .mail-label {
+        font-size: 0.95rem;
+      }
+    }
+
+    /* Game-only extraction: keep only the stage/canvas visible */
+    .game-only-hide {
+      display: none !important;
+    }
+
+    body {
+      overflow: hidden;
+      background: #050816;
+    }
+
+    .explore-page.nexus-page,
+    .explore-shell,
+    .contact-page-flow,
+    .shell {
+      min-height: 100vh;
+    }
+
+    .contact-page-flow {
+      max-width: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .shell {
+      gap: 0;
+    }
+
+    .stage {
+      min-height: 100vh;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      align-items: center;
+    }
+
+    canvas#game {
+      width: min(100vw, calc(100vh * 1.6667));
+      max-width: 100vw;
+      max-height: 100vh;
+      border: 0;
+      border-radius: 0;
+    }
+
+    @media (max-aspect-ratio: 5/3) {
+      canvas#game {
+        width: 100vw;
+        max-height: calc(100vw * 0.6);
+      }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
+  <header class="site-header game-only-hide">
     <div class="nav-inner">
       <a href="../index.html" class="nav-brand">Calyr.a&iacute;</a>
       <nav class="nav-core" aria-label="Primary">
         <a href="../explore.html" class="nav-pill">Explore</a>
         <a href="../docs.html" class="nav-pill">Docs</a>
-        <a href="../publications.html" class="nav-pill">Magnify</a>
+        <a href="../team.html" class="nav-pill">Team</a>
+        <a href="../publications.html" class="nav-pill">Publications</a>
       </nav>
       <nav class="nav-secondary" aria-label="Secondary">
         <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
         <a href="contact.html" class="nav-pill active">Contact</a>
-        <a href="http://localhost:8000" class="nav-pill" target="_blank" rel="noopener">Login</a>
+        <a href="contact.html" class="nav-pill">Login</a>
       </nav>
     </div>
   </header>
@@ -454,14 +531,11 @@
     <section class="explore-shell" aria-label="Contact">
       <div class="contact-page-flow">
         <div class="shell">
-          <section class="page-intro">
+          <section class="page-intro game-only-hide">
             <p class="page-kicker">Calyr.ai / Contact</p>
             <div class="brand">
               <h1 class="title">Breakout Contact</h1>
               <p class="subtitle">Use the contact page as a playable QR surface. Tap once for the full contact QR, tap again to return to play.</p>
-              <div class="intro-links" aria-label="Contact links">
-                <a class="intro-link-pill" href="mailto:rupert.tscheliessnig@calyr.ai">Email directly</a>
-              </div>
             </div>
           </section>
 
@@ -474,10 +548,16 @@
           </section>
 
           <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
-            <button type="button" class="action-pill" id="mail-btn">Mail</button>
+            <button type="button" class="action-pill" id="mail-btn" aria-label="Mail">
+              <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
+                <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <span class="mail-label">Mail</span>
+            </button>
           </div>
 
-          <section class="hud">
+          <section class="hud game-only-hide">
             <div class="stats">
               <div class="chip">
                 <span class="chip-label">Score</span>
@@ -498,7 +578,7 @@
             </div>
           </section>
 
-          <footer class="footer">
+          <footer class="footer game-only-hide">
             <span>Controls: Left / Right, A / D, or move the mouse.</span>
             <span id="mail-queue">Mail queues current score: 0</span>
             <span id="mode-note">Level 1: classic breakout on the bright QR.</span>
@@ -524,10 +604,12 @@
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
+    const PERSON_NAME = "Rupert G\u0301lisnig";
+    const ORG_NAME = "G\u0301Labs";
     const CONTACT_PAYLOAD = [
       "MECARD:",
-      "N:Rupert Glis´nig",
-      "ORG:G´Labs ⏸",
+      `N:${PERSON_NAME}`,
+      `ORG:${ORG_NAME}`,
       "EMAIL:rupert.tscheliessnig@calyr.ai",
       ";"
     ].join("");
@@ -544,6 +626,9 @@
     const LEVEL_UP_LIFE_BONUS = 1;
     const PERIMETER_SCORE_PENALTY = 180;
     const PERIMETER_DROP_LEVEL = 3;
+    const SPLITTER_BRICK_MAX = 5;
+    const CATCHER_HOLD_SECONDS = 0.09;
+    const CATCHER_REDIRECT_SPREAD = Math.PI * 0.36;
 
     function contactSeed() {
       let seed = 0;
@@ -581,7 +666,6 @@
       periodicModeUnlocked: false,
       keys: { left: false, right: false },
       lastTime: 0,
-      clickTimer: null,
       lastPointerUp: 0,
       automataBursts: [],
       explosions: [],
@@ -591,6 +675,9 @@
       qrLoading: false,
       previewMatrix: null,
       lastGameplaySnapshot: "",
+      ballTrap: null,
+      ballTrail: [],
+      extraBalls: [],
     };
 
     let qrLibraryPromise = null;
@@ -681,6 +768,28 @@
       return inTopLeft || inTopRight || inBottomLeft || inTiming;
     }
 
+    function isCatcherCell(row, col, size, seed) {
+      void row;
+      void col;
+      void size;
+      void seed;
+      return true;
+    }
+
+    function catcherNotchAngle(row, col, seed) {
+      return ((row * 19 + col * 23 + seed * 7) % 360) * (Math.PI / 180);
+    }
+
+    function catcherSpinSpeed(row, col, seed) {
+      const direction = ((row + col + seed) % 2 === 0) ? 1 : -1;
+      const magnitude = 0.6 + (((row * 11 + col * 17 + seed * 3) % 100) / 100) * 1.2;
+      return direction * magnitude;
+    }
+
+    function splitterRank(row, col, seed) {
+      return (row * 29 + col * 31 + seed * 13) % 997;
+    }
+
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
     }
@@ -712,7 +821,7 @@
     function getContactCardTextLines(layout) {
       return [
         {
-          text: "Rupert Glis´nig",
+          text: PERSON_NAME,
           font: '700 24px "SF Mono", "Fira Code", ui-monospace, monospace',
           x: layout.textX,
           y: layout.titleY,
@@ -720,12 +829,12 @@
           color: "#f7fbff",
         },
         {
-          text: "G´Labs ⏸",
+          text: ORG_NAME,
           font: '16px "SF Mono", "Fira Code", ui-monospace, monospace',
           x: layout.textX,
           y: layout.line2Y,
           fontSize: 16,
-          color: "#8ef4ff",
+          color: "#ff4df5",
         },
         {
           text: "rupert.tscheliessnig@calyr.ai",
@@ -797,6 +906,10 @@
               active: true,
               row: -1,
               col: -1,
+              catcher: false,
+              notchAngle: 0,
+              spinSpeed: 0,
+              splitter: false,
               pendingBlast: false,
             });
           }
@@ -1223,6 +1336,7 @@
       }
       const wall = baseWall;
       const qrSize = wall.length;
+      const seed = contactSeed();
       const gap = 2;
       const narrowScreen = window.innerWidth <= 640;
       const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
@@ -1268,12 +1382,13 @@
         state.perimeterOffset = defaultPerimeterOffset();
       }
       let activeCount = 0;
+      const splitterCandidates = [];
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!baseWall[row][col]) continue;
           const active = !!wall[row][col];
           if (active) activeCount += 1;
-          state.bricks.push({
+          const brick = {
             x: left + col * (moduleSize + gap),
             y: top + row * (moduleSize + gap),
             w: moduleSize,
@@ -1284,9 +1399,22 @@
             active: true,
             row,
             col,
+            catcher: isCatcherCell(row, col, qrSize, seed),
+            notchAngle: catcherNotchAngle(row, col, seed),
+            spinSpeed: catcherSpinSpeed(row, col, seed),
+            splitter: false,
             pendingBlast: false,
-          });
+          };
+          state.bricks.push(brick);
+          if (brick.row >= 0 && brick.col >= 0 && !isQrReservedCell(row, col, qrSize)) {
+            splitterCandidates.push({ brick, rank: splitterRank(row, col, seed) });
+          }
         }
+      }
+
+      splitterCandidates.sort((a, b) => a.rank - b.rank);
+      for (let i = 0; i < Math.min(SPLITTER_BRICK_MAX, splitterCandidates.length); i += 1) {
+        splitterCandidates[i].brick.splitter = true;
       }
 
       const textBrickSize = Math.max(5, moduleSize - 2);
@@ -1297,6 +1425,9 @@
     }
 
     function resetBallAndPaddle() {
+      state.ballTrap = null;
+      state.ballTrail = [];
+      state.extraBalls = [];
       if (isPerimeterChallengeActive()) {
         const { left, top, right, bottom, width, height } = state.qrBounds;
         setPerimeterOffset(state.perimeterOffset || defaultPerimeterOffset());
@@ -1369,6 +1500,8 @@
       state.gameOver = false;
       state.qrLoading = false;
       state.saveFeedback = "";
+      state.ballTrap = null;
+      state.extraBalls = [];
       syncHud();
       syncGameUi();
       draw();
@@ -1546,10 +1679,29 @@
       }
 
       const cyan = "#bff8ff";
+      const magenta = "#ff4df5";
       const blink = 1;
       const radius = Math.max(4.8, Math.min(w, h) * 0.58);
       const cx = x + w / 2;
       const cy = y + h / 2;
+
+      if (brick.catcher) {
+        const notch = Math.PI * 0.62;
+        const rotation = state.blinkTime * (brick.spinSpeed || 0);
+        const start = brick.notchAngle + rotation + notch * 0.5;
+        const end = brick.notchAngle + rotation + Math.PI * 2 - notch * 0.5;
+        ctx.save();
+        ctx.globalAlpha = blink;
+        ctx.lineWidth = Math.max(2, radius * 0.34);
+        ctx.strokeStyle = brick.splitter ? magenta : cyan;
+        ctx.shadowBlur = brick.splitter ? 10 : 7;
+        ctx.shadowColor = brick.splitter ? "rgba(255, 77, 245, 0.45)" : "rgba(80, 236, 255, 0.3)";
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.stroke();
+        ctx.restore();
+        return;
+      }
 
       ctx.save();
       ctx.globalAlpha = blink;
@@ -1587,6 +1739,94 @@
       ctx.lineTo(effect.x + effect.dx * tail, effect.y + effect.dy * tail);
       ctx.stroke();
       ctx.restore();
+    }
+
+    function updateBallTrail(dt) {
+      const speed = Math.hypot(state.ball.dx, state.ball.dy);
+      const targetLength = speed > 180 ? 22 : 16;
+      state.ballTrail.unshift({ x: state.ball.x, y: state.ball.y, life: 1 });
+      if (state.ballTrail.length > targetLength) {
+        state.ballTrail.length = targetLength;
+      }
+
+      const decay = Math.max(0.09, dt * 2.2);
+      state.ballTrail = state.ballTrail
+        .map((node) => ({ x: node.x, y: node.y, life: node.life - decay }))
+        .filter((node) => node.life > 0);
+    }
+
+    function drawBallWithTrail() {
+      const b = state.ball;
+      const max = Math.max(1, state.ballTrail.length);
+
+      for (let i = 0; i < state.ballTrail.length; i += 1) {
+        const node = state.ballTrail[i];
+        const t = 1 - i / max;
+        const alpha = Math.max(0, node.life) * t * 0.56;
+        const r = Math.max(2.2, b.r * (0.34 + t * 0.52));
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff7bf8";
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = "rgba(255, 77, 245, 0.45)";
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.shadowBlur = 28;
+      ctx.shadowColor = "rgba(255, 77, 245, 0.75)";
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r + 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 77, 245, 0.34)";
+      ctx.fill();
+
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = "rgba(255, 170, 248, 0.66)";
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff4df5";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(255, 236, 253, 0.86)";
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawAuxBall(ball) {
+      ctx.save();
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = "rgba(255, 77, 245, 0.52)";
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r * 0.94, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 77, 245, 0.9)";
+      ctx.fill();
+      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = "rgba(255, 219, 252, 0.75)";
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function spawnTripleBallsFromBall(sourceBall) {
+      const speed = Math.max(sourceBall.speedBase || state.ball.speedBase, Math.hypot(sourceBall.dx, sourceBall.dy));
+      const baseAngle = Math.atan2(sourceBall.dy, sourceBall.dx);
+      const spread = 0.32;
+      sourceBall.dx = Math.cos(baseAngle) * speed;
+      sourceBall.dy = Math.sin(baseAngle) * speed;
+
+      state.extraBalls = [-spread, spread].map((offset) => {
+        const angle = baseAngle + offset;
+        return {
+          x: sourceBall.x,
+          y: sourceBall.y,
+          r: sourceBall.r,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          speedBase: sourceBall.speedBase || state.ball.speedBase,
+        };
+      });
     }
 
     function spawnExplosion(brick, directionX, directionY, intensity = 1, options = {}) {
@@ -1800,17 +2040,10 @@
 
       if (!state.contactOpen) {
         drawSlider();
-
-        ctx.shadowBlur = 9;
-        ctx.shadowColor = "rgba(255,77,245,0.42)";
-        ctx.beginPath();
-        ctx.arc(state.ball.x, state.ball.y, state.ball.r, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff4df5";
-        ctx.fill();
-        ctx.lineWidth = 0.9;
-        ctx.strokeStyle = "rgba(255, 219, 252, 0.78)";
-        ctx.stroke();
-        ctx.shadowBlur = 0;
+        drawBallWithTrail();
+        for (const extraBall of state.extraBalls) {
+          drawAuxBall(extraBall);
+        }
       }
     }
 
@@ -1874,8 +2107,8 @@
       syncGameUi();
     }
 
-    function normalizeBallVelocity() {
-      const b = state.ball;
+    function normalizeBallVelocity(ball = state.ball) {
+      const b = ball;
       const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
       const minAxis = Math.max(70, speed * 0.24);
 
@@ -1887,10 +2120,10 @@
       b.dy *= scale;
     }
 
-    function collideWithPaddle() {
+    function collideWithPaddle(ball = state.ball) {
       if (isPerimeterChallengeActive()) {
         const slider = getPerimeterSlider();
-        const b = state.ball;
+        const b = ball;
         if (!slider) return;
 
         const overlaps = b.x + b.r >= slider.x
@@ -1925,12 +2158,12 @@
           return;
         }
 
-        normalizeBallVelocity();
+        normalizeBallVelocity(b);
         return;
       }
 
       const p = state.paddle;
-      const b = state.ball;
+      const b = ball;
       if (
         b.x + b.r >= p.x &&
         b.x - b.r <= p.x + p.w &&
@@ -1943,12 +2176,12 @@
         b.dx = speed * hit;
         b.dy = -Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000));
         b.y = p.y - b.r - 1;
-        normalizeBallVelocity();
+        normalizeBallVelocity(b);
       }
     }
 
-    function collideWithBricks() {
-      const b = state.ball;
+    function collideWithBricks(ball = state.ball, allowTrap = true) {
+      const b = ball;
 
       for (const brick of state.bricks) {
         if (!brick.alive || !brick.active) continue;
@@ -1962,6 +2195,103 @@
         const impactX = b.dx;
         const impactY = b.dy;
 
+        if (brick.catcher) {
+          if (brick.splitter) {
+            destroyBrick(brick, {
+              directionX: impactX,
+              directionY: impactY,
+              intensity: 1.2,
+              fillStyle: "rgba(255, 77, 245, 0.36)",
+              strokeStyle: "rgba(255, 77, 245, 0.98)",
+              shadowColor: "rgba(255, 77, 245, 0.74)",
+            });
+            if (b === state.ball) {
+              spawnTripleBallsFromBall(b);
+            }
+            syncPeriodicUnlockState();
+            syncHud();
+
+            if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+            else b.dy *= -1;
+            normalizeBallVelocity(b);
+          
+            const target = currentLevelTarget();
+            if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+              nextLevel();
+              return;
+            }
+
+            if (remainingBricks() <= 0) {
+              if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+                resetCurrentLevelLayout();
+              } else {
+                nextLevel();
+              }
+            }
+            return;
+          }
+
+          const inLen = Math.hypot(impactX, impactY) || 1;
+          const incomingToCenterX = -impactX / inLen;
+          const incomingToCenterY = -impactY / inLen;
+          const openingAngle = brick.notchAngle + state.blinkTime * (brick.spinSpeed || 0);
+          const openX = Math.cos(openingAngle);
+          const openY = Math.sin(openingAngle);
+          const throughOpening = (incomingToCenterX * openX + incomingToCenterY * openY) > 0.72;
+
+          if (allowTrap && throughOpening) {
+            const speed = Math.max(b.speedBase || state.ball.speedBase, Math.hypot(impactX, impactY));
+            state.ballTrap = {
+              brick,
+              hold: CATCHER_HOLD_SECONDS,
+              elapsed: 0,
+              speed,
+              incomingX: impactX,
+              incomingY: impactY,
+            };
+            b.x = brick.x + brick.w / 2;
+            b.y = brick.y + brick.h / 2;
+            b.dx = 0;
+            b.dy = 0;
+            state.score += 15;
+            syncHud();
+            return;
+          }
+
+          destroyBrick(brick, {
+            directionX: impactX,
+            directionY: impactY,
+            intensity: 1.1,
+          });
+          syncPeriodicUnlockState();
+          syncHud();
+
+          if (state.paused) return;
+
+          if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+          else b.dy *= -1;
+          normalizeBallVelocity(b);
+
+          if ((state.level === 2 || isRuleLightningLevel()) && state.levelHits % 10 === 0) {
+            startAutomataBurst(brick, impactX, impactY);
+          }
+
+          const target = currentLevelTarget();
+          if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+            nextLevel();
+            return;
+          }
+
+          if (remainingBricks() <= 0) {
+            if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+              resetCurrentLevelLayout();
+            } else {
+              nextLevel();
+            }
+          }
+          return;
+        }
+
         destroyBrick(brick, {
           directionX: impactX,
           directionY: impactY,
@@ -1974,7 +2304,7 @@
 
         if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
         else b.dy *= -1;
-        normalizeBallVelocity();
+        normalizeBallVelocity(b);
 
         if ((state.level === 2 || isRuleLightningLevel()) && state.levelHits % 10 === 0) {
           startAutomataBurst(brick, impactX, impactY);
@@ -1999,6 +2329,31 @@
 
     function updateBall(dt) {
       const b = state.ball;
+
+      if (state.ballTrap) {
+        const trap = state.ballTrap;
+        const centerX = trap.brick.x + trap.brick.w / 2;
+        const centerY = trap.brick.y + trap.brick.h / 2;
+        b.x = centerX;
+        b.y = centerY;
+        trap.elapsed += dt;
+
+        if (trap.elapsed < trap.hold) {
+          return;
+        }
+
+        const baseAngle = Math.atan2(-trap.incomingY, -trap.incomingX);
+        const scatter = (Math.random() * 2 - 1) * CATCHER_REDIRECT_SPREAD;
+        const nextAngle = baseAngle + scatter;
+        const outSpeed = trap.speed * (0.96 + Math.random() * 0.12);
+        b.dx = Math.cos(nextAngle) * outSpeed;
+        b.dy = Math.sin(nextAngle) * outSpeed;
+        b.x = centerX + Math.cos(nextAngle) * (trap.brick.w * 0.58 + b.r + 2);
+        b.y = centerY + Math.sin(nextAngle) * (trap.brick.h * 0.58 + b.r + 2);
+        normalizeBallVelocity(b);
+        state.ballTrap = null;
+      }
+
       b.x += b.dx * dt;
       b.y += b.dy * dt;
 
@@ -2018,29 +2373,76 @@
         if (b.x - b.r <= 0) {
           b.x = b.r;
           b.dx = Math.abs(b.dx);
-          normalizeBallVelocity();
+          normalizeBallVelocity(b);
         } else if (b.x + b.r >= canvas.width) {
           b.x = canvas.width - b.r;
           b.dx = -Math.abs(b.dx);
-          normalizeBallVelocity();
+          normalizeBallVelocity(b);
         }
 
         if (b.y - b.r <= 0) {
           b.y = b.r;
           b.dy = Math.abs(b.dy);
-          normalizeBallVelocity();
+          normalizeBallVelocity(b);
         } else if (b.y - b.r > canvas.height) {
+          if (state.extraBalls.length > 0) {
+            const promoted = state.extraBalls.shift();
+            state.ball.x = promoted.x;
+            state.ball.y = promoted.y;
+            state.ball.dx = promoted.dx;
+            state.ball.dy = promoted.dy;
+            state.ball.speedBase = promoted.speedBase || state.ball.speedBase;
+            state.ball.r = promoted.r || state.ball.r;
+            state.ballTrail = [];
+            return;
+          }
           loseLife();
           return;
         }
       }
 
-      collideWithPaddle();
-      collideWithBricks();
+      collideWithPaddle(b);
+      collideWithBricks(b, true);
+      updateBallTrail(dt);
 
       if (isPerimeterChallengeActive() && isBallOutsideQrBounds()) {
         dropBackFromPerimeter();
       }
+    }
+
+    function updateExtraBalls(dt) {
+      if (!state.extraBalls.length) return;
+
+      const survivors = [];
+      for (const b of state.extraBalls) {
+        b.x += b.dx * dt;
+        b.y += b.dy * dt;
+
+        if (b.x - b.r <= 0) {
+          b.x = b.r;
+          b.dx = Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        } else if (b.x + b.r >= canvas.width) {
+          b.x = canvas.width - b.r;
+          b.dx = -Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        }
+
+        if (b.y - b.r <= 0) {
+          b.y = b.r;
+          b.dy = Math.abs(b.dy);
+          normalizeBallVelocity(b);
+        } else if (b.y - b.r > canvas.height) {
+          continue;
+        }
+
+        collideWithPaddle(b);
+        collideWithBricks(b, false);
+
+        survivors.push(b);
+      }
+
+      state.extraBalls = survivors;
     }
 
     function updatePattern(dt) {
@@ -2076,6 +2478,7 @@
         updatePattern(dt);
         updatePaddle(dt);
         updateBall(dt);
+        updateExtraBalls(dt);
         updateAutomataBursts(dt);
       }
 
@@ -2115,12 +2518,7 @@
       if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = false;
     });
 
-    function movePaddleFromClientPoint(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = canvas.width / rect.width;
-      const x = (clientX - rect.left) * ratio;
-      const y = (clientY - rect.top) * ratio;
-
+    function movePaddleFromCanvasPoint(x, y) {
       if (isPerimeterChallengeActive()) {
         setPerimeterOffset(closestPerimeterOffset(x, y));
         return;
@@ -2130,8 +2528,68 @@
       clampPaddle();
     }
 
-    canvas.addEventListener("mousemove", (event) => {
-      movePaddleFromClientPoint(event.clientX, event.clientY);
+    function getCanvasContentPoint(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const styles = window.getComputedStyle(canvas);
+      const borderLeft = parseFloat(styles.borderLeftWidth) || 0;
+      const borderRight = parseFloat(styles.borderRightWidth) || 0;
+      const borderTop = parseFloat(styles.borderTopWidth) || 0;
+      const borderBottom = parseFloat(styles.borderBottomWidth) || 0;
+      const contentWidth = Math.max(1, rect.width - borderLeft - borderRight);
+      const contentHeight = Math.max(1, rect.height - borderTop - borderBottom);
+      const x = ((clientX - rect.left - borderLeft) * canvas.width) / contentWidth;
+      const y = ((clientY - rect.top - borderTop) * canvas.height) / contentHeight;
+
+      return {
+        x: clamp(x, 0, canvas.width),
+        y: clamp(y, 0, canvas.height),
+      };
+    }
+
+    function movePaddleFromClientPoint(clientX, clientY) {
+      const point = getCanvasContentPoint(clientX, clientY);
+      movePaddleFromCanvasPoint(point.x, point.y);
+    }
+
+    function getCanvasPointFromMouseLikeEvent(event) {
+      if (event.currentTarget === canvas && typeof event.offsetX === "number" && typeof event.offsetY === "number") {
+        return {
+          x: clamp((event.offsetX * canvas.width) / Math.max(1, canvas.clientWidth), 0, canvas.width),
+          y: clamp((event.offsetY * canvas.height) / Math.max(1, canvas.clientHeight), 0, canvas.height),
+        };
+      }
+
+      return getCanvasContentPoint(event.clientX, event.clientY);
+    }
+
+    function movePaddleFromMouseEvent(event) {
+      const point = getCanvasPointFromMouseLikeEvent(event);
+      movePaddleFromCanvasPoint(point.x, point.y);
+
+      // Keep pointer-driven motion visually locked to the cursor instead of waiting
+      // for the next animation frame, which can feel slightly behind in the iframe.
+      if (state.running && !state.paused && !state.contactOpen) {
+        draw();
+      }
+    }
+
+    function getCanvasPointFromEvent(event) {
+      return getCanvasContentPoint(event.clientX, event.clientY);
+    }
+
+    function isPointInsideCurrentCard(x, y) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      return (
+        x >= layout.cardX &&
+        x <= layout.cardX + layout.cardW &&
+        y >= layout.cardY &&
+        y <= layout.cardY + layout.cardH
+      );
+    }
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      movePaddleFromMouseEvent(event);
     });
 
     canvas.addEventListener(
@@ -2160,6 +2618,46 @@
       openMail();
     });
 
+    function getFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    async function requestFullscreenFor(element) {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen();
+        return;
+      }
+      if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+        return;
+      }
+      throw new Error("Fullscreen request is unsupported.");
+    }
+
+    async function exitFullscreenMode() {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+        return;
+      }
+      if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+        return;
+      }
+      throw new Error("Fullscreen exit is unsupported.");
+    }
+
+    async function toggleFullscreenMode() {
+      try {
+        if (getFullscreenElement()) {
+          await exitFullscreenMode();
+        } else {
+          await requestFullscreenFor(document.documentElement);
+        }
+      } catch (_error) {
+        setSaveFeedback("Fullscreen mode is unavailable in this browser.");
+      }
+    }
+
     function setLandscapeDirection(direction, active) {
       if (direction === "left") state.keys.left = active;
       if (direction === "right") state.keys.right = active;
@@ -2187,49 +2685,22 @@
     bindLandscapeControl(landscapeLeft, "left");
     bindLandscapeControl(landscapeRight, "right");
 
-    function clearPendingSingleTap() {
-      if (state.clickTimer) {
-        window.clearTimeout(state.clickTimer);
-        state.clickTimer = null;
-      }
-    }
-
-    function handleSingleActivate() {
-      clearPendingSingleTap();
-      if (state.qrLoading) return;
-      if (state.contactOpen && !state.gameOver) {
-        startOrResume();
-        return;
-      }
-      pauseIntoContact();
-    }
-
-    function handleDoubleActivate(options = {}) {
-      clearPendingSingleTap();
-      if (state.qrLoading) return;
-      if (options.storeLocal && state.contactOpen) {
-        saveContactLocally();
-        draw();
-        return;
-      }
-      if (!state.contactOpen && state.running && !state.gameOver) {
-        pauseIntoContact();
-        return;
-      }
-      startOrResume();
-    }
-
     canvas.addEventListener("dblclick", (event) => {
       event.preventDefault();
-      handleDoubleActivate();
+      void toggleFullscreenMode();
     });
 
     canvas.addEventListener("click", (event) => {
       event.preventDefault();
-      clearPendingSingleTap();
-      state.clickTimer = window.setTimeout(() => {
-        handleSingleActivate();
-      }, 220);
+      if (state.qrLoading) return;
+      const point = getCanvasPointFromEvent(event);
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
+        pauseIntoContact();
+        return;
+      }
+      if (!state.running || state.paused || state.contactOpen || state.gameOver) {
+        startOrResume();
+      }
     });
 
     canvas.addEventListener(
@@ -2239,18 +2710,68 @@
         const now = performance.now();
         if (now - state.lastPointerUp < 260) {
           state.lastPointerUp = 0;
-          handleDoubleActivate({ storeLocal: true });
+          void toggleFullscreenMode();
           return;
         }
         state.lastPointerUp = now;
-        clearPendingSingleTap();
-        state.clickTimer = window.setTimeout(() => {
-          handleSingleActivate();
-          state.lastPointerUp = 0;
-        }, 260);
+        if (state.qrLoading) return;
+        const point = getCanvasPointFromEvent(event);
+        if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
+          pauseIntoContact();
+          return;
+        }
+        if (!state.running || state.paused || state.contactOpen || state.gameOver) {
+          startOrResume();
+        }
       },
       { passive: true }
     );
+
+    function shouldSwitchBackFromTarget(target) {
+      if (!(target instanceof Element)) return false;
+      if (target.closest("canvas")) return false;
+      if (target.closest("button, a, input, textarea, select, label")) return false;
+      return true;
+    }
+
+    document.addEventListener(
+      "pointerup",
+      (event) => {
+        if (!shouldSwitchBackFromTarget(event.target)) return;
+        if (state.qrLoading) return;
+        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+          pauseIntoContact();
+        }
+      },
+      { passive: true }
+    );
+
+    let layoutSyncTimer = null;
+    let canvasSizeObserver = null;
+
+    function scheduleLayoutSync() {
+      if (layoutSyncTimer) {
+        window.clearTimeout(layoutSyncTimer);
+      }
+      layoutSyncTimer = window.setTimeout(() => {
+        layoutSyncTimer = null;
+        if (!state.initialized) return;
+
+        resetCurrentLevelLayout();
+        draw();
+      }, 90);
+    }
+
+    window.addEventListener("resize", scheduleLayoutSync, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleLayoutSync, { passive: true });
+    }
+    if (typeof ResizeObserver === "function") {
+      canvasSizeObserver = new ResizeObserver(() => {
+        scheduleLayoutSync();
+      });
+      canvasSizeObserver.observe(canvas);
+    }
 
     function bootWhenReady(startMs) {
       state.initialized = true;

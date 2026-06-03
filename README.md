@@ -2,6 +2,10 @@
 
 This repository is the public Calyr.ai website.
 
+## Homepage versioning
+
+- Version registry and build chain (MD -> YAML -> HTML): `README_versions.md`
+
 ## Short navigation
 
 Use this repo section when you are doing homepage-facing work.
@@ -191,3 +195,176 @@ They were removed from the site page build list in `scripts/build_pages.py`, so 
 If you want everything “organisable via your private git”, a clean pattern is to create a **private hub repo** (e.g. `ruperttscheliessnig/calyr-private`) and add your research repos as **git submodules**.
 
 That gives you one private entry point (issues, notes, scripts) while keeping individual projects separated.
+
+## Universal Layout Editing Process (All Pages)
+
+Use this process when you want direct, in-place editing on the real page (not a separate schematic view).
+
+Scope covered:
+
+- Page panels (toolbar, canvas, inspector, palette, floating controls)
+- Node movement/editing (graph nodes)
+- Editor surfaces (inspector/editor columns and sections)
+
+### 1) Add a layout config in the page runtime JS
+
+Define one central config object for editable panels, drag limits, and storage keys.
+
+Reference implementation:
+
+- `apps/homepage/engines/alphafold/js/glabs_nexus_engines_alphafold_reactflow.js`
+
+Required shape:
+
+- `panelEdit.storageKey`: localStorage key for panel offsets
+- `panelEdit.min` and `panelEdit.max`: drag clamps
+- `panelEdit.editable[]`: list of editable panel IDs and labels
+
+### 2) Add state + persistence
+
+Add runtime state for:
+
+- `layoutEditEnabled` (on/off mode)
+- `panelOffsets` (x/y offsets per panel)
+
+Persist offsets to localStorage under `panelEdit.storageKey`, and restore on load.
+
+### 3) Add in-place drag handlers
+
+Implement panel drag helpers:
+
+- `getPanelOffsetStyle(panelId)`
+- `startPanelOffsetDrag(panelId, pointerEvent)`
+- `resetPanelOffsets()`
+
+Apply offsets by adding `style={getPanelOffsetStyle('<id>')}` directly on the real panel element.
+
+### 4) Expose controls in the real toolbar
+
+Add two buttons where users already work:
+
+- `Layout` (toggle in-place panel editing)
+- `Reset Panels` (clear offsets)
+
+This keeps editing directly inside the actual page workflow.
+
+### 5) Add drag grips on real panels
+
+For each editable panel:
+
+- Add a small grip button rendered only in layout mode
+- Bind grip pointer down to `startPanelOffsetDrag(panelId, event)`
+
+Current AlphaFold grip targets:
+
+- toolbar
+- mode ruler
+- canvas panel
+- inspector panel
+- palette panel
+
+### 6) Keep node editing in-page too
+
+For graph pages:
+
+- Keep `nodesDraggable` bound to a mode toggle (for safe accidental-drag prevention)
+- Keep node editor/inspector visible in the same page
+- Keep node reset/fit actions local to the page
+
+Current AlphaFold node editing reference:
+
+- `Move mode` control in flow controls
+- active node JSON editor in inspector sections
+
+### 7) CSS requirements
+
+Add three style layers:
+
+- Layout mode affordance (dashed outlines on editable panels)
+- Grip styles (`.af-layout-panel-grip`)
+- Hidden-by-default grip visibility (`.is-layout-edit` parent class enables grips)
+
+Reference styles:
+
+- `apps/homepage/engines/alphafold/css/glabs_nexus_engines_alphafold.css`
+
+### 8) Page integration checklist (copy for every page)
+
+1. Add page-level `LAYOUT_CONFIG` / `WORKFLOW_LAYOUT.panelEdit`
+2. Add `layoutEditEnabled` and `panelOffsets` state
+3. Add localStorage restore/save effects
+4. Add toolbar buttons: `Layout`, `Reset Panels`
+5. Add grips to target panels
+6. Add per-panel transform styles
+7. Add CSS for outlines + grips
+8. Bump script query version in HTML (`?v=...`) to force browser refresh
+9. Validate with `get_errors`
+10. Verify in browser: toggle mode, drag panels, reload, confirm persistence
+
+### 9) Storage key convention (recommended)
+
+Use one key per page:
+
+- `af.workflow.layoutPanelOffsets.v1` (AlphaFold)
+- `<page>.layoutPanelOffsets.v1` (for new pages)
+
+Use one key for floating utility offsets if needed:
+
+- `<page>.panelDrag.v1`
+
+### 10) Why this process
+
+This gives the easiest editing flow:
+
+- Users edit in the real context
+- Panels, nodes, and editor move in one place
+- Layout survives refresh automatically
+- Same pattern can be repeated quickly across all pages
+
+## Homepage Direct Layout Editing (In-Page)
+
+Standard runtime:
+
+- `apps/homepage/js/nexus_layouttuning.js` (`nexus.layouttuning`)
+
+This is the shared layout refinement runtime for page-level tuning (storage, JSON snapshot, save/download/copy helpers).
+
+The homepage now supports direct in-page layout editing (same pattern, no separate editor required).
+
+Entry point:
+
+- `apps/homepage/index.html`
+
+Runtime + styles:
+
+- `apps/homepage/js/home_layout_editor.js`
+- `apps/homepage/css/home.css`
+
+Toolbar controls on the live homepage:
+
+- `Layout`: toggle edit mode and show raster + draggable overlay boxes
+- `Reset`: clear saved offsets and restore default positions
+- `Save`: persist current offsets and download `home_layout_offsets.json`
+- `Copy JSON`: copy current offsets for handoff or versioning
+
+Persistence key:
+
+- `calyr.home.layout.offsets.v1`
+
+Current editable homepage targets:
+
+- `#hero`
+- `.hero-copy`
+- `.hero-kicker`
+- `.hero-title`
+- `.hero-subtitle`
+- `.hero-orbit-logo`
+- `.hero-cta`
+- `.hero-characteristics`
+- `.site-footer`
+
+Notes:
+
+- Dragging snaps to a 16px raster.
+- Offsets are applied via `transform: translate(...)` on target elements.
+- Offsets persist through refresh and can be reset at any time.

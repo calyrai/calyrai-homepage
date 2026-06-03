@@ -17,13 +17,13 @@ layers:
 hero:
   label: ''
   title: Calyr.aí
-  subtitle: 'We use ASC supercomputer power like a digital pen for training and molecular
-    design, while the iPhone becomes the pocket pen in your hand.
+  subtitle: 'We use ASC supercomputer power for training and the design of molecules,
+    systems, and reproducible predictive oracles.
 
     '
   cta:
-    text: Explore the OO Engine
-    href: '#engine'
+    text: Explore the Nexus
+    href: https://calyr.ai/explore.html?v=20260524-blend-r1
 meta:
   page_title: Calyr.aí - Molecular Deeptech
   tagline: Molecular Intelligence · Adaptive Systems · Reproducible Oracles
@@ -73,8 +73,8 @@ nav:
     href: '#adaptive-systems'
   - label: REPRODUCIBLE ORACLES
     href: '#reproducible-oracles'
-  - label: OBJECT-ORIENTED PAGE ENGINE
-    href: '#engine'
+  - label: EXPLORE THE NEXUS
+    href: https://calyr.ai/explore.html?v=20260524-blend-r1
   bottom:
   - label: MOLECULAR INTELLIGENCE
     href: '#molecular-intelligence'
@@ -83,10 +83,6 @@ nav:
   - label: REPRODUCIBLE ORACLES
     href: '#reproducible-oracles'
 tile_modules_manifest: homepage_v3/tiles/tiles.yaml
-arte_mobile_theme:
-  enabled: true
-  accent: '#8ef4ff'
-  secondary: '#ff4df5'
 animation:
   particle_runtime:
     max_particles: 188

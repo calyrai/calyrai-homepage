@@ -1,0 +1,11 @@
+nodes:
+- id: theory
+  label: Theory
+  meaning: Knowledge architecture and semantic operating model
+  links:
+  - contact
+- id: contact
+  label: Contact
+  meaning: Playable contact surface and communication endpoint
+  links:
+  - theory

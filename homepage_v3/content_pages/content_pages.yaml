@@ -1,0 +1,37 @@
+pages:
+- source: calyr-current-projects.md
+  output: pages/calyr-current-projects.html
+  back_href: ../index.html#projects
+  kicker: Projects / Flagship Programs
+  brand: Calyr.aí / Projects
+  index_note: Projects are practical manifestations of the Atlas. Each program contributes
+    data, methods, models, and knowledge objects back into the shared knowledge infrastructure.
+  footer_note: This page documents active and flagship project directions. Details
+    are updated as programs evolve and new evidence is integrated into the Atlas.
+- source: calyr-business-model.md
+  output: pages/calyr-business-model.html
+  back_href: ../index.html#theory
+  kicker: Theory / Business Model
+  brand: Calyr.aí / Theory
+  index_note: Calyr.aí treats knowledge topology as the durable asset. Interfaces,
+    glyphs, AI systems, and tools are downstream projections of that structure.
+  footer_note: This page is a separate theory surface linked from the homepage. The
+    markdown source remains the canonical content asset for future revisions.
+- source: calyr-page-design.md
+  output: pages/calyr-page-design.html
+  back_href: ../index.html#design-page
+  kicker: Design / OO Page System
+  brand: Calyr.aí / Design
+  index_note: This page documents how markdown content is projected into the homepage
+    and detail pages while preserving layout constraints.
+  footer_note: 'Design is source-driven: markdown is the canonical truth, YAML defines
+    projection, and the renderer keeps visual structure stable.'
+- source: calyr-engine-project-description.md
+  output: pages/calyr-engine-project-description.html
+  back_href: ../index.html#engine-project-description
+  kicker: Engine / Project Description
+  brand: Calyr.aí / Engine
+  index_note: This page describes engine project scope, workflow stages, and ASC integration
+    surfaces in the same layout style as other detail pages.
+  footer_note: The engine project description is source-driven and can evolve via
+    markdown without redesigning the surrounding UI shell.

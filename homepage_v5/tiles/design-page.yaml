@@ -1,0 +1,32 @@
+id: design-page
+title: Page Design
+tile_kind: text
+open_by_default: false
+open_span:
+  cols: 7
+  rows: 5
+closed_span:
+  cols: 3
+  rows: 2
+closed_gradient: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130,
+  160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%)
+color: '#fff7f2'
+teaser: Design principles of the page system from markdown to render output.
+detail_label: Open page design
+detail_href: pages/calyr-page-design.html
+keywords:
+- design
+- page
+- markdown
+- layout
+- oo-engine
+neighbors:
+- engine
+- theory
+- projects
+node_id: design-page
+body: 'Open the page design detail page directly from this tile.
+
+  This tile documents how markdown, YAML, and rendering stay aligned.
+
+  Use it to inspect design decisions without changing the current layout shell.'

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Calyr.aí - Molecular Deeptech</title>
+  <link rel="stylesheet" href="../calyrai_font/out/calyrai-sans.css" />
+  <style>
+		:root {
+			--bg: #07080f;
+			--fg: #f2f6ff;
+			--muted: #b8c2d5;
+			--line: rgba(255,255,255,0.14);
+			--accent: #f2f6ff;
+			--typo: 'Eurostile Extended','Eurostile','Microgramma D Extended','Bank Gothic','Helvetica Neue','Arial Narrow',Arial,sans-serif;
+		}
+		* { box-sizing: border-box; }
+		html, body { height: 100%; }
+		body {
+			margin: 0;
+			background: radial-gradient(120% 120% at 50% -20%, #131827 0%, var(--bg) 56%);
+			color: var(--fg);
+			font-family: var(--typo);
+			letter-spacing: 0.04em;
+		}
+		.page {
+			min-height: 100vh;
+			display: grid;
+			grid-template-columns: minmax(320px, 1fr) minmax(260px, 420px);
+			gap: clamp(2rem, 6vw, 8rem);
+			align-items: center;
+			padding: clamp(2rem, 7vw, 6rem);
+		}
+		.hero-label {
+			font-size: clamp(0.74rem, 1vw, 0.92rem);
+			text-transform: uppercase;
+			color: var(--muted);
+			letter-spacing: 0.2em;
+			margin-bottom: clamp(1rem, 2vw, 1.5rem);
+		}
+		h1 {
+			margin: 0;
+			font-size: clamp(2.3rem, 6vw, 5.1rem);
+			font-weight: 300;
+			line-height: 0.96;
+			letter-spacing: 0.03em;
+		}
+		.hero-subtitle {
+			margin-top: clamp(1rem, 2vw, 1.8rem);
+			margin-bottom: 0;
+			max-width: 52ch;
+			color: var(--muted);
+			font-size: clamp(0.96rem, 1.25vw, 1.25rem);
+			line-height: 1.6;
+			letter-spacing: 0.05em;
+		}
+		.brand {
+			justify-self: end;
+			display: flex;
+			flex-direction: column;
+			gap: 1.4rem;
+			align-items: flex-start;
+			width: min(100%, 420px);
+		}
+		.brand .calyrai-wordmark { width: 100%; margin: 0; }
+		.brand .calyrai-wordmark-svg { width: 100%; height: auto; display: block; }
+		.cta {
+			text-decoration: none;
+			text-transform: uppercase;
+			color: var(--accent);
+			letter-spacing: 0.16em;
+			font-size: 0.84rem;
+			border-bottom: 1px solid var(--line);
+			padding-bottom: 0.28rem;
+		}
+		.tagline {
+			font-size: 0.78rem;
+			color: var(--muted);
+			letter-spacing: 0.11em;
+			text-transform: uppercase;
+			line-height: 1.45;
+		}
+		@media (max-width: 940px) {
+			.page {
+				grid-template-columns: 1fr;
+				gap: 2.2rem;
+			}
+			.brand {
+				justify-self: start;
+				width: min(100%, 360px);
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<section>
+			<div class="hero-label">SOFT MATTER LEARNING</div>
+			<h1>Calyr.aí</h1>
+			<p class="hero-subtitle">Soft matter AI-assisted learning and design for reproducible predictive oracles.</p>
+		</section>
+		<section class="brand">
+			
+	<div class="calyrai-wordmark" aria-label="CALYRAI">
+	  <svg class="calyrai-wordmark-svg" viewBox="0 0 1180 180" role="img" aria-hidden="true">
+	    <defs>
+	      <linearGradient id="calyrai-cyan-glow" x1="0" y1="0" x2="1" y2="0">
+	        <stop offset="0%" stop-color="#2de8f2" />
+	        <stop offset="100%" stop-color="#08d0ff" />
+	      </linearGradient>
+	      <linearGradient id="calyrai-magenta-glow" x1="0" y1="0" x2="1" y2="0">
+	        <stop offset="0%" stop-color="#ff2cf6" />
+	        <stop offset="100%" stop-color="#d81fff" />
+	      </linearGradient>
+	      <filter id="calyrai-neon-cyan" x="-22%" y="-22%" width="144%" height="144%">
+	        <feGaussianBlur stdDeviation="1.05" result="blur" />
+	        <feMerge>
+	          <feMergeNode in="blur" />
+	          <feMergeNode in="SourceGraphic" />
+	        </feMerge>
+	      </filter>
+	      <filter id="calyrai-neon-magenta" x="-22%" y="-22%" width="144%" height="144%">
+	        <feGaussianBlur stdDeviation="1.05" result="blur" />
+	        <feMerge>
+	          <feMergeNode in="blur" />
+	          <feMergeNode in="SourceGraphic" />
+	        </feMerge>
+	      </filter>
+	    </defs>
+	    <g fill="none" stroke-linecap="square" stroke-linejoin="miter" stroke-width="5.8">
+	      <path d="M 114 54 H 58 V 128 H 114" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 193 128 L 230 54 H 290 L 327 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 246 54 L 246 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 424 54 V 128 H 520" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 601 54 L 656 92 L 711 54" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 656 92 V 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 810 54 V 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 810 54 H 900 Q 928 54 928 80 Q 928 104 900 104 H 810" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 870 104 L 928 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 1003 128 L 1040 54 H 1100 L 1137 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 1056 54 L 1056 128" stroke="url(#calyrai-cyan-glow)" filter="url(#calyrai-neon-cyan)" />
+	      <path d="M 1170 54 V 128" stroke="url(#calyrai-magenta-glow)" filter="url(#calyrai-neon-magenta)" />
+	      <path d="M 1158 39 L 1178 20" stroke="url(#calyrai-magenta-glow)" filter="url(#calyrai-neon-magenta)" />
+	    </g>
+	  </svg>
+	</div>
+	
+			<a class="cta" href="https://calyr.ai/explore.html?v=20260524-blend-r1">EXPLORE THE NEXUS</a>
+			<div class="tagline">SOFT MATTER · LEARNING SYSTEMS · REPRODUCIBLE ORACLES</div>
+		</section>
+	</main>
+</body>
+</html>

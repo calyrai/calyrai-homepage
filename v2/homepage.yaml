@@ -1,0 +1,131 @@
+layout:
+  mode: "titlepage"
+  grid:
+    spacing_cm: 1
+    color: "#fff"
+    dot_radius_px: 0.7
+layers:
+  swirl_joystick:
+    enabled: true
+    sensitivity: 1.0
+    color_mode: section
+  particle_field:
+    enabled: true
+    particle_count: 1
+    levy_jump_prob: 0.08
+    field_strength: 0.7
+hero:
+  label: "SOFT MATTER LEARNING"
+  title: "Calyr.aí"
+  subtitle: |
+    Soft matter AI-assisted learning and design for reproducible predictive oracles.
+  cta:
+    text: "EXPLORE THE NEXUS"
+    href: "https://calyr.ai/explore.html?v=20260524-blend-r1"
+meta:
+  page_title: "Calyr.aí - Molecular Deeptech"
+  tagline: "SOFT MATTER · LEARNING SYSTEMS · REPRODUCIBLE ORACLES"
+nav:
+  top:
+    - label: "SOFT MATTER"
+      href: "#soft-matter"
+    - label: "LEARNING SYSTEMS"
+      href: "#learning-systems"
+    - label: "REPRODUCIBLE ORACLES"
+      href: "#reproducible-oracles"
+    - label: "EXPLORE THE NEXUS"
+      href: "https://calyr.ai/explore.html?v=20260524-blend-r1"
+  bottom:
+    - label: "SOFT MATTER"
+      href: "#soft-matter"
+    - label: "LEARNING SYSTEMS"
+      href: "#learning-systems"
+    - label: "REPRODUCIBLE ORACLES"
+      href: "#reproducible-oracles"
+explore_sections:
+  - title: "Theory"
+    color: "#24f3ff"
+    body: |
+      Soft matter learning is the core framing of the Calyr.ai page.
+      It combines material-system understanding with machine intelligence.
+      Use this layer to translate complex physical behavior into computable representations.
+  - title: "Calyrai"
+    color: "#ff4df5"
+    body: |
+      Learning systems continuously update how structure, data, and interpretation connect.
+      They support adaptive model behavior rather than static one-time fitting.
+      Use this layer when iterative improvement and semantic consistency are required.
+  - title: "Access"
+    color: "#f3f8ff"
+    body: |
+      Reproducible oracles are the public promise of the system.
+      Predictions and outputs must remain traceable, repeatable, and interpretable.
+      Use this layer for reliable decision surfaces that preserve scientific trust.
+  - title: "Engine"
+    color: "#9fb4c9"
+    body: |
+      Explore the Nexus provides the operational entry point for deeper interaction.
+      It connects the conceptual framing with navigable workspace structures.
+      Use this layer to move from homepage narrative to executable exploration.
+animation:
+  particle_runtime:
+    max_particles: 188
+    emit_per_frame: 3.2
+    levy_alpha: 1.45
+    levy_jump_prob: 0.28
+    min_step: 0.35
+    max_step: 28
+    base_drag: 0.988
+    trail_fade: 0.026
+    mouse_attract: 0.06
+    mouse_range: 420
+    mouse_attract_cutoff_margin: 34
+    return_to_swirl_force: 0.028
+    swirl_morph_force: 0.038
+    max_speed: 9.8
+    capture_frames: 140
+    soft_boundary_pull: 0.035
+    ring_capture_force: 0.14
+    swirl_repel_force: 0.012
+    grid_spacing: 37
+    grid_repel_r: 26
+    grid_repel_force: 0.11
+    grid_snap_r: 78
+    grid_snap_force: 0.068
+    ring_lock_band: 22
+    ring_lock_force: 0.22
+    ring_tangent_force: 0.18
+    emission_center_update_frames: 6
+    mouse_absorb_r: 34
+    swirl_absorb_band: 9
+    trail_point_step: 5
+    trail_min_dist: 18
+    trail_max_age: 188
+    trail_max_points: 15
+    meteor_trail_base_mult: 0.18
+    meteor_trail_head_mult: 1.75
+    meteor_glow_radius_mult: 4.8
+    meteor_head_long_mult: 1.08
+    meteor_head_short_mult: 0.68
+    meteor_tail_offset_base: 2.2
+    meteor_tail_offset_mult: 1.9
+    meteor_tail_width_mult: 0.95
+  flow_patterns:
+    mode: "auto"
+    adaptivity: 0.7
+    blend_strength: 0.75
+    presets:
+      spiral:
+        strength: 0.058
+        inward_pull: 0.018
+      beam:
+        strength: 0.046
+        line_pull: 0.024
+      vortex:
+        strength: 0.052
+        inward_pull: 0.02
+      weave:
+        strength: 0.036
+        frequency: 0.028
+      radial:
+        strength: 0.03
