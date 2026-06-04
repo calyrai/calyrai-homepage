@@ -1,0 +1,454 @@
+{
+  "generated_at": "2026-05-31T13:09:58.088551+00:00",
+  "stats": {
+    "paper_count": 3,
+    "section_count": 9,
+    "edge_count": 35
+  },
+  "nodes": [
+    {
+      "id": "atlas",
+      "type": "paper",
+      "title": "Atlas",
+      "subtitle": "Visible projection of the knowledge topology",
+      "glyph": "AT",
+      "cluster": "semantic-systems",
+      "tags": [
+        "projection",
+        "navigation",
+        "interface"
+      ],
+      "abstract": "Atlas is the visible projection of the knowledge graph, not a static menu.",
+      "path": "knowledge_network/papers/atlas.md",
+      "deeper_structure": [
+        {
+          "id": "abstract",
+          "title": "Abstract",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "cluster-emergence",
+          "title": "Cluster Emergence",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "glyph-projection",
+          "title": "Glyph Projection",
+          "level": 2,
+          "children": []
+        }
+      ],
+      "position": {
+        "x": 107.07,
+        "y": -54.19
+      },
+      "color": "hsl(320.0 78% 58%)",
+      "connectivity": {
+        "degree": 2,
+        "normalized_degree": 1.0,
+        "neighbors": [
+          "nexus",
+          "semantic-runtime"
+        ]
+      }
+    },
+    {
+      "id": "atlas::abstract",
+      "type": "section",
+      "paper_id": "atlas",
+      "section_id": "abstract",
+      "title": "Abstract",
+      "level": 2
+    },
+    {
+      "id": "atlas::cluster-emergence",
+      "type": "section",
+      "paper_id": "atlas",
+      "section_id": "cluster-emergence",
+      "title": "Cluster Emergence",
+      "level": 2
+    },
+    {
+      "id": "atlas::glyph-projection",
+      "type": "section",
+      "paper_id": "atlas",
+      "section_id": "glyph-projection",
+      "title": "Glyph Projection",
+      "level": 2
+    },
+    {
+      "id": "nexus",
+      "type": "paper",
+      "title": "Nexus",
+      "subtitle": "Operational topology for linking papers, sections, and runtime surfaces",
+      "glyph": "NX",
+      "cluster": "semantic-systems",
+      "tags": [
+        "runtime",
+        "orchestration",
+        "topology"
+      ],
+      "abstract": "Nexus defines the operational topology that binds papers, sections, and workflows into a traversable semantic runtime.",
+      "path": "knowledge_network/papers/nexus.md",
+      "deeper_structure": [
+        {
+          "id": "abstract",
+          "title": "Abstract",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "runtime-topology",
+          "title": "Runtime Topology",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "projection-binding",
+          "title": "Projection Binding",
+          "level": 2,
+          "children": []
+        }
+      ],
+      "position": {
+        "x": 104.71,
+        "y": -58.61
+      },
+      "color": "hsl(320.0 78% 58%)",
+      "connectivity": {
+        "degree": 2,
+        "normalized_degree": 1.0,
+        "neighbors": [
+          "atlas",
+          "semantic-runtime"
+        ]
+      }
+    },
+    {
+      "id": "nexus::abstract",
+      "type": "section",
+      "paper_id": "nexus",
+      "section_id": "abstract",
+      "title": "Abstract",
+      "level": 2
+    },
+    {
+      "id": "nexus::runtime-topology",
+      "type": "section",
+      "paper_id": "nexus",
+      "section_id": "runtime-topology",
+      "title": "Runtime Topology",
+      "level": 2
+    },
+    {
+      "id": "nexus::projection-binding",
+      "type": "section",
+      "paper_id": "nexus",
+      "section_id": "projection-binding",
+      "title": "Projection Binding",
+      "level": 2
+    },
+    {
+      "id": "semantic-runtime",
+      "type": "paper",
+      "title": "Semantic Runtime",
+      "subtitle": "Addressability and execution semantics for graph-native papers",
+      "glyph": "SR",
+      "cluster": "semantic-systems",
+      "tags": [
+        "semantics",
+        "addressing",
+        "execution"
+      ],
+      "abstract": "Semantic Runtime defines addressability and relation semantics for paper and section nodes.",
+      "path": "knowledge_network/papers/semantic-runtime.md",
+      "deeper_structure": [
+        {
+          "id": "abstract",
+          "title": "Abstract",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "semantic-addressing",
+          "title": "Semantic Addressing",
+          "level": 2,
+          "children": []
+        },
+        {
+          "id": "compression-cycle",
+          "title": "Compression Cycle",
+          "level": 2,
+          "children": []
+        }
+      ],
+      "position": {
+        "x": 104.69,
+        "y": 58.66
+      },
+      "color": "hsl(320.0 78% 58%)",
+      "connectivity": {
+        "degree": 2,
+        "normalized_degree": 1.0,
+        "neighbors": [
+          "atlas",
+          "nexus"
+        ]
+      }
+    },
+    {
+      "id": "semantic-runtime::abstract",
+      "type": "section",
+      "paper_id": "semantic-runtime",
+      "section_id": "abstract",
+      "title": "Abstract",
+      "level": 2
+    },
+    {
+      "id": "semantic-runtime::semantic-addressing",
+      "type": "section",
+      "paper_id": "semantic-runtime",
+      "section_id": "semantic-addressing",
+      "title": "Semantic Addressing",
+      "level": 2
+    },
+    {
+      "id": "semantic-runtime::compression-cycle",
+      "type": "section",
+      "paper_id": "semantic-runtime",
+      "section_id": "compression-cycle",
+      "title": "Compression Cycle",
+      "level": 2
+    }
+  ],
+  "edges": [
+    {
+      "id": "contains:atlas->atlas::abstract",
+      "type": "contains",
+      "source": "atlas",
+      "target": "atlas::abstract"
+    },
+    {
+      "id": "contains:atlas->atlas::cluster-emergence",
+      "type": "contains",
+      "source": "atlas",
+      "target": "atlas::cluster-emergence"
+    },
+    {
+      "id": "contains:atlas->atlas::glyph-projection",
+      "type": "contains",
+      "source": "atlas",
+      "target": "atlas::glyph-projection"
+    },
+    {
+      "id": "paper_ref:atlas->nexus",
+      "type": "paper_ref",
+      "source": "atlas",
+      "target": "nexus",
+      "resolved": true
+    },
+    {
+      "id": "paper_ref:atlas->glyph-interface",
+      "type": "paper_ref",
+      "source": "atlas",
+      "target": "glyph-interface",
+      "resolved": false
+    },
+    {
+      "id": "paper_link:atlas->nexus",
+      "type": "paper_link",
+      "source": "atlas",
+      "target": "nexus",
+      "resolved": true
+    },
+    {
+      "id": "paper_link:atlas->semantic-runtime::semantic-addressing",
+      "type": "paper_link",
+      "source": "atlas",
+      "target": "semantic-runtime::semantic-addressing",
+      "resolved": true
+    },
+    {
+      "id": "paper_link:atlas->glyph-interface",
+      "type": "paper_link",
+      "source": "atlas",
+      "target": "glyph-interface",
+      "resolved": false
+    },
+    {
+      "id": "section_link:atlas::cluster-emergence->nexus",
+      "type": "section_link",
+      "source": "atlas::cluster-emergence",
+      "target": "nexus"
+    },
+    {
+      "id": "section_link:atlas::cluster-emergence->semantic-runtime::semantic-addressing",
+      "type": "section_link",
+      "source": "atlas::cluster-emergence",
+      "target": "semantic-runtime::semantic-addressing"
+    },
+    {
+      "id": "section_link:atlas::glyph-projection->glyph-interface",
+      "type": "section_link",
+      "source": "atlas::glyph-projection",
+      "target": "glyph-interface"
+    },
+    {
+      "id": "contains:nexus->nexus::abstract",
+      "type": "contains",
+      "source": "nexus",
+      "target": "nexus::abstract"
+    },
+    {
+      "id": "contains:nexus->nexus::runtime-topology",
+      "type": "contains",
+      "source": "nexus",
+      "target": "nexus::runtime-topology"
+    },
+    {
+      "id": "contains:nexus->nexus::projection-binding",
+      "type": "contains",
+      "source": "nexus",
+      "target": "nexus::projection-binding"
+    },
+    {
+      "id": "paper_ref:nexus->semantic-runtime",
+      "type": "paper_ref",
+      "source": "nexus",
+      "target": "semantic-runtime",
+      "resolved": true
+    },
+    {
+      "id": "paper_ref:nexus->atlas",
+      "type": "paper_ref",
+      "source": "nexus",
+      "target": "atlas",
+      "resolved": true
+    },
+    {
+      "id": "paper_link:nexus->semantic-runtime",
+      "type": "paper_link",
+      "source": "nexus",
+      "target": "semantic-runtime",
+      "resolved": true
+    },
+    {
+      "id": "paper_link:nexus->atlas",
+      "type": "paper_link",
+      "source": "nexus",
+      "target": "atlas",
+      "resolved": true
+    },
+    {
+      "id": "paper_link:nexus->projection-theory",
+      "type": "paper_link",
+      "source": "nexus",
+      "target": "projection-theory",
+      "resolved": false
+    },
+    {
+      "id": "paper_link:nexus->atlas::cluster-emergence",
+      "type": "paper_link",
+      "source": "nexus",
+      "target": "atlas::cluster-emergence",
+      "resolved": true
+    },
+    {
+      "id": "section_link:nexus::runtime-topology->semantic-runtime",
+      "type": "section_link",
+      "source": "nexus::runtime-topology",
+      "target": "semantic-runtime"
+    },
+    {
+      "id": "section_link:nexus::runtime-topology->atlas",
+      "type": "section_link",
+      "source": "nexus::runtime-topology",
+      "target": "atlas"
+    },
+    {
+      "id": "section_link:nexus::projection-binding->projection-theory",
+      "type": "section_link",
+      "source": "nexus::projection-binding",
+      "target": "projection-theory"
+    },
+    {
+      "id": "section_link:nexus::projection-binding->atlas::cluster-emergence",
+      "type": "section_link",
+      "source": "nexus::projection-binding",
+      "target": "atlas::cluster-emergence"
+    },
+    {
+      "id": "contains:semantic-runtime->semantic-runtime::abstract",
+      "type": "contains",
+      "source": "semantic-runtime",
+      "target": "semantic-runtime::abstract"
+    },
+    {
+      "id": "contains:semantic-runtime->semantic-runtime::semantic-addressing",
+      "type": "contains",
+      "source": "semantic-runtime",
+      "target": "semantic-runtime::semantic-addressing"
+    },
+    {
+      "id": "contains:semantic-runtime->semantic-runtime::compression-cycle",
+      "type": "contains",
+      "source": "semantic-runtime",
+      "target": "semantic-runtime::compression-cycle"
+    },
+    {
+      "id": "paper_ref:semantic-runtime->glyph-interface",
+      "type": "paper_ref",
+      "source": "semantic-runtime",
+      "target": "glyph-interface",
+      "resolved": false
+    },
+    {
+      "id": "paper_ref:semantic-runtime->projection-theory",
+      "type": "paper_ref",
+      "source": "semantic-runtime",
+      "target": "projection-theory",
+      "resolved": false
+    },
+    {
+      "id": "paper_link:semantic-runtime->sbpa-assembly::lattice-formation",
+      "type": "paper_link",
+      "source": "semantic-runtime",
+      "target": "sbpa-assembly::lattice-formation",
+      "resolved": false
+    },
+    {
+      "id": "paper_link:semantic-runtime->glyph-interface",
+      "type": "paper_link",
+      "source": "semantic-runtime",
+      "target": "glyph-interface",
+      "resolved": false
+    },
+    {
+      "id": "paper_link:semantic-runtime->projection-theory",
+      "type": "paper_link",
+      "source": "semantic-runtime",
+      "target": "projection-theory",
+      "resolved": false
+    },
+    {
+      "id": "section_link:semantic-runtime::semantic-addressing->sbpa-assembly::lattice-formation",
+      "type": "section_link",
+      "source": "semantic-runtime::semantic-addressing",
+      "target": "sbpa-assembly::lattice-formation"
+    },
+    {
+      "id": "section_link:semantic-runtime::compression-cycle->glyph-interface",
+      "type": "section_link",
+      "source": "semantic-runtime::compression-cycle",
+      "target": "glyph-interface"
+    },
+    {
+      "id": "section_link:semantic-runtime::compression-cycle->projection-theory",
+      "type": "section_link",
+      "source": "semantic-runtime::compression-cycle",
+      "target": "projection-theory"
+    }
+  ]
+}

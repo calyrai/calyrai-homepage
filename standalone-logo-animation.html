@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Circle Rotation Baseline</title>
+  <style>
+    :root {
+      --bg: #020614;
+      --ink: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    #hero {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    #scene {
+      width: min(720px, 92vw);
+      height: auto;
+      overflow: visible;
+    }
+
+    #ring {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 14;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
+    }
+  </style>
+</head>
+<body>
+  <div id="hero">
+    <svg id="scene" viewBox="0 0 720 320" aria-label="rotating circle">
+      <g id="ringGroup" transform="translate(360 160)">
+        <circle id="ring" cx="0" cy="0" r="84"></circle>
+        <animateTransform
+          attributeName="transform"
+          additive="sum"
+          type="rotate"
+          from="0"
+          to="-360"
+          dur="2.4s"
+          repeatCount="indefinite"></animateTransform>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>

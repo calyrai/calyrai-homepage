@@ -1,0 +1,499 @@
+graph:
+  metadata:
+    id: calyrai-homepage
+    version: 1
+    mode: graph-first
+
+  flow:
+    - hero_title
+    - hero_subtitle
+    - nav_top
+    - section_theory
+    - section_calyrai
+    - section_access
+    - section_engine
+    - nav_bottom
+
+  nodes:
+    hero_title:
+      type: hero
+      text: Adaptive surrogate systems for complex reality.
+
+    hero_subtitle:
+      type: hero
+      text: We transform experimental and computational complexity into predictive, adaptive representations.
+
+    nav_top:
+      type: nav
+      items:
+        - label: SYSTEMS
+          href: "#systems"
+        - label: APPROACH
+          href: "#approach"
+        - label: RESEARCH
+          href: "#research"
+        - label: COMPANY
+          href: "#company"
+        - label: ENTER
+          href: "#enter"
+
+    section_theory:
+      type: section
+      title: Theory
+      body:
+        - Theory decomposes semantic space into navigable regions and records semantic adjacency and stable boundaries.
+        - It maps semantic terrain into stable regions so complex systems can be explored without losing orientation.
+        - Use Theory when you need semantic navigation that remains consistent as the system grows in complexity and scale.
+
+    section_calyrai:
+      type: section
+      title: Calyrai
+      body:
+        - Calyrai animates transitions and makes semantic gravity perceptible for interaction and perception.
+        - It turns state transitions into readable motion, emphasis, and context cues so users can feel system direction.
+        - Use Calyrai when interpretation must be intuitive while remaining faithful to the underlying semantic logic.
+
+    section_access:
+      type: section
+      title: Access
+      body:
+        - Access deploys live semantic projections so internal state can be rendered into public-facing surfaces.
+        - It ensures published surfaces stay synchronized with the internal model while preserving governance boundaries.
+        - Use Access for delivery channels where clarity, traceability, and controlled projection are required.
+
+    section_engine:
+      type: section
+      title: Engine
+      body:
+        - Engine handles graph evaluation, orchestration, and scheduling while public systems consume projections.
+        - It executes the internal graph of transformations, constraints, and orchestration rules.
+        - Use Engine as the protected execution substrate that powers projections without exposing private internals.
+
+    nav_bottom:
+      type: nav
+      items:
+        - label: SCIENCE
+          href: "#science"
+        - label: SOFTWARE
+          href: "#software"
+        - label: IMPACT
+          href: "#impact"
+
+    animation:
+      type: animation
+      params:
+        max_particles: 188
+        emit_per_frame: 3.2
+        levy_alpha: 1.45
+        levy_jump_prob: 0.28
+        min_step: 0.35
+        max_step: 28
+        base_drag: 0.988
+        trail_fade: 0.026
+        mouse_attract: 0.06
+        mouse_range: 420
+        mouse_attract_cutoff_margin: 34
+        return_to_swirl_force: 0.028
+        swirl_morph_force: 0.038
+        max_speed: 9.8
+        capture_frames: 140
+        soft_boundary_pull: 0.035
+        ring_capture_force: 0.14
+        swirl_repel_force: 0.012
+        grid_spacing: 37
+        grid_repel_r: 26
+        grid_repel_force: 0.11
+        grid_snap_r: 78
+        grid_snap_force: 0.068
+        ring_lock_band: 22
+        ring_lock_force: 0.22
+        ring_tangent_force: 0.18
+        emission_center_update_frames: 6
+        mouse_absorb_r: 34
+        swirl_absorb_band: 9
+        trail_point_step: 5
+        trail_min_dist: 18
+        trail_max_age: 188
+        trail_max_points: 15
+        meteor_trail_base_mult: 0.18
+        meteor_trail_head_mult: 1.75
+        meteor_glow_radius_mult: 4.8
+        meteor_head_long_mult: 1.08
+        meteor_head_short_mult: 0.68
+        meteor_tail_offset_base: 2.2
+        meteor_tail_offset_mult: 1.9
+        meteor_tail_width_mult: 0.95
+
+  edges:
+    - from: hero_title
+      to: hero_subtitle
+      relation: supports
+    - from: hero_subtitle
+      to: nav_top
+      relation: navigates_to
+    - from: nav_top
+      to: section_theory
+      relation: opens
+    - from: section_theory
+      to: section_calyrai
+      relation: flows_to
+    - from: section_calyrai
+      to: section_access
+      relation: flows_to
+    - from: section_access
+      to: section_engine
+      relation: flows_to
+    - from: section_engine
+      to: nav_bottom
+      relation: closes_with
+    - from: section_calyrai
+      to: animation
+      relation: configures
+
+  reactflow:
+    id: calyrai-workspace-workflow
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.82
+    defaults:
+      node_type: default
+      edge_type: smoothstep
+      animated_edges: true
+    styles:
+      node:
+        width: 176
+        height: 48
+        radius: 10
+        stroke_width: 1.2
+        text_size: 12
+        text_weight: 600
+        overrides:
+          n_semantic_core:
+            stroke: "#ff4df5"
+            text: "#ffe3fb"
+            stroke_width: 1.6
+            radius: 12
+            shadow: "0 0 14px rgba(255,77,245,0.35)"
+          n_calyrai_workspace:
+            stroke: "#7dffa3"
+            text: "#e8fff1"
+            stroke_width: 1.8
+            radius: 12
+            shadow: "0 0 18px rgba(125,255,163,0.35)"
+          n_public_surfaces:
+            stroke: "#ffd173"
+            text: "#fff6df"
+            stroke_width: 1.7
+            radius: 12
+            shadow: "0 0 16px rgba(255,209,115,0.30)"
+        categories:
+          intake:
+            fill: "rgba(8,19,32,0.9)"
+            stroke: "#36f3ff"
+            text: "#dffcff"
+          modeling:
+            fill: "rgba(18,14,34,0.9)"
+            stroke: "#c24fff"
+            text: "#f1deff"
+          runtime:
+            fill: "rgba(22,16,28,0.9)"
+            stroke: "#ff4df5"
+            text: "#ffe3fb"
+          interface:
+            fill: "rgba(14,20,36,0.9)"
+            stroke: "#9ec7ff"
+            text: "#ecf5ff"
+          workspace:
+            fill: "rgba(18,24,30,0.9)"
+            stroke: "#7dffa3"
+            text: "#e8fff1"
+          projection:
+            fill: "rgba(22,20,18,0.9)"
+            stroke: "#ffd173"
+            text: "#fff4d9"
+          governance:
+            fill: "rgba(28,18,18,0.9)"
+            stroke: "#ff8a8a"
+            text: "#ffe8e8"
+      edge:
+        stroke: "#c24fff"
+        stroke_width: 1.8
+        opacity: 0.86
+        label_color: "#c9a1ff"
+        label_size: 10
+      marker:
+        fill: "#c24fff"
+    legend:
+      intake: Signals and source acquisition
+      modeling: Semantic and graph modeling
+      runtime: Runtime execution and orchestration
+      interface: Human-visible interpretation layer
+      workspace: Authoring and operations workspace
+      projection: External delivery and publication surfaces
+      governance: Control, trust, and policy boundaries
+    nodes:
+      - id: n_sources
+        type: input
+        category: intake
+        position: { x: 80, y: 80 }
+        data:
+          label: Source Signals
+          description: Experimental, simulation, literature, and operator inputs.
+
+      - id: n_ingestion
+        type: default
+        category: intake
+        position: { x: 300, y: 80 }
+        data:
+          label: Ingestion
+          description: Normalization, schema alignment, and lineage capture.
+
+      - id: n_semantic_core
+        type: default
+        category: modeling
+        position: { x: 530, y: 80 }
+        data:
+          label: Semantic Core
+          description: Stable internal representation of states, meaning, and constraints.
+
+      - id: n_theory
+        type: default
+        category: modeling
+        position: { x: 760, y: 80 }
+        data:
+          label: Theory
+          description: Region decomposition, adjacency, and semantic boundary formation.
+
+      - id: n_graph_builder
+        type: default
+        category: modeling
+        position: { x: 980, y: 80 }
+        data:
+          label: Graph Builder
+          description: Materializes graph nodes, edges, constraints, and typed relations.
+
+      - id: n_engine
+        type: default
+        category: runtime
+        position: { x: 530, y: 260 }
+        data:
+          label: Engine
+          description: Graph evaluation, orchestration, and scheduling runtime.
+
+      - id: n_registry
+        type: default
+        category: governance
+        position: { x: 760, y: 260 }
+        data:
+          label: Registry
+          description: Provenance, version lineage, and semantic object identity.
+
+      - id: n_policy_gate
+        type: default
+        category: governance
+        position: { x: 980, y: 260 }
+        data:
+          label: Policy Gate
+          description: Compliance, access control, and release trust checks.
+
+      - id: n_calyrai
+        type: default
+        category: interface
+        position: { x: 530, y: 440 }
+        data:
+          label: Calyrai
+          description: Perceptual layer for transitions, semantic gravity, and interaction cues.
+
+      - id: n_reactflow_model
+        type: default
+        category: interface
+        position: { x: 760, y: 440 }
+        data:
+          label: React Flow Model
+          description: Visual node-edge representation used for interaction and navigation.
+
+      - id: n_calyrai_workspace
+        type: default
+        category: workspace
+        position: { x: 980, y: 440 }
+        data:
+          label: Calyrai Workspace
+          description: Authoring, tuning, and operational control surface for the full workflow.
+
+      - id: n_access
+        type: default
+        category: projection
+        position: { x: 760, y: 620 }
+        data:
+          label: Access
+          description: Controlled projection from internal semantics to public surfaces.
+
+      - id: n_public_surfaces
+        type: output
+        category: projection
+        position: { x: 980, y: 620 }
+        data:
+          label: Public Surfaces
+          description: Homepage, docs, dashboards, and external touchpoints.
+
+      - id: n_feedback
+        type: output
+        category: intake
+        position: { x: 300, y: 620 }
+        data:
+          label: Feedback Loop
+          description: Runtime observations and user interactions reinjected into modeling.
+
+    edges:
+      - id: e_sources_ingestion
+        source: n_sources
+        target: n_ingestion
+        label: collect
+
+      - id: e_ingestion_core
+        source: n_ingestion
+        target: n_semantic_core
+        label: normalize
+
+      - id: e_core_theory
+        source: n_semantic_core
+        target: n_theory
+        label: formalize
+
+      - id: e_theory_graph_builder
+        source: n_theory
+        target: n_graph_builder
+        label: encode
+
+      - id: e_graph_builder_engine
+        source: n_graph_builder
+        target: n_engine
+        label: compile workflow graph
+
+      - id: e_core_engine
+        source: n_semantic_core
+        target: n_engine
+        label: execute
+
+      - id: e_core_registry
+        source: n_semantic_core
+        target: n_registry
+        label: identify
+
+      - id: e_registry_policy
+        source: n_registry
+        target: n_policy_gate
+        label: verify
+
+      - id: e_engine_policy
+        source: n_engine
+        target: n_policy_gate
+        label: validate run
+
+      - id: e_theory_calyrai
+        source: n_theory
+        target: n_calyrai
+        label: inform motion grammar
+
+      - id: e_engine_calyrai
+        source: n_engine
+        target: n_calyrai
+        label: stream state transitions
+
+      - id: e_engine_access
+        source: n_engine
+        target: n_access
+        label: projectable outputs
+
+      - id: e_registry_access
+        source: n_registry
+        target: n_access
+        label: provenance context
+
+      - id: e_policy_access
+        source: n_policy_gate
+        target: n_access
+        label: enforce policy
+
+      - id: e_calyrai_reactflow
+        source: n_calyrai
+        target: n_reactflow_model
+        label: visualize semantics
+
+      - id: e_reactflow_workspace
+        source: n_reactflow_model
+        target: n_calyrai_workspace
+        label: interactive editing
+
+      - id: e_engine_workspace
+        source: n_engine
+        target: n_calyrai_workspace
+        label: runtime controls
+
+      - id: e_workspace_access
+        source: n_calyrai_workspace
+        target: n_access
+        label: publish projections
+
+      - id: e_calyrai_public
+        source: n_calyrai
+        target: n_public_surfaces
+        label: perceptual rendering
+
+      - id: e_access_public
+        source: n_access
+        target: n_public_surfaces
+        label: governed delivery
+
+      - id: e_public_feedback
+        source: n_public_surfaces
+        target: n_feedback
+        label: observe
+
+      - id: e_feedback_core
+        source: n_feedback
+        target: n_semantic_core
+        label: adapt
+
+    flow_paths:
+      - id: p_end_to_end_workspace
+        description: Complete path from source structures to Calyrai Workspace and publication.
+        steps:
+          - n_sources
+          - n_ingestion
+          - n_semantic_core
+          - n_theory
+          - n_graph_builder
+          - n_engine
+          - n_reactflow_model
+          - n_calyrai_workspace
+          - n_access
+          - n_public_surfaces
+
+      - id: p_runtime_projection
+        description: Fast operational path for runtime execution and delivery.
+        steps:
+          - n_semantic_core
+          - n_engine
+          - n_policy_gate
+          - n_calyrai_workspace
+          - n_access
+          - n_public_surfaces
+
+      - id: p_interpretability
+        description: Explainability path for human interpretation.
+        steps:
+          - n_semantic_core
+          - n_theory
+          - n_calyrai
+          - n_reactflow_model
+          - n_calyrai_workspace
+          - n_public_surfaces
+
+      - id: p_adaptation_loop
+        description: Continuous learning loop from published behavior back to the core.
+        steps:
+          - n_public_surfaces
+          - n_feedback
+          - n_semantic_core
