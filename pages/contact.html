@@ -604,13 +604,18 @@
     const landscapeLeft = document.getElementById("landscape-left");
     const landscapeRight = document.getElementById("landscape-right");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
-    const PERSON_NAME = "Rupert G\u0301lisnig";
-    const ORG_NAME = "G\u0301Labs";
+    const PERSON_NAME = "Rupert Tscheliessnig, PhD";
+    const ORG_NAME = "Calyr.ai";
+    const CONTACT_EMAIL = "rupert.tscheliessnig@calyr.ai";
+    const CONTACT_PHONE = "+4369919200915";
+    const CONTACT_WEBSITE = "https://calyr.ai";
     const CONTACT_PAYLOAD = [
       "MECARD:",
-      `N:${PERSON_NAME}`,
-      `ORG:${ORG_NAME}`,
-      "EMAIL:rupert.tscheliessnig@calyr.ai",
+      `N:${PERSON_NAME};`,
+      `ORG:${ORG_NAME};`,
+      `TEL:${CONTACT_PHONE};`,
+      `EMAIL:${CONTACT_EMAIL};`,
+      `URL:${CONTACT_WEBSITE};`,
       ";"
     ].join("");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
@@ -677,6 +682,7 @@
       saveFeedback: "",
       qrLoading: false,
       previewMatrix: null,
+      contactVisualWalker: null,
       lastGameplaySnapshot: "",
       ballTrap: null,
       ballTrail: [],
@@ -725,7 +731,7 @@
     function buildContactMatrix(text, options = {}) {
       const allowFallback = options.allowFallback !== false;
       if (typeof window.qrcode === "function") {
-        const qr = window.qrcode(0, "M");
+        const qr = window.qrcode(0, "L");
         qr.addData(text, "Byte");
         qr.make();
 
@@ -822,36 +828,102 @@
     }
 
     function getContactCardTextLines(layout) {
-      const landscapePhone =
-        window.matchMedia("(orientation: landscape)").matches &&
-        window.matchMedia("(max-width: 900px)").matches;
-
       return [
         {
           text: PERSON_NAME,
-          font: '700 24px "SF Mono", "Fira Code", ui-monospace, monospace',
+          font: '700 19px "SF Mono", "Fira Code", ui-monospace, monospace',
           x: layout.textX,
           y: layout.titleY,
-          fontSize: 24,
+          fontSize: 19,
           color: "#f7fbff",
         },
         {
           text: ORG_NAME,
-          font: '16px "SF Mono", "Fira Code", ui-monospace, monospace',
+          font: '15px "SF Mono", "Fira Code", ui-monospace, monospace',
           x: layout.textX,
           y: layout.line2Y,
-          fontSize: 16,
+          fontSize: 15,
           color: "#f7fbff",
         },
         {
-          text: "rupert.tscheliessnig@calyr.ai",
-          font: '16px "SF Mono", "Fira Code", ui-monospace, monospace',
+          text: CONTACT_EMAIL,
+          font: '14px "SF Mono", "Fira Code", ui-monospace, monospace',
           x: layout.textX,
           y: layout.line3Y,
-          fontSize: 16,
+          fontSize: 14,
           color: "#ffffff",
         }
       ];
+    }
+
+    function computeContactVisualSpec(qrSize, layout) {
+      const moduleGap = 2;
+      const narrowScreen = window.innerWidth <= 640;
+      const lineDefs = [
+        { text: PERSON_NAME, font: '700 19px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 19, color: "#f7fbff" },
+        { text: ORG_NAME, font: '15px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 15, color: "#f7fbff" },
+        { text: CONTACT_EMAIL, font: '14px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 14, color: "#ffffff" },
+      ];
+
+      const padX = narrowScreen ? 16 : 24;
+      const padY = narrowScreen ? 14 : 20;
+      const textQrGap = narrowScreen ? 12 : 18;
+      const lineGap = narrowScreen ? 8 : 10;
+
+      ctx.save();
+      let maxTextWidth = 0;
+      let totalTextHeight = 0;
+      lineDefs.forEach((line, index) => {
+        ctx.font = line.font;
+        const measured = ctx.measureText(line.text).width;
+        if (measured > maxTextWidth) maxTextWidth = measured;
+        totalTextHeight += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+      });
+      ctx.restore();
+
+      const qrMaxH = layout.cardH - padY * 2;
+      const minReadableQr = Math.min(260, Math.max(170, layout.cardW * 0.3));
+
+      let rotateText = false;
+      let reservedTextWidth = maxTextWidth + (narrowScreen ? 14 : 20);
+      let qrMaxW = layout.cardW - padX * 2 - reservedTextWidth - textQrGap;
+      if (qrMaxW < minReadableQr) {
+        rotateText = true;
+        reservedTextWidth = totalTextHeight + (narrowScreen ? 12 : 18);
+        qrMaxW = layout.cardW - padX * 2 - reservedTextWidth - textQrGap;
+      }
+
+      const moduleSize = Math.max(
+        3,
+        Math.floor(
+          Math.min(
+            (qrMaxW - moduleGap * (qrSize - 1)) / qrSize,
+            (qrMaxH - moduleGap * (qrSize - 1)) / qrSize
+          )
+        )
+      );
+
+      const qrWidth = qrSize * moduleSize + (qrSize - 1) * moduleGap;
+      const qrHeight = qrSize * moduleSize + (qrSize - 1) * moduleGap;
+      const qrBounds = {
+        left: layout.cardX + layout.cardW - padX - qrWidth,
+        top: layout.cardY + Math.round((layout.cardH - qrHeight) / 2),
+        right: layout.cardX + layout.cardW - padX,
+        bottom: layout.cardY + Math.round((layout.cardH - qrHeight) / 2) + qrHeight,
+        width: qrWidth,
+        height: qrHeight,
+      };
+
+      return {
+        moduleGap,
+        moduleSize,
+        qrBounds,
+        lineDefs,
+        padX,
+        padY,
+        lineGap,
+        rotateText,
+      };
     }
 
     function buildTextBricks(layout, brickSize, gap) {
@@ -918,6 +990,8 @@
               spinSpeed: 0,
               splitter: false,
               pendingBlast: false,
+              textPattern: true,
+              circleScale: 0.84,
             });
           }
         }
@@ -926,59 +1000,109 @@
       return bricks;
     }
 
-    function drawHighResContactCard(layout) {
-      const qrMatrix = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
-      const lines = getContactCardTextLines(layout);
+    function pseudoRandom01(seed) {
+      const value = Math.sin(seed) * 43758.5453123;
+      return value - Math.floor(value);
+    }
 
+    function wrapIndex(value, size) {
+      return ((value % size) + size) % size;
+    }
+
+    function pickInitialDarkCell(qrMatrix) {
       const qrSize = qrMatrix.length;
-      if (!qrSize) return;
-
-      const moduleGap = 2;
-      const narrowScreen = window.innerWidth <= 640;
-      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
-      const qrWidthLimit = narrowScreen ? 220 : 250;
-      const qrHeightLimit = layout.cardH - (narrowScreen ? 110 : 120);
-      const baseModuleSize = Math.max(
-        landscapePhone ? 7 : narrowScreen ? 11 : 8,
-        Math.floor(
-          Math.min(
-            (qrWidthLimit - moduleGap * (qrSize - 1)) / qrSize,
-            (qrHeightLimit - moduleGap * (qrSize - 1)) / qrSize
-          )
-        )
-      );
-      const previewModuleSize = Math.max(
-        landscapePhone ? 6 : narrowScreen ? 8 : 7,
-        Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
-      );
-      const previewWidth = qrSize * previewModuleSize + (qrSize - 1) * moduleGap;
-      const previewHeight = qrSize * previewModuleSize + (qrSize - 1) * moduleGap;
-      const previewLayout = getContactCardLayout(previewWidth, previewHeight);
-      const qrBounds = state.qrBounds.width && state.qrBounds.height
-        ? state.qrBounds
-        : {
-            left: previewLayout.qrLeft,
-            top: previewLayout.qrTop,
-            right: previewLayout.qrLeft + previewWidth,
-            bottom: previewLayout.qrTop + previewHeight,
-            width: previewWidth,
-            height: previewHeight,
-          };
-      const moduleSize = (qrBounds.width - moduleGap * (qrSize - 1)) / qrSize;
-      const radius = Math.max(2.4, moduleSize * 0.34);
       const centerRow = (qrSize - 1) / 2;
       const centerCol = (qrSize - 1) / 2;
-      let markedCell = null;
+      let best = null;
 
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!qrMatrix[row][col]) continue;
           const dist = (row - centerRow) ** 2 + (col - centerCol) ** 2;
-          if (!markedCell || dist < markedCell.dist) {
-            markedCell = { row, col, dist };
+          if (!best || dist < best.dist) {
+            best = { row, col, dist };
           }
         }
       }
+
+      return best ? { row: best.row, col: best.col } : null;
+    }
+
+    function getContactVisualWalker(qrMatrix) {
+      const qrSize = qrMatrix.length;
+      const existing = state.contactVisualWalker;
+
+      if (!existing || existing.size !== qrSize || !qrMatrix[existing.row]?.[existing.col]) {
+        const start = pickInitialDarkCell(qrMatrix);
+        state.contactVisualWalker = {
+          size: qrSize,
+          row: start ? start.row : 0,
+          col: start ? start.col : 0,
+          stepCounter: 0,
+          lastStepTime: state.blinkTime,
+          stepInterval: 0.09,
+        };
+      }
+
+      return state.contactVisualWalker;
+    }
+
+    function stepContactVisualWalker(qrMatrix) {
+      const walker = getContactVisualWalker(qrMatrix);
+      const elapsed = state.blinkTime - walker.lastStepTime;
+      if (elapsed < walker.stepInterval) return walker;
+
+      const directions = [
+        { dr: -1, dc: 0 },
+        { dr: 1, dc: 0 },
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 },
+      ];
+
+      let steps = Math.max(1, Math.floor(elapsed / walker.stepInterval));
+      while (steps > 0) {
+        let moved = false;
+
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+          const pick = pseudoRandom01((contactSeed() + walker.stepCounter * 17 + attempt * 101) * 0.0137);
+          const dir = directions[Math.floor(pick * directions.length) % directions.length];
+          const nextRow = wrapIndex(walker.row + dir.dr, walker.size);
+          const nextCol = wrapIndex(walker.col + dir.dc, walker.size);
+
+          if (qrMatrix[nextRow][nextCol]) {
+            walker.row = nextRow;
+            walker.col = nextCol;
+            moved = true;
+            break;
+          }
+        }
+
+        walker.stepCounter += 1;
+        if (!moved) break;
+        steps -= 1;
+      }
+
+      walker.lastStepTime = state.blinkTime;
+      return walker;
+    }
+
+    function drawHighResContactCard(layout) {
+      const qrMatrix = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
+      const qrSize = qrMatrix.length;
+      if (!qrSize) return;
+
+      const visualSpec = computeContactVisualSpec(qrSize, layout);
+      const moduleGap = visualSpec.moduleGap;
+      const moduleSize = visualSpec.moduleSize;
+      const qrBounds = visualSpec.qrBounds;
+      const lineDefs = visualSpec.lineDefs;
+      const padX = visualSpec.padX;
+      const padY = visualSpec.padY;
+      const lineGap = visualSpec.lineGap;
+      const rotateText = visualSpec.rotateText;
+
+      const radius = Math.max(2.4, moduleSize * 0.34);
+      const markedCell = stepContactVisualWalker(qrMatrix);
 
       drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
 
@@ -995,14 +1119,38 @@
 
       ctx.save();
       ctx.textAlign = "left";
-      lines.forEach((line) => {
-        ctx.font = line.font;
-        ctx.fillStyle = line.color;
-        ctx.fillText(line.text, line.x, line.y);
-      });
+      ctx.textBaseline = "alphabetic";
+      if (!rotateText) {
+        let y = layout.cardY + padY + lineDefs[0].fontSize;
+        const x = layout.cardX + padX;
+        lineDefs.forEach((line, index) => {
+          ctx.font = line.font;
+          ctx.fillStyle = line.color;
+          ctx.fillText(line.text, x, y);
+          y += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+        });
+      } else {
+        const tx = layout.cardX + padX + Math.max(10, lineDefs[0].fontSize * 0.8);
+        const ty = layout.cardY + layout.cardH - padY;
+        ctx.translate(tx, ty);
+        ctx.rotate(-Math.PI / 2);
+        let y = lineDefs[0].fontSize;
+        lineDefs.forEach((line, index) => {
+          ctx.font = line.font;
+          ctx.fillStyle = line.color;
+          ctx.fillText(line.text, 0, y);
+          y += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+        });
+      }
       ctx.fillStyle = "rgba(255, 255, 255, 0.78)";
       ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
-      ctx.fillText(state.running ? "tap once to return to play" : "tap once to start playing", layout.textX, layout.noteY);
+      if (!rotateText) {
+        ctx.fillText(
+          state.running ? "tap once to return to play" : "tap once to start playing",
+          layout.cardX + padX,
+          layout.cardY + layout.cardH - padY
+        );
+      }
       ctx.restore();
 
       ctx.save();
@@ -1012,13 +1160,19 @@
           const x = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
           const y = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
           const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
+          const phaseSeed = (row + 1) * 17.13 + (col + 1) * 31.7 + contactSeed() * 0.019;
+          const phaseOffset = pseudoRandom01(phaseSeed) * 20;
+          const speedBase = 0.65 + pseudoRandom01(phaseSeed * 1.37 + 3.1) * 2.15;
+          const direction = pseudoRandom01(phaseSeed * 0.71 + 1.9) > 0.5 ? 1 : -1;
+          const rotationSpeed = speedBase * direction;
           drawHalfOpenDisk(
             x,
             y,
             radius,
             isMarked ? "#ff4df5" : "#ffffff",
             isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.26)",
-            row * 0.37 + col * 0.21
+            phaseOffset,
+            rotationSpeed
           );
           if (isMarked) {
             ctx.fillStyle = "#ff4df5";
@@ -1292,6 +1446,8 @@
     }
 
     function drawQrBoundary() {
+      // Keep gameplay logic intact, but remove extra visual boundary lines.
+      return;
       if (state.contactOpen) return;
 
       const { left, top, width, height } = state.qrBounds;
@@ -1370,39 +1526,20 @@
       const wall = baseWall;
       const qrSize = wall.length;
       const seed = contactSeed();
-      const gap = 2;
-      const narrowScreen = window.innerWidth <= 640;
-      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
-      const layout = getContactCardLayout();
-      const horizontalPadding = landscapePhone ? 178 : narrowScreen ? 110 : 190;
-      const verticalPadding = landscapePhone ? 118 : narrowScreen ? 150 : 190;
-      const qrWidthLimit = narrowScreen ? 220 : 250;
-      const qrHeightLimit = layout.cardH - (narrowScreen ? 110 : 120);
-      const baseModuleSize = Math.max(
-        landscapePhone ? 7 : narrowScreen ? 11 : 8,
-        Math.floor(
-          Math.min(
-            (qrWidthLimit - gap * (qrSize - 1)) / qrSize,
-            (qrHeightLimit - gap * (qrSize - 1)) / qrSize
-          )
-        )
-      );
-      const moduleSize = Math.max(
-        landscapePhone ? 6 : narrowScreen ? 8 : 7,
-        Math.floor(baseModuleSize * CONTACT_CARD_QR_SCALE)
-      );
-      const totalW = qrSize * moduleSize + (qrSize - 1) * gap;
-      const totalH = qrSize * moduleSize + (qrSize - 1) * gap;
-      const contactLayout = getContactCardLayout(totalW, totalH);
-      const top = contactLayout.qrTop;
-      const left = contactLayout.qrLeft;
+      const cardLayout = getContactCardLayout();
+      const visualSpec = computeContactVisualSpec(qrSize, cardLayout);
+      const gap = visualSpec.moduleGap;
+      const moduleSize = visualSpec.moduleSize;
+      const contactLayout = getContactCardLayout();
+      const top = visualSpec.qrBounds.top;
+      const left = visualSpec.qrBounds.left;
       state.qrBounds = {
         left,
         top,
-        right: left + totalW,
-        bottom: top + totalH,
-        width: totalW,
-        height: totalH,
+        right: visualSpec.qrBounds.right,
+        bottom: visualSpec.qrBounds.bottom,
+        width: visualSpec.qrBounds.width,
+        height: visualSpec.qrBounds.height,
       };
       state.bricks = [];
       state.rows = qrSize;
@@ -1462,10 +1599,19 @@
         .sort((a, b) => a.dist - b.dist)[0];
       if (markCandidate?.brick) {
         markCandidate.brick.mulMark = true;
+        state.contactVisualWalker = {
+          size: qrSize,
+          row: markCandidate.brick.row,
+          col: markCandidate.brick.col,
+          stepCounter: 0,
+          lastStepTime: state.blinkTime,
+          stepInterval: 0.09,
+        };
       }
 
-      const textBrickSize = Math.max(5, moduleSize - 2);
-      const textBricks = buildTextBricks(contactLayout, textBrickSize, gap);
+      const textBrickSize = Math.max(8, moduleSize + 1);
+      const textBrickGap = Math.max(1, Math.floor(gap * 0.5));
+      const textBricks = buildTextBricks(contactLayout, textBrickSize, textBrickGap);
       state.bricks.push(...textBricks);
       activeCount += textBricks.length;
       state.totalBricks = activeCount;
@@ -1642,7 +1788,7 @@
         setSaveFeedback("Snapshot downloaded. Attach it to the mail draft if your device cannot share it directly.");
       }
 
-      window.location.href = `mailto:rupert.tscheliessnig@calyr.ai?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
       resumeAfterMailAction();
     }
 
@@ -1708,9 +1854,9 @@
       ctx.fill();
     }
 
-    function drawHalfOpenDisk(cx, cy, radius, strokeStyle, shadowColor, phase = 0) {
-      const gap = Math.PI * 0.72;
-      const rotation = state.blinkTime * 1.6 + (phase || 0) * 0.35;
+    function drawHalfOpenDisk(cx, cy, radius, strokeStyle, shadowColor, phase = 0, rotationSpeed = 1.6, gapScale = 0.14) {
+      const gap = Math.PI * gapScale;
+      const rotation = state.blinkTime * rotationSpeed + (phase || 0) * 0.35;
       const start = rotation + gap * 0.5;
       const end = rotation + Math.PI * 2 - gap * 0.5;
       ctx.beginPath();
@@ -1726,7 +1872,7 @@
     function drawQrBrick(brick) {
       const { x, y, w, h } = brick;
       if (state.contactOpen) {
-        const radius = Math.max(3, Math.min(w, h) * 0.34);
+        const radius = Math.max(3.2, Math.min(w, h) * (brick.circleScale || 0.42));
         const cx = x + w / 2;
         const cy = y + h / 2;
         ctx.save();
@@ -1753,12 +1899,12 @@
       const cyan = "#ffffff";
       const magenta = "#ff4df5";
       const blink = 1;
-      const radius = Math.max(4.8, Math.min(w, h) * 0.58);
+      const radius = Math.max(5.4, Math.min(w, h) * (brick.circleScale || 0.68));
       const cx = x + w / 2;
       const cy = y + h / 2;
 
       if (brick.catcher) {
-        const notch = Math.PI * 0.62;
+        const notch = Math.PI * 0.24;
         const rotation = state.blinkTime * (brick.spinSpeed || 0);
         const start = brick.notchAngle + rotation + notch * 0.5;
         const end = brick.notchAngle + rotation + Math.PI * 2 - notch * 0.5;
@@ -1784,7 +1930,9 @@
         radius,
         isMarked ? magenta : cyan,
         isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
-        brick.phase
+        brick.phase,
+        1.6,
+        0.24
       );
       if (isMarked) {
         ctx.fillStyle = magenta;
