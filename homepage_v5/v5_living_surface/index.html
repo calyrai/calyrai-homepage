@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CALYR V5 Living Surface Starter</title>
+  <style>
+    :root {
+      --bg: #04070d;
+      --line: rgba(190, 225, 255, 0.25);
+      --text: #eef6ff;
+      --muted: rgba(238, 246, 255, 0.75);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 22% 16%, rgba(0, 210, 255, 0.2), transparent 40%),
+        radial-gradient(circle at 82% 86%, rgba(182, 88, 255, 0.22), transparent 40%),
+        var(--bg);
+      font-family: "Avenir Next", "Segoe UI", Arial, sans-serif;
+    }
+    .frame {
+      width: min(1400px, calc(100vw - 28px));
+      margin: 14px auto;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: minmax(180px, 26vh);
+    }
+    .tile {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(140deg, rgba(8, 20, 40, 0.8), rgba(10, 8, 26, 0.72));
+      box-shadow: inset 0 0 0 1px rgba(200, 240, 255, 0.07), 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+    .tile canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    .nexus { grid-column: 1 / span 3; grid-row: 1 / span 2; }
+    .atlas { grid-column: 4 / span 1; grid-row: 1 / span 2; }
+    .glabs { grid-column: 1 / span 1; grid-row: 3 / span 1; }
+    .runtime { grid-column: 2 / span 3; grid-row: 3 / span 1; }
+    .topbar { display: none; }
+    @media (max-width: 900px) {
+      .frame {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: minmax(170px, 28vh);
+      }
+      .nexus { grid-column: 1 / span 2; grid-row: auto; }
+      .atlas { grid-column: 1 / span 1; grid-row: auto; }
+      .glabs { grid-column: 2 / span 1; grid-row: auto; }
+      .runtime { grid-column: 1 / span 2; grid-row: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" id="app"></main>
+
+  <script type="module">
+    import React, { useMemo, useRef } from "https://esm.sh/react@18.3.1";
+    import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
+    import { Canvas, useFrame } from "https://esm.sh/@react-three/fiber@8.17.10?deps=react@18.3.1,react-dom@18.3.1,three@0.165.0";
+    import * as THREE from "https://esm.sh/three@0.165.0";
+    import yaml from "https://esm.sh/js-yaml@4.1.0";
+
+    const SURFACE_SIZE = 13;
+
+    function sampleHeight(u, v, t, stiffness, mouse) {
+      const x = (u - 0.5) * SURFACE_SIZE;
+      const y = (v - 0.5) * SURFACE_SIZE;
+      const w1 = Math.sin(x * 1.05 + t * 1.1) * Math.cos(y * 0.78 - t * 0.95);
+      const w2 = Math.sin((x + y) * 0.63 - t * 0.7) * 0.7;
+      const w3 = Math.cos((x - y) * 0.54 + t * 0.46) * 0.42;
+      const dx = u - mouse.x;
+      const dy = v - mouse.y;
+      const d2 = dx * dx + dy * dy;
+      const lift = Math.exp(-18.0 * d2) * 1.28;
+      return (w1 * 0.32 + w2 * 0.23 + w3 * 0.19) * stiffness + lift;
+    }
+
+    function hash2(u, v) {
+      const s = Math.sin(u * 157.13 + v * 311.71) * 43758.5453123;
+      return s - Math.floor(s);
+    }
+
+    function LivingSurface({ tile }) {
+      const meshRef = useRef(null);
+      const mouseTargetRef = useRef(new THREE.Vector2(0.5, 0.5));
+      const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
+
+      const stiffness = Number(tile.material?.stiffness ?? 1.0);
+      const roughness = THREE.MathUtils.clamp(Number(tile.material?.roughness ?? 0.25), 0.05, 0.95);
+
+      const segments = useMemo(() => {
+        const tileArea = Math.max(1, Number(tile.w || 1) * Number(tile.h || 1));
+        const base = Math.round(28 + tileArea * 7);
+        return {
+          x: THREE.MathUtils.clamp(base, 24, 56),
+          y: THREE.MathUtils.clamp(Math.round(base * 0.72), 18, 42)
+        };
+      }, [tile.w, tile.h]);
+
+      const geometry = useMemo(() => {
+        const g = new THREE.PlaneGeometry(SURFACE_SIZE, SURFACE_SIZE, segments.x, segments.y);
+        const pos = g.attributes.position;
+        const uv = g.attributes.uv;
+        const p = pos.array;
+        const uvArr = uv.array;
+        const baseXY = new Float32Array(pos.count * 2);
+        const randAmp = new Float32Array(pos.count);
+        const edgeFade = new Float32Array(pos.count);
+
+        for (let i = 0; i < pos.count; i += 1) {
+          const u = uvArr[i * 2];
+          const v = uvArr[i * 2 + 1];
+
+          const edgeDist = Math.min(u, 1 - u, v, 1 - v);
+          const edgeFactor = THREE.MathUtils.clamp((edgeDist - 0.02) / 0.16, 0, 1);
+          edgeFade[i] = edgeFactor;
+
+          // Mondrian-like irregular zones to force mixed triangle scales.
+          const zoneX = u < 0.22 ? 0 : (u < 0.48 ? 1 : (u < 0.74 ? 2 : 3));
+          const zoneY = v < 0.34 ? 0 : (v < 0.67 ? 1 : 2);
+          const zone = zoneX + zoneY * 4;
+          const zoneScale = [0.08, 0.2, 0.12, 0.28, 0.14, 0.32, 0.18, 0.36, 0.1, 0.26, 0.16, 0.34][zone];
+
+          const r1 = hash2(u + 0.013 * zone, v + 0.021 * zone);
+          const r2 = hash2(u + 0.071 * zone, v + 0.043 * zone);
+          const jitterX = (r1 - 0.5) * zoneScale * edgeFactor;
+          const jitterY = (r2 - 0.5) * zoneScale * edgeFactor;
+
+          p[i * 3] += jitterX;
+          p[i * 3 + 1] += jitterY;
+
+          baseXY[i * 2] = p[i * 3];
+          baseXY[i * 2 + 1] = p[i * 3 + 1];
+          randAmp[i] = hash2(u + 0.19, v + 0.73);
+        }
+
+        g.userData.baseXY = baseXY;
+        g.userData.randAmp = randAmp;
+        g.userData.edgeFade = edgeFade;
+        g.computeVertexNormals();
+        return g;
+      }, [segments.x, segments.y]);
+
+      const material = useMemo(() => {
+        const palette = tile.material?.palette || ["#00d4ff", "#5565ff", "#d17dff", "#ffd26f"];
+        return new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color(palette[0]),
+          roughness,
+          metalness: 0.68,
+          clearcoat: 0.8,
+          clearcoatRoughness: roughness * 0.55,
+          emissive: new THREE.Color("#07101c"),
+          emissiveIntensity: 0.24,
+          sheen: 0.68,
+          sheenColor: new THREE.Color("#b7f1ff"),
+          iridescence: 0.86,
+          iridescenceIOR: 1.35,
+          iridescenceThicknessRange: [130, 680],
+          flatShading: true,
+          side: THREE.DoubleSide
+        });
+      }, [roughness, tile.material?.palette]);
+
+      const wireMaterial = useMemo(() => {
+        return new THREE.MeshBasicMaterial({
+          color: "#b8e7ff",
+          transparent: true,
+          opacity: 0.16,
+          wireframe: true,
+          side: THREE.DoubleSide
+        });
+      }, []);
+
+      useFrame((state) => {
+        if (!meshRef.current) return;
+        mouseRef.current.lerp(mouseTargetRef.current, 0.085);
+
+        const t = state.clock.elapsedTime;
+        const pos = geometry.attributes.position;
+        const uv = geometry.attributes.uv;
+        const p = pos.array;
+        const uvs = uv.array;
+        const baseXY = geometry.userData.baseXY;
+        const randAmp = geometry.userData.randAmp;
+        const edgeFade = geometry.userData.edgeFade;
+
+        for (let i = 0; i < pos.count; i += 1) {
+          const u = uvs[i * 2];
+          const v = uvs[i * 2 + 1];
+          // Tiny drift keeps the irregular point cloud alive without becoming noisy.
+          const drift = (randAmp[i] - 0.5) * 0.04 * edgeFade[i];
+          p[i * 3] = baseXY[i * 2] + Math.sin(t * 0.36 + i * 0.013) * drift;
+          p[i * 3 + 1] = baseXY[i * 2 + 1] + Math.cos(t * 0.31 + i * 0.011) * drift;
+          const edgeHeight = 0.72 + edgeFade[i] * 0.28;
+          p[i * 3 + 2] = sampleHeight(u, v, t, stiffness, mouseRef.current) * (0.62 + randAmp[i] * 0.22) * edgeHeight;
+        }
+
+        pos.needsUpdate = true;
+        geometry.computeVertexNormals();
+      });
+
+      function onPointerMove(e) {
+        if (!e.uv) return;
+        mouseTargetRef.current.set(e.uv.x, e.uv.y);
+      }
+
+      return React.createElement(
+        "group",
+        { rotation: [-0.32, 0, 0], scale: [1.06, 1.06, 1] },
+        React.createElement("mesh", { ref: meshRef, geometry, material, onPointerMove, onPointerDown: onPointerMove }),
+        React.createElement("mesh", { geometry, material: wireMaterial }),
+        React.createElement(
+          "mesh",
+          { position: [0, 0, 1.2], onPointerMove, onPointerDown: onPointerMove, visible: false },
+          React.createElement("planeGeometry", { args: [SURFACE_SIZE, SURFACE_SIZE, 1, 1] }),
+          React.createElement("meshBasicMaterial", { transparent: true, opacity: 0 })
+        )
+      );
+    }
+
+    function TileCanvas({ tile }) {
+      return React.createElement(
+        Canvas,
+        {
+          dpr: [1, 1.7],
+          camera: { position: [0, 0, 7.2], fov: 45 },
+          gl: { antialias: true, alpha: false }
+        },
+        React.createElement("color", { attach: "background", args: ["#050913"] }),
+        React.createElement("ambientLight", { intensity: 0.42 }),
+        React.createElement("hemisphereLight", { skyColor: "#7ad8ff", groundColor: "#190f2a", intensity: 0.72 }),
+        React.createElement("directionalLight", { position: [2, 3, 4], intensity: 1.15, color: "#d8efff" }),
+        React.createElement("directionalLight", { position: [-4, -2, 3], intensity: 0.74, color: "#8f7fff" }),
+        React.createElement("directionalLight", { position: [0, 4, 2], intensity: 0.45, color: "#ffd98f" }),
+        React.createElement(LivingSurface, { tile })
+      );
+    }
+
+    function TileCard({ tile }) {
+      return React.createElement(
+        "article",
+        { className: `tile ${tile.id}` },
+        React.createElement(TileCanvas, { tile })
+      );
+    }
+
+    function App({ tiles }) {
+      return React.createElement(
+        React.Fragment,
+        null,
+        ...tiles.map((tile) => React.createElement(TileCard, {
+          key: tile.id,
+          tile
+        }))
+      );
+    }
+
+    async function boot() {
+      const app = document.getElementById("app");
+      try {
+        const raw = await fetch("./tiles.layout.yaml");
+        const text = await raw.text();
+        const parsed = yaml.load(text) || {};
+        const tiles = Array.isArray(parsed.tiles) ? parsed.tiles : [];
+
+        const root = createRoot(app);
+        root.render(React.createElement(App, { tiles }));
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
