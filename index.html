@@ -35,10 +35,32 @@
 		.study-graph-label { margin: 0; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.68rem; color: rgba(255,255,255,0.86); }
 		.study-graph-input { width: 100%; border: 1px solid rgba(255,255,255,0.38); background: rgba(2, 6, 15, 0.85); color: #fff; padding: 0.52rem 0.65rem; font-size: 0.86rem; }
 		.study-graph-input:focus { outline: none; border-color: rgba(255,255,255,0.8); }
-		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
-		.study-section { position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 2px; border: 0; padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
+		.study-section { position: relative; border: 0; background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		body.skin-glass .study-section.is-collapsed { backdrop-filter: blur(7px) saturate(122%); -webkit-backdrop-filter: blur(7px) saturate(122%); }
+		body.skin-atlas .study-section.is-collapsed { filter: saturate(1.16) contrast(1.03); }
+		.study-section .living-surface {
+			position: absolute;
+			inset: 0;
+			overflow: hidden;
+			z-index: 1;
+			opacity: 0.94;
+			transition: opacity 220ms ease, transform 260ms ease;
+		}
+		.study-section .living-mesh {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			pointer-events: auto;
+		}
+		body.skin-living .study-section .living-surface { opacity: 0.96; }
+		body.skin-classic .study-section .living-surface { display: block; opacity: 0.92; }
+		.study-section.is-open .living-surface { opacity: 0.72 !important; transform: scale(1.01); z-index: 3; mix-blend-mode: normal; pointer-events: none; }
+		.study-section.is-open .living-mesh { pointer-events: none; }
 		.study-section.is-search-muted { opacity: 0.58; filter: saturate(0.65); }
-		.study-trigger { width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; display: block; }
+		.study-trigger { width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; z-index: 2; display: block; }
 		.study-detail-link { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }
 		.study-detail-link:hover,
 		.study-detail-link:focus-visible { border-color: rgba(255,255,255,0.96); background: rgba(12, 22, 40, 0.98); }
@@ -77,7 +99,55 @@
 		.study-section.tile-8.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%); }
 		.study-section.tile-1.is-collapsed { grid-column: span 4; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(223, 231, 244, 0.92) 100%); box-shadow: 0 0 16px rgba(255, 255, 255, 0.26), 0 0 28px rgba(255, 255, 255, 0.18); }
 		.study-section.is-collapsed .tile-open-state { display: none; }
-		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(255,255,255,0.18); background: rgba(0,0,0,0.26); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.24); backdrop-filter: blur(6px); }
+		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 190px; border-color: rgba(255,255,255,0.2); background: linear-gradient(135deg, rgba(80, 198, 255, 0.34) 0%, rgba(220, 104, 236, 0.3) 100%), rgba(4, 12, 28, 0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.2); backdrop-filter: blur(6px); }
+		/* Borderless mesh mode: keep Mondrian geometry but remove frame visuals. */
+		.study-section.is-collapsed,
+		.study-section.is-open,
+		.study-section[class*="tile-"].is-collapsed,
+		.study-section[class*="tile-"].is-open {
+			border: 0.5px solid rgba(255, 255, 255, 0.78) !important;
+			border-radius: 18px !important;
+			box-shadow: none !important;
+			background: transparent !important;
+			backdrop-filter: none !important;
+		}
+		.study-section.is-open,
+		.study-section[class*="tile-"].is-open {
+			background: linear-gradient(135deg, rgba(80, 198, 255, 0.56) 0%, rgba(220, 104, 236, 0.52) 100%), rgba(4, 12, 28, 0) !important;
+		}
+		/* Keep open tiles in the same color family as their collapsed state. */
+		.study-section.tile-1.is-open { background: linear-gradient(135deg, rgba(92, 140, 198, 0.9) 0%, rgba(71, 96, 156, 0.9) 100%) !important; }
+		.study-section.tile-2.is-open { background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%) !important; }
+		.study-section.tile-3.is-open { background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%) !important; }
+		.study-section.tile-4.is-open { background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%) !important; }
+		.study-section.tile-5.is-open { background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%) !important; }
+		.study-section.tile-6.is-open { background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%) !important; }
+		.study-section.tile-7.is-open { background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%) !important; }
+		.study-section.tile-8.is-open { background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%) !important; }
+		.study-section.is-open .tile-open-copy {
+			text-shadow: 0 1px 0 rgba(5, 12, 24, 0.9), 0 0 14px rgba(91, 206, 255, 0.16);
+		}
+		.study-section.is-open .study-heading {
+			font-weight: 700;
+			font-size: clamp(1.44rem, 2.3vw, 2.2rem);
+			letter-spacing: 0.015em;
+			text-shadow: 0 1px 0 rgba(4, 10, 20, 0.92), 0 0 16px rgba(120, 227, 255, 0.2);
+		}
+		.study-section.is-open .study-teaser {
+			color: rgba(236, 244, 255, 0.96);
+			font-size: clamp(1.14rem, 1.55vw, 1.4rem);
+			line-height: 1.35;
+			text-shadow: 0 1px 0 rgba(6, 12, 24, 0.9);
+		}
+		.study-section.is-open .study-keyword {
+			font-size: calc(0.82rem * var(--keyword-scale, 1));
+		}
+		.study-section.is-open .study-paragraph {
+			color: rgba(242, 247, 255, 0.98);
+			font-size: clamp(1.18rem, 1.34vw, 1.34rem);
+			line-height: 1.58;
+			text-shadow: 0 1px 0 rgba(6, 12, 24, 0.9);
+		}
 		.study-section[data-tile-kind="visit_card"].is-open { grid-row: span 6; min-height: 340px; }
 		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; }
 		.study-section.tile-2.is-open[data-tile-kind="text"], .study-section.tile-2.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 4; }
@@ -97,8 +167,132 @@
 		.study-section.tile-7.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-7.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-8.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-8.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
-		.study-section.is-open .tile-open-state { display: flex; flex-direction: column; }
-		.study-section.is-open .study-detail-link { display: inline-flex; }
+		/* Content tiles should be less tall while keeping width behavior unchanged. */
+		.study-section.is-open[data-tile-kind="text"] {
+			grid-row: span 2 !important;
+			min-height: 110px;
+		}
+		.study-section.is-open.is-expanded[data-tile-kind="text"] {
+			grid-row: span 3 !important;
+			min-height: 150px;
+		}
+		/* Allow manual tile resizing (vertical) when open. */
+		.study-section.is-open[data-tile-kind="text"],
+		.study-section.is-open[data-tile-kind="visit_card"] {
+			resize: none;
+			overflow: auto;
+			min-width: 320px;
+			min-height: 160px;
+			max-height: 85vh;
+			scrollbar-width: thin;
+			scrollbar-color: rgba(220, 240, 255, 0.38) rgba(255, 255, 255, 0.08);
+		}
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar-track,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.08);
+			border-radius: 999px;
+		}
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar-thumb,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar-thumb {
+			background: rgba(220, 240, 255, 0.42);
+			border: 1px solid rgba(255, 255, 255, 0.34);
+			border-radius: 999px;
+		}
+		.study-section.is-open .study-fulltext {
+			scrollbar-width: thin;
+			scrollbar-color: rgba(220, 240, 255, 0.4) rgba(255, 255, 255, 0.06);
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.06);
+			border-radius: 999px;
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar-thumb {
+			background: rgba(220, 240, 255, 0.4);
+			border: 1px solid rgba(255, 255, 255, 0.32);
+			border-radius: 999px;
+		}
+		.tile-resize-handle {
+			display: none;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			width: 34px;
+			height: 22px;
+			cursor: ns-resize;
+			z-index: 6;
+			background: rgba(255, 255, 255, 0.14);
+			border: 1px solid rgba(255, 255, 255, 0.82);
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(112, 228, 255, 0.22);
+		}
+		.tile-resize-handle::before {
+			content: '↕';
+			display: block;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 20px;
+			text-align: center;
+			color: rgba(255, 255, 255, 0.96);
+		}
+		.tile-resize-handle::after {
+			display: none;
+		}
+		.study-section.is-open[data-tile-kind="text"] .tile-resize-handle,
+		.study-section.is-open[data-tile-kind="visit_card"] .tile-resize-handle {
+			display: block;
+		}
+		.study-section:not(.is-open) .tile-resize-handle,
+		.study-section.is-collapsed .tile-resize-handle {
+			display: none !important;
+		}
+		.study-section.is-open .tile-open-state {
+			display: flex;
+			flex-direction: column;
+			background: transparent;
+			backdrop-filter: none;
+			color: #ffffff;
+		}
+		.study-section.is-open .study-heading,
+		.study-section.is-open .study-teaser,
+		.study-section.is-open .study-paragraph,
+		.study-section.is-open .study-keyword,
+		.study-section.is-open .study-detail-link {
+			color: #ffffff;
+		}
+		.study-section.is-open .study-detail-link { display: none; }
+		.study-section.is-open .study-keywords { cursor: default; }
+		.study-section.is-open .study-keyword {
+			cursor: pointer;
+			transition: transform 170ms ease, border-color 170ms ease, background 170ms ease, opacity 170ms ease;
+			transform-origin: center;
+		}
+		.study-section.is-open .study-keyword:nth-child(1) { --kw-hover-scale: 1.18; }
+		.study-section.is-open .study-keyword:nth-child(2) { --kw-hover-scale: 1.14; }
+		.study-section.is-open .study-keyword:nth-child(3) { --kw-hover-scale: 1.1; }
+		.study-section.is-open .study-keyword:nth-child(4) { --kw-hover-scale: 1.12; }
+		.study-section.is-open .study-keyword:nth-child(5) { --kw-hover-scale: 1.08; }
+		.study-section.is-open .study-keyword:nth-child(6) { --kw-hover-scale: 1.06; }
+		.study-section.is-open .study-keywords:hover .study-keyword { opacity: 0.62; }
+		.study-section.is-open .study-keywords:hover .study-keyword:hover,
+		.study-section.is-open .study-keyword:focus-visible {
+			opacity: 1;
+			transform: translateY(-1px) scale(var(--kw-hover-scale, 1.1));
+			border-color: rgba(255,255,255,0.86);
+			background: rgba(10, 30, 56, 0.62);
+			outline: none;
+		}
 		.study-section.is-open.is-expanded { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 14px 36px rgba(0,0,0,0.34); }
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded { grid-row: span 7; min-height: 420px; }
 		.study-content.has-expanded-open .study-section.is-collapsed { transform: scale(0.96); opacity: 0.84; filter: saturate(0.85); }
@@ -316,13 +510,13 @@
 	</section>
 	<main class="study-layout" id="explore">
 	<div class="study-content">
-		<section class="study-section tile-1 is-collapsed" id="projects" data-node-id="projects" data-keywords="projects,flagship,sbpa,core-facility,oracle,medtech,asc,infrastructure" data-neighbors="theory,calyrai,engine,access" data-search-text="projects flagship projects and current programs. flagship programs are the practical layer of calyr.aí. they show what is currently being built, tested, and integrated into the atlas. open current projects to view active programs, scientific directions, and infrastructure. projects flagship sbpa core-facility oracle medtech asc infrastructure" data-tile-kind="text" data-tile-index="1">
+		<section class="study-section tile-1 is-collapsed" id="projects" data-node-id="projects" data-keywords="projects,flagship,sbpa,core-facility,oracle,medtech,asc,infrastructure" data-neighbors="theory,calyrai,engine,access" data-search-text="projects innovation rapid prototyping. flagship programs are the practical layer of calyr.aí. they show what is currently being built, tested, and integrated into the atlas. open current projects to view active programs, scientific directions, and infrastructure. projects flagship sbpa core-facility oracle medtech asc infrastructure" data-tile-kind="text" data-tile-index="1">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-projects">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
 					<div class="tile-open-copy">
 						<h2 class="study-heading">Projects</h2>
-						<p class="study-teaser">Flagship projects and current programs.</p>
+						<p class="study-teaser">Innovation rapid prototyping.</p>
 <div class="study-keywords" aria-label="Section keywords"><span class="study-keyword" style="--keyword-scale:1.38;">projects</span><span class="study-keyword" style="--keyword-scale:1.12;">flagship</span><span class="study-keyword" style="--keyword-scale:0.98;">sbpa</span><span class="study-keyword" style="--keyword-scale:0.9;">core-facility</span><span class="study-keyword" style="--keyword-scale:0.82;">oracle</span><span class="study-keyword" style="--keyword-scale:0.76;">medtech</span></div>
 					</div>
 		<a class="study-detail-link" href="pages/calyr-current-projects.html">Open current projects</a>
@@ -516,6 +710,18 @@
 	}
 
 	const sections = Array.from(document.querySelectorAll('.study-section'));
+	const globalPointer = { x: 0, y: 0, active: false };
+	window.addEventListener('pointermove', (event) => {
+		globalPointer.x = event.clientX;
+		globalPointer.y = event.clientY;
+		globalPointer.active = true;
+	}, { passive: true });
+	window.addEventListener('pointerleave', () => {
+		globalPointer.active = false;
+	}, { passive: true });
+	window.addEventListener('blur', () => {
+		globalPointer.active = false;
+	});
 	const studyContent = document.querySelector('.study-content');
 	const graphSearchInput = document.querySelector('#graph-search-input');
 	const isTextualTile = (section) => section && (section.dataset.tileKind === 'text' || section.dataset.tileKind === 'visit_card');
@@ -539,6 +745,15 @@
 		"END:VCARD",
 	].join("\n");
 	let qrLibraryPromise = null;
+	const AVAILABLE_SKINS = ['classic', 'glass', 'living', 'atlas'];
+	const DEFAULT_SKIN = 'living';
+	const MATERIAL_BY_TILE = {
+		theory: { stiffness: 0.95, damping: 0.8, iridescence: 0.55, hue: 226 },
+		projects: { stiffness: 1.15, damping: 0.86, iridescence: 0.62, hue: 198 },
+		calyrai: { stiffness: 0.72, damping: 0.5, iridescence: 0.78, hue: 252 },
+		access: { stiffness: 0.6, damping: 0.54, iridescence: 0.42, hue: 238 },
+		engine: { stiffness: 1.4, damping: 0.9, iridescence: 0.66, hue: 214 },
+	};
 
 	const loadQrLibrary = () => {
 		if (typeof window.qrcode === 'function') return Promise.resolve();
@@ -557,6 +772,810 @@
 		return qrLibraryPromise;
 	};
 
+	const getSkinFromQuery = () => {
+		const params = new URLSearchParams(window.location.search);
+		const requested = (params.get('skin') || '').trim().toLowerCase();
+		return AVAILABLE_SKINS.includes(requested) ? requested : DEFAULT_SKIN;
+	};
+
+	const applySkinClass = (skin) => {
+		for (const value of AVAILABLE_SKINS) {
+			document.body.classList.remove(`skin-${value}`);
+		}
+		document.body.classList.add(`skin-${skin}`);
+		document.body.dataset.skin = skin;
+	};
+
+	const hashSeed = (value) => {
+		let hash = 2166136261;
+		const text = String(value || 'tile');
+		for (let i = 0; i < text.length; i += 1) {
+			hash ^= text.charCodeAt(i);
+			hash = Math.imul(hash, 16777619);
+		}
+		return Math.abs(hash >>> 0) + 1;
+	};
+
+	const seededRandom = (seed) => {
+		let state = Math.max(1, seed % 2147483647);
+		return () => {
+			state = (state * 48271) % 2147483647;
+			return state / 2147483647;
+		};
+	};
+
+	const hashGrid = (x, y) => {
+		const sx = Number(x) || 0;
+		const sy = Number(y) || 0;
+		const v = Math.sin(sx * 127.1 + sy * 311.7) * 43758.5453123;
+		return v - Math.floor(v);
+	};
+
+	const getTileConfig = (section) => {
+		const id = section.dataset.nodeId || section.id || 'tile';
+		const tileIndex = Number(section.dataset.tileIndex || '1') || 1;
+		const material = MATERIAL_BY_TILE[id] || { stiffness: 0.9, damping: 0.72, iridescence: 0.58, hue: 210 };
+		return {
+			id,
+			title: section.querySelector('.study-heading')?.textContent?.trim() || id,
+			seed: hashSeed(id),
+			density: Math.round(44 + tileIndex * 5 + material.iridescence * 18),
+			minSize: 3,
+			maxSize: 16,
+			stiffness: material.stiffness,
+			damping: material.damping,
+			iridescence: material.iridescence,
+			hue: material.hue,
+		};
+	};
+
+	class LivingMeshEngine {
+		constructor(section, tileConfig) {
+			this.section = section;
+			this.config = tileConfig;
+			this.mouse = { x: 0, y: 0, active: false };
+			this.hoverMix = 0;
+			this.reveal = 0;
+			this.revealTarget = 0;
+			this.nodes = [];
+			this.cellFlip = [];
+			this.microDots = [];
+			this.textAttractors = [];
+			this.textAttractorTimer = 0;
+			this.mouseOverText = false;
+			this.hoverPillKey = '';
+			this.hoverPillIsLink = false;
+			this.lastOpenState = false;
+			this.restSpring = 0.035 * this.config.stiffness;
+			this.linkSpring = 0.0048 * this.config.stiffness;
+			this.worldOffsetX = 0;
+			this.worldOffsetY = 0;
+			this.cellSize = 22;
+			this.cols = Math.min(20, Math.max(10, Math.round(Math.sqrt(this.config.density) * 1.8)));
+			this.rows = this.cols;
+
+			let surface = section.querySelector('.living-surface');
+			if (!(surface instanceof HTMLElement)) {
+				surface = document.createElement('div');
+				surface.className = 'living-surface';
+				section.prepend(surface);
+			}
+			this.surface = surface;
+			this.canvas = document.createElement('canvas');
+			this.canvas.className = 'living-mesh';
+			this.surface.textContent = '';
+			this.surface.appendChild(this.canvas);
+			this.ctx = this.canvas.getContext('2d', { alpha: true });
+			this.random = seededRandom(this.config.seed);
+
+			this.resize();
+			this.syncWorldOffset();
+			this.bindEvents();
+			if (typeof ResizeObserver !== 'undefined') {
+				this.resizeObserver = new ResizeObserver(() => this.resize());
+				this.resizeObserver.observe(this.section);
+			}
+		}
+
+		syncWorldOffset() {
+			const sectionRect = this.section.getBoundingClientRect();
+			const containerRect = studyContent instanceof HTMLElement
+				? studyContent.getBoundingClientRect()
+				: { left: 0, top: 0 };
+			this.worldOffsetX = sectionRect.left - containerRect.left;
+			this.worldOffsetY = sectionRect.top - containerRect.top;
+		}
+
+		bindEvents() {
+			const updateMouse = (event) => {
+				const rect = this.section.getBoundingClientRect();
+				this.mouse.x = event.clientX - rect.left;
+				this.mouse.y = event.clientY - rect.top;
+				this.mouse.active = true;
+			};
+			this.section.addEventListener('pointermove', updateMouse, { passive: true });
+			this.canvas.addEventListener('pointermove', updateMouse, { passive: true });
+
+			const clearMouse = () => {
+				this.mouse.active = false;
+			};
+			this.section.addEventListener('pointerleave', clearMouse, { passive: true });
+			this.canvas.addEventListener('pointerleave', clearMouse, { passive: true });
+
+			this.canvas.addEventListener('click', (event) => {
+				if (event.detail > 1) return;
+				const rect = this.canvas.getBoundingClientRect();
+				this.injectImpulse(event.clientX - rect.left, event.clientY - rect.top, 40, 12);
+			});
+			this.canvas.addEventListener('dblclick', (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(this.section);
+				activeTextSections.clear();
+				if (!wasOnlyOpen) activeTextSections.add(this.section);
+				enforceMondrianState();
+				this.revealTarget = wasOnlyOpen ? 0 : 1;
+				this.injectImpulse(this.width * 0.5, this.height * 0.5, 34, 10);
+			});
+		}
+
+		resize() {
+			const rect = this.section.getBoundingClientRect();
+			const width = Math.max(10, Math.round(rect.width));
+			const height = Math.max(10, Math.round(rect.height));
+			if (width === this.width && height === this.height && this.nodes.length) return;
+			this.width = width;
+			this.height = height;
+			const ratio = window.devicePixelRatio || 1;
+			this.canvas.width = Math.max(1, Math.floor(width * ratio));
+			this.canvas.height = Math.max(1, Math.floor(height * ratio));
+			this.canvas.style.width = `${width}px`;
+			this.canvas.style.height = `${height}px`;
+			if (this.ctx) this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+			const areaDensity = Math.max(0.65, Math.min(1.45, (width * height) / 98000));
+			this.cellSize = Math.max(18, Math.min(30, Math.round(24 / areaDensity)));
+			this.syncWorldOffset();
+			this.initGrid();
+			this.refreshTextAttractors();
+		}
+
+		refreshTextAttractors() {
+			const trigger = this.section.querySelector('.study-trigger');
+			if (!(trigger instanceof HTMLElement)) {
+				this.textAttractors = [];
+				return;
+			}
+			const normalizeKey = (value) => String(value || '').trim().toLowerCase().replace(/\s+/g, '-');
+			const sectionRect = this.section.getBoundingClientRect();
+			const points = [];
+			const maxPoints = 140;
+			const walker = document.createTreeWalker(trigger, NodeFilter.SHOW_TEXT, {
+				acceptNode: (node) => {
+					if (!node || !node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+					const parent = node.parentElement;
+					if (!(parent instanceof HTMLElement)) return NodeFilter.FILTER_REJECT;
+					const style = window.getComputedStyle(parent);
+					if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.05) {
+						return NodeFilter.FILTER_REJECT;
+					}
+					return NodeFilter.FILTER_ACCEPT;
+				},
+			});
+
+			let textNode = walker.nextNode();
+			while (textNode && points.length < maxPoints) {
+				const parent = textNode.parentElement;
+				const chip = parent instanceof HTMLElement
+					? parent.closest('.study-keyword, .study-detail-link')
+					: null;
+				const chipText = chip instanceof HTMLElement ? (chip.textContent || '') : '';
+				const chipKey = normalizeKey(chipText);
+				const chipIsLink = chip instanceof HTMLAnchorElement || (chip instanceof HTMLElement && !!chip.closest('a'));
+				const chipKind = chip instanceof HTMLElement
+					? (chip.classList.contains('study-keyword') ? 'pill' : 'link')
+					: 'text';
+				const range = document.createRange();
+				range.selectNodeContents(textNode);
+				const rects = range.getClientRects();
+				for (const rect of rects) {
+					if (points.length >= maxPoints) break;
+					if (!rect || rect.width < 6 || rect.height < 8) continue;
+					const y = rect.top + rect.height * 0.62 - sectionRect.top;
+					const pad = 4;
+					const startX = rect.left + pad;
+					const endX = rect.right - pad;
+					for (let x = startX; x <= endX && points.length < maxPoints; x += 20) {
+						points.push({
+							x: x - sectionRect.left,
+							y,
+							kind: chipKind,
+							key: chipKey,
+							isLink: chipIsLink,
+						});
+					}
+				}
+				textNode = walker.nextNode();
+			}
+
+			this.textAttractors = points;
+		}
+
+		initGrid() {
+			this.nodes = [];
+			this.cellFlip = [];
+			this.microDots = [];
+			const stepX = this.cellSize;
+			const stepY = this.cellSize;
+			const modX = ((this.worldOffsetX % stepX) + stepX) % stepX;
+			const modY = ((this.worldOffsetY % stepY) + stepY) % stepY;
+			const startX = -modX + stepX * 0.5;
+			const startY = -modY + stepY * 0.5;
+			const xPositions = [];
+			const yPositions = [];
+			for (let x = startX; x <= this.width + stepX * 0.5; x += stepX) xPositions.push(x);
+			for (let y = startY; y <= this.height + stepY * 0.5; y += stepY) yPositions.push(y);
+
+			const ensureEdgeAnchors = (positions, minValue, maxValue) => {
+				const eps = 0.001;
+				if (!positions.length || Math.abs(positions[0] - minValue) > eps) positions.unshift(minValue);
+				if (Math.abs(positions[positions.length - 1] - maxValue) > eps) positions.push(maxValue);
+				positions.sort((a, b) => a - b);
+			};
+			ensureEdgeAnchors(xPositions, 0, this.width);
+			ensureEdgeAnchors(yPositions, 0, this.height);
+			this.cols = xPositions.length;
+			this.rows = yPositions.length;
+
+			for (let row = 0; row < this.rows; row += 1) {
+				for (let col = 0; col < this.cols; col += 1) {
+					const ox = xPositions[col];
+					const oy = yPositions[row];
+					const globalCol = Math.floor((this.worldOffsetX + ox) / stepX);
+					const globalRow = Math.floor((this.worldOffsetY + oy) / stepY);
+					const pinned = col === 0 || row === 0 || col === this.cols - 1 || row === this.rows - 1;
+					const jitterAmp = stepX * 0.12;
+					const jx = pinned ? 0 : (hashGrid(globalCol + 17, globalRow + 23) - 0.5) * jitterAmp;
+					const jy = pinned ? 0 : (hashGrid(globalCol + 53, globalRow + 71) - 0.5) * jitterAmp;
+					const localX = ox + jx;
+					const localY = oy + jy;
+					this.nodes.push({
+						ox: localX,
+						oy: localY,
+						x: localX,
+						y: localY,
+						vx: 0,
+						vy: 0,
+						pinned,
+						globalCol,
+						globalRow,
+						hueOffset: this.random() * 1.2,
+					});
+				}
+			}
+			for (let row = 0; row < this.rows - 1; row += 1) {
+				for (let col = 0; col < this.cols - 1; col += 1) {
+					const idx = row * this.cols + col;
+					const n = this.nodes[idx];
+					this.cellFlip.push(hashGrid(n.globalCol + 5, n.globalRow + 9) > 0.47 ? 1 : 0);
+				}
+			}
+
+			const dotCount = Math.max(16, Math.min(56, Math.round((this.width * this.height) / 5200)));
+			for (let i = 0; i < dotCount; i += 1) {
+				this.microDots.push({
+					x: this.random() * this.width,
+					y: this.random() * this.height,
+					size: 0.35 + this.random() * 0.95,
+					alpha: 0.08 + this.random() * 0.22,
+					phase: this.random() * Math.PI * 2,
+				});
+			}
+		}
+
+		injectImpulse(px, py, radius, strength) {
+			const radiusSq = radius * radius;
+			for (const node of this.nodes) {
+				const dx = node.x - px;
+				const dy = node.y - py;
+				const distSq = dx * dx + dy * dy;
+				if (distSq >= radiusSq) continue;
+				const dist = Math.sqrt(distSq) || 1;
+				const force = (1 - dist / radius) * strength;
+				node.vx += (dx / dist) * force * 0.02;
+				node.vy += (dy / dist) * force * 0.024;
+			}
+		}
+
+		applyMouseForce(node) {
+			if (!this.mouse.active) return;
+			const dx = this.mouse.x - node.x;
+			const dy = this.mouse.y - node.y;
+			const dist = Math.hypot(dx, dy);
+			if (dist >= 210) return;
+			const t = (210 - dist) / 210;
+			const force = t * t;
+			const openBoost = this.section.classList.contains('is-open') ? 1.15 : 1;
+			const textBoost = this.mouseOverText ? 1.85 : 1.2;
+			const repel = 0.038 * openBoost * textBoost;
+			node.vx -= dx * force * repel;
+			node.vy -= dy * force * (repel * 1.05);
+		}
+
+		applyTextForce(node) {
+			if (!this.textAttractors.length) return;
+			const repelFromText = this.mouse.active && this.mouseOverText;
+			const hoverKey = this.hoverPillKey;
+			const hasPillFocus = !!hoverKey;
+			for (const target of this.textAttractors) {
+				const dx = target.x - node.x;
+				const dy = target.y - node.y;
+				const dist = Math.hypot(dx, dy);
+				if (dist >= 95 || dist < 0.001) continue;
+				const t = 1 - dist / 95;
+				let dir = repelFromText ? -1 : 1;
+				let magnitude = t * t * (0.007 + this.reveal * 0.01);
+
+				if (hasPillFocus && (target.kind === 'pill' || target.kind === 'link')) {
+					const sameKey = target.key === hoverKey;
+					if (this.hoverPillIsLink) {
+						dir = sameKey ? 1.6 : -1.2;
+						magnitude *= sameKey ? 2.3 : 1.55;
+					} else {
+						dir = sameKey ? -1.8 : -1.15;
+						magnitude *= sameKey ? 2.4 : 1.35;
+					}
+				} else if (target.kind === 'pill' && !target.isLink) {
+					// Keep non-linked pills gently repulsive as default guidance.
+					dir = -1;
+					magnitude *= 1.25;
+				}
+
+				node.vx += dx * magnitude * dir;
+				node.vy += dy * magnitude * 1.02 * dir;
+			}
+		}
+
+		updateTextHoverState() {
+			if (!this.mouse.active) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			const normalizeKey = (value) => String(value || '').trim().toLowerCase().replace(/\s+/g, '-');
+			const rect = this.section.getBoundingClientRect();
+			const clientX = rect.left + this.mouse.x;
+			const clientY = rect.top + this.mouse.y;
+			const hovered = document.elementFromPoint(clientX, clientY);
+			if (!(hovered instanceof HTMLElement)) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			if (!this.section.contains(hovered)) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			const textNode = hovered.closest('.study-heading, .study-teaser, .study-paragraph, .study-keyword, .study-detail-link, .visit-card-label');
+			this.mouseOverText = !!textNode;
+			const pillNode = hovered.closest('.study-keyword, .study-detail-link');
+			if (pillNode instanceof HTMLElement) {
+				this.hoverPillKey = normalizeKey(pillNode.textContent || '');
+				this.hoverPillIsLink = pillNode instanceof HTMLAnchorElement || !!pillNode.closest('a');
+			} else {
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+			}
+		}
+
+		textInfluenceAt(x, y, radius = 44) {
+			if (!this.textAttractors.length) return 0;
+			let influence = 0;
+			for (const target of this.textAttractors) {
+				const dist = Math.hypot(target.x - x, target.y - y);
+				if (dist >= radius) continue;
+				const t = 1 - dist / radius;
+				if (t > influence) influence = t;
+			}
+			return influence;
+		}
+
+		update(dt, timeSec, skin) {
+			if (!this.ctx) return;
+
+			if (globalPointer.active) {
+				const rect = this.section.getBoundingClientRect();
+				const inside = globalPointer.x >= rect.left
+					&& globalPointer.x <= rect.right
+					&& globalPointer.y >= rect.top
+					&& globalPointer.y <= rect.bottom;
+				if (inside) {
+					this.mouse.active = true;
+					this.mouse.x = globalPointer.x - rect.left;
+					this.mouse.y = globalPointer.y - rect.top;
+				} else {
+					this.mouse.active = false;
+				}
+			} else {
+				this.mouse.active = false;
+			}
+			this.updateTextHoverState();
+
+			const isOpen = this.section.classList.contains('is-open');
+			if (isOpen !== this.lastOpenState) {
+				this.lastOpenState = isOpen;
+				this.textAttractorTimer = 0;
+			}
+			this.textAttractorTimer -= dt;
+			if (this.textAttractorTimer <= 0) {
+				this.refreshTextAttractors();
+				this.textAttractorTimer = isOpen ? 0.2 : 0.45;
+			}
+
+			this.revealTarget = isOpen ? 1 : 0;
+			this.reveal += (this.revealTarget - this.reveal) * Math.min(1, dt * 9.5);
+			this.hoverMix += ((this.mouse.active ? 1 : 0) - this.hoverMix) * Math.min(1, dt * 16);
+			const damping = Math.max(0.78, this.config.damping);
+			const cols = this.cols;
+			const rows = this.rows;
+			const step = Math.min(0.035, dt);
+
+			const springBoost = this.mouse.active ? 1.28 : 1;
+
+			for (const node of this.nodes) {
+				if (node.pinned) {
+					node.vx = 0;
+					node.vy = 0;
+					node.x = node.ox;
+					node.y = node.oy;
+					continue;
+				}
+				node.vx += (node.ox - node.x) * this.restSpring * springBoost;
+				node.vy += (node.oy - node.y) * this.restSpring * springBoost;
+				this.applyMouseForce(node);
+				if (this.reveal > 0.05) this.applyTextForce(node);
+			}
+
+			for (let row = 0; row < rows; row += 1) {
+				for (let col = 0; col < cols; col += 1) {
+					const idx = row * cols + col;
+					const a = this.nodes[idx];
+					if (col < cols - 1) {
+						const b = this.nodes[idx + 1];
+						const dx = b.x - a.x;
+						const dy = b.y - a.y;
+						a.vx += dx * this.linkSpring;
+						a.vy += dy * this.linkSpring;
+						b.vx -= dx * this.linkSpring;
+						b.vy -= dy * this.linkSpring;
+					}
+					if (row < rows - 1) {
+						const b = this.nodes[idx + cols];
+						const dx = b.x - a.x;
+						const dy = b.y - a.y;
+						a.vx += dx * this.linkSpring;
+						a.vy += dy * this.linkSpring;
+						b.vx -= dx * this.linkSpring;
+						b.vy -= dy * this.linkSpring;
+					}
+				}
+			}
+
+			for (const node of this.nodes) {
+				if (node.pinned) {
+					node.vx = 0;
+					node.vy = 0;
+					node.x = node.ox;
+					node.y = node.oy;
+					continue;
+				}
+				node.vx *= damping;
+				node.vy *= damping;
+				node.x += node.vx * (step * 60);
+				node.y += node.vy * (step * 60);
+			}
+
+			this.syncWorldOffset();
+
+			this.draw(timeSec);
+		}
+
+		draw(timeSec) {
+			const ctx = this.ctx;
+			ctx.clearRect(0, 0, this.width, this.height);
+			const isOpen = this.section.classList.contains('is-open');
+			const wireRgb = isOpen ? '28, 36, 54' : '255, 255, 255';
+			const openBoost = 0.9 + this.reveal * 0.55;
+			const openFill = isOpen ? 0.08 : (0.76 + (1 - this.reveal) * 0.2);
+			const lineVisibility = isOpen ? 1.0 : (0.62 + this.reveal * 0.28);
+			const meshStrokeBoost = isOpen ? 2.2 : 1;
+			const readabilityMode = this.reveal > 0.2;
+			const cx = this.width * 0.5;
+			const cy = this.height * 0.5;
+			const maxDist = Math.max(1, Math.hypot(cx, cy));
+			const nodes2d = new Array(this.nodes.length);
+			const ox = this.worldOffsetX;
+			const oy = this.worldOffsetY;
+
+			for (let i = 0; i < this.nodes.length; i += 1) {
+				const node = this.nodes[i];
+				const dx = node.x - cx;
+				const dy = node.y - cy;
+				const dist = Math.hypot(dx, dy) || 1;
+				const ux = dx / dist;
+				const uy = dy / dist;
+				const revealPush = this.reveal * 14 * Math.max(0, 1 - dist / (Math.max(this.width, this.height) * 0.56));
+				const px = node.x + ux * revealPush;
+				const py = node.y + uy * revealPush;
+				const radial = dist / maxDist;
+				const gx = px + ox;
+				const gy = py + oy;
+				const wave = Math.sin(gx * 0.016 + timeSec * 1.12) * Math.cos(gy * 0.013 - timeSec * 0.93);
+				const stream = Math.sin((gx + gy) * 0.008 + timeSec * 0.48) * 0.4;
+				let mouseLift = 0;
+				if (this.mouse.active) {
+					const md = Math.hypot(px - this.mouse.x, py - this.mouse.y);
+					if (md < 180) mouseLift = (1 - md / 180) * 3.8;
+				}
+				const h = ((wave + stream) * (0.85 + this.config.iridescence) + mouseLift) * (1 - radial * 0.28);
+				nodes2d[i] = { x: px, y: py, h };
+			}
+
+			for (const dot of this.microDots) {
+				let px = dot.x;
+				let py = dot.y;
+				if (this.mouse.active) {
+					const dx = this.mouse.x - px;
+					const dy = this.mouse.y - py;
+					const dist = Math.hypot(dx, dy) || 1;
+					if (dist < 170) {
+						const pull = (1 - dist / 170) * 7.5 * this.hoverMix;
+						px += (dx / dist) * pull;
+						py += (dy / dist) * pull;
+					}
+				}
+				const twinkle = 0.72 + 0.28 * Math.sin(timeSec * 0.9 + dot.phase);
+				ctx.beginPath();
+				ctx.arc(px, py, dot.size, 0, Math.PI * 2);
+				ctx.fillStyle = `rgba(138, 196, 236, ${Math.min(0.12, dot.alpha * (0.52 - this.reveal * 0.28)).toFixed(3)})`;
+				ctx.fill();
+			}
+
+			const light = { x: -0.32, y: -0.42, z: 0.85 };
+			const hueBase = Number(this.config.hue || 210);
+			ctx.lineJoin = 'round';
+
+			const drawTri = (a, b, c, hueJitter = 0) => {
+				const ux = b.x - a.x;
+				const uy = b.y - a.y;
+				const uz = b.h - a.h;
+				const vx = c.x - a.x;
+				const vy = c.y - a.y;
+				const vz = c.h - a.h;
+				const nx = uy * vz - uz * vy;
+				const ny = uz * vx - ux * vz;
+				const nz = ux * vy - uy * vx;
+				const nLen = Math.hypot(nx, ny, nz) || 1;
+				const dot = Math.max(0, (nx * light.x + ny * light.y + nz * light.z) / nLen);
+				const shade = 0.38 + dot * 0.62;
+				const avgH = (a.h + b.h + c.h) / 3;
+				const hue = hueBase + hueJitter + avgH * 5.5 + this.config.iridescence * 10;
+				const sat = 66 + this.config.iridescence * 10;
+				const lum = 40 + shade * 24;
+				const cxTri = (a.x + b.x + c.x) / 3;
+				const cyTri = (a.y + b.y + c.y) / 3;
+				let hover = 0;
+				let attraction = 0;
+				if (this.mouse.active) {
+					const md = Math.hypot(cxTri - this.mouse.x, cyTri - this.mouse.y);
+					if (md < 185) {
+						attraction = 1 - md / 185;
+						hover = attraction;
+					}
+				}
+				const reflectBoost = Math.pow(attraction, 1.35) * this.hoverMix;
+				const baseAlpha = (0.62 + shade * 0.28 + hover * 0.07 + reflectBoost * 0.13) * openBoost * openFill;
+				const alpha = isOpen ? Math.min(0.04, baseAlpha * 0.16) : baseAlpha;
+
+				ctx.beginPath();
+				ctx.moveTo(a.x, a.y);
+				ctx.lineTo(b.x, b.y);
+				ctx.lineTo(c.x, c.y);
+				ctx.closePath();
+				if (!isOpen) {
+					ctx.fillStyle = `hsla(${hue.toFixed(1)}, ${sat.toFixed(1)}%, ${lum.toFixed(1)}%, ${alpha.toFixed(3)})`;
+					ctx.fill();
+					const triStrokeAlpha = (0.28 + shade * 0.22 + hover * 0.22 + reflectBoost * 0.24) * lineVisibility * meshStrokeBoost;
+					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.995, triStrokeAlpha).toFixed(3)})`;
+					ctx.lineWidth = 0.26 + reflectBoost * 0.2;
+					ctx.stroke();
+				}
+
+				if (hover > 0.01) {
+					const g = ctx.createRadialGradient(cxTri, cyTri, 0, cxTri, cyTri, 42 + reflectBoost * 22);
+					if (isOpen) {
+						g.addColorStop(0, `rgba(0,0,0, ${(0.14 * hover + reflectBoost * 0.18).toFixed(3)})`);
+						g.addColorStop(1, 'rgba(0,0,0,0)');
+					} else {
+						g.addColorStop(0, `rgba(255,255,255, ${(0.2 * hover + reflectBoost * 0.38).toFixed(3)})`);
+						g.addColorStop(1, 'rgba(255,255,255,0)');
+					}
+					ctx.fillStyle = g;
+					ctx.fill();
+				}
+			};
+
+			let flipIdx = 0;
+			for (let row = 0; row < this.rows - 1; row += 1) {
+				for (let col = 0; col < this.cols - 1; col += 1) {
+					const i = row * this.cols + col;
+					const a = nodes2d[i];
+					const b = nodes2d[i + 1];
+					const c = nodes2d[i + this.cols];
+					const d = nodes2d[i + this.cols + 1];
+					const flip = this.cellFlip[flipIdx++] || 0;
+					if (flip) {
+						drawTri(a, b, d, -1.1);
+						drawTri(a, d, c, 0.9);
+					} else {
+						drawTri(a, b, c, -0.8);
+						drawTri(b, d, c, 1.0);
+					}
+				}
+			}
+
+			ctx.beginPath();
+			for (let row = 0; row < this.rows; row += 1) {
+				for (let col = 0; col < this.cols; col += 1) {
+					const i = row * this.cols + col;
+					const a = nodes2d[i];
+					if (col < this.cols - 1 && (row + col) % 2 === 0) {
+						const b = nodes2d[i + 1];
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+					}
+					if (row < this.rows - 1 && (row + col) % 2 === 1) {
+						const b = nodes2d[i + this.cols];
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+					}
+				}
+			}
+			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.94, isOpen ? 0.62 : ((0.28 + this.config.iridescence * 0.1) * lineVisibility * meshStrokeBoost)).toFixed(3)})`;
+			ctx.lineWidth = isOpen ? 0.38 : 0.2;
+			ctx.stroke();
+
+			for (const node of nodes2d) {
+				let pointBoost = 0;
+				let textBoost = 0;
+				if (this.mouse.active) {
+					const d = Math.hypot(node.x - this.mouse.x, node.y - this.mouse.y);
+					if (d < 170) pointBoost = 1 - d / 170;
+				}
+				if (this.reveal > 0.05) {
+					textBoost = this.textInfluenceAt(node.x, node.y, 38) * this.reveal;
+				}
+				const baseR = 0.42 + pointBoost * 1.55 + textBoost * 1.15;
+				ctx.beginPath();
+				ctx.arc(node.x, node.y, baseR * 1.35, 0, Math.PI * 2);
+				ctx.fillStyle = `rgba(${wireRgb}, ${Math.min(0.96, ((0.08 + pointBoost * 0.22 + textBoost * 0.24) * lineVisibility * (isOpen ? 1.36 : 1))).toFixed(3)})`;
+				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(node.x, node.y, baseR, 0, Math.PI * 2);
+				ctx.fillStyle = `rgba(${wireRgb}, ${Math.min(0.995, ((0.18 + pointBoost * 0.52 + textBoost * 0.4) * lineVisibility * (isOpen ? 1.32 : 1))).toFixed(3)})`;
+				ctx.fill();
+			}
+
+			if (this.mouse.active || this.hoverMix > 0.02) {
+				const mx = this.mouse.x;
+				const my = this.mouse.y;
+
+				const magentaR = 168;
+				const magenta = ctx.createRadialGradient(mx, my, 0, mx, my, magentaR);
+				if (isOpen) {
+					magenta.addColorStop(0, `rgba(0, 0, 0, ${(0.1 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(0.5, `rgba(0, 0, 0, ${(0.06 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(1, 'rgba(0,0,0,0)');
+				} else {
+					magenta.addColorStop(0, `rgba(255, 92, 220, ${(0.24 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(0.5, `rgba(220, 96, 255, ${(0.14 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(1, 'rgba(220,96,255,0)');
+				}
+				ctx.fillStyle = magenta;
+				ctx.beginPath();
+				ctx.arc(mx, my, magentaR, 0, Math.PI * 2);
+				ctx.fill();
+
+				const spotR = 190;
+				const hot = ctx.createRadialGradient(mx, my, 0, mx, my, spotR);
+				if (isOpen) {
+					hot.addColorStop(0, `rgba(0,0,0, ${(0.08 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(0.35, `rgba(0,0,0, ${(0.05 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(1, 'rgba(0,0,0,0)');
+				} else {
+					hot.addColorStop(0, `rgba(255,255,255, ${(0.12 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(0.35, `rgba(255,182,240, ${(0.1 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(1, 'rgba(180,235,255,0)');
+				}
+				ctx.fillStyle = hot;
+				ctx.beginPath();
+				ctx.arc(mx, my, spotR, 0, Math.PI * 2);
+				ctx.fill();
+
+				for (const node of nodes2d) {
+					const d = Math.hypot(node.x - mx, node.y - my);
+					if (d >= 170) continue;
+					const near = (1 - d / 170) * this.hoverMix;
+					const r = 0.6 + near * 2.05;
+					ctx.beginPath();
+					ctx.arc(node.x, node.y, r * 1.3, 0, Math.PI * 2);
+					ctx.fillStyle = isOpen
+						? `rgba(0, 0, 0, ${((0.08 + near * 0.18) * openBoost).toFixed(3)})`
+						: (readabilityMode
+							? `rgba(220, 245, 255, ${((0.07 + near * 0.24) * openBoost).toFixed(3)})`
+							: `rgba(255, 116, 230, ${((0.08 + near * 0.28) * openBoost).toFixed(3)})`);
+					ctx.fill();
+					ctx.beginPath();
+					ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+					ctx.fillStyle = isOpen
+						? `rgba(0, 0, 0, ${((0.14 + near * 0.42) * openBoost).toFixed(3)})`
+						: (readabilityMode
+							? `rgba(170, 230, 255, ${((0.14 + near * 0.56) * openBoost).toFixed(3)})`
+							: `rgba(164, 248, 255, ${((0.24 + near * 0.8) * openBoost).toFixed(3)})`);
+					ctx.fill();
+				}
+			}
+		}
+	}
+
+	const livingMeshes = [];
+
+	const buildLivingSurface = (section, tileConfig) => {
+		livingMeshes.push(new LivingMeshEngine(section, tileConfig));
+	};
+
+	const initLivingSurfaceLayer = () => {
+		sections.forEach((section) => {
+			if (!(section instanceof HTMLElement)) return;
+			if (section.dataset.tileKind === 'visit_card') return;
+			buildLivingSurface(section, getTileConfig(section));
+		});
+	};
+
+	const startLivingLoop = () => {
+		let last = performance.now();
+		const frame = (now) => {
+			const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000));
+			last = now;
+			const skin = document.body.dataset.skin || DEFAULT_SKIN;
+			for (const engine of livingMeshes) {
+				engine.update(dt, now / 1000, skin);
+			}
+			requestAnimationFrame(frame);
+		};
+		requestAnimationFrame(frame);
+	};
+
+	const initSkinSystem = () => {
+		const skin = getSkinFromQuery();
+		applySkinClass(skin);
+		initLivingSurfaceLayer();
+		startLivingLoop();
+		window.calyrSkin = {
+			available: AVAILABLE_SKINS,
+			current: skin,
+			set: (nextSkin) => {
+				const normalized = String(nextSkin || '').toLowerCase();
+				if (!AVAILABLE_SKINS.includes(normalized)) return;
+				applySkinClass(normalized);
+				window.calyrSkin.current = normalized;
+			},
+		};
+	};
+
 	const moveDetailLinksToTileEnd = () => {
 		document.querySelectorAll('.tile-open-state').forEach((state) => {
 			if (!(state instanceof HTMLElement)) return;
@@ -567,7 +1586,46 @@
 		});
 	};
 
+	const enableKeywordChainLinks = () => {
+		document.querySelectorAll('.study-section').forEach((section) => {
+			if (!(section instanceof HTMLElement)) return;
+			const link = section.querySelector('.study-detail-link');
+			const keywords = section.querySelector('.study-keywords');
+			if (!(link instanceof HTMLAnchorElement) || !(keywords instanceof HTMLElement)) return;
+			const chips = Array.from(keywords.querySelectorAll('.study-keyword'));
+			const navigate = () => {
+				window.location.href = link.href;
+			};
+			keywords.setAttribute('role', 'group');
+			keywords.setAttribute('aria-label', (link.textContent || 'Open detail page').trim());
+			keywords.addEventListener('click', (event) => {
+				if (event.target instanceof HTMLElement && event.target.closest('.study-keyword')) return;
+				navigate();
+			});
+			chips.forEach((chip, index) => {
+				if (!(chip instanceof HTMLElement)) return;
+				const label = chip.textContent?.trim() || `Keyword ${index + 1}`;
+				chip.setAttribute('role', 'link');
+				chip.setAttribute('tabindex', '0');
+				chip.setAttribute('aria-label', `${label} - ${(link.textContent || 'Open detail page').trim()}`);
+				chip.addEventListener('click', (event) => {
+					event.preventDefault();
+					event.stopPropagation();
+					navigate();
+				});
+				chip.addEventListener('keydown', (event) => {
+					if (event.key !== 'Enter' && event.key !== ' ') return;
+					event.preventDefault();
+					event.stopPropagation();
+					navigate();
+				});
+			});
+		});
+	};
+
 	moveDetailLinksToTileEnd();
+	enableKeywordChainLinks();
+	initSkinSystem();
 
 	const buildFallbackMatrix = (size = 29) => {
 		const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -741,10 +1799,100 @@
 		section.classList.toggle('is-open', expanded);
 		section.classList.toggle('is-collapsed', !expanded);
 		section.classList.toggle('is-expanded', expanded && expandedMode && isTextualTile(section));
+		if (!expanded) {
+			section.style.removeProperty('grid-row');
+			section.style.removeProperty('min-height');
+			const collapsedStyles = window.getComputedStyle(section);
+			const start = parseInt(collapsedStyles.gridRowStart, 10);
+			const end = parseInt(collapsedStyles.gridRowEnd, 10);
+			if (Number.isFinite(start) && Number.isFinite(end) && end > start) {
+				section.dataset.collapsedRowSpan = String(end - start);
+			}
+		} else {
+			const savedSpan = Number(section.dataset.customRowSpan || '0');
+			const collapsedSpan = Number(section.dataset.collapsedRowSpan || '0');
+			const dynamicSpan = collapsedSpan > 0 ? collapsedSpan * 2 : 4;
+			const span = savedSpan > 0 ? savedSpan : dynamicSpan;
+			section.style.setProperty('grid-row', `span ${span}`, 'important');
+			section.style.setProperty('min-height', `${Math.max(110, span * 54)}px`);
+		}
 		const trigger = section.querySelector('.study-trigger');
 		if (trigger instanceof HTMLElement) {
 			trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
 		}
+	};
+
+	const ensureResizeHandles = () => {
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			const kind = section.dataset.tileKind || 'text';
+			if (kind !== 'text' && kind !== 'visit_card') continue;
+			if (section.querySelector('.tile-resize-handle')) continue;
+			const handle = document.createElement('div');
+			handle.className = 'tile-resize-handle';
+			handle.setAttribute('role', 'separator');
+			handle.setAttribute('aria-orientation', 'vertical');
+			handle.setAttribute('aria-label', 'Resize tile vertically');
+			section.appendChild(handle);
+		}
+	};
+
+	const initVerticalTileResize = () => {
+		if (!(studyContent instanceof HTMLElement)) return;
+		ensureResizeHandles();
+		let resizeState = null;
+
+		const onDragMove = (event) => {
+			if (!resizeState) return;
+			const y = Number(event.clientY);
+			if (!Number.isFinite(y)) return;
+			const deltaY = y - resizeState.startY;
+			const targetHeight = resizeState.startHeight + deltaY;
+			const unit = resizeState.rowHeight + resizeState.rowGap;
+			const span = Math.max(3, Math.min(10, Math.round((targetHeight + resizeState.rowGap) / unit)));
+			resizeState.section.dataset.customRowSpan = String(span);
+			resizeState.section.style.setProperty('grid-row', `span ${span}`, 'important');
+			resizeState.section.style.setProperty('min-height', `${Math.max(160, span * resizeState.rowHeight)}px`);
+			event.preventDefault();
+		};
+
+		const onDragEnd = () => {
+			if (!resizeState) return;
+			window.removeEventListener('pointermove', onDragMove);
+			window.removeEventListener('pointerup', onDragEnd);
+			window.removeEventListener('mousemove', onDragMove);
+			window.removeEventListener('mouseup', onDragEnd);
+			resizeState = null;
+		};
+
+		const startDrag = (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const handle = target.closest('.tile-resize-handle');
+			if (!(handle instanceof HTMLElement)) return;
+			const section = handle.closest('.study-section');
+			if (!(section instanceof HTMLElement) || !section.classList.contains('is-open')) return;
+			const y = Number(event.clientY);
+			if (!Number.isFinite(y)) return;
+			const gridStyles = window.getComputedStyle(studyContent);
+			const rowHeight = parseFloat(gridStyles.gridAutoRows || '54') || 54;
+			const rowGap = parseFloat(gridStyles.rowGap || '2') || 2;
+			resizeState = {
+				section,
+				startY: y,
+				startHeight: section.getBoundingClientRect().height,
+				rowHeight,
+				rowGap,
+			};
+			window.addEventListener('pointermove', onDragMove, { passive: false });
+			window.addEventListener('pointerup', onDragEnd, { passive: true });
+			window.addEventListener('mousemove', onDragMove, { passive: false });
+			window.addEventListener('mouseup', onDragEnd, { passive: true });
+			event.preventDefault();
+		};
+
+		studyContent.addEventListener('pointerdown', startDrag);
+		studyContent.addEventListener('mousedown', startDrag);
 	};
 
 	const enforceMondrianState = () => {
@@ -774,6 +1922,8 @@
 		enforceMondrianState();
 	};
 
+	initVerticalTileResize();
+
 	updateDensityMode();
 	initVisitGames();
 	restoreSectionOrder();
@@ -801,8 +1951,9 @@
 			if (!(trigger instanceof HTMLElement)) return;
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
+			const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(section);
 			activeTextSections.clear();
-			activeTextSections.add(section);
+			if (!wasOnlyOpen) activeTextSections.add(section);
 			enforceMondrianState();
 		});
 
@@ -815,8 +1966,9 @@
 			event.preventDefault();
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
+			const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(section);
 			activeTextSections.clear();
-			activeTextSections.add(section);
+			if (!wasOnlyOpen) activeTextSections.add(section);
 			enforceMondrianState();
 		});
 	}
