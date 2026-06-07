@@ -781,6 +781,7 @@
       extraBalls: [],
       meshNodes: Object.create(null),
       qrModuleSize: 10,
+      meshEnergy: 0,
     };
 
     let qrLibraryPromise = null;
@@ -1085,7 +1086,7 @@
               splitter: false,
               pendingBlast: false,
               textPattern: true,
-              circleScale: 0.34,
+              circleScale: baseDiscScale(x + 1, y + 1, 41),
             });
           }
         }
@@ -1195,7 +1196,7 @@
       const lineGap = visualSpec.lineGap;
       const rotateText = visualSpec.rotateText;
 
-      const radius = Math.max(2.4, moduleSize * 0.34);
+      const energyFactor = 1 + Math.min(0.35, state.meshEnergy * 0.035);
       const markedCell = stepContactVisualWalker(qrMatrix);
 
       drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
@@ -1254,6 +1255,8 @@
           const x = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
           const y = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
           const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
+          const individualScale = baseDiscScale(row + 1, col + 1, contactSeed());
+          const radius = Math.max(1.8, moduleSize * individualScale * energyFactor);
           const phaseSeed = (row + 1) * 17.13 + (col + 1) * 31.7 + contactSeed() * 0.019;
           const phaseOffset = pseudoRandom01(phaseSeed) * 20;
           const speedBase = 0.65 + pseudoRandom01(phaseSeed * 1.37 + 3.1) * 2.15;
@@ -1980,6 +1983,14 @@
       return `${row}:${col}`;
     }
 
+    function hashed01(a, b, c = 0) {
+      return pseudoRandom01((a * 12.9898 + b * 78.233 + c * 37.719) * 0.137);
+    }
+
+    function baseDiscScale(a, b, c = 0) {
+      return 0.22 + hashed01(a, b, c) * 0.58;
+    }
+
     function getMeshNode(row, col) {
       const key = meshNodeKey(row, col);
       let node = state.meshNodes[key];
@@ -2036,6 +2047,8 @@
 
       const velocityDamping = Math.pow(0.9, dt * 60);
       const maxShift = 24;
+      let accumulated = 0;
+      let count = 0;
       for (const brick of state.bricks) {
         if (!isGameplayQrBrick(brick)) continue;
         const node = getMeshNode(brick.row, brick.col);
@@ -2043,6 +2056,8 @@
         node.vy *= velocityDamping;
         node.dx = Math.max(-maxShift, Math.min(maxShift, node.dx + node.vx));
         node.dy = Math.max(-maxShift, Math.min(maxShift, node.dy + node.vy));
+        accumulated += Math.hypot(node.dx, node.dy);
+        count += 1;
       }
 
       // Light neighbor coupling keeps the net coherent while preserving deformation memory.
@@ -2061,6 +2076,8 @@
         center.dx += (avgDx - center.dx) * 0.03;
         center.dy += (avgDy - center.dy) * 0.03;
       }
+
+      state.meshEnergy = count ? accumulated / count : 0;
     }
 
     function drawImpressumInfo(layout) {
@@ -2171,11 +2188,15 @@
         }
       }
 
+      const energyFactor = 1 + Math.min(0.4, state.meshEnergy * 0.04);
       for (const node of centers.values()) {
         const brick = node.brick;
         const isMarked = !!brick.mulMark;
         const isSplitter = !!brick.splitter;
-        const radius = Math.max(1.8, state.qrModuleSize * 0.34);
+        const nodeModel = getMeshNode(brick.row, brick.col);
+        const motionFactor = 1 + Math.min(0.35, Math.hypot(nodeModel.dx, nodeModel.dy) * 0.025);
+        const individualScale = baseDiscScale(brick.row + 1, brick.col + 1, 19);
+        const radius = Math.max(1.8, state.qrModuleSize * individualScale * motionFactor * energyFactor);
         const baseSpin = 0.85 + (((brick.row * 17 + brick.col * 13) % 100) / 100) * 1.35;
         const direction = (brick.row + brick.col) % 2 === 0 ? 1 : -1;
         const rotationSpeed = isMeshActivated() ? baseSpin * direction : 0;
@@ -2223,7 +2244,15 @@
       const cyan = "#ffffff";
       const magenta = "#ff4df5";
       const blink = 1;
-      const radius = Math.max(5.4, Math.min(w, h) * (brick.circleScale || 0.68));
+      const points = [state.ball, ...state.extraBalls];
+      let proximity = 0;
+      for (const source of points) {
+        if (!source) continue;
+        const dist = Math.hypot((x + w * 0.5) - source.x, (y + h * 0.5) - source.y);
+        proximity = Math.max(proximity, Math.max(0, 1 - dist / 180));
+      }
+      const dynamicFactor = 1 + Math.min(0.4, state.meshEnergy * 0.05) + proximity * 0.25;
+      const radius = Math.max(3.2, Math.min(w, h) * (brick.circleScale || 0.68) * dynamicFactor);
       const cx = x + w / 2;
       const cy = y + h / 2;
 
