@@ -1247,6 +1247,17 @@
       }
       ctx.restore();
 
+      // Scanner mode: calm, high-contrast QR plate for reliable camera reads.
+      const qrPlatePad = Math.max(10, Math.floor(moduleSize * 0.9));
+      const qrPlateLeft = qrBounds.left - qrPlatePad;
+      const qrPlateTop = qrBounds.top - qrPlatePad;
+      const qrPlateW = qrBounds.width + qrPlatePad * 2;
+      const qrPlateH = qrBounds.height + qrPlatePad * 2;
+      drawRoundedRect(qrPlateLeft, qrPlateTop, qrPlateW, qrPlateH, Math.max(10, moduleSize), "#f7fbff");
+      ctx.strokeStyle = "rgba(8, 22, 46, 0.32)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(qrPlateLeft + 0.5, qrPlateTop + 0.5, qrPlateW - 1, qrPlateH - 1);
+
       ctx.save();
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
@@ -1262,11 +1273,8 @@
           const rotationSpeed = speedBase * direction;
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = isMarked ? "#ff4df5" : "#ffffff";
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = isMarked ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)";
+          ctx.fillStyle = isMarked ? "#7f2fff" : "#0a1a35";
           ctx.fill();
-          ctx.shadowBlur = 0;
         }
       }
       ctx.restore();
