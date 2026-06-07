@@ -267,6 +267,10 @@
       font-size: 0.82rem;
     }
 
+    .hud-hidden-metrics {
+      display: none;
+    }
+
     @media (max-width: 720px) {
       .contact-page-flow {
         padding: 10px 4px 6px;
@@ -540,14 +544,13 @@
       right: 26px;
       top: 24px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: flex-start;
       z-index: 4;
       pointer-events: none;
     }
 
-    .impressum-badge,
-    .impressum-meta {
+    .impressum-badge {
       border: 1px solid var(--line-strong);
       background: rgba(6, 13, 29, 0.64);
       color: rgba(246, 251, 255, 0.92);
@@ -564,13 +567,6 @@
       border-radius: 999px;
     }
 
-    .impressum-meta {
-      border-radius: 10px;
-      text-align: right;
-      max-width: 320px;
-      letter-spacing: 0.11em;
-    }
-
     @media (max-aspect-ratio: 5/3) {
       canvas#game {
         width: 100vw;
@@ -584,14 +580,9 @@
         top: 12px;
       }
 
-      .impressum-badge,
-      .impressum-meta {
+      .impressum-badge {
         font-size: 0.56rem;
         padding: 6px 9px;
-      }
-
-      .impressum-meta {
-        max-width: 210px;
       }
     }
   </style>
@@ -628,8 +619,7 @@
 
           <section class="stage">
             <div class="impressum-chrome" aria-hidden="true">
-              <div class="impressum-badge">Calyr Impressum</div>
-              <div class="impressum-meta">Interactive legal contact surface<br>Breakout x contact signal</div>
+              <div class="impressum-badge">Impressum</div>
             </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
             <div class="landscape-controls" aria-hidden="true">
@@ -654,20 +644,14 @@
                 <span class="chip-label">Score</span>
                 <span class="chip-value" id="score">0</span>
               </div>
-              <div class="chip">
-                <span class="chip-label">Lives</span>
-                <span class="chip-value" id="lives">3</span>
-              </div>
-              <div class="chip">
-                <span class="chip-label">Level</span>
-                <span class="chip-value" id="level">1</span>
-              </div>
-              <div class="chip">
-                <span class="chip-label">Pattern Hits</span>
-                <span class="chip-value" id="pattern">0/0</span>
-              </div>
             </div>
           </section>
+
+          <div class="hud-hidden-metrics" aria-hidden="true">
+            <span id="lives">3</span>
+            <span id="level">1</span>
+            <span id="pattern">0/0</span>
+          </div>
 
           <footer class="footer game-only-hide">
             <span>Controls: Left / Right, A / D, or move the mouse.</span>
