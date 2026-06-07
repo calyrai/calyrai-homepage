@@ -1851,16 +1851,39 @@
 		section.classList.toggle('is-expanded', expanded && expandedMode && isTextualTile(section));
 		const getGridMetrics = () => {
 			if (!(studyContent instanceof HTMLElement)) {
-				return { rowHeight: 54, rowGap: 2 };
+				return { rowHeight: 54, rowGap: 2, colGap: 2, cols: 12 };
 			}
 			const gridStyles = window.getComputedStyle(studyContent);
 			return {
 				rowHeight: parseFloat(gridStyles.gridAutoRows || '54') || 54,
 				rowGap: parseFloat(gridStyles.rowGap || '2') || 2,
+				colGap: parseFloat(gridStyles.columnGap || gridStyles.gap || '2') || 2,
+				cols: 12,
 			};
+		};
+		const measureStateHeightAtWidth = (state, widthPx) => {
+			if (!(state instanceof HTMLElement)) return 0;
+			const clone = state.cloneNode(true);
+			if (!(clone instanceof HTMLElement)) return 0;
+			clone.style.position = 'absolute';
+			clone.style.left = '-99999px';
+			clone.style.top = '0';
+			clone.style.width = `${Math.max(260, Math.floor(widthPx))}px`;
+			clone.style.height = 'auto';
+			clone.style.minHeight = '0';
+			clone.style.maxHeight = 'none';
+			clone.style.overflow = 'visible';
+			clone.style.display = 'flex';
+			clone.style.visibility = 'hidden';
+			clone.style.pointerEvents = 'none';
+			document.body.appendChild(clone);
+			const measured = Math.ceil(clone.scrollHeight + 16);
+			clone.remove();
+			return measured;
 		};
 		if (!expanded) {
 			section.style.removeProperty('grid-row');
+			section.style.removeProperty('grid-column');
 			section.style.removeProperty('min-height');
 			const collapsedStyles = window.getComputedStyle(section);
 			const start = parseInt(collapsedStyles.gridRowStart, 10);
@@ -1870,31 +1893,47 @@
 			}
 		} else {
 			const savedSpan = Number(section.dataset.customRowSpan || '0');
-			const { rowHeight, rowGap } = getGridMetrics();
+			const { rowHeight, rowGap, colGap, cols } = getGridMetrics();
 			let span = savedSpan;
+			let colSpan = 0;
 			if (span <= 0) {
 				const isVisitCard = section.dataset.tileKind === 'visit_card';
 				const state = section.querySelector('.tile-open-state');
-				let desired = 0;
-				if (state instanceof HTMLElement) {
-					const head = state.querySelector('.tile-open-head');
-					const full = state.querySelector('.study-fulltext');
-					const extra = state.querySelector('.study-detail-link.tile-detail-footer');
-					desired += head instanceof HTMLElement ? head.scrollHeight : 0;
-					desired += full instanceof HTMLElement ? full.scrollHeight : state.scrollHeight;
-					desired += extra instanceof HTMLElement ? extra.scrollHeight : 0;
-					desired += 36; // section paddings/gaps
-				} else {
-					desired = rowHeight * 4;
-				}
-
-				const maxViewport = Math.floor(window.innerHeight * (isVisitCard ? 0.9 : 0.82));
-				const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
 				const unit = rowHeight + rowGap;
+				const maxViewport = Math.floor(window.innerHeight * (isVisitCard ? 0.9 : 0.82));
 				const minSpan = isVisitCard ? 4 : 3;
 				const maxSpan = isVisitCard ? 14 : 12;
-				span = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
+				if (!isVisitCard && studyContent instanceof HTMLElement && state instanceof HTMLElement) {
+					const contentWidth = studyContent.clientWidth;
+					const colUnit = (contentWidth - colGap * (cols - 1)) / cols;
+					let best = { col: 6, row: 7, area: Number.POSITIVE_INFINITY, overflow: Number.POSITIVE_INFINITY };
+					for (let c = 5; c <= 10; c += 1) {
+						const frameWidth = colUnit * c + colGap * (c - 1) - 16;
+						const desired = Math.max(160, measureStateHeightAtWidth(state, frameWidth));
+						const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
+						const rows = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
+						const overflow = Math.max(0, rows - 8);
+						const area = c * rows;
+						if (overflow < best.overflow || (overflow === best.overflow && area < best.area)) {
+							best = { col: c, row: rows, area, overflow };
+						}
+					}
+					colSpan = best.col;
+					span = best.row;
+				} else {
+					const desired = state instanceof HTMLElement
+						? Math.max(160, Math.ceil(state.scrollHeight + 16))
+						: rowHeight * 4;
+					const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
+					span = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
+				}
+				if (colSpan > 0) {
+					section.dataset.autoColSpan = String(colSpan);
+				}
 				section.dataset.autoRowSpan = String(span);
+			}
+			if (colSpan > 0) {
+				section.style.setProperty('grid-column', `span ${colSpan}`, 'important');
 			}
 			section.style.setProperty('grid-row', `span ${span}`, 'important');
 			section.style.setProperty('min-height', `${Math.max(160, span * rowHeight)}px`);
