@@ -1906,7 +1906,15 @@
 				if (!isVisitCard && studyContent instanceof HTMLElement && state instanceof HTMLElement) {
 					const contentWidth = studyContent.clientWidth;
 					const colUnit = (contentWidth - colGap * (cols - 1)) / cols;
-					let best = { col: 6, row: 7, area: Number.POSITIVE_INFINITY, overflow: Number.POSITIVE_INFINITY };
+					let best = {
+						col: 6,
+						row: 7,
+						area: Number.POSITIVE_INFINITY,
+						overflow: Number.POSITIVE_INFINITY,
+						rowComfort: Number.POSITIVE_INFINITY,
+						spare: Number.POSITIVE_INFINITY,
+						score: Number.POSITIVE_INFINITY,
+					};
 					for (let c = 5; c <= 10; c += 1) {
 						const frameWidth = colUnit * c + colGap * (c - 1) - 16;
 						const desired = Math.max(160, measureStateHeightAtWidth(state, frameWidth));
@@ -1914,8 +1922,18 @@
 						const rows = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
 						const overflow = Math.max(0, rows - 8);
 						const area = c * rows;
-						if (overflow < best.overflow || (overflow === best.overflow && area < best.area)) {
-							best = { col: c, row: rows, area, overflow };
+						const tileHeight = rows * rowHeight + Math.max(0, rows - 1) * rowGap;
+						const spare = Math.max(0, tileHeight - desired);
+						const rowComfort = rows >= 5 && rows <= 6 ? 0 : Math.abs(rows - 6);
+						const widthPenalty = Math.max(0, c - 5) * 4;
+						const score = spare + widthPenalty;
+						if (
+							overflow < best.overflow
+							|| (overflow === best.overflow && rowComfort < best.rowComfort)
+							|| (overflow === best.overflow && rowComfort === best.rowComfort && score < best.score)
+							|| (overflow === best.overflow && rowComfort === best.rowComfort && score === best.score && area < best.area)
+						) {
+							best = { col: c, row: rows, area, overflow, rowComfort, spare, score };
 						}
 					}
 					colSpan = best.col;
