@@ -696,6 +696,7 @@
     const landscapeRight = document.getElementById("landscape-right");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const PERSON_NAME = "Rupert Tscheliessnig, PhD";
+    const ORG_TITLE = "Founder · Calyr.ai";
     const ORG_NAME = "Calyr.ai";
     const CONTACT_EMAIL = "rupert.tscheliessnig@calyr.ai";
     const CONTACT_PHONE = "+4369919200915";
@@ -1342,8 +1343,11 @@
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
+      if (state.contactOpen) {
+        return "Readable QR view active. Tap inside the game box to resume play.";
+      }
       return state.running
-        ? "Single tap pauses or resumes. The QR mesh deforms live with gameplay."
+        ? "Single tap pauses or resumes. Tap outside the game box for readable QR view."
         : "Single tap starts the game. Double-tap toggles fullscreen.";
     }
 
@@ -1908,7 +1912,13 @@
     function pauseIntoContact() {
       if (!state.initialized) return;
       state.paused = true;
+      state.contactOpen = true;
+      state.gameOver = false;
       syncGameUi();
+      if (!state.previewMatrix && !state.qrLoading) {
+        void showContactQr();
+        return;
+      }
       draw();
     }
 
@@ -2051,6 +2061,41 @@
       }
     }
 
+    function drawImpressumInfo(layout) {
+      if (!state.contactOpen) return;
+      const narrowScreen = window.innerWidth <= 640;
+      const x = layout.cardX + (narrowScreen ? 18 : 28);
+      const lineH = narrowScreen ? 22 : 28;
+      let y = layout.cardY + (narrowScreen ? 28 : 40);
+      ctx.save();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+
+      ctx.font = `700 ${narrowScreen ? 15 : 18}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(246, 251, 255, 0.96)";
+      ctx.fillText(PERSON_NAME, x, y);
+      y += lineH;
+
+      ctx.font = `${narrowScreen ? 11 : 13}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(200, 230, 255, 0.82)";
+      ctx.fillText(ORG_TITLE, x, y);
+      y += lineH * 1.3;
+
+      ctx.font = `${narrowScreen ? 10 : 12}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(180, 210, 255, 0.72)";
+      ctx.fillText(CONTACT_EMAIL, x, y);
+      y += lineH;
+      ctx.fillText(CONTACT_WEBSITE, x, y);
+      y += lineH * 1.4;
+
+      ctx.font = `500 ${narrowScreen ? 9 : 10}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(180, 210, 255, 0.44)";
+      ctx.letterSpacing = "0.12em";
+      ctx.fillText("TAP INSIDE GAME TO PLAY", x, y);
+
+      ctx.restore();
+    }
+
     function drawTileBoard(layout) {
       const x = layout.cardX;
       const y = layout.cardY;
@@ -2128,8 +2173,12 @@
         const brick = node.brick;
         const isMarked = !!brick.mulMark;
         const isSplitter = !!brick.splitter;
-        const radius = Math.max(2.4, Math.min(brick.w, brick.h) * 0.3);
-        const rotationSpeed = isMeshActivated() ? 1.55 : 0;
+        // Per-node unique size: mix of row/col position and a pseudo-random scale
+        const sizeVariance = 0.22 + (((brick.row * 23 + brick.col * 31 + brick.row * brick.col * 7) % 100) / 100) * 0.56;
+        const radius = Math.max(1.8, Math.min(brick.w, brick.h) * sizeVariance);
+        const baseSpin = 0.85 + (((brick.row * 17 + brick.col * 13) % 100) / 100) * 1.35;
+        const direction = (brick.row + brick.col) % 2 === 0 ? 1 : -1;
+        const rotationSpeed = isMeshActivated() ? baseSpin * direction : 0;
         drawHalfOpenDisk(
           node.x,
           node.y,
@@ -2522,6 +2571,7 @@
 
       drawTileBoard(layout);
       drawDeformableQrMesh();
+      drawImpressumInfo(layout);
 
       for (const brick of state.bricks) {
         if (!brick.alive) continue;
@@ -3206,7 +3256,20 @@
     canvas.addEventListener("click", (event) => {
       event.preventDefault();
       if (state.qrLoading) return;
+      const point = getCanvasPointFromEvent(event);
+      // While in readable QR view: click inside game box starts play
+      if (state.contactOpen && isPointInsideCurrentCard(point.x, point.y)) {
+        state.contactOpen = false;
+        startOrResume();
+        return;
+      }
+      // While playing: click outside game box shows readable QR
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
+        pauseIntoContact();
+        return;
+      }
       if (!state.running || state.paused || state.gameOver) {
+        state.contactOpen = false;
         startOrResume();
       } else {
         state.paused = true;
@@ -3226,6 +3289,11 @@
         }
         state.lastPointerUp = now;
         if (state.qrLoading) return;
+        const point = getCanvasPointFromEvent(event);
+        if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
+          pauseIntoContact();
+          return;
+        }
         if (!state.running || state.paused || state.gameOver) {
           startOrResume();
         } else {
@@ -3248,6 +3316,9 @@
       (event) => {
         if (!shouldSwitchBackFromTarget(event.target)) return;
         if (state.qrLoading) return;
+        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+          pauseIntoContact();
+        }
       },
       { passive: true }
     );
@@ -3283,6 +3354,7 @@
       state.initialized = true;
       state.running = false;
       state.paused = true;
+      state.contactOpen = true;
       state.lastTime = 0;
       if (startMs) {
         draw();
