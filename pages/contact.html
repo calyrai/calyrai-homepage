@@ -172,17 +172,18 @@
     }
 
     .contact-actions {
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       gap: 12px;
-      position: fixed;
+      position: absolute;
       left: 50%;
-      bottom: max(10px, env(safe-area-inset-bottom));
+      bottom: 26px;
       transform: translateX(-50%);
-      z-index: 30;
+      z-index: 6;
       width: auto;
-      max-width: calc(100vw - 20px);
+      max-width: min(88vw, 520px);
+      pointer-events: auto;
     }
 
     body.mail-available .contact-actions {
@@ -319,7 +320,8 @@
       }
 
       .contact-actions {
-        display: none;
+        bottom: 16px;
+        max-width: min(92vw, 420px);
       }
 
       body.mail-available .contact-actions {
@@ -431,9 +433,9 @@
       }
 
       body.mail-available .contact-actions {
-        position: fixed;
+        position: absolute;
         left: 50%;
-        bottom: max(10px, env(safe-area-inset-bottom));
+        bottom: max(12px, env(safe-area-inset-bottom));
         transform: translateX(-50%);
         display: flex;
         z-index: 30;
@@ -578,22 +580,21 @@
           </section>
 
           <section class="stage">
+            <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
+              <button type="button" class="action-pill" id="mail-btn" aria-label="Mail">
+                <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
+                  <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span class="mail-label">Mail</span>
+              </button>
+            </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
             <div class="landscape-controls" aria-hidden="true">
               <button type="button" class="landscape-arrow landscape-arrow-left" id="landscape-left" aria-label="Move left">‹</button>
               <button type="button" class="landscape-arrow landscape-arrow-right" id="landscape-right" aria-label="Move right">›</button>
             </div>
           </section>
-
-          <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
-            <button type="button" class="action-pill" id="mail-btn" aria-label="Mail">
-              <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
-                <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <span class="mail-label">Mail</span>
-            </button>
-          </div>
 
           <section class="hud game-only-hide">
             <div class="stats">
@@ -670,6 +671,9 @@
     const SPLITTER_BRICK_MAX = 5;
     const CATCHER_HOLD_SECONDS = 0.09;
     const CATCHER_REDIRECT_SPREAD = Math.PI * 0.36;
+    const SIMULATION_STEP = 1 / 120;
+    const MAX_FRAME_DELTA = 0.25;
+    const MAX_SIM_STEPS_PER_FRAME = 20;
 
     function contactSeed() {
       let seed = 0;
@@ -726,6 +730,8 @@
     };
 
     let qrLibraryPromise = null;
+    let simulationAccumulator = 0;
+    let suppressClickUntil = 0;
 
     function buildQrWall(size, seed) {
       const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -1313,7 +1319,7 @@
       }
       return state.running
         ? "Single tap pauses or resumes. Tap outside the game box for readable QR view."
-        : "Single tap starts the game. Double-tap toggles fullscreen.";
+        : "Single tap starts the game. Double-tap starts or resumes without reset.";
     }
 
     function loadQrLibrary() {
@@ -3011,10 +3017,14 @@
 
     function frame(ts) {
       if (!state.lastTime) state.lastTime = ts;
-      // Keep real-time speed in embedded/iframe contexts where frame rate can dip below 50 FPS.
-      const dt = Math.min(0.05, (ts - state.lastTime) / 1000);
+      const rawDt = (ts - state.lastTime) / 1000;
+      const dt = Math.min(MAX_FRAME_DELTA, Math.max(0, rawDt));
       state.lastTime = ts;
       state.blinkTime += dt;
+      simulationAccumulator = Math.min(
+        simulationAccumulator + dt,
+        SIMULATION_STEP * MAX_SIM_STEPS_PER_FRAME
+      );
 
       if (!state.running) {
         draw();
@@ -3022,20 +3032,26 @@
         return;
       }
 
-      updateExplosions(dt);
+      let steps = 0;
+      while (simulationAccumulator >= SIMULATION_STEP && steps < MAX_SIM_STEPS_PER_FRAME) {
+        updateExplosions(SIMULATION_STEP);
 
-      if (!state.paused) {
-        updatePlayClock(dt);
-        if (!state.running) {
-          draw();
-          return;
+        if (!state.paused) {
+          updatePlayClock(SIMULATION_STEP);
+          if (!state.running) {
+            draw();
+            return;
+          }
+          updatePattern(SIMULATION_STEP);
+          updatePaddle(SIMULATION_STEP);
+          updateBall(SIMULATION_STEP);
+          updateExtraBalls(SIMULATION_STEP);
+          updateMeshDeformation(SIMULATION_STEP);
+          updateAutomataBursts(SIMULATION_STEP);
         }
-        updatePattern(dt);
-        updatePaddle(dt);
-        updateBall(dt);
-        updateExtraBalls(dt);
-        updateMeshDeformation(dt);
-        updateAutomataBursts(dt);
+
+        simulationAccumulator -= SIMULATION_STEP;
+        steps += 1;
       }
 
       draw();
@@ -3053,6 +3069,7 @@
       state.paused = false;
       syncGameUi();
       state.lastTime = 0;
+      simulationAccumulator = 0;
     }
 
     window.addEventListener("keydown", (event) => {
@@ -3258,16 +3275,17 @@
 
     canvas.addEventListener("dblclick", (event) => {
       event.preventDefault();
+      suppressClickUntil = performance.now() + 320;
       if (state.contactOpen || !state.running || state.paused || state.gameOver) {
         state.contactOpen = false;
         startOrResume();
         return;
       }
-      void toggleFullscreenMode();
     });
 
     canvas.addEventListener("click", (event) => {
       event.preventDefault();
+      if (performance.now() < suppressClickUntil) return;
       if (state.qrLoading) return;
       const point = getCanvasPointFromEvent(event);
       // While in readable QR view: click inside game box starts play
@@ -3297,7 +3315,11 @@
         const now = performance.now();
         if (now - state.lastPointerUp < 260) {
           state.lastPointerUp = 0;
-          void toggleFullscreenMode();
+          suppressClickUntil = now + 320;
+          if (state.contactOpen || !state.running || state.paused || state.gameOver) {
+            state.contactOpen = false;
+            startOrResume();
+          }
           return;
         }
         state.lastPointerUp = now;
