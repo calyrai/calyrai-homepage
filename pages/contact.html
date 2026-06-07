@@ -780,6 +780,7 @@
       ballTrail: [],
       extraBalls: [],
       meshNodes: Object.create(null),
+      qrModuleSize: 10,
     };
 
     let qrLibraryPromise = null;
@@ -1084,7 +1085,7 @@
               splitter: false,
               pendingBlast: false,
               textPattern: true,
-              circleScale: 0.84,
+              circleScale: 0.34,
             });
           }
         }
@@ -1636,6 +1637,7 @@
       };
       state.bricks = [];
       state.meshNodes = Object.create(null);
+      state.qrModuleSize = moduleSize;
       state.rows = qrSize;
       state.cols = qrSize;
       state.levelHits = 0;
@@ -2173,9 +2175,7 @@
         const brick = node.brick;
         const isMarked = !!brick.mulMark;
         const isSplitter = !!brick.splitter;
-        // Per-node unique size: mix of row/col position and a pseudo-random scale
-        const sizeVariance = 0.22 + (((brick.row * 23 + brick.col * 31 + brick.row * brick.col * 7) % 100) / 100) * 0.56;
-        const radius = Math.max(1.8, Math.min(brick.w, brick.h) * sizeVariance);
+        const radius = Math.max(1.8, state.qrModuleSize * 0.34);
         const baseSpin = 0.85 + (((brick.row * 17 + brick.col * 13) % 100) / 100) * 1.35;
         const direction = (brick.row + brick.col) % 2 === 0 ? 1 : -1;
         const rotationSpeed = isMeshActivated() ? baseSpin * direction : 0;
