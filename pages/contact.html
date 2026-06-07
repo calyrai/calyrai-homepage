@@ -2703,7 +2703,8 @@
 
     function frame(ts) {
       if (!state.lastTime) state.lastTime = ts;
-      const dt = Math.min(0.02, (ts - state.lastTime) / 1000);
+      // Keep real-time speed in embedded/iframe contexts where frame rate can dip below 50 FPS.
+      const dt = Math.min(0.05, (ts - state.lastTime) / 1000);
       state.lastTime = ts;
       state.blinkTime += dt;
 
