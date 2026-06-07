@@ -1849,6 +1849,30 @@
 		section.classList.toggle('is-open', expanded);
 		section.classList.toggle('is-collapsed', !expanded);
 		section.classList.toggle('is-expanded', expanded && expandedMode && isTextualTile(section));
+		const getGridMetrics = () => {
+			if (!(studyContent instanceof HTMLElement)) {
+				return { rowHeight: 54, rowGap: 2 };
+			}
+			const gridStyles = window.getComputedStyle(studyContent);
+			return {
+				rowHeight: parseFloat(gridStyles.gridAutoRows || '54') || 54,
+				rowGap: parseFloat(gridStyles.rowGap || '2') || 2,
+			};
+		};
+		const applyAutoHeight = () => {
+			if (!section.classList.contains('is-open')) return;
+			const manualSpan = Number(section.dataset.customRowSpan || '0');
+			if (manualSpan > 0) return;
+			const { rowHeight, rowGap } = getGridMetrics();
+			const state = section.querySelector('.tile-open-state');
+			const measured = state instanceof HTMLElement ? state.scrollHeight + 24 : rowHeight * 4;
+			const capped = Math.min(Math.max(160, measured), Math.max(220, Math.floor(window.innerHeight * 0.78)));
+			const unit = rowHeight + rowGap;
+			const span = Math.max(3, Math.min(12, Math.ceil((capped + rowGap) / unit)));
+			section.dataset.autoRowSpan = String(span);
+			section.style.setProperty('grid-row', `span ${span}`, 'important');
+			section.style.setProperty('min-height', `${Math.max(160, span * rowHeight)}px`);
+		};
 		if (!expanded) {
 			section.style.removeProperty('grid-row');
 			section.style.removeProperty('min-height');
@@ -1863,8 +1887,12 @@
 			const collapsedSpan = Number(section.dataset.collapsedRowSpan || '0');
 			const dynamicSpan = collapsedSpan > 0 ? collapsedSpan * 2 : 4;
 			const span = savedSpan > 0 ? savedSpan : dynamicSpan;
+			const { rowHeight } = getGridMetrics();
 			section.style.setProperty('grid-row', `span ${span}`, 'important');
-			section.style.setProperty('min-height', `${Math.max(110, span * 54)}px`);
+			section.style.setProperty('min-height', `${Math.max(110, span * rowHeight)}px`);
+			if (savedSpan <= 0) {
+				requestAnimationFrame(applyAutoHeight);
+			}
 		}
 		const trigger = section.querySelector('.study-trigger');
 		if (trigger instanceof HTMLElement) {
@@ -2029,6 +2057,12 @@
 	});
 
 	window.addEventListener('resize', () => {
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			if (!section.classList.contains('is-open')) continue;
+			if (Number(section.dataset.customRowSpan || '0') > 0) continue;
+			setExpanded(section, true, false);
+		}
 		buildInterfaceMap();
 	});
 
