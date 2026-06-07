@@ -339,51 +339,6 @@
       }
     }
 
-    @media (max-width: 900px) and (hover: none) and (pointer: coarse) {
-      .landscape-controls {
-        position: absolute;
-        inset: 0;
-        display: block;
-        pointer-events: none;
-      }
-
-      .landscape-arrow {
-        position: absolute;
-        top: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 52px;
-        height: 52px;
-        border-radius: 999px;
-        border: 1px solid rgba(191, 248, 255, 0.18);
-        background: rgba(7, 13, 28, 0.82);
-        color: #ffffff;
-        font: inherit;
-        font-size: 1.6rem;
-        line-height: 1;
-        box-shadow: 0 0 18px rgba(255, 255, 255, 0.14);
-        transform: translateY(-50%);
-        pointer-events: auto;
-        backdrop-filter: blur(8px);
-        z-index: 25;
-      }
-
-      .landscape-arrow-left {
-        left: max(10px, env(safe-area-inset-left));
-      }
-
-      .landscape-arrow-right {
-        right: max(10px, env(safe-area-inset-right));
-      }
-
-      .landscape-arrow:active,
-      .landscape-arrow.is-active {
-        background: rgba(255, 255, 255, 0.18);
-        box-shadow: 0 0 22px rgba(255, 255, 255, 0.28);
-      }
-    }
-
     @media (max-width: 900px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
       body {
         overflow: hidden;
@@ -590,10 +545,6 @@
               </button>
             </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
-            <div class="landscape-controls" aria-hidden="true">
-              <button type="button" class="landscape-arrow landscape-arrow-left" id="landscape-left" aria-label="Move left">‹</button>
-              <button type="button" class="landscape-arrow landscape-arrow-right" id="landscape-right" aria-label="Move right">›</button>
-            </div>
           </section>
 
           <section class="hud game-only-hide">
@@ -634,8 +585,6 @@
     const saveNoteNode = document.getElementById("save-note");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
-    const landscapeLeft = document.getElementById("landscape-left");
-    const landscapeRight = document.getElementById("landscape-right");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const PERSON_NAME = "Rupert Tscheliessnig, PhD";
     const ORG_TITLE = "Founder · Calyr.ai";
@@ -710,6 +659,7 @@
       gameOver: false,
       periodicModeUnlocked: false,
       keys: { left: false, right: false },
+      touchSteer: 0,
       lastTime: 0,
       lastPointerUp: 0,
       automataBursts: [],
@@ -2597,18 +2547,21 @@
     }
 
     function updatePaddle(dt) {
+      let steer = 0;
+      if (state.keys.left) steer -= 1;
+      if (state.keys.right) steer += 1;
+      if (Math.abs(state.touchSteer) > Math.abs(steer)) {
+        steer = state.touchSteer;
+      }
+
       if (isPerimeterChallengeActive()) {
-        let travel = 0;
         const perimeterSpeed = state.paddle.speed * 0.85;
-        if (state.keys.left) travel -= perimeterSpeed * dt;
-        if (state.keys.right) travel += perimeterSpeed * dt;
+        const travel = perimeterSpeed * steer * dt;
         if (travel) advancePerimeterSlider(travel);
         return;
       }
 
-      state.paddle.dx = 0;
-      if (state.keys.left) state.paddle.dx -= state.paddle.speed;
-      if (state.keys.right) state.paddle.dx += state.paddle.speed;
+      state.paddle.dx = state.paddle.speed * steer;
       state.paddle.x += state.paddle.dx * dt;
       clampPaddle();
     }
@@ -3123,6 +3076,25 @@
       movePaddleFromCanvasPoint(point.x, point.y);
     }
 
+    function updateTouchSteerFromClientPoint(clientX, clientY) {
+      const point = getCanvasContentPoint(clientX, clientY);
+      const half = Math.max(1, canvas.width / 2);
+      let normalized = (point.x - half) / half;
+      normalized = clamp(normalized, -1, 1);
+      const deadZone = 0.06;
+      if (Math.abs(normalized) <= deadZone) {
+        state.touchSteer = 0;
+        return;
+      }
+      const magnitude = (Math.abs(normalized) - deadZone) / (1 - deadZone);
+      const curved = Math.pow(clamp(magnitude, 0, 1), 1.15);
+      state.touchSteer = Math.sign(normalized) * curved;
+    }
+
+    function clearTouchSteer() {
+      state.touchSteer = 0;
+    }
+
     function getCanvasPointFromMouseLikeEvent(event) {
       if (event.currentTarget === canvas && typeof event.offsetX === "number" && typeof event.offsetY === "number") {
         return {
@@ -3175,13 +3147,14 @@
       (event) => {
         if (!event.touches || !event.touches[0]) return;
         event.preventDefault();
+        suppressClickUntil = performance.now() + 420;
         if (state.contactOpen) {
           const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
           applyMeshImpactAt(point.x, point.y, 2.2);
           draw();
           return;
         }
-        movePaddleFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
+        updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
       },
       { passive: false }
     );
@@ -3191,13 +3164,32 @@
       (event) => {
         if (!event.touches || !event.touches[0]) return;
         event.preventDefault();
+        suppressClickUntil = performance.now() + 420;
         if (state.contactOpen) {
           const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
           applyMeshImpactAt(point.x, point.y, 2.2);
           draw();
           return;
         }
-        movePaddleFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
+        updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchend",
+      (event) => {
+        event.preventDefault();
+        clearTouchSteer();
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchcancel",
+      (event) => {
+        event.preventDefault();
+        clearTouchSteer();
       },
       { passive: false }
     );
@@ -3245,33 +3237,6 @@
         setSaveFeedback("Fullscreen mode is unavailable in this browser.");
       }
     }
-
-    function setLandscapeDirection(direction, active) {
-      if (direction === "left") state.keys.left = active;
-      if (direction === "right") state.keys.right = active;
-      const target = direction === "left" ? landscapeLeft : landscapeRight;
-      if (target) target.classList.toggle("is-active", active);
-      if (active && (!state.running || state.paused || state.contactOpen)) startOrResume();
-    }
-
-    function bindLandscapeControl(node, direction) {
-      if (!node) return;
-      const start = (event) => {
-        event.preventDefault();
-        setLandscapeDirection(direction, true);
-      };
-      const stop = (event) => {
-        event.preventDefault();
-        setLandscapeDirection(direction, false);
-      };
-      node.addEventListener("pointerdown", start);
-      node.addEventListener("pointerup", stop);
-      node.addEventListener("pointercancel", stop);
-      node.addEventListener("pointerleave", stop);
-    }
-
-    bindLandscapeControl(landscapeLeft, "left");
-    bindLandscapeControl(landscapeRight, "right");
 
     canvas.addEventListener("dblclick", (event) => {
       event.preventDefault();
@@ -3327,6 +3292,9 @@
         const point = getCanvasPointFromEvent(event);
         if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
           pauseIntoContact();
+          return;
+        }
+        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
           return;
         }
         if (!state.running || state.paused || state.gameOver) {
