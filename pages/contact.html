@@ -15,6 +15,8 @@
       --cyan: #ffffff;
       --magenta: #7eaeff;
       --line: rgba(255, 255, 255, 0.24);
+      --line-soft: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.34);
       --glow: 0 0 24px rgba(255, 255, 255, 0.16);
     }
 
@@ -463,7 +465,10 @@
 
     body {
       overflow: hidden;
-      background: #06142d;
+      background:
+        radial-gradient(120% 95% at 82% -10%, rgba(190, 230, 255, 0.14), transparent 62%),
+        radial-gradient(110% 90% at -5% 100%, rgba(115, 168, 255, 0.16), transparent 66%),
+        linear-gradient(180deg, #09142d 0%, #050d1f 100%);
     }
 
     .explore-page.nexus-page,
@@ -488,23 +493,105 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: #06142d;
+      background: transparent;
       box-shadow: none;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 53px, var(--line-soft) 53px 54px),
+        repeating-linear-gradient(90deg, transparent 0 53px, var(--line-soft) 53px 54px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
     canvas#game {
       width: min(100vw, calc(100vh * 1.6667));
-      max-width: 100vw;
-      max-height: 100vh;
-      border: 0;
-      border-radius: 0;
+      max-width: calc(100vw - 34px);
+      max-height: calc(100vh - 34px);
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      box-shadow:
+        0 14px 48px rgba(2, 7, 20, 0.7),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      position: relative;
+      z-index: 2;
+    }
+
+    .impressum-chrome {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .impressum-badge,
+    .impressum-meta {
+      border: 1px solid var(--line-strong);
+      background: rgba(6, 13, 29, 0.64);
+      color: rgba(246, 251, 255, 0.92);
+      padding: 8px 12px;
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      line-height: 1.3;
+      backdrop-filter: blur(6px);
+    }
+
+    .impressum-badge {
+      border-radius: 999px;
+    }
+
+    .impressum-meta {
+      border-radius: 10px;
+      text-align: right;
+      max-width: 320px;
+      letter-spacing: 0.11em;
     }
 
     @media (max-aspect-ratio: 5/3) {
       canvas#game {
         width: 100vw;
+        max-width: calc(100vw - 22px);
         max-height: calc(100vw * 0.6);
+      }
+
+      .impressum-chrome {
+        left: 14px;
+        right: 14px;
+        top: 12px;
+      }
+
+      .impressum-badge,
+      .impressum-meta {
+        font-size: 0.56rem;
+        padding: 6px 9px;
+      }
+
+      .impressum-meta {
+        max-width: 210px;
       }
     }
   </style>
@@ -540,6 +627,10 @@
           </section>
 
           <section class="stage">
+            <div class="impressum-chrome" aria-hidden="true">
+              <div class="impressum-badge">Calyr Impressum</div>
+              <div class="impressum-meta">Interactive legal contact surface<br>Breakout x contact signal</div>
+            </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
             <div class="landscape-controls" aria-hidden="true">
               <button type="button" class="landscape-arrow landscape-arrow-left" id="landscape-left" aria-label="Move left">‹</button>
@@ -687,6 +778,7 @@
       ballTrap: null,
       ballTrail: [],
       extraBalls: [],
+      meshNodes: Object.create(null),
     };
 
     let qrLibraryPromise = null;
@@ -1250,12 +1342,9 @@
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
-      if (state.contactOpen) {
-        return state.running
-          ? "Single tap returns to play. Double-tap the QR on phone to store the contact locally."
-          : "Single tap starts the game. Double-tap stores the contact locally.";
-      }
-      return "Single tap opens the contact QR. Your contact card is prepared but not loaded until you ask for it.";
+      return state.running
+        ? "Single tap pauses or resumes. The QR mesh deforms live with gameplay."
+        : "Single tap starts the game. Double-tap toggles fullscreen.";
     }
 
     function loadQrLibrary() {
@@ -1542,6 +1631,7 @@
         height: visualSpec.qrBounds.height,
       };
       state.bricks = [];
+      state.meshNodes = Object.create(null);
       state.rows = qrSize;
       state.cols = qrSize;
       state.levelHits = 0;
@@ -1793,17 +1883,10 @@
     }
 
     async function showContactQr() {
-      if (state.running && !state.contactOpen) {
-        captureGameplaySnapshot();
-      }
-      state.paused = true;
-      state.contactOpen = true;
-      state.gameOver = false;
       state.saveFeedback = "";
       state.qrLoading = true;
       syncHud();
       syncGameUi();
-      draw();
 
       try {
         await loadQrLibrary();
@@ -1814,6 +1897,9 @@
       }
 
       state.qrLoading = false;
+      if (!state.initialized) {
+        resetBricks();
+      }
       syncHud();
       syncGameUi();
       draw();
@@ -1822,14 +1908,15 @@
     function pauseIntoContact() {
       if (!state.initialized) return;
       state.paused = true;
-      void showContactQr();
+      syncGameUi();
+      draw();
     }
 
     function endToContact(reasonText) {
       captureGameplaySnapshot();
       state.running = false;
       state.paused = true;
-      state.contactOpen = true;
+      state.contactOpen = false;
       state.gameOver = true;
       state.saveFeedback = reasonText || "";
       syncHud();
@@ -1838,7 +1925,7 @@
 
     function syncGameUi() {
       document.body.classList.toggle("game-over", !!state.gameOver);
-      const mailAvailable = !state.running || state.paused || state.contactOpen || state.gameOver;
+      const mailAvailable = !state.running || state.paused || state.gameOver;
       document.body.classList.toggle("mail-available", !!mailAvailable);
     }
 
@@ -1867,6 +1954,194 @@
       ctx.shadowColor = shadowColor;
       ctx.stroke();
       ctx.shadowBlur = 0;
+    }
+
+    function isGameplayQrBrick(brick) {
+      return !!(brick && brick.alive && brick.active && brick.row >= 0 && brick.col >= 0 && !brick.textPattern);
+    }
+
+    function isMeshActivated() {
+      return state.running && !state.paused && !state.gameOver;
+    }
+
+    function meshNodeKey(row, col) {
+      return `${row}:${col}`;
+    }
+
+    function getMeshNode(row, col) {
+      const key = meshNodeKey(row, col);
+      let node = state.meshNodes[key];
+      if (!node) {
+        node = { dx: 0, dy: 0, vx: 0, vy: 0 };
+        state.meshNodes[key] = node;
+      }
+      return node;
+    }
+
+    function meshOffsetForPoint(row, col, px, py, phase = 0) {
+      const node = getMeshNode(row, col);
+      const active = isMeshActivated();
+      const waveX = active ? Math.sin(py * 0.018 + state.blinkTime * 1.2 + phase * 0.6) * 0.24 : 0;
+      const waveY = active ? Math.cos(px * 0.016 + state.blinkTime * 1.0 + phase * 0.6) * 0.2 : 0;
+      return {
+        x: node.dx + waveX,
+        y: node.dy + waveY,
+      };
+    }
+
+    function applyMeshImpactAt(x, y, magnitude = 1) {
+      const qrBricks = state.bricks.filter(isGameplayQrBrick);
+      if (!qrBricks.length) return;
+
+      const radius = 164;
+      const maxShift = 24;
+      for (const brick of qrBricks) {
+        const node = getMeshNode(brick.row, brick.col);
+        const cx = brick.x + brick.w * 0.5 + node.dx;
+        const cy = brick.y + brick.h * 0.5 + node.dy;
+        const dx = cx - x;
+        const dy = cy - y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const influence = Math.max(0, 1 - dist / radius);
+        if (influence <= 0) continue;
+
+        const impulse = influence * influence * (0.6 + magnitude * 1.1);
+        node.vx += (dx / dist) * impulse;
+        node.vy += (dy / dist) * impulse;
+
+        node.dx = Math.max(-maxShift, Math.min(maxShift, node.dx));
+        node.dy = Math.max(-maxShift, Math.min(maxShift, node.dy));
+      }
+    }
+
+    function updateMeshDeformation(dt) {
+      if (!state.running || state.paused) return;
+
+      applyMeshImpactAt(state.ball.x, state.ball.y, 1.2);
+      for (const b of state.extraBalls) {
+        applyMeshImpactAt(b.x, b.y, 0.9);
+      }
+
+      const velocityDamping = Math.pow(0.9, dt * 60);
+      const maxShift = 24;
+      for (const brick of state.bricks) {
+        if (!isGameplayQrBrick(brick)) continue;
+        const node = getMeshNode(brick.row, brick.col);
+        node.vx *= velocityDamping;
+        node.vy *= velocityDamping;
+        node.dx = Math.max(-maxShift, Math.min(maxShift, node.dx + node.vx));
+        node.dy = Math.max(-maxShift, Math.min(maxShift, node.dy + node.vy));
+      }
+
+      // Light neighbor coupling keeps the net coherent while preserving deformation memory.
+      for (const brick of state.bricks) {
+        if (!isGameplayQrBrick(brick)) continue;
+        const center = getMeshNode(brick.row, brick.col);
+        const neighbors = [
+          state.meshNodes[meshNodeKey(brick.row, brick.col + 1)],
+          state.meshNodes[meshNodeKey(brick.row, brick.col - 1)],
+          state.meshNodes[meshNodeKey(brick.row + 1, brick.col)],
+          state.meshNodes[meshNodeKey(brick.row - 1, brick.col)],
+        ].filter(Boolean);
+        if (!neighbors.length) continue;
+        const avgDx = neighbors.reduce((sum, n) => sum + n.dx, 0) / neighbors.length;
+        const avgDy = neighbors.reduce((sum, n) => sum + n.dy, 0) / neighbors.length;
+        center.dx += (avgDx - center.dx) * 0.03;
+        center.dy += (avgDy - center.dy) * 0.03;
+      }
+    }
+
+    function drawTileBoard(layout) {
+      const x = layout.cardX;
+      const y = layout.cardY;
+      const w = layout.cardW;
+      const h = layout.cardH;
+      const cols = 10;
+      const rows = 6;
+
+      ctx.fillStyle = "rgba(10, 24, 50, 0.74)";
+      ctx.fillRect(x, y, w, h);
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.lineWidth = 1;
+      for (let c = 1; c < cols; c += 1) {
+        const gx = x + (w * c) / cols;
+        ctx.beginPath();
+        ctx.moveTo(gx + 0.5, y);
+        ctx.lineTo(gx + 0.5, y + h);
+        ctx.stroke();
+      }
+      for (let r = 1; r < rows; r += 1) {
+        const gy = y + (h * r) / rows;
+        ctx.beginPath();
+        ctx.moveTo(x, gy + 0.5);
+        ctx.lineTo(x + w, gy + 0.5);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.34)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      ctx.restore();
+    }
+
+    function drawDeformableQrMesh() {
+      const qrBricks = state.bricks.filter(isGameplayQrBrick);
+      if (!qrBricks.length) return;
+
+      const lookup = new Map();
+      for (const brick of qrBricks) {
+        lookup.set(`${brick.row}:${brick.col}`, brick);
+      }
+
+      const centers = new Map();
+      for (const brick of qrBricks) {
+        const cx = brick.x + brick.w * 0.5;
+        const cy = brick.y + brick.h * 0.5;
+        const offset = meshOffsetForPoint(brick.row, brick.col, cx, cy, brick.phase || 0);
+        centers.set(`${brick.row}:${brick.col}`, { x: cx + offset.x, y: cy + offset.y, brick });
+      }
+
+      ctx.save();
+      ctx.lineWidth = 0.9;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+      for (const [key, node] of centers) {
+        const [row, col] = key.split(":").map(Number);
+        const right = centers.get(`${row}:${col + 1}`);
+        const down = centers.get(`${row + 1}:${col}`);
+        if (right) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(right.x, right.y);
+          ctx.stroke();
+        }
+        if (down) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(down.x, down.y);
+          ctx.stroke();
+        }
+      }
+
+      for (const node of centers.values()) {
+        const brick = node.brick;
+        const isMarked = !!brick.mulMark;
+        const isSplitter = !!brick.splitter;
+        const radius = Math.max(2.4, Math.min(brick.w, brick.h) * 0.3);
+        const rotationSpeed = isMeshActivated() ? 1.55 : 0;
+        drawHalfOpenDisk(
+          node.x,
+          node.y,
+          radius,
+          isMarked || isSplitter ? "#ff4df5" : "#ffffff",
+          isMarked || isSplitter ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
+          brick.phase || 0,
+          rotationSpeed,
+          0.24
+        );
+      }
+      ctx.restore();
     }
 
     function drawQrBrick(brick) {
@@ -2245,21 +2520,12 @@
         return;
       }
 
-      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
-
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
-      ctx.lineWidth = 1.6;
-      ctx.beginPath();
-      ctx.moveTo(layout.cardX + 28, layout.cardY);
-      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY, layout.cardX + layout.cardW, layout.cardY + layout.cardH, 28);
-      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY + layout.cardH, layout.cardX, layout.cardY + layout.cardH, 28);
-      ctx.arcTo(layout.cardX, layout.cardY + layout.cardH, layout.cardX, layout.cardY, 28);
-      ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
-      ctx.closePath();
-      ctx.stroke();
+      drawTileBoard(layout);
+      drawDeformableQrMesh();
 
       for (const brick of state.bricks) {
         if (!brick.alive) continue;
+        if (isGameplayQrBrick(brick)) continue;
         drawQrBrick(brick);
       }
 
@@ -2726,6 +2992,7 @@
         updatePaddle(dt);
         updateBall(dt);
         updateExtraBalls(dt);
+        updateMeshDeformation(dt);
         updateAutomataBursts(dt);
       }
 
@@ -2939,13 +3206,11 @@
     canvas.addEventListener("click", (event) => {
       event.preventDefault();
       if (state.qrLoading) return;
-      const point = getCanvasPointFromEvent(event);
-      if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
-        pauseIntoContact();
-        return;
-      }
-      if (!state.running || state.paused || state.contactOpen || state.gameOver) {
+      if (!state.running || state.paused || state.gameOver) {
         startOrResume();
+      } else {
+        state.paused = true;
+        syncGameUi();
       }
     });
 
@@ -2961,13 +3226,11 @@
         }
         state.lastPointerUp = now;
         if (state.qrLoading) return;
-        const point = getCanvasPointFromEvent(event);
-        if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
-          pauseIntoContact();
-          return;
-        }
-        if (!state.running || state.paused || state.contactOpen || state.gameOver) {
+        if (!state.running || state.paused || state.gameOver) {
           startOrResume();
+        } else {
+          state.paused = true;
+          syncGameUi();
         }
       },
       { passive: true }
@@ -2985,9 +3248,6 @@
       (event) => {
         if (!shouldSwitchBackFromTarget(event.target)) return;
         if (state.qrLoading) return;
-        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
-          pauseIntoContact();
-        }
       },
       { passive: true }
     );
