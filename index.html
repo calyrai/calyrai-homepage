@@ -4,8 +4,8 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Calyr.aí - Molecular Deeptech</title>
-  <link rel="stylesheet" href="../calyrai_font/out/calyrai-sans.css" />
-  <script src="../vendor/gsap/gsap.min.js"></script>
+	<link rel="stylesheet" href="calyrai_font/out/calyrai-sans.css" />
+	<script src="vendor/gsap/gsap.min.js"></script>
   <style>
 		:root {
 			--bg: #0b0b0b;
@@ -57,14 +57,14 @@
 		}
 		body.skin-living .study-section .living-surface { opacity: 0.96; }
 		body.skin-classic .study-section .living-surface { display: block; opacity: 0.92; }
-		.study-section.is-open .living-surface { opacity: 0.74 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: screen; pointer-events: none; }
+		.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; }
 		body.skin-living .study-section.is-open .living-surface,
 		body.skin-classic .study-section.is-open .living-surface,
 		body.skin-glass .study-section.is-open .living-surface,
 		body.skin-atlas .study-section.is-open .living-surface {
-				opacity: 0.74 !important;
+				opacity: 0.92 !important;
 			z-index: 1 !important;
-			mix-blend-mode: screen !important;
+			mix-blend-mode: normal !important;
 			pointer-events: none;
 		}
 		.study-section.is-open .living-mesh { pointer-events: none; }
@@ -695,11 +695,11 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-1 is-open" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="10">
+		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="10">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-lisnig-impressum">
 			<div class="tile-open-state tile-open-state-visit-card">
 				<div class="visit-card-label">Impressum</div>
-				<iframe class="visit-embed-frame" src="../pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+							<iframe class="visit-embed-frame" src="pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
 </div>
 		</div>
 	</section>
@@ -1305,10 +1305,10 @@
 			ctx.clearRect(0, 0, this.width, this.height);
 			const isOpen = this.section.classList.contains('is-open');
 			const wireRgb = '255, 255, 255';
-			const openBoost = 0.9 + this.reveal * 0.55;
-			const openFill = isOpen ? 0.08 : (0.76 + (1 - this.reveal) * 0.2);
-			const lineVisibility = isOpen ? 1.0 : (0.62 + this.reveal * 0.28);
-			const meshStrokeBoost = isOpen ? 2.2 : 1;
+			const openBoost = 0.95 + this.reveal * 0.58;
+			const openFill = isOpen ? 0.22 : (0.76 + (1 - this.reveal) * 0.2);
+			const lineVisibility = isOpen ? 1.26 : (0.62 + this.reveal * 0.28);
+			const meshStrokeBoost = isOpen ? 2.55 : 1;
 			const readabilityMode = this.reveal > 0.2;
 			const cx = this.width * 0.5;
 			const cy = this.height * 0.5;
@@ -1357,7 +1357,10 @@
 				const twinkle = 0.72 + 0.28 * Math.sin(timeSec * 0.9 + dot.phase);
 				ctx.beginPath();
 				ctx.arc(px, py, dot.size, 0, Math.PI * 2);
-				ctx.fillStyle = `rgba(138, 196, 236, ${Math.min(0.12, dot.alpha * (0.52 - this.reveal * 0.28)).toFixed(3)})`;
+				const dotAlpha = isOpen
+					? Math.min(0.18, dot.alpha * (0.82 - this.reveal * 0.1))
+					: Math.min(0.12, dot.alpha * (0.52 - this.reveal * 0.28));
+				ctx.fillStyle = `rgba(138, 196, 236, ${dotAlpha.toFixed(3)})`;
 				ctx.fill();
 			}
 
@@ -1403,18 +1406,18 @@
 				ctx.lineTo(c.x, c.y);
 				ctx.closePath();
 				if (isOpen) {
-					ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.16, alpha).toFixed(3)})`;
+					ctx.fillStyle = `rgba(12, 42, 74, ${Math.min(0.34, alpha + 0.05).toFixed(3)})`;
 					ctx.fill();
-					const triStrokeAlpha = (0.34 + shade * 0.2 + hover * 0.24 + reflectBoost * 0.26) * lineVisibility * meshStrokeBoost;
-					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.88, triStrokeAlpha).toFixed(3)})`;
-					ctx.lineWidth = 0.32 + reflectBoost * 0.22;
+					const triStrokeAlpha = (0.58 + shade * 0.18) * lineVisibility * meshStrokeBoost;
+					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.94, triStrokeAlpha + 0.06).toFixed(3)})`;
+					ctx.lineWidth = 0.24;
 					ctx.stroke();
 				} else {
 					ctx.fillStyle = `hsla(${hue.toFixed(1)}, ${sat.toFixed(1)}%, ${lum.toFixed(1)}%, ${alpha.toFixed(3)})`;
 					ctx.fill();
-					const triStrokeAlpha = (0.28 + shade * 0.22 + hover * 0.22 + reflectBoost * 0.24) * lineVisibility * meshStrokeBoost;
+					const triStrokeAlpha = (0.34 + shade * 0.18) * lineVisibility * meshStrokeBoost;
 					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.995, triStrokeAlpha).toFixed(3)})`;
-					ctx.lineWidth = 0.26 + reflectBoost * 0.2;
+					ctx.lineWidth = 0.22;
 					ctx.stroke();
 				}
 
@@ -1468,8 +1471,8 @@
 					}
 				}
 			}
-			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.94, isOpen ? 0.62 : ((0.28 + this.config.iridescence * 0.1) * lineVisibility * meshStrokeBoost)).toFixed(3)})`;
-			ctx.lineWidth = isOpen ? 0.38 : 0.2;
+			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.94, isOpen ? 0.68 : 0.42).toFixed(3)})`;
+			ctx.lineWidth = isOpen ? 0.24 : 0.2;
 			ctx.stroke();
 
 			for (const node of nodes2d) {
@@ -1485,11 +1488,19 @@
 				const baseR = 0.42 + pointBoost * 1.55 + textBoost * 1.15;
 				ctx.beginPath();
 				ctx.arc(node.x, node.y, baseR * 1.35, 0, Math.PI * 2);
-				ctx.fillStyle = `rgba(${wireRgb}, ${Math.min(0.96, ((0.08 + pointBoost * 0.22 + textBoost * 0.24) * lineVisibility * (isOpen ? 1.36 : 1))).toFixed(3)})`;
+				const outerNodeAlpha = Math.max(
+					isOpen ? 0.2 : 0.1,
+					Math.min(0.96, ((0.08 + pointBoost * 0.22 + textBoost * 0.24) * lineVisibility * (isOpen ? 1.36 : 1)))
+				);
+				ctx.fillStyle = `rgba(${wireRgb}, ${outerNodeAlpha.toFixed(3)})`;
 				ctx.fill();
 				ctx.beginPath();
 				ctx.arc(node.x, node.y, baseR, 0, Math.PI * 2);
-				ctx.fillStyle = `rgba(${wireRgb}, ${Math.min(0.995, ((0.18 + pointBoost * 0.52 + textBoost * 0.4) * lineVisibility * (isOpen ? 1.32 : 1))).toFixed(3)})`;
+				const innerNodeAlpha = Math.max(
+					isOpen ? 0.36 : 0.2,
+					Math.min(0.995, ((0.18 + pointBoost * 0.52 + textBoost * 0.4) * lineVisibility * (isOpen ? 1.32 : 1)))
+				);
+				ctx.fillStyle = `rgba(${wireRgb}, ${innerNodeAlpha.toFixed(3)})`;
 				ctx.fill();
 			}
 
@@ -1952,10 +1963,9 @@
 	initVisitGames();
 	restoreSectionOrder();
 	enforceMondrianState();
-	const initialTargetId = (window.location.hash || '').replace(/^#/, '') || 'access';
-	activateById(initialTargetId);
-	if (!document.querySelector('.study-section.is-open')) {
-		activateById('access');
+	const initialTargetId = (window.location.hash || '').replace(/^#/, '');
+	if (initialTargetId) {
+		activateById(initialTargetId);
 	}
 	if (graphSearchInput instanceof HTMLInputElement) {
 		graphSearchInput.addEventListener('input', () => {

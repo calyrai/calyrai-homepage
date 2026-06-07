@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+python3 scripts/build_unified_v4.py
+
+if [[ -f "$ROOT/homepage_v4/output/index.html" ]]; then
+  echo "Built: homepage_v4/output/index.html"
+else
+  echo "Build finished, but homepage_v4/output/index.html was not found."
+  exit 1
+fi

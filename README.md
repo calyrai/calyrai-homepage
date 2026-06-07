@@ -36,12 +36,38 @@ Canonical path example:
 - mirror path: `docs/_repo/apps/homepage/pages_src/projects.md`
 - source path: `apps/homepage/pages_src/projects.md`
 
-### Build
+### Homepage-local commands
+
+Run these commands from `apps/homepage/`.
 
 ```bash
-cd /Users/rtscheliessnig/Workspace/Calyr/apps/homepage
-bash scripts/build_all.sh
+./nexus.homepage-build
 ```
+
+- Builds canonical homepage output to `homepage_v4/output/index.html`.
+
+```bash
+./nexus.homepage-open 8011
+```
+
+- Serves the homepage locally on `http://localhost:8011/`.
+
+```bash
+./nexus.homepage-push "homepage update"
+```
+
+- Runs build, commits all homepage repo changes, and pushes the current branch.
+- Typo-compatible alias is available: `./nexus.hompage-build`.
+
+### V5 material-engine starter
+
+```bash
+./nexus.homepage-v5-open 8020
+```
+
+- Opens local server for the staged living-surface sandbox.
+- Starter page: `homepage_v5/v5_living_surface/index.html`
+- Layout source: `homepage_v5/v5_living_surface/tiles.layout.yaml`
 
 ### Related active paths
 
