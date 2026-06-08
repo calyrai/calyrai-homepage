@@ -689,6 +689,8 @@
     const SIMULATION_STEP = 1 / 120;
     const MAX_FRAME_DELTA = 0.25;
     const MAX_SIM_STEPS_PER_FRAME = 20;
+    const TILE_GRID_COLS = 10;
+    const TILE_GRID_ROWS = 6;
     const CONTROL_LABELS = {
       mail: "Mail",
       restart: "Restart",
@@ -747,6 +749,8 @@
       meshNodes: Object.create(null),
       qrModuleSize: 10,
       meshEnergy: 0,
+      gridNodes: Object.create(null),
+      gridEnergy: 0,
     };
 
     let qrLibraryPromise = null;
@@ -1985,6 +1989,168 @@
       return 0.22 + hashed01(a, b, c) * 0.58;
     }
 
+    function getTileGridGeometry(layout) {
+      return {
+        x: layout.cardX,
+        y: layout.cardY,
+        w: layout.cardW,
+        h: layout.cardH,
+        cols: TILE_GRID_COLS,
+        rows: TILE_GRID_ROWS,
+      };
+    }
+
+    function gridNodeKey(col, row) {
+      return `${col}:${row}`;
+    }
+
+    function getGridNode(col, row) {
+      const key = gridNodeKey(col, row);
+      let node = state.gridNodes[key];
+      if (!node) {
+        node = { dx: 0, dy: 0, vx: 0, vy: 0 };
+        state.gridNodes[key] = node;
+      }
+      return node;
+    }
+
+    function getGridNodePosition(layout, col, row) {
+      const grid = getTileGridGeometry(layout);
+      const baseX = grid.x + (grid.w * col) / grid.cols;
+      const baseY = grid.y + (grid.h * row) / grid.rows;
+      const node = getGridNode(col, row);
+      return {
+        x: baseX + node.dx,
+        y: baseY + node.dy,
+      };
+    }
+
+    function applyGridImpactAt(x, y, magnitude = 1) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      const radius = Math.min(grid.w, grid.h) * 0.42;
+      const maxShift = 34;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const baseX = grid.x + (grid.w * col) / grid.cols;
+          const baseY = grid.y + (grid.h * row) / grid.rows;
+          const node = getGridNode(col, row);
+          const nx = baseX + node.dx;
+          const ny = baseY + node.dy;
+          const dx = nx - x;
+          const dy = ny - y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const influence = Math.max(0, 1 - dist / radius);
+          if (influence <= 0) continue;
+
+          const impulse = influence * influence * (0.45 + magnitude * 1.25);
+          node.vx += (dx / dist) * impulse;
+          node.vy += (dy / dist) * impulse;
+          node.dx += (dx / dist) * impulse * 0.38;
+          node.dy += (dy / dist) * impulse * 0.38;
+
+          node.dx = clamp(node.dx, -maxShift, maxShift);
+          node.dy = clamp(node.dy, -maxShift, maxShift);
+        }
+      }
+    }
+
+    function updateGridDeformation(dt) {
+      if (!state.running || state.paused || state.contactOpen) return;
+
+      applyGridImpactAt(state.ball.x, state.ball.y, 0.9);
+      for (const b of state.extraBalls) {
+        applyGridImpactAt(b.x, b.y, 0.55);
+      }
+
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      const velocityDamping = Math.pow(0.86, dt * 60);
+      const spring = Math.min(0.22, dt * 7.8);
+      const maxShift = 34;
+      let accumulated = 0;
+      let count = 0;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const node = getGridNode(col, row);
+          node.vx *= velocityDamping;
+          node.vy *= velocityDamping;
+          node.dx += node.vx;
+          node.dy += node.vy;
+          node.dx += (0 - node.dx) * spring;
+          node.dy += (0 - node.dy) * spring;
+          node.dx = clamp(node.dx, -maxShift, maxShift);
+          node.dy = clamp(node.dy, -maxShift, maxShift);
+          accumulated += Math.hypot(node.dx, node.dy);
+          count += 1;
+        }
+      }
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const center = getGridNode(col, row);
+          const neighbors = [
+            state.gridNodes[gridNodeKey(col - 1, row)],
+            state.gridNodes[gridNodeKey(col + 1, row)],
+            state.gridNodes[gridNodeKey(col, row - 1)],
+            state.gridNodes[gridNodeKey(col, row + 1)],
+          ].filter(Boolean);
+          if (!neighbors.length) continue;
+          const avgDx = neighbors.reduce((sum, n) => sum + n.dx, 0) / neighbors.length;
+          const avgDy = neighbors.reduce((sum, n) => sum + n.dy, 0) / neighbors.length;
+          center.dx += (avgDx - center.dx) * 0.052;
+          center.dy += (avgDy - center.dy) * 0.052;
+        }
+      }
+
+      state.gridEnergy = count ? accumulated / count : 0;
+    }
+
+    function sampleGridLensingForce(x, y) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      let fx = 0;
+      let fy = 0;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const baseX = grid.x + (grid.w * col) / grid.cols;
+          const baseY = grid.y + (grid.h * row) / grid.rows;
+          const node = getGridNode(col, row);
+          const mass = Math.hypot(node.dx, node.dy);
+          if (mass < 0.22) continue;
+
+          const nx = baseX + node.dx;
+          const ny = baseY + node.dy;
+          const dx = nx - x;
+          const dy = ny - y;
+          const distSq = dx * dx + dy * dy + 320;
+          const strength = Math.min(2800, mass * 310) / distSq;
+          fx += dx * strength;
+          fy += dy * strength;
+        }
+      }
+
+      return { fx, fy };
+    }
+
+    function applyRelativityLensing(ball, dt) {
+      if (!state.running || state.paused || state.contactOpen) return;
+      const speed = Math.hypot(ball.dx, ball.dy) || ball.speedBase || state.ball.speedBase;
+      const force = sampleGridLensingForce(ball.x, ball.y);
+      if (Math.abs(force.fx) < 1e-6 && Math.abs(force.fy) < 1e-6) return;
+
+      ball.dx += force.fx * dt * 42;
+      ball.dy += force.fy * dt * 42;
+
+      const adjustedSpeed = Math.hypot(ball.dx, ball.dy) || 1;
+      const scale = speed / adjustedSpeed;
+      ball.dx *= scale;
+      ball.dy *= scale;
+    }
+
     function getMeshNode(row, col) {
       const key = meshNodeKey(row, col);
       let node = state.meshNodes[key];
@@ -2112,32 +2278,60 @@
     }
 
     function drawTileBoard(layout) {
-      const x = layout.cardX;
-      const y = layout.cardY;
-      const w = layout.cardW;
-      const h = layout.cardH;
-      const cols = 10;
-      const rows = 6;
+      const grid = getTileGridGeometry(layout);
+      const x = grid.x;
+      const y = grid.y;
+      const w = grid.w;
+      const h = grid.h;
+      const cols = grid.cols;
+      const rows = grid.rows;
 
       ctx.fillStyle = "rgba(10, 24, 50, 0.74)";
       ctx.fillRect(x, y, w, h);
 
       ctx.save();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-      ctx.lineWidth = 1;
+      const tension = 0.14 + Math.min(0.18, state.gridEnergy * 0.015);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+      ctx.lineWidth = 1.1;
+
       for (let c = 1; c < cols; c += 1) {
-        const gx = x + (w * c) / cols;
+        const first = getGridNodePosition(layout, c, 0);
         ctx.beginPath();
-        ctx.moveTo(gx + 0.5, y);
-        ctx.lineTo(gx + 0.5, y + h);
+        ctx.moveTo(first.x, first.y);
+        for (let r = 1; r <= rows; r += 1) {
+          const p = getGridNodePosition(layout, c, r);
+          const prev = getGridNodePosition(layout, c, r - 1);
+          const cx = prev.x + (p.x - prev.x) * tension;
+          const cy = prev.y + (p.y - prev.y) * tension;
+          ctx.quadraticCurveTo(cx, cy, p.x, p.y);
+        }
         ctx.stroke();
       }
+
       for (let r = 1; r < rows; r += 1) {
-        const gy = y + (h * r) / rows;
+        const first = getGridNodePosition(layout, 0, r);
         ctx.beginPath();
-        ctx.moveTo(x, gy + 0.5);
-        ctx.lineTo(x + w, gy + 0.5);
+        ctx.moveTo(first.x, first.y);
+        for (let c = 1; c <= cols; c += 1) {
+          const p = getGridNodePosition(layout, c, r);
+          const prev = getGridNodePosition(layout, c - 1, r);
+          const cx = prev.x + (p.x - prev.x) * tension;
+          const cy = prev.y + (p.y - prev.y) * tension;
+          ctx.quadraticCurveTo(cx, cy, p.x, p.y);
+        }
         ctx.stroke();
+      }
+
+      ctx.fillStyle = "rgba(214, 236, 255, 0.7)";
+      for (let c = 0; c <= cols; c += 1) {
+        for (let r = 0; r <= rows; r += 1) {
+          const node = getGridNodePosition(layout, c, r);
+          const model = getGridNode(c, r);
+          const radius = 1.1 + Math.min(1.7, Math.hypot(model.dx, model.dy) * 0.05);
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.34)";
@@ -2942,6 +3136,7 @@
         state.ballTrap = null;
       }
 
+      applyRelativityLensing(b, dt);
       b.x += b.dx * dt;
       b.y += b.dy * dt;
 
@@ -3003,6 +3198,7 @@
 
       const survivors = [];
       for (const b of state.extraBalls) {
+        applyRelativityLensing(b, dt);
         b.x += b.dx * dt;
         b.y += b.dy * dt;
 
@@ -3076,6 +3272,7 @@
           updatePaddle(SIMULATION_STEP);
           updateBall(SIMULATION_STEP);
           updateExtraBalls(SIMULATION_STEP);
+          updateGridDeformation(SIMULATION_STEP);
           updateMeshDeformation(SIMULATION_STEP);
           updateAutomataBursts(SIMULATION_STEP);
         }
@@ -3198,6 +3395,9 @@
     function movePaddleFromMouseEvent(event) {
       const point = getCanvasPointFromMouseLikeEvent(event);
       movePaddleFromCanvasPoint(point.x, point.y);
+      if (state.running && !state.paused && !state.contactOpen) {
+        applyGridImpactAt(point.x, point.y, 1.3);
+      }
 
       // Keep pointer-driven motion visually locked to the cursor instead of waiting
       // for the next animation frame, which can feel slightly behind in the iframe.
@@ -3243,6 +3443,8 @@
           draw();
           return;
         }
+        const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+        applyGridImpactAt(point.x, point.y, 1.5);
         updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
       },
       { passive: false }
@@ -3260,6 +3462,8 @@
           draw();
           return;
         }
+        const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+        applyGridImpactAt(point.x, point.y, 1.35);
         updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
       },
       { passive: false }
