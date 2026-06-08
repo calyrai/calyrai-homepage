@@ -1264,11 +1264,8 @@
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
-      if (state.contactOpen) {
-        return "Readable QR view active. Double-tap to reset and enter play mode.";
-      }
       return state.running
-        ? "Play mode active. Double-tap leaves to readable mode. Touch left/right controls bar speed."
+        ? "Play mode active. Double-tap resets. Touch left/right controls bar speed."
         : "Double-tap enters play mode. Touch left/right controls bar speed.";
     }
 
@@ -3251,11 +3248,6 @@
     }
 
     function handleDoubleTouchAction() {
-      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
-        pauseIntoContact();
-        return;
-      }
-
       hardResetIntoPlay();
     }
 
@@ -3299,10 +3291,7 @@
       "pointerup",
       (event) => {
         if (!shouldSwitchBackFromTarget(event.target)) return;
-        if (state.qrLoading) return;
-        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
-          pauseIntoContact();
-        }
+        // Single-window mode: ignore outside taps.
       },
       { passive: true }
     );
