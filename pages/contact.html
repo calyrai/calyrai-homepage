@@ -202,9 +202,9 @@
     }
 
     .action-pill {
-      min-width: 108px;
-      height: 42px;
-      padding: 0 22px;
+      width: 48px;
+      height: 48px;
+      padding: 0;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: rgba(7, 13, 28, 0.92);
@@ -212,44 +212,58 @@
       font: inherit;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+      gap: 0;
+      text-transform: none;
     }
 
     #mail-btn {
-      width: auto;
-      min-width: 138px;
-      height: 38px;
-      padding: 0 14px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      padding: 0;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(122, 182, 255, 0.72);
       background:
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 38%),
-        linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
+        radial-gradient(circle at 50% 0%, rgba(148, 205, 255, 0.18), transparent 44%),
+        rgba(8, 35, 78, 0.26);
       box-shadow:
-        0 0 16px rgba(255, 255, 255, 0.2),
-        inset 0 0 18px rgba(255, 255, 255, 0.07);
+        0 0 18px rgba(101, 170, 255, 0.28),
+        inset 0 0 16px rgba(129, 198, 255, 0.15);
       font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-weight: 700;
-      letter-spacing: 0.1em;
-      color: #f7fbff;
+      letter-spacing: 0;
+      color: #9aceff;
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
-      text-transform: uppercase;
+      gap: 0;
+      text-transform: none;
+    }
+
+    #exit-btn {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      border: 1px solid rgba(255, 201, 92, 0.9);
+      background: linear-gradient(180deg, rgba(251, 202, 74, 0.96), rgba(214, 151, 36, 0.96));
+      box-shadow:
+        0 0 14px rgba(247, 188, 64, 0.45),
+        inset 0 -3px 10px rgba(138, 89, 18, 0.25);
+      color: #821713;
     }
 
     #mail-btn .mail-icon {
-      width: 15px;
-      height: 15px;
+      width: 26px;
+      height: 26px;
       display: block;
-      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.42));
+      filter: drop-shadow(0 0 8px rgba(120, 188, 255, 0.5));
     }
 
-    #mail-btn .mail-label {
-      font-size: 0.8rem;
-      line-height: 1;
+    #exit-btn .exit-icon {
+      width: 30px;
+      height: 30px;
+      display: block;
+      filter: drop-shadow(0 0 3px rgba(128, 20, 20, 0.35));
     }
 
     .action-pill-primary {
@@ -397,25 +411,21 @@
       }
 
       .action-pill {
-        min-width: 112px;
+        min-width: 48px;
         height: 40px;
         background: rgba(7, 13, 28, 0.78);
         backdrop-filter: blur(8px);
       }
 
       #mail-btn {
-        min-width: 168px;
+        min-width: 44px;
         height: 48px;
-        padding: 0 20px;
+        padding: 0;
       }
 
       #mail-btn .mail-icon {
-        width: 20px;
-        height: 20px;
-      }
-
-      #mail-btn .mail-label {
-        font-size: 0.95rem;
+        width: 24px;
+        height: 24px;
       }
     }
 
@@ -541,7 +551,12 @@
                   <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
                   <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
-                <span class="mail-label">Mail</span>
+              </button>
+              <button type="button" class="action-pill" id="exit-btn" aria-label="Exit mode">
+                <svg class="exit-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"></rect>
+                  <circle cx="12" cy="12" r="4.2" fill="currentColor" opacity="0.9"></circle>
+                </svg>
               </button>
             </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
@@ -585,6 +600,7 @@
     const saveNoteNode = document.getElementById("save-note");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
+    const exitBtn = document.getElementById("exit-btn");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const PERSON_NAME = "Rupert Tscheliessnig, PhD";
     const ORG_TITLE = "Founder · Calyr.ai";
@@ -3217,6 +3233,12 @@
 
     mailBtn.addEventListener("click", () => {
       openMail();
+    });
+
+    exitBtn.addEventListener("click", () => {
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+        pauseIntoContact();
+      }
     });
 
     function getFullscreenElement() {
