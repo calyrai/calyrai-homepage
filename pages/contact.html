@@ -682,6 +682,7 @@
     let qrLibraryPromise = null;
     let simulationAccumulator = 0;
     let suppressClickUntil = 0;
+    let lastTouchEndTime = 0;
 
     function buildQrWall(size, seed) {
       const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -3193,6 +3194,14 @@
       (event) => {
         event.preventDefault();
         clearTouchSteer();
+        const now = performance.now();
+        if (now - lastTouchEndTime < 280) {
+          lastTouchEndTime = 0;
+          suppressClickUntil = now + 420;
+          handleDoubleTouchAction();
+          return;
+        }
+        lastTouchEndTime = now;
       },
       { passive: false }
     );
