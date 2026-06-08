@@ -511,6 +511,43 @@
 				border-radius: 0;
 			}
 		}
+
+		.landing-legal-note {
+			position: relative;
+			z-index: 3;
+			width: var(--frame-width);
+			margin: 0 auto 1.4rem;
+			padding: 0.85rem 1rem;
+			border: 1px solid rgba(255, 255, 255, 0.24);
+			background: rgba(8, 12, 24, 0.72);
+			color: rgba(242, 246, 255, 0.92);
+			font-family: "Avenir Next", "Avenir", "Segoe UI", Arial, sans-serif;
+			font-size: 0.78rem;
+			line-height: 1.45;
+		}
+
+		.landing-legal-note h2 {
+			margin: 0 0 0.38rem;
+			font-size: 0.82rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			font-weight: 700;
+		}
+
+		.landing-legal-note p {
+			margin: 0.2rem 0;
+		}
+
+		.landing-legal-note a {
+			color: rgba(197, 233, 255, 0.98);
+			text-decoration: none;
+			border-bottom: 1px solid rgba(197, 233, 255, 0.5);
+		}
+
+		.landing-legal-note a:hover {
+			color: #ffffff;
+			border-bottom-color: rgba(255, 255, 255, 0.82);
+		}
 		
 	</style>
 </head>
@@ -720,6 +757,12 @@
 	</section>
 	</div>
 </main>
+	<footer class="landing-legal-note" aria-label="Legal Notice">
+		<h2>Legal Notice</h2>
+		<p>Media owner and responsible for content: Rupert Tscheliessnig</p>
+		<p>calyr.ai · Ogugasse 3/3/13, 1220 Vienna, Austria</p>
+		<p>Email: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a> · Web: <a href="https://calyr.ai">https://calyr.ai</a></p>
+	</footer>
 	<script>
 (() => {
 	const menuToggle = document.querySelector('.corner-menu-toggle');
