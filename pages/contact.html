@@ -214,6 +214,35 @@
       text-transform: uppercase;
       gap: 0;
       text-transform: none;
+      position: relative;
+      cursor: pointer;
+      box-shadow: none;
+      transition: box-shadow 0.2s ease, transform 0.16s ease;
+    }
+
+    .action-pill::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(5, 12, 30, 0.82);
+      color: rgba(241, 249, 255, 0.95);
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .action-pill:hover::after,
+    .action-pill:focus-visible::after {
+      opacity: 1;
     }
 
     #mail-btn {
@@ -226,9 +255,7 @@
       background:
         radial-gradient(circle at 50% 0%, rgba(148, 205, 255, 0.18), transparent 44%),
         rgba(8, 35, 78, 0.26);
-      box-shadow:
-        0 0 18px rgba(101, 170, 255, 0.28),
-        inset 0 0 16px rgba(129, 198, 255, 0.15);
+      box-shadow: none;
       font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-weight: 700;
       letter-spacing: 0;
@@ -240,16 +267,14 @@
       text-transform: none;
     }
 
-    #exit-btn {
+    #restart-btn {
       width: 52px;
       height: 52px;
       min-width: 52px;
-      border: 1px solid rgba(255, 201, 92, 0.9);
-      background: linear-gradient(180deg, rgba(251, 202, 74, 0.96), rgba(214, 151, 36, 0.96));
-      box-shadow:
-        0 0 14px rgba(247, 188, 64, 0.45),
-        inset 0 -3px 10px rgba(138, 89, 18, 0.25);
-      color: #821713;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      color: #ff4df5;
     }
 
     #mail-btn .mail-icon {
@@ -259,11 +284,27 @@
       filter: drop-shadow(0 0 8px rgba(120, 188, 255, 0.5));
     }
 
-    #exit-btn .exit-icon {
+    #restart-btn .restart-icon {
       width: 30px;
       height: 30px;
       display: block;
-      filter: drop-shadow(0 0 3px rgba(128, 20, 20, 0.35));
+      filter: drop-shadow(0 0 4px rgba(255, 77, 245, 0.35));
+    }
+
+    #mail-btn:hover,
+    #mail-btn:focus-visible {
+      box-shadow:
+        0 0 18px rgba(101, 170, 255, 0.35),
+        inset 0 0 16px rgba(129, 198, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    #restart-btn:hover,
+    #restart-btn:focus-visible {
+      box-shadow:
+        0 0 18px rgba(255, 77, 245, 0.35),
+        inset 0 0 12px rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
     }
 
     .action-pill-primary {
@@ -546,16 +587,16 @@
 
           <section class="stage">
             <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
-              <button type="button" class="action-pill" id="mail-btn" aria-label="Mail">
+              <button type="button" class="action-pill" id="mail-btn" aria-label="Mail" data-label="Mail">
                 <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
                   <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </button>
-              <button type="button" class="action-pill" id="exit-btn" aria-label="Exit mode">
-                <svg class="exit-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"></rect>
-                  <circle cx="12" cy="12" r="4.2" fill="currentColor" opacity="0.9"></circle>
+              <button type="button" class="action-pill" id="restart-btn" aria-label="Restart" data-label="Restart">
+                <svg class="restart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="8.2" fill="none" stroke="rgba(255,255,255,0.96)" stroke-width="2.1"></circle>
+                  <circle cx="12" cy="12" r="3.7" fill="currentColor"></circle>
                 </svg>
               </button>
             </div>
@@ -600,7 +641,7 @@
     const saveNoteNode = document.getElementById("save-note");
     const contactActions = document.getElementById("contact-actions");
     const mailBtn = document.getElementById("mail-btn");
-    const exitBtn = document.getElementById("exit-btn");
+    const restartBtn = document.getElementById("restart-btn");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const PERSON_NAME = "Rupert Tscheliessnig, PhD";
     const ORG_TITLE = "Founder · Calyr.ai";
@@ -3235,10 +3276,18 @@
       openMail();
     });
 
-    exitBtn.addEventListener("click", () => {
-      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
-        pauseIntoContact();
-      }
+    restartBtn.addEventListener("click", () => {
+      resetGame();
+      state.running = false;
+      state.paused = true;
+      state.contactOpen = true;
+      state.gameOver = false;
+      state.saveFeedback = "";
+      state.lastTime = 0;
+      simulationAccumulator = 0;
+      syncGameUi();
+      syncHud();
+      void showContactQr();
     });
 
     function getFullscreenElement() {
