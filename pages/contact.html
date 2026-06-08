@@ -235,6 +235,7 @@
       color: rgba(241, 249, 255, 0.95);
       font-size: 0.56rem;
       font-family: var(--control-font);
+      font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -267,6 +268,12 @@
       align-items: center;
       gap: 0;
       text-transform: none;
+    }
+
+    #mail-btn,
+    #restart-btn {
+      font-family: var(--control-font) !important;
+      font-weight: 700;
     }
 
     #restart-btn {
@@ -1928,8 +1935,7 @@
 
     function syncGameUi() {
       document.body.classList.toggle("game-over", !!state.gameOver);
-      const mailAvailable = !state.running || state.paused || state.gameOver;
-      document.body.classList.toggle("mail-available", !!mailAvailable);
+      document.body.classList.toggle("mail-available", true);
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
