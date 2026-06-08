@@ -12,6 +12,7 @@
       --bg: #06142d;
       --panel: rgba(10, 28, 58, 0.92);
       --ink: #eefaff;
+      --control-font: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
       --cyan: #ffffff;
       --magenta: #7eaeff;
       --line: rgba(255, 255, 255, 0.24);
@@ -218,6 +219,7 @@
       cursor: pointer;
       box-shadow: none;
       transition: box-shadow 0.2s ease, transform 0.16s ease;
+      font-family: var(--control-font);
     }
 
     .action-pill::after {
@@ -232,6 +234,7 @@
       background: rgba(5, 12, 30, 0.82);
       color: rgba(241, 249, 255, 0.95);
       font-size: 0.56rem;
+      font-family: var(--control-font);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -256,7 +259,6 @@
         radial-gradient(circle at 50% 0%, rgba(148, 205, 255, 0.18), transparent 44%),
         rgba(8, 35, 78, 0.26);
       box-shadow: none;
-      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-weight: 700;
       letter-spacing: 0;
       color: #9aceff;
@@ -587,13 +589,13 @@
 
           <section class="stage">
             <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
-              <button type="button" class="action-pill" id="mail-btn" aria-label="Mail" data-label="Mail">
+              <button type="button" class="action-pill" id="mail-btn" aria-label="" data-label="">
                 <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
                   <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </button>
-              <button type="button" class="action-pill" id="restart-btn" aria-label="Restart" data-label="Restart">
+              <button type="button" class="action-pill" id="restart-btn" aria-label="" data-label="">
                 <svg class="restart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <circle cx="12" cy="12" r="8.2" fill="none" stroke="rgba(255,255,255,0.96)" stroke-width="2.1"></circle>
                   <circle cx="12" cy="12" r="3.7" fill="currentColor"></circle>
@@ -680,6 +682,10 @@
     const SIMULATION_STEP = 1 / 120;
     const MAX_FRAME_DELTA = 0.25;
     const MAX_SIM_STEPS_PER_FRAME = 20;
+    const CONTROL_LABELS = {
+      mail: "Mail",
+      restart: "Restart",
+    };
 
     function contactSeed() {
       let seed = 0;
@@ -740,6 +746,13 @@
     let simulationAccumulator = 0;
     let suppressClickUntil = 0;
     let lastTouchEndTime = 0;
+
+    function applyControlLabels() {
+      mailBtn.setAttribute("data-label", CONTROL_LABELS.mail);
+      mailBtn.setAttribute("aria-label", CONTROL_LABELS.mail);
+      restartBtn.setAttribute("data-label", CONTROL_LABELS.restart);
+      restartBtn.setAttribute("aria-label", CONTROL_LABELS.restart);
+    }
 
     function buildQrWall(size, seed) {
       const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -3423,6 +3436,7 @@
     }
 
     function bootWhenReady(startMs) {
+      applyControlLabels();
       state.initialized = true;
       state.running = false;
       state.paused = true;
