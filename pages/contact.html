@@ -1264,8 +1264,11 @@
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
+      if (state.contactOpen) {
+        return "Readable mode active. Double-tap to re-enter play mode.";
+      }
       return state.running
-        ? "Play mode active. Double-tap resets. Touch left/right controls bar speed."
+        ? "Play mode active. Double-tap leaves mode. Touch left/right controls bar speed."
         : "Double-tap enters play mode. Touch left/right controls bar speed.";
     }
 
@@ -3248,7 +3251,23 @@
     }
 
     function handleDoubleTouchAction() {
-      hardResetIntoPlay();
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+        pauseIntoContact();
+        return;
+      }
+
+      if (state.contactOpen) {
+        state.contactOpen = false;
+        startOrResume();
+        return;
+      }
+
+      if (state.gameOver) {
+        hardResetIntoPlay();
+        return;
+      }
+
+      startOrResume();
     }
 
     canvas.addEventListener("dblclick", (event) => {
