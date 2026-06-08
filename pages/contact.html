@@ -1265,11 +1265,11 @@
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
       if (state.contactOpen) {
-        return "Readable QR view active. Tap inside the game box to resume play.";
+        return "Readable QR view active. Double-tap to reset and enter play mode.";
       }
       return state.running
-        ? "Single tap pauses or resumes. Tap outside the game box for readable QR view."
-        : "Single tap starts the game. Double-tap starts or resumes without reset.";
+        ? "Play mode active. Double-tap leaves to readable mode. Touch left/right controls bar speed."
+        : "Double-tap enters play mode. Touch left/right controls bar speed.";
     }
 
     function loadQrLibrary() {
@@ -3025,6 +3025,18 @@
       simulationAccumulator = 0;
     }
 
+    function hardResetIntoPlay() {
+      resetGame();
+      state.running = true;
+      state.paused = false;
+      state.contactOpen = false;
+      state.gameOver = false;
+      syncGameUi();
+      syncHud();
+      state.lastTime = 0;
+      simulationAccumulator = 0;
+    }
+
     window.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") state.keys.left = true;
       if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = true;
@@ -3238,39 +3250,25 @@
       }
     }
 
+    function handleDoubleTouchAction() {
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+        pauseIntoContact();
+        return;
+      }
+
+      hardResetIntoPlay();
+    }
+
     canvas.addEventListener("dblclick", (event) => {
       event.preventDefault();
       suppressClickUntil = performance.now() + 320;
-      if (state.contactOpen || !state.running || state.paused || state.gameOver) {
-        state.contactOpen = false;
-        startOrResume();
-        return;
-      }
+      handleDoubleTouchAction();
     });
 
     canvas.addEventListener("click", (event) => {
       event.preventDefault();
       if (performance.now() < suppressClickUntil) return;
-      if (state.qrLoading) return;
-      const point = getCanvasPointFromEvent(event);
-      // While in readable QR view: click inside game box starts play
-      if (state.contactOpen && isPointInsideCurrentCard(point.x, point.y)) {
-        state.contactOpen = false;
-        startOrResume();
-        return;
-      }
-      // While playing: click outside game box shows readable QR
-      if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
-        pauseIntoContact();
-        return;
-      }
-      if (!state.running || state.paused || state.gameOver) {
-        state.contactOpen = false;
-        startOrResume();
-      } else {
-        state.paused = true;
-        syncGameUi();
-      }
+      // Interaction mode intentionally uses double-touch only for enter/leave/reset.
     });
 
     canvas.addEventListener(
@@ -3281,28 +3279,11 @@
         if (now - state.lastPointerUp < 260) {
           state.lastPointerUp = 0;
           suppressClickUntil = now + 320;
-          if (state.contactOpen || !state.running || state.paused || state.gameOver) {
-            state.contactOpen = false;
-            startOrResume();
-          }
+          handleDoubleTouchAction();
           return;
         }
         state.lastPointerUp = now;
-        if (state.qrLoading) return;
-        const point = getCanvasPointFromEvent(event);
-        if (state.running && !state.paused && !state.contactOpen && !state.gameOver && !isPointInsideCurrentCard(point.x, point.y)) {
-          pauseIntoContact();
-          return;
-        }
-        if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
-          return;
-        }
-        if (!state.running || state.paused || state.gameOver) {
-          startOrResume();
-        } else {
-          state.paused = true;
-          syncGameUi();
-        }
+        // Single touch release is reserved for steering only.
       },
       { passive: true }
     );
