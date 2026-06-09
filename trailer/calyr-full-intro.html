@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CALYR.AI Full Intro Trailer</title>
+  <style>
+    :root {
+      --bg: #020203;
+      --magenta: #ff2bb8;
+      --magenta-soft: #ff84df;
+      --flame-1: #ff4d9f;
+      --flame-2: #ffbf4d;
+      --text: #f9f7ff;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: radial-gradient(1200px 700px at 50% 50%, #111119 0%, var(--bg) 70%);
+      overflow: hidden;
+      font-family: Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="intro"></canvas>
+  <script>
+    const canvas = document.getElementById("intro");
+    const ctx = canvas.getContext("2d");
+
+    const DPR = () => Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    const trail = [];
+    const sparks = [];
+
+    let startMs = performance.now();
+
+    function resize() {
+      const dpr = DPR();
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+
+    function clamp(v, lo = 0, hi = 1) {
+      return Math.max(lo, Math.min(hi, v));
+    }
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function clear(w, h) {
+      const g = ctx.createRadialGradient(w * 0.5, h * 0.45, 80, w * 0.5, h * 0.5, Math.max(w, h));
+      g.addColorStop(0, "#11111a");
+      g.addColorStop(1, "#020203");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    function drawScene1(time, w, h) {
+      const sceneT = clamp(time / 5.0);
+      const x = 120 + (w - 240) * easeInOut(sceneT);
+      const y = h * 0.5 + Math.sin(time * 8) * 18;
+
+      trail.push({ x, y, life: 1, r: 8 + Math.random() * 7 });
+      while (trail.length > 80) trail.shift();
+
+      for (let i = trail.length - 1; i >= 0; i -= 1) {
+        const p = trail[i];
+        p.life -= 0.02;
+        if (p.life <= 0) trail.splice(i, 1);
+      }
+
+      for (const p of trail) {
+        const a = p.life * 0.45;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.8);
+        grad.addColorStop(0, `rgba(255, 70, 165, ${a})`);
+        grad.addColorStop(0.5, `rgba(255, 180, 80, ${a * 0.7})`);
+        grad.addColorStop(1, "rgba(255, 120, 0, 0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const pulse = 12 + Math.sin(time * 9) * 4;
+      const halo = ctx.createRadialGradient(x, y, 0, x, y, 42 + pulse);
+      halo.addColorStop(0, "rgba(255, 52, 182, 0.9)");
+      halo.addColorStop(1, "rgba(255, 52, 182, 0)");
+      ctx.fillStyle = halo;
+      ctx.beginPath();
+      ctx.arc(x, y, 42 + pulse, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#ff2bb8";
+      ctx.beginPath();
+      ctx.arc(x, y, 11, 0, Math.PI * 2);
+      ctx.fill();
+
+      const textAlpha = clamp((time - 0.4) / 1.0);
+      ctx.fillStyle = `rgba(249, 247, 255, ${textAlpha})`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "700 34px Avenir, 'Avenir Next', sans-serif";
+      ctx.fillText("Molecular Deeptech", w / 2, h * 0.14);
+      ctx.font = "500 26px Avenir, 'Avenir Next', sans-serif";
+      ctx.fillText("Matter as code, biology as system", w / 2, h * 0.86);
+    }
+
+    function drawRing(cx, cy, r, rollback) {
+      ctx.strokeStyle = "rgba(255,255,255,0.16)";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = "#ff2bb8";
+      ctx.lineWidth = 9;
+      ctx.lineCap = "round";
+
+      const seg = Math.PI * 0.52;
+      const base = -Math.PI * 0.5;
+      const rollbackAngle = base - rollback * Math.PI * 1.55;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, rollbackAngle, rollbackAngle + seg, false);
+      ctx.stroke();
+    }
+
+    function drawCalyrWriting(cx, cy, time) {
+      const reveal = clamp((time - 5.6) / 1.8);
+      const label = "CALYR.AI";
+      const visible = Math.max(0, Math.floor(reveal * label.length));
+      const partial = label.slice(0, visible);
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "700 68px Avenir, 'Avenir Next', sans-serif";
+      ctx.fillStyle = "rgba(249,247,255,0.97)";
+      ctx.shadowColor = "rgba(255,43,184,0.45)";
+      ctx.shadowBlur = 16;
+      ctx.fillText(partial, cx, cy);
+      ctx.shadowBlur = 0;
+
+      if (partial.includes("I")) {
+        const metrics = ctx.measureText(partial);
+        const left = cx - metrics.width / 2;
+        const iX = left + metrics.width - 12;
+        const iY = cy - 20;
+
+        if (Math.random() < 0.7) {
+          sparks.push({
+            x: iX + (Math.random() - 0.5) * 6,
+            y: iY,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: -1.2 - Math.random() * 1.3,
+            life: 1
+          });
+        }
+      }
+    }
+
+    function updateSparks() {
+      for (let i = sparks.length - 1; i >= 0; i -= 1) {
+        const p = sparks[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05;
+        p.life -= 0.025;
+        if (p.life <= 0) sparks.splice(i, 1);
+      }
+
+      for (const p of sparks) {
+        ctx.fillStyle = `rgba(255, ${130 + Math.floor(120 * p.life)}, 80, ${p.life})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2 + p.life * 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawFallingC(cx, cy, time) {
+      const p = clamp((time - 8.0) / 2.0);
+      const yStart = cy - 190;
+      const yEnd = cy;
+      const y = yStart + (yEnd - yStart) * easeInOut(p);
+      const rot = (1 - p) * Math.PI * 1.7;
+
+      ctx.save();
+      ctx.translate(cx - 265, y);
+      ctx.rotate(rot);
+      ctx.font = "700 72px Avenir, 'Avenir Next', sans-serif";
+      ctx.fillStyle = `rgba(255, 43, 184, ${0.2 + 0.8 * p})`;
+      ctx.fillText("C", 0, 0);
+      ctx.restore();
+    }
+
+    function drawScene2(time, w, h) {
+      const cx = w * 0.5;
+      const cy = h * 0.5;
+      const sceneTime = time - 5.0;
+      const r = Math.min(w, h) * 0.23;
+
+      drawRing(cx, cy, r, clamp(sceneTime / 2.0));
+      drawCalyrWriting(cx, cy, time);
+      updateSparks();
+      drawFallingC(cx, cy, time);
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "rgba(249, 247, 255, 0.7)";
+      ctx.font = "500 22px Avenir, 'Avenir Next', sans-serif";
+      ctx.fillText("Computational Materials & Systems Biology", cx, cy + r + 66);
+    }
+
+    function frame(nowMs) {
+      const elapsed = (nowMs - startMs) / 1000;
+      const loop = 12.5;
+      const time = elapsed % loop;
+
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      clear(w, h);
+
+      if (time < 5.0) {
+        drawScene1(time, w, h);
+      } else {
+        drawScene2(time, w, h);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

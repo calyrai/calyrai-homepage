@@ -6,6 +6,41 @@ Icon?
 *.log
 .DS_Store
 
+# Dependency directories
+node_modules/
+bower_components/
+jspm_packages/
+
+# Python virtual environments (strictly local)
+venv/
+.venv/
+env/
+ENV/
+
+# Package manager caches
+.npm/
+.pnpm-store/
+.yarn/
+
+# Build and cache outputs
+build/
+dist/
+coverage/
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+
+# IDE/editor metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS/editor noise
+Thumbs.db
+
 # Python cache / bytecode
 __pycache__/
 *.pyc
