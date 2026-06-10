@@ -1279,7 +1279,28 @@
 
       const markedCell = null;
 
-      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
+      const cardBaseGradient = ctx.createLinearGradient(
+        layout.cardX,
+        layout.cardY,
+        layout.cardX + layout.cardW,
+        layout.cardY
+      );
+      cardBaseGradient.addColorStop(0, "#2c1f63");
+      cardBaseGradient.addColorStop(0.34, "#18407f");
+      cardBaseGradient.addColorStop(1, "#0a2a56");
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, cardBaseGradient);
+
+      const violetLift = ctx.createRadialGradient(
+        layout.cardX + layout.cardW * 0.16,
+        layout.cardY + layout.cardH * 0.22,
+        24,
+        layout.cardX + layout.cardW * 0.16,
+        layout.cardY + layout.cardH * 0.22,
+        layout.cardW * 0.62
+      );
+      violetLift.addColorStop(0, "rgba(188, 132, 255, 0.14)");
+      violetLift.addColorStop(1, "rgba(188, 132, 255, 0)");
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, violetLift);
 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
       ctx.lineWidth = 1.6;
