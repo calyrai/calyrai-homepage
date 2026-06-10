@@ -464,10 +464,11 @@
       position: relative;
       color: #f4f9ff;
       text-decoration: none;
-      border: 1px solid rgba(232, 245, 255, 0.72);
-      background: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.35), rgba(222, 242, 255, 0.14) 55%, rgba(176, 217, 255, 0.1));
-      box-shadow: 0 12px 24px rgba(2, 10, 24, 0.46), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(7px);
+      border: 1px solid rgba(232, 245, 255, 0.78);
+      background: #163f73;
+      box-shadow: 0 8px 14px rgba(2, 10, 24, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       cursor: pointer;
       padding: 0;
     }
@@ -515,28 +516,25 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      --ring-thickness: 2.6px;
+      --ring-thickness: 3px;
       background: conic-gradient(
         from 10deg,
-        transparent 0 56deg,
-        var(--ring-color, #c8ecff) 56deg 304deg,
-        transparent 304deg 360deg
+        transparent 0 64deg,
+        var(--ring-color, #c8ecff) 64deg 300deg,
+        transparent 300deg 360deg
       );
       -webkit-mask: radial-gradient(
         farthest-side,
-        transparent calc(100% - var(--ring-thickness) - 0.5px),
+        transparent calc(100% - var(--ring-thickness)),
         #000 calc(100% - var(--ring-thickness))
       );
       mask: radial-gradient(
         farthest-side,
-        transparent calc(100% - var(--ring-thickness) - 0.5px),
+        transparent calc(100% - var(--ring-thickness)),
         #000 calc(100% - var(--ring-thickness))
       );
-      opacity: 0.95;
-      will-change: transform;
-      backface-visibility: hidden;
+      opacity: 1;
       transform-origin: 50% 50%;
-      transform: translateZ(0);
     }
 
     .fab-ring-1 {
@@ -563,12 +561,12 @@
       border-radius: 50%;
       transform: translate(-50%, -50%);
       background: rgba(244, 250, 255, 0.96);
-      box-shadow: 0 0 8px rgba(244, 250, 255, 0.8);
+      box-shadow: 0 0 4px rgba(244, 250, 255, 0.55);
     }
 
     @keyframes fab-spin {
-      from { transform: translateZ(0) rotate(0deg); }
-      to { transform: translateZ(0) rotate(360deg); }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .social-fab .fab-linkedin {
