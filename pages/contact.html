@@ -455,8 +455,8 @@
 
     .social-fab a,
     .social-fab button {
-      width: 52px;
-      height: 52px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
@@ -506,60 +506,60 @@
 
     .fab-core {
       position: relative;
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       display: block;
-      transform: translateX(-3px);
     }
 
     .fab-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      --ring-thickness: 2px;
+      --ring-thickness: 2.6px;
       background: conic-gradient(
-        from 16deg,
-        transparent 0 40deg,
-        var(--ring-color, #c8ecff) 40deg 300deg,
-        transparent 300deg 360deg
+        from 10deg,
+        transparent 0 56deg,
+        var(--ring-color, #c8ecff) 56deg 304deg,
+        transparent 304deg 360deg
       );
       -webkit-mask: radial-gradient(
         farthest-side,
-        transparent calc(100% - var(--ring-thickness)),
+        transparent calc(100% - var(--ring-thickness) - 0.5px),
         #000 calc(100% - var(--ring-thickness))
       );
       mask: radial-gradient(
         farthest-side,
-        transparent calc(100% - var(--ring-thickness)),
+        transparent calc(100% - var(--ring-thickness) - 0.5px),
         #000 calc(100% - var(--ring-thickness))
       );
       opacity: 0.95;
       will-change: transform;
       backface-visibility: hidden;
+      transform-origin: 50% 50%;
       transform: translateZ(0);
     }
 
     .fab-ring-1 {
       inset: 0;
-      animation: fab-spin 7.2s linear infinite;
+      animation: fab-spin 8.4s linear infinite;
     }
 
     .fab-ring-2 {
-      inset: 4px;
-      animation: fab-spin 5.9s linear infinite reverse;
+      inset: 5px;
+      animation: fab-spin 6.9s linear infinite reverse;
     }
 
     .fab-ring-3 {
-      inset: 8px;
-      animation: fab-spin 4.8s linear infinite;
+      inset: 10px;
+      animation: fab-spin 5.6s linear infinite;
     }
 
     .fab-dot {
       position: absolute;
-      left: 42%;
+      left: 50%;
       top: 50%;
-      width: 4px;
-      height: 4px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       transform: translate(-50%, -50%);
       background: rgba(244, 250, 255, 0.96);
@@ -611,13 +611,13 @@
 
       .social-fab a,
       .social-fab button {
-        width: 46px;
-        height: 46px;
+        width: 52px;
+        height: 52px;
       }
 
       .fab-core {
-        width: 26px;
-        height: 26px;
+        width: 32px;
+        height: 32px;
       }
     }
   </style>
