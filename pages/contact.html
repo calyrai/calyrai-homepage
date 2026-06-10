@@ -306,7 +306,7 @@
       }
 
       .social-fab {
-        right: max(10px, env(safe-area-inset-right));
+        left: max(10px, env(safe-area-inset-left));
         bottom: max(10px, env(safe-area-inset-bottom));
       }
     }
@@ -441,7 +441,7 @@
 
     .social-fab {
       position: fixed;
-      right: 18px;
+      left: 18px;
       bottom: 18px;
       z-index: 60;
       display: flex;
@@ -479,9 +479,9 @@
     .social-fab [data-short]::after {
       content: attr(data-short);
       position: absolute;
-      right: calc(100% + 10px);
+      left: calc(100% + 10px);
       top: 50%;
-      transform: translateY(-50%) translateX(6px);
+      transform: translateY(-50%) translateX(-6px);
       padding: 4px 9px;
       border-radius: 999px;
       border: 1px solid rgba(216, 239, 255, 0.56);
@@ -516,25 +516,42 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1.8px solid transparent;
-      border-top-color: var(--ring-color, #c8ecff);
-      border-right-color: var(--ring-color, #c8ecff);
+      --ring-thickness: 2px;
+      background: conic-gradient(
+        from 16deg,
+        transparent 0 40deg,
+        var(--ring-color, #c8ecff) 40deg 300deg,
+        transparent 300deg 360deg
+      );
+      -webkit-mask: radial-gradient(
+        farthest-side,
+        transparent calc(100% - var(--ring-thickness)),
+        #000 calc(100% - var(--ring-thickness))
+      );
+      mask: radial-gradient(
+        farthest-side,
+        transparent calc(100% - var(--ring-thickness)),
+        #000 calc(100% - var(--ring-thickness))
+      );
       opacity: 0.95;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform: translateZ(0);
     }
 
     .fab-ring-1 {
-      transform: scale(1.02);
-      animation: fab-spin-a 5.6s linear infinite;
+      inset: 0;
+      animation: fab-spin 7.2s linear infinite;
     }
 
     .fab-ring-2 {
-      transform: scale(0.82);
-      animation: fab-spin-b 4.6s linear infinite reverse;
+      inset: 4px;
+      animation: fab-spin 5.9s linear infinite reverse;
     }
 
     .fab-ring-3 {
-      transform: scale(0.62);
-      animation: fab-spin-c 3.8s linear infinite;
+      inset: 8px;
+      animation: fab-spin 4.8s linear infinite;
     }
 
     .fab-dot {
@@ -549,19 +566,9 @@
       box-shadow: 0 0 8px rgba(244, 250, 255, 0.8);
     }
 
-    @keyframes fab-spin-a {
-      from { transform: scale(1.02) rotate(0deg); }
-      to { transform: scale(1.02) rotate(360deg); }
-    }
-
-    @keyframes fab-spin-b {
-      from { transform: scale(0.82) rotate(0deg); }
-      to { transform: scale(0.82) rotate(360deg); }
-    }
-
-    @keyframes fab-spin-c {
-      from { transform: scale(0.62) rotate(0deg); }
-      to { transform: scale(0.62) rotate(360deg); }
+    @keyframes fab-spin {
+      from { transform: translateZ(0) rotate(0deg); }
+      to { transform: translateZ(0) rotate(360deg); }
     }
 
     .social-fab .fab-linkedin {
@@ -598,7 +605,7 @@
 
     @media (max-width: 760px) {
       .social-fab {
-        right: 16px;
+        left: 16px;
         bottom: 14px;
       }
 
@@ -3660,7 +3667,7 @@
     });
 
     window.addEventListener("mousemove", (event) => {
-      if (event.clientX >= window.innerWidth - 56) {
+      if (event.clientX <= 56) {
         showFabTemporarily();
       }
     });
@@ -3670,7 +3677,7 @@
       (event) => {
         if (!event.touches || !event.touches[0]) return;
         const x = event.touches[0].clientX;
-        edgeTouchStarted = x >= window.innerWidth - 40;
+        edgeTouchStarted = x <= 40;
         edgeTouchStartX = x;
       },
       { passive: true }
@@ -3680,7 +3687,7 @@
       "touchmove",
       (event) => {
         if (!edgeTouchStarted || !event.touches || !event.touches[0]) return;
-        const delta = edgeTouchStartX - event.touches[0].clientX;
+        const delta = event.touches[0].clientX - edgeTouchStartX;
         if (delta > 20) {
           edgeTouchStarted = false;
           showFabTemporarily();
