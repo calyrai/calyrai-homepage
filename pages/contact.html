@@ -28,10 +28,12 @@
     body {
       margin: 0;
       min-height: 100vh;
-      display: block;
+      display: flex;
+      flex-direction: column;
       padding: 0;
       overflow-y: auto;
       color: var(--ink);
+      font-family: var(--control-font);
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior: none;
       -webkit-user-select: none;
@@ -172,25 +174,6 @@
       border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .contact-actions {
-      display: none;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      position: absolute;
-      left: 50%;
-      bottom: 26px;
-      transform: translateX(-50%);
-      z-index: 6;
-      width: auto;
-      max-width: min(88vw, 520px);
-      pointer-events: auto;
-    }
-
-    body.mail-available .contact-actions {
-      display: flex !important;
-    }
-
     .landscape-controls {
       display: none;
     }
@@ -200,126 +183,6 @@
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
-    }
-
-    .action-pill {
-      width: 48px;
-      height: 48px;
-      padding: 0;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(7, 13, 28, 0.92);
-      color: var(--ink);
-      font: inherit;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      gap: 0;
-      text-transform: none;
-      position: relative;
-      cursor: pointer;
-      box-shadow: none;
-      transition: box-shadow 0.2s ease, transform 0.16s ease;
-      font-family: var(--control-font);
-    }
-
-    .action-pill::after {
-      content: attr(data-label);
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: rgba(5, 12, 30, 0.82);
-      color: rgba(241, 249, 255, 0.95);
-      font-size: 0.56rem;
-      font-family: var(--control-font);
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .action-pill:hover::after,
-    .action-pill:focus-visible::after {
-      opacity: 1;
-    }
-
-    #mail-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      padding: 0;
-      border-radius: 999px;
-      border: 1px solid rgba(122, 182, 255, 0.72);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(148, 205, 255, 0.18), transparent 44%),
-        rgba(8, 35, 78, 0.26);
-      box-shadow: none;
-      font-weight: 700;
-      letter-spacing: 0;
-      color: #9aceff;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0;
-      text-transform: none;
-    }
-
-    #mail-btn,
-    #restart-btn {
-      font-family: var(--control-font) !important;
-      font-weight: 700;
-    }
-
-    #restart-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      border: 1px solid rgba(255, 255, 255, 0.72);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: none;
-      color: #ff4df5;
-    }
-
-    #mail-btn .mail-icon {
-      width: 26px;
-      height: 26px;
-      display: block;
-      filter: drop-shadow(0 0 8px rgba(120, 188, 255, 0.5));
-    }
-
-    #restart-btn .restart-icon {
-      width: 30px;
-      height: 30px;
-      display: block;
-      filter: drop-shadow(0 0 4px rgba(255, 77, 245, 0.35));
-    }
-
-    #mail-btn:hover,
-    #mail-btn:focus-visible {
-      box-shadow:
-        0 0 18px rgba(101, 170, 255, 0.35),
-        inset 0 0 16px rgba(129, 198, 255, 0.2);
-      transform: translateY(-1px);
-    }
-
-    #restart-btn:hover,
-    #restart-btn:focus-visible {
-      box-shadow:
-        0 0 18px rgba(255, 77, 245, 0.35),
-        inset 0 0 12px rgba(255, 255, 255, 0.14);
-      transform: translateY(-1px);
-    }
-
-    .action-pill-primary {
-      background: linear-gradient(90deg, rgba(126, 174, 255, 0.95), rgba(255, 255, 255, 0.9));
-      color: #06142d;
-      box-shadow: 0 0 22px rgba(126, 174, 255, 0.22);
     }
 
     .footer {
@@ -383,14 +246,6 @@
         gap: 6px;
       }
 
-      .contact-actions {
-        bottom: 16px;
-        max-width: min(92vw, 420px);
-      }
-
-      body.mail-available .contact-actions {
-        display: flex;
-      }
     }
 
     @media (min-width: 721px) {
@@ -411,8 +266,7 @@
       .site-header,
       .page-intro,
       .hud,
-      .footer,
-      .contact-actions {
+      .footer {
         display: none;
       }
 
@@ -451,31 +305,9 @@
         transform: translateY(calc(-1 * max(16px, env(safe-area-inset-top))));
       }
 
-      body.mail-available .contact-actions {
-        position: absolute;
-        left: 50%;
-        bottom: max(12px, env(safe-area-inset-bottom));
-        transform: translateX(-50%);
-        display: flex;
-        z-index: 30;
-      }
-
-      .action-pill {
-        min-width: 48px;
-        height: 40px;
-        background: rgba(7, 13, 28, 0.78);
-        backdrop-filter: blur(8px);
-      }
-
-      #mail-btn {
-        min-width: 44px;
-        height: 48px;
-        padding: 0;
-      }
-
-      #mail-btn .mail-icon {
-        width: 24px;
-        height: 24px;
+      .social-fab {
+        right: max(10px, env(safe-area-inset-right));
+        bottom: max(10px, env(safe-area-inset-bottom));
       }
     }
 
@@ -485,7 +317,8 @@
     }
 
     body {
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       background:
         radial-gradient(120% 95% at 82% -10%, rgba(190, 230, 255, 0.14), transparent 62%),
         radial-gradient(110% 90% at -5% 100%, rgba(115, 168, 255, 0.16), transparent 66%),
@@ -497,6 +330,10 @@
     .contact-page-flow,
     .shell {
       min-height: 100vh;
+    }
+
+    .explore-page.nexus-page {
+      flex: 1 0 auto;
     }
 
     .contact-page-flow {
@@ -562,6 +399,219 @@
         max-height: calc(100vw * 0.6);
       }
     }
+
+    .impressum-visitcard {
+      margin: 12px auto 28px;
+      width: min(96vw, 980px);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        radial-gradient(circle at 85% 0%, rgba(126, 174, 255, 0.14), transparent 45%),
+        linear-gradient(180deg, rgba(9, 26, 52, 0.9), rgba(7, 18, 34, 0.9));
+      box-shadow: 0 16px 40px rgba(2, 10, 24, 0.45);
+      padding: 16px 18px;
+      font-family: var(--control-font);
+    }
+
+    .impressum-visitcard h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(220, 236, 255, 0.92);
+    }
+
+    .impressum-visitcard p {
+      margin: 6px 0;
+      color: rgba(231, 243, 255, 0.88);
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+
+    .impressum-visitcard a {
+      color: #b8dbff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(184, 219, 255, 0.45);
+    }
+
+    .impressum-visitcard a:hover {
+      color: #ffffff;
+      border-bottom-color: rgba(255, 255, 255, 0.75);
+    }
+
+    .social-fab {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(18px) scale(0.95);
+      transition: opacity 180ms ease, transform 220ms ease;
+    }
+
+    .social-fab a,
+    .social-fab button {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #f4f9ff;
+      text-decoration: none;
+      border: 1px solid rgba(232, 245, 255, 0.72);
+      background: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.35), rgba(222, 242, 255, 0.14) 55%, rgba(176, 217, 255, 0.1));
+      box-shadow: 0 12px 24px rgba(2, 10, 24, 0.46), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(7px);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .social-fab button {
+      font: inherit;
+    }
+
+    .social-fab [data-short]::after {
+      content: attr(data-short);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%) translateX(6px);
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(216, 239, 255, 0.56);
+      background: rgba(6, 17, 38, 0.78);
+      color: rgba(236, 246, 255, 0.95);
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      white-space: nowrap;
+    }
+
+    .social-fab a:hover::after,
+    .social-fab button:hover::after,
+    .social-fab a:focus-visible::after,
+    .social-fab button:focus-visible::after {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .fab-core {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      display: block;
+    }
+
+    .fab-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.8px solid transparent;
+      border-top-color: var(--ring-color, #c8ecff);
+      border-right-color: var(--ring-color, #c8ecff);
+      opacity: 0.95;
+    }
+
+    .fab-ring-1 {
+      transform: scale(1.02);
+      animation: fab-spin-a 3.2s linear infinite;
+    }
+
+    .fab-ring-2 {
+      transform: scale(0.82);
+      animation: fab-spin-b 2.4s linear infinite reverse;
+    }
+
+    .fab-ring-3 {
+      transform: scale(0.62);
+      animation: fab-spin-c 1.8s linear infinite;
+    }
+
+    .fab-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(244, 250, 255, 0.96);
+      box-shadow: 0 0 8px rgba(244, 250, 255, 0.8);
+    }
+
+    @keyframes fab-spin-a {
+      from { transform: scale(1.02) rotate(0deg); }
+      to { transform: scale(1.02) rotate(360deg); }
+    }
+
+    @keyframes fab-spin-b {
+      from { transform: scale(0.82) rotate(0deg); }
+      to { transform: scale(0.82) rotate(360deg); }
+    }
+
+    @keyframes fab-spin-c {
+      from { transform: scale(0.62) rotate(0deg); }
+      to { transform: scale(0.62) rotate(360deg); }
+    }
+
+    .social-fab .fab-linkedin {
+      --ring-color: #7fc3ff;
+    }
+
+    .social-fab .fab-whatsapp {
+      --ring-color: #60f5ee;
+    }
+
+    .social-fab .fab-mail {
+      --ring-color: #f8fcff;
+    }
+
+    .social-fab .fab-reset {
+      --ring-color: #ff79ef;
+    }
+
+    .social-fab a:hover,
+    .social-fab button:hover,
+    .social-fab a:focus-visible,
+    .social-fab button:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(2, 10, 24, 0.56);
+      outline: none;
+    }
+
+    body:not(.game-active) .social-fab,
+    body.game-active.fab-peek .social-fab {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    @media (max-width: 760px) {
+      .social-fab {
+        right: 16px;
+        bottom: 14px;
+      }
+
+      .social-fab a,
+      .social-fab button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .fab-core {
+        width: 26px;
+        height: 26px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -575,7 +625,7 @@
         <a href="../publications.html" class="nav-pill">Publications</a>
       </nav>
       <nav class="nav-secondary" aria-label="Secondary">
-        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
+        <a href="https://bsky.app/profile/calyr.ai" class="nav-pill">Follow</a>
         <a href="contact.html" class="nav-pill active">Contact</a>
         <a href="contact.html" class="nav-pill">Login</a>
       </nav>
@@ -595,20 +645,6 @@
           </section>
 
           <section class="stage">
-            <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
-              <button type="button" class="action-pill" id="mail-btn" aria-label="" data-label="">
-                <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
-                  <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-              <button type="button" class="action-pill" id="restart-btn" aria-label="" data-label="">
-                <svg class="restart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <circle cx="12" cy="12" r="8.2" fill="none" stroke="rgba(255,255,255,0.96)" stroke-width="2.1"></circle>
-                  <circle cx="12" cy="12" r="3.7" fill="currentColor"></circle>
-                </svg>
-              </button>
-            </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
           </section>
 
@@ -638,6 +674,49 @@
     </section>
   </main>
 
+  <section class="impressum-visitcard" aria-label="Legal Notice">
+    <h2>Legal Notice</h2>
+    <p>Media owner and responsible for content: Rupert Tscheliessnig</p>
+    <p>calyr.ai · Ogugasse 3/3/13, 1220 Vienna, Austria</p>
+    <p>Email: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
+    <p>Web: <a href="https://calyr.ai">https://calyr.ai</a></p>
+  </section>
+
+  <nav class="social-fab" aria-label="Quick social actions">
+    <a class="fab-linkedin" data-short="LinkedIn" href="https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/" target="_blank" rel="noopener noreferrer" aria-label="Open LinkedIn">
+      <span class="fab-core" aria-hidden="true">
+        <span class="fab-ring fab-ring-1"></span>
+        <span class="fab-ring fab-ring-2"></span>
+        <span class="fab-ring fab-ring-3"></span>
+        <span class="fab-dot"></span>
+      </span>
+    </a>
+    <a class="fab-whatsapp" data-short="WhatsApp" href="https://wa.me/4369919200915" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp">
+      <span class="fab-core" aria-hidden="true">
+        <span class="fab-ring fab-ring-1"></span>
+        <span class="fab-ring fab-ring-2"></span>
+        <span class="fab-ring fab-ring-3"></span>
+        <span class="fab-dot"></span>
+      </span>
+    </a>
+    <a class="fab-mail" data-short="Mail" href="mailto:rupert.tscheliessnig@calyr.ai" aria-label="Send Email">
+      <span class="fab-core" aria-hidden="true">
+        <span class="fab-ring fab-ring-1"></span>
+        <span class="fab-ring fab-ring-2"></span>
+        <span class="fab-ring fab-ring-3"></span>
+        <span class="fab-dot"></span>
+      </span>
+    </a>
+    <button type="button" class="fab-reset" id="fab-reset" data-short="Reset" aria-label="Reset game">
+      <span class="fab-core" aria-hidden="true">
+        <span class="fab-ring fab-ring-1"></span>
+        <span class="fab-ring fab-ring-2"></span>
+        <span class="fab-ring fab-ring-3"></span>
+        <span class="fab-dot"></span>
+      </span>
+    </button>
+  </nav>
+
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
@@ -648,9 +727,8 @@
     const mailQueueNode = document.getElementById("mail-queue");
     const modeNoteNode = document.getElementById("mode-note");
     const saveNoteNode = document.getElementById("save-note");
-    const contactActions = document.getElementById("contact-actions");
-    const mailBtn = document.getElementById("mail-btn");
-    const restartBtn = document.getElementById("restart-btn");
+    const fabMailBtn = document.querySelector(".social-fab .fab-mail");
+    const fabResetBtn = document.getElementById("fab-reset");
     const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
     const PERSON_NAME = "Rupert Tscheliessnig, PhD";
     const ORG_TITLE = "Founder · Calyr.ai";
@@ -668,6 +746,7 @@
       ";"
     ].join("");
     const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
+    const GAME_SHIFT_KEY = "calyr.contact.game-shifts";
     const CONTACT_CARD_QR_SCALE = 0.76;
     const QR_RENDER_SCALE = 0.84;
     const SINGLE_LEVEL_ONLY = true;
@@ -695,6 +774,10 @@
       mail: "Mail",
       restart: "Restart",
     };
+    const FAB_EDGE_PEEK_MS = 3200;
+    let fabPeekTimeout = null;
+    let edgeTouchStarted = false;
+    let edgeTouchStartX = 0;
 
     function contactSeed() {
       let seed = 0;
@@ -742,7 +825,14 @@
       qrLoading: false,
       previewMatrix: null,
       contactVisualWalker: null,
-      lastGameplaySnapshot: "",
+      moveSummary: {
+        paddleShift: 0,
+        ballTravel: 0,
+        samples: 0,
+        lastPaddleX: null,
+        lastBallX: null,
+        lastBallY: null,
+      },
       ballTrap: null,
       ballTrail: [],
       extraBalls: [],
@@ -759,10 +849,14 @@
     let lastTouchEndTime = 0;
 
     function applyControlLabels() {
-      mailBtn.setAttribute("data-label", CONTROL_LABELS.mail);
-      mailBtn.setAttribute("aria-label", CONTROL_LABELS.mail);
-      restartBtn.setAttribute("data-label", CONTROL_LABELS.restart);
-      restartBtn.setAttribute("aria-label", CONTROL_LABELS.restart);
+      if (fabMailBtn) {
+        fabMailBtn.setAttribute("data-short", CONTROL_LABELS.mail);
+        fabMailBtn.setAttribute("aria-label", CONTROL_LABELS.mail);
+      }
+      if (fabResetBtn) {
+        fabResetBtn.setAttribute("data-short", CONTROL_LABELS.restart);
+        fabResetBtn.setAttribute("aria-label", CONTROL_LABELS.restart);
+      }
     }
 
     function buildQrWall(size, seed) {
@@ -1798,12 +1892,34 @@
       draw();
     }
 
-    function captureGameplaySnapshot() {
-      if (!canvas || state.contactOpen) return;
+    function updateMovementSummary() {
+      const summary = state.moveSummary;
+      if (summary.lastPaddleX != null) {
+        summary.paddleShift += Math.abs(state.paddle.x - summary.lastPaddleX);
+      }
+      if (summary.lastBallX != null && summary.lastBallY != null) {
+        summary.ballTravel += Math.hypot(state.ball.x - summary.lastBallX, state.ball.y - summary.lastBallY);
+      }
+      summary.lastPaddleX = state.paddle.x;
+      summary.lastBallX = state.ball.x;
+      summary.lastBallY = state.ball.y;
+      summary.samples += 1;
+    }
+
+    function persistMovementSummary() {
       try {
-        state.lastGameplaySnapshot = canvas.toDataURL("image/png");
+        const summary = state.moveSummary;
+        const payload = {
+          savedAt: new Date().toISOString(),
+          score: state.score,
+          level: state.level,
+          patternHits: state.patternHits,
+          paddleShift: Math.round(summary.paddleShift),
+          ballTravel: Math.round(summary.ballTravel),
+          samples: summary.samples,
+        };
+        window.localStorage.setItem(GAME_SHIFT_KEY, JSON.stringify(payload));
       } catch (_error) {
-        state.lastGameplaySnapshot = "";
       }
     }
 
@@ -1825,9 +1941,7 @@
       if (!state.contactOpen) {
         return canvasToBlob(canvas);
       }
-      if (state.lastGameplaySnapshot) {
-        return dataUrlToBlob(state.lastGameplaySnapshot);
-      }
+      // Keep contact mode fast: no heavy gameplay snapshot buffer, only movement deltas are persisted.
       return canvasToBlob(canvas);
     }
 
@@ -1927,7 +2041,7 @@
     }
 
     function endToContact(reasonText) {
-      captureGameplaySnapshot();
+      persistMovementSummary();
       state.running = false;
       state.paused = true;
       state.contactOpen = false;
@@ -1939,7 +2053,26 @@
 
     function syncGameUi() {
       document.body.classList.toggle("game-over", !!state.gameOver);
-      document.body.classList.toggle("mail-available", true);
+      document.body.classList.toggle("impressum-open", !!state.contactOpen);
+      document.body.classList.toggle(
+        "game-active",
+        !!(state.running && !state.paused && !state.contactOpen && !state.gameOver)
+      );
+    }
+
+    function isGameActive() {
+      return !!(state.running && !state.paused && !state.contactOpen && !state.gameOver);
+    }
+
+    function showFabTemporarily(durationMs = FAB_EDGE_PEEK_MS) {
+      if (!isGameActive()) return;
+      document.body.classList.add("fab-peek");
+      if (fabPeekTimeout) {
+        window.clearTimeout(fabPeekTimeout);
+      }
+      fabPeekTimeout = window.setTimeout(() => {
+        document.body.classList.remove("fab-peek");
+      }, durationMs);
     }
 
     function drawRoundedRect(x, y, w, h, r, fill) {
@@ -3280,6 +3413,7 @@
           updateGridDeformation(SIMULATION_STEP);
           updateMeshDeformation(SIMULATION_STEP);
           updateAutomataBursts(SIMULATION_STEP);
+          updateMovementSummary();
         }
 
         simulationAccumulator -= SIMULATION_STEP;
@@ -3500,22 +3634,62 @@
       { passive: false }
     );
 
-    mailBtn.addEventListener("click", () => {
+    fabMailBtn.addEventListener("click", () => {
       openMail();
     });
 
-    restartBtn.addEventListener("click", () => {
+    fabResetBtn.addEventListener("click", () => {
       resetGame();
       state.running = false;
       state.paused = true;
       state.contactOpen = true;
       state.gameOver = false;
       state.saveFeedback = "";
+      state.moveSummary.paddleShift = 0;
+      state.moveSummary.ballTravel = 0;
+      state.moveSummary.samples = 0;
+      state.moveSummary.lastPaddleX = null;
+      state.moveSummary.lastBallX = null;
+      state.moveSummary.lastBallY = null;
       state.lastTime = 0;
       simulationAccumulator = 0;
       syncGameUi();
       syncHud();
       void showContactQr();
+    });
+
+    window.addEventListener("mousemove", (event) => {
+      if (event.clientX >= window.innerWidth - 56) {
+        showFabTemporarily();
+      }
+    });
+
+    window.addEventListener(
+      "touchstart",
+      (event) => {
+        if (!event.touches || !event.touches[0]) return;
+        const x = event.touches[0].clientX;
+        edgeTouchStarted = x >= window.innerWidth - 40;
+        edgeTouchStartX = x;
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "touchmove",
+      (event) => {
+        if (!edgeTouchStarted || !event.touches || !event.touches[0]) return;
+        const delta = edgeTouchStartX - event.touches[0].clientX;
+        if (delta > 20) {
+          edgeTouchStarted = false;
+          showFabTemporarily();
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener("touchend", () => {
+      edgeTouchStarted = false;
     });
 
     function getFullscreenElement() {
