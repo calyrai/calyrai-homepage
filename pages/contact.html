@@ -753,6 +753,14 @@
     const GAME_SHIFT_KEY = "calyr.contact.game-shifts";
     const CONTACT_CARD_QR_SCALE = 0.76;
     const QR_RENDER_SCALE = 0.84;
+    const QR_ABSTRACTION_STYLES = ["classic", "rings", "voronoi"];
+    const QR_STYLE_LABELS = {
+      classic: "Classic",
+      rings: "Open circles",
+      voronoi: "Voronoi",
+    };
+    const DEFAULT_QR_ABSTRACTION_STYLE = "rings";
+    const QR_ROTATION_QUARTERS = 1;
     const SINGLE_LEVEL_ONLY = true;
     const MAX_LEVEL = SINGLE_LEVEL_ONLY ? 1 : 4;
     const LEVEL_TARGETS = SINGLE_LEVEL_ONLY
@@ -779,6 +787,7 @@
       restart: "Restart",
     };
     const FAB_EDGE_PEEK_MS = 3200;
+    const LOW_POWER_MODE = window.matchMedia("(pointer: coarse)").matches;
     let fabPeekTimeout = null;
     let edgeTouchStarted = false;
     let edgeTouchStartX = 0;
@@ -845,12 +854,40 @@
       meshEnergy: 0,
       gridNodes: Object.create(null),
       gridEnergy: 0,
+      qrRenderStyle: DEFAULT_QR_ABSTRACTION_STYLE,
+      qrReadability: {
+        running: false,
+        detector: "unknown",
+        results: null,
+        testedAt: 0,
+      },
     };
 
     let qrLibraryPromise = null;
     let simulationAccumulator = 0;
     let suppressClickUntil = 0;
     let lastTouchEndTime = 0;
+    const canvasMetrics = {
+      rect: null,
+      borderLeft: 0,
+      borderRight: 0,
+      borderTop: 0,
+      borderBottom: 0,
+      contentWidth: 1,
+      contentHeight: 1,
+    };
+
+    function refreshCanvasMetrics() {
+      const rect = canvas.getBoundingClientRect();
+      const styles = window.getComputedStyle(canvas);
+      canvasMetrics.rect = rect;
+      canvasMetrics.borderLeft = parseFloat(styles.borderLeftWidth) || 0;
+      canvasMetrics.borderRight = parseFloat(styles.borderRightWidth) || 0;
+      canvasMetrics.borderTop = parseFloat(styles.borderTopWidth) || 0;
+      canvasMetrics.borderBottom = parseFloat(styles.borderBottomWidth) || 0;
+      canvasMetrics.contentWidth = Math.max(1, rect.width - canvasMetrics.borderLeft - canvasMetrics.borderRight);
+      canvasMetrics.contentHeight = Math.max(1, rect.height - canvasMetrics.borderTop - canvasMetrics.borderBottom);
+    }
 
     function applyControlLabels() {
       if (fabMailBtn) {
@@ -1351,16 +1388,34 @@
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!qrMatrix[row][col]) continue;
-          const baseX = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
-          const baseY = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          const base = getQrModuleCenter(
+            qrBounds,
+            moduleSize,
+            moduleGap,
+            row,
+            col,
+            qrSize,
+            QR_ROTATION_QUARTERS
+          );
+          const baseX = base.x;
+          const baseY = base.y;
           const node = getMeshNode(row, col);
           const x = baseX + node.dx;
           const y = baseY + node.dy;
 
           if (col + 1 < qrSize && qrMatrix[row][col + 1]) {
             const rNode = getMeshNode(row, col + 1);
-            const rx = qrBounds.left + (col + 1) * (moduleSize + moduleGap) + moduleSize / 2 + rNode.dx;
-            const ry = baseY + rNode.dy;
+            const rightBase = getQrModuleCenter(
+              qrBounds,
+              moduleSize,
+              moduleGap,
+              row,
+              col + 1,
+              qrSize,
+              QR_ROTATION_QUARTERS
+            );
+            const rx = rightBase.x + rNode.dx;
+            const ry = rightBase.y + rNode.dy;
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(rx, ry);
@@ -1369,8 +1424,17 @@
 
           if (row + 1 < qrSize && qrMatrix[row + 1][col]) {
             const dNode = getMeshNode(row + 1, col);
-            const dx = baseX + dNode.dx;
-            const dy = qrBounds.top + (row + 1) * (moduleSize + moduleGap) + moduleSize / 2 + dNode.dy;
+            const downBase = getQrModuleCenter(
+              qrBounds,
+              moduleSize,
+              moduleGap,
+              row + 1,
+              col,
+              qrSize,
+              QR_ROTATION_QUARTERS
+            );
+            const dx = downBase.x + dNode.dx;
+            const dy = downBase.y + dNode.dy;
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(dx, dy);
@@ -1382,20 +1446,35 @@
       for (let row = 0; row < qrSize; row += 1) {
         for (let col = 0; col < qrSize; col += 1) {
           if (!qrMatrix[row][col]) continue;
-          const baseX = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
-          const baseY = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          const base = getQrModuleCenter(
+            qrBounds,
+            moduleSize,
+            moduleGap,
+            row,
+            col,
+            qrSize,
+            QR_ROTATION_QUARTERS
+          );
+          const baseX = base.x;
+          const baseY = base.y;
           const node = getMeshNode(row, col);
-          const x = baseX + node.dx;
-          const y = baseY + node.dy;
+          const reserved = isQrReservedCell(row, col, qrSize);
+          const stability = reserved ? 0.2 : 1;
+          const x = baseX + node.dx * stability;
+          const y = baseY + node.dy * stability;
           const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
-          const radius = Math.max(2.2, moduleSize * 0.37);
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = isMarked ? "#ff4df5" : "#ffffff";
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = isMarked ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)";
-          ctx.fill();
-          ctx.shadowBlur = 0;
+          drawAbstractQrModule(ctx, {
+            x,
+            y,
+            moduleSize,
+            row,
+            col,
+            qrSize,
+            style: state.qrRenderStyle,
+            ink: isMarked ? "#ff4df5" : "#ffffff",
+            glow: isMarked ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)",
+            animate: true,
+          });
         }
       }
       ctx.restore();
@@ -1434,22 +1513,23 @@
     }
 
     function currentModeNote() {
+      const styleLabel = QR_STYLE_LABELS[state.qrRenderStyle] || state.qrRenderStyle;
       if (SINGLE_LEVEL_ONLY) {
-        return `Level 1 only: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits, then Level 1 resets.`;
+        return `Level 1 only: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits, then Level 1 resets. Style: ${styleLabel}.`;
       }
       if (isPerimeterChallengeActive()) {
-        return "Level 4: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
+        return `Level 4: periodic walls are live. Run the slider along the full QR frame and keep the ball inside. Style: ${styleLabel}.`;
       }
       if (state.level === 4) {
-        return `Level 4: game of life rules ignite magenta trajectories until ${LEVEL_TARGETS[4]} hits, then periodic walls take over.`;
+        return `Level 4: game of life rules ignite magenta trajectories until ${LEVEL_TARGETS[4]} hits, then periodic walls take over. Style: ${styleLabel}.`;
       }
       if (state.level === 3) {
-        return `Level 3: drive the fractured QR up to ${LEVEL_TARGETS[3]} hits to unlock the rule-based phase.`;
+        return `Level 3: drive the fractured QR up to ${LEVEL_TARGETS[3]} hits to unlock the rule-based phase. Style: ${styleLabel}.`;
       }
       if (state.level === 2) {
-        return `Level 2: cascades return every 10 hits while you work through the damaged QR to ${LEVEL_TARGETS[2]}.`;
+        return `Level 2: cascades return every 10 hits while you work through the damaged QR to ${LEVEL_TARGETS[2]}. Style: ${styleLabel}.`;
       }
-      return `Level 1: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits.`;
+      return `Level 1: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits. Style: ${styleLabel}.`;
     }
 
     function currentLevelTarget() {
@@ -1462,11 +1542,22 @@
       return `${Math.min(state.levelHits, target)}/${target}`;
     }
 
+    function readabilitySummaryText() {
+      const check = state.qrReadability;
+      if (check.running) return "Scan test running: classic, rings, voronoi...";
+      if (check.detector === "unavailable") return "Scan test skipped: BarcodeDetector not available in this browser.";
+      if (!check.results) return "Scan test pending.";
+      const readable = QR_ABSTRACTION_STYLES.filter((style) => check.results[style]);
+      if (!readable.length) return "Scan test: none of the tested abstractions decoded reliably.";
+      const labels = readable.map((style) => QR_STYLE_LABELS[style] || style).join(", ");
+      return `Scan test passed: ${labels}.`;
+    }
+
     function currentSaveNote() {
       if (state.saveFeedback) return state.saveFeedback;
       if (state.qrLoading) return "Preparing your contact QR...";
       if (state.contactOpen) {
-        return "Readable mode active. Double-tap to re-enter play mode.";
+        return `Readable mode active (${QR_STYLE_LABELS[state.qrRenderStyle] || state.qrRenderStyle}). ${readabilitySummaryText()} Double-tap to re-enter play mode.`;
       }
       return state.running
         ? "Play mode active. Double-tap leaves mode. Touch left/right controls bar speed."
@@ -2032,6 +2123,8 @@
     async function showContactQr() {
       state.saveFeedback = "";
       state.qrLoading = true;
+      state.qrReadability.running = false;
+      state.qrRenderStyle = "rings";
       syncHud();
       syncGameUi();
 
@@ -2050,6 +2143,7 @@
       syncHud();
       syncGameUi();
       draw();
+      void runQrReadabilitySuite(state.previewMatrix);
     }
 
     function pauseIntoContact() {
@@ -2125,6 +2219,171 @@
       ctx.shadowColor = shadowColor;
       ctx.stroke();
       ctx.shadowBlur = 0;
+    }
+
+    function drawVoronoiCell(targetCtx, cx, cy, radius, row, col, styleSeed, fillStyle) {
+      const corners = 6;
+      const angleBase = hashed01(row + 1, col + 1, styleSeed + 17) * Math.PI * 2;
+      targetCtx.beginPath();
+      for (let i = 0; i < corners; i += 1) {
+        const t = i / corners;
+        const angle = angleBase + t * Math.PI * 2;
+        const jitter = (hashed01(row + i + 3, col + i * 2 + 7, styleSeed + 29) - 0.5) * radius * 0.4;
+        const localR = radius * (0.86 + hashed01(row + i + 11, col + i + 13, styleSeed + 47) * 0.28) + jitter;
+        const x = cx + Math.cos(angle) * localR;
+        const y = cy + Math.sin(angle) * localR;
+        if (i === 0) targetCtx.moveTo(x, y);
+        else targetCtx.lineTo(x, y);
+      }
+      targetCtx.closePath();
+      targetCtx.fillStyle = fillStyle;
+      targetCtx.fill();
+    }
+
+    function getRotatedQrIndex(row, col, qrSize, quarterTurns = 0) {
+      const turns = ((quarterTurns % 4) + 4) % 4;
+      if (turns === 1) return { row: col, col: qrSize - 1 - row };
+      if (turns === 2) return { row: qrSize - 1 - row, col: qrSize - 1 - col };
+      if (turns === 3) return { row: qrSize - 1 - col, col: row };
+      return { row, col };
+    }
+
+    function getQrModuleCenter(bounds, moduleSize, moduleGap, row, col, qrSize, quarterTurns = 0) {
+      const mapped = getRotatedQrIndex(row, col, qrSize, quarterTurns);
+      return {
+        x: bounds.left + mapped.col * (moduleSize + moduleGap) + moduleSize / 2,
+        y: bounds.top + mapped.row * (moduleSize + moduleGap) + moduleSize / 2,
+      };
+    }
+
+    function drawAbstractQrModule(targetCtx, options) {
+      const {
+        x,
+        y,
+        moduleSize,
+        row,
+        col,
+        qrSize,
+        style,
+        ink,
+        glow,
+        animate,
+      } = options;
+
+      const normalizedStyle = QR_ABSTRACTION_STYLES.includes(style) ? style : DEFAULT_QR_ABSTRACTION_STYLE;
+      const activeStyle = normalizedStyle;
+      const styleSeed = contactSeed();
+      const radius = Math.max(1.6, moduleSize * 0.42);
+
+      targetCtx.save();
+      if (glow) {
+        targetCtx.shadowBlur = Math.max(0, moduleSize * 0.45);
+        targetCtx.shadowColor = glow;
+      }
+
+      if (activeStyle === "voronoi") {
+        drawVoronoiCell(targetCtx, x, y, radius, row, col, styleSeed, ink);
+      } else if (activeStyle === "rings") {
+        const gap = Math.PI * (0.2 + hashed01(row + 5, col + 7, 61) * 0.16);
+        const spin = (hashed01(row + 9, col + 11, 83) - 0.5) * 0.9;
+        const rotation = (animate ? state.blinkTime * spin : 0) + hashed01(row + 3, col + 2, 37) * Math.PI * 2;
+        targetCtx.beginPath();
+        targetCtx.arc(x, y, radius, rotation + gap * 0.5, rotation + Math.PI * 2 - gap * 0.5);
+        targetCtx.strokeStyle = ink;
+        targetCtx.lineWidth = Math.max(1.2, radius * 0.42);
+        targetCtx.stroke();
+      } else {
+        const side = Math.max(2, moduleSize * 0.8);
+        targetCtx.fillStyle = ink;
+        targetCtx.fillRect(x - side * 0.5, y - side * 0.5, side, side);
+      }
+
+      targetCtx.restore();
+    }
+
+    function renderStylizedQrToCanvas(qrMatrix, style, targetSize = 520) {
+      const out = document.createElement("canvas");
+      out.width = targetSize;
+      out.height = targetSize;
+      const outCtx = out.getContext("2d");
+      outCtx.fillStyle = "#ffffff";
+      outCtx.fillRect(0, 0, targetSize, targetSize);
+
+      const qrSize = qrMatrix.length;
+      const margin = Math.max(26, Math.floor(targetSize * 0.08));
+      const moduleSize = (targetSize - margin * 2) / qrSize;
+
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const mapped = getRotatedQrIndex(row, col, qrSize, QR_ROTATION_QUARTERS);
+          const x = margin + (mapped.col + 0.5) * moduleSize;
+          const y = margin + (mapped.row + 0.5) * moduleSize;
+          drawAbstractQrModule(outCtx, {
+            x,
+            y,
+            moduleSize,
+            row,
+            col,
+            qrSize,
+            style,
+            ink: "#000000",
+            glow: null,
+            animate: false,
+          });
+        }
+      }
+
+      return out;
+    }
+
+    async function detectQrPayload(canvasEl) {
+      if (typeof window.BarcodeDetector !== "function") return null;
+      try {
+        const detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+        const detected = await detector.detect(canvasEl);
+        if (!detected || !detected.length) return "";
+        return detected[0].rawValue || "";
+      } catch (_error) {
+        return "";
+      }
+    }
+
+    async function runQrReadabilitySuite(qrMatrix) {
+      if (!Array.isArray(qrMatrix) || !qrMatrix.length) return;
+
+      state.qrReadability.running = true;
+      syncHud();
+
+      if (typeof window.BarcodeDetector !== "function") {
+        state.qrReadability = {
+          running: false,
+          detector: "unavailable",
+          results: null,
+          testedAt: Date.now(),
+        };
+        syncHud();
+        return;
+      }
+
+      const results = {};
+      for (const style of QR_ABSTRACTION_STYLES) {
+        const rendered = renderStylizedQrToCanvas(qrMatrix, style);
+        const decoded = await detectQrPayload(rendered);
+        results[style] = decoded === CONTACT_PAYLOAD;
+      }
+
+      state.qrReadability = {
+        running: false,
+        detector: "available",
+        results,
+        testedAt: Date.now(),
+      };
+      state.qrRenderStyle = "rings";
+
+      syncHud();
+      syncGameUi();
+      draw();
     }
 
     function isGameplayQrBrick(brick) {
@@ -2215,6 +2474,7 @@
     }
 
     function updateGridDeformation(dt) {
+      if (LOW_POWER_MODE) return;
       if (!state.running || state.paused || state.contactOpen) return;
 
       applyGridImpactAt(state.ball.x, state.ball.y, 0.9);
@@ -2295,6 +2555,7 @@
     }
 
     function applyRelativityLensing(ball, dt) {
+      if (LOW_POWER_MODE) return;
       if (!state.running || state.paused || state.contactOpen) return;
       const speed = Math.hypot(ball.dx, ball.dy) || ball.speedBase || state.ball.speedBase;
       const force = sampleGridLensingForce(ball.x, ball.y);
@@ -2358,6 +2619,7 @@
     }
 
     function updateMeshDeformation(dt) {
+      if (LOW_POWER_MODE) return;
       if (!state.running || state.paused) return;
 
       applyMeshImpactAt(state.ball.x, state.ball.y, 1.2);
@@ -3504,16 +3766,12 @@
     }
 
     function getCanvasContentPoint(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      const styles = window.getComputedStyle(canvas);
-      const borderLeft = parseFloat(styles.borderLeftWidth) || 0;
-      const borderRight = parseFloat(styles.borderRightWidth) || 0;
-      const borderTop = parseFloat(styles.borderTopWidth) || 0;
-      const borderBottom = parseFloat(styles.borderBottomWidth) || 0;
-      const contentWidth = Math.max(1, rect.width - borderLeft - borderRight);
-      const contentHeight = Math.max(1, rect.height - borderTop - borderBottom);
-      const x = ((clientX - rect.left - borderLeft) * canvas.width) / contentWidth;
-      const y = ((clientY - rect.top - borderTop) * canvas.height) / contentHeight;
+      if (!canvasMetrics.rect) {
+        refreshCanvasMetrics();
+      }
+
+      const x = ((clientX - canvasMetrics.rect.left - canvasMetrics.borderLeft) * canvas.width) / canvasMetrics.contentWidth;
+      const y = ((clientY - canvasMetrics.rect.top - canvasMetrics.borderTop) * canvas.height) / canvasMetrics.contentHeight;
 
       return {
         x: clamp(x, 0, canvas.width),
@@ -3825,20 +4083,39 @@
     let layoutSyncTimer = null;
     let canvasSizeObserver = null;
 
+    function applyLayoutSync() {
+      if (!state.initialized) return;
+      refreshCanvasMetrics();
+      resetCurrentLevelLayout();
+      draw();
+    }
+
     function scheduleLayoutSync() {
       if (layoutSyncTimer) {
         window.clearTimeout(layoutSyncTimer);
       }
       layoutSyncTimer = window.setTimeout(() => {
         layoutSyncTimer = null;
-        if (!state.initialized) return;
-
-        resetCurrentLevelLayout();
-        draw();
+        applyLayoutSync();
       }, 90);
     }
 
+    function handleOrientationChangeImmediate() {
+      if (layoutSyncTimer) {
+        window.clearTimeout(layoutSyncTimer);
+        layoutSyncTimer = null;
+      }
+
+      // iOS and Android often settle viewport metrics over a few ticks.
+      // Run immediate sync plus short follow-up passes for instant-looking rotation.
+      refreshCanvasMetrics();
+      applyLayoutSync();
+      window.setTimeout(applyLayoutSync, 100);
+      window.setTimeout(applyLayoutSync, 260);
+    }
+
     window.addEventListener("resize", scheduleLayoutSync, { passive: true });
+    window.addEventListener("orientationchange", handleOrientationChangeImmediate, { passive: true });
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", scheduleLayoutSync, { passive: true });
     }
@@ -3851,6 +4128,7 @@
 
     function bootWhenReady(startMs) {
       applyControlLabels();
+      refreshCanvasMetrics();
       state.initialized = true;
       state.running = false;
       state.paused = true;
