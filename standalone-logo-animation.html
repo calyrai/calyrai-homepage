@@ -92,6 +92,8 @@
       const phaseDuration = prefersReduced ? 500 : 4200;
       const inflowSpeed = prefersReduced ? 0.00015 : 0.00062;
       const trailLength = prefersReduced ? 16 : 84;
+      const slitWidth = 2.2;
+      const slitHeight = 430;
       const droplets = [];
       const embers = [];
       const nodes = [];
@@ -137,9 +139,9 @@
           a,
           spin: rand(0.00006, 0.00012),
           size: rand(1.2, 3.6),
-          x: -220 + rand(-30, 30),
-          y: rand(-30, 30),
-          px: -220,
+          x: rand(-slitWidth, slitWidth),
+          y: ((i / (nodeCount - 1)) - 0.5) * slitHeight,
+          px: 0,
           py: 0,
           history: [],
           w: 0
@@ -166,12 +168,12 @@
         ctx.save();
         ctx.translate(cx, cy);
 
-        const haloPulse = 0.06 + Math.sin(t * 0.8) * 0.03;
-        ctx.strokeStyle = "rgba(160,230,255," + (0.06 + haloPulse).toFixed(3) + ")";
-        ctx.lineWidth = 1.1;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, ringRadius * 1.18, ringRadius * ringYScale * 1.18, 0, 0, Math.PI * 2);
-        ctx.stroke();
+        const slitPulse = 0.2 + Math.sin(t * 1.1) * 0.07;
+        ctx.globalCompositeOperation = "lighter";
+        ctx.fillStyle = "rgba(170,236,255," + slitPulse.toFixed(3) + ")";
+        ctx.fillRect(-slitWidth * 0.5, -slitHeight * 0.5, slitWidth, slitHeight);
+        ctx.fillStyle = "rgba(245,252,255,0.35)";
+        ctx.fillRect(-0.5, -slitHeight * 0.5, 1, slitHeight);
 
         let leftMass = 0;
 
@@ -188,8 +190,8 @@
           const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
           const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16;
 
-          const sourceX = -220 + Math.sin(t * 3 + n.a * 6) * 22;
-          const sourceY = Math.sin(t * 1.8 + n.a * 3.4) * 42;
+          const sourceX = Math.sin(t * 2.2 + n.a * 7) * slitWidth;
+          const sourceY = ((i / (nodeCount - 1)) - 0.5) * slitHeight + Math.sin(t * 1.6 + n.a * 4.2) * 10;
 
           n.px = n.x;
           n.py = n.y;
@@ -260,13 +262,13 @@
         for (let i = 0; i < inflowDensity; i += 1) {
           const p = (t * inflowSpeed * 1000 + i / inflowDensity) % 1;
           const eased = easeInOut(p);
-          const ix = -250 + eased * 112;
-          const iy = Math.sin(t * 2.5 + i * 1.4) * 34;
+          const ix = (Math.sin(t * 2.7 + i * 1.3) * slitWidth) + (Math.cos(t * 0.8 + i) * 8) * phaseEased;
+          const iy = -slitHeight * 0.5 + eased * slitHeight + Math.sin(t * 2.5 + i * 1.4) * 12;
           const ir = 1.2 + (1 - p) * 1.8;
 
           ctx.globalCompositeOperation = "lighter";
           for (let k = 0; k < 4; k += 1) {
-            const txk = ix - (k + 1) * 4.4;
+            const txk = ix - (k + 1) * 1.9;
             const tyk = iy + Math.sin(t * 5 + k + i) * 1.2;
             ctx.fillStyle = "rgba(148,235,255," + (0.2 - k * 0.042).toFixed(3) + ")";
             ctx.beginPath();
@@ -319,9 +321,9 @@
         }
 
         ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "rgba(255,255,255," + clamp(leftMass / nodeCount * 0.16, 0.02, 0.18).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(255,255,255," + clamp(leftMass / nodeCount * 0.13, 0.02, 0.16).toFixed(3) + ")";
         ctx.beginPath();
-        ctx.ellipse(-225, 0, 32, 56, 0.08, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, 8, 52, 0, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();
