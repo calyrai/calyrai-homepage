@@ -84,10 +84,20 @@
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="orbitGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.8" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
         <g id="root" transform="translate(480 280)">
           <ellipse id="halo" cx="0" cy="0" rx="220" ry="180" fill="none" stroke="rgba(175,236,255,0.08)" stroke-width="1.4" />
+          <path id="orbitAfterglow" d="" fill="none" stroke="rgba(160,235,255,0.25)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#orbitGlow)" />
+          <path id="orbitTraceCore" d="" fill="none" stroke="rgba(238,251,255,0.76)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          <g id="signalTrails" stroke-linecap="round"></g>
           <g id="links" stroke="rgba(228,248,255,0.34)" stroke-width="0.9" stroke-linecap="round"></g>
           <g id="particles" filter="url(#softGlow)"></g>
           <g id="inflow" filter="url(#softGlow)"></g>
@@ -103,7 +113,10 @@
       const svgNs = "http://www.w3.org/2000/svg";
       const particlesGroup = document.getElementById("particles");
       const linksGroup = document.getElementById("links");
+      const signalTrailsGroup = document.getElementById("signalTrails");
       const inflowGroup = document.getElementById("inflow");
+      const orbitAfterglow = document.getElementById("orbitAfterglow");
+      const orbitTraceCore = document.getElementById("orbitTraceCore");
       const halo = document.getElementById("halo");
       const focus = document.getElementById("focus");
 
@@ -117,6 +130,9 @@
       const breathSpeed = prefersReduced ? 0 : 0.0011;
       const orbitSpeed = prefersReduced ? 0 : 0.00022;
       const inflowSpeed = prefersReduced ? 0 : 0.00055;
+      const tracerSpeed = prefersReduced ? 0 : 0.00135;
+      const tracerHistory = [];
+      const tracerMaxHistory = 28;
 
       const nodes = [];
       const inflow = [];
@@ -159,6 +175,15 @@
       }
 
       for (let i = 0; i < 22; i += 1) {
+        const trail = document.createElementNS(svgNs, "line");
+        trail.setAttribute("x1", "-242");
+        trail.setAttribute("y1", "0");
+        trail.setAttribute("x2", "-242");
+        trail.setAttribute("y2", "0");
+        trail.setAttribute("stroke", "rgba(152,236,255,0.18)");
+        trail.setAttribute("stroke-width", String(rand(1.4, 2.3)));
+        signalTrailsGroup.appendChild(trail);
+
         const c = document.createElementNS(svgNs, "circle");
         const r = rand(1.2, 2.8);
         c.setAttribute("r", String(r));
@@ -169,7 +194,10 @@
           phase: i / 22,
           spread: rand(10, 56),
           yDrift: rand(-26, 26),
-          radius: r
+          radius: r,
+          trail,
+          px: -242,
+          py: 0
         });
       }
 
@@ -188,6 +216,17 @@
 
       function clamp(v, min, max) {
         return Math.max(min, Math.min(max, v));
+      }
+
+      function pathFromPoints(points) {
+        if (!points.length) {
+          return "";
+        }
+        let d = "M " + points[0].x.toFixed(2) + " " + points[0].y.toFixed(2);
+        for (let i = 1; i < points.length; i += 1) {
+          d += " L " + points[i].x.toFixed(2) + " " + points[i].y.toFixed(2);
+        }
+        return d;
       }
 
       const start = performance.now();
@@ -230,6 +269,19 @@
         focus.setAttribute("opacity", (1 - formedRatio * 0.94).toFixed(3));
         focus.setAttribute("cx", (-160 + formedRatio * 12).toFixed(2));
 
+        const tracerA = elapsed * tracerSpeed + Math.PI * 0.14;
+        const tracerX = Math.cos(tracerA) * ringRadius * 1.05;
+        const tracerY = Math.sin(tracerA) * ringRadius * ringVerticalScale * 1.05;
+        tracerHistory.push({ x: tracerX, y: tracerY });
+        if (tracerHistory.length > tracerMaxHistory) {
+          tracerHistory.shift();
+        }
+        const tracePath = pathFromPoints(tracerHistory);
+        orbitAfterglow.setAttribute("d", tracePath);
+        orbitTraceCore.setAttribute("d", tracePath);
+        orbitAfterglow.setAttribute("stroke", "rgba(154,235,255," + (0.17 + formedRatio * 0.3).toFixed(3) + ")");
+        orbitTraceCore.setAttribute("stroke", "rgba(245,252,255," + (0.22 + formedRatio * 0.7).toFixed(3) + ")");
+
         for (let i = 0; i < inflow.length; i += 1) {
           const p = inflow[i];
           const cycle = (elapsed * inflowSpeed + p.phase) % 1;
@@ -237,9 +289,21 @@
           const x = -242 + eased * 88 + Math.sin(tBreath * 2.1 + p.phase * 12) * 5;
           const y = p.yDrift + Math.sin(tBreath * 1.6 + p.phase * 17) * (p.spread * 0.14);
           const alpha = (0.02 + (1 - Math.abs(cycle - 0.52) * 2) * 0.5) * formedRatio;
+
+          const tx = p.px + (x - p.px) * 0.22;
+          const ty = p.py + (y - p.py) * 0.22;
+          p.trail.setAttribute("x1", tx.toFixed(2));
+          p.trail.setAttribute("y1", ty.toFixed(2));
+          p.trail.setAttribute("x2", x.toFixed(2));
+          p.trail.setAttribute("y2", y.toFixed(2));
+          p.trail.setAttribute("stroke", "rgba(146,235,255," + clamp(alpha * 0.9, 0.03, 0.35).toFixed(3) + ")");
+
           p.el.setAttribute("cx", x.toFixed(2));
           p.el.setAttribute("cy", y.toFixed(2));
           p.el.setAttribute("fill", "rgba(255,255,255," + clamp(alpha, 0.02, 0.45).toFixed(3) + ")");
+
+          p.px = x;
+          p.py = y;
         }
 
         for (let i = 0; i < nodes.length; i += 1) {
