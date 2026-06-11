@@ -331,8 +331,10 @@ const TILE_GRID_COLS = CONFIG.grid.cols;
 const TILE_GRID_ROWS = CONFIG.grid.rows;
 const CONTROL_LABELS = CONFIG.ui.controlLabels;
 const FAB_EDGE_PEEK_MS = CONFIG.ui.fabEdgePeekMs;
+const FAB_COLLAPSE_IDLE_MS = 1300;
 const LOW_POWER_MODE = !!CONFIG.performance.forceLowPowerMode;
 let fabPeekTimeout = null;
+let fabCollapseTimer = null;
 let edgeTouchStarted = false;
 let edgeTouchStartX = 0;
 
@@ -1949,6 +1951,7 @@ function isGameActive() {
 
 function showFabTemporarily(durationMs = FAB_EDGE_PEEK_MS) {
   if (!isGameActive()) return;
+  pokeFabInteraction();
   document.body.classList.add("fab-peek");
   if (fabPeekTimeout) {
     window.clearTimeout(fabPeekTimeout);
@@ -1956,6 +1959,27 @@ function showFabTemporarily(durationMs = FAB_EDGE_PEEK_MS) {
   fabPeekTimeout = window.setTimeout(() => {
     document.body.classList.remove("fab-peek");
   }, durationMs);
+}
+
+function setFabCollapsed(collapsed) {
+  if (!socialFab) return;
+  socialFab.classList.toggle("fab-collapsed", !!collapsed);
+}
+
+function scheduleFabCollapse() {
+  if (!socialFab) return;
+  if (fabCollapseTimer) {
+    window.clearTimeout(fabCollapseTimer);
+  }
+  fabCollapseTimer = window.setTimeout(() => {
+    setFabCollapsed(true);
+  }, FAB_COLLAPSE_IDLE_MS);
+}
+
+function pokeFabInteraction() {
+  if (!socialFab) return;
+  setFabCollapsed(false);
+  scheduleFabCollapse();
 }
 
 function syncFabInsideCard() {
@@ -2021,6 +2045,11 @@ function syncFabInsideCard() {
       el.style.setProperty("--fab-core-size", `${Math.round(size * (isCenter ? 0.6 : 0.62))}px`);
       el.style.setProperty("--fab-ring-thickness", isCenter ? "4px" : "3px");
     });
+
+    if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${Math.round(sideSize + gap)}px`);
+    if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
+    if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + gap))}px`);
+    if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + sideSize + gap * 2))}px`);
   } else {
     [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].forEach((el) => {
       if (!el) return;
@@ -2029,6 +2058,12 @@ function syncFabInsideCard() {
       el.style.removeProperty("--fab-core-size");
       el.style.removeProperty("--fab-ring-thickness");
     });
+
+    const fallbackShift = Math.round(knobSize + gap);
+    if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${fallbackShift}px`);
+    if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
+    if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${-fallbackShift}px`);
+    if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${-Math.round((knobSize + gap) * 2)}px`);
   }
 
   socialFab.style.left = `${Math.round(left)}px`;
@@ -3824,6 +3859,7 @@ function isPointInsideCurrentCard(x, y) {
 
 canvas.addEventListener("pointermove", (event) => {
   if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+  pokeFabInteraction();
   if (state.contactOpen) {
     const point = getCanvasPointFromMouseLikeEvent(event);
     applyMeshImpactAt(point.x, point.y, 1.6);
@@ -3849,6 +3885,7 @@ canvas.addEventListener(
   (event) => {
     if (!event.touches || !event.touches[0]) return;
     event.preventDefault();
+    pokeFabInteraction();
     suppressClickUntil = performance.now() + 180;
     if (state.contactOpen) {
       const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
@@ -3867,6 +3904,7 @@ canvas.addEventListener(
   (event) => {
     if (!event.touches || !event.touches[0]) return;
     event.preventDefault();
+    pokeFabInteraction();
     suppressClickUntil = performance.now() + 180;
     if (state.contactOpen) {
       const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
@@ -3926,6 +3964,7 @@ fabResetBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("mousemove", (event) => {
+  pokeFabInteraction();
   if (event.clientX <= 56) {
     showFabTemporarily();
   }
@@ -3935,6 +3974,7 @@ window.addEventListener(
   "touchstart",
   (event) => {
     if (!event.touches || !event.touches[0]) return;
+    pokeFabInteraction();
     const x = event.touches[0].clientX;
     edgeTouchStarted = x <= 40;
     edgeTouchStartX = x;
@@ -4122,6 +4162,7 @@ function bootWhenReady(startMs) {
   if (startMs) draw();
   syncGameUi();
   syncFabInsideCard();
+  scheduleFabCollapse();
   void showContactQr();
   gameLoop.start();
 }
