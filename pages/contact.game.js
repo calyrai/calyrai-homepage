@@ -315,33 +315,23 @@ const CATCHER_HOLD_SECONDS = CONFIG.game.catcherHoldSeconds;
 const CATCHER_REDIRECT_SPREAD = Math.PI * CONFIG.game.catcherRedirectSpreadPiFactor;
 const SIMULATION_STEP = CONFIG.performance.simulationStep;
 const MAX_FRAME_DELTA = CONFIG.performance.maxFrameDelta;
-const IS_CHROME = /Chrome\//.test(navigator.userAgent)
-  && !/Edg\//.test(navigator.userAgent)
-  && !/OPR\//.test(navigator.userAgent);
 const GAME = Object.freeze({
-  chromePerfMode: IS_CHROME && CONFIG.performance.chromePerfModeEnabled,
-  maxSimStepsDesktop: CONFIG.performance.maxSimStepsDesktop,
-  maxSimStepsChrome: CONFIG.performance.maxSimStepsChrome,
-  deformationStrideDesktop: CONFIG.performance.deformationStrideDesktop,
-  deformationStrideChrome: CONFIG.performance.deformationStrideChrome,
-  enableRelativityLensingDesktop: CONFIG.performance.enableRelativityLensingDesktop,
-  enableRelativityLensingInChrome: CONFIG.performance.enableRelativityLensingInChrome,
-  drawMeshLinksDesktop: CONFIG.performance.drawMeshLinksDesktop,
-  drawMeshLinksInChrome: CONFIG.performance.drawMeshLinksInChrome,
+  // Keep one gameplay simulation profile across devices.
+  maxSimSteps: CONFIG.performance.maxSimStepsDesktop,
+  deformationStride: CONFIG.performance.deformationStrideDesktop,
+  enableRelativityLensing: CONFIG.performance.enableRelativityLensingDesktop,
+  drawMeshLinks: CONFIG.performance.drawMeshLinksDesktop,
 });
 
-const CHROME_PERF_MODE = GAME.chromePerfMode;
-const MAX_SIM_STEPS_PER_FRAME = CHROME_PERF_MODE ? GAME.maxSimStepsChrome : GAME.maxSimStepsDesktop;
-const DEFORMATION_STEP_STRIDE = CHROME_PERF_MODE ? GAME.deformationStrideChrome : GAME.deformationStrideDesktop;
-const ENABLE_RELATIVITY_LENSING = CHROME_PERF_MODE
-  ? GAME.enableRelativityLensingInChrome
-  : GAME.enableRelativityLensingDesktop;
-const DRAW_MESH_LINKS = CHROME_PERF_MODE ? GAME.drawMeshLinksInChrome : GAME.drawMeshLinksDesktop;
+const MAX_SIM_STEPS_PER_FRAME = GAME.maxSimSteps;
+const DEFORMATION_STEP_STRIDE = GAME.deformationStride;
+const ENABLE_RELATIVITY_LENSING = GAME.enableRelativityLensing;
+const DRAW_MESH_LINKS = GAME.drawMeshLinks;
 const TILE_GRID_COLS = CONFIG.grid.cols;
 const TILE_GRID_ROWS = CONFIG.grid.rows;
 const CONTROL_LABELS = CONFIG.ui.controlLabels;
 const FAB_EDGE_PEEK_MS = CONFIG.ui.fabEdgePeekMs;
-const LOW_POWER_MODE = CONFIG.performance.forceLowPowerMode || window.matchMedia("(pointer: coarse)").matches;
+const LOW_POWER_MODE = !!CONFIG.performance.forceLowPowerMode;
 let fabPeekTimeout = null;
 let edgeTouchStarted = false;
 let edgeTouchStartX = 0;
