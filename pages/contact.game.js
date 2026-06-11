@@ -4152,52 +4152,74 @@ document.addEventListener(
   { passive: true }
 );
 
-let layoutSyncTimer = null;
-let canvasSizeObserver = null;
+class LayoutController {
+  constructor() {
+    this.layoutSyncTimer = null;
+    this.canvasSizeObserver = null;
+  }
+
+  applySync() {
+    if (!state.initialized) return;
+    refreshCanvasMetrics();
+    syncFabInsideCard();
+    resetCurrentLevelLayout();
+    draw();
+  }
+
+  scheduleSync() {
+    if (this.layoutSyncTimer) {
+      window.clearTimeout(this.layoutSyncTimer);
+    }
+    this.layoutSyncTimer = window.setTimeout(() => {
+      this.layoutSyncTimer = null;
+      this.applySync();
+    }, 90);
+  }
+
+  handleOrientationChangeImmediate() {
+    if (this.layoutSyncTimer) {
+      window.clearTimeout(this.layoutSyncTimer);
+      this.layoutSyncTimer = null;
+    }
+
+    // iOS and Android often settle viewport metrics over a few ticks.
+    // Run immediate sync plus short follow-up passes for instant-looking rotation.
+    refreshCanvasMetrics();
+    this.applySync();
+    window.setTimeout(() => this.applySync(), 100);
+    window.setTimeout(() => this.applySync(), 260);
+  }
+
+  bindEvents() {
+    window.addEventListener("resize", () => this.scheduleSync(), { passive: true });
+    window.addEventListener("orientationchange", () => this.handleOrientationChangeImmediate(), { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", () => this.scheduleSync(), { passive: true });
+    }
+    if (typeof ResizeObserver === "function") {
+      this.canvasSizeObserver = new ResizeObserver(() => {
+        this.scheduleSync();
+      });
+      this.canvasSizeObserver.observe(canvas);
+    }
+  }
+}
+
+const layoutController = new LayoutController();
 
 function applyLayoutSync() {
-  if (!state.initialized) return;
-  refreshCanvasMetrics();
-  syncFabInsideCard();
-  resetCurrentLevelLayout();
-  draw();
+  layoutController.applySync();
 }
 
 function scheduleLayoutSync() {
-  if (layoutSyncTimer) {
-    window.clearTimeout(layoutSyncTimer);
-  }
-  layoutSyncTimer = window.setTimeout(() => {
-    layoutSyncTimer = null;
-    applyLayoutSync();
-  }, 90);
+  layoutController.scheduleSync();
 }
 
 function handleOrientationChangeImmediate() {
-  if (layoutSyncTimer) {
-    window.clearTimeout(layoutSyncTimer);
-    layoutSyncTimer = null;
-  }
-
-  // iOS and Android often settle viewport metrics over a few ticks.
-  // Run immediate sync plus short follow-up passes for instant-looking rotation.
-  refreshCanvasMetrics();
-  applyLayoutSync();
-  window.setTimeout(applyLayoutSync, 100);
-  window.setTimeout(applyLayoutSync, 260);
+  layoutController.handleOrientationChangeImmediate();
 }
 
-window.addEventListener("resize", scheduleLayoutSync, { passive: true });
-window.addEventListener("orientationchange", handleOrientationChangeImmediate, { passive: true });
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", scheduleLayoutSync, { passive: true });
-}
-if (typeof ResizeObserver === "function") {
-  canvasSizeObserver = new ResizeObserver(() => {
-    scheduleLayoutSync();
-  });
-  canvasSizeObserver.observe(canvas);
-}
+layoutController.bindEvents();
 
 function bootWhenReady(startMs) {
   applyControlLabels();
