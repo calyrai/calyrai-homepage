@@ -94,8 +94,11 @@
       const trailLength = prefersReduced ? 20 : 94;
       const slitWidth = 1;
       const slitHeight = 430;
-      const focusOrbitRadiusX = ringRadius * 0.78;
-      const focusOrbitRadiusY = ringRadius * ringYScale * 0.62;
+      const lensX = ringRadius * 0.52;
+      const lensY = -ringRadius * ringYScale * 0.34;
+      const lensOuterR = 28;
+      const lensCoreR = 11;
+      const lensObstacleR = 24;
       const nodes = [];
       const noiseSeeds = [];
       let frozen = false;
@@ -137,6 +140,7 @@
           orbitNoise: rand(-0.08, 0.08),
           waveGroup: i % 3,
           wavePhase: rand(0, Math.PI * 2),
+          hitsLens: (i % 5 === 0 || i % 7 === 0),
           size: rand(1.2, 3.6),
           x: rand(-0.4, 0.4),
           y: sourceY,
@@ -184,19 +188,23 @@
         ctx.fillStyle = "rgba(245,252,255,0.88)";
         ctx.fillRect(-0.5, -slitHeight * 0.5, 1, slitHeight);
 
-        const focusA = drawPhase * Math.PI * 2 + Math.PI * 0.16;
-        const focusX = Math.cos(focusA) * focusOrbitRadiusX;
-        const focusY = Math.sin(focusA) * focusOrbitRadiusY;
-
         ctx.globalCompositeOperation = "lighter";
+        // Large transparent Ć-like accent: C-lens plus acute stroke.
+        ctx.strokeStyle = "rgba(255, 77, 245, 0.28)";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(lensX, lensY, lensOuterR, Math.PI * 0.22, Math.PI * 1.78);
+        ctx.stroke();
         ctx.fillStyle = "rgba(255, 77, 245, 0.14)";
         ctx.beginPath();
-        ctx.arc(focusX, focusY, 18, 0, Math.PI * 2);
+        ctx.arc(lensX, lensY, lensCoreR, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "rgba(255, 77, 245, 0.33)";
+        ctx.strokeStyle = "rgba(255, 77, 245, 0.36)";
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.arc(focusX, focusY, 7, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(lensX + 5, lensY - lensOuterR - 8);
+        ctx.lineTo(lensX + 18, lensY - lensOuterR - 24);
+        ctx.stroke();
 
         for (let i = 0; i < nodes.length; i += 1) {
           const n = nodes[i];
@@ -212,28 +220,37 @@
           const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
           const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16 + n.orbitNoise * 18;
 
-          const dxFocus = tx - focusX;
-          const dyFocus = ty - focusY;
+          const dxFocus = tx - lensX;
+          const dyFocus = ty - lensY;
           const distFocus = Math.hypot(dxFocus, dyFocus);
-          const influence = clamp(1 - distFocus / 84, 0, 1);
+          const influence = clamp(1 - distFocus / 122, 0, 1);
+          const obstacle = clamp((lensObstacleR - distFocus) / lensObstacleR, 0, 1);
           let fx = tx;
           let fy = ty;
           if (influence > 0) {
             const inv = 1 / Math.max(0.001, distFocus);
             const nx = dxFocus * inv;
             const ny = dyFocus * inv;
-            if (group === 0) {
-              // Wave 0 is pulled toward the magenta focus.
-              fx -= nx * influence * 18;
-              fy -= ny * influence * 18;
-            } else if (group === 1) {
-              // Wave 1 is pushed outward from the magenta focus.
-              fx += nx * influence * 22;
-              fy += ny * influence * 22;
+
+            // Hard obstacle core: nothing can pass through the lens center.
+            if (obstacle > 0) {
+              fx += nx * obstacle * 46;
+              fy += ny * obstacle * 46;
+            }
+
+            if (n.hitsLens) {
+              // Hit trajectories are focused onto the lens edge (not through core).
+              const edgeDelta = distFocus - (lensObstacleR + 4);
+              fx -= nx * influence * edgeDelta * 0.34;
+              fy -= ny * influence * edgeDelta * 0.34;
+              fx += -ny * influence * 8;
+              fy += nx * influence * 8;
             } else {
-              // Wave 2 orbits around the focus tangentially.
-              fx += -ny * influence * 14;
-              fy += nx * influence * 14;
+              // Non-hit trajectories are deflected away so they miss the lens.
+              fx += nx * influence * 34;
+              fy += ny * influence * 34;
+              fx += ny * influence * 7;
+              fy -= nx * influence * 7;
             }
           }
 
@@ -275,6 +292,30 @@
             ctx.strokeStyle = strokeColor + historyStrength.toFixed(3) + ")";
             ctx.lineWidth = clamp(n.size * 0.66, 0.9, 2.2);
             ctx.stroke();
+
+            // Add little Arrival-like micro pattern marks along the trajectory.
+            if (!prefersReduced && n.history.length > 12) {
+              const microColor = n.hitsLens ? "rgba(255,170,246," : "rgba(180,235,255,";
+              for (let h = 6; h < n.history.length; h += 7) {
+                const p0 = n.history[h - 1];
+                const p1 = n.history[h];
+                const dx = p1.x - p0.x;
+                const dy = p1.y - p0.y;
+                const len = Math.hypot(dx, dy);
+                if (len < 0.001) {
+                  continue;
+                }
+                const nxm = -dy / len;
+                const nym = dx / len;
+                const m = 0.9 + (h / n.history.length) * 1.7;
+                ctx.beginPath();
+                ctx.moveTo(p1.x - nxm * m, p1.y - nym * m);
+                ctx.lineTo(p1.x + nxm * m, p1.y + nym * m);
+                ctx.strokeStyle = microColor + (0.09 + (h / n.history.length) * 0.11).toFixed(3) + ")";
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+              }
+            }
           }
 
           ctx.globalCompositeOperation = "lighter";
