@@ -4297,8 +4297,6 @@ class ChatbotOrbController {
     this.rafId = null;
     this.enabled = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     this.following = false;
-    this.approachScore = 0;
-    this.prevMouseDist = null;
   }
 
   bindEvents() {
@@ -4325,17 +4323,8 @@ class ChatbotOrbController {
     this.stageEl.addEventListener("pointerleave", () => {
       this.pointerInside = false;
       this.following = false;
-      this.approachScore = 0;
-      this.prevMouseDist = null;
       this.orbEl.classList.remove("chatbot-catchable");
-      this.orbEl.classList.remove("chatbot-expanded");
     }, { passive: true });
-
-    this.orbEl.addEventListener("click", () => {
-      this.orbEl.classList.add("chatbot-catchable");
-      setSaveFeedback("Orb engaged. Move closer to guide it.");
-      showFabTemporarily(1300);
-    });
 
     window.addEventListener("resize", () => this.syncRect(false), { passive: true });
     this.start();
@@ -4374,24 +4363,13 @@ class ChatbotOrbController {
       const dy = this.mouseY - this.y;
       const dist = Math.hypot(dx, dy);
 
-      if (this.prevMouseDist != null) {
-        const improving = this.prevMouseDist - dist;
-        if (improving > 0.7) {
-          this.approachScore = Math.min(220, this.approachScore + improving);
-        } else {
-          this.approachScore = Math.max(0, this.approachScore - 1.8);
-        }
-      }
-      this.prevMouseDist = dist;
-
-      if (!this.following && this.approachScore > 90 && dist < 170) {
+      if (!this.following && dist < 135) {
         this.following = true;
-      } else if (this.following && dist > 290) {
+      } else if (this.following && dist > 250) {
         this.following = false;
       }
 
       if (this.following) {
-        this.orbEl.classList.add("chatbot-expanded");
         if (dist < 72) {
           this.targetX = this.x;
           this.targetY = this.y;
@@ -4404,16 +4382,12 @@ class ChatbotOrbController {
           this.orbEl.classList.remove("chatbot-catchable");
         }
       } else {
-        this.orbEl.classList.remove("chatbot-expanded");
         this.targetX = clamp(this.rect.width * 0.22, padding, this.rect.width - padding);
         this.targetY = clamp(this.rect.height * 0.68, padding, this.rect.height - padding);
         this.orbEl.classList.remove("chatbot-catchable");
       }
     } else {
       this.following = false;
-      this.approachScore = Math.max(0, this.approachScore - 3);
-      this.prevMouseDist = null;
-      this.orbEl.classList.remove("chatbot-expanded");
       this.targetX = clamp(this.rect.width * 0.22, padding, this.rect.width - padding);
       this.targetY = clamp(this.rect.height * 0.68, padding, this.rect.height - padding);
       this.orbEl.classList.remove("chatbot-catchable");

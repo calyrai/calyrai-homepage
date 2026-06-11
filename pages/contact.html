@@ -439,11 +439,10 @@
       color: #f5fbff;
       box-shadow: 0 10px 22px rgba(4, 12, 28, 0.48);
       z-index: 4;
-      pointer-events: auto;
+      pointer-events: none;
       padding: 0;
       transform: translate(-50%, -50%);
       transition: box-shadow 220ms ease, border-color 220ms ease, transform 220ms ease;
-      cursor: pointer;
     }
 
     .chatbot-orb-core {
@@ -480,35 +479,6 @@
       border-radius: 50%;
       border: 2px solid rgba(245, 251, 255, 0.95);
       box-shadow: 0 0 10px rgba(245, 251, 255, 0.42);
-    }
-
-    .chatbot-sat {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 10px;
-      height: 10px;
-      margin-left: -5px;
-      margin-top: -5px;
-      border-radius: 50%;
-      border: 2px solid rgba(238, 248, 255, 0.95);
-      background: rgba(10, 26, 52, 0.92);
-      box-shadow: 0 0 8px rgba(220, 243, 255, 0.42);
-      opacity: 0.9;
-      transform: translate(0, 0) scale(0.72);
-      transition: transform 260ms cubic-bezier(.2,.78,.22,1), opacity 220ms ease;
-    }
-
-    .chatbot-orb.chatbot-expanded .chatbot-sat-1 {
-      transform: translate(-24px, -20px) scale(1);
-    }
-
-    .chatbot-orb.chatbot-expanded .chatbot-sat-2 {
-      transform: translate(26px, -6px) scale(1);
-    }
-
-    .chatbot-orb.chatbot-expanded .chatbot-sat-3 {
-      transform: translate(6px, 24px) scale(1);
     }
 
     .chatbot-orb.chatbot-catchable {
@@ -835,9 +805,6 @@
                 <span class="chatbot-ring chatbot-ring-1"></span>
                 <span class="chatbot-ring chatbot-ring-2"></span>
                 <span class="chatbot-dot"></span>
-                <span class="chatbot-sat chatbot-sat-1"></span>
-                <span class="chatbot-sat chatbot-sat-2"></span>
-                <span class="chatbot-sat chatbot-sat-3"></span>
               </span>
             </button>
           </section>
