@@ -88,16 +88,16 @@
 
       const ringRadius = 170;
       const ringYScale = 0.84;
-      const nodeCount = 96;
-      const phaseDuration = prefersReduced ? 500 : 4200;
-      const inflowSpeed = prefersReduced ? 0.00015 : 0.00062;
-      const trailLength = prefersReduced ? 16 : 84;
-      const slitWidth = 2.2;
+      const nodeCount = 88;
+      const travelDuration = prefersReduced ? 400 : 2400;
+      const drawDuration = prefersReduced ? 700 : 3600;
+      const trailLength = prefersReduced ? 20 : 94;
+      const slitWidth = 1;
       const slitHeight = 430;
-      const droplets = [];
-      const embers = [];
       const nodes = [];
       const noiseSeeds = [];
+      let frozen = false;
+      let finalSnapshot = null;
 
       function resize() {
         const rect = canvas.getBoundingClientRect();
@@ -121,102 +121,108 @@
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       }
 
-      function spawnDroplet(x, y, vx, vy, size, life, alpha) {
-        droplets.push({ x, y, vx, vy, size, life, maxLife: life, alpha });
-      }
-
-      function spawnEmber(x, y, r, life) {
-        embers.push({ x, y, r, life, maxLife: life });
-      }
-
       for (let i = 0; i < 8; i += 1) {
         noiseSeeds.push(rand(0, Math.PI * 2));
       }
 
       for (let i = 0; i < nodeCount; i += 1) {
         const a = (Math.PI * 2 * i) / nodeCount;
+        const sourceY = rand(-8, 8);
         nodes.push({
           a,
-          spin: rand(0.00006, 0.00012),
+          sourceX: rand(-0.4, 0.4),
+          sourceY,
+          orbitNoise: rand(-0.08, 0.08),
           size: rand(1.2, 3.6),
-          x: rand(-slitWidth, slitWidth),
-          y: ((i / (nodeCount - 1)) - 0.5) * slitHeight,
+          x: rand(-0.4, 0.4),
+          y: sourceY,
           px: 0,
-          py: 0,
-          history: [],
-          w: 0
+          py: sourceY,
+          history: []
         });
       }
 
       const start = performance.now();
 
+      function drawBackground(width, height) {
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
+        ctx.fillRect(0, 0, width, height);
+      }
+
       function frame(now) {
+        if (frozen && finalSnapshot) {
+          ctx.putImageData(finalSnapshot, 0, 0);
+          return;
+        }
+
         const elapsed = now - start;
         const t = elapsed * 0.001;
-        const phase = clamp(elapsed / phaseDuration, 0, 1);
-        const phaseEased = easeInOut(phase);
+        const travelPhase = clamp(elapsed / travelDuration, 0, 1);
+        const travelEased = easeInOut(travelPhase);
+        const drawPhase = clamp((elapsed - travelDuration) / drawDuration, 0, 1);
+        const drawingOnRing = elapsed >= travelDuration;
 
         const width = canvas.width / DPR;
         const height = canvas.height / DPR;
         const cx = width * 0.5;
         const cy = height * 0.47;
 
-        ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
-        ctx.fillRect(0, 0, width, height);
+        drawBackground(width, height);
 
         ctx.save();
         ctx.translate(cx, cy);
 
-        const slitPulse = 0.2 + Math.sin(t * 1.1) * 0.07;
+        const slitPulse = 0.35;
         ctx.globalCompositeOperation = "lighter";
         ctx.fillStyle = "rgba(170,236,255," + slitPulse.toFixed(3) + ")";
         ctx.fillRect(-slitWidth * 0.5, -slitHeight * 0.5, slitWidth, slitHeight);
-        ctx.fillStyle = "rgba(245,252,255,0.35)";
+        ctx.fillStyle = "rgba(245,252,255,0.88)";
         ctx.fillRect(-0.5, -slitHeight * 0.5, 1, slitHeight);
-
-        let leftMass = 0;
 
         for (let i = 0; i < nodes.length; i += 1) {
           const n = nodes[i];
           const swirl = Math.sin(t * 0.54 + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * 3.8;
           const rough = 1 + Math.sin(t * 0.68 + n.a * 5.2) * 0.06;
-
-          // Deformed orbit with two gaps so trajectories visibly draw an Arrival-like symbol.
           const gapWave = Math.abs(Math.sin(n.a * 1.5 + t * 0.19));
           const gapFactor = clamp((gapWave - 0.18) / 0.82, 0, 1);
 
-          const orbitA = n.a + elapsed * n.spin;
+          const orbitA = n.a + drawPhase * Math.PI * 2;
           const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
-          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16;
+          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16 + n.orbitNoise * 18;
 
-          const sourceX = Math.sin(t * 2.2 + n.a * 7) * slitWidth;
-          const sourceY = ((i / (nodeCount - 1)) - 0.5) * slitHeight + Math.sin(t * 1.6 + n.a * 4.2) * 10;
+          const sourceX = n.sourceX;
+          const sourceY = n.sourceY;
 
           n.px = n.x;
           n.py = n.y;
-          n.x = sourceX + (tx - sourceX) * phaseEased;
-          n.y = sourceY + (ty - sourceY) * phaseEased;
+          n.x = sourceX + (tx - sourceX) * travelEased;
+          n.y = sourceY + (ty - sourceY) * travelEased;
 
-          n.history.push({ x: n.x, y: n.y });
-          if (n.history.length > trailLength) {
-            n.history.shift();
+          // Only start trail history once particle has reached the circle.
+          if (drawingOnRing) {
+            n.history.push({ x: n.x, y: n.y });
+            if (n.history.length > trailLength) {
+              n.history.shift();
+            }
+          } else if (n.history.length) {
+            n.history.length = 0;
           }
 
           const vx = n.x - n.px;
           const vy = n.y - n.py;
 
           const speed = Math.hypot(vx, vy);
-          const tailAlpha = clamp(speed * 0.09, 0.03, 0.28);
+          const tailAlpha = clamp(speed * 0.09, 0.02, 0.24);
 
-          if (n.history.length > 2) {
+          if (n.history.length > 2 && drawingOnRing) {
             ctx.globalCompositeOperation = "lighter";
             ctx.beginPath();
             ctx.moveTo(n.history[0].x, n.history[0].y);
             for (let h = 1; h < n.history.length; h += 1) {
               ctx.lineTo(n.history[h].x, n.history[h].y);
             }
-            const historyStrength = clamp((n.history.length / trailLength) * 0.26, 0.08, 0.26);
+            const historyStrength = clamp((n.history.length / trailLength) * 0.28, 0.1, 0.28);
             ctx.strokeStyle = "rgba(150,232,255," + historyStrength.toFixed(3) + ")";
             ctx.lineWidth = clamp(n.size * 0.66, 0.9, 2.2);
             ctx.stroke();
@@ -233,37 +239,18 @@
             ctx.fill();
           }
 
-          ctx.fillStyle = "rgba(248,253,255," + (0.34 + phaseEased * 0.5).toFixed(3) + ")";
+          ctx.fillStyle = "rgba(248,253,255," + (0.34 + travelEased * 0.5).toFixed(3) + ")";
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
           ctx.fill();
-
-          if (Math.cos(orbitA) < -0.65) {
-            leftMass += 1;
-            if (!prefersReduced && Math.random() < 0.1) {
-              spawnEmber(n.x + rand(-6, 6), n.y + rand(-6, 6), rand(1.6, 3.8), rand(18, 44));
-            }
-          }
-
-          if (!prefersReduced && Math.random() < 0.06) {
-            spawnDroplet(
-              n.x,
-              n.y,
-              vx * 0.25 + rand(-0.24, 0.24),
-              vy * 0.25 + rand(-0.24, 0.24),
-              rand(0.8, 2.1),
-              rand(20, 50),
-              rand(0.08, 0.28)
-            );
-          }
         }
 
         const inflowDensity = prefersReduced ? 2 : 7;
         for (let i = 0; i < inflowDensity; i += 1) {
-          const p = (t * inflowSpeed * 1000 + i / inflowDensity) % 1;
+          const p = (t * 0.62 + i / inflowDensity) % 1;
           const eased = easeInOut(p);
-          const ix = (Math.sin(t * 2.7 + i * 1.3) * slitWidth) + (Math.cos(t * 0.8 + i) * 8) * phaseEased;
-          const iy = -slitHeight * 0.5 + eased * slitHeight + Math.sin(t * 2.5 + i * 1.4) * 12;
+          const ix = Math.sin(t * 2.7 + i * 1.3) * 0.45;
+          const iy = Math.sin(t * 3.2 + i * 1.6) * 14 + (eased - 0.5) * 26;
           const ir = 1.2 + (1 - p) * 1.8;
 
           ctx.globalCompositeOperation = "lighter";
@@ -280,53 +267,16 @@
           ctx.beginPath();
           ctx.arc(ix, iy, ir, 0, Math.PI * 2);
           ctx.fill();
-
-          if (!prefersReduced && Math.random() < 0.08) {
-            spawnDroplet(ix, iy, rand(0.2, 0.8), rand(-0.3, 0.3), rand(0.7, 1.6), rand(16, 34), rand(0.09, 0.26));
-          }
         }
-
-        for (let i = droplets.length - 1; i >= 0; i -= 1) {
-          const d = droplets[i];
-          d.x += d.vx;
-          d.y += d.vy;
-          d.vx *= 0.992;
-          d.vy *= 0.992;
-          d.life -= 1;
-          const p = d.life / d.maxLife;
-          if (d.life <= 0) {
-            droplets.splice(i, 1);
-            continue;
-          }
-          ctx.globalCompositeOperation = "lighter";
-          ctx.fillStyle = "rgba(160,240,255," + (d.alpha * p).toFixed(3) + ")";
-          ctx.beginPath();
-          ctx.arc(d.x, d.y, d.size * (0.65 + p * 0.5), 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        for (let i = embers.length - 1; i >= 0; i -= 1) {
-          const e = embers[i];
-          e.life -= 1;
-          if (e.life <= 0) {
-            embers.splice(i, 1);
-            continue;
-          }
-          const p = e.life / e.maxLife;
-          ctx.globalCompositeOperation = "lighter";
-          ctx.fillStyle = "rgba(246,252,255," + (0.17 * p).toFixed(3) + ")";
-          ctx.beginPath();
-          ctx.arc(e.x, e.y, e.r * (1.1 - p * 0.4), 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "rgba(255,255,255," + clamp(leftMass / nodeCount * 0.13, 0.02, 0.16).toFixed(3) + ")";
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 8, 52, 0, 0, Math.PI * 2);
-        ctx.fill();
 
         ctx.restore();
+
+        // Freeze final, fully drawn symbol.
+        if (!frozen && drawPhase >= 1) {
+          frozen = true;
+          finalSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          return;
+        }
 
         requestAnimationFrame(frame);
       }
