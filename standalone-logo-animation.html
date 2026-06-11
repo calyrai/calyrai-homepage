@@ -88,8 +88,10 @@
 
       const ringRadius = 170;
       const ringYScale = 0.84;
-      const nodeCount = 120;
+      const nodeCount = 96;
       const phaseDuration = prefersReduced ? 500 : 4200;
+      const inflowSpeed = prefersReduced ? 0.00015 : 0.00062;
+      const trailLength = prefersReduced ? 16 : 84;
       const droplets = [];
       const embers = [];
       const nodes = [];
@@ -133,12 +135,13 @@
         const a = (Math.PI * 2 * i) / nodeCount;
         nodes.push({
           a,
-          spin: rand(0.00008, 0.00018),
+          spin: rand(0.00006, 0.00012),
           size: rand(1.2, 3.6),
           x: -220 + rand(-30, 30),
           y: rand(-30, 30),
           px: -220,
           py: 0,
+          history: [],
           w: 0
         });
       }
@@ -157,7 +160,7 @@
         const cy = height * 0.47;
 
         ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "rgba(0, 0, 0, 0.09)";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
         ctx.fillRect(0, 0, width, height);
 
         ctx.save();
@@ -174,12 +177,16 @@
 
         for (let i = 0; i < nodes.length; i += 1) {
           const n = nodes[i];
-          const swirl = Math.sin(t * 0.9 + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * 5.5;
-          const rough = 1 + Math.sin(t * 1.2 + n.a * 5.2) * 0.1;
+          const swirl = Math.sin(t * 0.54 + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * 3.8;
+          const rough = 1 + Math.sin(t * 0.68 + n.a * 5.2) * 0.06;
+
+          // Deformed orbit with two gaps so trajectories visibly draw an Arrival-like symbol.
+          const gapWave = Math.abs(Math.sin(n.a * 1.5 + t * 0.19));
+          const gapFactor = clamp((gapWave - 0.18) / 0.82, 0, 1);
 
           const orbitA = n.a + elapsed * n.spin;
-          const tx = Math.cos(orbitA) * ringRadius * rough;
-          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough + swirl * 0.18;
+          const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
+          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16;
 
           const sourceX = -220 + Math.sin(t * 3 + n.a * 6) * 22;
           const sourceY = Math.sin(t * 1.8 + n.a * 3.4) * 42;
@@ -189,11 +196,29 @@
           n.x = sourceX + (tx - sourceX) * phaseEased;
           n.y = sourceY + (ty - sourceY) * phaseEased;
 
+          n.history.push({ x: n.x, y: n.y });
+          if (n.history.length > trailLength) {
+            n.history.shift();
+          }
+
           const vx = n.x - n.px;
           const vy = n.y - n.py;
 
           const speed = Math.hypot(vx, vy);
           const tailAlpha = clamp(speed * 0.09, 0.03, 0.28);
+
+          if (n.history.length > 2) {
+            ctx.globalCompositeOperation = "lighter";
+            ctx.beginPath();
+            ctx.moveTo(n.history[0].x, n.history[0].y);
+            for (let h = 1; h < n.history.length; h += 1) {
+              ctx.lineTo(n.history[h].x, n.history[h].y);
+            }
+            const historyStrength = clamp((n.history.length / trailLength) * 0.26, 0.08, 0.26);
+            ctx.strokeStyle = "rgba(150,232,255," + historyStrength.toFixed(3) + ")";
+            ctx.lineWidth = clamp(n.size * 0.66, 0.9, 2.2);
+            ctx.stroke();
+          }
 
           ctx.globalCompositeOperation = "lighter";
           for (let k = 1; k <= 5; k += 1) {
