@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Calyr Arrival Logo Concept</title>
+  <title>Calyr Arrival Ink Concept</title>
   <style>
     :root {
       --bg-0: #000000;
-      --bg-1: #020814;
-      --ink: #f4fbff;
-      --muted: rgba(230, 248, 255, 0.7);
+      --bg-1: #04070f;
+      --ink: #f5fbff;
+      --muted: rgba(220, 238, 255, 0.68);
     }
 
     * { box-sizing: border-box; }
@@ -21,7 +21,7 @@
       height: 100%;
       overflow: hidden;
       background:
-        radial-gradient(110vmax 80vmax at 50% 45%, var(--bg-1), var(--bg-0) 68%),
+        radial-gradient(110vmax 84vmax at 50% 45%, var(--bg-1), var(--bg-0) 70%),
         #000;
       color: var(--ink);
       font-family: "Avenir Next", "Segoe UI", Arial, sans-serif;
@@ -45,7 +45,8 @@
       width: 100%;
       height: 100%;
       display: block;
-      overflow: visible;
+      border-radius: 20px;
+      background: radial-gradient(90% 90% at 50% 45%, rgba(22, 34, 56, 0.18), rgba(0, 0, 0, 0.15));
     }
 
     .wordmark {
@@ -72,256 +73,233 @@
 <body>
   <main class="hero">
     <div class="logo-wrap" aria-label="Calyr arrival concept logo">
-      <svg id="scene" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-        <title id="title">Calyr Arrival Particle Ring</title>
-        <desc id="desc">A dense particle cluster arrives from the left and forms a connected ring.</desc>
-
-        <defs>
-          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="1.2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g id="root" transform="translate(480 280)">
-          <ellipse id="halo" cx="0" cy="0" rx="220" ry="180" fill="none" stroke="rgba(175,236,255,0.08)" stroke-width="1.4" />
-          <g id="nodeTails" filter="url(#softGlow)"></g>
-          <g id="inflowTails" filter="url(#softGlow)"></g>
-          <g id="links" stroke="rgba(228,248,255,0.34)" stroke-width="0.9" stroke-linecap="round"></g>
-          <g id="particles" filter="url(#softGlow)"></g>
-          <g id="inflow" filter="url(#softGlow)"></g>
-          <circle id="focus" cx="-158" cy="0" r="12" fill="rgba(255,255,255,0.5)" />
-        </g>
-      </svg>
+      <canvas id="scene" width="960" height="600" aria-label="Calyr Arrival ink ring"></canvas>
       <div class="wordmark">Calyr.ai Arrival Concept</div>
     </div>
   </main>
 
   <script>
     (function () {
-      const svgNs = "http://www.w3.org/2000/svg";
-      const particlesGroup = document.getElementById("particles");
-      const linksGroup = document.getElementById("links");
-      const nodeTailsGroup = document.getElementById("nodeTails");
-      const inflowTailsGroup = document.getElementById("inflowTails");
-      const inflowGroup = document.getElementById("inflow");
-      const halo = document.getElementById("halo");
-      const focus = document.getElementById("focus");
+      const canvas = document.getElementById("scene");
+      const ctx = canvas.getContext("2d");
+      const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const ringRadius = 170;
-      const ringVerticalScale = 0.93;
-      const baseCount = 84;
-      const linkThreshold = 42;
-      const formationDuration = prefersReduced ? 400 : 2600;
-      const breathSpeed = prefersReduced ? 0 : 0.0011;
-      const orbitSpeed = prefersReduced ? 0 : 0.00022;
-      const inflowSpeed = prefersReduced ? 0 : 0.00055;
-
+      const ringYScale = 0.84;
+      const nodeCount = 120;
+      const phaseDuration = prefersReduced ? 500 : 4200;
+      const droplets = [];
+      const embers = [];
       const nodes = [];
-      const inflow = [];
+      const noiseSeeds = [];
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = Math.floor(rect.width * DPR);
+        canvas.height = Math.floor(rect.height * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
 
       function rand(min, max) {
         return min + Math.random() * (max - min);
-      }
-
-      for (let i = 0; i < baseCount; i += 1) {
-        const a = (Math.PI * 2 * i) / baseCount + rand(-0.028, 0.028);
-        const bias = 1 + Math.max(0, Math.cos(a - Math.PI)) * 0.08;
-        const tx = Math.cos(a) * ringRadius * bias;
-        const ty = Math.sin(a) * ringRadius * ringVerticalScale * bias;
-        const sourceSpread = rand(6, 40);
-        const sx = -172 + rand(-sourceSpread, sourceSpread);
-        const sy = rand(-sourceSpread, sourceSpread);
-        const delay = Math.max(0, i * (formationDuration / (baseCount * 1.35)) + rand(-45, 30));
-        const r = rand(1.5, 3.9) * (Math.cos(a - Math.PI) > 0.76 ? 1.16 : 1);
-
-        const circle = document.createElementNS(svgNs, "circle");
-        circle.setAttribute("r", String(r));
-        circle.setAttribute("fill", "rgba(255,255,255,0.95)");
-
-        const tails = [];
-        for (let k = 0; k < 4; k += 1) {
-          const tc = document.createElementNS(svgNs, "circle");
-          tc.setAttribute("r", String(Math.max(0.8, r - (k + 1) * 0.48)));
-          tc.setAttribute("fill", "rgba(160,236,255,0.1)");
-          nodeTailsGroup.appendChild(tc);
-          tails.push(tc);
-        }
-
-        particlesGroup.appendChild(circle);
-
-        nodes.push({
-          a,
-          baseA: a,
-          bias,
-          sx,
-          sy,
-          tx,
-          ty,
-          delay,
-          r,
-          tails,
-          el: circle,
-          x: sx,
-          y: sy,
-          px: sx,
-          py: sy,
-          p: 0
-        });
-      }
-
-      for (let i = 0; i < 22; i += 1) {
-        const c = document.createElementNS(svgNs, "circle");
-        const r = rand(1.2, 2.8);
-        c.setAttribute("r", String(r));
-        c.setAttribute("fill", "rgba(255,255,255,0.8)");
-
-        const tails = [];
-        for (let k = 0; k < 4; k += 1) {
-          const tc = document.createElementNS(svgNs, "circle");
-          tc.setAttribute("r", String(Math.max(0.6, r - (k + 1) * 0.35)));
-          tc.setAttribute("fill", "rgba(152,236,255,0.08)");
-          inflowTailsGroup.appendChild(tc);
-          tails.push(tc);
-        }
-
-        inflowGroup.appendChild(c);
-        inflow.push({
-          el: c,
-          phase: i / 22,
-          spread: rand(10, 56),
-          yDrift: rand(-26, 26),
-          radius: r,
-          tails,
-          px: -242,
-          py: 0
-        });
-      }
-
-      for (let i = 0; i < baseCount; i += 1) {
-        const line = document.createElementNS(svgNs, "line");
-        line.setAttribute("x1", "0");
-        line.setAttribute("y1", "0");
-        line.setAttribute("x2", "0");
-        line.setAttribute("y2", "0");
-        linksGroup.appendChild(line);
-      }
-
-      function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
       }
 
       function clamp(v, min, max) {
         return Math.max(min, Math.min(max, v));
       }
 
+      function easeInOut(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function spawnDroplet(x, y, vx, vy, size, life, alpha) {
+        droplets.push({ x, y, vx, vy, size, life, maxLife: life, alpha });
+      }
+
+      function spawnEmber(x, y, r, life) {
+        embers.push({ x, y, r, life, maxLife: life });
+      }
+
+      for (let i = 0; i < 8; i += 1) {
+        noiseSeeds.push(rand(0, Math.PI * 2));
+      }
+
+      for (let i = 0; i < nodeCount; i += 1) {
+        const a = (Math.PI * 2 * i) / nodeCount;
+        nodes.push({
+          a,
+          spin: rand(0.00008, 0.00018),
+          size: rand(1.2, 3.6),
+          x: -220 + rand(-30, 30),
+          y: rand(-30, 30),
+          px: -220,
+          py: 0,
+          w: 0
+        });
+      }
+
       const start = performance.now();
 
       function frame(now) {
         const elapsed = now - start;
-        const tBreath = elapsed * breathSpeed;
-        const breathe = 1 + Math.sin(tBreath) * 0.02;
-        const wobble = Math.sin(tBreath * 0.7) * 4.2;
+        const t = elapsed * 0.001;
+        const phase = clamp(elapsed / phaseDuration, 0, 1);
+        const phaseEased = easeInOut(phase);
 
-        halo.setAttribute("rx", String(220 * breathe));
-        halo.setAttribute("ry", String((180 + wobble) * breathe));
-        halo.setAttribute("stroke", "rgba(175,236,255," + (0.05 + Math.abs(Math.sin(tBreath)) * 0.04).toFixed(3) + ")");
+        const width = canvas.width / DPR;
+        const height = canvas.height / DPR;
+        const cx = width * 0.5;
+        const cy = height * 0.47;
 
-        let formedRatioSum = 0;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.09)";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        const haloPulse = 0.06 + Math.sin(t * 0.8) * 0.03;
+        ctx.strokeStyle = "rgba(160,230,255," + (0.06 + haloPulse).toFixed(3) + ")";
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, ringRadius * 1.18, ringRadius * ringYScale * 1.18, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        let leftMass = 0;
 
         for (let i = 0; i < nodes.length; i += 1) {
           const n = nodes[i];
-          const raw = clamp((elapsed - n.delay) / formationDuration, 0, 1);
-          const p = easeOutCubic(raw);
-          const orbitBlend = clamp((elapsed - (formationDuration + n.delay * 0.22)) / 2600, 0, 1);
-          const orbitA = n.baseA + elapsed * orbitSpeed * (0.55 + orbitBlend * 0.9);
-          const targetX = Math.cos(orbitA) * ringRadius * n.bias;
-          const targetY = Math.sin(orbitA) * ringRadius * ringVerticalScale * n.bias;
-          const driftX = Math.cos(tBreath + n.a * 2.2) * 1.6;
-          const driftY = Math.sin(tBreath * 1.3 + n.a * 1.8) * 1.4;
+          const swirl = Math.sin(t * 0.9 + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * 5.5;
+          const rough = 1 + Math.sin(t * 1.2 + n.a * 5.2) * 0.1;
 
-          n.p = p;
-          n.x = n.sx + (targetX - n.sx) * p + driftX;
-          n.y = n.sy + (targetY - n.sy) * p + driftY;
+          const orbitA = n.a + elapsed * n.spin;
+          const tx = Math.cos(orbitA) * ringRadius * rough;
+          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough + swirl * 0.18;
+
+          const sourceX = -220 + Math.sin(t * 3 + n.a * 6) * 22;
+          const sourceY = Math.sin(t * 1.8 + n.a * 3.4) * 42;
+
+          n.px = n.x;
+          n.py = n.y;
+          n.x = sourceX + (tx - sourceX) * phaseEased;
+          n.y = sourceY + (ty - sourceY) * phaseEased;
 
           const vx = n.x - n.px;
           const vy = n.y - n.py;
 
-          n.el.setAttribute("cx", n.x.toFixed(2));
-          n.el.setAttribute("cy", n.y.toFixed(2));
-          n.el.setAttribute("fill", "rgba(255,255,255," + (0.3 + p * 0.68).toFixed(3) + ")");
+          const speed = Math.hypot(vx, vy);
+          const tailAlpha = clamp(speed * 0.09, 0.03, 0.28);
 
-          for (let t = 0; t < n.tails.length; t += 1) {
-            const trailStep = t + 1;
-            const tx = n.x - vx * trailStep * 2.8;
-            const ty = n.y - vy * trailStep * 2.8;
-            const ta = clamp((0.2 - t * 0.045) * p, 0.02, 0.3);
-            n.tails[t].setAttribute("cx", tx.toFixed(2));
-            n.tails[t].setAttribute("cy", ty.toFixed(2));
-            n.tails[t].setAttribute("fill", "rgba(152,236,255," + ta.toFixed(3) + ")");
+          ctx.globalCompositeOperation = "lighter";
+          for (let k = 1; k <= 5; k += 1) {
+            const txk = n.x - vx * k * 3.2;
+            const tyk = n.y - vy * k * 3.2;
+            const rr = Math.max(0.5, n.size - k * 0.42);
+            ctx.fillStyle = "rgba(156,235,255," + (tailAlpha * (1 - k * 0.16)).toFixed(3) + ")";
+            ctx.beginPath();
+            ctx.arc(txk, tyk, rr, 0, Math.PI * 2);
+            ctx.fill();
           }
 
-          n.px = n.x;
-          n.py = n.y;
+          ctx.fillStyle = "rgba(248,253,255," + (0.34 + phaseEased * 0.5).toFixed(3) + ")";
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+          ctx.fill();
 
-          formedRatioSum += p;
-        }
-
-        const formedRatio = formedRatioSum / nodes.length;
-        focus.setAttribute("opacity", (1 - formedRatio * 0.94).toFixed(3));
-        focus.setAttribute("cx", (-160 + formedRatio * 12).toFixed(2));
-
-        for (let i = 0; i < inflow.length; i += 1) {
-          const p = inflow[i];
-          const cycle = (elapsed * inflowSpeed + p.phase) % 1;
-          const eased = easeOutCubic(cycle);
-          const x = -242 + eased * 88 + Math.sin(tBreath * 2.1 + p.phase * 12) * 5;
-          const y = p.yDrift + Math.sin(tBreath * 1.6 + p.phase * 17) * (p.spread * 0.14);
-          const alpha = (0.02 + (1 - Math.abs(cycle - 0.52) * 2) * 0.5) * formedRatio;
-
-          const vx = x - p.px;
-          const vy = y - p.py;
-
-          for (let t = 0; t < p.tails.length; t += 1) {
-            const trailStep = t + 1;
-            const tx = x - vx * trailStep * 3.4;
-            const ty = y - vy * trailStep * 3.4;
-            const ta = clamp(alpha * (0.95 - t * 0.22), 0.015, 0.36);
-            p.tails[t].setAttribute("cx", tx.toFixed(2));
-            p.tails[t].setAttribute("cy", ty.toFixed(2));
-            p.tails[t].setAttribute("fill", "rgba(146,235,255," + ta.toFixed(3) + ")");
+          if (Math.cos(orbitA) < -0.65) {
+            leftMass += 1;
+            if (!prefersReduced && Math.random() < 0.1) {
+              spawnEmber(n.x + rand(-6, 6), n.y + rand(-6, 6), rand(1.6, 3.8), rand(18, 44));
+            }
           }
 
-          p.el.setAttribute("cx", x.toFixed(2));
-          p.el.setAttribute("cy", y.toFixed(2));
-          p.el.setAttribute("fill", "rgba(255,255,255," + clamp(alpha, 0.02, 0.45).toFixed(3) + ")");
-
-          p.px = x;
-          p.py = y;
+          if (!prefersReduced && Math.random() < 0.06) {
+            spawnDroplet(
+              n.x,
+              n.y,
+              vx * 0.25 + rand(-0.24, 0.24),
+              vy * 0.25 + rand(-0.24, 0.24),
+              rand(0.8, 2.1),
+              rand(20, 50),
+              rand(0.08, 0.28)
+            );
+          }
         }
 
-        for (let i = 0; i < nodes.length; i += 1) {
-          const a = nodes[i];
-          const b = nodes[(i + 1) % nodes.length];
-          const line = linksGroup.children[i];
+        const inflowDensity = prefersReduced ? 2 : 7;
+        for (let i = 0; i < inflowDensity; i += 1) {
+          const p = (t * inflowSpeed * 1000 + i / inflowDensity) % 1;
+          const eased = easeInOut(p);
+          const ix = -250 + eased * 112;
+          const iy = Math.sin(t * 2.5 + i * 1.4) * 34;
+          const ir = 1.2 + (1 - p) * 1.8;
 
-          line.setAttribute("x1", a.x.toFixed(2));
-          line.setAttribute("y1", a.y.toFixed(2));
-          line.setAttribute("x2", b.x.toFixed(2));
-          line.setAttribute("y2", b.y.toFixed(2));
+          ctx.globalCompositeOperation = "lighter";
+          for (let k = 0; k < 4; k += 1) {
+            const txk = ix - (k + 1) * 4.4;
+            const tyk = iy + Math.sin(t * 5 + k + i) * 1.2;
+            ctx.fillStyle = "rgba(148,235,255," + (0.2 - k * 0.042).toFixed(3) + ")";
+            ctx.beginPath();
+            ctx.arc(txk, tyk, Math.max(0.45, ir - k * 0.35), 0, Math.PI * 2);
+            ctx.fill();
+          }
 
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d = Math.hypot(dx, dy);
-          const near = d < linkThreshold ? 1 : 0;
-          const alpha = near ? (0.04 + Math.min(a.p, b.p) * 0.34) : 0;
-          line.setAttribute("stroke", "rgba(230,248,255," + alpha.toFixed(3) + ")");
+          ctx.fillStyle = "rgba(248,252,255,0.5)";
+          ctx.beginPath();
+          ctx.arc(ix, iy, ir, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (!prefersReduced && Math.random() < 0.08) {
+            spawnDroplet(ix, iy, rand(0.2, 0.8), rand(-0.3, 0.3), rand(0.7, 1.6), rand(16, 34), rand(0.09, 0.26));
+          }
         }
+
+        for (let i = droplets.length - 1; i >= 0; i -= 1) {
+          const d = droplets[i];
+          d.x += d.vx;
+          d.y += d.vy;
+          d.vx *= 0.992;
+          d.vy *= 0.992;
+          d.life -= 1;
+          const p = d.life / d.maxLife;
+          if (d.life <= 0) {
+            droplets.splice(i, 1);
+            continue;
+          }
+          ctx.globalCompositeOperation = "lighter";
+          ctx.fillStyle = "rgba(160,240,255," + (d.alpha * p).toFixed(3) + ")";
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.size * (0.65 + p * 0.5), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        for (let i = embers.length - 1; i >= 0; i -= 1) {
+          const e = embers[i];
+          e.life -= 1;
+          if (e.life <= 0) {
+            embers.splice(i, 1);
+            continue;
+          }
+          const p = e.life / e.maxLife;
+          ctx.globalCompositeOperation = "lighter";
+          ctx.fillStyle = "rgba(246,252,255," + (0.17 * p).toFixed(3) + ")";
+          ctx.beginPath();
+          ctx.arc(e.x, e.y, e.r * (1.1 - p * 0.4), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "rgba(255,255,255," + clamp(leftMass / nodeCount * 0.16, 0.02, 0.18).toFixed(3) + ")";
+        ctx.beginPath();
+        ctx.ellipse(-225, 0, 32, 56, 0.08, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
 
         requestAnimationFrame(frame);
       }
