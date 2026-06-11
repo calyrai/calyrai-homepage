@@ -427,6 +427,70 @@
       transform: translateZ(10px) rotate(-4deg);
     }
 
+    .chatbot-orb {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 1px solid rgba(225, 242, 255, 0.75);
+      background: rgba(8, 22, 47, 0.82);
+      color: #f5fbff;
+      box-shadow: 0 10px 22px rgba(4, 12, 28, 0.48);
+      z-index: 4;
+      pointer-events: none;
+      padding: 0;
+      transform: translate(-50%, -50%);
+      transition: box-shadow 220ms ease, border-color 220ms ease;
+    }
+
+    .chatbot-orb-core {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+
+    .chatbot-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid rgba(248, 252, 255, 0.9);
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      transform-origin: 50% 50%;
+    }
+
+    .chatbot-ring-1 {
+      inset: 12px;
+      animation: chatbot-spin 6.6s linear infinite;
+    }
+
+    .chatbot-ring-2 {
+      inset: 24px;
+      animation: chatbot-spin 4.8s linear infinite reverse;
+    }
+
+    .chatbot-dot {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 2px solid rgba(245, 251, 255, 0.95);
+      box-shadow: 0 0 10px rgba(245, 251, 255, 0.42);
+    }
+
+    .chatbot-orb.chatbot-catchable {
+      border-color: rgba(167, 231, 255, 0.95);
+      box-shadow: 0 0 0 4px rgba(167, 231, 255, 0.18), 0 12px 24px rgba(6, 16, 34, 0.52);
+    }
+
+    @keyframes chatbot-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     @media (max-aspect-ratio: 5/3) {
       canvas#game {
         width: 100vw;
@@ -445,6 +509,11 @@
 
       .stage::before {
         opacity: 0.2;
+      }
+
+      .chatbot-orb {
+        width: 62px;
+        height: 62px;
       }
     }
 
@@ -728,6 +797,13 @@
 
           <section class="stage">
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
+            <button class="chatbot-orb" type="button" aria-label="Analog chatbot helper">
+              <span class="chatbot-orb-core" aria-hidden="true">
+                <span class="chatbot-ring chatbot-ring-1"></span>
+                <span class="chatbot-ring chatbot-ring-2"></span>
+                <span class="chatbot-dot"></span>
+              </span>
+            </button>
           </section>
 
           <section class="hud game-only-hide">

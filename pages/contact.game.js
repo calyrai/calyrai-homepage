@@ -13,6 +13,7 @@ const fabCalyrBtn = document.querySelector(".social-fab .fab-whatsapp");
 const fabResetBtn = document.getElementById("fab-reset");
 const socialFab = document.querySelector(".social-fab");
 const stageNode = document.querySelector(".stage");
+const chatbotOrbNode = document.querySelector(".chatbot-orb");
 
 function parseYamlScalar(raw) {
   if (!raw.length) return "";
@@ -4226,8 +4227,8 @@ class CardFxController {
     }, { passive: true });
 
     this.stageEl.addEventListener("pointerleave", () => {
-      if (this.active) return;
       this.setHover(false);
+      this.setActive(false);
       this.resetParallax();
     }, { passive: true });
 
@@ -4280,6 +4281,116 @@ class CardFxController {
 
 const cardFxController = new CardFxController(stageNode);
 
+class ChatbotOrbController {
+  constructor(stageEl, orbEl) {
+    this.stageEl = stageEl;
+    this.orbEl = orbEl;
+    this.rect = null;
+    this.active = false;
+    this.pointerInside = false;
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.x = 0;
+    this.y = 0;
+    this.targetX = 0;
+    this.targetY = 0;
+    this.rafId = null;
+  }
+
+  bindEvents() {
+    if (!this.stageEl || !this.orbEl) return;
+    this.syncRect(true);
+
+    this.stageEl.addEventListener("pointerenter", (event) => {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      this.pointerInside = true;
+      this.active = true;
+      this.updateMouse(event);
+    }, { passive: true });
+
+    this.stageEl.addEventListener("pointermove", (event) => {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      this.pointerInside = true;
+      this.active = true;
+      this.updateMouse(event);
+    }, { passive: true });
+
+    this.stageEl.addEventListener("pointerleave", () => {
+      this.pointerInside = false;
+      this.orbEl.classList.remove("chatbot-catchable");
+    }, { passive: true });
+
+    window.addEventListener("resize", () => this.syncRect(false), { passive: true });
+    this.start();
+  }
+
+  syncRect(forceReset) {
+    if (!this.stageEl) return;
+    this.rect = this.stageEl.getBoundingClientRect();
+    if (forceReset || !this.x) {
+      this.x = Math.max(40, this.rect.width * 0.82);
+      this.y = Math.max(40, this.rect.height * 0.2);
+      this.targetX = this.x;
+      this.targetY = this.y;
+      this.paint();
+    }
+  }
+
+  updateMouse(event) {
+    if (!this.rect) this.syncRect(false);
+    this.mouseX = clamp(event.clientX - this.rect.left, 0, this.rect.width);
+    this.mouseY = clamp(event.clientY - this.rect.top, 0, this.rect.height);
+  }
+
+  paint() {
+    if (!this.orbEl) return;
+    this.orbEl.style.left = `${Math.round(this.x)}px`;
+    this.orbEl.style.top = `${Math.round(this.y)}px`;
+  }
+
+  update() {
+    if (!this.stageEl || !this.orbEl || !this.rect) return;
+    const padding = 42;
+
+    if (this.pointerInside && this.active) {
+      const dx = this.mouseX - this.x;
+      const dy = this.mouseY - this.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < 72) {
+        this.targetX = this.x;
+        this.targetY = this.y;
+        this.orbEl.classList.add("chatbot-catchable");
+      } else {
+        const leadX = this.mouseX + clamp(dx * 0.22, -64, 64);
+        const leadY = this.mouseY - 34;
+        this.targetX = clamp(leadX, padding, this.rect.width - padding);
+        this.targetY = clamp(leadY, padding, this.rect.height - padding);
+        this.orbEl.classList.remove("chatbot-catchable");
+      }
+    } else {
+      this.targetX = clamp(this.rect.width * 0.82, padding, this.rect.width - padding);
+      this.targetY = clamp(this.rect.height * 0.2, padding, this.rect.height - padding);
+      this.orbEl.classList.remove("chatbot-catchable");
+    }
+
+    this.x += (this.targetX - this.x) * 0.14;
+    this.y += (this.targetY - this.y) * 0.14;
+    this.paint();
+  }
+
+  start() {
+    const tick = () => {
+      this.update();
+      this.rafId = window.requestAnimationFrame(tick);
+    };
+    if (this.rafId) window.cancelAnimationFrame(this.rafId);
+    this.rafId = window.requestAnimationFrame(tick);
+  }
+}
+
+const chatbotOrbController = new ChatbotOrbController(stageNode, chatbotOrbNode);
+
 function applyLayoutSync() {
   layoutController.applySync();
 }
@@ -4298,6 +4409,7 @@ function bootWhenReady(startMs) {
   applyControlLabels();
   refreshCanvasMetrics();
   cardFxController.bindEvents();
+  chatbotOrbController.bindEvents();
   state.initialized = true;
   state.running = false;
   state.paused = true;
