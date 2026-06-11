@@ -373,24 +373,16 @@
     }
 
     .stage::after {
-      content: "";
-      position: absolute;
-      inset: 16px;
-      border: 1px solid var(--line-strong);
-      border-radius: 20px;
-      pointer-events: none;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      content: none;
     }
 
     canvas#game {
       width: min(100vw, calc(100vh * 1.6667));
       max-width: calc(100vw - 34px);
       max-height: calc(100vh - 34px);
-      border: 1px solid var(--line-strong);
+      border: none;
       border-radius: 16px;
-      box-shadow:
-        0 14px 48px rgba(2, 7, 20, 0.7),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      box-shadow: 0 14px 48px rgba(2, 7, 20, 0.7);
       position: relative;
       z-index: 2;
     }
