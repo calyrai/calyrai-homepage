@@ -12,6 +12,7 @@ const fabLinkedinBtn = document.querySelector(".social-fab .fab-linkedin");
 const fabCalyrBtn = document.querySelector(".social-fab .fab-whatsapp");
 const fabResetBtn = document.getElementById("fab-reset");
 const socialFab = document.querySelector(".social-fab");
+const stageNode = document.querySelector(".stage");
 
 function parseYamlScalar(raw) {
   if (!raw.length) return "";
@@ -4207,6 +4208,78 @@ class LayoutController {
 
 const layoutController = new LayoutController();
 
+class CardFxController {
+  constructor(stageEl) {
+    this.stageEl = stageEl;
+    this.active = false;
+    this.hover = false;
+  }
+
+  bindEvents() {
+    if (!this.stageEl) return;
+    this.stageEl.classList.add("card-carousel");
+
+    this.stageEl.addEventListener("pointerenter", (event) => {
+      if (this.active) return;
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      this.setHover(true);
+    }, { passive: true });
+
+    this.stageEl.addEventListener("pointerleave", () => {
+      if (this.active) return;
+      this.setHover(false);
+      this.resetParallax();
+    }, { passive: true });
+
+    this.stageEl.addEventListener("pointermove", (event) => {
+      this.updateParallax(event);
+    }, { passive: true });
+
+    this.stageEl.addEventListener("click", () => {
+      this.setActive(true);
+    }, { passive: true });
+
+    this.stageEl.addEventListener("touchstart", () => {
+      this.setActive(true);
+      this.resetParallax();
+    }, { passive: true });
+  }
+
+  setHover(hovered) {
+    this.hover = !!hovered;
+    if (!this.stageEl || this.active) return;
+    this.stageEl.classList.toggle("card-hover", this.hover);
+  }
+
+  setActive(active) {
+    this.active = !!active;
+    if (!this.stageEl) return;
+    this.stageEl.classList.toggle("card-active", this.active);
+    if (this.active) {
+      this.stageEl.classList.remove("card-hover");
+      this.resetParallax();
+    }
+  }
+
+  resetParallax() {
+    if (!this.stageEl) return;
+    this.stageEl.style.setProperty("--card-tilt-x", "0deg");
+    this.stageEl.style.setProperty("--card-tilt-y", "0deg");
+  }
+
+  updateParallax(event) {
+    if (!this.stageEl || this.active || !this.hover) return;
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    const rect = this.stageEl.getBoundingClientRect();
+    const nx = clamp(((event.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1, -1, 1);
+    const ny = clamp(((event.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1, -1, 1);
+    this.stageEl.style.setProperty("--card-tilt-y", `${Math.round(nx * 6)}deg`);
+    this.stageEl.style.setProperty("--card-tilt-x", `${Math.round(-ny * 4)}deg`);
+  }
+}
+
+const cardFxController = new CardFxController(stageNode);
+
 function applyLayoutSync() {
   layoutController.applySync();
 }
@@ -4224,6 +4297,7 @@ layoutController.bindEvents();
 function bootWhenReady(startMs) {
   applyControlLabels();
   refreshCanvasMetrics();
+  cardFxController.bindEvents();
   state.initialized = true;
   state.running = false;
   state.paused = true;

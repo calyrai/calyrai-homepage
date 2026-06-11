@@ -359,10 +359,30 @@
       align-items: center;
       position: relative;
       overflow: hidden;
+      perspective: 1400px;
+      --card-tilt-x: 0deg;
+      --card-tilt-y: 0deg;
+      --card-rot-x: -3deg;
+      --card-rot-y: 18deg;
+      --card-scale: 0.95;
+      --card-lift: 10px;
+      --card-shadow: drop-shadow(0 24px 34px rgba(2, 10, 24, 0.42));
     }
 
     .stage::before {
-      content: none;
+      content: "";
+      position: absolute;
+      top: 14%;
+      left: 24%;
+      width: min(44vw, 420px);
+      height: min(18vw, 180px);
+      background: linear-gradient(130deg, rgba(235, 246, 255, 0.32), rgba(255, 255, 255, 0.02));
+      filter: blur(10px);
+      transform: translateZ(18px) rotate(-8deg);
+      opacity: 0.65;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 260ms ease, transform 300ms ease;
     }
 
     .stage::after {
@@ -378,6 +398,33 @@
       box-shadow: none;
       position: relative;
       z-index: 2;
+      transform-style: preserve-3d;
+      transform: translateY(var(--card-lift)) rotateX(calc(var(--card-rot-x) + var(--card-tilt-x))) rotateY(calc(var(--card-rot-y) + var(--card-tilt-y))) scale(var(--card-scale));
+      filter: var(--card-shadow);
+      transition: transform 320ms cubic-bezier(.2,.78,.22,1), filter 300ms ease;
+    }
+
+    .stage.card-hover {
+      --card-rot-x: 0deg;
+      --card-rot-y: 0deg;
+      --card-scale: 1;
+      --card-lift: 0px;
+      --card-shadow: drop-shadow(0 18px 28px rgba(2, 10, 24, 0.34));
+    }
+
+    .stage.card-active {
+      --card-rot-x: 0deg;
+      --card-rot-y: 0deg;
+      --card-scale: 1;
+      --card-lift: 0px;
+      --card-tilt-x: 0deg;
+      --card-tilt-y: 0deg;
+      --card-shadow: drop-shadow(0 10px 20px rgba(2, 10, 24, 0.28));
+    }
+
+    .stage.card-active::before {
+      opacity: 0.24;
+      transform: translateZ(10px) rotate(-4deg);
     }
 
     @media (max-aspect-ratio: 5/3) {
@@ -385,6 +432,19 @@
         width: 100vw;
         max-width: calc(100vw - 22px);
         max-height: calc(100vw * 0.6);
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .stage {
+        --card-rot-x: 0deg;
+        --card-rot-y: 0deg;
+        --card-scale: 1;
+        --card-lift: 0px;
+      }
+
+      .stage::before {
+        opacity: 0.2;
       }
     }
 
