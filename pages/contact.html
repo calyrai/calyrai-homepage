@@ -1473,7 +1473,8 @@
             style: state.qrRenderStyle,
             ink: isMarked ? "#ff4df5" : "#ffffff",
             glow: isMarked ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)",
-            animate: true,
+            // Keep open-circle modules stable while pointer interaction repels nodes.
+            animate: false,
           });
         }
       }
@@ -3820,12 +3821,6 @@
       if (state.running && !state.paused && !state.contactOpen) {
         applyGridImpactAt(point.x, point.y, 1.3);
       }
-
-      // Keep pointer-driven motion visually locked to the cursor instead of waiting
-      // for the next animation frame, which can feel slightly behind in the iframe.
-      if (state.running && !state.paused && !state.contactOpen) {
-        draw();
-      }
     }
 
     function getCanvasPointFromEvent(event) {
@@ -3846,12 +3841,23 @@
       if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
       if (state.contactOpen) {
         const point = getCanvasPointFromMouseLikeEvent(event);
-        applyMeshImpactAt(point.x, point.y, 2.2);
-        draw();
+        applyMeshImpactAt(point.x, point.y, 1.6);
         return;
       }
       movePaddleFromMouseEvent(event);
     });
+
+    canvas.addEventListener(
+      "wheel",
+      (event) => {
+        if (!state.contactOpen) return;
+        event.preventDefault();
+        const point = getCanvasContentPoint(event.clientX, event.clientY);
+        const wheelBoost = Math.min(2.2, 1.4 + Math.abs(event.deltaY) * 0.0018);
+        applyMeshImpactAt(point.x, point.y, wheelBoost);
+      },
+      { passive: false }
+    );
 
     canvas.addEventListener(
       "touchstart",
@@ -3861,8 +3867,7 @@
         suppressClickUntil = performance.now() + 420;
         if (state.contactOpen) {
           const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
-          applyMeshImpactAt(point.x, point.y, 2.2);
-          draw();
+          applyMeshImpactAt(point.x, point.y, 1.6);
           return;
         }
         const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
@@ -3880,8 +3885,7 @@
         suppressClickUntil = performance.now() + 420;
         if (state.contactOpen) {
           const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
-          applyMeshImpactAt(point.x, point.y, 2.2);
-          draw();
+          applyMeshImpactAt(point.x, point.y, 1.6);
           return;
         }
         const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
