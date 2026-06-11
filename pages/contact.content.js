@@ -1,7 +1,7 @@
 window.CONTACT_CONTENT = {
-  personName: "Rupert Tscheliessnig, PhD",
+  personName: "Rupert Tscheliessnig, MBA, PhD",
   orgTitle: "Founder · Calyr.ai",
-  orgName: "Calyr.ai",
+  orgName: "Calyr.aí",
   email: "rupert.tscheliessnig@calyr.ai",
   phone: "+4369919200915",
   website: "https://calyr.ai",

@@ -394,8 +394,8 @@
       border-radius: 18px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       background:
-        radial-gradient(circle at 85% 0%, rgba(126, 174, 255, 0.14), transparent 45%),
-        linear-gradient(180deg, rgba(9, 26, 52, 0.9), rgba(7, 18, 34, 0.9));
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 35%),
+        linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
       box-shadow: 0 16px 40px rgba(2, 10, 24, 0.45);
       padding: 16px 18px;
       font-family: var(--control-font);
@@ -443,6 +443,7 @@
 
     .social-fab a,
     .social-fab button {
+      --ring-color: #ffffff;
       width: 58px;
       height: 58px;
       border-radius: 50%;
@@ -453,12 +454,17 @@
       color: #f4f9ff;
       text-decoration: none;
       border: 1px solid rgba(232, 245, 255, 0.78);
-      background: #163f73;
+      background: rgba(11, 27, 56, 0.9);
       box-shadow: 0 8px 14px rgba(2, 10, 24, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
       cursor: pointer;
       padding: 0;
+    }
+
+    .social-fab a[hidden],
+    .social-fab button[hidden] {
+      display: none !important;
     }
 
     .social-fab button {
@@ -495,8 +501,8 @@
 
     .fab-core {
       position: relative;
-      width: 36px;
-      height: 36px;
+      width: var(--fab-core-size, 36px);
+      height: var(--fab-core-size, 36px);
       display: block;
     }
 
@@ -504,7 +510,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      --ring-thickness: 3.4px;
+      --ring-thickness: var(--fab-ring-thickness, 3.4px);
       border: var(--ring-thickness) solid var(--ring-color, #c8ecff);
       border-left-color: transparent;
       opacity: 1;
@@ -517,12 +523,12 @@
     }
 
     .fab-ring-2 {
-      inset: 6px;
+      inset: calc(var(--fab-core-size, 36px) * 0.1667);
       animation: fab-spin 7.2s linear infinite reverse;
     }
 
     .fab-ring-3 {
-      inset: 12px;
+      inset: calc(var(--fab-core-size, 36px) * 0.3333);
       animation: fab-spin 6.0s linear infinite;
     }
 
@@ -543,29 +549,37 @@
       to { transform: rotate(360deg); }
     }
 
-    .social-fab .fab-linkedin {
-      --ring-color: #7fc3ff;
-    }
-
-    .social-fab .fab-whatsapp {
-      --ring-color: #60f5ee;
-    }
-
-    .social-fab .fab-mail {
-      --ring-color: #f8fcff;
-    }
-
-    .social-fab .fab-reset {
-      --ring-color: #ff79ef;
-    }
-
     .social-fab a:hover,
     .social-fab button:hover,
     .social-fab a:focus-visible,
     .social-fab button:focus-visible {
       transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(2, 10, 24, 0.56);
+      box-shadow: 0 14px 28px rgba(2, 10, 24, 0.56), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
       outline: none;
+    }
+
+    .social-fab .fab-linkedin:hover,
+    .social-fab .fab-linkedin:focus-visible {
+      --ring-color: #7fc3ff;
+      box-shadow: 0 0 24px rgba(127, 195, 255, 0.5), 0 14px 28px rgba(2, 10, 24, 0.56);
+    }
+
+    .social-fab .fab-whatsapp:hover,
+    .social-fab .fab-whatsapp:focus-visible {
+      --ring-color: #60f5ee;
+      box-shadow: 0 0 24px rgba(96, 245, 238, 0.46), 0 14px 28px rgba(2, 10, 24, 0.56);
+    }
+
+    .social-fab .fab-mail:hover,
+    .social-fab .fab-mail:focus-visible {
+      --ring-color: #ffd86f;
+      box-shadow: 0 0 24px rgba(255, 216, 111, 0.48), 0 14px 28px rgba(2, 10, 24, 0.56);
+    }
+
+    .social-fab .fab-reset:hover,
+    .social-fab .fab-reset:focus-visible {
+      --ring-color: #ff88c4;
+      box-shadow: 0 0 24px rgba(255, 136, 196, 0.44), 0 14px 28px rgba(2, 10, 24, 0.56);
     }
 
     body:not(.game-active) .social-fab,
@@ -714,9 +728,9 @@
 
   <script id="contact-config-yaml" type="text/plain">
 contact:
-  personName: "Rupert Tscheliessnig, PhD"
+  personName: "Rupert Tscheliessnig, MBA, PhD"
   orgTitle: "Founder · Calyr.ai"
-  orgName: "Calyr.ai"
+  orgName: "Calyr.aí"
   email: "rupert.tscheliessnig@calyr.ai"
   phone: "+4369919200915"
   website: "https://calyr.ai"
@@ -726,6 +740,11 @@ render:
   qrRotationQuarters: 1
   contactCardQrScale: 0.76
   qrRenderScale: 0.84
+  raster:
+    sizeMin: 0.24
+    sizeMax: 0.92
+    openThreshold: 0.42
+    magentaThreshold: 0.93
 
 game:
   singleLevelOnly: true
@@ -798,6 +817,44 @@ ui:
     minReadableQrMobileMax: 180
     minReadableQrMobileWidthRatio: 0.22
     forceHorizontalTextOnMobile: true
+    cardSystem:
+      leftAreaRatio: 0.45
+      rightAreaRatio: 0.55
+      nameXRatio: 0.08
+      nameYRatio: 0.17
+      networkYRatio: 0.5
+      companyBelowNetworkRatio: 0.14
+      companyBelowNetworkMin: 46
+      emailBelowCompanyRatio: 0.048
+      emailBelowCompanyMin: 18
+      qrWidthRatioOfRightArea: 0.78
+      qrHeightRatioOfCard: 0.68
+      qrMin: 160
+      qrMax: 330
+      qrRightInsetRatio: 0.1
+      qrRightInsetMinRatio: 0.06
+      nameSizeRatio: 0.06
+      companySizeRatio: 0.033
+      emailSizeRatio: 0.026
+      nameSizeMinDesktop: 24
+      nameSizeMaxDesktop: 34
+      nameSizeMinMobile: 22
+      nameSizeMaxMobile: 28
+      companySizeMin: 15
+      companySizeMax: 19
+      emailSizeMin: 12
+      emailSizeMax: 15
+      nodeAvailableLeftMin: 220
+      nodeReservedGapToQr: 26
+      nodeSideSizeRatio: 0.135
+      nodeSideSizeMin: 44
+      nodeSideSizeMax: 62
+      nodeCenterScale: 1.78
+      nodeCenterMin: 80
+      nodeCenterMax: 114
+      nodeGapRatio: 0.06
+      nodeGapMin: 14
+      nodeGapMax: 32
 
 libraries:
   qrGeneratorUrl: "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"

@@ -29,4 +29,12 @@ window.CONTACT_GAME_CONFIG = {
     drawMeshLinksInChrome: false,
     forceLowPowerMode: false,
   },
+  render: {
+    raster: {
+      sizeMin: 0.24,
+      sizeMax: 0.92,
+      openThreshold: 0.42,
+      magentaThreshold: 0.93,
+    },
+  },
 };
