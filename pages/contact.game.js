@@ -3698,13 +3698,67 @@ class RenderSystem {
   }
 }
 
-class InputSystem {
+class InputController {
+  movePaddleFromCanvasPoint(x, y) {
+    if (isPerimeterChallengeActive()) {
+      setPerimeterOffset(closestPerimeterOffset(x, y));
+      return;
+    }
+
+    state.paddle.x = x - state.paddle.w / 2;
+    clampPaddle();
+  }
+
+  getCanvasContentPoint(clientX, clientY) {
+    if (!canvasMetrics.rect) {
+      refreshCanvasMetrics();
+    }
+
+    const x = ((clientX - canvasMetrics.rect.left - canvasMetrics.borderLeft) * canvas.width) / canvasMetrics.contentWidth;
+    const y = ((clientY - canvasMetrics.rect.top - canvasMetrics.borderTop) * canvas.height) / canvasMetrics.contentHeight;
+
+    return {
+      x: clamp(x, 0, canvas.width),
+      y: clamp(y, 0, canvas.height),
+    };
+  }
+
+  getCanvasPointFromMouseLikeEvent(event) {
+    if (event.currentTarget === canvas && typeof event.offsetX === "number" && typeof event.offsetY === "number") {
+      return {
+        x: clamp((event.offsetX * canvas.width) / Math.max(1, canvas.clientWidth), 0, canvas.width),
+        y: clamp((event.offsetY * canvas.height) / Math.max(1, canvas.clientHeight), 0, canvas.height),
+      };
+    }
+
+    return this.getCanvasContentPoint(event.clientX, event.clientY);
+  }
+
+  movePaddleFromMouseEvent(event) {
+    const point = this.getCanvasPointFromMouseLikeEvent(event);
+    this.movePaddleFromCanvasPoint(point.x, point.y);
+    if (state.running && !state.paused && !state.contactOpen) {
+      applyGridImpactAt(point.x, point.y, 1.3);
+    }
+  }
+
   updateTouchSteer(clientX, clientY) {
-    updateTouchSteerFromClientPoint(clientX, clientY);
+    const point = this.getCanvasContentPoint(clientX, clientY);
+    const half = Math.max(1, canvas.width / 2);
+    let normalized = (point.x - half) / half;
+    normalized = clamp(normalized, -1, 1);
+    const deadZone = 0.06;
+    if (Math.abs(normalized) <= deadZone) {
+      state.touchSteer = 0;
+      return;
+    }
+    const magnitude = (Math.abs(normalized) - deadZone) / (1 - deadZone);
+    const curved = Math.pow(clamp(magnitude, 0, 1), 1.15);
+    state.touchSteer = Math.sign(normalized) * curved;
   }
 
   clearTouchSteer() {
-    clearTouchSteer();
+    state.touchSteer = 0;
   }
 }
 
@@ -3757,7 +3811,7 @@ class GameLoop {
 
 const physicsSystem = new PhysicsSystem();
 const renderSystem = new RenderSystem();
-const inputSystem = new InputSystem();
+const inputSystem = new InputController();
 const gameLoop = new GameLoop(physicsSystem, renderSystem);
 
 function frame(ts) {
@@ -3809,27 +3863,11 @@ window.addEventListener("keyup", (event) => {
 });
 
 function movePaddleFromCanvasPoint(x, y) {
-  if (isPerimeterChallengeActive()) {
-    setPerimeterOffset(closestPerimeterOffset(x, y));
-    return;
-  }
-
-  state.paddle.x = x - state.paddle.w / 2;
-  clampPaddle();
+  inputSystem.movePaddleFromCanvasPoint(x, y);
 }
 
 function getCanvasContentPoint(clientX, clientY) {
-  if (!canvasMetrics.rect) {
-    refreshCanvasMetrics();
-  }
-
-  const x = ((clientX - canvasMetrics.rect.left - canvasMetrics.borderLeft) * canvas.width) / canvasMetrics.contentWidth;
-  const y = ((clientY - canvasMetrics.rect.top - canvasMetrics.borderTop) * canvas.height) / canvasMetrics.contentHeight;
-
-  return {
-    x: clamp(x, 0, canvas.width),
-    y: clamp(y, 0, canvas.height),
-  };
+  return inputSystem.getCanvasContentPoint(clientX, clientY);
 }
 
 function movePaddleFromClientPoint(clientX, clientY) {
@@ -3838,41 +3876,19 @@ function movePaddleFromClientPoint(clientX, clientY) {
 }
 
 function updateTouchSteerFromClientPoint(clientX, clientY) {
-  const point = getCanvasContentPoint(clientX, clientY);
-  const half = Math.max(1, canvas.width / 2);
-  let normalized = (point.x - half) / half;
-  normalized = clamp(normalized, -1, 1);
-  const deadZone = 0.06;
-  if (Math.abs(normalized) <= deadZone) {
-    state.touchSteer = 0;
-    return;
-  }
-  const magnitude = (Math.abs(normalized) - deadZone) / (1 - deadZone);
-  const curved = Math.pow(clamp(magnitude, 0, 1), 1.15);
-  state.touchSteer = Math.sign(normalized) * curved;
+  inputSystem.updateTouchSteer(clientX, clientY);
 }
 
 function clearTouchSteer() {
-  state.touchSteer = 0;
+  inputSystem.clearTouchSteer();
 }
 
 function getCanvasPointFromMouseLikeEvent(event) {
-  if (event.currentTarget === canvas && typeof event.offsetX === "number" && typeof event.offsetY === "number") {
-    return {
-      x: clamp((event.offsetX * canvas.width) / Math.max(1, canvas.clientWidth), 0, canvas.width),
-      y: clamp((event.offsetY * canvas.height) / Math.max(1, canvas.clientHeight), 0, canvas.height),
-    };
-  }
-
-  return getCanvasContentPoint(event.clientX, event.clientY);
+  return inputSystem.getCanvasPointFromMouseLikeEvent(event);
 }
 
 function movePaddleFromMouseEvent(event) {
-  const point = getCanvasPointFromMouseLikeEvent(event);
-  movePaddleFromCanvasPoint(point.x, point.y);
-  if (state.running && !state.paused && !state.contactOpen) {
-    applyGridImpactAt(point.x, point.y, 1.3);
-  }
+  inputSystem.movePaddleFromMouseEvent(event);
 }
 
 function getCanvasPointFromEvent(event) {
