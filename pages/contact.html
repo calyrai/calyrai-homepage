@@ -2287,7 +2287,10 @@
       } else if (activeStyle === "rings") {
         const gap = Math.PI * (0.2 + hashed01(row + 5, col + 7, 61) * 0.16);
         const spin = (hashed01(row + 9, col + 11, 83) - 0.5) * 0.9;
-        const rotation = (animate ? state.blinkTime * spin : 0) + hashed01(row + 3, col + 2, 37) * Math.PI * 2;
+        // In contact/static mode keep a fixed opening direction to avoid a swirled look.
+        const rotation = animate
+          ? (state.blinkTime * spin) + hashed01(row + 3, col + 2, 37) * Math.PI * 2
+          : 0;
         targetCtx.beginPath();
         targetCtx.arc(x, y, radius, rotation + gap * 0.5, rotation + Math.PI * 2 - gap * 0.5);
         targetCtx.strokeStyle = ink;
