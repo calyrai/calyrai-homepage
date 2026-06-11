@@ -464,6 +464,66 @@ const canvasMetrics = {
   contentWidth: 1,
   contentHeight: 1,
 };
+const textRasterCache = new Map();
+
+function getRasterizedTextPoints(text, font, fontSize) {
+  const key = `${text}__${font}__${fontSize}`;
+  const cached = textRasterCache.get(key);
+  if (cached) return cached;
+
+  const scratch = document.createElement("canvas");
+  const scratchCtx = scratch.getContext("2d");
+  scratchCtx.font = font;
+  const width = Math.max(8, Math.ceil(scratchCtx.measureText(text).width) + 8);
+  const height = Math.max(8, Math.ceil(fontSize * 1.45) + 8);
+  scratch.width = width;
+  scratch.height = height;
+
+  scratchCtx.clearRect(0, 0, width, height);
+  scratchCtx.font = font;
+  scratchCtx.fillStyle = "#ffffff";
+  scratchCtx.textAlign = "left";
+  scratchCtx.textBaseline = "alphabetic";
+  const baseline = Math.max(fontSize, Math.round(fontSize * 1.03));
+  scratchCtx.fillText(text, 2, baseline);
+
+  const pixels = scratchCtx.getImageData(0, 0, width, height).data;
+  const step = Math.max(2, Math.round(fontSize * 0.18));
+  const points = [];
+
+  for (let y = 0; y < height; y += step) {
+    for (let x = 0; x < width; x += step) {
+      const alpha = pixels[(y * width + x) * 4 + 3];
+      if (alpha < 96) continue;
+      const noise = hashed01(x + 1, y + 1, 811);
+      points.push({
+        x,
+        y,
+        scale: 0.78 + noise * 0.52,
+        magenta: noise > 0.975,
+      });
+    }
+  }
+
+  const result = { points, baseline, width, height };
+  textRasterCache.set(key, result);
+  return result;
+}
+
+function drawRasterizedTextLine(targetCtx, text, font, x, baselineY, fontSize, baseColor) {
+  const raster = getRasterizedTextPoints(text, font, fontSize);
+  const top = baselineY - raster.baseline;
+  const baseRadius = Math.max(1.2, fontSize * 0.115);
+
+  for (const point of raster.points) {
+    const px = x + point.x;
+    const py = top + point.y;
+    const radius = baseRadius * point.scale;
+    const color = point.magenta ? "#ff4df5" : baseColor;
+    const glow = point.magenta ? "rgba(255, 77, 245, 0.36)" : "rgba(255, 255, 255, 0.24)";
+    drawHalfOpenDisk(px, py, radius, color, glow, 0, 0, 0);
+  }
+}
 
 function refreshCanvasMetrics() {
   const rect = canvas.getBoundingClientRect();
@@ -612,11 +672,52 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function resolveCardSystem(narrowScreen) {
+  const pick = (key, fallback) => (typeof CARD_SYSTEM[key] === "number" ? CARD_SYSTEM[key] : fallback);
+  return {
+    leftAreaRatio: pick("leftAreaRatio", 0.45),
+    rightAreaRatio: pick("rightAreaRatio", 0.55),
+    nameXRatio: pick("nameXRatio", 0.08),
+    nameYRatio: pick("nameYRatio", 0.17),
+    networkYRatio: pick("networkYRatio", 0.5),
+    companyBelowNetworkRatio: pick("companyBelowNetworkRatio", 0.14),
+    companyBelowNetworkMin: pick("companyBelowNetworkMin", 46),
+    emailBelowCompanyRatio: pick("emailBelowCompanyRatio", 0.048),
+    emailBelowCompanyMin: pick("emailBelowCompanyMin", 18),
+    qrWidthRatioOfRightArea: pick("qrWidthRatioOfRightArea", 0.78),
+    qrHeightRatioOfCard: pick("qrHeightRatioOfCard", 0.68),
+    qrMin: pick("qrMin", 160),
+    qrMax: pick("qrMax", 330),
+    qrRightInsetRatio: pick("qrRightInsetRatio", 0.1),
+    qrRightInsetMinRatio: pick("qrRightInsetMinRatio", 0.06),
+    nameSizeRatio: pick("nameSizeRatio", 0.06),
+    companySizeRatio: pick("companySizeRatio", 0.033),
+    emailSizeRatio: pick("emailSizeRatio", 0.026),
+    nameSizeMin: pick(narrowScreen ? "nameSizeMinMobile" : "nameSizeMinDesktop", narrowScreen ? 22 : 24),
+    nameSizeMax: pick(narrowScreen ? "nameSizeMaxMobile" : "nameSizeMaxDesktop", narrowScreen ? 28 : 34),
+    companySizeMin: pick("companySizeMin", 15),
+    companySizeMax: pick("companySizeMax", 19),
+    emailSizeMin: pick("emailSizeMin", 12),
+    emailSizeMax: pick("emailSizeMax", 15),
+    nodeAvailableLeftMin: pick("nodeAvailableLeftMin", 220),
+    nodeReservedGapToQr: pick("nodeReservedGapToQr", 26),
+    nodeSideSizeRatio: pick("nodeSideSizeRatio", 0.135),
+    nodeSideSizeMin: pick("nodeSideSizeMin", 44),
+    nodeSideSizeMax: pick("nodeSideSizeMax", 62),
+    nodeCenterScale: pick("nodeCenterScale", 1.78),
+    nodeCenterMin: pick("nodeCenterMin", 80),
+    nodeCenterMax: pick("nodeCenterMax", 114),
+    nodeGapRatio: pick("nodeGapRatio", 0.06),
+    nodeGapMin: pick("nodeGapMin", 14),
+    nodeGapMax: pick("nodeGapMax", 32),
+  };
+}
+
 function getContactCardLayout(totalW = 0, totalH = 0) {
   const layout = ContactLayoutEngine.getCardLayout(totalW, totalH);
-  if (!state.contactOpen) return layout;
+  if (!state.initialized) return layout;
 
-  // Final contact view uses a single visible frame by letting the card fill the canvas.
+  // Use one identical canvas-wide card geometry for both contact and gameplay levels.
   return {
     ...layout,
     cardX: 0,
@@ -668,57 +769,35 @@ function buildContactCardLineDefs(layout, narrowScreen) {
 function computeContactVisualSpec(qrSize, layout) {
   const moduleGap = 2;
   const narrowScreen = ContactLayoutEngine.isNarrowScreen();
+  const sys = resolveCardSystem(narrowScreen);
   const lineDefs = buildContactCardLineDefs(layout, narrowScreen);
 
   // Use the same layout system for contact and gameplay so geometry stays consistent.
   if (state.contactOpen || state.initialized) {
-    const leftAreaRatio = typeof CARD_SYSTEM.leftAreaRatio === "number" ? CARD_SYSTEM.leftAreaRatio : 0.45;
-    const rightAreaRatio = typeof CARD_SYSTEM.rightAreaRatio === "number" ? CARD_SYSTEM.rightAreaRatio : 0.55;
-    const nameXRatio = typeof CARD_SYSTEM.nameXRatio === "number" ? CARD_SYSTEM.nameXRatio : 0.08;
-    const nameYRatio = typeof CARD_SYSTEM.nameYRatio === "number" ? CARD_SYSTEM.nameYRatio : 0.17;
-    const networkYRatio = typeof CARD_SYSTEM.networkYRatio === "number" ? CARD_SYSTEM.networkYRatio : 0.5;
-    const companyBelowNetworkRatio = typeof CARD_SYSTEM.companyBelowNetworkRatio === "number" ? CARD_SYSTEM.companyBelowNetworkRatio : 0.14;
-    const companyBelowNetworkMin = typeof CARD_SYSTEM.companyBelowNetworkMin === "number" ? CARD_SYSTEM.companyBelowNetworkMin : 46;
-    const emailBelowCompanyRatio = typeof CARD_SYSTEM.emailBelowCompanyRatio === "number" ? CARD_SYSTEM.emailBelowCompanyRatio : 0.048;
-    const emailBelowCompanyMin = typeof CARD_SYSTEM.emailBelowCompanyMin === "number" ? CARD_SYSTEM.emailBelowCompanyMin : 18;
-    const qrWidthRatioOfRightArea = typeof CARD_SYSTEM.qrWidthRatioOfRightArea === "number" ? CARD_SYSTEM.qrWidthRatioOfRightArea : 0.78;
-    const qrHeightRatioOfCard = typeof CARD_SYSTEM.qrHeightRatioOfCard === "number" ? CARD_SYSTEM.qrHeightRatioOfCard : 0.68;
-    const qrMin = typeof CARD_SYSTEM.qrMin === "number" ? CARD_SYSTEM.qrMin : 160;
-    const qrMax = typeof CARD_SYSTEM.qrMax === "number" ? CARD_SYSTEM.qrMax : 330;
-    const qrRightInsetRatio = typeof CARD_SYSTEM.qrRightInsetRatio === "number" ? CARD_SYSTEM.qrRightInsetRatio : 0.1;
-    const qrRightInsetMinRatio = typeof CARD_SYSTEM.qrRightInsetMinRatio === "number" ? CARD_SYSTEM.qrRightInsetMinRatio : 0.06;
-    const nameSizeRatio = typeof CARD_SYSTEM.nameSizeRatio === "number" ? CARD_SYSTEM.nameSizeRatio : 0.06;
-    const companySizeRatio = typeof CARD_SYSTEM.companySizeRatio === "number" ? CARD_SYSTEM.companySizeRatio : 0.033;
-    const emailSizeRatio = typeof CARD_SYSTEM.emailSizeRatio === "number" ? CARD_SYSTEM.emailSizeRatio : 0.026;
-    const nameSizeMinDesktop = typeof CARD_SYSTEM.nameSizeMinDesktop === "number" ? CARD_SYSTEM.nameSizeMinDesktop : 24;
-    const nameSizeMaxDesktop = typeof CARD_SYSTEM.nameSizeMaxDesktop === "number" ? CARD_SYSTEM.nameSizeMaxDesktop : 34;
-    const nameSizeMinMobile = typeof CARD_SYSTEM.nameSizeMinMobile === "number" ? CARD_SYSTEM.nameSizeMinMobile : 22;
-    const nameSizeMaxMobile = typeof CARD_SYSTEM.nameSizeMaxMobile === "number" ? CARD_SYSTEM.nameSizeMaxMobile : 28;
-    const companySizeMin = typeof CARD_SYSTEM.companySizeMin === "number" ? CARD_SYSTEM.companySizeMin : 15;
-    const companySizeMax = typeof CARD_SYSTEM.companySizeMax === "number" ? CARD_SYSTEM.companySizeMax : 19;
-    const emailSizeMin = typeof CARD_SYSTEM.emailSizeMin === "number" ? CARD_SYSTEM.emailSizeMin : 12;
-    const emailSizeMax = typeof CARD_SYSTEM.emailSizeMax === "number" ? CARD_SYSTEM.emailSizeMax : 15;
-
     const cardLeft = layout.cardX;
     const cardTop = layout.cardY;
     const cardW = layout.cardW;
     const cardH = layout.cardH;
-    const leftW = cardW * leftAreaRatio;
+    const leftW = cardW * sys.leftAreaRatio;
     const rightX = cardLeft + leftW;
-    const rightW = cardW * rightAreaRatio;
-    const nameX = cardLeft + cardW * nameXRatio;
+    const rightW = cardW * sys.rightAreaRatio;
+    const nameX = cardLeft + cardW * sys.nameXRatio;
     const nameSize = clamp(
-      Math.round(cardH * nameSizeRatio),
-      narrowScreen ? nameSizeMinMobile : nameSizeMinDesktop,
-      narrowScreen ? nameSizeMaxMobile : nameSizeMaxDesktop
+      Math.round(cardH * sys.nameSizeRatio),
+      sys.nameSizeMin,
+      sys.nameSizeMax
     );
-    const companySize = clamp(Math.round(cardH * companySizeRatio), companySizeMin, companySizeMax);
-    const emailSize = clamp(Math.round(cardH * emailSizeRatio), emailSizeMin, emailSizeMax);
-    const nameY = cardTop + cardH * nameYRatio;
-    const networkY = cardTop + cardH * networkYRatio;
-    const companyY = networkY + Math.max(companyBelowNetworkMin, cardH * companyBelowNetworkRatio);
-    const emailY = companyY + Math.max(emailBelowCompanyMin, cardH * emailBelowCompanyRatio);
-    const qrTarget = clamp(Math.round(Math.min(rightW * qrWidthRatioOfRightArea, cardH * qrHeightRatioOfCard)), qrMin, qrMax);
+    const companySize = clamp(Math.round(cardH * sys.companySizeRatio), sys.companySizeMin, sys.companySizeMax);
+    const emailSize = clamp(Math.round(cardH * sys.emailSizeRatio), sys.emailSizeMin, sys.emailSizeMax);
+    const nameY = cardTop + cardH * sys.nameYRatio;
+    const networkY = cardTop + cardH * sys.networkYRatio;
+    const companyY = networkY + Math.max(sys.companyBelowNetworkMin, cardH * sys.companyBelowNetworkRatio);
+    const emailY = companyY + Math.max(sys.emailBelowCompanyMin, cardH * sys.emailBelowCompanyRatio);
+    const qrTarget = clamp(
+      Math.round(Math.min(rightW * sys.qrWidthRatioOfRightArea, cardH * sys.qrHeightRatioOfCard)),
+      sys.qrMin,
+      sys.qrMax
+    );
 
     const moduleSize = Math.max(
       3,
@@ -728,9 +807,9 @@ function computeContactVisualSpec(qrSize, layout) {
     const qrWidth = qrSize * moduleSize + (qrSize - 1) * moduleGap;
     const qrHeight = qrSize * moduleSize + (qrSize - 1) * moduleGap;
     const qrLeft = clamp(
-      rightX + rightW - qrWidth - rightW * qrRightInsetRatio,
-      rightX + rightW * qrRightInsetMinRatio,
-      cardLeft + cardW - qrWidth - rightW * qrRightInsetMinRatio
+      rightX + rightW - qrWidth - rightW * sys.qrRightInsetRatio,
+      rightX + rightW * sys.qrRightInsetMinRatio,
+      cardLeft + cardW - qrWidth - rightW * sys.qrRightInsetMinRatio
     );
     const qrTop = Math.round(cardTop + (cardH - qrHeight) * 0.5);
 
@@ -853,12 +932,14 @@ function computeContactVisualSpec(qrSize, layout) {
   };
 }
 
-function buildTextBricks(layout, brickSize, gap) {
+function buildTextBricks(layout, brickSize, gap, lineDefsOverride = null) {
   const scratch = document.createElement("canvas");
   scratch.width = canvas.width;
   scratch.height = canvas.height;
   const scratchCtx = scratch.getContext("2d");
-  const lines = buildContactCardLineDefs(layout, ContactLayoutEngine.isNarrowScreen());
+  const lines = Array.isArray(lineDefsOverride) && lineDefsOverride.length
+    ? lineDefsOverride
+    : buildContactCardLineDefs(layout, ContactLayoutEngine.isNarrowScreen());
   scratchCtx.clearRect(0, 0, scratch.width, scratch.height);
   scratchCtx.fillStyle = "#ffffff";
   scratchCtx.textAlign = "left";
@@ -1126,17 +1207,6 @@ function drawHighResContactCard(layout) {
   ctx.restore();
 
   ctx.save();
-  ctx.lineWidth = 0.9;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
-  const brickScaleMap = new Map();
-  for (const brick of state.bricks) {
-    if (!isGameplayQrBrick(brick)) continue;
-    brickScaleMap.set(
-      `${brick.row}:${brick.col}`,
-      brick.circleScale || brick.baseScale || getRasterProfile(brick.row, brick.col).sizeScale
-    );
-  }
-
   for (let row = 0; row < qrSize; row += 1) {
     for (let col = 0; col < qrSize; col += 1) {
       if (!qrMatrix[row][col]) continue;
@@ -1151,71 +1221,8 @@ function drawHighResContactCard(layout) {
       );
       const baseX = base.x;
       const baseY = base.y;
-      const node = getMeshNode(row, col);
-      const x = baseX + node.dx;
-      const y = baseY + node.dy;
-
-      if (col + 1 < qrSize && qrMatrix[row][col + 1]) {
-        const rNode = getMeshNode(row, col + 1);
-        const rightBase = getQrModuleCenter(
-          qrBounds,
-          moduleSize,
-          moduleGap,
-          row,
-          col + 1,
-          qrSize,
-          QR_ROTATION_QUARTERS
-        );
-        const rx = rightBase.x + rNode.dx;
-        const ry = rightBase.y + rNode.dy;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(rx, ry);
-        ctx.stroke();
-      }
-
-      if (row + 1 < qrSize && qrMatrix[row + 1][col]) {
-        const dNode = getMeshNode(row + 1, col);
-        const downBase = getQrModuleCenter(
-          qrBounds,
-          moduleSize,
-          moduleGap,
-          row + 1,
-          col,
-          qrSize,
-          QR_ROTATION_QUARTERS
-        );
-        const dx = downBase.x + dNode.dx;
-        const dy = downBase.y + dNode.dy;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(dx, dy);
-        ctx.stroke();
-      }
-    }
-  }
-
-  for (let row = 0; row < qrSize; row += 1) {
-    for (let col = 0; col < qrSize; col += 1) {
-      if (!qrMatrix[row][col]) continue;
-      const base = getQrModuleCenter(
-        qrBounds,
-        moduleSize,
-        moduleGap,
-        row,
-        col,
-        qrSize,
-        QR_ROTATION_QUARTERS
-      );
-      const baseX = base.x;
-      const baseY = base.y;
-      const node = getMeshNode(row, col);
-      const reserved = isQrReservedCell(row, col, qrSize);
-      const stability = reserved ? 0.2 : 1;
-      const x = baseX + node.dx * stability;
-      const y = baseY + node.dy * stability;
-      const profile = getRasterProfile(row, col);
-      const scale = brickScaleMap.get(`${row}:${col}`) || profile.sizeScale;
+      const x = baseX;
+      const y = baseY;
       const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
       drawAbstractQrModule(ctx, {
         x,
@@ -1224,13 +1231,10 @@ function drawHighResContactCard(layout) {
         row,
         col,
         qrSize,
-        style: state.qrRenderStyle,
-        ink: (isMarked || profile.magenta) ? "#ff4df5" : "#ffffff",
-        glow: (isMarked || profile.magenta) ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)",
-        moduleScale: scale,
-        gapScale: profile.open ? 0.24 : 0,
-        staticOpen: true,
-        // Keep open-circle modules stable while pointer interaction repels nodes.
+        style: "classic",
+        ink: isMarked ? "#ff4df5" : "#ffffff",
+        glow: isMarked ? "rgba(255, 77, 245, 0.38)" : null,
+        moduleScale: 1,
         animate: false,
       });
     }
@@ -1680,7 +1684,7 @@ function resetBricks() {
 
   const textBrickSize = Math.max(8, moduleSize + 1);
   const textBrickGap = Math.max(1, Math.floor(gap * 0.5));
-  const textBricks = buildTextBricks(contactLayout, textBrickSize, textBrickGap);
+  const textBricks = buildTextBricks(contactLayout, textBrickSize, textBrickGap, visualSpec.lineDefs);
   state.bricks.push(...textBricks);
   activeCount += textBricks.length;
   state.totalBricks = activeCount;
@@ -1975,23 +1979,12 @@ function syncFabInsideCard() {
   const rect = canvasMetrics.rect;
   const scaleX = rect.width / canvas.width;
   const scaleY = rect.height / canvas.height;
-  const isVisitCard = !!state.contactOpen;
-  const nodeAvailableLeftMin = typeof CARD_SYSTEM.nodeAvailableLeftMin === "number" ? CARD_SYSTEM.nodeAvailableLeftMin : 220;
-  const nodeReservedGapToQr = typeof CARD_SYSTEM.nodeReservedGapToQr === "number" ? CARD_SYSTEM.nodeReservedGapToQr : 26;
-  const nodeSideSizeRatio = typeof CARD_SYSTEM.nodeSideSizeRatio === "number" ? CARD_SYSTEM.nodeSideSizeRatio : 0.135;
-  const nodeSideSizeMin = typeof CARD_SYSTEM.nodeSideSizeMin === "number" ? CARD_SYSTEM.nodeSideSizeMin : 44;
-  const nodeSideSizeMax = typeof CARD_SYSTEM.nodeSideSizeMax === "number" ? CARD_SYSTEM.nodeSideSizeMax : 62;
-  const nodeCenterScale = typeof CARD_SYSTEM.nodeCenterScale === "number" ? CARD_SYSTEM.nodeCenterScale : 1.78;
-  const nodeCenterMin = typeof CARD_SYSTEM.nodeCenterMin === "number" ? CARD_SYSTEM.nodeCenterMin : 80;
-  const nodeCenterMax = typeof CARD_SYSTEM.nodeCenterMax === "number" ? CARD_SYSTEM.nodeCenterMax : 114;
-  const nodeGapRatio = typeof CARD_SYSTEM.nodeGapRatio === "number" ? CARD_SYSTEM.nodeGapRatio : 0.06;
-  const nodeGapMin = typeof CARD_SYSTEM.nodeGapMin === "number" ? CARD_SYSTEM.nodeGapMin : 14;
-  const nodeGapMax = typeof CARD_SYSTEM.nodeGapMax === "number" ? CARD_SYSTEM.nodeGapMax : 32;
-  const networkYRatio = typeof CARD_SYSTEM.networkYRatio === "number" ? CARD_SYSTEM.networkYRatio : 0.5;
+  const sys = resolveCardSystem(window.innerWidth <= 760);
+  const isUnifiedCardLayout = !!state.initialized;
 
   let sideSize = window.innerWidth <= 760 ? 52 : 60;
   let centerSize = window.innerWidth <= 760 ? 92 : 108;
-  let gap = isVisitCard ? (window.innerWidth <= 760 ? 24 : 40) : 10;
+  let gap = isUnifiedCardLayout ? (window.innerWidth <= 760 ? 24 : 40) : 10;
   const visibleControls = Array.from(socialFab.querySelectorAll("a, button")).filter((el) => !el.hidden);
   const controlCount = Math.max(1, visibleControls.length);
 
@@ -2003,16 +1996,16 @@ function syncFabInsideCard() {
     ? rect.left + layout.qrBounds.left * scaleX
     : cardLeft + cardWidth * 0.62;
 
-  if (isVisitCard) {
-    const availableLeftWidth = Math.max(nodeAvailableLeftMin, (qrLeft - cardLeft) - nodeReservedGapToQr);
-    sideSize = clamp(Math.round(availableLeftWidth * nodeSideSizeRatio), nodeSideSizeMin, nodeSideSizeMax);
-    centerSize = clamp(Math.round(sideSize * nodeCenterScale), nodeCenterMin, nodeCenterMax);
-    gap = clamp(Math.round(availableLeftWidth * nodeGapRatio), nodeGapMin, nodeGapMax);
+  if (isUnifiedCardLayout) {
+    const availableLeftWidth = Math.max(sys.nodeAvailableLeftMin, (qrLeft - cardLeft) - sys.nodeReservedGapToQr);
+    sideSize = clamp(Math.round(availableLeftWidth * sys.nodeSideSizeRatio), sys.nodeSideSizeMin, sys.nodeSideSizeMax);
+    centerSize = clamp(Math.round(sideSize * sys.nodeCenterScale), sys.nodeCenterMin, sys.nodeCenterMax);
+    gap = clamp(Math.round(availableLeftWidth * sys.nodeGapRatio), sys.nodeGapMin, sys.nodeGapMax);
   }
 
   const knobSize = sideSize;
-  const rowWidth = isVisitCard
-    ? (sideSize * 2 + centerSize + gap * 2)
+  const rowWidth = isUnifiedCardLayout
+    ? (sideSize * 3 + centerSize + gap * 3)
     : (knobSize * controlCount + gap * Math.max(0, controlCount - 1));
 
   const marginX = Math.max(8, 14 * scaleX);
@@ -2021,14 +2014,14 @@ function syncFabInsideCard() {
   const leftSectionRight = Math.max(leftSectionLeft + rowWidth, qrLeft - Math.max(10, 12 * scaleX));
   const preferredLeft = leftSectionLeft + (leftSectionRight - leftSectionLeft) * 0.5 - rowWidth * 0.5;
   const left = clamp(preferredLeft, cardLeft + marginX, cardLeft + cardWidth - rowWidth - marginX);
-  const preferredTop = isVisitCard
-    ? cardTop + cardHeight * networkYRatio - centerSize * 0.5
+  const preferredTop = isUnifiedCardLayout
+    ? cardTop + cardHeight * sys.networkYRatio - centerSize * 0.5
     : rect.top + layout.line3Y * scaleY + Math.max(18, 16 * scaleY);
   const top = clamp(preferredTop, cardTop + marginY, cardTop + cardHeight - knobSize - marginY);
 
   socialFab.style.gap = `${gap}px`;
-  if (isVisitCard) {
-    const ordered = [fabLinkedinBtn, fabCalyrBtn, fabMailBtn].filter(Boolean);
+  if (isUnifiedCardLayout) {
+    const ordered = [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].filter(Boolean);
     ordered.forEach((el, index) => {
       const isCenter = index === 1;
       const size = isCenter ? centerSize : sideSize;
@@ -2038,7 +2031,7 @@ function syncFabInsideCard() {
       el.style.setProperty("--fab-ring-thickness", isCenter ? "4px" : "3px");
     });
   } else {
-    [fabLinkedinBtn, fabCalyrBtn, fabMailBtn].forEach((el) => {
+    [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].forEach((el) => {
       if (!el) return;
       el.style.width = "";
       el.style.height = "";
@@ -2751,6 +2744,26 @@ function drawDeformableQrMesh() {
       gapScale
     );
   }
+
+  // Keep raster source tied to level-1 typography glyph bricks as part of the same mesh language.
+  const textBricks = state.bricks.filter((brick) => !!(brick && brick.alive && brick.active && brick.textPattern));
+  for (const brick of textBricks) {
+    const cx = brick.x + brick.w * 0.5;
+    const cy = brick.y + brick.h * 0.5;
+    const profile = getRasterProfile(Math.floor(cx), Math.floor(cy));
+    const radius = Math.max(1.4, Math.min(brick.w, brick.h) * (brick.circleScale || profile.sizeScale) * 0.58);
+    const accent = profile.magenta;
+    drawHalfOpenDisk(
+      cx,
+      cy,
+      radius,
+      accent ? "#ff4df5" : "#ffffff",
+      accent ? "rgba(255, 77, 245, 0.36)" : "rgba(255, 255, 255, 0.26)",
+      brick.phase || 0,
+      0,
+      profile.open ? 0.24 : 0
+    );
+  }
   ctx.restore();
 }
 
@@ -3145,6 +3158,7 @@ function draw() {
   for (const brick of state.bricks) {
     if (!brick.alive) continue;
     if (isGameplayQrBrick(brick)) continue;
+    if (brick.textPattern) continue;
     drawQrBrick(brick);
   }
 
