@@ -136,7 +136,7 @@ function loadContactConfig() {
       fabEdgePeekMs: 3200,
       controlLabels: { mail: "Mail", restart: "Restart" },
       layout: {
-        narrowScreenMaxWidth: 640,
+        narrowScreenMaxWidth: 720,
         cardXDesktop: 54,
         cardXMobile: 28,
         cardYDesktop: 30,
@@ -1706,7 +1706,7 @@ function resetBallAndPaddle() {
     return;
   }
 
-  const narrowScreen = window.innerWidth <= 640;
+  const narrowScreen = ContactLayoutEngine.isNarrowScreen();
   const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
   const qrBottom = state.bricks.length
     ? Math.max(...state.bricks.map((brick) => brick.y + brick.h))
@@ -1979,12 +1979,13 @@ function syncFabInsideCard() {
   const rect = canvasMetrics.rect;
   const scaleX = rect.width / canvas.width;
   const scaleY = rect.height / canvas.height;
-  const sys = resolveCardSystem(window.innerWidth <= 760);
+  const narrowScreen = ContactLayoutEngine.isNarrowScreen();
+  const sys = resolveCardSystem(narrowScreen);
   const isUnifiedCardLayout = !!state.initialized;
 
-  let sideSize = window.innerWidth <= 760 ? 52 : 60;
-  let centerSize = window.innerWidth <= 760 ? 92 : 108;
-  let gap = isUnifiedCardLayout ? (window.innerWidth <= 760 ? 24 : 40) : 10;
+  let sideSize = narrowScreen ? 52 : 60;
+  let centerSize = narrowScreen ? 92 : 108;
+  let gap = isUnifiedCardLayout ? (narrowScreen ? 24 : 40) : 10;
   const visibleControls = Array.from(socialFab.querySelectorAll("a, button")).filter((el) => !el.hidden);
   const controlCount = Math.max(1, visibleControls.length);
 
