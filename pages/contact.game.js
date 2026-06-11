@@ -2792,16 +2792,23 @@ function drawDeformableQrMesh() {
     const rotationSpeed = isMeshActivated() ? baseSpin * direction : 0;
     const magentaAccent = isMarked || isSplitter || profile.magenta;
     const gapScale = profile.open ? 0.24 : 0;
-    drawHalfOpenDisk(
-      node.x,
-      node.y,
-      radius,
-      magentaAccent ? "#ff4df5" : "#ffffff",
-      magentaAccent ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
-      brick.phase || 0,
-      rotationSpeed,
-      gapScale
-    );
+    if (!state.contactOpen) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, Math.max(1.5, radius * 0.56), 0, Math.PI * 2);
+      ctx.fillStyle = magentaAccent ? "rgba(255, 77, 245, 0.9)" : "rgba(255, 255, 255, 0.9)";
+      ctx.fill();
+    } else {
+      drawHalfOpenDisk(
+        node.x,
+        node.y,
+        radius,
+        magentaAccent ? "#ff4df5" : "#ffffff",
+        magentaAccent ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
+        brick.phase || 0,
+        rotationSpeed,
+        gapScale
+      );
+    }
   }
 
   // Keep raster source tied to level-1 typography glyph bricks as part of the same mesh language.
@@ -2812,16 +2819,23 @@ function drawDeformableQrMesh() {
     const profile = getRasterProfile(Math.floor(cx), Math.floor(cy));
     const radius = Math.max(1.4, Math.min(brick.w, brick.h) * (brick.circleScale || profile.sizeScale) * 0.58);
     const accent = profile.magenta;
-    drawHalfOpenDisk(
-      cx,
-      cy,
-      radius,
-      accent ? "#ff4df5" : "#ffffff",
-      accent ? "rgba(255, 77, 245, 0.36)" : "rgba(255, 255, 255, 0.26)",
-      brick.phase || 0,
-      0,
-      profile.open ? 0.24 : 0
-    );
+    if (!state.contactOpen) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(1.2, radius * 0.52), 0, Math.PI * 2);
+      ctx.fillStyle = accent ? "rgba(255, 77, 245, 0.86)" : "rgba(255, 255, 255, 0.82)";
+      ctx.fill();
+    } else {
+      drawHalfOpenDisk(
+        cx,
+        cy,
+        radius,
+        accent ? "#ff4df5" : "#ffffff",
+        accent ? "rgba(255, 77, 245, 0.36)" : "rgba(255, 255, 255, 0.26)",
+        brick.phase || 0,
+        0,
+        profile.open ? 0.24 : 0
+      );
+    }
   }
   ctx.restore();
 }
@@ -2868,37 +2882,17 @@ function drawQrBrick(brick) {
   const cx = x + w / 2;
   const cy = y + h / 2;
 
-  if (brick.catcher) {
-    const notch = Math.PI * 0.24;
-    const rotation = state.blinkTime * (brick.spinSpeed || 0);
-    const start = brick.notchAngle + rotation + notch * 0.5;
-    const end = brick.notchAngle + rotation + Math.PI * 2 - notch * 0.5;
-    ctx.save();
-    ctx.globalAlpha = blink;
-    ctx.lineWidth = Math.max(2, radius * 0.34);
-    ctx.strokeStyle = brick.splitter ? magenta : cyan;
-    ctx.shadowBlur = brick.splitter ? 10 : 7;
-    ctx.shadowColor = brick.splitter ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)";
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, start, end);
-    ctx.stroke();
-    ctx.restore();
-    return;
-  }
-
   ctx.save();
   ctx.globalAlpha = blink;
   const isMarked = !!brick.mulMark;
-  drawHalfOpenDisk(
-    cx,
-    cy,
-    radius,
-    isMarked ? magenta : cyan,
-    isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
-    brick.phase,
-    1.6,
-    0.24
-  );
+  ctx.beginPath();
+  ctx.arc(cx, cy, Math.max(2, radius * 0.58), 0, Math.PI * 2);
+  if (brick.catcher || brick.splitter || isMarked) {
+    ctx.fillStyle = "rgba(255, 77, 245, 0.92)";
+  } else {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  }
+  ctx.fill();
   if (isMarked) {
     ctx.fillStyle = magenta;
     ctx.font = `${Math.max(9, Math.floor(radius * 1.8))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
