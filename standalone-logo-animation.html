@@ -94,6 +94,8 @@
       const trailLength = prefersReduced ? 20 : 94;
       const slitWidth = 1;
       const slitHeight = 430;
+      const focusOrbitRadiusX = ringRadius * 0.78;
+      const focusOrbitRadiusY = ringRadius * ringYScale * 0.62;
       const nodes = [];
       const noiseSeeds = [];
       let frozen = false;
@@ -133,6 +135,8 @@
           sourceX: rand(-0.4, 0.4),
           sourceY,
           orbitNoise: rand(-0.08, 0.08),
+          waveGroup: i % 3,
+          wavePhase: rand(0, Math.PI * 2),
           size: rand(1.2, 3.6),
           x: rand(-0.4, 0.4),
           y: sourceY,
@@ -180,10 +184,27 @@
         ctx.fillStyle = "rgba(245,252,255,0.88)";
         ctx.fillRect(-0.5, -slitHeight * 0.5, 1, slitHeight);
 
+        const focusA = drawPhase * Math.PI * 2 + Math.PI * 0.16;
+        const focusX = Math.cos(focusA) * focusOrbitRadiusX;
+        const focusY = Math.sin(focusA) * focusOrbitRadiusY;
+
+        ctx.globalCompositeOperation = "lighter";
+        ctx.fillStyle = "rgba(255, 77, 245, 0.14)";
+        ctx.beginPath();
+        ctx.arc(focusX, focusY, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255, 77, 245, 0.33)";
+        ctx.beginPath();
+        ctx.arc(focusX, focusY, 7, 0, Math.PI * 2);
+        ctx.fill();
+
         for (let i = 0; i < nodes.length; i += 1) {
           const n = nodes[i];
-          const swirl = Math.sin(t * 0.54 + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * 3.8;
-          const rough = 1 + Math.sin(t * 0.68 + n.a * 5.2) * 0.06;
+          const group = n.waveGroup;
+          const waveSpeed = group === 0 ? 0.56 : (group === 1 ? 0.84 : 1.22);
+          const waveAmp = group === 0 ? 3.6 : (group === 1 ? 7.8 : 11.2);
+          const swirl = Math.sin(t * waveSpeed + n.wavePhase + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * waveAmp;
+          const rough = 1 + Math.sin(t * (0.62 + group * 0.24) + n.a * 5.2) * (0.06 + group * 0.04);
           const gapWave = Math.abs(Math.sin(n.a * 1.5 + t * 0.19));
           const gapFactor = clamp((gapWave - 0.18) / 0.82, 0, 1);
 
@@ -191,13 +212,38 @@
           const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
           const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16 + n.orbitNoise * 18;
 
+          const dxFocus = tx - focusX;
+          const dyFocus = ty - focusY;
+          const distFocus = Math.hypot(dxFocus, dyFocus);
+          const influence = clamp(1 - distFocus / 84, 0, 1);
+          let fx = tx;
+          let fy = ty;
+          if (influence > 0) {
+            const inv = 1 / Math.max(0.001, distFocus);
+            const nx = dxFocus * inv;
+            const ny = dyFocus * inv;
+            if (group === 0) {
+              // Wave 0 is pulled toward the magenta focus.
+              fx -= nx * influence * 18;
+              fy -= ny * influence * 18;
+            } else if (group === 1) {
+              // Wave 1 is pushed outward from the magenta focus.
+              fx += nx * influence * 22;
+              fy += ny * influence * 22;
+            } else {
+              // Wave 2 orbits around the focus tangentially.
+              fx += -ny * influence * 14;
+              fy += nx * influence * 14;
+            }
+          }
+
           const sourceX = n.sourceX;
           const sourceY = n.sourceY;
 
           n.px = n.x;
           n.py = n.y;
-          n.x = sourceX + (tx - sourceX) * travelEased;
-          n.y = sourceY + (ty - sourceY) * travelEased;
+          n.x = sourceX + (fx - sourceX) * travelEased;
+          n.y = sourceY + (fy - sourceY) * travelEased;
 
           // Only start trail history once particle has reached the circle.
           if (drawingOnRing) {
@@ -223,7 +269,10 @@
               ctx.lineTo(n.history[h].x, n.history[h].y);
             }
             const historyStrength = clamp((n.history.length / trailLength) * 0.28, 0.1, 0.28);
-            ctx.strokeStyle = "rgba(150,232,255," + historyStrength.toFixed(3) + ")";
+            const strokeColor = group === 0
+              ? "rgba(150,232,255,"
+              : (group === 1 ? "rgba(188,224,255," : "rgba(255,150,245,");
+            ctx.strokeStyle = strokeColor + historyStrength.toFixed(3) + ")";
             ctx.lineWidth = clamp(n.size * 0.66, 0.9, 2.2);
             ctx.stroke();
           }
@@ -233,7 +282,8 @@
             const txk = n.x - vx * k * 3.2;
             const tyk = n.y - vy * k * 3.2;
             const rr = Math.max(0.5, n.size - k * 0.42);
-            ctx.fillStyle = "rgba(156,235,255," + (tailAlpha * (1 - k * 0.16)).toFixed(3) + ")";
+            const tailBase = group === 2 ? "rgba(255,160,246," : "rgba(156,235,255,";
+            ctx.fillStyle = tailBase + (tailAlpha * (1 - k * 0.16)).toFixed(3) + ")";
             ctx.beginPath();
             ctx.arc(txk, tyk, rr, 0, Math.PI * 2);
             ctx.fill();
