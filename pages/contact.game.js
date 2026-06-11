@@ -3849,7 +3849,7 @@ canvas.addEventListener(
   (event) => {
     if (!event.touches || !event.touches[0]) return;
     event.preventDefault();
-    suppressClickUntil = performance.now() + 420;
+    suppressClickUntil = performance.now() + 180;
     if (state.contactOpen) {
       const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
       applyMeshImpactAt(point.x, point.y, 1.6);
@@ -3867,7 +3867,7 @@ canvas.addEventListener(
   (event) => {
     if (!event.touches || !event.touches[0]) return;
     event.preventDefault();
-    suppressClickUntil = performance.now() + 420;
+    suppressClickUntil = performance.now() + 180;
     if (state.contactOpen) {
       const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
       applyMeshImpactAt(point.x, point.y, 1.6);
@@ -3885,14 +3885,21 @@ canvas.addEventListener(
   (event) => {
     event.preventDefault();
     inputSystem.clearTouchSteer();
+
+    // During active gameplay, touch-end is steering-only and must not toggle mode.
+    if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+      lastTouchEndTime = performance.now();
+      return;
+    }
+
     const now = performance.now();
-    if (now - lastTouchEndTime < 280) {
-      lastTouchEndTime = 0;
-      suppressClickUntil = now + 420;
-      handleDoubleTouchAction();
+    if (now - lastTouchEndTime < 160) {
+      lastTouchEndTime = now;
       return;
     }
     lastTouchEndTime = now;
+    suppressClickUntil = now + 180;
+    handleDoubleTouchAction();
   },
   { passive: false }
 );
