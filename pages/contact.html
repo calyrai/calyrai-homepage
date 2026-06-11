@@ -156,6 +156,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      border: none;
+      background: transparent;
+      box-shadow: none;
     }
 
     canvas {
@@ -171,7 +174,7 @@
       background:
         radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 35%),
         linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: none;
     }
 
     .landscape-controls {
@@ -779,7 +782,14 @@
     const CATCHER_REDIRECT_SPREAD = Math.PI * 0.36;
     const SIMULATION_STEP = 1 / 120;
     const MAX_FRAME_DELTA = 0.25;
-    const MAX_SIM_STEPS_PER_FRAME = 20;
+    const IS_CHROME = /Chrome\//.test(navigator.userAgent)
+      && !/Edg\//.test(navigator.userAgent)
+      && !/OPR\//.test(navigator.userAgent);
+    const CHROME_PERF_MODE = IS_CHROME;
+    const MAX_SIM_STEPS_PER_FRAME = CHROME_PERF_MODE ? 10 : 20;
+    const DEFORMATION_STEP_STRIDE = CHROME_PERF_MODE ? 3 : 1;
+    const ENABLE_RELATIVITY_LENSING = !CHROME_PERF_MODE;
+    const DRAW_MESH_LINKS = !CHROME_PERF_MODE;
     const TILE_GRID_COLS = 10;
     const TILE_GRID_ROWS = 6;
     const CONTROL_LABELS = {
@@ -1068,10 +1078,13 @@
     function computeContactVisualSpec(qrSize, layout) {
       const moduleGap = 2;
       const narrowScreen = window.innerWidth <= 640;
+      const titleSize = narrowScreen ? 16 : 19;
+      const orgSize = narrowScreen ? 13 : 15;
+      const emailSize = narrowScreen ? 12 : 14;
       const lineDefs = [
-        { text: PERSON_NAME, font: '700 19px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 19, color: "#f7fbff" },
-        { text: ORG_NAME, font: '15px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 15, color: "#f7fbff" },
-        { text: CONTACT_EMAIL, font: '14px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 14, color: "#ffffff" },
+        { text: PERSON_NAME, font: `700 ${titleSize}px "SF Mono", "Fira Code", ui-monospace, monospace`, fontSize: titleSize, color: "#f7fbff" },
+        { text: ORG_NAME, font: `${orgSize}px "SF Mono", "Fira Code", ui-monospace, monospace`, fontSize: orgSize, color: "#f7fbff" },
+        { text: CONTACT_EMAIL, font: `${emailSize}px "SF Mono", "Fira Code", ui-monospace, monospace`, fontSize: emailSize, color: "#ffffff" },
       ];
 
       const padX = narrowScreen ? 16 : 24;
@@ -1091,7 +1104,9 @@
       ctx.restore();
 
       const qrMaxH = layout.cardH - padY * 2;
-      const minReadableQr = Math.min(260, Math.max(170, layout.cardW * 0.3));
+      const minReadableQr = narrowScreen
+        ? Math.min(180, Math.max(120, layout.cardW * 0.22))
+        : Math.min(260, Math.max(170, layout.cardW * 0.3));
 
       let rotateText = false;
       let reservedTextWidth = maxTextWidth + (narrowScreen ? 14 : 20);
@@ -1100,6 +1115,11 @@
         rotateText = true;
         reservedTextWidth = totalTextHeight + (narrowScreen ? 12 : 18);
         qrMaxW = layout.cardW - padX * 2 - reservedTextWidth - textQrGap;
+      }
+
+      // Keep phone layout visually aligned with desktop by avoiding vertical text rotation.
+      if (narrowScreen) {
+        rotateText = false;
       }
 
       const moduleSize = Math.max(
@@ -2559,6 +2579,7 @@
     }
 
     function applyRelativityLensing(ball, dt) {
+      if (!ENABLE_RELATIVITY_LENSING) return;
       if (LOW_POWER_MODE) return;
       if (!state.running || state.paused || state.contactOpen) return;
       const speed = Math.hypot(ball.dx, ball.dy) || ball.speedBase || state.ball.speedBase;
@@ -2787,23 +2808,25 @@
       }
 
       ctx.save();
-      ctx.lineWidth = 0.9;
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
-      for (const [key, node] of centers) {
-        const [row, col] = key.split(":").map(Number);
-        const right = centers.get(`${row}:${col + 1}`);
-        const down = centers.get(`${row + 1}:${col}`);
-        if (right) {
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(right.x, right.y);
-          ctx.stroke();
-        }
-        if (down) {
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(down.x, down.y);
-          ctx.stroke();
+      if (DRAW_MESH_LINKS) {
+        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+        for (const [key, node] of centers) {
+          const [row, col] = key.split(":").map(Number);
+          const right = centers.get(`${row}:${col + 1}`);
+          const down = centers.get(`${row + 1}:${col}`);
+          if (right) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(right.x, right.y);
+            ctx.stroke();
+          }
+          if (down) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(down.x, down.y);
+            ctx.stroke();
+          }
         }
       }
 
@@ -3701,8 +3724,10 @@
           updatePaddle(SIMULATION_STEP);
           updateBall(SIMULATION_STEP);
           updateExtraBalls(SIMULATION_STEP);
-          updateGridDeformation(SIMULATION_STEP);
-          updateMeshDeformation(SIMULATION_STEP);
+          if ((steps % DEFORMATION_STEP_STRIDE) === 0) {
+            updateGridDeformation(SIMULATION_STEP);
+            updateMeshDeformation(SIMULATION_STEP);
+          }
           updateAutomataBursts(SIMULATION_STEP);
           updateMovementSummary();
         }
