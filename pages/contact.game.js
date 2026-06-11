@@ -4296,6 +4296,7 @@ class ChatbotOrbController {
     this.targetY = 0;
     this.rafId = null;
     this.enabled = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    this.following = false;
   }
 
   bindEvents() {
@@ -4332,8 +4333,8 @@ class ChatbotOrbController {
     if (!this.stageEl) return;
     this.rect = this.stageEl.getBoundingClientRect();
     if (forceReset || !this.x) {
-      this.x = Math.max(40, this.rect.width * 0.82);
-      this.y = Math.max(40, this.rect.height * 0.2);
+      this.x = clamp(this.rect.width * 0.22, 42, this.rect.width - 42);
+      this.y = clamp(this.rect.height * 0.68, 42, this.rect.height - 42);
       this.targetX = this.x;
       this.targetY = this.y;
       this.paint();
@@ -4361,20 +4362,33 @@ class ChatbotOrbController {
       const dy = this.mouseY - this.y;
       const dist = Math.hypot(dx, dy);
 
-      if (dist < 72) {
-        this.targetX = this.x;
-        this.targetY = this.y;
-        this.orbEl.classList.add("chatbot-catchable");
+      if (!this.following && dist < 120) {
+        this.following = true;
+      } else if (this.following && dist > 260) {
+        this.following = false;
+      }
+
+      if (this.following) {
+        if (dist < 72) {
+          this.targetX = this.x;
+          this.targetY = this.y;
+          this.orbEl.classList.add("chatbot-catchable");
+        } else {
+          const leadX = this.mouseX + clamp(dx * 0.2, -58, 58);
+          const leadY = this.mouseY - 30;
+          this.targetX = clamp(leadX, padding, this.rect.width - padding);
+          this.targetY = clamp(leadY, padding, this.rect.height - padding);
+          this.orbEl.classList.remove("chatbot-catchable");
+        }
       } else {
-        const leadX = this.mouseX + clamp(dx * 0.22, -64, 64);
-        const leadY = this.mouseY - 34;
-        this.targetX = clamp(leadX, padding, this.rect.width - padding);
-        this.targetY = clamp(leadY, padding, this.rect.height - padding);
+        this.targetX = clamp(this.rect.width * 0.22, padding, this.rect.width - padding);
+        this.targetY = clamp(this.rect.height * 0.68, padding, this.rect.height - padding);
         this.orbEl.classList.remove("chatbot-catchable");
       }
     } else {
-      this.targetX = clamp(this.rect.width * 0.82, padding, this.rect.width - padding);
-      this.targetY = clamp(this.rect.height * 0.2, padding, this.rect.height - padding);
+      this.following = false;
+      this.targetX = clamp(this.rect.width * 0.22, padding, this.rect.width - padding);
+      this.targetY = clamp(this.rect.height * 0.68, padding, this.rect.height - padding);
       this.orbEl.classList.remove("chatbot-catchable");
     }
 
