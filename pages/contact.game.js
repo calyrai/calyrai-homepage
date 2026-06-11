@@ -333,8 +333,6 @@ const CONTROL_LABELS = CONFIG.ui.controlLabels;
 const FAB_EDGE_PEEK_MS = CONFIG.ui.fabEdgePeekMs;
 const FAB_COLLAPSE_IDLE_MS = 1300;
 const LOW_POWER_MODE = !!CONFIG.performance.forceLowPowerMode;
-let fabPeekTimeout = null;
-let fabCollapseTimer = null;
 let edgeTouchStarted = false;
 let edgeTouchStartX = 0;
 
@@ -1929,146 +1927,180 @@ function endToContact(reasonText) {
   syncGameUi();
 }
 
-function syncGameUi() {
-  document.body.classList.toggle("game-over", !!state.gameOver);
-  document.body.classList.toggle("impressum-open", !!state.contactOpen);
-  document.body.classList.toggle(
-    "game-active",
-    !!(state.running && !state.paused && !state.contactOpen && !state.gameOver)
-  );
-
-  if (fabResetBtn) {
-    fabResetBtn.hidden = false;
-    fabResetBtn.setAttribute("aria-hidden", "false");
+class FabController {
+  constructor() {
+    this.peekTimeout = null;
+    this.collapseTimer = null;
   }
 
-  syncFabInsideCard();
+  isGameActive() {
+    return !!(state.running && !state.paused && !state.contactOpen && !state.gameOver);
+  }
+
+  syncGameUi() {
+    document.body.classList.toggle("game-over", !!state.gameOver);
+    document.body.classList.toggle("impressum-open", !!state.contactOpen);
+    document.body.classList.toggle("game-active", this.isGameActive());
+
+    if (fabResetBtn) {
+      fabResetBtn.hidden = false;
+      fabResetBtn.setAttribute("aria-hidden", "false");
+    }
+
+    this.syncInsideCard();
+  }
+
+  showTemporarily(durationMs = FAB_EDGE_PEEK_MS) {
+    if (!this.isGameActive()) return;
+    this.pokeInteraction();
+    document.body.classList.add("fab-peek");
+    if (this.peekTimeout) {
+      window.clearTimeout(this.peekTimeout);
+    }
+    this.peekTimeout = window.setTimeout(() => {
+      document.body.classList.remove("fab-peek");
+    }, durationMs);
+  }
+
+  setCollapsed(collapsed) {
+    if (!socialFab) return;
+    socialFab.classList.toggle("fab-collapsed", !!collapsed);
+  }
+
+  scheduleCollapse() {
+    if (!socialFab) return;
+    if (this.collapseTimer) {
+      window.clearTimeout(this.collapseTimer);
+    }
+    this.collapseTimer = window.setTimeout(() => {
+      this.setCollapsed(true);
+    }, FAB_COLLAPSE_IDLE_MS);
+  }
+
+  pokeInteraction() {
+    if (!socialFab) return;
+    this.setCollapsed(false);
+    this.scheduleCollapse();
+  }
+
+  syncInsideCard() {
+    if (!socialFab) return;
+    if (!canvasMetrics.rect) refreshCanvasMetrics();
+    if (!canvasMetrics.rect) return;
+
+    const qrWidth = state.qrBounds?.width || 0;
+    const qrHeight = state.qrBounds?.height || 0;
+    const layout = getContactCardLayout(qrWidth, qrHeight);
+    const rect = canvasMetrics.rect;
+    const scaleX = rect.width / canvas.width;
+    const scaleY = rect.height / canvas.height;
+    const narrowScreen = ContactLayoutEngine.isNarrowScreen();
+    const sys = resolveCardSystem(narrowScreen);
+    const isUnifiedCardLayout = !!state.initialized;
+
+    let sideSize = narrowScreen ? 52 : 60;
+    let centerSize = narrowScreen ? 92 : 108;
+    let gap = isUnifiedCardLayout ? (narrowScreen ? 24 : 40) : 10;
+    const visibleControls = Array.from(socialFab.querySelectorAll("a, button")).filter((el) => !el.hidden);
+    const controlCount = Math.max(1, visibleControls.length);
+
+    const cardLeft = rect.left + layout.cardX * scaleX;
+    const cardTop = rect.top + layout.cardY * scaleY;
+    const cardWidth = layout.cardW * scaleX;
+    const cardHeight = layout.cardH * scaleY;
+    const qrLeft = layout.qrBounds
+      ? rect.left + layout.qrBounds.left * scaleX
+      : cardLeft + cardWidth * 0.62;
+
+    if (isUnifiedCardLayout) {
+      const availableLeftWidth = Math.max(sys.nodeAvailableLeftMin, (qrLeft - cardLeft) - sys.nodeReservedGapToQr);
+      sideSize = clamp(Math.round(availableLeftWidth * sys.nodeSideSizeRatio), sys.nodeSideSizeMin, sys.nodeSideSizeMax);
+      centerSize = clamp(Math.round(sideSize * sys.nodeCenterScale), sys.nodeCenterMin, sys.nodeCenterMax);
+      gap = clamp(Math.round(availableLeftWidth * sys.nodeGapRatio), sys.nodeGapMin, sys.nodeGapMax);
+    }
+
+    const knobSize = sideSize;
+    const rowWidth = isUnifiedCardLayout
+      ? (sideSize * 3 + centerSize + gap * 3)
+      : (knobSize * controlCount + gap * Math.max(0, controlCount - 1));
+
+    const marginX = Math.max(8, 14 * scaleX);
+    const marginY = Math.max(8, 12 * scaleY);
+    const leftSectionLeft = cardLeft + marginX;
+    const leftSectionRight = Math.max(leftSectionLeft + rowWidth, qrLeft - Math.max(10, 12 * scaleX));
+    const preferredLeft = leftSectionLeft + (leftSectionRight - leftSectionLeft) * 0.5 - rowWidth * 0.5;
+    const left = clamp(preferredLeft, cardLeft + marginX, cardLeft + cardWidth - rowWidth - marginX);
+    const preferredTop = isUnifiedCardLayout
+      ? cardTop + cardHeight * sys.networkYRatio - centerSize * 0.5
+      : rect.top + layout.line3Y * scaleY + Math.max(18, 16 * scaleY);
+    const top = clamp(preferredTop, cardTop + marginY, cardTop + cardHeight - knobSize - marginY);
+
+    socialFab.style.gap = `${gap}px`;
+    if (isUnifiedCardLayout) {
+      const ordered = [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].filter(Boolean);
+      ordered.forEach((el, index) => {
+        const isCenter = index === 1;
+        const size = isCenter ? centerSize : sideSize;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.setProperty("--fab-core-size", `${Math.round(size * (isCenter ? 0.6 : 0.62))}px`);
+        el.style.setProperty("--fab-ring-thickness", isCenter ? "4px" : "3px");
+      });
+
+      if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${Math.round(sideSize + gap)}px`);
+      if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
+      if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + gap))}px`);
+      if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + sideSize + gap * 2))}px`);
+    } else {
+      [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].forEach((el) => {
+        if (!el) return;
+        el.style.width = "";
+        el.style.height = "";
+        el.style.removeProperty("--fab-core-size");
+        el.style.removeProperty("--fab-ring-thickness");
+      });
+
+      const fallbackShift = Math.round(knobSize + gap);
+      if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${fallbackShift}px`);
+      if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
+      if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${-fallbackShift}px`);
+      if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${-Math.round((knobSize + gap) * 2)}px`);
+    }
+
+    socialFab.style.left = `${Math.round(left)}px`;
+    socialFab.style.top = `${Math.round(top)}px`;
+    socialFab.style.bottom = "auto";
+  }
+}
+
+const fabController = new FabController();
+
+function syncGameUi() {
+  fabController.syncGameUi();
 }
 
 function isGameActive() {
-  return !!(state.running && !state.paused && !state.contactOpen && !state.gameOver);
+  return fabController.isGameActive();
 }
 
 function showFabTemporarily(durationMs = FAB_EDGE_PEEK_MS) {
-  if (!isGameActive()) return;
-  pokeFabInteraction();
-  document.body.classList.add("fab-peek");
-  if (fabPeekTimeout) {
-    window.clearTimeout(fabPeekTimeout);
-  }
-  fabPeekTimeout = window.setTimeout(() => {
-    document.body.classList.remove("fab-peek");
-  }, durationMs);
+  fabController.showTemporarily(durationMs);
 }
 
 function setFabCollapsed(collapsed) {
-  if (!socialFab) return;
-  socialFab.classList.toggle("fab-collapsed", !!collapsed);
+  fabController.setCollapsed(collapsed);
 }
 
 function scheduleFabCollapse() {
-  if (!socialFab) return;
-  if (fabCollapseTimer) {
-    window.clearTimeout(fabCollapseTimer);
-  }
-  fabCollapseTimer = window.setTimeout(() => {
-    setFabCollapsed(true);
-  }, FAB_COLLAPSE_IDLE_MS);
+  fabController.scheduleCollapse();
 }
 
 function pokeFabInteraction() {
-  if (!socialFab) return;
-  setFabCollapsed(false);
-  scheduleFabCollapse();
+  fabController.pokeInteraction();
 }
 
 function syncFabInsideCard() {
-  if (!socialFab) return;
-  if (!canvasMetrics.rect) refreshCanvasMetrics();
-  if (!canvasMetrics.rect) return;
-
-  const qrWidth = state.qrBounds?.width || 0;
-  const qrHeight = state.qrBounds?.height || 0;
-  const layout = getContactCardLayout(qrWidth, qrHeight);
-  const rect = canvasMetrics.rect;
-  const scaleX = rect.width / canvas.width;
-  const scaleY = rect.height / canvas.height;
-  const narrowScreen = ContactLayoutEngine.isNarrowScreen();
-  const sys = resolveCardSystem(narrowScreen);
-  const isUnifiedCardLayout = !!state.initialized;
-
-  let sideSize = narrowScreen ? 52 : 60;
-  let centerSize = narrowScreen ? 92 : 108;
-  let gap = isUnifiedCardLayout ? (narrowScreen ? 24 : 40) : 10;
-  const visibleControls = Array.from(socialFab.querySelectorAll("a, button")).filter((el) => !el.hidden);
-  const controlCount = Math.max(1, visibleControls.length);
-
-  const cardLeft = rect.left + layout.cardX * scaleX;
-  const cardTop = rect.top + layout.cardY * scaleY;
-  const cardWidth = layout.cardW * scaleX;
-  const cardHeight = layout.cardH * scaleY;
-  const qrLeft = layout.qrBounds
-    ? rect.left + layout.qrBounds.left * scaleX
-    : cardLeft + cardWidth * 0.62;
-
-  if (isUnifiedCardLayout) {
-    const availableLeftWidth = Math.max(sys.nodeAvailableLeftMin, (qrLeft - cardLeft) - sys.nodeReservedGapToQr);
-    sideSize = clamp(Math.round(availableLeftWidth * sys.nodeSideSizeRatio), sys.nodeSideSizeMin, sys.nodeSideSizeMax);
-    centerSize = clamp(Math.round(sideSize * sys.nodeCenterScale), sys.nodeCenterMin, sys.nodeCenterMax);
-    gap = clamp(Math.round(availableLeftWidth * sys.nodeGapRatio), sys.nodeGapMin, sys.nodeGapMax);
-  }
-
-  const knobSize = sideSize;
-  const rowWidth = isUnifiedCardLayout
-    ? (sideSize * 3 + centerSize + gap * 3)
-    : (knobSize * controlCount + gap * Math.max(0, controlCount - 1));
-
-  const marginX = Math.max(8, 14 * scaleX);
-  const marginY = Math.max(8, 12 * scaleY);
-  const leftSectionLeft = cardLeft + marginX;
-  const leftSectionRight = Math.max(leftSectionLeft + rowWidth, qrLeft - Math.max(10, 12 * scaleX));
-  const preferredLeft = leftSectionLeft + (leftSectionRight - leftSectionLeft) * 0.5 - rowWidth * 0.5;
-  const left = clamp(preferredLeft, cardLeft + marginX, cardLeft + cardWidth - rowWidth - marginX);
-  const preferredTop = isUnifiedCardLayout
-    ? cardTop + cardHeight * sys.networkYRatio - centerSize * 0.5
-    : rect.top + layout.line3Y * scaleY + Math.max(18, 16 * scaleY);
-  const top = clamp(preferredTop, cardTop + marginY, cardTop + cardHeight - knobSize - marginY);
-
-  socialFab.style.gap = `${gap}px`;
-  if (isUnifiedCardLayout) {
-    const ordered = [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].filter(Boolean);
-    ordered.forEach((el, index) => {
-      const isCenter = index === 1;
-      const size = isCenter ? centerSize : sideSize;
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.setProperty("--fab-core-size", `${Math.round(size * (isCenter ? 0.6 : 0.62))}px`);
-      el.style.setProperty("--fab-ring-thickness", isCenter ? "4px" : "3px");
-    });
-
-    if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${Math.round(sideSize + gap)}px`);
-    if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
-    if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + gap))}px`);
-    if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${Math.round(-(centerSize + sideSize + gap * 2))}px`);
-  } else {
-    [fabLinkedinBtn, fabCalyrBtn, fabMailBtn, fabResetBtn].forEach((el) => {
-      if (!el) return;
-      el.style.width = "";
-      el.style.height = "";
-      el.style.removeProperty("--fab-core-size");
-      el.style.removeProperty("--fab-ring-thickness");
-    });
-
-    const fallbackShift = Math.round(knobSize + gap);
-    if (fabLinkedinBtn) fabLinkedinBtn.style.setProperty("--fab-collapse-shift", `${fallbackShift}px`);
-    if (fabCalyrBtn) fabCalyrBtn.style.setProperty("--fab-collapse-shift", "0px");
-    if (fabMailBtn) fabMailBtn.style.setProperty("--fab-collapse-shift", `${-fallbackShift}px`);
-    if (fabResetBtn) fabResetBtn.style.setProperty("--fab-collapse-shift", `${-Math.round((knobSize + gap) * 2)}px`);
-  }
-
-  socialFab.style.left = `${Math.round(left)}px`;
-  socialFab.style.top = `${Math.round(top)}px`;
-  socialFab.style.bottom = "auto";
+  fabController.syncInsideCard();
 }
 
 function drawRoundedRect(x, y, w, h, r, fill) {
