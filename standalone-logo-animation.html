@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Circle Rotation Baseline</title>
+  <title>Calyr Arrival Logo Concept</title>
   <style>
     :root {
-      --bg: #020614;
-      --ink: #ffffff;
+      --bg-0: #000000;
+      --bg-1: #020814;
+      --ink: #f4fbff;
+      --muted: rgba(230, 248, 255, 0.7);
     }
 
     * { box-sizing: border-box; }
@@ -17,47 +19,252 @@
       margin: 0;
       width: 100%;
       height: 100%;
-      background: var(--bg);
       overflow: hidden;
+      background:
+        radial-gradient(110vmax 80vmax at 50% 45%, var(--bg-1), var(--bg-0) 68%),
+        #000;
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", Arial, sans-serif;
     }
 
-    #hero {
+    .hero {
       width: 100%;
       height: 100%;
       display: grid;
       place-items: center;
+      padding: 24px;
+    }
+
+    .logo-wrap {
+      width: min(920px, 96vw);
+      aspect-ratio: 16 / 10;
+      position: relative;
     }
 
     #scene {
-      width: min(720px, 92vw);
-      height: auto;
+      width: 100%;
+      height: 100%;
+      display: block;
       overflow: visible;
     }
 
-    #ring {
-      fill: none;
-      stroke: var(--ink);
-      stroke-width: 14;
-      stroke-linecap: round;
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
+    .wordmark {
+      position: absolute;
+      left: 50%;
+      bottom: 4%;
+      transform: translateX(-50%);
+      letter-spacing: 0.24em;
+      font-size: clamp(12px, 1.15vw, 16px);
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-shadow: 0 0 20px rgba(174, 236, 255, 0.28);
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wordmark {
+        text-shadow: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="hero">
-    <svg id="scene" viewBox="0 0 720 320" aria-label="rotating circle">
-      <g id="ringGroup" transform="translate(360 160)">
-        <circle id="ring" cx="0" cy="0" r="84"></circle>
-        <animateTransform
-          attributeName="transform"
-          additive="sum"
-          type="rotate"
-          from="0"
-          to="-360"
-          dur="2.4s"
-          repeatCount="indefinite"></animateTransform>
-      </g>
-    </svg>
-  </div>
+  <main class="hero">
+    <div class="logo-wrap" aria-label="Calyr arrival concept logo">
+      <svg id="scene" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+        <title id="title">Calyr Arrival Particle Ring</title>
+        <desc id="desc">A dense particle cluster arrives from the left and forms a connected ring.</desc>
+
+        <defs>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="1.2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g id="root" transform="translate(480 280)">
+          <ellipse id="halo" cx="0" cy="0" rx="220" ry="180" fill="none" stroke="rgba(175,236,255,0.08)" stroke-width="1.4" />
+          <g id="links" stroke="rgba(228,248,255,0.34)" stroke-width="0.9" stroke-linecap="round"></g>
+          <g id="particles" filter="url(#softGlow)"></g>
+          <g id="inflow" filter="url(#softGlow)"></g>
+          <circle id="focus" cx="-158" cy="0" r="12" fill="rgba(255,255,255,0.5)" />
+        </g>
+      </svg>
+      <div class="wordmark">Calyr.ai Arrival Concept</div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const svgNs = "http://www.w3.org/2000/svg";
+      const particlesGroup = document.getElementById("particles");
+      const linksGroup = document.getElementById("links");
+      const inflowGroup = document.getElementById("inflow");
+      const halo = document.getElementById("halo");
+      const focus = document.getElementById("focus");
+
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const ringRadius = 170;
+      const ringVerticalScale = 0.93;
+      const baseCount = 84;
+      const linkThreshold = 42;
+      const formationDuration = prefersReduced ? 400 : 2600;
+      const breathSpeed = prefersReduced ? 0 : 0.0011;
+      const orbitSpeed = prefersReduced ? 0 : 0.00022;
+      const inflowSpeed = prefersReduced ? 0 : 0.00055;
+
+      const nodes = [];
+      const inflow = [];
+
+      function rand(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      for (let i = 0; i < baseCount; i += 1) {
+        const a = (Math.PI * 2 * i) / baseCount + rand(-0.028, 0.028);
+        const bias = 1 + Math.max(0, Math.cos(a - Math.PI)) * 0.08;
+        const tx = Math.cos(a) * ringRadius * bias;
+        const ty = Math.sin(a) * ringRadius * ringVerticalScale * bias;
+        const sourceSpread = rand(6, 40);
+        const sx = -172 + rand(-sourceSpread, sourceSpread);
+        const sy = rand(-sourceSpread, sourceSpread);
+        const delay = Math.max(0, i * (formationDuration / (baseCount * 1.35)) + rand(-45, 30));
+        const r = rand(1.5, 3.9) * (Math.cos(a - Math.PI) > 0.76 ? 1.16 : 1);
+
+        const circle = document.createElementNS(svgNs, "circle");
+        circle.setAttribute("r", String(r));
+        circle.setAttribute("fill", "rgba(255,255,255,0.95)");
+        particlesGroup.appendChild(circle);
+
+        nodes.push({
+          a,
+          baseA: a,
+          bias,
+          sx,
+          sy,
+          tx,
+          ty,
+          delay,
+          r,
+          el: circle,
+          x: sx,
+          y: sy,
+          p: 0
+        });
+      }
+
+      for (let i = 0; i < 22; i += 1) {
+        const c = document.createElementNS(svgNs, "circle");
+        const r = rand(1.2, 2.8);
+        c.setAttribute("r", String(r));
+        c.setAttribute("fill", "rgba(255,255,255,0.8)");
+        inflowGroup.appendChild(c);
+        inflow.push({
+          el: c,
+          phase: i / 22,
+          spread: rand(10, 56),
+          yDrift: rand(-26, 26),
+          radius: r
+        });
+      }
+
+      for (let i = 0; i < baseCount; i += 1) {
+        const line = document.createElementNS(svgNs, "line");
+        line.setAttribute("x1", "0");
+        line.setAttribute("y1", "0");
+        line.setAttribute("x2", "0");
+        line.setAttribute("y2", "0");
+        linksGroup.appendChild(line);
+      }
+
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+      }
+
+      const start = performance.now();
+
+      function frame(now) {
+        const elapsed = now - start;
+        const tBreath = elapsed * breathSpeed;
+        const breathe = 1 + Math.sin(tBreath) * 0.02;
+        const wobble = Math.sin(tBreath * 0.7) * 4.2;
+
+        halo.setAttribute("rx", String(220 * breathe));
+        halo.setAttribute("ry", String((180 + wobble) * breathe));
+        halo.setAttribute("stroke", "rgba(175,236,255," + (0.05 + Math.abs(Math.sin(tBreath)) * 0.04).toFixed(3) + ")");
+
+        let formedRatioSum = 0;
+
+        for (let i = 0; i < nodes.length; i += 1) {
+          const n = nodes[i];
+          const raw = clamp((elapsed - n.delay) / formationDuration, 0, 1);
+          const p = easeOutCubic(raw);
+          const orbitBlend = clamp((elapsed - (formationDuration + n.delay * 0.22)) / 2600, 0, 1);
+          const orbitA = n.baseA + elapsed * orbitSpeed * (0.55 + orbitBlend * 0.9);
+          const targetX = Math.cos(orbitA) * ringRadius * n.bias;
+          const targetY = Math.sin(orbitA) * ringRadius * ringVerticalScale * n.bias;
+          const driftX = Math.cos(tBreath + n.a * 2.2) * 1.6;
+          const driftY = Math.sin(tBreath * 1.3 + n.a * 1.8) * 1.4;
+
+          n.p = p;
+          n.x = n.sx + (targetX - n.sx) * p + driftX;
+          n.y = n.sy + (targetY - n.sy) * p + driftY;
+
+          n.el.setAttribute("cx", n.x.toFixed(2));
+          n.el.setAttribute("cy", n.y.toFixed(2));
+          n.el.setAttribute("fill", "rgba(255,255,255," + (0.3 + p * 0.68).toFixed(3) + ")");
+
+          formedRatioSum += p;
+        }
+
+        const formedRatio = formedRatioSum / nodes.length;
+        focus.setAttribute("opacity", (1 - formedRatio * 0.94).toFixed(3));
+        focus.setAttribute("cx", (-160 + formedRatio * 12).toFixed(2));
+
+        for (let i = 0; i < inflow.length; i += 1) {
+          const p = inflow[i];
+          const cycle = (elapsed * inflowSpeed + p.phase) % 1;
+          const eased = easeOutCubic(cycle);
+          const x = -242 + eased * 88 + Math.sin(tBreath * 2.1 + p.phase * 12) * 5;
+          const y = p.yDrift + Math.sin(tBreath * 1.6 + p.phase * 17) * (p.spread * 0.14);
+          const alpha = (0.02 + (1 - Math.abs(cycle - 0.52) * 2) * 0.5) * formedRatio;
+          p.el.setAttribute("cx", x.toFixed(2));
+          p.el.setAttribute("cy", y.toFixed(2));
+          p.el.setAttribute("fill", "rgba(255,255,255," + clamp(alpha, 0.02, 0.45).toFixed(3) + ")");
+        }
+
+        for (let i = 0; i < nodes.length; i += 1) {
+          const a = nodes[i];
+          const b = nodes[(i + 1) % nodes.length];
+          const line = linksGroup.children[i];
+
+          line.setAttribute("x1", a.x.toFixed(2));
+          line.setAttribute("y1", a.y.toFixed(2));
+          line.setAttribute("x2", b.x.toFixed(2));
+          line.setAttribute("y2", b.y.toFixed(2));
+
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          const near = d < linkThreshold ? 1 : 0;
+          const alpha = near ? (0.04 + Math.min(a.p, b.p) * 0.34) : 0;
+          line.setAttribute("stroke", "rgba(230,248,255," + alpha.toFixed(3) + ")");
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    })();
+  </script>
 </body>
 </html>
