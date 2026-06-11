@@ -4295,10 +4295,14 @@ class ChatbotOrbController {
     this.targetX = 0;
     this.targetY = 0;
     this.rafId = null;
+    this.enabled = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   }
 
   bindEvents() {
-    if (!this.stageEl || !this.orbEl) return;
+    if (!this.stageEl || !this.orbEl || !this.enabled) {
+      if (this.orbEl) this.orbEl.style.display = "none";
+      return;
+    }
     this.syncRect(true);
 
     this.stageEl.addEventListener("pointerenter", (event) => {
