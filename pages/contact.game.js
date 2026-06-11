@@ -13,7 +13,6 @@ const fabCalyrBtn = document.querySelector(".social-fab .fab-whatsapp");
 const fabResetBtn = document.getElementById("fab-reset");
 const socialFab = document.querySelector(".social-fab");
 const stageNode = document.querySelector(".stage");
-const chatbotOrbNode = document.querySelector(".chatbot-orb");
 
 function parseYamlScalar(raw) {
   if (!raw.length) return "";
@@ -4408,7 +4407,6 @@ class ChatbotOrbController {
   }
 }
 
-const chatbotOrbController = new ChatbotOrbController(stageNode, chatbotOrbNode);
 
 function applyLayoutSync() {
   layoutController.applySync();
@@ -4428,7 +4426,6 @@ function bootWhenReady(startMs) {
   applyControlLabels();
   refreshCanvasMetrics();
   cardFxController.bindEvents();
-  chatbotOrbController.bindEvents();
   state.initialized = true;
   state.running = false;
   state.paused = true;
