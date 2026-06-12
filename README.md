@@ -40,6 +40,24 @@ Canonical path example:
 
 Run these commands from `apps/homepage/`.
 
+### Instant local load
+
+Use this when you want the homepage to open immediately with local assets and avoid `file://` loading quirks.
+
+```bash
+cd apps/homepage
+./nexus.homepage-open 8011
+```
+
+Open:
+
+- `http://localhost:8011/index.html`
+- Contact page directly: `http://localhost:8011/pages/contact.html`
+
+Expected contact QR style:
+
+- White QR modules on a black background panel.
+
 ```bash
 ./nexus.homepage-build
 ```

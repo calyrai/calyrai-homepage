@@ -1200,13 +1200,13 @@ function drawHighResContactCard(layout) {
   ctx.restore();
 
   ctx.save();
-  // High-contrast scan panel for mobile cameras: white backing + quiet zone.
+  // High-contrast presentation: black backing + quiet zone.
   const qrQuiet = Math.max(10, moduleSize * 4);
   const qrPanelX = qrBounds.left - qrQuiet;
   const qrPanelY = qrBounds.top - qrQuiet;
   const qrPanelW = qrBounds.width + qrQuiet * 2;
   const qrPanelH = qrBounds.height + qrQuiet * 2;
-  drawRoundedRect(qrPanelX, qrPanelY, qrPanelW, qrPanelH, 14, "#ffffff");
+  drawRoundedRect(qrPanelX, qrPanelY, qrPanelW, qrPanelH, 14, "#000000");
 
   for (let row = 0; row < qrSize; row += 1) {
     for (let col = 0; col < qrSize; col += 1) {
@@ -1233,7 +1233,7 @@ function drawHighResContactCard(layout) {
         col,
         qrSize,
         style: "classic",
-        ink: isMarked ? "#111111" : "#000000",
+        ink: isMarked ? "#ff4df5" : "#ffffff",
         glow: isMarked ? "rgba(255, 77, 245, 0.38)" : null,
         moduleScale: 1,
         animate: false,
@@ -2243,7 +2243,7 @@ function renderStylizedQrToCanvas(qrMatrix, style, targetSize = 520) {
   out.width = targetSize;
   out.height = targetSize;
   const outCtx = out.getContext("2d");
-  outCtx.fillStyle = "#ffffff";
+  outCtx.fillStyle = "#000000";
   outCtx.fillRect(0, 0, targetSize, targetSize);
 
   const qrSize = qrMatrix.length;
@@ -2264,7 +2264,7 @@ function renderStylizedQrToCanvas(qrMatrix, style, targetSize = 520) {
         col,
         qrSize,
         style,
-        ink: "#000000",
+        ink: "#ffffff",
         glow: null,
         animate: false,
       });
