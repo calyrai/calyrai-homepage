@@ -54,18 +54,64 @@
       left: 50%;
       bottom: 4%;
       transform: translateX(-50%);
-      letter-spacing: 0.24em;
-      font-size: clamp(12px, 1.15vw, 16px);
-      color: var(--muted);
-      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      font-size: clamp(30px, 4.9vw, 62px);
+      font-family: "Avenir Next", Avenir, "Segoe UI", Arial, sans-serif;
+      font-weight: 500;
+      color: rgba(244, 249, 255, 0.96);
+      text-transform: none;
       white-space: nowrap;
-      text-shadow: 0 0 20px rgba(174, 236, 255, 0.28);
+      text-shadow: 0 0 18px rgba(174, 236, 255, 0.1);
       pointer-events: none;
+    }
+
+    .wordmark .glow-i {
+      color: #ff7bf2;
+      text-shadow:
+        0 0 8px rgba(255, 176, 247, 0.82),
+        0 0 18px rgba(255, 96, 232, 0.74),
+        0 0 34px rgba(214, 52, 255, 0.62);
+      transition: text-shadow 320ms ease, color 320ms ease;
+    }
+
+    .wordmark .glow-i.final-glow {
+      color: #ff9bf6;
+      text-shadow:
+        0 0 10px rgba(255, 176, 247, 0.95),
+        0 0 24px rgba(255, 88, 232, 0.9),
+        0 0 48px rgba(218, 56, 255, 0.82),
+        0 0 72px rgba(188, 44, 255, 0.55);
+      animation: finalPulse 1800ms ease-in-out infinite;
+    }
+
+    @keyframes finalPulse {
+      0%, 100% {
+        text-shadow:
+          0 0 8px rgba(255, 176, 247, 0.8),
+          0 0 20px rgba(255, 88, 232, 0.76),
+          0 0 38px rgba(218, 56, 255, 0.62),
+          0 0 58px rgba(188, 44, 255, 0.42);
+      }
+      50% {
+        text-shadow:
+          0 0 12px rgba(255, 188, 249, 0.98),
+          0 0 30px rgba(255, 102, 234, 0.95),
+          0 0 58px rgba(222, 64, 255, 0.9),
+          0 0 84px rgba(192, 54, 255, 0.66);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .wordmark {
         text-shadow: none;
+      }
+
+      .wordmark .glow-i {
+        text-shadow: 0 0 10px rgba(255, 144, 241, 0.65);
+      }
+
+      .wordmark .glow-i.final-glow {
+        animation: none;
       }
     }
   </style>
@@ -74,257 +120,485 @@
   <main class="hero">
     <div class="logo-wrap" aria-label="Calyr arrival concept logo">
       <canvas id="scene" width="960" height="600" aria-label="Calyr Arrival ink ring"></canvas>
-      <div class="wordmark">Calyr.ai Arrival Concept</div>
+      <div class="wordmark" aria-label="Calyr.ai">
+        Calyr.a<span class="glow-i">í</span>
+      </div>
     </div>
   </main>
 
   <script>
-    (function () {
-      const canvas = document.getElementById("scene");
-      const ctx = canvas.getContext("2d");
-      const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    class ArrivalInkScene {
+      constructor(canvas, glowEl) {
+        this.canvas = canvas;
+        this.glowEl = glowEl;
+        this.ctx = canvas.getContext("2d");
+        this.dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        this.prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        this.config = this.createConfig();
+        this.state = {
+          nodes: [],
+          noiseSeeds: [],
+          start: performance.now(),
+          frozen: false,
+          finalSnapshot: null
+        };
 
-      const ringRadius = 170;
-      const ringYScale = 0.84;
-      const nodeCount = 88;
-      const travelDuration = prefersReduced ? 400 : 2400;
-      const drawDuration = prefersReduced ? 700 : 3600;
-      const trailLength = prefersReduced ? 20 : 94;
-      const slitWidth = 1;
-      const slitHeight = 430;
-      const lensX = ringRadius * 0.52;
-      const lensY = -ringRadius * ringYScale * 0.34;
-      const lensOuterR = 28;
-      const lensCoreR = 11;
-      const lensObstacleR = 24;
-      const nodes = [];
-      const noiseSeeds = [];
-      let frozen = false;
-      let finalSnapshot = null;
+        this.onResize = () => this.resize();
+        this.resize();
+        window.addEventListener("resize", this.onResize);
 
-      function resize() {
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = Math.floor(rect.width * DPR);
-        canvas.height = Math.floor(rect.height * DPR);
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        this.initNoiseSeeds();
+        this.initNodes();
       }
 
-      resize();
-      window.addEventListener("resize", resize);
+      createConfig() {
+        const ringRadius = 170;
+        const ringYScale = 0.84;
 
-      function rand(min, max) {
+        return {
+          ringRadius,
+          ringYScale,
+          nodeCount: 104,
+          travelDuration: this.prefersReduced ? 400 : 2400,
+          drawDuration: this.prefersReduced ? 700 : 3600,
+          trailLength: this.prefersReduced ? 72 : 420,
+          maxSplineStep: 34,
+          continuityFilter: this.prefersReduced ? 0.34 : 0.12,
+          diffusionPasses: this.prefersReduced ? 1 : 3,
+          barcodeStrokeCount: 0,
+          slitWidth: 0.6,
+          slitHeight: 430,
+          slitX: -14,
+          lensX: ringRadius * 0.56,
+          lensY: -ringRadius * ringYScale * 0.31,
+          lensObstacleR: 22,
+          lensRange: 220,
+          coreVoidAngle: -0.56 - (Math.PI / 2),
+          coreVoidLength: 136,
+          coreVoidWidth: 16,
+          inflowDensity: this.prefersReduced ? 2 : 7
+        };
+      }
+
+      rand(min, max) {
         return min + Math.random() * (max - min);
       }
 
-      function clamp(v, min, max) {
+      clamp(v, min, max) {
         return Math.max(min, Math.min(max, v));
       }
 
-      function easeInOut(t) {
+      easeInOut(t) {
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       }
 
-      for (let i = 0; i < 8; i += 1) {
-        noiseSeeds.push(rand(0, Math.PI * 2));
+      organicNoise(t, seed) {
+        return (
+          Math.sin(t * 0.83 + seed) * 0.55 +
+          Math.sin(t * 1.97 + seed * 1.7) * 0.3 +
+          Math.sin(t * 3.41 + seed * 2.3) * 0.15
+        );
       }
 
-      for (let i = 0; i < nodeCount; i += 1) {
-        const a = (Math.PI * 2 * i) / nodeCount;
-        const sourceY = rand(-8, 8);
-        nodes.push({
-          a,
-          sourceX: rand(-0.4, 0.4),
-          sourceY,
-          orbitNoise: rand(-0.08, 0.08),
-          waveGroup: i % 3,
-          wavePhase: rand(0, Math.PI * 2),
-          hitsLens: (i % 5 === 0 || i % 7 === 0),
-          size: rand(1.2, 3.6),
-          x: rand(-0.4, 0.4),
-          y: sourceY,
-          px: 0,
-          py: sourceY,
-          history: []
-        });
+      resize() {
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = Math.floor(rect.width * this.dpr);
+        this.canvas.height = Math.floor(rect.height * this.dpr);
+        this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       }
 
-      const start = performance.now();
-
-      function drawBackground(width, height) {
-        ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
-        ctx.fillRect(0, 0, width, height);
+      initNoiseSeeds() {
+        for (let i = 0; i < 8; i += 1) {
+          this.state.noiseSeeds.push(this.rand(0, Math.PI * 2));
+        }
       }
 
-      function frame(now) {
-        if (frozen && finalSnapshot) {
-          ctx.putImageData(finalSnapshot, 0, 0);
+      initNodes() {
+        const { nodeCount, slitX } = this.config;
+        for (let i = 0; i < nodeCount; i += 1) {
+          const a = (Math.PI * 2 * i) / nodeCount;
+          const sourceY = this.rand(-8, 8);
+          const sourceX = slitX + this.rand(-0.24, 0.24);
+          this.state.nodes.push({
+            a,
+            sourceX,
+            sourceY,
+            orbitNoise: this.rand(-0.08, 0.08),
+            waveGroup: i % 3,
+            wavePhase: this.rand(0, Math.PI * 2),
+            hitsLens: (i % 5 === 0 || i % 7 === 0),
+            organicSeed: this.rand(0, Math.PI * 2),
+            radialBias: this.rand(-0.12, 0.16),
+            size: this.rand(1.2, 3.6),
+            x: sourceX,
+            y: sourceY,
+            fx: sourceX,
+            fy: sourceY,
+            px: sourceX,
+            py: sourceY,
+            history: []
+          });
+        }
+      }
+
+      drawBackground(width, height) {
+        this.ctx.globalCompositeOperation = "source-over";
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
+        this.ctx.fillRect(0, 0, width, height);
+      }
+
+      drawSmoothSpline(points, tension) {
+        if (points.length < 2) {
+          return;
+        }
+        if (points.length === 2) {
+          this.ctx.moveTo(points[0].x, points[0].y);
+          this.ctx.lineTo(points[1].x, points[1].y);
           return;
         }
 
-        const elapsed = now - start;
-        const t = elapsed * 0.001;
-        const travelPhase = clamp(elapsed / travelDuration, 0, 1);
-        const travelEased = easeInOut(travelPhase);
-        const drawPhase = clamp((elapsed - travelDuration) / drawDuration, 0, 1);
-        const drawingOnRing = elapsed >= travelDuration;
+        this.ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < points.length - 1; i += 1) {
+          const p0 = points[Math.max(0, i - 1)];
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const p3 = points[Math.min(points.length - 1, i + 2)];
 
-        const width = canvas.width / DPR;
-        const height = canvas.height / DPR;
-        const cx = width * 0.5;
-        const cy = height * 0.47;
+          const cp1x = p1.x + (p2.x - p0.x) * tension;
+          const cp1y = p1.y + (p2.y - p0.y) * tension;
+          const cp2x = p2.x - (p3.x - p1.x) * tension;
+          const cp2y = p2.y - (p3.y - p1.y) * tension;
 
-        drawBackground(width, height);
+          this.ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+        }
+      }
+
+      drawAcuteOverlay() {
+        const ctx = this.ctx;
+        const { lensX, lensY } = this.config;
+        // Render obstacle as i-stem + glowing acute. Only acute should glow.
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.translate(lensX + 4.8, lensY - 8.2);
+
+        // Draw a clear upright lowercase "i" as obstacle body (no glow).
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowBlur = 0;
+        ctx.font = "700 48px 'Avenir Next', Avenir, 'Segoe UI', Arial, sans-serif";
+        ctx.fillStyle = "rgba(244, 249, 255, 0.82)";
+        ctx.fillText("i", 0, 3);
+
+        // Crisp inner pass for readability over trajectories.
+        ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
+        ctx.font = "700 38px 'Avenir Next', Avenir, 'Segoe UI', Arial, sans-serif";
+        ctx.fillText("i", 0, 3);
+
+        // Acute accent only: strong magenta glow.
+        ctx.save();
+        ctx.translate(10.2, -22.5);
+        ctx.rotate(-0.78);
+        ctx.shadowColor = "rgba(255, 68, 238, 0.98)";
+        ctx.shadowBlur = 16;
+
+        ctx.fillStyle = "rgba(255, 64, 236, 0.95)";
+        ctx.beginPath();
+        ctx.moveTo(-1.7, 7.4);
+        ctx.lineTo(2.1, 7.4);
+        ctx.lineTo(9.0, -7.4);
+        ctx.lineTo(5.0, -7.4);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255, 210, 250, 0.86)";
+        ctx.beginPath();
+        ctx.moveTo(2.8, 5.9);
+        ctx.lineTo(4.2, 5.9);
+        ctx.lineTo(7.5, -5.9);
+        ctx.lineTo(6.1, -5.9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        ctx.restore();
+      }
+
+      updateFinalGlow(drawPhase) {
+        if (!this.glowEl) {
+          return;
+        }
+        if (drawPhase >= 0.86) {
+          this.glowEl.classList.add("final-glow");
+        } else {
+          this.glowEl.classList.remove("final-glow");
+        }
+      }
+
+      drawCoreVoid() {
+        const ctx = this.ctx;
+        const { lensX, lensY, coreVoidAngle, coreVoidLength, coreVoidWidth } = this.config;
 
         ctx.save();
-        ctx.translate(cx, cy);
-
-        const slitPulse = 0.35;
-        ctx.globalCompositeOperation = "lighter";
-        ctx.fillStyle = "rgba(170,236,255," + slitPulse.toFixed(3) + ")";
-        ctx.fillRect(-slitWidth * 0.5, -slitHeight * 0.5, slitWidth, slitHeight);
-        ctx.fillStyle = "rgba(245,252,255,0.88)";
-        ctx.fillRect(-0.5, -slitHeight * 0.5, 1, slitHeight);
-
-        ctx.globalCompositeOperation = "lighter";
-        // Large transparent Ć-like accent: C-lens plus acute stroke.
-        ctx.strokeStyle = "rgba(255, 77, 245, 0.28)";
-        ctx.lineWidth = 5;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.translate(lensX + 6, lensY - 8);
+        ctx.rotate(coreVoidAngle);
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
         ctx.beginPath();
-        ctx.arc(lensX, lensY, lensOuterR, Math.PI * 0.22, Math.PI * 1.78);
-        ctx.stroke();
-        ctx.fillStyle = "rgba(255, 77, 245, 0.14)";
-        ctx.beginPath();
-        ctx.arc(lensX, lensY, lensCoreR, 0, Math.PI * 2);
+        const x = -coreVoidWidth * 0.5;
+        const y = -coreVoidLength * 0.5;
+        const w = coreVoidWidth;
+        const h = coreVoidLength;
+        const r = coreVoidWidth * 0.48;
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
         ctx.fill();
-        ctx.strokeStyle = "rgba(255, 77, 245, 0.36)";
-        ctx.lineWidth = 4;
+        ctx.fillRect(-0.65, -coreVoidLength * 0.5 - 6, 1.3, coreVoidLength + 12);
+        ctx.restore();
+      }
+
+      drawCenterDisk(t) {
+        const ctx = this.ctx;
+        const diskR = this.config.ringRadius * 0.64;
+
+        ctx.save();
+        ctx.globalCompositeOperation = "source-over";
+        const g = ctx.createRadialGradient(0, 0, diskR * 0.12, 0, 0, diskR);
+        g.addColorStop(0, "rgba(2, 6, 12, 0.98)");
+        g.addColorStop(1, "rgba(0, 0, 0, 0.96)");
+        ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.moveTo(lensX + 5, lensY - lensOuterR - 8);
-        ctx.lineTo(lensX + 18, lensY - lensOuterR - 24);
+        ctx.arc(0, 0, diskR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = "rgba(190, 228, 255, 0.14)";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(0, 0, diskR * 0.985, 0, Math.PI * 2);
         ctx.stroke();
 
-        for (let i = 0; i < nodes.length; i += 1) {
-          const n = nodes[i];
-          const group = n.waveGroup;
-          const waveSpeed = group === 0 ? 0.56 : (group === 1 ? 0.84 : 1.22);
-          const waveAmp = group === 0 ? 3.6 : (group === 1 ? 7.8 : 11.2);
-          const swirl = Math.sin(t * waveSpeed + n.wavePhase + noiseSeeds[i % noiseSeeds.length] + n.a * 2.2) * waveAmp;
-          const rough = 1 + Math.sin(t * (0.62 + group * 0.24) + n.a * 5.2) * (0.06 + group * 0.04);
-          const gapWave = Math.abs(Math.sin(n.a * 1.5 + t * 0.19));
-          const gapFactor = clamp((gapWave - 0.18) / 0.82, 0, 1);
+        const rays = 34;
+        for (let i = 0; i < rays; i += 1) {
+          const a = (i / rays) * Math.PI * 2 + t * 0.02;
+          const inner = diskR * 0.7;
+          const outer = diskR * (0.88 + 0.06 * Math.sin(t * 0.6 + i));
+          ctx.strokeStyle = "rgba(170, 214, 255," + (0.028 + 0.02 * Math.sin(i + t)).toFixed(3) + ")";
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(a) * inner, Math.sin(a) * inner);
+          ctx.lineTo(Math.cos(a) * outer, Math.sin(a) * outer);
+          ctx.stroke();
+        }
 
-          const orbitA = n.a + drawPhase * Math.PI * 2;
-          const tx = Math.cos(orbitA) * ringRadius * rough * (0.88 + gapFactor * 0.22);
-          const ty = Math.sin(orbitA) * ringRadius * ringYScale * rough * (0.9 + gapFactor * 0.2) + swirl * 0.16 + n.orbitNoise * 18;
+        ctx.restore();
+      }
 
-          const dxFocus = tx - lensX;
-          const dyFocus = ty - lensY;
-          const distFocus = Math.hypot(dxFocus, dyFocus);
-          const influence = clamp(1 - distFocus / 122, 0, 1);
-          const obstacle = clamp((lensObstacleR - distFocus) / lensObstacleR, 0, 1);
-          let fx = tx;
-          let fy = ty;
-          if (influence > 0) {
-            const inv = 1 / Math.max(0.001, distFocus);
-            const nx = dxFocus * inv;
-            const ny = dyFocus * inv;
+      computeNodeTarget(node, i, t, drawPhase) {
+        const cfg = this.config;
+        const group = node.waveGroup;
+        const waveSpeed = group === 0 ? 0.56 : (group === 1 ? 0.84 : 1.22);
+        const waveAmp = group === 0 ? 3.6 : (group === 1 ? 7.8 : 11.2);
+        const swirl = Math.sin(t * waveSpeed + node.wavePhase + this.state.noiseSeeds[i % this.state.noiseSeeds.length] + node.a * 2.2) * waveAmp;
+        const rough = 1 + Math.sin(t * (0.62 + group * 0.24) + node.a * 5.2) * (0.06 + group * 0.04);
+        const gapWave = Math.abs(Math.sin(node.a * 1.5 + t * 0.19));
+        const gapFactor = this.clamp((gapWave - 0.18) / 0.82, 0, 1);
+        const orbitA = node.a + drawPhase * Math.PI * 2;
 
-            // Hard obstacle core: nothing can pass through the lens center.
-            if (obstacle > 0) {
-              fx += nx * obstacle * 46;
-              fy += ny * obstacle * 46;
-            }
+        const denseSide = this.clamp((Math.cos(orbitA - 0.1) + 1) * 0.5, 0, 1);
+        const sideRadiusScale = 1 - denseSide * 0.2;
+        const sideYScale = 1 - denseSide * 0.12;
+        const localNoise = this.organicNoise(t + orbitA * 0.3, node.organicSeed);
+        const radialNoise = 1 + localNoise * 0.13 + node.radialBias;
 
-            if (n.hitsLens) {
-              // Hit trajectories are focused onto the lens edge (not through core).
-              const edgeDelta = distFocus - (lensObstacleR + 4);
-              fx -= nx * influence * edgeDelta * 0.34;
-              fy -= ny * influence * edgeDelta * 0.34;
-              fx += -ny * influence * 8;
-              fy += nx * influence * 8;
-            } else {
-              // Non-hit trajectories are deflected away so they miss the lens.
-              fx += nx * influence * 34;
-              fy += ny * influence * 34;
-              fx += ny * influence * 7;
-              fy -= nx * influence * 7;
-            }
+        const tx = Math.cos(orbitA) * cfg.ringRadius * rough * (0.88 + gapFactor * 0.22) * sideRadiusScale * radialNoise;
+        const ty = Math.sin(orbitA) * cfg.ringRadius * cfg.ringYScale * rough * (0.9 + gapFactor * 0.2) * sideYScale * (1 + localNoise * 0.09)
+          + swirl * 0.16 + node.orbitNoise * 18;
+
+        const dxFocus = tx - cfg.lensX;
+        const dyFocus = ty - cfg.lensY;
+        const distFocus = Math.hypot(dxFocus, dyFocus);
+        const influence = this.clamp(1 - distFocus / cfg.lensRange, 0, 1);
+        const obstacle = this.clamp((cfg.lensObstacleR - distFocus) / cfg.lensObstacleR, 0, 1);
+
+        let fx = tx;
+        let fy = ty;
+        if (influence > 0) {
+          const inv = 1 / Math.max(0.001, distFocus);
+          const nx = dxFocus * inv;
+          const ny = dyFocus * inv;
+
+          const condense = 1 - influence * 0.72;
+          fx = cfg.lensX + (fx - cfg.lensX) * condense;
+          fy = cfg.lensY + (fy - cfg.lensY) * condense;
+
+          if (obstacle > 0) {
+            fx += nx * obstacle * 10;
+            fy += ny * obstacle * 10;
           }
 
-          const sourceX = n.sourceX;
-          const sourceY = n.sourceY;
+          if (node.hitsLens) {
+            const edgeDelta = distFocus - (cfg.lensObstacleR + 4);
+            fx -= nx * influence * edgeDelta * 0.16;
+            fy -= ny * influence * edgeDelta * 0.16;
+            fx += -ny * influence * 1.5;
+            fy += nx * influence * 1.5;
 
-          n.px = n.x;
-          n.py = n.y;
-          n.x = sourceX + (fx - sourceX) * travelEased;
-          n.y = sourceY + (fy - sourceY) * travelEased;
-
-          // Only start trail history once particle has reached the circle.
-          if (drawingOnRing) {
-            n.history.push({ x: n.x, y: n.y });
-            if (n.history.length > trailLength) {
-              n.history.shift();
-            }
-          } else if (n.history.length) {
-            n.history.length = 0;
+            const tunnelAxisX = Math.cos(cfg.coreVoidAngle);
+            const tunnelAxisY = Math.sin(cfg.coreVoidAngle);
+            const along = (fx - cfg.lensX) * tunnelAxisX + (fy - cfg.lensY) * tunnelAxisY;
+            fx = cfg.lensX + tunnelAxisX * along * (0.88 + 0.08 * (1 - influence));
+            fy = cfg.lensY + tunnelAxisY * along * (0.88 + 0.08 * (1 - influence));
+          } else {
+            fx += nx * influence * 4.2;
+            fy += ny * influence * 4.2;
+            fx += ny * influence * 0.9;
+            fy -= nx * influence * 0.9;
           }
+        }
 
-          const vx = n.x - n.px;
-          const vy = n.y - n.py;
+        return { fx, fy, group, denseSide, influence };
+      }
 
-          const speed = Math.hypot(vx, vy);
-          const tailAlpha = clamp(speed * 0.09, 0.02, 0.24);
+      updateNode(node, i, t, drawPhase, travelEased, drawingOnRing) {
+        const cfg = this.config;
+        const meta = this.computeNodeTarget(node, i, t, drawPhase);
+        const targetX = node.sourceX + (meta.fx - node.sourceX) * travelEased;
+        const targetY = node.sourceY + (meta.fy - node.sourceY) * travelEased;
 
-          if (n.history.length > 2 && drawingOnRing) {
-            ctx.globalCompositeOperation = "lighter";
-            ctx.beginPath();
-            ctx.moveTo(n.history[0].x, n.history[0].y);
-            for (let h = 1; h < n.history.length; h += 1) {
-              ctx.lineTo(n.history[h].x, n.history[h].y);
-            }
-            const historyStrength = clamp((n.history.length / trailLength) * 0.28, 0.1, 0.28);
-            const strokeColor = group === 0
-              ? "rgba(150,232,255,"
-              : (group === 1 ? "rgba(188,224,255," : "rgba(255,150,245,");
-            ctx.strokeStyle = strokeColor + historyStrength.toFixed(3) + ")";
-            ctx.lineWidth = clamp(n.size * 0.66, 0.9, 2.2);
-            ctx.stroke();
+        node.px = node.x;
+        node.py = node.y;
+        if (drawingOnRing) {
+          node.fx += (targetX - node.fx) * cfg.continuityFilter;
+          node.fy += (targetY - node.fy) * cfg.continuityFilter;
+          node.x = node.fx;
+          node.y = node.fy;
+        } else {
+          node.fx = targetX;
+          node.fy = targetY;
+          node.x = targetX;
+          node.y = targetY;
+        }
 
-            // Add little Arrival-like micro pattern marks along the trajectory.
-            if (!prefersReduced && n.history.length > 12) {
-              const microColor = n.hitsLens ? "rgba(255,170,246," : "rgba(180,235,255,";
-              for (let h = 6; h < n.history.length; h += 7) {
-                const p0 = n.history[h - 1];
-                const p1 = n.history[h];
-                const dx = p1.x - p0.x;
-                const dy = p1.y - p0.y;
-                const len = Math.hypot(dx, dy);
-                if (len < 0.001) {
-                  continue;
-                }
-                const nxm = -dy / len;
-                const nym = dx / len;
-                const m = 0.9 + (h / n.history.length) * 1.7;
-                ctx.beginPath();
-                ctx.moveTo(p1.x - nxm * m, p1.y - nym * m);
-                ctx.lineTo(p1.x + nxm * m, p1.y + nym * m);
-                ctx.strokeStyle = microColor + (0.09 + (h / n.history.length) * 0.11).toFixed(3) + ")";
-                ctx.lineWidth = 0.8;
-                ctx.stroke();
+        if (drawingOnRing) {
+          if (node.history.length) {
+            const prev = node.history[node.history.length - 1];
+            const step = Math.hypot(node.x - prev.x, node.y - prev.y);
+            if (step > cfg.maxSplineStep) {
+              const inserts = Math.min(5, Math.ceil(step / cfg.maxSplineStep));
+              for (let s = 1; s < inserts; s += 1) {
+                const q = s / inserts;
+                node.history.push({
+                  x: prev.x + (node.x - prev.x) * q,
+                  y: prev.y + (node.y - prev.y) * q
+                });
               }
             }
           }
+          node.history.push({ x: node.x, y: node.y });
+          if (node.history.length > cfg.trailLength) {
+            node.history.shift();
+          }
+        } else if (node.history.length) {
+          node.history.length = 0;
+        }
 
+        return meta;
+      }
+
+      renderNode(node, meta, t, travelEased, drawingOnRing) {
+        const cfg = this.config;
+        const ctx = this.ctx;
+        const vx = node.x - node.px;
+        const vy = node.y - node.py;
+        const speed = Math.hypot(vx, vy);
+        const tailAlpha = this.clamp(speed * 0.09, 0.02, 0.24);
+
+        if (node.history.length > 2 && drawingOnRing) {
           ctx.globalCompositeOperation = "lighter";
-          for (let k = 1; k <= 5; k += 1) {
-            const txk = n.x - vx * k * 3.2;
-            const tyk = n.y - vy * k * 3.2;
-            const rr = Math.max(0.5, n.size - k * 0.42);
-            const tailBase = group === 2 ? "rgba(255,160,246," : "rgba(156,235,255,";
-            ctx.fillStyle = tailBase + (tailAlpha * (1 - k * 0.16)).toFixed(3) + ")";
+          ctx.beginPath();
+          this.drawSmoothSpline(node.history, 0.1);
+          const historyStrength = this.clamp((node.history.length / cfg.trailLength) * 0.28, 0.1, 0.28);
+          const strokeColor = meta.group === 0
+            ? "rgba(150,232,255,"
+            : (meta.group === 1 ? "rgba(188,224,255," : "rgba(255,150,245,");
+          const denseBoost = 0.7 + meta.denseSide * 0.7;
+          const lensBoost = 1 + meta.influence * 1.25;
+          const inkAlpha = historyStrength * denseBoost * lensBoost;
+
+          ctx.strokeStyle = strokeColor + inkAlpha.toFixed(3) + ")";
+          ctx.lineWidth = this.clamp(node.size * (0.22 + meta.influence * 0.15), 0.26, 0.92);
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.filter = "blur(0.18px)";
+          ctx.stroke();
+          ctx.filter = "none";
+
+          for (let d = 0; d < cfg.diffusionPasses; d += 1) {
+            const phase = t * 1.6 + node.organicSeed * 0.9 + d * 1.3;
+            const jitterX = Math.sin(phase + node.a * 2.2) * (0.45 + d * 0.2);
+            const jitterY = Math.cos(phase * 0.8 + node.a * 1.1) * (0.25 + d * 0.12);
+            const alpha = inkAlpha * (0.28 - d * 0.07);
+            if (alpha <= 0.02) {
+              continue;
+            }
+
+            ctx.save();
+            ctx.translate(jitterX, jitterY);
+            ctx.beginPath();
+            this.drawSmoothSpline(node.history, 0.14 + d * 0.015);
+            ctx.strokeStyle = strokeColor + alpha.toFixed(3) + ")";
+            ctx.lineWidth = this.clamp(node.size * (0.3 + meta.influence * 0.13 + d * 0.05), 0.34, 1.4);
+            ctx.filter = "blur(0.45px)";
+            ctx.stroke();
+            ctx.filter = "none";
+            ctx.restore();
+          }
+
+          const barLen = this.clamp(6 + node.history.length * 0.065 + meta.influence * 7, 7, 25);
+          for (let b = 0; b < cfg.barcodeStrokeCount; b += 1) {
+            const xOffset = (b - (cfg.barcodeStrokeCount - 1) * 0.5) * 0.72 + Math.sin(t * 2.1 + node.organicSeed + b) * 0.15;
+            const yOffset = Math.cos(t * 1.7 + node.a * 3 + b) * 0.55;
+            const barAlpha = this.clamp(inkAlpha * (0.35 - b * 0.09), 0.06, 0.3);
+            const yStart = node.y - barLen * 0.5 + yOffset;
+            const yEnd = node.y + barLen * 0.5 + yOffset;
+            const xBar = node.x + xOffset;
+
+            ctx.beginPath();
+            ctx.moveTo(xBar, yStart);
+            ctx.lineTo(xBar, yEnd);
+            ctx.strokeStyle = "rgba(235,249,255," + barAlpha.toFixed(3) + ")";
+            ctx.lineWidth = this.clamp(0.22 + b * 0.08, 0.22, 0.44);
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(xBar, yStart);
+            ctx.lineTo(xBar + 1.9 + b * 0.35, yStart);
+            ctx.strokeStyle = "rgba(235,249,255," + this.clamp(barAlpha * 0.9, 0.05, 0.26).toFixed(3) + ")";
+            ctx.lineWidth = this.clamp(0.2 + b * 0.06, 0.2, 0.36);
+            ctx.lineCap = "round";
+            ctx.stroke();
+          }
+        }
+
+        // Avoid dotted/dashed ring artifacts: keep particles visible mainly during inflow.
+        if (!drawingOnRing) {
+          ctx.globalCompositeOperation = "lighter";
+          for (let k = 1; k <= 2; k += 1) {
+            const txk = node.x - vx * k * 3.2;
+            const tyk = node.y - vy * k * 3.2;
+            const rr = Math.max(0.26, node.size * 0.42 - k * 0.26);
+            const tailBase = meta.group === 2 ? "rgba(255,160,246," : "rgba(156,235,255,";
+            ctx.fillStyle = tailBase + (tailAlpha * 0.45 * (1 - k * 0.2)).toFixed(3) + ")";
             ctx.beginPath();
             ctx.arc(txk, tyk, rr, 0, Math.PI * 2);
             ctx.fill();
@@ -332,14 +606,18 @@
 
           ctx.fillStyle = "rgba(248,253,255," + (0.34 + travelEased * 0.5).toFixed(3) + ")";
           ctx.beginPath();
-          ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
           ctx.fill();
         }
+      }
 
-        const inflowDensity = prefersReduced ? 2 : 7;
-        for (let i = 0; i < inflowDensity; i += 1) {
-          const p = (t * 0.62 + i / inflowDensity) % 1;
-          const eased = easeInOut(p);
+      drawInflow(t) {
+        const ctx = this.ctx;
+        const density = this.config.inflowDensity;
+
+        for (let i = 0; i < density; i += 1) {
+          const p = (t * 0.62 + i / density) % 1;
+          const eased = this.easeInOut(p);
           const ix = Math.sin(t * 2.7 + i * 1.3) * 0.45;
           const iy = Math.sin(t * 3.2 + i * 1.6) * 14 + (eased - 0.5) * 26;
           const ir = 1.2 + (1 - p) * 1.8;
@@ -359,21 +637,71 @@
           ctx.arc(ix, iy, ir, 0, Math.PI * 2);
           ctx.fill();
         }
+      }
 
-        ctx.restore();
+      frame(now) {
+        const ctx = this.ctx;
+        const { frozen, finalSnapshot, start } = this.state;
+        const cfg = this.config;
 
-        // Freeze final, fully drawn symbol.
-        if (!frozen && drawPhase >= 1) {
-          frozen = true;
-          finalSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        if (frozen && finalSnapshot) {
+          ctx.putImageData(finalSnapshot, 0, 0);
           return;
         }
 
-        requestAnimationFrame(frame);
+        const elapsed = now - start;
+        const t = elapsed * 0.001;
+        const travelPhase = this.clamp(elapsed / cfg.travelDuration, 0, 1);
+        const travelEased = this.easeInOut(travelPhase);
+        const drawPhase = this.clamp((elapsed - cfg.travelDuration) / cfg.drawDuration, 0, 1);
+        const drawingOnRing = elapsed >= cfg.travelDuration;
+
+        const width = this.canvas.width / this.dpr;
+        const height = this.canvas.height / this.dpr;
+        const cx = width * 0.5;
+        const cy = height * 0.47;
+
+        this.drawBackground(width, height);
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.globalCompositeOperation = "lighter";
+        ctx.fillStyle = "rgba(170,236,255,0.35)";
+        ctx.fillRect(cfg.slitX - cfg.slitWidth * 0.5, -cfg.slitHeight * 0.5, cfg.slitWidth, cfg.slitHeight);
+        ctx.fillStyle = "rgba(245,252,255,0.72)";
+        ctx.fillRect(cfg.slitX - 0.2, -cfg.slitHeight * 0.5, 0.4, cfg.slitHeight);
+
+        this.drawCenterDisk(t);
+
+        for (let i = 0; i < this.state.nodes.length; i += 1) {
+          const node = this.state.nodes[i];
+          const meta = this.updateNode(node, i, t, drawPhase, travelEased, drawingOnRing);
+          this.renderNode(node, meta, t, travelEased, drawingOnRing);
+        }
+
+        this.drawInflow(t);
+        this.drawAcuteOverlay();
+        ctx.restore();
+        this.updateFinalGlow(drawPhase);
+
+        if (!this.state.frozen && drawPhase >= 1) {
+          this.state.frozen = true;
+          this.state.finalSnapshot = ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+          return;
+        }
+
+        requestAnimationFrame((ts) => this.frame(ts));
       }
 
-      requestAnimationFrame(frame);
-    })();
+      start() {
+        requestAnimationFrame((ts) => this.frame(ts));
+      }
+    }
+
+    const canvas = document.getElementById("scene");
+    const glowI = document.querySelector(".wordmark .glow-i");
+    const scene = new ArrivalInkScene(canvas, glowI);
+    scene.start();
   </script>
 </body>
 </html>
