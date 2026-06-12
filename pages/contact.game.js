@@ -261,14 +261,16 @@ const CONTENT = Object.freeze({
 });
 
 const CONTACT_PAYLOAD = [
-  "MECARD:",
-  `N:${CONTENT.personName};`,
-  `ORG:${CONTENT.orgName};`,
-  `TEL:${CONTENT.phone};`,
-  `EMAIL:${CONTENT.email};`,
-  `URL:${CONTENT.website};`,
-  ";"
-].join("");
+  "BEGIN:VCARD",
+  "VERSION:3.0",
+  `FN:${CONTENT.personName}`,
+  `ORG:${CONTENT.orgName}`,
+  `TITLE:${CONTENT.orgTitle}`,
+  `TEL;TYPE=CELL:${CONTENT.phone}`,
+  `EMAIL;TYPE=INTERNET:${CONTENT.email}`,
+  `URL:${CONTENT.website}`,
+  "END:VCARD",
+].join("\n");
 
 const PERSON_NAME = CONTENT.personName;
 const ORG_TITLE = CONTENT.orgTitle;
@@ -1198,6 +1200,14 @@ function drawHighResContactCard(layout) {
   ctx.restore();
 
   ctx.save();
+  // High-contrast scan panel for mobile cameras: white backing + quiet zone.
+  const qrQuiet = Math.max(10, moduleSize * 4);
+  const qrPanelX = qrBounds.left - qrQuiet;
+  const qrPanelY = qrBounds.top - qrQuiet;
+  const qrPanelW = qrBounds.width + qrQuiet * 2;
+  const qrPanelH = qrBounds.height + qrQuiet * 2;
+  drawRoundedRect(qrPanelX, qrPanelY, qrPanelW, qrPanelH, 14, "#ffffff");
+
   for (let row = 0; row < qrSize; row += 1) {
     for (let col = 0; col < qrSize; col += 1) {
       if (!qrMatrix[row][col]) continue;
@@ -1223,7 +1233,7 @@ function drawHighResContactCard(layout) {
         col,
         qrSize,
         style: "classic",
-        ink: isMarked ? "#ff4df5" : "#ffffff",
+        ink: isMarked ? "#111111" : "#000000",
         glow: isMarked ? "rgba(255, 77, 245, 0.38)" : null,
         moduleScale: 1,
         animate: false,
