@@ -558,7 +558,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		teaser = str(section.get("teaser", "")).strip()
 		default_tile_kind = "glyph" if index == 1 else "text"
 		tile_kind = str(section.get("tile_kind", default_tile_kind)).strip().lower()
-		if tile_kind not in {"glyph", "text", "visit_card"}:
+		if tile_kind not in {"glyph", "text", "visit_card", "empty"}:
 			tile_kind = "text"
 		paragraphs = [paragraph.strip() for paragraph in body.splitlines() if paragraph.strip()]
 		excerpt = teaser or (paragraphs[0] if paragraphs else "")
@@ -577,6 +577,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		keywords_csv = ",".join(keywords)
 		neighbors_csv = ",".join(neighbors)
 		search_text = " ".join([title, excerpt, " ".join(paragraphs), " ".join(keywords)]).strip().lower()
+		if tile_kind == "empty":
+			search_text = ""
 		keyword_scales = [1.38, 1.12, 0.98, 0.9, 0.82, 0.76]
 		keyword_markup = ""
 		if tile_kind == "text" and keywords:
@@ -621,6 +623,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 				f'\t\t\t\t<div class="glyph-surface" aria-label="{html.escape(title)} glyph">{glyph_markup}</div>\n'
 				'</div>'
 			)
+		if tile_kind == "empty":
+			open_markup = '<div class="tile-empty-state" aria-hidden="true"></div>'
 		extra_section_attrs = ""
 		if tile_kind == "visit_card":
 			visit_src = str(section.get("visit_src") or section.get("visit_game_href") or "../pages/contact.html").strip() or "../pages/contact.html"
@@ -653,6 +657,9 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			initial_open_slug = slug
 		initial_state_class = "is-open" if is_initially_open else "is-collapsed"
 		initial_expanded = "true" if is_initially_open else "false"
+		if tile_kind == "empty":
+			initial_state_class = "is-collapsed"
+			initial_expanded = "false"
 		tile_variant = (index - 1) % 8 + 1
 		closed_span = as_dict(section.get("closed_span"))
 		open_span = as_dict(section.get("open_span"))
@@ -678,23 +685,31 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			tile_collapsed_rule += f' box-shadow: {closed_shadow};'
 		tile_collapsed_rule += ' }'
 		closed_tile_rules.append(tile_collapsed_rule)
-		open_text_tile_rules.append(
-			f'.study-section.tile-{tile_variant}.is-open[data-tile-kind="text"], .study-section.tile-{tile_variant}.is-open[data-tile-kind="visit_card"] {{ grid-column: span {open_cols}; grid-row: span {open_rows}; }}'
-		)
-		expanded_text_tile_rules.append(
-			f'.study-section.tile-{tile_variant}.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-{tile_variant}.is-open.is-expanded[data-tile-kind="visit_card"] {{ grid-column: span {expanded_cols}; grid-row: span {expanded_rows}; z-index: 3; }}'
-		)
+		if tile_kind in {"text", "visit_card"}:
+			open_text_tile_rules.append(
+				f'.study-section.tile-{tile_variant}.is-open[data-tile-kind="text"], .study-section.tile-{tile_variant}.is-open[data-tile-kind="visit_card"] {{ grid-column: span {open_cols}; grid-row: span {open_rows}; }}'
+			)
+			expanded_text_tile_rules.append(
+				f'.study-section.tile-{tile_variant}.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-{tile_variant}.is-open.is-expanded[data-tile-kind="visit_card"] {{ grid-column: span {expanded_cols}; grid-row: span {expanded_rows}; z-index: 3; }}'
+			)
 		trigger_open = f'\t\t<div class="study-trigger" role="button" tabindex="0" aria-expanded="{initial_expanded}" aria-controls="detail-{html.escape(slug)}">\n'
 		trigger_close = '\t\t</div>\n'
 
-		tile_markup.append(
-			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
-			f'{trigger_open}'
-			f'\t\t\t{open_markup}\n'
-			f'{trigger_close}'
-			f'\t</section>'
-		)
-		menu_entries.append((f"#{slug}", title))
+		if tile_kind == "empty":
+			tile_markup.append(
+				f'<section class="study-section tile-{tile_variant} tile-empty {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="" data-neighbors="" data-search-text="" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
+				f'\t\t{open_markup}\n'
+				f'\t</section>'
+			)
+		else:
+			tile_markup.append(
+				f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
+				f'{trigger_open}'
+				f'\t\t\t{open_markup}\n'
+				f'{trigger_close}'
+				f'\t</section>'
+			)
+			menu_entries.append((f"#{slug}", title))
 
 	closed_tile_rules_css = "\n\t\t".join(closed_tile_rules)
 	open_text_tile_rules_css = "\n\t\t".join(open_text_tile_rules)
@@ -1199,12 +1214,14 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.corner-menu-panel[hidden] {{ display: none; }}
 		.corner-menu-link {{ display: block; color: #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.18); }}
 		.corner-menu-link.is-active {{ color: #7ff3ff; border-bottom-color: rgba(127, 243, 255, 0.96); }}
-		.study-layout {{ position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }}
+		.study-layout {{ position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }}
+		.study-layout::-webkit-scrollbar {{ display: none; width: 0; height: 0; }}
 		.study-graph-toolbar {{ display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: center; border: 1px solid rgba(255,255,255,0.52); border-bottom: 0; padding: 0.52rem 0.7rem; background: rgba(7, 14, 28, 0.72); }}
 		.study-graph-label {{ margin: 0; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.68rem; color: rgba(255,255,255,0.86); }}
 		.study-graph-input {{ width: 100%; border: 1px solid rgba(255,255,255,0.38); background: rgba(2, 6, 15, 0.85); color: #fff; padding: 0.52rem 0.65rem; font-size: 0.86rem; }}
 		.study-graph-input:focus {{ outline: none; border-color: rgba(255,255,255,0.8); }}
-		.study-content {{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }}
+		.study-content {{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }}
+		.study-content::-webkit-scrollbar {{ display: none; width: 0; height: 0; }}
 		.study-section {{ position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }}
 		.study-section.is-search-muted {{ opacity: 0.58; filter: saturate(0.65); }}
 		.study-trigger {{ width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; z-index: 2; display: block; }}
@@ -1228,7 +1245,11 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-keyword:nth-child(4) {{ opacity: 0.82; }}
 		.study-keyword:nth-child(5) {{ opacity: 0.78; }}
 		.study-keyword:nth-child(6) {{ opacity: 0.74; }}
-		.study-fulltext {{ flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; }}
+		.study-fulltext {{ flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; touch-action: pan-y; }}
+		.study-fulltext::-webkit-scrollbar {{ display: none; width: 0; height: 0; }}
+		.study-section[data-tile-kind="empty"] {{ border-color: rgba(255,255,255,0.22); background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); pointer-events: none; }}
+		.study-section[data-tile-kind="empty"] .living-surface {{ display: none !important; }}
+		.tile-empty-state {{ width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.0) 60%); }}
 		.tile-open-state-visit-card {{ padding: 0; color: #ffffff; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }}
 		.visit-embed-frame {{ width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }}
 		.study-section[data-visit-defer="true"] .visit-embed-frame {{ opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 220ms ease; }}

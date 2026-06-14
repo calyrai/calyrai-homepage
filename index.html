@@ -40,12 +40,14 @@
 		.corner-menu-panel[hidden] { display: none; }
 		.corner-menu-link { display: block; color: #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
 		.corner-menu-link.is-active { color: #7ff3ff; border-bottom-color: rgba(127, 243, 255, 0.96); }
-		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }
+		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }
+		.study-layout::-webkit-scrollbar { display: none; width: 0; height: 0; }
 		.study-graph-toolbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: center; border: 1px solid rgba(255,255,255,0.52); border-bottom: 0; padding: 0.52rem 0.7rem; background: rgba(7, 14, 28, 0.72); }
 		.study-graph-label { margin: 0; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.68rem; color: rgba(255,255,255,0.86); }
 		.study-graph-input { width: 100%; border: 1px solid rgba(255,255,255,0.38); background: rgba(2, 6, 15, 0.85); color: #fff; padding: 0.52rem 0.65rem; font-size: 0.86rem; }
 		.study-graph-input:focus { outline: none; border-color: rgba(255,255,255,0.8); }
-		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
+		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }
+		.study-content::-webkit-scrollbar { display: none; width: 0; height: 0; }
 		.study-section { position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
 		.study-section.is-search-muted { opacity: 0.58; filter: saturate(0.65); }
 		.study-trigger { width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; z-index: 2; display: block; }
@@ -72,7 +74,11 @@
 		.study-keyword:nth-child(4) { opacity: 0.82; }
 		.study-keyword:nth-child(5) { opacity: 0.78; }
 		.study-keyword:nth-child(6) { opacity: 0.74; }
-		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; }
+		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+		.study-fulltext::-webkit-scrollbar { display: none; width: 0; height: 0; }
+		.study-section[data-tile-kind="empty"] { border-color: rgba(255,255,255,0.22); background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); pointer-events: none; }
+		.study-section[data-tile-kind="empty"] .living-surface { display: none !important; }
+		.tile-empty-state { width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.0) 60%); }
 		.tile-open-state-visit-card { padding: 0; color: #ffffff; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
 		.visit-embed-frame { width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }
 		.study-section[data-visit-defer="true"] .visit-embed-frame { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 220ms ease; }
@@ -138,36 +144,38 @@
 		.tile-open-state-visit-card .study-paragraph { color: #ffffff; }
 		.study-paragraph { margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }
 		.study-section.is-collapsed { grid-column: span 2; grid-row: span 2; border-color: rgba(255, 255, 255, 0.38); background: linear-gradient(135deg, rgba(53, 231, 255, 0.82) 0%, rgba(255, 63, 209, 0.84) 100%); box-shadow: 0 0 18px rgba(53, 231, 255, 0.18), 0 0 24px rgba(255, 63, 209, 0.16); }
-		.study-section.tile-1.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(112, 255, 213, 0.95) 0%, rgba(72, 201, 255, 0.92) 52%, rgba(123, 134, 255, 0.9) 100%); }
-		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%); }
-		.study-section.tile-3.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%); }
-		.study-section.tile-4.is-collapsed { grid-column: span 3; grid-row: span 3; background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%); }
-		.study-section.tile-5.is-collapsed { grid-column: span 5; grid-row: span 2; background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%); }
-		.study-section.tile-6.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%); }
-		.study-section.tile-7.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%); }
-		.study-section.tile-8.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%); }
-		.study-section.tile-1.is-collapsed { grid-column: span 4; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(223, 231, 244, 0.92) 100%); box-shadow: 0 0 16px rgba(255, 255, 255, 0.26), 0 0 28px rgba(255, 255, 255, 0.18); }
+		.study-section.tile-1.is-collapsed { grid-column: span 4; grid-row: span 2; background: linear-gradient(135deg, rgba(112, 255, 213, 0.95) 0%, rgba(72, 201, 255, 0.92) 52%, rgba(123, 134, 255, 0.9) 100%); }
+		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 3; background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%); }
+		.study-section.tile-3.is-collapsed { grid-column: span 1; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.0) 100%); }
+		.study-section.tile-4.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%); }
+		.study-section.tile-5.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%); }
+		.study-section.tile-6.is-collapsed { grid-column: span 4; grid-row: span 2; background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%); }
+		.study-section.tile-7.is-collapsed { grid-column: span 2; grid-row: span 1; background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.0) 100%); }
+		.study-section.tile-8.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%); }
+		.study-section.tile-1.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%); }
+		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%); }
+		.study-section.tile-3.is-collapsed { grid-column: span 3; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(223, 231, 244, 0.92) 100%); box-shadow: 0 0 16px rgba(255, 255, 255, 0.26), 0 0 28px rgba(255, 255, 255, 0.18); }
 		.study-section.is-collapsed .tile-open-state { display: none; }
 		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(255,255,255,0.18); background: rgba(0,0,0,0.26); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.24); backdrop-filter: blur(6px); }
 		.study-section[data-tile-kind="visit_card"].is-open { grid-row: span 6; min-height: 340px; }
 		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; }
 		.study-section.tile-2.is-open[data-tile-kind="text"], .study-section.tile-2.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 4; }
-		.study-section.tile-3.is-open[data-tile-kind="text"], .study-section.tile-3.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-4.is-open[data-tile-kind="text"], .study-section.tile-4.is-open[data-tile-kind="visit_card"] { grid-column: span 5; grid-row: span 4; }
-		.study-section.tile-5.is-open[data-tile-kind="text"], .study-section.tile-5.is-open[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 4; }
-		.study-section.tile-6.is-open[data-tile-kind="text"], .study-section.tile-6.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-7.is-open[data-tile-kind="text"], .study-section.tile-7.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-4.is-open[data-tile-kind="text"], .study-section.tile-4.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-5.is-open[data-tile-kind="text"], .study-section.tile-5.is-open[data-tile-kind="visit_card"] { grid-column: span 5; grid-row: span 4; }
+		.study-section.tile-6.is-open[data-tile-kind="text"], .study-section.tile-6.is-open[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 4; }
 		.study-section.tile-8.is-open[data-tile-kind="text"], .study-section.tile-8.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 6; }
+		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-2.is-open[data-tile-kind="text"], .study-section.tile-2.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-3.is-open[data-tile-kind="text"], .study-section.tile-3.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 6; }
 		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 11; grid-row: span 7; z-index: 3; }
 		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-2.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 5; z-index: 3; }
-		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-3.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-4.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-4.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; z-index: 3; }
-		.study-section.tile-5.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-5.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 10; grid-row: span 5; z-index: 3; }
-		.study-section.tile-6.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-6.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-7.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-7.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-4.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-4.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-5.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-5.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; z-index: 3; }
+		.study-section.tile-6.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-6.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 10; grid-row: span 5; z-index: 3; }
 		.study-section.tile-8.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-8.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
+		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-2.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-3.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
 		.study-section.is-open .tile-open-state { display: flex; flex-direction: column; }
 		.study-section.is-open .study-detail-link {
 			display: inline-flex;
@@ -361,7 +369,10 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-3 is-collapsed" id="calyrai" data-node-id="calyrai" data-keywords="ai,learning,semantics,relation" data-neighbors="projects,theory,access,engine" data-search-text="calyrai learning systems continuously update how structure, data, and interpretation connect. learning systems continuously update how structure, data, and interpretation connect. they support adaptive model behavior rather than static one-time fitting. use this layer when iterative improvement and semantic consistency are required. ai learning semantics relation" data-tile-kind="text" data-tile-index="3">
+		<section class="study-section tile-3 tile-empty is-collapsed" id="void-axis-a" data-node-id="void-axis-a" data-keywords="" data-neighbors="" data-search-text="" data-tile-kind="empty" data-tile-index="3">
+		<div class="tile-empty-state" aria-hidden="true"></div>
+	</section>
+		<section class="study-section tile-4 is-collapsed" id="calyrai" data-node-id="calyrai" data-keywords="ai,learning,semantics,relation" data-neighbors="projects,theory,access,engine" data-search-text="calyrai learning systems continuously update how structure, data, and interpretation connect. learning systems continuously update how structure, data, and interpretation connect. they support adaptive model behavior rather than static one-time fitting. use this layer when iterative improvement and semantic consistency are required. ai learning semantics relation" data-tile-kind="text" data-tile-index="4">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-calyrai">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -379,7 +390,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-4 is-collapsed" id="access" data-node-id="access" data-keywords="reproducibility,trust,interface,oracle" data-neighbors="projects,theory,calyrai,engine" data-search-text="access reproducible oracles are the public promise of the system. reproducible oracles are the public promise of the system. predictions and outputs must remain traceable, repeatable, and interpretable. use this layer for reliable decision surfaces that preserve scientific trust. reproducibility trust interface oracle" data-tile-kind="text" data-tile-index="4">
+		<section class="study-section tile-5 is-collapsed" id="access" data-node-id="access" data-keywords="reproducibility,trust,interface,oracle" data-neighbors="projects,theory,calyrai,engine" data-search-text="access reproducible oracles are the public promise of the system. reproducible oracles are the public promise of the system. predictions and outputs must remain traceable, repeatable, and interpretable. use this layer for reliable decision surfaces that preserve scientific trust. reproducibility trust interface oracle" data-tile-kind="text" data-tile-index="5">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-access">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -397,7 +408,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-5 is-collapsed" id="engine" data-node-id="engine" data-keywords="object-oriented,engine,projections,renderers,runtime" data-neighbors="projects,theory,calyrai,access,engine-project-description" data-search-text="engine calyr.ai is ai-native scientific design in executable form. calyr.ai is ai-native scientific design in executable form. supercomputing infrastructure, surrogate modelling, and semantic engineering converge in this engine layer. use this tile to move from narrative to operational design of molecular, nano biological, and physical systems. object-oriented engine projections renderers runtime" data-tile-kind="text" data-tile-index="5">
+		<section class="study-section tile-6 is-collapsed" id="engine" data-node-id="engine" data-keywords="object-oriented,engine,projections,renderers,runtime" data-neighbors="projects,theory,calyrai,access,engine-project-description" data-search-text="engine calyr.ai is ai-native scientific design in executable form. calyr.ai is ai-native scientific design in executable form. supercomputing infrastructure, surrogate modelling, and semantic engineering converge in this engine layer. use this tile to move from narrative to operational design of molecular, nano biological, and physical systems. object-oriented engine projections renderers runtime" data-tile-kind="text" data-tile-index="6">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-engine">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -415,7 +426,10 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-6 is-collapsed" id="engine-project-description" data-node-id="engine-project-description" data-keywords="engine,project-description,workflow,alphafold,asc" data-neighbors="engine,projects,design-page" data-search-text="engine project description project description for engine workflows in the same detail-page layout. open the engine project description as a dedicated subpoint tile of engine. this tile keeps the same detail-page layout used by current projects. use it to review scope, workflow stages, and asc integration readiness. engine project-description workflow alphafold asc" data-tile-kind="text" data-tile-index="6">
+		<section class="study-section tile-7 tile-empty is-collapsed" id="void-axis-b" data-node-id="void-axis-b" data-keywords="" data-neighbors="" data-search-text="" data-tile-kind="empty" data-tile-index="7">
+		<div class="tile-empty-state" aria-hidden="true"></div>
+	</section>
+		<section class="study-section tile-8 is-collapsed" id="engine-project-description" data-node-id="engine-project-description" data-keywords="engine,project-description,workflow,alphafold,asc" data-neighbors="engine,projects,design-page" data-search-text="engine project description project description for engine workflows in the same detail-page layout. open the engine project description as a dedicated subpoint tile of engine. this tile keeps the same detail-page layout used by current projects. use it to review scope, workflow stages, and asc integration readiness. engine project-description workflow alphafold asc" data-tile-kind="text" data-tile-index="8">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-engine-project-description">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -434,7 +448,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-7 is-collapsed" id="page-design" data-node-id="design-page" data-keywords="design,page,markdown,layout,oo-engine" data-neighbors="engine,theory,projects" data-search-text="page design design principles of the page system from markdown to render output. open the page design detail page directly from this tile. this tile documents how markdown, yaml, and rendering stay aligned. use it to inspect design decisions without changing the current layout shell. design page markdown layout oo-engine" data-tile-kind="text" data-tile-index="7">
+		<section class="study-section tile-1 is-collapsed" id="page-design" data-node-id="design-page" data-keywords="design,page,markdown,layout,oo-engine" data-neighbors="engine,theory,projects" data-search-text="page design design principles of the page system from markdown to render output. open the page design detail page directly from this tile. this tile documents how markdown, yaml, and rendering stay aligned. use it to inspect design decisions without changing the current layout shell. design page markdown layout oo-engine" data-tile-kind="text" data-tile-index="9">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-page-design">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -453,7 +467,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-8 is-collapsed" id="current-projects-page" data-node-id="current-projects-page" data-keywords="inspect,projects-page,layout,detail" data-neighbors="projects,theory,engine" data-search-text="current projects page inspect the current projects detail page in the same layout style. open the current projects detail page directly from this tile. this tile exists for inspection and keeps the same detail layout style. use it to verify content, index behavior, and section rendering. inspect projects-page layout detail" data-tile-kind="text" data-tile-index="8">
+		<section class="study-section tile-2 is-collapsed" id="current-projects-page" data-node-id="current-projects-page" data-keywords="inspect,projects-page,layout,detail" data-neighbors="projects,theory,engine" data-search-text="current projects page inspect the current projects detail page in the same layout style. open the current projects detail page directly from this tile. this tile exists for inspection and keeps the same detail layout style. use it to verify content, index behavior, and section rendering. inspect projects-page layout detail" data-tile-kind="text" data-tile-index="10">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-current-projects-page">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -472,7 +486,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="9" data-visit-defer="true" data-visit-knob="false" data-visit-mesh="true">
+		<section class="study-section tile-3 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="11" data-visit-defer="true" data-visit-knob="false" data-visit-mesh="true">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-lisnig-impressum">
 			<div class="tile-open-state tile-open-state-visit-card">
 				<div class="visit-mesh" aria-hidden="true"><span class="visit-mesh-line l1"></span><span class="visit-mesh-line l2"></span><span class="visit-mesh-line l3"></span><span class="visit-mesh-line l4"></span><span class="visit-mesh-line l5"></span><span class="visit-mesh-node n1"></span><span class="visit-mesh-node n2"></span><span class="visit-mesh-node n3"></span><span class="visit-mesh-node n4"></span></div>
@@ -1191,6 +1205,7 @@
 	document.querySelectorAll('.study-section').forEach((section) => {
 		if (!(section instanceof HTMLElement)) return;
 		if (section.dataset.tileKind === 'visit_card') return;
+		if (section.dataset.tileKind === 'empty') return;
 		livingMeshes.push(new LivingMeshEngine(section, getTileConfig(section)));
 	});
 	let _last = performance.now();

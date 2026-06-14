@@ -6,7 +6,7 @@ open_span:
   cols: 8
   rows: 4
 closed_span:
-  cols: 5
+  cols: 4
   rows: 2
 closed_gradient: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80,
   128, 0.88) 100%)

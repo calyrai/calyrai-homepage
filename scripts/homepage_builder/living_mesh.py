@@ -300,6 +300,7 @@ LIVING_MESH_SCRIPT = """<script>
 	document.querySelectorAll('.study-section').forEach((section) => {
 		if (!(section instanceof HTMLElement)) return;
 		if (section.dataset.tileKind === 'visit_card') return;
+		if (section.dataset.tileKind === 'empty') return;
 		livingMeshes.push(new LivingMeshEngine(section, getTileConfig(section)));
 	});
 	let _last = performance.now();
