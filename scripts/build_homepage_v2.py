@@ -27,7 +27,7 @@ def _load_font_css_href(root: Path) -> str:
 		css_file = str(artifacts.get("css", "")).strip()
 		if not css_file:
 			return ""
-		return f"../calyrai_font/out/{css_file}"
+		return f"./calyrai_font/out/{css_file}"
 	except Exception:
 		return ""
 

@@ -11,10 +11,10 @@ AI-Native Scientific Design
 
 
 ## Hero Title
-CALYR.AI
+Calyr.ai
 
 ## Hero Subtitle
-Supercomputing infrastructure, surrogate modelling, and semantic engineering to design molecular, nano biological, as well as physical systems and objects.
+Transforming simulations, experiments and data into interactive surrogate models.
 
 ## CTA Text
 Explore the OO Engine

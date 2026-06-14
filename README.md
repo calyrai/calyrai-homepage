@@ -2,11 +2,124 @@
 
 This repository is the public Calyr.ai website.
 
+## Locked homepage decisions (2026-06-14)
+
+The following direction is approved and should be treated as the current baseline.
+
+- Hero label: AI-Native Scientific Design
+- Hero brand headline: Calyr.ai branding with larger visual weight
+- Hero subtitle: Transforming simulations, experiments and data into interactive surrogate models.
+- Hero tagline: Molecular Intelligence · Adaptive Systems · Reproducible Oracles
+- Tile mesh direction: keep bright/white tile net rendering (do not switch to dark/black net globally)
+- Cross-browser/local behavior: keep local asset paths compatible with both localhost and file loading paths
+
+Primary implementation files for this state:
+
+- `homepage_v5/homepage.md`
+- `scripts/homepage_builder/titlepage.py`
+- `scripts/homepage_builder/living_mesh.py`
+- `scripts/build_homepage_v2.py`
+- generated outputs: `index.html`, `pages/*.html`
+
 ## Homepage versioning
 
-- Version registry and build chain (MD -> YAML -> HTML): `README_versions.md`
+- Canonical runtime/build chain (active): `homepage_v5/homepage.md` + `homepage_v5/homepage.yaml` + `homepage_v5/tiles/*.yaml` -> `index.html`
+
+## Canonical pipeline (2026-06)
+
+Use this workflow as the single source of truth for homepage behavior.
+
+- Main source markdown: `homepage_v5/homepage.md`
+- Main curation yaml: `homepage_v5/homepage.yaml`
+- Tile modules: `homepage_v5/tiles/*.yaml`
+- Detail page markdown: `homepage_v5/content_pages/*.md`
+- Detail page manifest: `homepage_v5/content_pages/content_pages.yaml`
+- Main builder: `scripts/build_homepage_v2.py`
+- Detail-page builder: `scripts/build_content_pages.py`
+- Canonical output: `index.html` + `pages/*.html`
+
+Commands:
+
+```bash
+cd apps/homepage
+./nexus.homepage-build
+./nexus.homepage-open 8011
+```
+
+Notes:
+
+- `nexus.homepage-open` runs a build before serving to keep local state deterministic.
+- The v4 TypeScript OO engine under `homepage_v4/src/` is a reference/prototyping surface, not the active homepage runtime.
+
+## Session handoff (2026-06-12)
+
+Use this block as the restart point for the next agent session.
+
+### Current state
+
+- Contact QR style was switched to white modules on black background in `pages/contact.game.js`.
+- Start page behavior was updated in `index.html`:
+	- Clicking the left hero brand (`Calyr.aí`) resets to start state.
+	- Legal note (impressum footer) is shown only when the contact tile (`#lisnig-impressum`) is open.
+	- Nested/internal side scrollbars were removed; page uses full-page wheel scrolling.
+
+### Last pushed commits (main)
+
+- `2af02d0` - contact QR style + instant local load docs.
+- `01a405f` - remove nested side scrollbars and restore full-page wheel scrolling.
+
+### Run and verify quickly
+
+```bash
+cd apps/homepage
+./nexus.homepage-open 8011
+```
+
+Then verify:
+
+- `http://localhost:8011/index.html`
+- Click left brand area -> all tiles collapse to start state.
+- Open Contact tile -> legal/impressum footer appears.
+- Close Contact tile -> legal/impressum footer hides.
+- Mouse-wheel scroll works on whole page without sidebars.
+
+### Guardrails for next agent
+
+- Keep homepage work in this repo only (`apps/homepage/`) and push to `calyrai/calyrai-homepage` only.
+- Do not mix pushes with root `Calyr` repo work in the same commit flow.
+- Commit only minimal files changed for the requested behavior.
+- Prefer local server checks (`./nexus.homepage-open 8011`) over `file://` checks because iframe/contact resource loading differs on `file://`.
+
+### Next likely tasks
+
+- Projects workstream first, with AORTA as priority.
+- Mobile fine-tuning: hero/menu spacing and tile sizing in narrow portrait.
+- Re-check contact tile full-screen behavior in landscape mobile.
+- Optional cleanup: review untracked `logo/` and `references/` before future pushes so only intentional assets are committed.
+
+### Next focus: AORTA (projects)
+
+AORTA source-of-truth is currently in the main Calyr docs module, not in homepage tile content yet.
+
+- Primary source: `docs/calyr.aorta/calyr.aorta.md`
+- Module readme/build: `docs/calyr.aorta/README.md`
+- Load policy/register: `docs/calyr.aorta/register.md`
+
+Recommended sequence for next agent:
+
+1. Review and update AORTA content only in `docs/calyr.aorta/calyr.aorta.md`.
+2. Build AORTA outputs from single source:
+	- `cd docs/calyr.aorta`
+	- `./calyr.aorta build all`
+3. Decide homepage integration shape:
+	- Add AORTA-specific project tile/detail link, or
+	- Extend Projects page content with explicit AORTA entry.
+4. Keep AORTA module separate from global autoload chain unless explicitly requested.
+5. Push only minimal homepage files for UI/integration changes; keep core AORTA source commits scoped and separate.
 
 ## Short navigation
+
+Legacy note: the `pages_src/`, `projects_src/`, `src/`, and `scripts/build_pages.py` references below are historical and are not the active pipeline in this workspace.
 
 Use this repo section when you are doing homepage-facing work.
 
@@ -62,7 +175,7 @@ Expected contact QR style:
 ./nexus.homepage-build
 ```
 
-- Builds canonical homepage output to `homepage_v4/output/index.html`.
+- Builds canonical homepage output to `index.html` and `pages/*.html`.
 
 ```bash
 ./nexus.homepage-open 8011

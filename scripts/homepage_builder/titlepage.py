@@ -468,7 +468,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 				box-shadow: 0 0 20px rgba(57, 231, 255, 0.14), inset 0 0 0 1px rgba(57, 231, 255, 0.14);
 			}}
 			body.arte-mobile-theme .hero-kicker {{ font-size: 0.62rem; letter-spacing: 0.16em; opacity: 0.76; }}
-			body.arte-mobile-theme .hero-title {{ font-size: clamp(2.08rem, 11vw, 3.18rem); line-height: 1.02; }}
+			body.arte-mobile-theme .hero-title {{ font-size: clamp(2.36rem, 12vw, 3.7rem); line-height: 1.02; }}
 			body.arte-mobile-theme .hero-subtitle {{ margin-top: 0.62rem; font-size: 0.84rem; line-height: 1.38; opacity: 0.92; }}
 			body.arte-mobile-theme .hero-slogan {{ margin-top: 0.64rem; font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.72; }}
 			body.arte-mobile-theme .corner-menu-toggle {{
@@ -756,7 +756,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	tagline = str(meta.get("tagline", "")).strip()
 	hero_slogan_markup = f'<p class="hero-slogan" aria-live="polite">{html.escape(tagline)}</p>'
 	font_link = f'  <link rel="stylesheet" href="{font_css_href}" />\n' if font_css_href else ""
-	gsap_script_tag = '  <script src="../vendor/gsap/gsap.min.js"></script>\n'
+	gsap_script_tag = '  <script src="./vendor/gsap/gsap.min.js"></script>\n'
 
 	tile_runtime_script = """<script>
 (() => {
@@ -1193,8 +1193,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		body {{ margin: 0; background: var(--bg); color: var(--fg); font-family: "Avenir Next", "Segoe UI", Arial, sans-serif; }}
 		.layout-grid {{ position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.9; }}
 		.hero {{ position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }}
-		.hero-copy {{ width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }}
-		.hero-title {{ margin: 0; font-size: clamp(2.5rem, 6vw, 5.4rem); line-height: 1.02; }}
+		.hero-copy {{ width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: linear-gradient(145deg, rgba(8,12,24,0.66) 0%, rgba(5,10,20,0.58) 54%, rgba(2,7,16,0.68) 100%); }}
+		.hero-title {{ margin: 0; font-size: clamp(3.2rem, 7.8vw, 7rem); line-height: 0.98; }}
 		.hero-home-link {{ color: inherit; text-decoration: none; display: inline-block; }}
 		.hero-home-link:focus-visible {{ outline: 1px solid rgba(255,255,255,0.9); outline-offset: 4px; }}
 		.hero-subtitle {{ margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }}
@@ -1322,6 +1322,11 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		{closed_tile_rules_css}
 		.study-section.is-collapsed .tile-open-state {{ display: none; }}
 		.study-section.is-open {{ grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(184, 226, 255, 0.36); background: linear-gradient(165deg, rgba(2, 8, 22, 0.98) 0%, rgba(2, 14, 38, 0.96) 52%, rgba(1, 6, 16, 0.98) 100%); box-shadow: inset 0 0 0 1px rgba(180, 225, 255, 0.16), 0 14px 30px rgba(0,0,0,0.54); backdrop-filter: blur(6px); }}
+		@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {{
+			.study-section.is-open {{
+				background: linear-gradient(165deg, rgba(2, 8, 22, 0.995) 0%, rgba(2, 12, 30, 0.995) 56%, rgba(1, 5, 14, 0.998) 100%);
+			}}
+		}}
 		.study-section[data-tile-kind="visit_card"].is-open {{ grid-row: span 6; min-height: 340px; }}
 		{open_text_tile_rules_css}
 		{expanded_text_tile_rules_css}
@@ -1361,6 +1366,18 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-content[data-density="compact"] .study-section.is-collapsed {{ grid-column: span 2; grid-row: span 1; }}
 		.study-content[data-density="dense"] .study-section.is-collapsed {{ grid-column: span 1; grid-row: span 1; }}
 		.study-section[data-tile-kind="glyph"].is-open .tile-open-state-glyph {{ display: grid; }}
+		@media (min-width: 1200px) {{
+			:root {{ --frame-width: min(100% - 72px, 1540px); }}
+			.hero {{ padding: 3.3rem 0 0.9rem; }}
+			.hero-copy {{ padding: 30px 34px; }}
+			.hero-subtitle {{ font-size: 1.06rem; line-height: 1.7; max-width: 1020px; opacity: 0.96; }}
+			.study-layout {{ max-height: min(82vh, 1040px); }}
+			.study-content {{ grid-auto-rows: 62px; gap: 10px; padding: 10px; min-height: 640px; max-height: min(74vh, 960px); }}
+			.study-section.is-collapsed .study-trigger {{ padding: 0.24rem; }}
+			.study-section.is-collapsed .study-heading {{ font-size: clamp(1.1rem, 1.35vw, 1.45rem); }}
+			.study-section.is-collapsed .study-teaser {{ font-size: 0.98rem; opacity: 0.9; }}
+			.study-section.is-collapsed:hover {{ transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,0.34), 0 0 20px rgba(115, 209, 255, 0.16); }}
+		}}
 		@media (max-width: 940px) {{
 			:root {{ --frame-width: min(100% - 36px, 1280px); }}
 			.study-layout {{ max-height: min(82vh, 980px); overflow: auto; }}
