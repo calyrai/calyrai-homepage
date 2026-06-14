@@ -1321,6 +1321,21 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-section[data-tile-kind="visit_card"].is-open {{ grid-row: span 6; min-height: 340px; }}
 		{open_text_tile_rules_css}
 		{expanded_text_tile_rules_css}
+		.study-content.has-open-tile {{ grid-auto-flow: row; }}
+		.study-content.has-open-tile .study-section.is-open[data-tile-kind="text"],
+		.study-content.has-open-tile .study-section.is-open[data-tile-kind="visit_card"] {{
+			grid-column: 1 / -1 !important;
+			grid-row: span 10 !important;
+			min-height: min(74vh, 760px);
+			z-index: 4;
+		}}
+		.study-content.has-open-tile .study-section.is-open .tile-open-state {{
+			padding: 1rem;
+		}}
+		.study-content.has-open-tile .study-section.is-open .study-fulltext {{
+			font-size: 1.05rem;
+			line-height: 1.6;
+		}}
 		.study-section.is-open .tile-open-state {{ display: flex; flex-direction: column; }}
 		.study-section.is-open .study-detail-link {{
 			display: inline-flex;

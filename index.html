@@ -176,6 +176,21 @@
 		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-2.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-3.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
+		.study-content.has-open-tile { grid-auto-flow: row; }
+		.study-content.has-open-tile .study-section.is-open[data-tile-kind="text"],
+		.study-content.has-open-tile .study-section.is-open[data-tile-kind="visit_card"] {
+			grid-column: 1 / -1 !important;
+			grid-row: span 10 !important;
+			min-height: min(74vh, 760px);
+			z-index: 4;
+		}
+		.study-content.has-open-tile .study-section.is-open .tile-open-state {
+			padding: 1rem;
+		}
+		.study-content.has-open-tile .study-section.is-open .study-fulltext {
+			font-size: 1.05rem;
+			line-height: 1.6;
+		}
 		.study-section.is-open .tile-open-state { display: flex; flex-direction: column; }
 		.study-section.is-open .study-detail-link {
 			display: inline-flex;
