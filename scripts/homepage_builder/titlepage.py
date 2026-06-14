@@ -468,7 +468,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 				box-shadow: 0 0 20px rgba(57, 231, 255, 0.14), inset 0 0 0 1px rgba(57, 231, 255, 0.14);
 			}}
 			body.arte-mobile-theme .hero-kicker {{ font-size: 0.62rem; letter-spacing: 0.16em; opacity: 0.76; }}
-			body.arte-mobile-theme .hero-title {{ font-size: clamp(1.52rem, 8vw, 2.12rem); line-height: 1.05; }}
+			body.arte-mobile-theme .hero-title {{ font-size: clamp(2.08rem, 11vw, 3.18rem); line-height: 1.02; }}
 			body.arte-mobile-theme .hero-subtitle {{ margin-top: 0.62rem; font-size: 0.84rem; line-height: 1.38; opacity: 0.92; }}
 			body.arte-mobile-theme .hero-slogan {{ margin-top: 0.64rem; font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.72; }}
 			body.arte-mobile-theme .corner-menu-toggle {{
@@ -1192,7 +1192,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.layout-grid {{ position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.9; }}
 		.hero {{ position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }}
 		.hero-copy {{ width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }}
-		.hero-title {{ margin: 0; font-size: clamp(2rem, 4.2vw, 3.8rem); }}
+		.hero-title {{ margin: 0; font-size: clamp(2.5rem, 6vw, 5.4rem); line-height: 1.02; }}
 		.hero-subtitle {{ margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }}
 		.hero-brand {{
 			color: #f8fdff;
