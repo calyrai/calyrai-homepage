@@ -725,7 +725,16 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	hero_label = str(hero.get("label", ""))
 	hero_kicker_markup = f'<div class="{html.escape(hero_kicker_class)}">{html.escape(hero_label)}</div>' if hero_label.strip() else ""
 	hero_title = str(hero.get("title", "")).strip()
-	hero_title_markup = html.escape(hero_title).replace("í", '<span class="hero-acute" tabindex="0">í</span>').replace("Í", '<span class="hero-acute" tabindex="0">Í</span>')
+	hero_title = re.sub(r"(?i)calyr\.a[ií]", "Calyr.aí", hero_title)
+	if not hero_title:
+		hero_title = "Calyr.aí"
+	hero_title_markup = (
+		'<span class="hero-brand">'
+		+ html.escape(hero_title)
+			.replace("í", '<span class="hero-acute" tabindex="0">í</span>')
+			.replace("Í", '<span class="hero-acute" tabindex="0">Í</span>')
+		+ '</span>'
+	)
 	hero_subtitle = str(hero.get("subtitle", "")).replace("\n", " ").strip()
 	tagline = str(meta.get("tagline", "")).strip()
 	hero_slogan_markup = f'<p class="hero-slogan" aria-live="polite">{html.escape(tagline)}</p>'
@@ -1170,7 +1179,19 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.hero-copy {{ width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }}
 		.hero-title {{ margin: 0; font-size: clamp(2rem, 4.2vw, 3.8rem); }}
 		.hero-subtitle {{ margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }}
-		.hero-acute {{ color: #ff4df5; }}
+		.hero-brand {{
+			color: #f8fdff;
+			text-shadow: 0 0 10px rgba(255, 77, 245, 0.46), 0 0 22px rgba(255, 77, 245, 0.32), 0 0 34px rgba(255, 77, 245, 0.2);
+			animation: hero-brand-glow 2.8s ease-in-out infinite;
+		}}
+		.hero-acute {{
+			color: #ff4df5;
+			text-shadow: 0 0 8px rgba(255, 77, 245, 0.8), 0 0 18px rgba(255, 77, 245, 0.54), 0 0 30px rgba(255, 77, 245, 0.34);
+		}}
+		@keyframes hero-brand-glow {{
+			0%, 100% {{ text-shadow: 0 0 10px rgba(255, 77, 245, 0.46), 0 0 22px rgba(255, 77, 245, 0.32), 0 0 34px rgba(255, 77, 245, 0.2); }}
+			50% {{ text-shadow: 0 0 14px rgba(255, 77, 245, 0.62), 0 0 28px rgba(255, 77, 245, 0.44), 0 0 44px rgba(255, 77, 245, 0.28); }}
+		}}
 		.hero-slogan {{ margin: 0.85rem 0 0; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.88; }}
 		.corner-menu-toggle {{ position: fixed; top: 26px; right: var(--frame-gutter); width: 72px; height: 54px; border: 1px solid rgba(255,255,255,0.9); background: transparent; z-index: 20; }}
 		.corner-menu-line {{ display: block; width: 30px; height: 1px; margin: 6px auto; background: #fff; }}
@@ -1186,7 +1207,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-content {{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }}
 		.study-section {{ position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }}
 		.study-section.is-search-muted {{ opacity: 0.58; filter: saturate(0.65); }}
-		.study-trigger {{ width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; display: block; }}
+		.study-trigger {{ width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; z-index: 2; display: block; }}
 		{living_mesh_css}
 		.study-detail-link {{ display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }}
 		.study-detail-link:hover,

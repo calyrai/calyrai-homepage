@@ -1,8 +1,8 @@
 """LivingMesh triangle-grid interactive canvas — injected into every tile."""
 
 LIVING_MESH_CSS = """\
-\t\t.study-section .living-surface { position: absolute; inset: 0; overflow: hidden; z-index: 1; opacity: 0.94; transition: opacity 220ms ease, transform 260ms ease; }
-\t\t.study-section .living-mesh { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: auto; }
+		.study-section .living-surface { position: absolute; inset: 0; overflow: hidden; z-index: 1; opacity: 0.94; transition: opacity 220ms ease, transform 260ms ease; pointer-events: none; }
+		.study-section .living-mesh { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 \t\t.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; }
 \t\t.study-section.is-open .living-mesh { pointer-events: none; }"""
 
