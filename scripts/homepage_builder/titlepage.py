@@ -614,6 +614,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			f'\t\t\t\t</div>\n'
 			f'\t\t\t</div>'
 		)
+		collapsed_indicator_markup = ""
 		if tile_kind == "glyph":
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-glyph">\n'
@@ -640,10 +641,10 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 					'<span class="visit-mesh-node n1"></span><span class="visit-mesh-node n2"></span><span class="visit-mesh-node n3"></span><span class="visit-mesh-node n4"></span>'
 					'</div>\n'
 				)
+			collapsed_indicator_markup = knob_markup + mesh_markup
 			extra_section_attrs = f' data-visit-defer="{"true" if defer_visit else "false"}" data-visit-knob="{"true" if knob_enabled else "false"}" data-visit-mesh="{"true" if mesh_enabled else "false"}"'
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-visit-card">\n'
-							f'\t\t\t\t{knob_markup}{mesh_markup}'
 							f'\t\t\t\t<iframe class="visit-embed-frame" {iframe_src_attr} title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>\n'
 				'</div>'
 			)
@@ -689,6 +690,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		tile_markup.append(
 			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
 			f'{trigger_open}'
+			f'\t\t\t{collapsed_indicator_markup}'
 			f'\t\t\t{open_markup}\n'
 			f'{trigger_close}'
 			f'\t</section>'
