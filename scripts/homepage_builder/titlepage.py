@@ -1069,12 +1069,16 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		studyContent.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+			if (target.closest('a')) return;
 			const trigger = target.closest('.study-trigger');
 			if (!(trigger instanceof HTMLElement)) return;
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
+			const wasActive = activeTextSections.has(section);
 			activeTextSections.clear();
-			activeTextSections.add(section);
+			if (!wasActive) {
+				activeTextSections.add(section);
+			}
 			enforceMondrianState();
 		});
 
@@ -1087,8 +1091,11 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			event.preventDefault();
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
+			const wasActive = activeTextSections.has(section);
 			activeTextSections.clear();
-			activeTextSections.add(section);
+			if (!wasActive) {
+				activeTextSections.add(section);
+			}
 			enforceMondrianState();
 		});
 	}
