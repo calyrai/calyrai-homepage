@@ -3,7 +3,7 @@
 LIVING_MESH_CSS = """\
 		.study-section .living-surface { position: absolute; inset: 0; overflow: hidden; z-index: 1; opacity: 0.94; transition: opacity 220ms ease, transform 260ms ease; pointer-events: none; }
 		.study-section .living-mesh { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-\t\t.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; }
+		.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; filter: grayscale(1) contrast(1.08); }
 \t\t.study-section.is-open .living-mesh { pointer-events: none; }"""
 
 LIVING_MESH_SCRIPT = """<script>
@@ -225,7 +225,7 @@ LIVING_MESH_SCRIPT = """<script>
 		draw(timeSec) {
 			const ctx=this.ctx; ctx.clearRect(0,0,this.width,this.height);
 			const isOpen=this.section.classList.contains('is-open');
-			const wireRgb=isOpen?'28,36,54':'255,255,255';
+			const wireRgb=isOpen?'246,246,246':'255,255,255';
 			const openBoost=0.9+this.reveal*0.55, openFill=isOpen?0.08:(0.76+(1-this.reveal)*0.2);
 			const lineVis=isOpen?1.0:(0.62+this.reveal*0.28), meshStroke=isOpen?2.2:1;
 			const cx=this.width*0.5, cy=this.height*0.5, maxDist=Math.max(1,Math.hypot(cx,cy));
@@ -270,7 +270,7 @@ LIVING_MESH_SCRIPT = """<script>
 			}
 			ctx.strokeStyle=`rgba(${wireRgb},${Math.min(0.94,isOpen?0.62:((0.28+this.config.iridescence*0.1)*lineVis*meshStroke)).toFixed(3)})`;
 			ctx.lineWidth=isOpen?0.38:0.2; ctx.stroke();
-			for(const dot of this.microDots){ctx.beginPath();ctx.arc(dot.x,dot.y,dot.size,0,Math.PI*2);ctx.fillStyle=`rgba(138,196,236,${Math.min(0.12,dot.alpha*(0.52-this.reveal*0.28)).toFixed(3)})`;ctx.fill();}
+			for(const dot of this.microDots){ctx.beginPath();ctx.arc(dot.x,dot.y,dot.size,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(238,238,238,${Math.min(0.1,dot.alpha*(0.44-this.reveal*0.22)).toFixed(3)})`:`rgba(138,196,236,${Math.min(0.12,dot.alpha*(0.52-this.reveal*0.28)).toFixed(3)})`;ctx.fill();}
 			for(const n of nodes2d){
 				let pb=0,tb=0;
 				if(this.mouse.active){const d=Math.hypot(n.x-this.mouse.x,n.y-this.mouse.y);if(d<170)pb=1-d/170;}
@@ -282,11 +282,17 @@ LIVING_MESH_SCRIPT = """<script>
 			if(this.mouse.active||this.hoverMix>0.02){
 				const mx=this.mouse.x,my=this.mouse.y,mR=168;
 				const mg=ctx.createRadialGradient(mx,my,0,mx,my,mR);
-				mg.addColorStop(0,`rgba(255,92,220,${(0.24*this.hoverMix).toFixed(3)})`);
-				mg.addColorStop(0.5,`rgba(220,96,255,${(0.14*this.hoverMix).toFixed(3)})`);
-				mg.addColorStop(1,'rgba(220,96,255,0)');
+				if (isOpen) {
+					mg.addColorStop(0,`rgba(255,255,255,${(0.18*this.hoverMix).toFixed(3)})`);
+					mg.addColorStop(0.5,`rgba(210,210,210,${(0.1*this.hoverMix).toFixed(3)})`);
+					mg.addColorStop(1,'rgba(210,210,210,0)');
+				} else {
+					mg.addColorStop(0,`rgba(255,92,220,${(0.24*this.hoverMix).toFixed(3)})`);
+					mg.addColorStop(0.5,`rgba(220,96,255,${(0.14*this.hoverMix).toFixed(3)})`);
+					mg.addColorStop(1,'rgba(220,96,255,0)');
+				}
 				ctx.fillStyle=mg;ctx.beginPath();ctx.arc(mx,my,mR,0,Math.PI*2);ctx.fill();
-				for(const n of nodes2d){const d=Math.hypot(n.x-mx,n.y-my);if(d>=170)continue;const nr=(1-d/170)*this.hoverMix,r=0.6+nr*2.05;ctx.beginPath();ctx.arc(n.x,n.y,r*1.3,0,Math.PI*2);ctx.fillStyle=`rgba(255,116,230,${((0.08+nr*0.28)*openBoost).toFixed(3)})`;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=`rgba(164,248,255,${((0.24+nr*0.8)*openBoost).toFixed(3)})`;ctx.fill();}
+				for(const n of nodes2d){const d=Math.hypot(n.x-mx,n.y-my);if(d>=170)continue;const nr=(1-d/170)*this.hoverMix,r=0.6+nr*2.05;ctx.beginPath();ctx.arc(n.x,n.y,r*1.3,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(240,240,240,${((0.08+nr*0.24)*openBoost).toFixed(3)})`:`rgba(255,116,230,${((0.08+nr*0.28)*openBoost).toFixed(3)})`;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(255,255,255,${((0.24+nr*0.74)*openBoost).toFixed(3)})`:`rgba(164,248,255,${((0.24+nr*0.8)*openBoost).toFixed(3)})`;ctx.fill();}
 			}
 		}
 	}

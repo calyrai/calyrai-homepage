@@ -1301,7 +1301,18 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		{open_text_tile_rules_css}
 		{expanded_text_tile_rules_css}
 		.study-section.is-open .tile-open-state {{ display: flex; flex-direction: column; }}
-		.study-section.is-open .study-detail-link {{ display: inline-flex; }}
+		.study-section.is-open .study-detail-link {{
+			display: inline-flex;
+			border-color: rgba(255,255,255,0.84) !important;
+			background: rgba(0,0,0,0.64) !important;
+			box-shadow: none !important;
+			color: #ffffff;
+		}}
+		.study-section.is-open .study-detail-link:hover,
+		.study-section.is-open .study-detail-link:focus-visible {{
+			border-color: rgba(255,255,255,0.98) !important;
+			background: rgba(0,0,0,0.82) !important;
+		}}
 		.study-section.is-open.is-expanded {{ box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 14px 36px rgba(0,0,0,0.34); }}
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded {{ grid-row: span 7; min-height: 420px; }}
 		.study-content.has-expanded-open .study-section.is-collapsed {{ transform: scale(0.96); opacity: 0.84; filter: saturate(0.85); }}
