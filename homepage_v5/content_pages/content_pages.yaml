@@ -1,6 +1,6 @@
 pages:
 - source: calyr-current-projects.md
-  output: pages/calyr-current-projects.html
+  output: ../pages/calyr-current-projects.html
   back_href: ../index.html#projects
   kicker: Projects / Flagship Programs
   brand: Calyr.aí / Projects
@@ -9,7 +9,7 @@ pages:
   footer_note: This page documents active and flagship project directions. Details
     are updated as programs evolve and new evidence is integrated into the Atlas.
 - source: calyr-business-model.md
-  output: pages/calyr-business-model.html
+  output: ../pages/calyr-business-model.html
   back_href: ../index.html#theory
   kicker: Theory / Business Model
   brand: Calyr.aí / Theory
@@ -18,7 +18,7 @@ pages:
   footer_note: This page is a separate theory surface linked from the homepage. The
     markdown source remains the canonical content asset for future revisions.
 - source: calyr-page-design.md
-  output: pages/calyr-page-design.html
+  output: ../pages/calyr-page-design.html
   back_href: ../index.html#design-page
   kicker: Design / OO Page System
   brand: Calyr.aí / Design
@@ -27,7 +27,7 @@ pages:
   footer_note: 'Design is source-driven: markdown is the canonical truth, YAML defines
     projection, and the renderer keeps visual structure stable.'
 - source: calyr-engine-project-description.md
-  output: pages/calyr-engine-project-description.html
+  output: ../pages/calyr-engine-project-description.html
   back_href: ../index.html#engine-project-description
   kicker: Engine / Project Description
   brand: Calyr.aí / Engine

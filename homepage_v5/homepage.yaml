@@ -82,7 +82,7 @@ nav:
     href: '#adaptive-systems'
   - label: REPRODUCIBLE ORACLES
     href: '#reproducible-oracles'
-tile_modules_manifest: homepage_v3/tiles/tiles.yaml
+tile_modules_manifest: homepage_v5/tiles/tiles.yaml
 arte_mobile_theme:
   enabled: true
   accent: '#8ef4ff'

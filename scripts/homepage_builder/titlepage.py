@@ -620,11 +620,21 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 				f'\t\t\t\t<div class="glyph-surface" aria-label="{html.escape(title)} glyph">{glyph_markup}</div>\n'
 				'</div>'
 			)
+		extra_section_attrs = ""
 		if tile_kind == "visit_card":
-			visit_src = str(section.get("visit_src", "../pages/contact.html")).strip() or "../pages/contact.html"
+			visit_src = str(section.get("visit_src") or section.get("visit_game_href") or "../pages/contact.html").strip() or "../pages/contact.html"
+			defer_visit = bool(section.get("defer_embed_until_visible", False))
+			collapsed_indicator = str(section.get("collapsed_indicator", "none")).strip().lower()
+			knob_enabled = collapsed_indicator in {"rotating_knob", "knob", "rotating-knob"}
+			iframe_src_attr = f'data-src="{html.escape(visit_src)}"' if defer_visit else f'src="{html.escape(visit_src)}"'
+			knob_markup = ''
+			if knob_enabled:
+				knob_markup = '<div class="visit-knob" aria-hidden="true"><span class="visit-knob-core"><span class="visit-knob-spoke s1"></span><span class="visit-knob-spoke s2"></span><span class="visit-knob-spoke s3"></span></span></div>\n'
+			extra_section_attrs = f' data-visit-defer="{"true" if defer_visit else "false"}" data-visit-knob="{"true" if knob_enabled else "false"}"'
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-visit-card">\n'
-							f'\t\t\t\t<iframe class="visit-embed-frame" src="{html.escape(visit_src)}" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>\n'
+							f'\t\t\t\t{knob_markup}'
+							f'\t\t\t\t<iframe class="visit-embed-frame" {iframe_src_attr} title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>\n'
 				'</div>'
 			)
 		is_initially_open = False
@@ -667,7 +677,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		trigger_close = '\t\t</div>\n'
 
 		tile_markup.append(
-			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}">\n'
+			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
 			f'{trigger_open}'
 			f'\t\t\t{open_markup}\n'
 			f'{trigger_close}'
@@ -870,7 +880,69 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	};
 
 	const initVisitGames = () => {
-		// Contact tile is now embedded as a standalone iframe page.
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			if (section.dataset.tileKind !== 'visit_card') continue;
+			const shouldDefer = section.dataset.visitDefer === 'true';
+			const frame = section.querySelector('.visit-embed-frame');
+			if (!(frame instanceof HTMLIFrameElement)) continue;
+
+			if (!shouldDefer) {
+				section.classList.add('visit-card-visible');
+				continue;
+			}
+
+			const deferredSrc = frame.dataset.src || frame.getAttribute('src') || '';
+			if (deferredSrc) {
+				frame.dataset.src = deferredSrc;
+				frame.removeAttribute('src');
+			}
+
+			let observer = null;
+			const activate = () => {
+				if (frame.dataset.loaded === 'true') {
+					section.classList.add('visit-card-visible');
+					return;
+				}
+				const src = frame.dataset.src || '';
+				if (src) {
+					frame.setAttribute('src', src);
+					frame.dataset.loaded = 'true';
+				}
+				section.classList.add('visit-card-visible');
+				if (observer) {
+					observer.disconnect();
+					observer = null;
+				}
+				window.removeEventListener('scroll', checkProximity);
+				window.removeEventListener('resize', checkProximity);
+			};
+
+			const checkProximity = () => {
+				const rect = section.getBoundingClientRect();
+				const entersViewport = rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * 0.08;
+				if (entersViewport) activate();
+			};
+
+			if ('IntersectionObserver' in window) {
+				observer = new IntersectionObserver((entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							activate();
+							break;
+						}
+					}
+				}, { threshold: 0.15, rootMargin: '0px 0px 120px 0px' });
+				observer.observe(section);
+			}
+
+			window.addEventListener('scroll', checkProximity, { passive: true });
+			window.addEventListener('resize', checkProximity, { passive: true });
+			requestAnimationFrame(checkProximity);
+			window.setTimeout(checkProximity, 220);
+			section.addEventListener('pointerenter', activate, { once: true });
+			section.addEventListener('focusin', activate, { once: true });
+		}
 	};
 
 	const updateDensityMode = () => {
@@ -1117,6 +1189,38 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-fulltext {{ flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; }}
 		.tile-open-state-visit-card {{ padding: 0; color: #ffffff; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }}
 		.visit-embed-frame {{ width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }}
+		.study-section[data-visit-defer="true"] .visit-embed-frame {{ opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 220ms ease; }}
+		.study-section.visit-card-visible[data-visit-defer="true"] .visit-embed-frame {{ opacity: 1; visibility: visible; pointer-events: auto; }}
+		.study-section[data-visit-knob="true"] .visit-knob {{
+			position: absolute;
+			left: 10px;
+			bottom: 10px;
+			width: 42px;
+			height: 42px;
+			border-radius: 999px;
+			border: 1.35px solid rgba(214, 242, 255, 0.88);
+			background: radial-gradient(circle at 30% 30%, rgba(151, 226, 255, 0.22), rgba(7, 17, 36, 0.76));
+			box-shadow: 0 0 12px rgba(143, 224, 255, 0.22), inset 0 0 0 1px rgba(230, 247, 255, 0.16);
+			display: grid;
+			place-items: center;
+			opacity: 0;
+			transform: scale(0.9) rotate(0deg);
+			transition: opacity 220ms ease, transform 220ms ease;
+			pointer-events: none;
+		}}
+		.study-section[data-visit-knob="true"] .visit-knob-core {{ position: relative; width: 20px; height: 20px; border-radius: 999px; border: 1px solid rgba(228, 246, 255, 0.9); }}
+		.study-section[data-visit-knob="true"] .visit-knob-core::before,
+		.study-section[data-visit-knob="true"] .visit-knob-core::after {{ content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 999px; border: 1px solid rgba(228, 246, 255, 0.8); }}
+		.study-section[data-visit-knob="true"] .visit-knob-core::before {{ width: 12px; height: 12px; }}
+		.study-section[data-visit-knob="true"] .visit-knob-core::after {{ width: 5px; height: 5px; background: rgba(233, 248, 255, 0.92); border: 0; }}
+		.study-section[data-visit-knob="true"] .visit-knob-spoke {{ position: absolute; width: 1px; height: 7px; background: rgba(229, 247, 255, 0.9); left: 50%; top: 2px; transform-origin: 50% 18px; }}
+		.study-section[data-visit-knob="true"] .visit-knob-spoke.s2 {{ transform: rotate(120deg); }}
+		.study-section[data-visit-knob="true"] .visit-knob-spoke.s3 {{ transform: rotate(240deg); }}
+		.study-section.is-collapsed[data-visit-knob="true"] .visit-knob {{ opacity: 1; transform: scale(1) rotate(0deg); animation: visit-knob-spin 7s linear infinite; }}
+		.study-section.is-collapsed[data-visit-knob="true"] .study-trigger:hover .visit-knob,
+		.study-section.is-collapsed[data-visit-knob="true"] .study-trigger:focus-visible .visit-knob {{ animation-duration: 2.2s; }}
+		.study-section.is-open[data-visit-knob="true"] .visit-knob {{ opacity: 0; transform: scale(0.9) rotate(180deg); animation: none; }}
+		@keyframes visit-knob-spin {{ from {{ transform: scale(1) rotate(0deg); }} to {{ transform: scale(1) rotate(360deg); }} }}
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded .visit-embed-frame {{ min-height: 460px; }}
 		.tile-open-state-visit-card .study-paragraph {{ color: #ffffff; }}
 		.study-paragraph {{ margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }}

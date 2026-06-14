@@ -5,4 +5,5 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 PORT="${1:-8011}"
 
 cd "$ROOT"
+"$ROOT/nexus.homepage-build"
 python3 -m http.server "$PORT"

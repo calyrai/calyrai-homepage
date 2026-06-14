@@ -4,11 +4,20 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
-python3 scripts/build_unified_v4.py
+# Canonical homepage build: YAML + Markdown -> root index + detail pages
+python3 scripts/build_homepage_v2.py --yaml homepage_v5/homepage.yaml --out index.html
+python3 scripts/build_content_pages.py --manifest homepage_v5/content_pages/content_pages.yaml
 
-if [[ -f "$ROOT/homepage_v4/output/index.html" ]]; then
-  echo "Built: homepage_v4/output/index.html"
+if [[ -f "$ROOT/index.html" ]]; then
+  echo "Built: index.html"
 else
-  echo "Build finished, but homepage_v4/output/index.html was not found."
+  echo "Build finished, but index.html was not found."
+  exit 1
+fi
+
+if [[ -f "$ROOT/pages/calyr-business-model.html" ]]; then
+  echo "Built: pages/*.html (content pages)"
+else
+  echo "Build finished, but pages output was not found."
   exit 1
 fi
