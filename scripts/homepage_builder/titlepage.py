@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 from .content import as_dict, as_list_of_dict
+from .living_mesh import LIVING_MESH_CSS, LIVING_MESH_SCRIPT
 
 
 def _build_grid_hover_script(grid_cfg: dict[str, Any] | None = None) -> str:
@@ -719,6 +720,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			menu_links_markup += f'\n\t\t<a class="corner-menu-link" href="{html.escape(href)}">{html.escape(label)}</a>'
 
 	page_title = str(meta.get("page_title") or hero.get("title") or "Homepage")
+	living_mesh_css = LIVING_MESH_CSS
+	living_mesh_script = LIVING_MESH_SCRIPT
 	hero_label = str(hero.get("label", ""))
 	hero_kicker_markup = f'<div class="{html.escape(hero_kicker_class)}">{html.escape(hero_label)}</div>' if hero_label.strip() else ""
 	hero_title = str(hero.get("title", "")).strip()
@@ -1184,6 +1187,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-section {{ position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }}
 		.study-section.is-search-muted {{ opacity: 0.58; filter: saturate(0.65); }}
 		.study-trigger {{ width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; display: block; }}
+		{living_mesh_css}
 		.study-detail-link {{ display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }}
 		.study-detail-link:hover,
 		.study-detail-link:focus-visible {{ border-color: rgba(255,255,255,0.96); background: rgba(12, 22, 40, 0.98); }}
@@ -1314,6 +1318,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	</section>
 	{study_layout_markup}
 	{tile_runtime_script}
+	{living_mesh_script}
 	{grid_hover_script}
 </body>
 </html>
