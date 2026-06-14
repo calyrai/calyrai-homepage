@@ -614,14 +614,6 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			f'\t\t\t\t</div>\n'
 			f'\t\t\t</div>'
 		)
-		interactive_mesh_markup = (
-			'<div class="tile-hi-grid" aria-hidden="true">'
-			'<span class="tile-hi-line h1"></span><span class="tile-hi-line h2"></span><span class="tile-hi-line h3"></span>'
-			'<span class="tile-hi-line v1"></span><span class="tile-hi-line v2"></span><span class="tile-hi-line d1"></span>'
-			'<span class="tile-hi-node n1"></span><span class="tile-hi-node n2"></span><span class="tile-hi-node n3"></span><span class="tile-hi-node n4"></span>'
-			'</div>'
-		)
-		collapsed_indicator_markup = ""
 		if tile_kind == "glyph":
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-glyph">\n'
@@ -648,10 +640,10 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 					'<span class="visit-mesh-node n1"></span><span class="visit-mesh-node n2"></span><span class="visit-mesh-node n3"></span><span class="visit-mesh-node n4"></span>'
 					'</div>\n'
 				)
-			collapsed_indicator_markup = knob_markup + mesh_markup
 			extra_section_attrs = f' data-visit-defer="{"true" if defer_visit else "false"}" data-visit-knob="{"true" if knob_enabled else "false"}" data-visit-mesh="{"true" if mesh_enabled else "false"}"'
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-visit-card">\n'
+							f'\t\t\t\t{knob_markup}{mesh_markup}'
 							f'\t\t\t\t<iframe class="visit-embed-frame" {iframe_src_attr} title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>\n'
 				'</div>'
 			)
@@ -695,10 +687,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		trigger_close = '\t\t</div>\n'
 
 		tile_markup.append(
-			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}" data-hi-grid="true"{extra_section_attrs}>\n'
+			f'<section class="study-section tile-{tile_variant} {initial_state_class}" id="{html.escape(slug)}" data-node-id="{html.escape(node_id)}" data-keywords="{html.escape(keywords_csv)}" data-neighbors="{html.escape(neighbors_csv)}" data-search-text="{html.escape(search_text)}" data-tile-kind="{tile_kind}" data-tile-index="{index}"{extra_section_attrs}>\n'
 			f'{trigger_open}'
-			f'\t\t\t{interactive_mesh_markup}\n'
-			f'\t\t\t{collapsed_indicator_markup}'
 			f'\t\t\t{open_markup}\n'
 			f'{trigger_close}'
 			f'\t</section>'
@@ -1086,42 +1076,6 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	}
 
 	if (studyContent instanceof HTMLElement) {
-		for (const section of sections) {
-			if (!(section instanceof HTMLElement)) continue;
-			if (section.dataset.hiGrid !== 'true') continue;
-
-			const setMeshVars = (clientX, clientY) => {
-				const rect = section.getBoundingClientRect();
-				if (!rect.width || !rect.height) return;
-				const px = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-				const py = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
-				const cx = px - 0.5;
-				const cy = py - 0.5;
-				const energy = Math.max(0, 1 - Math.min(1, Math.hypot(cx, cy) * 1.6));
-				section.style.setProperty('--mesh-x', px.toFixed(3));
-				section.style.setProperty('--mesh-y', py.toFixed(3));
-				section.style.setProperty('--mesh-energy', energy.toFixed(3));
-			};
-
-			section.style.setProperty('--mesh-x', '0.5');
-			section.style.setProperty('--mesh-y', '0.5');
-			section.style.setProperty('--mesh-energy', '0.2');
-
-			section.addEventListener('pointermove', (event) => {
-				setMeshVars(event.clientX, event.clientY);
-			}, { passive: true });
-
-			section.addEventListener('pointerenter', (event) => {
-				setMeshVars(event.clientX, event.clientY);
-			}, { passive: true });
-
-			section.addEventListener('pointerleave', () => {
-				section.style.setProperty('--mesh-x', '0.5');
-				section.style.setProperty('--mesh-y', '0.5');
-				section.style.setProperty('--mesh-energy', '0.2');
-			}, { passive: true });
-		}
-
 		studyContent.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
@@ -1230,29 +1184,6 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-section {{ position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }}
 		.study-section.is-search-muted {{ opacity: 0.58; filter: saturate(0.65); }}
 		.study-trigger {{ width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; display: block; }}
-		.study-section[data-hi-grid="true"] .tile-hi-grid {{
-			position: absolute;
-			inset: 6px;
-			opacity: calc(0.34 + var(--mesh-energy, 0.2) * 0.62);
-			transform: perspective(420px) rotateX(calc((0.5 - var(--mesh-y, 0.5)) * 8deg)) rotateY(calc((var(--mesh-x, 0.5) - 0.5) * 10deg));
-			transition: opacity 180ms ease, transform 180ms ease;
-			pointer-events: none;
-		}}
-		.study-section[data-hi-grid="true"] .tile-hi-line {{ position: absolute; background: rgba(226, 246, 255, 0.72); box-shadow: 0 0 10px rgba(142, 224, 255, 0.28); }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.h1 {{ left: 5%; top: 20%; width: 90%; height: 1px; }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.h2 {{ left: 8%; top: 50%; width: 84%; height: 1px; }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.h3 {{ left: 10%; top: 80%; width: 80%; height: 1px; }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.v1 {{ left: 30%; top: 8%; width: 1px; height: 84%; }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.v2 {{ left: 68%; top: 10%; width: 1px; height: 80%; }}
-		.study-section[data-hi-grid="true"] .tile-hi-line.d1 {{ left: 16%; top: 18%; width: 72%; height: 1px; transform: rotate(18deg); transform-origin: left center; }}
-		.study-section[data-hi-grid="true"] .tile-hi-node {{ width: calc(4px + var(--mesh-energy, 0.2) * 2px); height: calc(4px + var(--mesh-energy, 0.2) * 2px); position: absolute; border-radius: 999px; background: rgba(238, 250, 255, 0.95); box-shadow: 0 0 9px rgba(138, 223, 255, 0.55); }}
-		.study-section[data-hi-grid="true"] .tile-hi-node.n1 {{ left: 13%; top: 16%; }}
-		.study-section[data-hi-grid="true"] .tile-hi-node.n2 {{ left: 73%; top: 24%; }}
-		.study-section[data-hi-grid="true"] .tile-hi-node.n3 {{ left: 20%; top: 72%; }}
-		.study-section[data-hi-grid="true"] .tile-hi-node.n4 {{ left: 74%; top: 70%; }}
-		.study-section.is-collapsed[data-hi-grid="true"] .tile-hi-grid {{ animation: tile-hi-grid-pulse 2.4s ease-in-out infinite; }}
-		.study-section.is-open[data-hi-grid="true"] .tile-hi-grid {{ opacity: 0; transform: scale(0.96); animation: none; }}
-		@keyframes tile-hi-grid-pulse {{ 0%,100% {{ filter: drop-shadow(0 0 2px rgba(143, 224, 255, 0.18)); }} 50% {{ filter: drop-shadow(0 0 10px rgba(143, 224, 255, 0.42)); }} }}
 		.study-detail-link {{ display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }}
 		.study-detail-link:hover,
 		.study-detail-link:focus-visible {{ border-color: rgba(255,255,255,0.96); background: rgba(12, 22, 40, 0.98); }}
@@ -1309,24 +1240,27 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		@keyframes visit-knob-spin {{ from {{ transform: scale(1) rotate(0deg); }} to {{ transform: scale(1) rotate(360deg); }} }}
 		.study-section[data-visit-mesh="true"] .visit-mesh {{
 			position: absolute;
-			inset: 8px;
+			left: 10px;
+			bottom: 10px;
+			width: 46px;
+			height: 46px;
 			opacity: 0;
-			transform: scale(0.97);
+			transform: scale(0.9);
 			transition: opacity 220ms ease, transform 220ms ease;
 			pointer-events: none;
 		}}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line {{ position: absolute; height: 1.4px; background: rgba(227, 246, 255, 0.92); transform-origin: left center; box-shadow: 0 0 8px rgba(143, 224, 255, 0.32); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 {{ left: 6%; top: 22%; width: 58%; transform: rotate(9deg); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 {{ left: 12%; top: 50%; width: 62%; transform: rotate(-7deg); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 {{ left: 16%; top: 78%; width: 56%; transform: rotate(8deg); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 {{ left: 10%; top: 24%; width: 54%; transform: rotate(55deg); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 {{ left: 30%; top: 24%; width: 54%; transform: rotate(121deg); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-node {{ position: absolute; width: 6px; height: 6px; border-radius: 999px; background: rgba(236, 250, 255, 0.98); box-shadow: 0 0 10px rgba(143, 224, 255, 0.62); }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 {{ left: 8%; top: 20%; }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 {{ left: 74%; top: 36%; }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 {{ left: 16%; top: 79%; }}
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 {{ left: 70%; top: 72%; }}
-		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh {{ opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.2s ease-in-out infinite; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line {{ position: absolute; height: 1px; background: rgba(227, 246, 255, 0.88); transform-origin: left center; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 {{ left: 6px; top: 8px; width: 30px; transform: rotate(12deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 {{ left: 7px; top: 20px; width: 28px; transform: rotate(-8deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 {{ left: 9px; top: 32px; width: 26px; transform: rotate(10deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 {{ left: 7px; top: 9px; width: 24px; transform: rotate(64deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 {{ left: 19px; top: 11px; width: 24px; transform: rotate(116deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node {{ position: absolute; width: 4px; height: 4px; border-radius: 999px; background: rgba(236, 250, 255, 0.95); box-shadow: 0 0 8px rgba(143, 224, 255, 0.5); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 {{ left: 7px; top: 7px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 {{ left: 34px; top: 13px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 {{ left: 10px; top: 33px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 {{ left: 33px; top: 31px; }}
+		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh {{ opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.8s ease-in-out infinite; }}
 		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:hover .visit-mesh,
 		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:focus-visible .visit-mesh {{ animation-duration: 1.3s; }}
 		.study-section.is-open[data-visit-mesh="true"] .visit-mesh {{ opacity: 0; transform: scale(0.9); animation: none; }}
