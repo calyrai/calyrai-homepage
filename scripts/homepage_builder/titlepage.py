@@ -744,11 +744,13 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 	if not hero_title:
 		hero_title = "Calyr.aí"
 	hero_title_markup = (
-		'<span class="hero-brand">'
+		'<a class="hero-home-link" href="/" aria-label="Go to homepage">'
+		+ '<span class="hero-brand">'
 		+ html.escape(hero_title)
 			.replace("í", '<span class="hero-acute" tabindex="0">í</span>')
 			.replace("Í", '<span class="hero-acute" tabindex="0">Í</span>')
 		+ '</span>'
+		+ '</a>'
 	)
 	hero_subtitle = str(hero.get("subtitle", "")).replace("\n", " ").strip()
 	tagline = str(meta.get("tagline", "")).strip()
@@ -1193,6 +1195,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.hero {{ position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }}
 		.hero-copy {{ width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }}
 		.hero-title {{ margin: 0; font-size: clamp(2.5rem, 6vw, 5.4rem); line-height: 1.02; }}
+		.hero-home-link {{ color: inherit; text-decoration: none; display: inline-block; }}
+		.hero-home-link:focus-visible {{ outline: 1px solid rgba(255,255,255,0.9); outline-offset: 4px; }}
 		.hero-subtitle {{ margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }}
 		.hero-brand {{
 			color: #f8fdff;
@@ -1317,7 +1321,7 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-section.is-collapsed {{ grid-column: span 2; grid-row: span 2; border-color: rgba(255, 255, 255, 0.38); background: linear-gradient(135deg, rgba(53, 231, 255, 0.82) 0%, rgba(255, 63, 209, 0.84) 100%); box-shadow: 0 0 18px rgba(53, 231, 255, 0.18), 0 0 24px rgba(255, 63, 209, 0.16); }}
 		{closed_tile_rules_css}
 		.study-section.is-collapsed .tile-open-state {{ display: none; }}
-		.study-section.is-open {{ grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(255,255,255,0.18); background: rgba(0,0,0,0.26); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.24); backdrop-filter: blur(6px); }}
+		.study-section.is-open {{ grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(184, 226, 255, 0.36); background: linear-gradient(165deg, rgba(2, 8, 22, 0.98) 0%, rgba(2, 14, 38, 0.96) 52%, rgba(1, 6, 16, 0.98) 100%); box-shadow: inset 0 0 0 1px rgba(180, 225, 255, 0.16), 0 14px 30px rgba(0,0,0,0.54); backdrop-filter: blur(6px); }}
 		.study-section[data-tile-kind="visit_card"].is-open {{ grid-row: span 6; min-height: 340px; }}
 		{open_text_tile_rules_css}
 		{expanded_text_tile_rules_css}
@@ -1328,6 +1332,8 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			grid-row: span 10 !important;
 			min-height: min(74vh, 760px);
 			z-index: 4;
+			background: radial-gradient(circle at 50% 45%, rgba(22, 40, 66, 0.36) 0%, rgba(2, 10, 24, 0.98) 58%, rgba(0, 0, 0, 0.99) 100%) !important;
+			box-shadow: inset 0 0 0 1px rgba(206, 235, 255, 0.16), 0 0 34px rgba(0, 0, 0, 0.9), 0 0 90px rgba(0, 0, 0, 0.72) !important;
 		}}
 		.study-content.has-open-tile .study-section.is-open .tile-open-state {{
 			padding: 1rem;
