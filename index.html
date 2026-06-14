@@ -93,27 +93,24 @@
 		@keyframes visit-knob-spin { from { transform: scale(1) rotate(0deg); } to { transform: scale(1) rotate(360deg); } }
 		.study-section[data-visit-mesh="true"] .visit-mesh {
 			position: absolute;
-			left: 10px;
-			bottom: 10px;
-			width: 46px;
-			height: 46px;
+			inset: 8px;
 			opacity: 0;
-			transform: scale(0.9);
+			transform: scale(0.97);
 			transition: opacity 220ms ease, transform 220ms ease;
 			pointer-events: none;
 		}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line { position: absolute; height: 1px; background: rgba(227, 246, 255, 0.88); transform-origin: left center; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 { left: 6px; top: 8px; width: 30px; transform: rotate(12deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 { left: 7px; top: 20px; width: 28px; transform: rotate(-8deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 { left: 9px; top: 32px; width: 26px; transform: rotate(10deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 { left: 7px; top: 9px; width: 24px; transform: rotate(64deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 { left: 19px; top: 11px; width: 24px; transform: rotate(116deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node { position: absolute; width: 4px; height: 4px; border-radius: 999px; background: rgba(236, 250, 255, 0.95); box-shadow: 0 0 8px rgba(143, 224, 255, 0.5); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 { left: 7px; top: 7px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 { left: 34px; top: 13px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 { left: 10px; top: 33px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 { left: 33px; top: 31px; }
-		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh { opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.8s ease-in-out infinite; }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line { position: absolute; height: 1.4px; background: rgba(227, 246, 255, 0.92); transform-origin: left center; box-shadow: 0 0 8px rgba(143, 224, 255, 0.32); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 { left: 6%; top: 22%; width: 58%; transform: rotate(9deg); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 { left: 12%; top: 50%; width: 62%; transform: rotate(-7deg); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 { left: 16%; top: 78%; width: 56%; transform: rotate(8deg); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 { left: 10%; top: 24%; width: 54%; transform: rotate(55deg); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 { left: 30%; top: 24%; width: 54%; transform: rotate(121deg); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-node { position: absolute; width: 6px; height: 6px; border-radius: 999px; background: rgba(236, 250, 255, 0.98); box-shadow: 0 0 10px rgba(143, 224, 255, 0.62); }
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 { left: 8%; top: 20%; }
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 { left: 74%; top: 36%; }
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 { left: 16%; top: 79%; }
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 { left: 70%; top: 72%; }
+		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh { opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.2s ease-in-out infinite; }
 		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:hover .visit-mesh,
 		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:focus-visible .visit-mesh { animation-duration: 1.3s; }
 		.study-section.is-open[data-visit-mesh="true"] .visit-mesh { opacity: 0; transform: scale(0.9); animation: none; }
