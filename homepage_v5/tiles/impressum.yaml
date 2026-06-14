@@ -22,7 +22,7 @@ visit_game_label: Breakout Contact Game
 visit_game_href: https://calyr.ai/pages/contact.html
 visit_src: pages/contact.html
 defer_embed_until_visible: true
-collapsed_indicator: rotating_knob
+collapsed_indicator: mesh
 keywords:
 - contact
 - legal

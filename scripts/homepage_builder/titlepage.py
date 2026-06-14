@@ -626,14 +626,24 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 			defer_visit = bool(section.get("defer_embed_until_visible", False))
 			collapsed_indicator = str(section.get("collapsed_indicator", "none")).strip().lower()
 			knob_enabled = collapsed_indicator in {"rotating_knob", "knob", "rotating-knob"}
+			mesh_enabled = collapsed_indicator in {"mesh", "net", "wire", "wireframe"}
 			iframe_src_attr = f'data-src="{html.escape(visit_src)}"' if defer_visit else f'src="{html.escape(visit_src)}"'
 			knob_markup = ''
 			if knob_enabled:
 				knob_markup = '<div class="visit-knob" aria-hidden="true"><span class="visit-knob-core"><span class="visit-knob-spoke s1"></span><span class="visit-knob-spoke s2"></span><span class="visit-knob-spoke s3"></span></span></div>\n'
-			extra_section_attrs = f' data-visit-defer="{"true" if defer_visit else "false"}" data-visit-knob="{"true" if knob_enabled else "false"}"'
+			mesh_markup = ''
+			if mesh_enabled:
+				mesh_markup = (
+					'<div class="visit-mesh" aria-hidden="true">'
+					'<span class="visit-mesh-line l1"></span><span class="visit-mesh-line l2"></span><span class="visit-mesh-line l3"></span>'
+					'<span class="visit-mesh-line l4"></span><span class="visit-mesh-line l5"></span>'
+					'<span class="visit-mesh-node n1"></span><span class="visit-mesh-node n2"></span><span class="visit-mesh-node n3"></span><span class="visit-mesh-node n4"></span>'
+					'</div>\n'
+				)
+			extra_section_attrs = f' data-visit-defer="{"true" if defer_visit else "false"}" data-visit-knob="{"true" if knob_enabled else "false"}" data-visit-mesh="{"true" if mesh_enabled else "false"}"'
 			open_markup = (
 				'<div class="tile-open-state tile-open-state-visit-card">\n'
-							f'\t\t\t\t{knob_markup}'
+							f'\t\t\t\t{knob_markup}{mesh_markup}'
 							f'\t\t\t\t<iframe class="visit-embed-frame" {iframe_src_attr} title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>\n'
 				'</div>'
 			)
@@ -1228,6 +1238,33 @@ def render_titlepage_html(data: dict[str, Any], font_css_href: str, wordmark_mar
 		.study-section.is-collapsed[data-visit-knob="true"] .study-trigger:focus-visible .visit-knob {{ animation-duration: 2.2s; }}
 		.study-section.is-open[data-visit-knob="true"] .visit-knob {{ opacity: 0; transform: scale(0.9) rotate(180deg); animation: none; }}
 		@keyframes visit-knob-spin {{ from {{ transform: scale(1) rotate(0deg); }} to {{ transform: scale(1) rotate(360deg); }} }}
+		.study-section[data-visit-mesh="true"] .visit-mesh {{
+			position: absolute;
+			left: 10px;
+			bottom: 10px;
+			width: 46px;
+			height: 46px;
+			opacity: 0;
+			transform: scale(0.9);
+			transition: opacity 220ms ease, transform 220ms ease;
+			pointer-events: none;
+		}}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line {{ position: absolute; height: 1px; background: rgba(227, 246, 255, 0.88); transform-origin: left center; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 {{ left: 6px; top: 8px; width: 30px; transform: rotate(12deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 {{ left: 7px; top: 20px; width: 28px; transform: rotate(-8deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 {{ left: 9px; top: 32px; width: 26px; transform: rotate(10deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 {{ left: 7px; top: 9px; width: 24px; transform: rotate(64deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 {{ left: 19px; top: 11px; width: 24px; transform: rotate(116deg); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node {{ position: absolute; width: 4px; height: 4px; border-radius: 999px; background: rgba(236, 250, 255, 0.95); box-shadow: 0 0 8px rgba(143, 224, 255, 0.5); }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 {{ left: 7px; top: 7px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 {{ left: 34px; top: 13px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 {{ left: 10px; top: 33px; }}
+		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 {{ left: 33px; top: 31px; }}
+		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh {{ opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.8s ease-in-out infinite; }}
+		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:hover .visit-mesh,
+		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:focus-visible .visit-mesh {{ animation-duration: 1.3s; }}
+		.study-section.is-open[data-visit-mesh="true"] .visit-mesh {{ opacity: 0; transform: scale(0.9); animation: none; }}
+		@keyframes visit-mesh-pulse {{ 0%, 100% {{ filter: drop-shadow(0 0 2px rgba(136, 231, 255, 0.24)); }} 50% {{ filter: drop-shadow(0 0 8px rgba(136, 231, 255, 0.5)); }} }}
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded .visit-embed-frame {{ min-height: 460px; }}
 		.tile-open-state-visit-card .study-paragraph {{ color: #ffffff; }}
 		.study-paragraph {{ margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }}
