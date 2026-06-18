@@ -12,31 +12,91 @@
 			--fg: #ffffff;
 			--frame-width: min(100% - 48px, 1280px);
 			--frame-gutter: max(24px, calc((100vw - var(--frame-width)) / 2));
+			--menu-anchor-top: max(14px, calc(env(safe-area-inset-top) + 14px));
+			--menu-anchor-right: max(14px, calc(env(safe-area-inset-right) + 14px));
+			--accent: #ff4df5;
+			--accent-glow: rgba(255, 77, 245, 0.92);
+			--border-light: rgba(255,255,255,0.84);
+			--border-subtle: rgba(255,255,255,0.26);
+			--bg-dark: rgba(8,12,24,0.56);
+			--bg-darker: rgba(8,8,8,0.98);
+			--transition-norm: 240ms ease;
 		}
 		* { box-sizing: border-box; }
 		body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Avenir Next", "Segoe UI", Arial, sans-serif; }
 		.layout-grid { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.9; }
 		.hero { position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }
-		.hero-copy { width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }
+		.hero-copy { width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid var(--border-light); background: var(--bg-dark); }
 		.hero-title { margin: 0; font-size: clamp(3.2rem, 7vw, 6.4rem); line-height: 1.02; }
 		.hero-subtitle { margin-top: 0.9rem; margin-bottom: 0; max-width: 900px; line-height: 1.25; font-size: clamp(1.2rem, 2.2vw, 2rem); font-weight: 600; }
-		.hero-acute { color: #ff4df5; }
-		.hero-acute-glow { color: #ff4df5; text-shadow: 0 0 8px rgba(255, 77, 245, 0.92), 0 0 18px rgba(255, 77, 245, 0.64), 0 0 28px rgba(255, 77, 245, 0.44); }
-		.hero-slogan { margin: 0.85rem 0 0; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.88; }
-		.hero-red-dot { color: #ff4df5; }
-		.corner-menu-toggle { position: fixed; top: 26px; right: var(--frame-gutter); width: 72px; height: 54px; border: 1px solid rgba(255,255,255,0.9); background: transparent; z-index: 20; }
+		.hero-acute { color: var(--accent); }
+		.hero-acute-glow { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow), 0 0 18px rgba(255, 77, 245, 0.64), 0 0 28px rgba(255, 77, 245, 0.44); }
+		.hero-red-dot { color: var(--accent); }
+		.corner-menu-toggle { position: fixed; top: var(--menu-anchor-top); right: var(--menu-anchor-right); width: 72px; height: 54px; border: 1px solid rgba(255,255,255,0.9); background: transparent; z-index: 20; }
 		.corner-menu-line { display: block; width: 30px; height: 1px; margin: 6px auto; background: #fff; }
-		.corner-menu-panel { position: fixed; top: 72px; right: var(--frame-gutter); min-width: 260px; max-height: min(72vh, 640px); overflow: auto; padding: 14px; background: rgba(8,8,8,0.98); border: 1px solid rgba(255,255,255,0.26); z-index: 25; }
+		.corner-menu-panel { position: fixed; top: calc(var(--menu-anchor-top) + 58px); right: var(--menu-anchor-right); min-width: 260px; max-height: min(72vh, 640px); overflow: auto; padding: 14px; background: var(--bg-darker); border: 1px solid var(--border-subtle); z-index: 25; }
 		.corner-menu-panel[hidden] { display: none; }
 		.corner-menu-link { display: block; color: #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
 		.corner-menu-link.is-active { color: #7ff3ff; border-bottom-color: rgba(127, 243, 255, 0.96); }
-		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }
+		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 3.6rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }
 		.study-graph-toolbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: center; border: 1px solid rgba(255,255,255,0.52); border-bottom: 0; padding: 0.52rem 0.7rem; background: rgba(7, 14, 28, 0.72); }
 		.study-graph-label { margin: 0; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.68rem; color: rgba(255,255,255,0.86); }
 		.study-graph-input { width: 100%; border: 1px solid rgba(255,255,255,0.38); background: rgba(2, 6, 15, 0.85); color: #fff; padding: 0.52rem 0.65rem; font-size: 0.86rem; }
 		.study-graph-input:focus { outline: none; border-color: rgba(255,255,255,0.8); }
-		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 2px; border: 0; padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
-		.study-section { position: relative; border: 0; background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 2px; border: 0; padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; perspective: 1400px; transform-style: preserve-3d; }
+		.study-section { position: relative; border: 0; background: transparent; overflow: hidden; transform-style: preserve-3d; transform: translateZ(0); transition: transform var(--transition-norm), box-shadow var(--transition-norm), flex-basis var(--transition-norm), width var(--transition-norm), min-height var(--transition-norm), background var(--transition-norm), border-color var(--transition-norm), opacity 200ms ease, filter 200ms ease; }
+		.study-section.tile-1 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(112, 255, 213, 0.94) 0%, rgba(72, 201, 255, 0.9) 52%, rgba(123, 134, 255, 0.88) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(108, 244, 212, 0.78) 0%, rgba(70, 178, 255, 0.72) 100%);
+		}
+		.study-section.tile-2 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(116, 207, 255, 0.9) 0%, rgba(214, 71, 215, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(120, 218, 255, 0.76) 0%, rgba(206, 88, 218, 0.68) 100%);
+		}
+		.study-section.tile-3 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(0, 208, 255, 0.88) 0%, rgba(126, 96, 255, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(40, 205, 255, 0.74) 0%, rgba(126, 112, 255, 0.68) 100%);
+		}
+		.study-section.tile-4 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(78, 255, 201, 0.88) 0%, rgba(46, 164, 225, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(96, 248, 206, 0.74) 0%, rgba(60, 172, 224, 0.68) 100%);
+		}
+		.study-section.tile-5 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(245, 171, 79, 0.9) 0%, rgba(225, 80, 128, 0.88) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(244, 180, 98, 0.74) 0%, rgba(226, 96, 142, 0.68) 100%);
+		}
+		.study-section.tile-6 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(94, 255, 198, 0.9) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(100, 246, 206, 0.76) 0%, rgba(56, 202, 255, 0.72) 48%, rgba(60, 134, 255, 0.66) 100%);
+		}
+		.study-section.tile-7 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(255, 210, 134, 0.74) 0%, rgba(246, 136, 170, 0.7) 50%, rgba(150, 128, 255, 0.66) 100%);
+		}
+		.study-section.tile-8 {
+			--tile-grad-collapsed: linear-gradient(135deg, rgba(181, 255, 246, 0.9) 0%, rgba(102, 184, 255, 0.88) 50%, rgba(186, 113, 255, 0.86) 100%);
+			--tile-grad-open: linear-gradient(145deg, rgba(184, 248, 240, 0.72) 0%, rgba(118, 188, 255, 0.7) 50%, rgba(190, 124, 255, 0.66) 100%);
+		}
+		.study-section::before,
+		.study-section::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			pointer-events: none;
+			transition: opacity 220ms ease, transform 260ms ease;
+		}
+		.study-section::before {
+			background: linear-gradient(155deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0.0) 62%);
+			opacity: 0.42;
+			transform: translateZ(8px);
+			z-index: 2;
+		}
+		.study-section::after {
+			background: radial-gradient(120% 80% at 75% 100%, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.0) 65%);
+			opacity: 0.52;
+			transform: translateZ(1px);
+			z-index: 1;
+		}
 		body.perf-desktop-lite .study-section,
 		body.perf-desktop-lite .study-section.is-open,
 		body.perf-desktop-lite .study-section.is-collapsed {
@@ -48,6 +108,8 @@
 		}
 		body.perf-desktop-lite .study-section .living-surface { opacity: 0.78 !important; }
 		body.perf-desktop-lite .study-section.is-open .living-surface { opacity: 0.58 !important; }
+		body.perf-desktop-lite .study-section::before { opacity: 0.28; }
+		body.perf-desktop-lite .study-section::after { opacity: 0.34; }
 		body.skin-glass .study-section.is-collapsed { backdrop-filter: blur(7px) saturate(122%); -webkit-backdrop-filter: blur(7px) saturate(122%); }
 		body.skin-atlas .study-section.is-collapsed { filter: saturate(1.16) contrast(1.03); }
 		.study-section .living-surface {
@@ -58,6 +120,35 @@
 			opacity: 0.94;
 			transition: opacity 220ms ease, transform 260ms ease;
 		}
+		.study-section .living-surface::before,
+		.study-section .living-surface::after {
+			content: "";
+			position: absolute;
+			inset: -14%;
+			pointer-events: none;
+			mix-blend-mode: screen;
+			filter: blur(11px);
+		}
+		.study-section .living-surface::before {
+			background:
+				radial-gradient(54% 40% at 22% 48%, rgba(138, 246, 255, 0.34) 0%, rgba(138, 246, 255, 0) 72%),
+				radial-gradient(52% 40% at 78% 52%, rgba(255, 180, 236, 0.3) 0%, rgba(255, 180, 236, 0) 72%);
+			opacity: 0.9;
+			animation: butterfly-grid-shift 12s ease-in-out infinite;
+		}
+		.study-section .living-surface::after {
+			background: linear-gradient(120deg, rgba(188, 246, 255, 0.16), rgba(255, 192, 237, 0.13), rgba(186, 235, 255, 0.16));
+			opacity: 0.58;
+			animation: butterfly-grid-breathe 8s ease-in-out infinite;
+		}
+		@keyframes butterfly-grid-shift {
+			0%, 100% { transform: translate3d(-2%, 0, 0) rotate(-1.8deg) scale(1); }
+			50% { transform: translate3d(2%, 1.5%, 0) rotate(1.8deg) scale(1.04); }
+		}
+		@keyframes butterfly-grid-breathe {
+			0%, 100% { opacity: 0.34; }
+			50% { opacity: 0.52; }
+		}
 		.study-section .living-mesh {
 			position: absolute;
 			inset: 0;
@@ -65,6 +156,8 @@
 			height: 100%;
 			display: block;
 			pointer-events: auto;
+			opacity: 0.42;
+			filter: saturate(0.72) brightness(0.92);
 		}
 		body.skin-living .study-section .living-surface { opacity: 0.96; }
 		body.skin-classic .study-section .living-surface { display: block; opacity: 0.92; }
@@ -93,21 +186,277 @@
 		.glyph-surface svg { width: min(78%, 280px); height: min(78%, 280px); }
 		.study-heading { margin: 0 0 0.48rem; font-size: clamp(1.05rem, 1.8vw, 1.6rem); }
 		.study-teaser { margin: 0 0 0.64rem; font-size: 0.94rem; opacity: 0.86; }
-		.study-keywords { display: flex; flex-wrap: wrap; gap: 0.36rem 0.48rem; margin: 0 0 0.78rem; align-items: baseline; }
-		.study-keyword { display: inline-flex; align-items: center; padding: 0.18rem 0.38rem; border: 1px solid rgba(255,255,255,0.28); background: rgba(0,0,0,0.32); text-transform: uppercase; letter-spacing: 0.12em; line-height: 1; font-size: calc(0.66rem * var(--keyword-scale, 1)); opacity: 0.94; white-space: nowrap; }
-		.study-keyword:nth-child(1) { border-width: 1px; }
-		.study-keyword:nth-child(2) { opacity: 0.9; }
-		.study-keyword:nth-child(3) { opacity: 0.86; }
-		.study-keyword:nth-child(4) { opacity: 0.82; }
-		.study-keyword:nth-child(5) { opacity: 0.78; }
-		.study-keyword:nth-child(6) { opacity: 0.74; }
+		.study-keywords { display: flex; flex-wrap: wrap; gap: 0.36rem 0.48rem; margin: 0 0 0.78rem; align-items: center; }
+		.study-keyword {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 7.4rem;
+			padding: 0.24rem 0.62rem;
+			border: 0;
+			background: rgba(230, 245, 255, 0.2);
+			text-transform: uppercase;
+			letter-spacing: 0.12em;
+			line-height: 1;
+			font-size: 0.68rem;
+			opacity: 0.94;
+			white-space: nowrap;
+		}
+		.study-keyword:nth-child(1) { opacity: 0.94; }
+		.study-keyword:nth-child(2) { opacity: 0.94; }
+		.study-keyword:nth-child(3) { opacity: 0.94; }
+		.study-keyword:nth-child(4) { opacity: 0.94; }
+		.study-keyword:nth-child(5) { opacity: 0.94; }
+		.study-keyword:nth-child(6) { opacity: 0.94; }
 		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; }
-			.tile-open-state-visit-card { padding: 0; color: #ffffff; overflow: hidden; display: block; min-height: 0; background: transparent; }
-			.visit-card-label { display: none; }
-			.visit-embed-frame { width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }
-			#lisnig-impressum { order: -10; }
-		.study-section[data-tile-kind="visit_card"].is-open.is-expanded .visit-embed-frame { min-height: 460px; }
-		.tile-open-state-visit-card .study-paragraph { color: #ffffff; }
+		#lisnig-impressum { order: -10; }
+		#lisnig-impressum.is-open,
+		#lisnig-impressum.is-collapsed {
+			background: #000000 !important;
+			box-shadow: none !important;
+		}
+		#lisnig-impressum .living-surface,
+		#lisnig-impressum .living-mesh {
+			display: none !important;
+		}
+		#lisnig-impressum .tile-open-state {
+			padding: 1rem;
+		}
+		#lisnig-impressum .tile-open-head,
+		#lisnig-impressum .study-keywords,
+		#lisnig-impressum .contact-game-hint {
+			display: none !important;
+		}
+		#lisnig-impressum .study-fulltext {
+			margin-top: 0;
+			overflow: visible;
+		}
+		.contact-signature {
+			position: relative;
+			margin: 0 0 0.66rem;
+		}
+		.contact-signature-name {
+			margin: 0;
+			font-size: clamp(1.06rem, 2.1vw, 1.62rem);
+			line-height: 1.1;
+			font-weight: 520;
+			letter-spacing: 0.015em;
+			color: rgba(255, 255, 255, 0.82);
+		}
+		.contact-signature-role {
+			margin: 0.22rem 0 0;
+			font-size: clamp(0.64rem, 1.05vw, 0.86rem);
+			font-weight: 500;
+			letter-spacing: 0.02em;
+			text-transform: none;
+			color: rgba(255, 255, 255, 0.62);
+		}
+		.contact-game-surface {
+			margin-top: 0.18rem;
+			padding: 0;
+			border: 0;
+			border-radius: 0;
+			background: transparent;
+			box-shadow: none;
+			display: flex;
+			justify-content: center;
+		}
+		.contact-game-qr {
+			display: block;
+			width: min(100%, 470px);
+			aspect-ratio: 1 / 1;
+			margin: 0;
+			border-radius: 0;
+			border: 0;
+			background: #000000;
+			cursor: default;
+			position: relative;
+			overflow: hidden;
+		}
+		.contact-game-qr-matrix {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		.contact-game-dot {
+			position: absolute;
+			background: #ffffff;
+			border-radius: 50%;
+			box-shadow: 0 0 3px rgba(255, 255, 255, 0.38);
+			transition: transform 34ms linear;
+		}
+		.contact-game-hotspot {
+			position: absolute;
+			min-width: 14px;
+			min-height: 14px;
+			padding: 0 0.18rem;
+			border-radius: 50%;
+			background: transparent;
+			transform: translate(-50%, -50%);
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			color: #000000;
+			font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+			font-size: 0.45rem;
+			font-weight: 900;
+			line-height: 1;
+			z-index: 6;
+			transition: transform 140ms ease, color 140ms ease;
+		}
+		.contact-game-hotspot::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 50%;
+			background: #ffffff;
+			box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.24);
+			animation: contact-hotspot-idle-pulse 1.6s ease-in-out infinite;
+			z-index: 0;
+		}
+		.contact-game-qr.is-idle .contact-game-hotspot {
+			min-width: 11px;
+			min-height: 11px;
+			font-size: 0.4rem;
+		}
+		.contact-game-qr.is-idle .contact-game-hotspot::before {
+			animation: contact-hotspot-idle-pulse-small 1.8s ease-in-out infinite;
+		}
+		.contact-game-hotspot > * {
+			position: relative;
+			z-index: 1;
+		}
+		.contact-game-hotspot-text {
+			opacity: 0;
+			transition: opacity 120ms ease;
+			letter-spacing: 0.06em;
+			text-rendering: geometricPrecision;
+			font-synthesis: none;
+		}
+		.contact-game-hotspot-label {
+			position: absolute;
+			left: 50%;
+			top: -28px;
+			transform: translateX(-50%);
+			padding: 0.18rem 0.42rem;
+			border: 1px solid rgba(255, 255, 255, 0.34);
+			background: rgba(0, 0, 0, 0.86);
+			color: #ffffff;
+			font-size: 0.58rem;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			white-space: nowrap;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 120ms ease;
+		}
+		.contact-game-hotspot:hover,
+		.contact-game-hotspot:focus-visible {
+			color: #ffffff;
+			outline: none;
+		}
+		.contact-game-hotspot:hover::before,
+		.contact-game-hotspot:focus-visible::before {
+			background: #ff4df5;
+			animation: contact-hotspot-hover-pulse 0.9s ease-in-out infinite;
+			box-shadow: 0 0 0 0 rgba(255, 77, 245, 0.38);
+		}
+		.contact-game-hotspot:hover .contact-game-hotspot-text,
+		.contact-game-hotspot:focus-visible .contact-game-hotspot-text {
+			opacity: 1;
+		}
+		.contact-game-hotspot:hover .contact-game-hotspot-label,
+		.contact-game-hotspot:focus-visible .contact-game-hotspot-label {
+			opacity: 1;
+		}
+		@keyframes contact-hotspot-idle-pulse {
+			0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.24); }
+			50% { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(255, 255, 255, 0); }
+		}
+		@keyframes contact-hotspot-idle-pulse-small {
+			0%, 100% { transform: scale(0.78); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.18); }
+			50% { transform: scale(0.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0); }
+		}
+		@keyframes contact-hotspot-hover-pulse {
+			0%, 100% { transform: scale(1.9); box-shadow: 0 0 0 0 rgba(255, 77, 245, 0.36); }
+			50% { transform: scale(2.7); box-shadow: 0 0 0 16px rgba(255, 77, 245, 0); }
+		}
+		.contact-game-controls {
+			display: flex;
+			gap: 0.42rem;
+			margin-top: 0.5rem;
+			flex-wrap: wrap;
+		}
+		.contact-game-btn {
+			border: 1px solid rgba(255, 255, 255, 0.42);
+			background: rgba(10, 28, 54, 0.88);
+			color: #eaf7ff;
+			padding: 0.34rem 0.6rem;
+			border-radius: 999px;
+			font-size: 0.64rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			text-decoration: none;
+			cursor: pointer;
+		}
+		.contact-game-link {
+			border-style: dotted;
+			border-width: 2px;
+			border-color: rgba(24, 36, 50, 0.62);
+			background: linear-gradient(180deg, rgba(239, 245, 250, 0.96), rgba(223, 233, 242, 0.96));
+			color: #0d1620;
+			padding: 0.32rem 0.62rem;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+		.contact-game-link::before {
+			content: '';
+			width: 0.62rem;
+			height: 0.62rem;
+			border-radius: 50%;
+			box-shadow: 0 0 0 1px rgba(7, 16, 26, 0.54), 0 0 9px rgba(255, 255, 255, 0.52);
+			flex: 0 0 auto;
+		}
+		.contact-game-link.contact-whatsapp::before { background: radial-gradient(circle at 30% 30%, #8effb6 0%, #34d678 58%, #20884b 100%); }
+		.contact-game-link.contact-linkedin::before { background: radial-gradient(circle at 30% 30%, #8ec8ff 0%, #409cff 58%, #1f4f93 100%); }
+		.contact-game-link.contact-email::before { background: radial-gradient(circle at 30% 30%, #ffd0a7 0%, #ff9252 58%, #a94f22 100%); }
+		.contact-game-link .contact-dot-label {
+			display: inline-block;
+			font-weight: 800;
+			font-size: 0.7rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: #0b1722;
+			text-shadow: 0 0 0.35px rgba(11, 23, 34, 0.92);
+			background-image: radial-gradient(circle, rgba(7, 16, 26, 0.98) 1.2px, transparent 1.3px);
+			background-size: 5px 5px;
+			background-position: 0 0;
+			-webkit-background-clip: text;
+			background-clip: text;
+		}
+		.contact-game-btn:hover,
+		.contact-game-btn:focus-visible {
+			border-color: rgba(186, 230, 255, 0.92);
+			background: rgba(14, 36, 68, 0.96);
+			outline: none;
+		}
+		.contact-game-link:hover,
+		.contact-game-link:focus-visible {
+			border-color: rgba(10, 20, 30, 0.86);
+			background: linear-gradient(180deg, rgba(248, 252, 255, 0.98), rgba(229, 239, 247, 0.98));
+		}
+		.contact-game-link:hover .contact-dot-label,
+		.contact-game-link:focus-visible .contact-dot-label {
+			background-image: radial-gradient(circle, rgba(0, 0, 0, 0.96) 1.2px, transparent 1.3px);
+		}
+		.contact-game-hint {
+			margin: 0.45rem 0 0;
+			font-size: 0.68rem;
+			opacity: 0.78;
+		}
 		.study-paragraph { margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }
 		.study-section.is-collapsed { grid-column: span 2; grid-row: span 2; border-color: rgba(255, 255, 255, 0.38); background: linear-gradient(135deg, rgba(53, 231, 255, 0.82) 0%, rgba(255, 63, 209, 0.84) 100%); box-shadow: 0 0 18px rgba(53, 231, 255, 0.18), 0 0 24px rgba(255, 63, 209, 0.16); }
 		.study-section.tile-1.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(112, 255, 213, 0.95) 0%, rgba(72, 201, 255, 0.92) 52%, rgba(123, 134, 255, 0.9) 100%); }
@@ -126,47 +475,63 @@
 		.study-section.is-open,
 		.study-section[class*="tile-"].is-collapsed,
 		.study-section[class*="tile-"].is-open {
-			border: 0.5px solid rgba(255, 255, 255, 0.78) !important;
+			border: 1px solid rgba(0, 0, 0, 0.92) !important;
 			border-radius: 18px !important;
-			box-shadow: none !important;
-			background: transparent !important;
+			box-shadow: 0 0 10px rgba(138, 217, 255, 0.18), 0 0 16px rgba(124, 172, 255, 0.12) !important;
+			background: var(--tile-grad-collapsed, linear-gradient(145deg, rgba(106, 198, 255, 0.84) 0%, rgba(203, 122, 255, 0.78) 100%)) !important;
 			backdrop-filter: none !important;
 		}
 		.study-section.is-open,
 		.study-section[class*="tile-"].is-open {
-			background: linear-gradient(135deg, rgba(112, 234, 255, 0.72) 0%, rgba(112, 170, 255, 0.68) 100%), rgba(4, 12, 28, 0) !important;
+			background: var(--tile-grad-open, linear-gradient(145deg, rgba(114, 221, 255, 0.74) 0%, rgba(132, 142, 255, 0.7) 100%)) !important;
 		}
-		/* Keep open tiles in the same color family as their collapsed state. */
-		.study-section.tile-1.is-open { background: linear-gradient(135deg, rgba(92, 140, 198, 0.9) 0%, rgba(71, 96, 156, 0.9) 100%) !important; }
-		.study-section.tile-2.is-open { background: linear-gradient(135deg, rgba(112, 238, 255, 0.88) 0%, rgba(94, 172, 255, 0.86) 100%) !important; }
-		.study-section.tile-3.is-open { background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%) !important; }
-		.study-section.tile-4.is-open { background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%) !important; }
-		.study-section.tile-5.is-open { background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%) !important; }
-		.study-section.tile-6.is-open { background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%) !important; }
-		.study-section.tile-7.is-open { background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%) !important; }
-		.study-section.tile-8.is-open { background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%) !important; }
 		/* Final open-state surface: keep it airy so no dark front panel remains. */
 		.study-section.is-open[data-tile-kind="text"],
 		.study-section.is-open[data-tile-kind="visit_card"] {
-			background: linear-gradient(135deg, rgba(126, 221, 255, 0.12) 0%, rgba(124, 179, 255, 0.08) 100%) !important;
+			background: var(--tile-grad-open, linear-gradient(145deg, rgba(114, 221, 255, 0.74) 0%, rgba(132, 142, 255, 0.7) 100%)) !important;
 			border-color: rgba(198, 239, 255, 0.72) !important;
 			box-shadow: inset 0 0 0 1px rgba(208, 244, 255, 0.42), 0 8px 20px rgba(66, 154, 218, 0.14) !important;
 			backdrop-filter: none !important;
 		}
-		/* Text-only projection mode: render open text tiles without mesh/background effects. */
-		.study-section.is-open[data-tile-kind="text"] {
-			background: transparent !important;
-			box-shadow: none !important;
+		/* Contact tile white border only */
+		#lisnig-impressum.is-collapsed,
+		#lisnig-impressum.is-open {
+			border: 1px solid var(--border-light) !important;
 		}
+		/* Keep mesh/gridflow visible in open text tiles. */
 		.study-section.is-open[data-tile-kind="text"] .living-surface {
-			display: none !important;
+			display: block !important;
+			opacity: 0.9 !important;
 		}
-		.study-section.is-open[data-tile-kind="text"] .tile-open-copy,
-		.study-section.is-open[data-tile-kind="text"] .study-heading,
-		.study-section.is-open[data-tile-kind="text"] .study-teaser,
-		.study-section.is-open[data-tile-kind="text"] .study-paragraph,
-		.study-section.is-open[data-tile-kind="text"] .study-keyword {
-			text-shadow: none !important;
+		.study-section.is-open {
+			transform: translate3d(0, 0, 16px) rotateX(0.8deg);
+		}
+		.study-section.is-open::before {
+			opacity: 0.58;
+			transform: translateZ(16px);
+		}
+		.study-section.is-open::after {
+			opacity: 0.62;
+			transform: translateZ(6px);
+		}
+		.study-section.is-open .tile-open-state {
+			transform: translateZ(20px);
+		}
+		@media (hover: hover) and (pointer: fine) {
+			.study-section.is-collapsed:hover {
+				transform: translate3d(0, -4px, 20px) rotateX(4deg) rotateY(-3deg);
+			}
+			.study-section.is-collapsed:hover::before {
+				opacity: 0.72;
+				transform: translateZ(18px);
+			}
+			.study-section.is-collapsed:hover::after {
+				opacity: 0.68;
+				transform: translateZ(10px);
+			}
+			body.perf-desktop-lite .study-section.is-collapsed:hover {
+				transform: translate3d(0, -2px, 10px) rotateX(2deg) rotateY(-1.5deg);
+			}
 		}
 		.study-section.is-open .tile-open-copy {
 			text-shadow: 0 1px 0 rgba(5, 12, 24, 0.9), 0 0 14px rgba(91, 206, 255, 0.16);
@@ -211,23 +576,14 @@
 		.study-section.tile-7.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-7.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-8.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-8.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
-		/* Content tiles should be less tall while keeping width behavior unchanged. */
-		.study-section.is-open[data-tile-kind="text"] {
-			grid-row: span 2 !important;
-			min-height: 110px;
-		}
-		.study-section.is-open.is-expanded[data-tile-kind="text"] {
-			grid-row: span 3 !important;
-			min-height: 150px;
-		}
-		/* Allow manual tile resizing (vertical) when open. */
+		/* Open tiles should expand to show full content instead of clipping/inner scrolling. */
 		.study-section.is-open[data-tile-kind="text"],
 		.study-section.is-open[data-tile-kind="visit_card"] {
 			resize: none;
-			overflow: auto;
+			overflow: visible;
 			min-width: 320px;
 			min-height: 160px;
-			max-height: 85vh;
+			max-height: none;
 			scrollbar-width: thin;
 			scrollbar-color: rgba(220, 240, 255, 0.38) rgba(255, 255, 255, 0.08);
 		}
@@ -264,49 +620,17 @@
 			border: 1px solid rgba(255, 255, 255, 0.32);
 			border-radius: 999px;
 		}
-		.tile-resize-handle {
-			display: none;
-			position: absolute;
-			top: 10px;
-			right: 10px;
-			width: 34px;
-			height: 22px;
-			cursor: ns-resize;
-			z-index: 6;
-			background: rgba(255, 255, 255, 0.14);
-			border: 1px solid rgba(255, 255, 255, 0.82);
-			border-radius: 8px;
-			box-shadow: 0 0 10px rgba(112, 228, 255, 0.22);
-		}
-		.tile-resize-handle::before {
-			content: '↕';
-			display: block;
-			width: 100%;
-			height: 100%;
-			margin: 0;
-			font-size: 13px;
-			font-weight: 700;
-			line-height: 20px;
-			text-align: center;
-			color: rgba(255, 255, 255, 0.96);
-		}
-		.tile-resize-handle::after {
-			display: none;
-		}
-		.study-section.is-open[data-tile-kind="text"] .tile-resize-handle,
-		.study-section.is-open[data-tile-kind="visit_card"] .tile-resize-handle {
-			display: block;
-		}
-		.study-section:not(.is-open) .tile-resize-handle,
-		.study-section.is-collapsed .tile-resize-handle {
-			display: none !important;
-		}
 		.study-section.is-open .tile-open-state {
 			display: flex;
 			flex-direction: column;
+			height: auto;
+			overflow: visible;
 			background: transparent;
 			backdrop-filter: none;
 			color: #ffffff;
+		}
+		.study-section.is-open .study-fulltext {
+			overflow: visible;
 		}
 		.study-section.is-open .study-heading,
 		.study-section.is-open .study-teaser,
@@ -319,7 +643,7 @@
 		.study-section.is-open .study-keywords { cursor: default; }
 		.study-section.is-open .study-keyword {
 			cursor: pointer;
-			transition: transform 170ms ease, border-color 170ms ease, background 170ms ease, opacity 170ms ease;
+			transition: transform 170ms ease, background 170ms ease, opacity 170ms ease;
 			transform-origin: center;
 		}
 		.study-section.is-open .study-keyword:nth-child(1) { --kw-hover-scale: 1.18; }
@@ -333,8 +657,7 @@
 		.study-section.is-open .study-keyword:focus-visible {
 			opacity: 1;
 			transform: translateY(-1px) scale(var(--kw-hover-scale, 1.1));
-			border-color: rgba(255,255,255,0.86);
-			background: rgba(10, 30, 56, 0.62);
+			background: rgba(245, 252, 255, 0.34);
 			outline: none;
 		}
 		.study-section.is-open.is-expanded { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 14px 36px rgba(0,0,0,0.34); }
@@ -384,7 +707,8 @@
 			body.arte-mobile-theme .hero-subtitle { margin-top: 0.58rem; font-size: 1.12rem; line-height: 1.24; opacity: 0.96; }
 			body.arte-mobile-theme .hero-slogan { margin-top: 0.64rem; font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.72; }
 			body.arte-mobile-theme .corner-menu-toggle {
-				top: 14px;
+				top: 22px;
+				right: calc(var(--frame-gutter) + 10px);
 				width: 56px;
 				height: 44px;
 				border-color: color-mix(in srgb, #8ef4ff 62%, white 20%);
@@ -393,7 +717,8 @@
 			}
 			body.arte-mobile-theme .corner-menu-line { width: 23px; margin: 5px auto; }
 			body.arte-mobile-theme .corner-menu-panel {
-				top: 62px;
+				top: 74px;
+				right: calc(var(--frame-gutter) + 10px);
 				min-width: min(86vw, 300px);
 				padding: 10px;
 				border-color: rgba(142, 244, 255, 0.34);
@@ -464,10 +789,11 @@
 			body.arte-mobile-theme .study-fulltext { margin-top: 0.42rem; }
 			body.arte-mobile-theme .study-paragraph { margin-bottom: 0.35rem; font-size: 0.86rem; line-height: 1.38; }
 			body.arte-mobile-theme .study-keyword {
-				font-size: 0.54rem;
-				padding: 0.14rem 0.28rem;
-				border-color: color-mix(in srgb, #8ef4ff 64%, white 22%);
-				background: rgba(8, 19, 36, 0.78);
+				font-size: 0.58rem;
+				min-width: 6.2rem;
+				padding: 0.14rem 0.34rem;
+				border: 0;
+				background: rgba(236, 247, 255, 0.24);
 			}
 			body.arte-mobile-theme .study-detail-link {
 				min-height: 2.1rem;
@@ -529,7 +855,7 @@
 			width: var(--frame-width);
 			margin: 0 auto 1.4rem;
 			padding: 0.85rem 1rem;
-			border: 1px solid rgba(255, 255, 255, 0.24);
+			border: 1px solid rgba(255,255,255,0.84);
 			background: rgba(8, 12, 24, 0.72);
 			color: rgba(242, 246, 255, 0.92);
 			font-family: "Avenir Next", "Avenir", "Segoe UI", Arial, sans-serif;
@@ -539,7 +865,7 @@
 
 		.landing-legal-note h2 {
 			margin: 0 0 0.38rem;
-			font-size: 0.82rem;
+			font-size: 0.78rem;
 			letter-spacing: 0.08em;
 			text-transform: uppercase;
 			font-weight: 700;
@@ -759,11 +1085,19 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum,game,qr,mesh" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum interactive legal contact game. deformable qr mesh game embedded directly in homepage tile. name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum game qr mesh" data-tile-kind="visit_card" data-tile-index="10">
+		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum,game,qr,mesh" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum interactive legal contact game directly in one tile surface. name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum game qr mesh" data-tile-kind="text" data-tile-index="10">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-lisnig-impressum">
-			<div class="tile-open-state tile-open-state-visit-card">
-							<iframe class="visit-embed-frame" src="about:blank" data-src="pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
-</div>
+			<div class="tile-open-state">
+				<div class="study-fulltext" id="detail-lisnig-impressum">
+					<div class="contact-signature" aria-label="Contact identity">
+						<p class="contact-signature-name">Rupert Tscheliessnig, MBA, PhD</p>
+						<p class="contact-signature-role">Founder · Calyr.ai</p>
+					</div>
+					<div class="contact-game-surface" role="group" aria-label="Contact QR code">
+						<div id="contact-game-qr" class="contact-game-qr" aria-label="Contact QR code"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 	</div>
@@ -823,17 +1157,22 @@
 		const activeTextSections = new Set();
 	let openIsExpanded = false;
 	const QR_LIBRARY_URL = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
-	const CONTACT_QR_PAYLOAD = [
-		"BEGIN:VCARD",
-		"VERSION:3.0",
-		"N:Ǵlisnig;Rupert;;;",
-		"FN:Rupert Ǵlisnig",
-		"ORG:ǴLabs / Calyr.ai",
-		"TITLE:Founder",
-		"EMAIL;TYPE=INTERNET:rupert.tscheliessnig@calyr.ai",
-		"URL:https://calyr.ai",
-		"END:VCARD",
-	].join("\n");
+		const CONTACT_PERSON_NAME = 'Rupert Tscheliessnig';
+		const CONTACT_CREDENTIALS = 'PhD, MBA';
+		const CONTACT_ORG_TITLE = 'Founder · Calyr.ai';
+		const CONTACT_ORG_NAME = 'Calyr.aí';
+		const CONTACT_EMAIL = 'rupert.tscheliessnig@calyr.ai';
+		const CONTACT_PHONE = '069919200915';
+		const CONTACT_QR_PAYLOAD = [
+			'BEGIN:VCARD',
+			'VERSION:3.0',
+			'N:Tscheliessnig;Rupert;;;',
+			`FN:${CONTACT_PERSON_NAME}`,
+			`TITLE:${CONTACT_CREDENTIALS}`,
+			`TEL;TYPE=CELL:${CONTACT_PHONE}`,
+			`EMAIL;TYPE=INTERNET:${CONTACT_EMAIL}`,
+			'END:VCARD',
+		].join('\n');
 	let qrLibraryPromise = null;
 	const AVAILABLE_SKINS = ['classic', 'glass', 'living', 'atlas'];
 	const DEFAULT_SKIN = 'living';
@@ -1194,35 +1533,17 @@
 
 		applyTextForce(node) {
 			if (!this.textAttractors.length) return;
-			const repelFromText = this.mouse.active && this.mouseOverText;
-			const hoverKey = this.hoverPillKey;
-			const hasPillFocus = !!hoverKey;
+			const hoverBoost = this.mouse.active && this.mouseOverText ? 1.45 : 1;
 			for (const target of this.textAttractors) {
 				const dx = target.x - node.x;
 				const dy = target.y - node.y;
 				const dist = Math.hypot(dx, dy);
 				if (dist >= 95 || dist < 0.001) continue;
 				const t = 1 - dist / 95;
-				let dir = repelFromText ? -1 : 1;
-				let magnitude = t * t * (0.007 + this.reveal * 0.01);
-
-				if (hasPillFocus && (target.kind === 'pill' || target.kind === 'link')) {
-					const sameKey = target.key === hoverKey;
-					if (this.hoverPillIsLink) {
-						dir = sameKey ? 1.6 : -1.2;
-						magnitude *= sameKey ? 2.3 : 1.55;
-					} else {
-						dir = sameKey ? -1.8 : -1.15;
-						magnitude *= sameKey ? 2.4 : 1.35;
-					}
-				} else if (target.kind === 'pill' && !target.isLink) {
-					// Keep non-linked pills gently repulsive as default guidance.
-					dir = -1;
-					magnitude *= 1.25;
-				}
-
-				node.vx += dx * magnitude * dir;
-				node.vy += dy * magnitude * 1.02 * dir;
+				const roleBoost = target.kind === 'pill' ? 1.25 : target.kind === 'link' ? 1.35 : 1;
+				const magnitude = t * t * (0.009 + this.reveal * 0.012) * hoverBoost * roleBoost;
+				node.vx -= dx * magnitude;
+				node.vy -= dy * magnitude * 1.02;
 			}
 		}
 
@@ -1432,9 +1753,9 @@
 				ctx.beginPath();
 				ctx.arc(px, py, dot.size, 0, Math.PI * 2);
 				const dotAlpha = isOpen
-					? Math.min(0.18, dot.alpha * (0.82 - this.reveal * 0.1))
-					: Math.min(0.12, dot.alpha * (0.52 - this.reveal * 0.28));
-				ctx.fillStyle = `rgba(138, 196, 236, ${dotAlpha.toFixed(3)})`;
+					? Math.min(0.2, dot.alpha * (0.92 - this.reveal * 0.1))
+					: Math.min(0.14, dot.alpha * (0.58 - this.reveal * 0.24));
+				ctx.fillStyle = `rgba(236, 247, 255, ${dotAlpha.toFixed(3)})`;
 				ctx.fill();
 			}
 
@@ -1479,21 +1800,12 @@
 				ctx.lineTo(b.x, b.y);
 				ctx.lineTo(c.x, c.y);
 				ctx.closePath();
-				if (isOpen) {
-					ctx.fillStyle = `rgba(12, 42, 74, ${Math.min(0.08, alpha * 0.45).toFixed(3)})`;
-					ctx.fill();
-					const triStrokeAlpha = (0.58 + shade * 0.18) * lineVisibility * meshStrokeBoost;
-					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.94, triStrokeAlpha + 0.06).toFixed(3)})`;
-					ctx.lineWidth = 0.24;
-					ctx.stroke();
-				} else {
-					ctx.fillStyle = `hsla(${hue.toFixed(1)}, ${sat.toFixed(1)}%, ${lum.toFixed(1)}%, ${alpha.toFixed(3)})`;
-					ctx.fill();
-					const triStrokeAlpha = (0.34 + shade * 0.18) * lineVisibility * meshStrokeBoost;
-					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.995, triStrokeAlpha).toFixed(3)})`;
-					ctx.lineWidth = 0.22;
-					ctx.stroke();
-				}
+				const triStrokeAlpha = isOpen
+					? (0.44 + shade * 0.15) * lineVisibility
+					: (0.28 + shade * 0.14) * lineVisibility;
+				ctx.strokeStyle = `rgba(248, 252, 255, ${Math.min(0.82, triStrokeAlpha).toFixed(3)})`;
+				ctx.lineWidth = isOpen ? 0.26 : 0.2;
+				ctx.stroke();
 
 				if (hover > 0.01) {
 					const g = ctx.createRadialGradient(cxTri, cyTri, 0, cxTri, cyTri, 42 + reflectBoost * 22);
@@ -1512,6 +1824,7 @@
 			let flipIdx = 0;
 			for (let row = 0; row < this.rows - 1; row += 1) {
 				for (let col = 0; col < this.cols - 1; col += 1) {
+					if (hashGrid(col + this.config.seed * 0.001, row + this.config.seed * 0.002) < 0.34) continue;
 					const i = row * this.cols + col;
 					const a = nodes2d[i];
 					const b = nodes2d[i + 1];
@@ -1529,24 +1842,15 @@
 			}
 
 			ctx.beginPath();
-			for (let row = 0; row < this.rows; row += 1) {
-				for (let col = 0; col < this.cols; col += 1) {
-					const i = row * this.cols + col;
-					const a = nodes2d[i];
-					if (col < this.cols - 1 && (row + col) % 2 === 0) {
-						const b = nodes2d[i + 1];
-						ctx.moveTo(a.x, a.y);
-						ctx.lineTo(b.x, b.y);
-					}
-					if (row < this.rows - 1 && (row + col) % 2 === 1) {
-						const b = nodes2d[i + this.cols];
-						ctx.moveTo(a.x, a.y);
-						ctx.lineTo(b.x, b.y);
-					}
-				}
+			for (let i = 0; i < nodes2d.length; i += 1) {
+				if (hashGrid(i + this.config.seed * 0.01, this.reveal * 100) < 0.78) continue;
+				const a = nodes2d[i];
+				const b = nodes2d[(i + 11) % nodes2d.length];
+				ctx.moveTo(a.x, a.y);
+				ctx.lineTo(b.x, b.y);
 			}
-			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.94, isOpen ? 0.68 : 0.42).toFixed(3)})`;
-			ctx.lineWidth = isOpen ? 0.24 : 0.2;
+			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.48, isOpen ? 0.42 : 0.28).toFixed(3)})`;
+			ctx.lineWidth = isOpen ? 0.2 : 0.16;
 			ctx.stroke();
 
 			for (const node of nodes2d) {
@@ -1666,7 +1970,6 @@
 		}
 		sections.forEach((section) => {
 			if (!(section instanceof HTMLElement)) return;
-			if (section.dataset.tileKind === 'visit_card') return;
 			buildLivingSurface(section, getTileConfig(section));
 			if (livingMeshObserver) livingMeshObserver.observe(section);
 		});
@@ -1788,8 +2091,8 @@
 	};
 
 	const buildQrMatrix = (payload) => {
-		if (typeof window.qrcode !== 'function') return buildFallbackMatrix();
-		const qr = window.qrcode(0, 'M');
+		if (typeof window.qrcode !== 'function') return null;
+		const qr = window.qrcode(0, 'L');
 		qr.addData(payload, 'Byte');
 		qr.make();
 		const size = qr.getModuleCount();
@@ -1862,19 +2165,557 @@
 		return map;
 	};
 
-	const initVisitGames = () => {
-		// Contact tile is now embedded as a standalone iframe page.
-	};
+	const initContactTileGame = () => {
+		const qrRoot = document.getElementById('contact-game-qr');
+		if (!(qrRoot instanceof HTMLElement)) return;
 
-	const hydrateVisitCardEmbed = (section) => {
-		if (!(section instanceof HTMLElement)) return;
-		if (section.dataset.tileKind !== 'visit_card') return;
-		const iframe = section.querySelector('.visit-embed-frame');
-		if (!(iframe instanceof HTMLIFrameElement)) return;
-		const desiredSrc = iframe.dataset.src || '';
-		if (!desiredSrc) return;
-		if (iframe.getAttribute('src') === desiredSrc) return;
-		iframe.setAttribute('src', desiredSrc);
+		const renderQrDots = () => {
+			if (!CONTACT_QR_PAYLOAD.trim()) {
+				qrRoot.replaceChildren();
+				return;
+			}
+
+			const matrix = buildQrMatrix(CONTACT_QR_PAYLOAD);
+			if (!Array.isArray(matrix) || !matrix.length) {
+				qrRoot.replaceChildren();
+				return;
+			}
+			const size = matrix.length;
+			const quiet = 4;
+			const total = size + quiet * 2;
+			const bounds = qrRoot.getBoundingClientRect();
+			const side = Math.max(120, Math.floor(Math.min(bounds.width, bounds.height) * 0.92));
+			const moduleGap = 1;
+			const moduleSize = Math.max(3, Math.floor((side - moduleGap * (total - 1)) / total));
+			const drawSize = total * moduleSize + (total - 1) * moduleGap;
+
+			const matrixRoot = document.createElement('div');
+			matrixRoot.className = 'contact-game-qr-matrix';
+			matrixRoot.setAttribute('role', 'img');
+			matrixRoot.setAttribute('aria-label', 'QR code with contact content');
+			matrixRoot.style.width = `${drawSize}px`;
+			matrixRoot.style.height = `${drawSize}px`;
+			matrixRoot.style.pointerEvents = 'auto';
+
+			const dotSize = Math.max(5, Math.round(moduleSize * 0.9));
+			const inset = Math.floor((moduleSize - dotSize) / 2);
+			const isFinderCell = (row, col, qrSize) => {
+				const topLeft = row <= 6 && col <= 6;
+				const topRight = row <= 6 && col >= qrSize - 7;
+				const bottomLeft = row >= qrSize - 7 && col <= 6;
+				return topLeft || topRight || bottomLeft;
+			};
+
+			const darkModules = [];
+			const dotNodes = [];
+			qrRoot.classList.add('is-idle');
+			for (let row = 0; row < size; row += 1) {
+				for (let col = 0; col < size; col += 1) {
+					if (!matrix[row]?.[col]) continue;
+					const dot = document.createElement('span');
+					dot.className = 'contact-game-dot';
+					const polarity = ((row + col) % 2 === 0) ? 'magenta' : 'cyan';
+					dot.dataset.polarity = polarity;
+					if (polarity === 'magenta') {
+						dot.style.background = '#ff3ecf';
+						dot.style.boxShadow = '0 0 4px rgba(255, 62, 207, 0.56)';
+					} else {
+						dot.style.background = '#37e8ff';
+						dot.style.boxShadow = '0 0 4px rgba(55, 232, 255, 0.56)';
+					}
+					dot.style.width = `${dotSize}px`;
+					dot.style.height = `${dotSize}px`;
+					const baseX = (col + quiet) * (moduleSize + moduleGap) + inset;
+					const baseY = (row + quiet) * (moduleSize + moduleGap) + inset;
+					dot.style.transform = `translate(${baseX}px, ${baseY}px)`;
+					matrixRoot.appendChild(dot);
+					dotNodes.push({ el: dot, baseX, baseY, offsetX: 0, offsetY: 0, vx: 0, vy: 0, polarity, pulsePhase: Math.random() * Math.PI * 2 });
+					if (!isFinderCell(row, col, size)) {
+						darkModules.push({ row, col, x: baseX + dotSize * 0.5, y: baseY + dotSize * 0.5 });
+					}
+				}
+			}
+
+			class ContactDotDynamics {
+				constructor(nodes, maxOffset = 132) {
+					this.nodes = nodes;
+					this.maxOffset = maxOffset;
+				}
+
+				applyForce(node, fx, fy) {
+					const mass = node.polarity === 'magenta' ? 1.22 : 1.08;
+					node.vx += fx / mass;
+					node.vy += fy / mass;
+				}
+
+				integrate(spring = 0.012, drag = 0.9) {
+					for (const node of this.nodes) {
+						node.vx += -node.offsetX * spring;
+						node.vy += -node.offsetY * spring;
+						const speed = Math.hypot(node.vx, node.vy);
+						const viscousDrag = Math.max(0.72, drag - Math.min(0.16, speed * 0.014));
+						node.vx *= viscousDrag;
+						node.vy *= viscousDrag;
+						node.offsetX += node.vx;
+						node.offsetY += node.vy;
+						node.offsetX = Math.max(-this.maxOffset, Math.min(this.maxOffset, node.offsetX));
+						node.offsetY = Math.max(-this.maxOffset, Math.min(this.maxOffset, node.offsetY));
+					}
+				}
+
+				stillMoving(minOffset = 0.01, minVelocity = 0.01) {
+					for (const node of this.nodes) {
+						if (
+							Math.abs(node.offsetX) > minOffset ||
+							Math.abs(node.offsetY) > minOffset ||
+							Math.abs(node.vx) > minVelocity ||
+							Math.abs(node.vy) > minVelocity
+						) {
+							return true;
+						}
+					}
+					return false;
+				}
+
+				halt() {
+					for (const node of this.nodes) {
+						node.vx = 0;
+						node.vy = 0;
+					}
+				}
+			}
+
+			const dotDynamics = new ContactDotDynamics(dotNodes);
+
+			const renderDotOffsets = () => {
+				const now = performance.now() * 0.001;
+				for (const node of dotNodes) {
+					const speed = Math.hypot(node.vx || 0, node.vy || 0);
+					const pulseAmpBase = node.polarity === 'magenta' ? 0.022 : 0.018;
+					const pulseAmp = pulseAmpBase + Math.min(0.015, speed * 0.0024);
+					const pulseA = Math.sin(now * (node.polarity === 'magenta' ? 2.05 : 1.75) + node.pulsePhase) * pulseAmp;
+					const pulseB = Math.sin(now * 0.66 + node.pulsePhase * 0.72) * 0.007;
+					const scale = 1 + pulseA + pulseB;
+					node.el.style.transform = `translate(${node.baseX + node.offsetX}px, ${node.baseY + node.offsetY}px) scale(${scale})`;
+				}
+			};
+
+			let waveFrameId = null;
+			let waveOrigin = null;
+			let waveStart = 0;
+			let waveReleasedAt = null;
+			let activeHotspot = null;
+			let wavePower = 1;
+			let manualDrag = false;
+			let lastPointerLocal = null;
+			let smoothPointerLocal = null;
+			let restoreFrameId = null;
+			let lastTouchTapAt = 0;
+			let idleTimerId = null;
+			const idleDelayMs = 900;
+			const nextFrame = (cb) => window.requestAnimationFrame(cb);
+			const killFrame = (id) => window.cancelAnimationFrame(id);
+
+			const hasLargeOffsets = () => {
+				for (const node of dotNodes) {
+					if (
+						Math.abs(node.offsetX) > 0.9 ||
+						Math.abs(node.offsetY) > 0.9 ||
+						Math.abs(node.vx) > 0.12 ||
+						Math.abs(node.vy) > 0.12
+					) return true;
+				}
+				return false;
+			};
+
+			const setIdleState = (isIdle) => {
+				qrRoot.classList.toggle('is-idle', isIdle);
+			};
+
+			const scheduleIdleState = () => {
+				if (idleTimerId !== null) {
+					clearTimeout(idleTimerId);
+					idleTimerId = null;
+				}
+				idleTimerId = window.setTimeout(() => {
+					idleTimerId = null;
+					setIdleState(true);
+					if (hasLargeOffsets()) {
+						startRandomRestore();
+					}
+				}, idleDelayMs);
+			};
+
+			const markInteractionActive = () => {
+				setIdleState(false);
+				scheduleIdleState();
+			};
+
+			const stopRestore = () => {
+				if (restoreFrameId !== null) {
+					killFrame(restoreFrameId);
+					restoreFrameId = null;
+				}
+			};
+
+			const startRandomRestore = () => {
+				markInteractionActive();
+				stopWave();
+				stopRestore();
+				const restoreStart = performance.now();
+				const restoreDurationMs = 2200;
+				for (const node of dotNodes) {
+					node.restorePhase = Math.random() * Math.PI * 2;
+					node.restoreAmp = 0.12 + Math.random() * 0.34;
+					node.restoreTwist = Math.random() * 2 - 1;
+				}
+
+				const restoreTick = (now) => {
+					const elapsedMs = now - restoreStart;
+					if (elapsedMs >= restoreDurationMs) {
+						for (const node of dotNodes) {
+							node.offsetX = 0;
+							node.offsetY = 0;
+							node.vx = 0;
+							node.vy = 0;
+						}
+						renderDotOffsets();
+						stopRestore();
+						scheduleIdleState();
+						return;
+					}
+					let stillMoving = false;
+					for (const node of dotNodes) {
+						const ox = node.offsetX;
+						const oy = node.offsetY;
+						const dist = Math.hypot(ox, oy);
+						if (dist <= 0.02) {
+							node.offsetX = 0;
+							node.offsetY = 0;
+							continue;
+						}
+						stillMoving = true;
+						const toBaseX = -ox * 0.12;
+						const toBaseY = -oy * 0.12;
+						const nx = ox / dist;
+						const ny = oy / dist;
+						const px = -ny;
+						const py = nx;
+						const fade = Math.max(0, 1 - (elapsedMs / restoreDurationMs));
+						const wobble = Math.sin(now * 0.008 + node.restorePhase + dist * 0.05) * node.restoreAmp * fade;
+						node.vx = (node.vx + toBaseX + px * wobble * node.restoreTwist) * 0.82;
+						node.vy = (node.vy + toBaseY + py * wobble * node.restoreTwist) * 0.82;
+						node.offsetX += node.vx;
+						node.offsetY += node.vy;
+					}
+					renderDotOffsets();
+					if (stillMoving) {
+						restoreFrameId = nextFrame(restoreTick);
+					} else {
+						stopRestore();
+						scheduleIdleState();
+					}
+				};
+
+				restoreFrameId = nextFrame(restoreTick);
+			};
+
+			const stopWave = () => {
+				waveOrigin = null;
+				waveReleasedAt = null;
+				activeHotspot = null;
+				if (waveFrameId !== null) {
+					killFrame(waveFrameId);
+					waveFrameId = null;
+				}
+				dotDynamics.halt();
+				renderDotOffsets();
+			};
+
+			const releaseWave = () => {
+				if (!waveOrigin || waveReleasedAt !== null) return;
+				waveReleasedAt = performance.now();
+				scheduleIdleState();
+				if (waveFrameId === null) {
+					waveFrameId = nextFrame(animateWave);
+				}
+			};
+
+			const animateWave = (now) => {
+				if (!waveOrigin) {
+					waveFrameId = null;
+					return;
+				}
+				const elapsed = (now - waveStart) / 1000;
+				if (waveReleasedAt !== null) {
+					if ((now - waveReleasedAt) < 5000) {
+						dotDynamics.integrate(0.003, 0.95);
+						renderDotOffsets();
+						waveFrameId = nextFrame(animateWave);
+						return;
+					}
+					dotDynamics.integrate(0.024, 0.88);
+					renderDotOffsets();
+					if (dotDynamics.stillMoving()) {
+						waveFrameId = nextFrame(animateWave);
+						return;
+					}
+					stopWave();
+					return;
+				}
+				const spread = 184;
+				const pushStrength = 6.6 * wavePower;
+				for (const node of dotNodes) {
+					const centerX = node.baseX + node.offsetX + dotSize * 0.5;
+					const centerY = node.baseY + node.offsetY + dotSize * 0.5;
+					const dx = centerX - waveOrigin.x;
+					const dy = centerY - waveOrigin.y;
+					const dist = Math.hypot(dx, dy);
+					if (dist > spread) {
+						node.el.style.transform = `translate(${node.baseX + node.offsetX}px, ${node.baseY + node.offsetY}px)`;
+						continue;
+					}
+					const falloff = Math.max(0, 1 - (dist / spread));
+					const ripple = 0.55 + 0.45 * Math.sin((dist / 16) - (elapsed * 8.5));
+					const polaritySign = node.polarity === 'magenta' ? 1 : -1;
+					const radialForce = falloff * ripple * pushStrength * polaritySign;
+					const ox = dist ? (dx / dist) * radialForce : 0;
+					const oy = dist ? (dy / dist) * radialForce : 0;
+					const swirl = falloff * 0.24;
+					const sx = dist ? (-dy / dist) * swirl : 0;
+					const sy = dist ? (dx / dist) * swirl : 0;
+					dotDynamics.applyForce(node, ox + sx, oy + sy);
+				}
+				dotDynamics.integrate(0.004, 0.93);
+				renderDotOffsets();
+				if (elapsed < 1.35) {
+					waveFrameId = nextFrame(animateWave);
+				} else {
+					waveReleasedAt = now;
+					waveFrameId = nextFrame(animateWave);
+				}
+			};
+
+			const applyRepel = (x, y, power = 1) => {
+				markInteractionActive();
+				stopRestore();
+				waveOrigin = { x, y };
+				waveReleasedAt = null;
+				activeHotspot = { x, y };
+				wavePower = Math.max(0.5, Math.min(2.6, power));
+				waveStart = performance.now();
+				if (waveFrameId === null) {
+					waveFrameId = nextFrame(animateWave);
+				}
+			};
+
+			const carveLane = (localX, localY, vx, vy, power = 1) => {
+				const speed = Math.hypot(vx, vy);
+				const dirX = speed > 0.001 ? vx / speed : 1;
+				const dirY = speed > 0.001 ? vy / speed : 0;
+				const perpX = -dirY;
+				const perpY = dirX;
+				const radius = manualDrag ? 52 : 28;
+				const basePush = (manualDrag ? 13.8 : 5.2) * power;
+				const speedBoost = 0.9 + Math.min(1.8, speed / 8);
+
+				for (const node of dotNodes) {
+					const centerX = node.baseX + node.offsetX + dotSize * 0.5;
+					const centerY = node.baseY + node.offsetY + dotSize * 0.5;
+					const dx = centerX - localX;
+					const dy = centerY - localY;
+					const dist = Math.hypot(dx, dy);
+					if (dist > radius) continue;
+
+					const falloff = 1 - (dist / radius);
+					const sideSigned = dx * perpX + dy * perpY;
+					const sideCurve = Math.tanh(sideSigned / 10);
+					const sidePush = falloff * basePush * speedBoost * sideCurve;
+					const radialPush = falloff * basePush * 0.36;
+					const polaritySign = node.polarity === 'magenta' ? 1 : -1;
+					const rx = dist > 0.001 ? (dx / dist) * radialPush * polaritySign : 0;
+					const ry = dist > 0.001 ? (dy / dist) * radialPush * polaritySign : 0;
+					dotDynamics.applyForce(node, perpX * sidePush + rx, perpY * sidePush + ry);
+				}
+
+				dotDynamics.integrate(0.002, 0.94);
+				renderDotOffsets();
+			};
+
+			const sweepLane = (fromX, fromY, toX, toY, power = 1) => {
+				const vx = toX - fromX;
+				const vy = toY - fromY;
+				const dist = Math.hypot(vx, vy);
+				const steps = Math.max(1, Math.ceil(dist / 3));
+				for (let i = 1; i <= steps; i += 1) {
+					const t = i / steps;
+					const x = fromX + vx * t;
+					const y = fromY + vy * t;
+					carveLane(x, y, vx, vy, power);
+				}
+			};
+
+			const updateWaveFromPointer = (event) => {
+				const el = document.elementFromPoint(event.clientX, event.clientY);
+				const hotspot = el instanceof HTMLElement ? el.closest('.contact-game-hotspot') : null;
+				if (hotspot instanceof HTMLElement) {
+					const left = Number.parseFloat(hotspot.style.left || '0');
+					const top = Number.parseFloat(hotspot.style.top || '0');
+					if (Number.isFinite(left) && Number.isFinite(top)) {
+						applyRepel(left, top, 1.1);
+					}
+					return;
+				}
+			};
+
+			const handleMatrixPointerMove = (event) => {
+				const rect = matrixRoot.getBoundingClientRect();
+				const rawX = event.clientX - rect.left;
+				const rawY = event.clientY - rect.top;
+				if (!smoothPointerLocal) smoothPointerLocal = { x: rawX, y: rawY };
+				smoothPointerLocal.x += (rawX - smoothPointerLocal.x) * 0.42;
+				smoothPointerLocal.y += (rawY - smoothPointerLocal.y) * 0.42;
+				const localX = smoothPointerLocal.x;
+				const localY = smoothPointerLocal.y;
+				const power = manualDrag || event.buttons === 1 ? 2.45 : 1.2;
+				const prev = lastPointerLocal;
+				const vx = prev ? localX - prev.x : 0;
+				const vy = prev ? localY - prev.y : 0;
+				if (prev && (manualDrag || event.buttons === 1)) {
+					sweepLane(prev.x, prev.y, localX, localY, power * 1.2);
+				} else {
+					carveLane(localX, localY, vx, vy, power);
+				}
+				lastPointerLocal = { x: localX, y: localY };
+				const ripplePower = manualDrag || event.buttons === 1 ? 0.72 : power;
+				applyRepel(localX, localY, ripplePower);
+			};
+
+			matrixRoot.addEventListener('pointerdown', (event) => {
+				markInteractionActive();
+				if (event.pointerType === 'touch') {
+					const now = performance.now();
+					if ((now - lastTouchTapAt) < 320) {
+						lastTouchTapAt = 0;
+						event.preventDefault();
+						startRandomRestore();
+						return;
+					}
+					lastTouchTapAt = now;
+				}
+				manualDrag = true;
+				lastPointerLocal = null;
+				smoothPointerLocal = null;
+				if (typeof matrixRoot.setPointerCapture === 'function') {
+					try { matrixRoot.setPointerCapture(event.pointerId); } catch {}
+				}
+				handleMatrixPointerMove(event);
+			});
+			matrixRoot.addEventListener('dblclick', (event) => {
+				event.preventDefault();
+				startRandomRestore();
+			});
+			matrixRoot.addEventListener('pointermove', handleMatrixPointerMove);
+			matrixRoot.addEventListener('pointerup', () => {
+				manualDrag = false;
+				lastPointerLocal = null;
+				smoothPointerLocal = null;
+				releaseWave();
+			});
+			matrixRoot.addEventListener('pointerleave', () => {
+				manualDrag = false;
+				lastPointerLocal = null;
+				smoothPointerLocal = null;
+				releaseWave();
+			});
+
+			window.addEventListener('pointermove', updateWaveFromPointer, { passive: true });
+			window.addEventListener('pointerleave', () => {
+				releaseWave();
+				scheduleIdleState();
+			}, { passive: true });
+			window.calyrQrWave = {
+				start: applyRepel,
+				stop: stopWave,
+				restore: startRandomRestore,
+			};
+
+			const hotspotDefs = [
+				{ label: 'Bluesky', text: 'BS', href: 'https://bsky.app', row: Math.floor(size * 0.26), col: Math.floor(size * 0.42) },
+				{ label: 'LinkedIn', text: 'IN', href: 'https://www.linkedin.com/in/ruperttscheliessnig', row: Math.floor(size * 0.34), col: Math.floor(size * 0.62) },
+				{ label: 'X', text: 'X', href: 'https://x.com', row: Math.floor(size * 0.52), col: Math.floor(size * 0.35) },
+				{ label: 'Instagram', text: 'IG', href: 'https://www.instagram.com', row: Math.floor(size * 0.58), col: Math.floor(size * 0.67) },
+				{ label: 'YouTube', text: 'YT', href: 'https://www.youtube.com', row: Math.floor(size * 0.73), col: Math.floor(size * 0.47) },
+			];
+
+			const pickNearestDark = (targetRow, targetCol) => {
+				let best = null;
+				for (const m of darkModules) {
+					const dr = m.row - targetRow;
+					const dc = m.col - targetCol;
+					const d = dr * dr + dc * dc;
+					if (!best || d < best.d) best = { module: m, d };
+				}
+				return best ? best.module : null;
+			};
+
+			for (const def of hotspotDefs) {
+				const m = pickNearestDark(def.row, def.col);
+				if (!m) continue;
+				const hotspot = document.createElement('a');
+				hotspot.className = 'contact-game-hotspot';
+				hotspot.href = def.href;
+				hotspot.target = '_blank';
+				hotspot.rel = 'noopener noreferrer';
+				hotspot.setAttribute('aria-label', def.label);
+				hotspot.addEventListener('click', (event) => {
+					event.stopPropagation();
+				});
+				hotspot.addEventListener('pointerenter', () => applyRepel(m.x, m.y));
+				hotspot.addEventListener('pointerleave', () => {
+					releaseWave();
+					scheduleIdleState();
+				});
+				hotspot.addEventListener('focus', () => applyRepel(m.x, m.y));
+				hotspot.addEventListener('blur', () => {
+					releaseWave();
+					scheduleIdleState();
+				});
+				hotspot.style.left = `${m.x}px`;
+				hotspot.style.top = `${m.y}px`;
+
+				const text = document.createElement('span');
+				text.className = 'contact-game-hotspot-text';
+				text.textContent = def.text;
+				hotspot.appendChild(text);
+
+				const label = document.createElement('span');
+				label.className = 'contact-game-hotspot-label';
+				label.textContent = def.label;
+				hotspot.appendChild(label);
+
+				matrixRoot.appendChild(hotspot);
+			}
+
+			scheduleIdleState();
+
+			qrRoot.replaceChildren(matrixRoot);
+		};
+
+		const initialize = async () => {
+			try {
+				await loadQrLibrary();
+				renderQrDots();
+			} catch {
+				qrRoot.replaceChildren();
+			}
+		};
+
+		initialize();
+		window.addEventListener('resize', () => {
+			if (typeof window.qrcode !== 'function') return;
+			renderQrDots();
+		}, { passive: true });
 	};
 
 	const updateDensityMode = () => {
@@ -1991,151 +2832,29 @@
 				section.dataset.collapsedRowSpan = String(end - start);
 			}
 		} else {
-			const savedSpan = Number(section.dataset.customRowSpan || '0');
-			const { rowHeight, rowGap, colGap, cols } = getGridMetrics();
-			let span = savedSpan;
-			let colSpan = 0;
-			if (span <= 0) {
-				const isVisitCard = section.dataset.tileKind === 'visit_card';
-				const state = section.querySelector('.tile-open-state');
-				const unit = rowHeight + rowGap;
-				const maxViewport = Math.floor(window.innerHeight * (isVisitCard ? 0.9 : 0.82));
-				const minSpan = isVisitCard ? 4 : 3;
-				const maxSpan = isVisitCard ? 14 : 12;
-				if (!isVisitCard && studyContent instanceof HTMLElement && state instanceof HTMLElement) {
-					const contentWidth = studyContent.clientWidth;
-					const colUnit = (contentWidth - colGap * (cols - 1)) / cols;
-					let best = {
-						col: 6,
-						row: 7,
-						area: Number.POSITIVE_INFINITY,
-						overflow: Number.POSITIVE_INFINITY,
-						rowComfort: Number.POSITIVE_INFINITY,
-						spare: Number.POSITIVE_INFINITY,
-						score: Number.POSITIVE_INFINITY,
-					};
-					for (let c = 5; c <= 10; c += 1) {
-						const frameWidth = colUnit * c + colGap * (c - 1) - 16;
-						const desired = Math.max(160, measureStateHeightAtWidth(state, frameWidth));
-						const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
-						const rows = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
-						const overflow = Math.max(0, rows - 8);
-						const area = c * rows;
-						const tileHeight = rows * rowHeight + Math.max(0, rows - 1) * rowGap;
-						const spare = Math.max(0, tileHeight - desired);
-						const rowComfort = rows >= 5 && rows <= 6 ? 0 : Math.abs(rows - 6);
-						const widthPenalty = Math.max(0, c - 5) * 4;
-						const score = spare + widthPenalty;
-						if (
-							overflow < best.overflow
-							|| (overflow === best.overflow && rowComfort < best.rowComfort)
-							|| (overflow === best.overflow && rowComfort === best.rowComfort && score < best.score)
-							|| (overflow === best.overflow && rowComfort === best.rowComfort && score === best.score && area < best.area)
-						) {
-							best = { col: c, row: rows, area, overflow, rowComfort, spare, score };
-						}
-					}
-					colSpan = best.col;
-					span = best.row;
-				} else {
-					const desired = state instanceof HTMLElement
-						? Math.max(160, Math.ceil(state.scrollHeight + 16))
-						: rowHeight * 4;
-					const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
-					span = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
-				}
-				if (colSpan > 0) {
-					section.dataset.autoColSpan = String(colSpan);
-				}
-				section.dataset.autoRowSpan = String(span);
-			}
-			if (colSpan > 0) {
-				section.style.setProperty('grid-column', `span ${colSpan}`, 'important');
-			}
+			const { rowHeight, rowGap } = getGridMetrics();
+			const state = section.querySelector('.tile-open-state');
+			const unit = rowHeight + rowGap;
+			const isVisitCard = section.dataset.tileKind === 'visit_card';
+			const minSpan = isVisitCard ? 5 : 4;
+			const maxSpan = isVisitCard ? 40 : 36;
+			const desiredHeight = state instanceof HTMLElement
+				? Math.max(180, Math.ceil(state.scrollHeight + 24))
+				: rowHeight * minSpan;
+			const span = Math.max(minSpan, Math.min(maxSpan, Math.ceil((desiredHeight + rowGap) / unit)));
+			section.dataset.autoRowSpan = String(span);
 			section.style.setProperty('grid-row', `span ${span}`, 'important');
-			section.style.setProperty('min-height', `${Math.max(160, span * rowHeight)}px`);
+			section.style.setProperty('min-height', `${desiredHeight}px`);
 		}
 		const trigger = section.querySelector('.study-trigger');
 		if (trigger instanceof HTMLElement) {
 			trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
 		}
 		if (expanded) {
-			hydrateVisitCardEmbed(section);
+			// no-op: contact game now runs inline in tile surface
 		}
 	};
 
-	const ensureResizeHandles = () => {
-		for (const section of sections) {
-			if (!(section instanceof HTMLElement)) continue;
-			const kind = section.dataset.tileKind || 'text';
-			if (kind !== 'text' && kind !== 'visit_card') continue;
-			if (section.querySelector('.tile-resize-handle')) continue;
-			const handle = document.createElement('div');
-			handle.className = 'tile-resize-handle';
-			handle.setAttribute('role', 'separator');
-			handle.setAttribute('aria-orientation', 'vertical');
-			handle.setAttribute('aria-label', 'Resize tile vertically');
-			section.appendChild(handle);
-		}
-	};
-
-	const initVerticalTileResize = () => {
-		if (!(studyContent instanceof HTMLElement)) return;
-		ensureResizeHandles();
-		let resizeState = null;
-
-		const onDragMove = (event) => {
-			if (!resizeState) return;
-			const y = Number(event.clientY);
-			if (!Number.isFinite(y)) return;
-			const deltaY = y - resizeState.startY;
-			const targetHeight = resizeState.startHeight + deltaY;
-			const unit = resizeState.rowHeight + resizeState.rowGap;
-			const span = Math.max(3, Math.min(10, Math.round((targetHeight + resizeState.rowGap) / unit)));
-			resizeState.section.dataset.customRowSpan = String(span);
-			resizeState.section.style.setProperty('grid-row', `span ${span}`, 'important');
-			resizeState.section.style.setProperty('min-height', `${Math.max(160, span * resizeState.rowHeight)}px`);
-			event.preventDefault();
-		};
-
-		const onDragEnd = () => {
-			if (!resizeState) return;
-			window.removeEventListener('pointermove', onDragMove);
-			window.removeEventListener('pointerup', onDragEnd);
-			window.removeEventListener('mousemove', onDragMove);
-			window.removeEventListener('mouseup', onDragEnd);
-			resizeState = null;
-		};
-
-		const startDrag = (event) => {
-			const target = event.target;
-			if (!(target instanceof Element)) return;
-			const handle = target.closest('.tile-resize-handle');
-			if (!(handle instanceof HTMLElement)) return;
-			const section = handle.closest('.study-section');
-			if (!(section instanceof HTMLElement) || !section.classList.contains('is-open')) return;
-			const y = Number(event.clientY);
-			if (!Number.isFinite(y)) return;
-			const gridStyles = window.getComputedStyle(studyContent);
-			const rowHeight = parseFloat(gridStyles.gridAutoRows || '54') || 54;
-			const rowGap = parseFloat(gridStyles.rowGap || '2') || 2;
-			resizeState = {
-				section,
-				startY: y,
-				startHeight: section.getBoundingClientRect().height,
-				rowHeight,
-				rowGap,
-			};
-			window.addEventListener('pointermove', onDragMove, { passive: false });
-			window.addEventListener('pointerup', onDragEnd, { passive: true });
-			window.addEventListener('mousemove', onDragMove, { passive: false });
-			window.addEventListener('mouseup', onDragEnd, { passive: true });
-			event.preventDefault();
-		};
-
-		studyContent.addEventListener('pointerdown', startDrag);
-		studyContent.addEventListener('mousedown', startDrag);
-	};
 
 	const enforceMondrianState = () => {
 		for (const section of sections) {
@@ -2164,10 +2883,8 @@
 		enforceMondrianState();
 	};
 
-	initVerticalTileResize();
-
 	updateDensityMode();
-	initVisitGames();
+	initContactTileGame();
 	restoreSectionOrder();
 	enforceMondrianState();
 	const initialTargetId = (window.location.hash || '').replace(/^#/, '');
@@ -2186,6 +2903,7 @@
 		studyContent.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+			if (target.closest('.contact-game-surface, .contact-game-btn, .contact-game-qr')) return;
 			const trigger = target.closest('.study-trigger');
 			if (!(trigger instanceof HTMLElement)) return;
 			const section = trigger.closest('.study-section');
@@ -2200,6 +2918,7 @@
 			if (event.key !== 'Enter' && event.key !== ' ') return;
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+			if (target.closest('.contact-game-surface, .contact-game-btn, .contact-game-qr')) return;
 			const trigger = target.closest('.study-trigger');
 			if (!(trigger instanceof HTMLElement)) return;
 			event.preventDefault();
