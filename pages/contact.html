@@ -28,12 +28,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      display: block;
       padding: 0;
       overflow-y: auto;
       color: var(--ink);
-      font-family: var(--control-font);
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior: none;
       -webkit-user-select: none;
@@ -156,9 +154,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      border: none;
-      background: transparent;
-      box-shadow: none;
     }
 
     canvas {
@@ -174,7 +169,26 @@
       background:
         radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 35%),
         linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .contact-actions {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      position: absolute;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%);
+      z-index: 6;
+      width: auto;
+      max-width: min(88vw, 520px);
+      pointer-events: auto;
+    }
+
+    body.mail-available .contact-actions {
+      display: flex !important;
     }
 
     .landscape-controls {
@@ -186,6 +200,126 @@
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
+    }
+
+    .action-pill {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 13, 28, 0.92);
+      color: var(--ink);
+      font: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      gap: 0;
+      text-transform: none;
+      position: relative;
+      cursor: pointer;
+      box-shadow: none;
+      transition: box-shadow 0.2s ease, transform 0.16s ease;
+      font-family: var(--control-font);
+    }
+
+    .action-pill::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(5, 12, 30, 0.82);
+      color: rgba(241, 249, 255, 0.95);
+      font-size: 0.56rem;
+      font-family: var(--control-font);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .action-pill:hover::after,
+    .action-pill:focus-visible::after {
+      opacity: 1;
+    }
+
+    #mail-btn {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      padding: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(122, 182, 255, 0.72);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(148, 205, 255, 0.18), transparent 44%),
+        rgba(8, 35, 78, 0.26);
+      box-shadow: none;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: #9aceff;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      text-transform: none;
+    }
+
+    #mail-btn,
+    #restart-btn {
+      font-family: var(--control-font) !important;
+      font-weight: 700;
+    }
+
+    #restart-btn {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      color: #ff4df5;
+    }
+
+    #mail-btn .mail-icon {
+      width: 26px;
+      height: 26px;
+      display: block;
+      filter: drop-shadow(0 0 8px rgba(120, 188, 255, 0.5));
+    }
+
+    #restart-btn .restart-icon {
+      width: 30px;
+      height: 30px;
+      display: block;
+      filter: drop-shadow(0 0 4px rgba(255, 77, 245, 0.35));
+    }
+
+    #mail-btn:hover,
+    #mail-btn:focus-visible {
+      box-shadow:
+        0 0 18px rgba(101, 170, 255, 0.35),
+        inset 0 0 16px rgba(129, 198, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    #restart-btn:hover,
+    #restart-btn:focus-visible {
+      box-shadow:
+        0 0 18px rgba(255, 77, 245, 0.35),
+        inset 0 0 12px rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .action-pill-primary {
+      background: linear-gradient(90deg, rgba(126, 174, 255, 0.95), rgba(255, 255, 255, 0.9));
+      color: #06142d;
+      box-shadow: 0 0 22px rgba(126, 174, 255, 0.22);
     }
 
     .footer {
@@ -249,6 +383,14 @@
         gap: 6px;
       }
 
+      .contact-actions {
+        bottom: 16px;
+        max-width: min(92vw, 420px);
+      }
+
+      body.mail-available .contact-actions {
+        display: flex;
+      }
     }
 
     @media (min-width: 721px) {
@@ -269,7 +411,8 @@
       .site-header,
       .page-intro,
       .hud,
-      .footer {
+      .footer,
+      .contact-actions {
         display: none;
       }
 
@@ -308,9 +451,31 @@
         transform: translateY(calc(-1 * max(16px, env(safe-area-inset-top))));
       }
 
-      .social-fab {
-        left: max(10px, env(safe-area-inset-left));
-        bottom: max(10px, env(safe-area-inset-bottom));
+      body.mail-available .contact-actions {
+        position: absolute;
+        left: 50%;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        display: flex;
+        z-index: 30;
+      }
+
+      .action-pill {
+        min-width: 48px;
+        height: 40px;
+        background: rgba(7, 13, 28, 0.78);
+        backdrop-filter: blur(8px);
+      }
+
+      #mail-btn {
+        min-width: 44px;
+        height: 48px;
+        padding: 0;
+      }
+
+      #mail-btn .mail-icon {
+        width: 24px;
+        height: 24px;
       }
     }
 
@@ -320,8 +485,7 @@
     }
 
     body {
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       background:
         radial-gradient(120% 95% at 82% -10%, rgba(190, 230, 255, 0.14), transparent 62%),
         radial-gradient(110% 90% at -5% 100%, rgba(115, 168, 255, 0.16), transparent 66%),
@@ -333,10 +497,6 @@
     .contact-page-flow,
     .shell {
       min-height: 100vh;
-    }
-
-    .explore-page.nexus-page {
-      flex: 1 0 auto;
     }
 
     .contact-page-flow {
@@ -359,140 +519,40 @@
       align-items: center;
       position: relative;
       overflow: hidden;
-      perspective: 1400px;
-      --card-tilt-x: 0deg;
-      --card-tilt-y: 0deg;
-      --card-rot-x: -3deg;
-      --card-rot-y: 18deg;
-      --card-scale: 0.95;
-      --card-lift: 10px;
-      --card-shadow: drop-shadow(0 24px 34px rgba(2, 10, 24, 0.42));
     }
 
     .stage::before {
       content: "";
       position: absolute;
-      top: 14%;
-      left: 24%;
-      width: min(44vw, 420px);
-      height: min(18vw, 180px);
-      background: linear-gradient(130deg, rgba(235, 246, 255, 0.32), rgba(255, 255, 255, 0.02));
-      filter: blur(10px);
-      transform: translateZ(18px) rotate(-8deg);
-      opacity: 0.65;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 53px, var(--line-soft) 53px 54px),
+        repeating-linear-gradient(90deg, transparent 0 53px, var(--line-soft) 53px 54px);
+      opacity: 0.45;
       pointer-events: none;
-      z-index: 3;
-      transition: opacity 260ms ease, transform 300ms ease;
     }
 
     .stage::after {
-      content: none;
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
     canvas#game {
       width: min(100vw, calc(100vh * 1.6667));
       max-width: calc(100vw - 34px);
       max-height: calc(100vh - 34px);
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      box-shadow:
+        0 14px 48px rgba(2, 7, 20, 0.7),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
       position: relative;
       z-index: 2;
-      transform-style: preserve-3d;
-      transform: translateY(var(--card-lift)) rotateX(calc(var(--card-rot-x) + var(--card-tilt-x))) rotateY(calc(var(--card-rot-y) + var(--card-tilt-y))) scale(var(--card-scale));
-      filter: var(--card-shadow);
-      transition: transform 320ms cubic-bezier(.2,.78,.22,1), filter 300ms ease;
-    }
-
-    .stage.card-hover {
-      --card-rot-x: 0deg;
-      --card-rot-y: 0deg;
-      --card-scale: 1;
-      --card-lift: 0px;
-      --card-shadow: drop-shadow(0 18px 28px rgba(2, 10, 24, 0.34));
-    }
-
-    .stage.card-active {
-      --card-rot-x: 0deg;
-      --card-rot-y: 0deg;
-      --card-scale: 1;
-      --card-lift: 0px;
-      --card-tilt-x: 0deg;
-      --card-tilt-y: 0deg;
-      --card-shadow: drop-shadow(0 10px 20px rgba(2, 10, 24, 0.28));
-    }
-
-    .stage.card-active::before {
-      opacity: 0.24;
-      transform: translateZ(10px) rotate(-4deg);
-    }
-
-    .chatbot-orb {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      border: 1px solid rgba(225, 242, 255, 0.75);
-      background: rgba(8, 22, 47, 0.82);
-      color: #f5fbff;
-      box-shadow: 0 10px 22px rgba(4, 12, 28, 0.48);
-      z-index: 4;
-      pointer-events: none;
-      padding: 0;
-      transform: translate(-50%, -50%);
-      transition: box-shadow 220ms ease, border-color 220ms ease, transform 220ms ease;
-    }
-
-    .chatbot-orb-core {
-      position: absolute;
-      inset: 0;
-      display: block;
-    }
-
-    .chatbot-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 3px solid rgba(248, 252, 255, 0.9);
-      border-left-color: transparent;
-      border-bottom-color: transparent;
-      transform-origin: 50% 50%;
-    }
-
-    .chatbot-ring-1 {
-      inset: 12px;
-      animation: chatbot-spin 6.6s linear infinite;
-    }
-
-    .chatbot-ring-2 {
-      inset: 24px;
-      animation: chatbot-spin 4.8s linear infinite reverse;
-    }
-
-    .chatbot-dot {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 2px solid rgba(245, 251, 255, 0.95);
-      box-shadow: 0 0 10px rgba(245, 251, 255, 0.42);
-    }
-
-    .chatbot-orb.chatbot-catchable {
-      border-color: rgba(167, 231, 255, 0.95);
-      box-shadow: 0 0 0 4px rgba(167, 231, 255, 0.18), 0 12px 24px rgba(6, 16, 34, 0.52);
-    }
-
-    .chatbot-orb.chatbot-catchable {
-      transform: translate(-50%, -50%) scale(1.03);
-    }
-
-    @keyframes chatbot-spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
 
     @media (max-aspect-ratio: 5/3) {
@@ -500,269 +560,6 @@
         width: 100vw;
         max-width: calc(100vw - 22px);
         max-height: calc(100vw * 0.6);
-      }
-    }
-
-    @media (hover: none), (pointer: coarse) {
-      .stage {
-        --card-rot-x: 0deg;
-        --card-rot-y: 0deg;
-        --card-scale: 1;
-        --card-lift: 0px;
-      }
-
-      .stage::before {
-        opacity: 0.2;
-      }
-
-      .chatbot-orb {
-        display: none;
-      }
-    }
-
-    .impressum-visitcard {
-      margin: 12px auto 28px;
-      width: min(96vw, 980px);
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 35%),
-        linear-gradient(180deg, rgba(8, 15, 34, 0.96), rgba(2, 6, 18, 0.98));
-      box-shadow: 0 16px 40px rgba(2, 10, 24, 0.45);
-      padding: 16px 18px;
-      font-family: var(--control-font);
-    }
-
-    .impressum-visitcard h2 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(220, 236, 255, 0.92);
-    }
-
-    .impressum-visitcard p {
-      margin: 6px 0;
-      color: rgba(231, 243, 255, 0.88);
-      line-height: 1.45;
-      font-size: 0.92rem;
-    }
-
-    .impressum-visitcard a {
-      color: #b8dbff;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(184, 219, 255, 0.45);
-    }
-
-    .impressum-visitcard a:hover {
-      color: #ffffff;
-      border-bottom-color: rgba(255, 255, 255, 0.75);
-    }
-
-    .social-fab {
-      position: fixed;
-      left: 18px;
-      bottom: 18px;
-      z-index: 60;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(18px) scale(0.95);
-      transition: opacity 180ms ease, transform 220ms ease;
-    }
-
-    .social-fab a,
-    .social-fab button {
-      --ring-color: #ffffff;
-      --fab-collapse-shift: 0px;
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      color: #f4f9ff;
-      text-decoration: none;
-      border: 1px solid rgba(232, 245, 255, 0.78);
-      background: rgba(11, 27, 56, 0.9);
-      box-shadow: 0 8px 14px rgba(2, 10, 24, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      cursor: pointer;
-      padding: 0;
-      transition: transform 240ms ease, opacity 220ms ease, box-shadow 220ms ease;
-    }
-
-    .social-fab a[hidden],
-    .social-fab button[hidden] {
-      display: none !important;
-    }
-
-    .social-fab button {
-      font: inherit;
-    }
-
-    .social-fab [data-short]::after {
-      content: attr(data-short);
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 8px);
-      transform: translateX(-50%) translateY(4px);
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(216, 239, 255, 0.56);
-      background: rgba(6, 17, 38, 0.78);
-      color: rgba(236, 246, 255, 0.95);
-      font-size: 0.64rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 180ms ease, transform 180ms ease;
-      white-space: nowrap;
-    }
-
-    .social-fab a:hover::after,
-    .social-fab button:hover::after,
-    .social-fab a:focus-visible::after,
-    .social-fab button:focus-visible::after {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .fab-core {
-      position: relative;
-      width: var(--fab-core-size, 36px);
-      height: var(--fab-core-size, 36px);
-      display: block;
-    }
-
-    .fab-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      --ring-thickness: var(--fab-ring-thickness, 3.4px);
-      border: var(--ring-thickness) solid var(--ring-color, #c8ecff);
-      border-left-color: transparent;
-      opacity: 1;
-      transform-origin: 50% 50%;
-    }
-
-    .fab-ring-1 {
-      inset: 0;
-      animation: fab-spin 8.8s linear infinite;
-    }
-
-    .fab-ring-2 {
-      inset: calc(var(--fab-core-size, 36px) * 0.1667);
-      animation: fab-spin 7.2s linear infinite reverse;
-    }
-
-    .fab-ring-3 {
-      inset: calc(var(--fab-core-size, 36px) * 0.3333);
-      animation: fab-spin 6.0s linear infinite;
-    }
-
-    .fab-dot {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(244, 250, 255, 0.96);
-      box-shadow: 0 0 4px rgba(244, 250, 255, 0.55);
-    }
-
-    @keyframes fab-spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .social-fab a:hover,
-    .social-fab button:hover,
-    .social-fab a:focus-visible,
-    .social-fab button:focus-visible {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(2, 10, 24, 0.56), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-      outline: none;
-    }
-
-    .social-fab .fab-linkedin:hover,
-    .social-fab .fab-linkedin:focus-visible {
-      --ring-color: #7fc3ff;
-      box-shadow: 0 0 24px rgba(127, 195, 255, 0.5), 0 14px 28px rgba(2, 10, 24, 0.56);
-    }
-
-    .social-fab .fab-whatsapp:hover,
-    .social-fab .fab-whatsapp:focus-visible {
-      --ring-color: #60f5ee;
-      box-shadow: 0 0 24px rgba(96, 245, 238, 0.46), 0 14px 28px rgba(2, 10, 24, 0.56);
-    }
-
-    .social-fab .fab-mail:hover,
-    .social-fab .fab-mail:focus-visible {
-      --ring-color: #ffd86f;
-      box-shadow: 0 0 24px rgba(255, 216, 111, 0.48), 0 14px 28px rgba(2, 10, 24, 0.56);
-    }
-
-    .social-fab .fab-reset:hover,
-    .social-fab .fab-reset:focus-visible {
-      --ring-color: #ff88c4;
-      box-shadow: 0 0 24px rgba(255, 136, 196, 0.44), 0 14px 28px rgba(2, 10, 24, 0.56);
-    }
-
-    .social-fab.fab-collapsed .fab-linkedin,
-    .social-fab.fab-collapsed .fab-mail,
-    .social-fab.fab-collapsed .fab-reset {
-      transform: translateX(var(--fab-collapse-shift, 0px)) scale(0.34);
-      opacity: 0.55;
-      pointer-events: none;
-      box-shadow: 0 0 12px rgba(180, 220, 255, 0.22);
-    }
-
-    .social-fab.fab-collapsed .fab-whatsapp {
-      transform: translateX(0) scale(1);
-      opacity: 1;
-    }
-
-    body.impressum-open .social-fab {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0) scale(1);
-    }
-
-    @media (max-width: 760px) {
-      .social-fab {
-        left: 16px;
-        bottom: 14px;
-      }
-
-      .social-fab a,
-      .social-fab button {
-        width: 52px;
-        height: 52px;
-      }
-
-      .fab-core {
-        width: 32px;
-        height: 32px;
-      }
-
-      .fab-ring {
-        --ring-thickness: 3px;
-      }
-
-      .fab-ring-2 {
-        inset: 5px;
-      }
-
-      .fab-ring-3 {
-        inset: 10px;
       }
     }
   </style>
@@ -778,7 +575,7 @@
         <a href="../publications.html" class="nav-pill">Publications</a>
       </nav>
       <nav class="nav-secondary" aria-label="Secondary">
-        <a href="https://bsky.app/profile/calyr.ai" class="nav-pill">Follow</a>
+        <a href="https://bsky.app/profile/calyrai.bsky.social" class="nav-pill">Follow</a>
         <a href="contact.html" class="nav-pill active">Contact</a>
         <a href="contact.html" class="nav-pill">Login</a>
       </nav>
@@ -798,6 +595,20 @@
           </section>
 
           <section class="stage">
+            <div class="contact-actions" id="contact-actions" aria-label="Contact actions">
+              <button type="button" class="action-pill" id="mail-btn" aria-label="" data-label="">
+                <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="2.5" y="4" width="19" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"></rect>
+                  <path d="M3.8 6.4L12 13.1 20.2 6.4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+              <button type="button" class="action-pill" id="restart-btn" aria-label="" data-label="">
+                <svg class="restart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="8.2" fill="none" stroke="rgba(255,255,255,0.96)" stroke-width="2.1"></circle>
+                  <circle cx="12" cy="12" r="3.7" fill="currentColor"></circle>
+                </svg>
+              </button>
+            </div>
             <canvas id="game" width="900" height="540" aria-label="Breakout game"></canvas>
           </section>
 
@@ -827,186 +638,3033 @@
     </section>
   </main>
 
-  <section class="impressum-visitcard" aria-label="Legal Notice">
-    <h2>Legal Notice</h2>
-    <p>Media owner and responsible for content: Rupert Tscheliessnig</p>
-    <p>calyr.ai · Ogugasse 3/3/13, 1220 Vienna, Austria</p>
-    <p>Email: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a></p>
-    <p>Web: <a href="https://calyr.ai">https://calyr.ai</a></p>
-  </section>
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const scoreNode = document.getElementById("score");
+    const livesNode = document.getElementById("lives");
+    const levelNode = document.getElementById("level");
+    const patternNode = document.getElementById("pattern");
+    const mailQueueNode = document.getElementById("mail-queue");
+    const modeNoteNode = document.getElementById("mode-note");
+    const saveNoteNode = document.getElementById("save-note");
+    const contactActions = document.getElementById("contact-actions");
+    const mailBtn = document.getElementById("mail-btn");
+    const restartBtn = document.getElementById("restart-btn");
+    const QR_LIBRARY_URL = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
+    const PERSON_NAME = "Rupert Tscheliessnig, PhD";
+    const ORG_TITLE = "Founder · Calyr.ai";
+    const ORG_NAME = "Calyr.ai";
+    const CONTACT_EMAIL = "rupert.tscheliessnig@calyr.ai";
+    const CONTACT_PHONE = "+4369919200915";
+    const CONTACT_WEBSITE = "https://calyr.ai";
+    const CONTACT_PAYLOAD = [
+      "MECARD:",
+      `N:${PERSON_NAME};`,
+      `ORG:${ORG_NAME};`,
+      `TEL:${CONTACT_PHONE};`,
+      `EMAIL:${CONTACT_EMAIL};`,
+      `URL:${CONTACT_WEBSITE};`,
+      ";"
+    ].join("");
+    const LOCAL_CONTACT_KEY = "calyr.contact.qr.local-record";
+    const CONTACT_CARD_QR_SCALE = 0.76;
+    const QR_RENDER_SCALE = 0.84;
+    const SINGLE_LEVEL_ONLY = true;
+    const MAX_LEVEL = SINGLE_LEVEL_ONLY ? 1 : 4;
+    const LEVEL_TARGETS = SINGLE_LEVEL_ONLY
+      ? { 1: 200 }
+      : {
+          1: 200,
+          2: 400,
+          3: 400,
+          4: 1000,
+        };
+    const LEVEL_UP_LIFE_BONUS = 1;
+    const PERIMETER_SCORE_PENALTY = 180;
+    const PERIMETER_DROP_LEVEL = 3;
+    const SPLITTER_BRICK_MAX = 5;
+    const CATCHER_HOLD_SECONDS = 0.09;
+    const CATCHER_REDIRECT_SPREAD = Math.PI * 0.36;
+    const SIMULATION_STEP = 1 / 120;
+    const MAX_FRAME_DELTA = 0.25;
+    const MAX_SIM_STEPS_PER_FRAME = 20;
+    const TILE_GRID_COLS = 10;
+    const TILE_GRID_ROWS = 6;
+    const CONTROL_LABELS = {
+      mail: "Mail",
+      restart: "Restart",
+    };
 
-  <nav class="social-fab" aria-label="Quick social actions">
-    <a class="fab-linkedin" data-short="LinkedIn" href="https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/" target="_blank" rel="noopener noreferrer" aria-label="Open LinkedIn">
-      <span class="fab-core" aria-hidden="true">
-        <span class="fab-ring fab-ring-1"></span>
-        <span class="fab-ring fab-ring-2"></span>
-        <span class="fab-ring fab-ring-3"></span>
-        <span class="fab-dot"></span>
-      </span>
-    </a>
-    <a class="fab-whatsapp" data-short="WhatsApp" href="https://wa.me/4369919200915" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp">
-      <span class="fab-core" aria-hidden="true">
-        <span class="fab-ring fab-ring-1"></span>
-        <span class="fab-ring fab-ring-2"></span>
-        <span class="fab-ring fab-ring-3"></span>
-        <span class="fab-dot"></span>
-      </span>
-    </a>
-    <a class="fab-mail" data-short="Mail" href="mailto:rupert.tscheliessnig@calyr.ai" aria-label="Send Email">
-      <span class="fab-core" aria-hidden="true">
-        <span class="fab-ring fab-ring-1"></span>
-        <span class="fab-ring fab-ring-2"></span>
-        <span class="fab-ring fab-ring-3"></span>
-        <span class="fab-dot"></span>
-      </span>
-    </a>
-    <button type="button" class="fab-reset" id="fab-reset" data-short="Reset" aria-label="Reset game">
-      <span class="fab-core" aria-hidden="true">
-        <span class="fab-ring fab-ring-1"></span>
-        <span class="fab-ring fab-ring-2"></span>
-        <span class="fab-ring fab-ring-3"></span>
-        <span class="fab-dot"></span>
-      </span>
-    </button>
-  </nav>
+    function contactSeed() {
+      let seed = 0;
+      for (const char of CONTACT_PAYLOAD) {
+        seed = (seed * 31 + char.charCodeAt(0)) % 100000;
+      }
+      return seed;
+    }
 
-  <script src="contact.content.js"></script>
-  <script src="contact.game.config.js"></script>
+    const state = {
+      running: false,
+      initialized: false,
+      paused: false,
+      contactOpen: false,
+      contactMode: true,
+      score: 0,
+      lives: 3,
+      level: 1,
+      paddle: { w: 124, h: 14, x: 388, y: 504, speed: 540, dx: 0 },
+      ball: { x: 450, y: 420, r: 9, dx: 240, dy: -240, speedBase: 240 },
+      bricks: [],
+      rows: 0,
+      cols: 0,
+      brickGap: 3,
+      brickSize: { w: 18, h: 18 },
+      totalBricks: 0,
+      patternHits: 0,
+      levelHits: 0,
+      blinkTime: 0,
+      patternTimer: 0,
+      patternInterval: 1.0,
+      patternSeed: 0,
+      playSeconds: 0,
+      gameOver: false,
+      periodicModeUnlocked: false,
+      keys: { left: false, right: false },
+      touchSteer: 0,
+      lastTime: 0,
+      lastPointerUp: 0,
+      automataBursts: [],
+      explosions: [],
+      qrBounds: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 },
+      perimeterOffset: 0,
+      saveFeedback: "",
+      qrLoading: false,
+      previewMatrix: null,
+      contactVisualWalker: null,
+      lastGameplaySnapshot: "",
+      ballTrap: null,
+      ballTrail: [],
+      extraBalls: [],
+      meshNodes: Object.create(null),
+      qrModuleSize: 10,
+      meshEnergy: 0,
+      gridNodes: Object.create(null),
+      gridEnergy: 0,
+    };
 
-  <script id="contact-config-yaml" type="text/plain">
-contact:
-  personName: "Rupert Tscheliessnig, MBA, PhD"
-  orgTitle: "Founder · Calyr.ai"
-  orgName: "Calyr.aí"
-  email: "rupert.tscheliessnig@calyr.ai"
-  phone: "+4369919200915"
-  website: "https://calyr.ai"
+    let qrLibraryPromise = null;
+    let simulationAccumulator = 0;
+    let suppressClickUntil = 0;
+    let lastTouchEndTime = 0;
 
-render:
-  defaultQrAbstractionStyle: "rings"
-  qrRotationQuarters: 1
-  contactCardQrScale: 0.76
-  qrRenderScale: 0.84
-  raster:
-    sizeMin: 0.24
-    sizeMax: 0.92
-    openThreshold: 0.42
-    magentaThreshold: 0.93
+    function applyControlLabels() {
+      mailBtn.setAttribute("data-label", CONTROL_LABELS.mail);
+      mailBtn.setAttribute("aria-label", CONTROL_LABELS.mail);
+      restartBtn.setAttribute("data-label", CONTROL_LABELS.restart);
+      restartBtn.setAttribute("aria-label", CONTROL_LABELS.restart);
+    }
 
-game:
-  singleLevelOnly: true
-  maxLevel: 4
-  levelTargets:
-    level1: 200
-    level2: 400
-    level3: 400
-    level4: 1000
-  levelUpLifeBonus: 1
-  perimeterScorePenalty: 180
-  perimeterDropLevel: 3
-  splitterBrickMax: 5
-  catcherHoldSeconds: 0.09
-  catcherRedirectSpreadPiFactor: 0.36
+    function buildQrWall(size, seed) {
+      const matrix = Array.from({ length: size }, () => Array(size).fill(0));
 
-performance:
-  simulationStep: 0.008333333333333333
-  maxFrameDelta: 0.25
-  chromePerfModeEnabled: true
-  maxSimStepsDesktop: 20
-  maxSimStepsChrome: 10
-  deformationStrideDesktop: 1
-  deformationStrideChrome: 3
-  enableRelativityLensingDesktop: true
-  enableRelativityLensingInChrome: false
-  drawMeshLinksDesktop: true
-  drawMeshLinksInChrome: false
-  forceLowPowerMode: false
+      function addFinder(startX, startY) {
+        for (let y = 0; y < 7; y += 1) {
+          for (let x = 0; x < 7; x += 1) {
+            const edge = x === 0 || x === 6 || y === 0 || y === 6;
+            const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+            matrix[startY + y][startX + x] = edge || core ? 1 : 0;
+          }
+        }
+      }
 
-grid:
-  cols: 10
-  rows: 6
+      addFinder(0, 0);
+      addFinder(size - 7, 0);
+      addFinder(0, size - 7);
 
-ui:
-  fabEdgePeekMs: 3200
-  controlLabels:
-    mail: "Mail"
-    restart: "Restart"
-  layout:
-    narrowScreenMaxWidth: 720
-    cardXDesktop: 54
-    cardXMobile: 28
-    cardYDesktop: 30
-    cardYMobile: 24
-    qrInsetDesktop: 34
-    qrInsetMobile: 26
-    textXDesktopOffset: 34
-    textXMobileOffset: 24
-    titleYDesktopOffset: 52
-    titleYMobileOffset: 40
-    line2YDesktopOffset: 92
-    line2YMobileOffset: 74
-    line3YDesktopOffset: 126
-    line3YMobileOffset: 102
-    noteYDesktopOffset: 28
-    noteYMobileOffset: 24
-    textPadXDesktop: 24
-    textPadXMobile: 16
-    textPadYDesktop: 20
-    textPadYMobile: 14
-    textQrGapDesktop: 18
-    textQrGapMobile: 12
-    textLineGapDesktop: 10
-    textLineGapMobile: 8
-    minReadableQrDesktopMin: 170
-    minReadableQrDesktopMax: 260
-    minReadableQrDesktopWidthRatio: 0.3
-    minReadableQrMobileMin: 120
-    minReadableQrMobileMax: 180
-    minReadableQrMobileWidthRatio: 0.22
-    forceHorizontalTextOnMobile: true
-    cardSystem:
-      leftAreaRatio: 0.45
-      rightAreaRatio: 0.55
-      nameXRatio: 0.08
-      nameYRatio: 0.17
-      networkYRatio: 0.5
-      companyBelowNetworkRatio: 0.14
-      companyBelowNetworkMin: 46
-      emailBelowCompanyRatio: 0.048
-      emailBelowCompanyMin: 18
-      qrWidthRatioOfRightArea: 0.78
-      qrHeightRatioOfCard: 0.68
-      qrMin: 160
-      qrMax: 330
-      qrRightInsetRatio: 0.1
-      qrRightInsetMinRatio: 0.06
-      nameSizeRatio: 0.06
-      companySizeRatio: 0.033
-      emailSizeRatio: 0.026
-      nameSizeMinDesktop: 24
-      nameSizeMaxDesktop: 34
-      nameSizeMinMobile: 22
-      nameSizeMaxMobile: 28
-      companySizeMin: 15
-      companySizeMax: 19
-      emailSizeMin: 12
-      emailSizeMax: 15
-      nodeAvailableLeftMin: 220
-      nodeReservedGapToQr: 26
-      nodeSideSizeRatio: 0.135
-      nodeSideSizeMin: 44
-      nodeSideSizeMax: 62
-      nodeCenterScale: 1.78
-      nodeCenterMin: 80
-      nodeCenterMax: 114
-      nodeGapRatio: 0.06
-      nodeGapMin: 14
-      nodeGapMax: 32
+      for (let i = 8; i < size - 8; i += 1) {
+        matrix[6][i] = i % 2 === 0 ? 1 : 0;
+        matrix[i][6] = i % 2 === 0 ? 1 : 0;
+      }
 
-libraries:
-  qrGeneratorUrl: "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          if (matrix[y][x] === 1) continue;
+          const reservedTop = y < 8 && (x < 8 || x >= size - 8);
+          const reservedBottom = y >= size - 8 && x < 8;
+          const timing = x === 6 || y === 6;
+          if (reservedTop || reservedBottom || timing) continue;
+          matrix[y][x] = ((x * 13 + y * 17 + x * y * 3 + seed * 19) % 7) < 3 ? 1 : 0;
+        }
+      }
+
+      matrix[size - 8][8] = 1;
+      return matrix;
+    }
+
+    function buildContactMatrix(text, options = {}) {
+      const allowFallback = options.allowFallback !== false;
+      if (typeof window.qrcode === "function") {
+        const qr = window.qrcode(0, "L");
+        qr.addData(text, "Byte");
+        qr.make();
+
+        const count = qr.getModuleCount();
+        const quiet = 4;
+        const size = count + quiet * 2;
+        const matrix = Array.from({ length: size }, () => Array(size).fill(0));
+
+        for (let y = 0; y < size; y += 1) {
+          for (let x = 0; x < size; x += 1) {
+            const mx = x - quiet;
+            const my = y - quiet;
+            if (mx < 0 || my < 0 || mx >= count || my >= count) {
+              matrix[y][x] = 0;
+            } else {
+              matrix[y][x] = qr.isDark(my, mx) ? 1 : 0;
+            }
+          }
+        }
+        return matrix;
+      }
+
+      if (allowFallback) {
+        return buildQrWall(33, contactSeed());
+      }
+
+      return null;
+    }
+
+    function isQrReservedCell(row, col, size) {
+      const quiet = 4;
+      const inner = size - quiet * 2;
+      const x = col - quiet;
+      const y = row - quiet;
+
+      if (x < 0 || y < 0 || x >= inner || y >= inner) return true;
+
+      const inTopLeft = x < 9 && y < 9;
+      const inTopRight = x >= inner - 9 && y < 9;
+      const inBottomLeft = x < 9 && y >= inner - 9;
+      const inTiming = x === 6 || y === 6;
+
+      return inTopLeft || inTopRight || inBottomLeft || inTiming;
+    }
+
+    function isCatcherCell(row, col, size, seed) {
+      void row;
+      void col;
+      void size;
+      void seed;
+      return true;
+    }
+
+    function catcherNotchAngle(row, col, seed) {
+      return ((row * 19 + col * 23 + seed * 7) % 360) * (Math.PI / 180);
+    }
+
+    function catcherSpinSpeed(row, col, seed) {
+      const direction = ((row + col + seed) % 2 === 0) ? 1 : -1;
+      const magnitude = 0.6 + (((row * 11 + col * 17 + seed * 3) % 100) / 100) * 1.2;
+      return direction * magnitude;
+    }
+
+    function splitterRank(row, col, seed) {
+      return (row * 29 + col * 31 + seed * 13) % 997;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getContactCardLayout(totalW = 0, totalH = 0) {
+      const narrowScreen = window.innerWidth <= 640;
+      const cardX = narrowScreen ? 28 : 54;
+      const cardY = narrowScreen ? 24 : 30;
+      const cardW = canvas.width - cardX * 2;
+      const cardH = canvas.height - cardY * 2;
+      const qrInset = narrowScreen ? 26 : 34;
+      const qrLeft = cardX + cardW - qrInset - totalW;
+      const qrTop = cardY + Math.round((cardH - totalH) / 2);
+      return {
+        cardX,
+        cardY,
+        cardW,
+        cardH,
+        qrLeft,
+        qrTop,
+        textX: cardX + (narrowScreen ? 24 : 34),
+        titleY: cardY + (narrowScreen ? 40 : 52),
+        line2Y: cardY + (narrowScreen ? 74 : 92),
+        line3Y: cardY + (narrowScreen ? 102 : 126),
+        noteY: cardY + cardH - (narrowScreen ? 24 : 28),
+      };
+    }
+
+    function getContactCardTextLines(layout) {
+      return [
+        {
+          text: PERSON_NAME,
+          font: '700 19px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.titleY,
+          fontSize: 19,
+          color: "#f7fbff",
+        },
+        {
+          text: ORG_NAME,
+          font: '15px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.line2Y,
+          fontSize: 15,
+          color: "#f7fbff",
+        },
+        {
+          text: CONTACT_EMAIL,
+          font: '14px "SF Mono", "Fira Code", ui-monospace, monospace',
+          x: layout.textX,
+          y: layout.line3Y,
+          fontSize: 14,
+          color: "#ffffff",
+        }
+      ];
+    }
+
+    function computeContactVisualSpec(qrSize, layout) {
+      const moduleGap = 2;
+      const narrowScreen = window.innerWidth <= 640;
+      const lineDefs = [
+        { text: PERSON_NAME, font: '700 19px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 19, color: "#f7fbff" },
+        { text: ORG_NAME, font: '15px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 15, color: "#f7fbff" },
+        { text: CONTACT_EMAIL, font: '14px "SF Mono", "Fira Code", ui-monospace, monospace', fontSize: 14, color: "#ffffff" },
+      ];
+
+      const padX = narrowScreen ? 16 : 24;
+      const padY = narrowScreen ? 14 : 20;
+      const textQrGap = narrowScreen ? 12 : 18;
+      const lineGap = narrowScreen ? 8 : 10;
+
+      ctx.save();
+      let maxTextWidth = 0;
+      let totalTextHeight = 0;
+      lineDefs.forEach((line, index) => {
+        ctx.font = line.font;
+        const measured = ctx.measureText(line.text).width;
+        if (measured > maxTextWidth) maxTextWidth = measured;
+        totalTextHeight += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+      });
+      ctx.restore();
+
+      const qrMaxH = layout.cardH - padY * 2;
+      const minReadableQr = Math.min(260, Math.max(170, layout.cardW * 0.3));
+
+      let rotateText = false;
+      let reservedTextWidth = maxTextWidth + (narrowScreen ? 14 : 20);
+      let qrMaxW = layout.cardW - padX * 2 - reservedTextWidth - textQrGap;
+      if (qrMaxW < minReadableQr) {
+        rotateText = true;
+        reservedTextWidth = totalTextHeight + (narrowScreen ? 12 : 18);
+        qrMaxW = layout.cardW - padX * 2 - reservedTextWidth - textQrGap;
+      }
+
+      const moduleSize = Math.max(
+        3,
+        Math.floor(
+          Math.min(
+            (qrMaxW - moduleGap * (qrSize - 1)) / qrSize,
+            (qrMaxH - moduleGap * (qrSize - 1)) / qrSize
+          )
+        )
+      );
+
+      const qrWidth = qrSize * moduleSize + (qrSize - 1) * moduleGap;
+      const qrHeight = qrSize * moduleSize + (qrSize - 1) * moduleGap;
+      const qrBounds = {
+        left: layout.cardX + layout.cardW - padX - qrWidth,
+        top: layout.cardY + Math.round((layout.cardH - qrHeight) / 2),
+        right: layout.cardX + layout.cardW - padX,
+        bottom: layout.cardY + Math.round((layout.cardH - qrHeight) / 2) + qrHeight,
+        width: qrWidth,
+        height: qrHeight,
+      };
+
+      return {
+        moduleGap,
+        moduleSize,
+        qrBounds,
+        lineDefs,
+        padX,
+        padY,
+        lineGap,
+        rotateText,
+      };
+    }
+
+    function buildTextBricks(layout, brickSize, gap) {
+      const scratch = document.createElement("canvas");
+      scratch.width = canvas.width;
+      scratch.height = canvas.height;
+      const scratchCtx = scratch.getContext("2d");
+      const lines = getContactCardTextLines(layout);
+      scratchCtx.clearRect(0, 0, scratch.width, scratch.height);
+      scratchCtx.fillStyle = "#ffffff";
+      scratchCtx.textAlign = "left";
+      scratchCtx.textBaseline = "alphabetic";
+
+      lines.forEach((line) => {
+        scratchCtx.font = line.font;
+        scratchCtx.fillText(line.text, line.x, line.y);
+      });
+
+      const image = scratchCtx.getImageData(0, 0, scratch.width, scratch.height).data;
+      const bricks = [];
+      const step = brickSize + gap;
+
+      function inkCoverage(startX, startY) {
+        let filled = 0;
+        let samples = 0;
+
+        for (let sampleY = startY; sampleY < startY + brickSize; sampleY += 1) {
+          for (let sampleX = startX; sampleX < startX + brickSize; sampleX += 1) {
+            const px = Math.max(0, Math.min(scratch.width - 1, Math.round(sampleX)));
+            const py = Math.max(0, Math.min(scratch.height - 1, Math.round(sampleY)));
+            const alpha = image[(py * scratch.width + px) * 4 + 3];
+            samples += 1;
+            if (alpha > 96) filled += 1;
+          }
+        }
+
+        return samples ? filled / samples : 0;
+      }
+
+      lines.forEach((line) => {
+        scratchCtx.font = line.font;
+        const metrics = scratchCtx.measureText(line.text);
+        const textWidth = Math.ceil(metrics.width);
+        const top = Math.max(0, Math.floor(line.y - line.fontSize * 0.9));
+        const bottom = Math.min(canvas.height, Math.ceil(line.y + line.fontSize * 0.28));
+
+        for (let y = top; y < bottom; y += step) {
+          for (let x = line.x; x < line.x + textWidth; x += step) {
+            const coverage = inkCoverage(x, y);
+            if (coverage < 0.22) continue;
+            bricks.push({
+              x,
+              y,
+              w: brickSize,
+              h: brickSize,
+              glow: "rgba(255, 255, 255, 0.18)",
+              phase: (x * 0.013) + (y * 0.017),
+              alive: true,
+              active: true,
+              row: -1,
+              col: -1,
+              catcher: false,
+              notchAngle: 0,
+              spinSpeed: 0,
+              splitter: false,
+              pendingBlast: false,
+              textPattern: true,
+              circleScale: baseDiscScale(x + 1, y + 1, 41),
+            });
+          }
+        }
+      });
+
+      return bricks;
+    }
+
+    function pseudoRandom01(seed) {
+      const value = Math.sin(seed) * 43758.5453123;
+      return value - Math.floor(value);
+    }
+
+    function wrapIndex(value, size) {
+      return ((value % size) + size) % size;
+    }
+
+    function pickInitialDarkCell(qrMatrix) {
+      const qrSize = qrMatrix.length;
+      const centerRow = (qrSize - 1) / 2;
+      const centerCol = (qrSize - 1) / 2;
+      let best = null;
+
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const dist = (row - centerRow) ** 2 + (col - centerCol) ** 2;
+          if (!best || dist < best.dist) {
+            best = { row, col, dist };
+          }
+        }
+      }
+
+      return best ? { row: best.row, col: best.col } : null;
+    }
+
+    function getContactVisualWalker(qrMatrix) {
+      const qrSize = qrMatrix.length;
+      const existing = state.contactVisualWalker;
+
+      if (!existing || existing.size !== qrSize || !qrMatrix[existing.row]?.[existing.col]) {
+        const start = pickInitialDarkCell(qrMatrix);
+        state.contactVisualWalker = {
+          size: qrSize,
+          row: start ? start.row : 0,
+          col: start ? start.col : 0,
+          stepCounter: 0,
+          lastStepTime: state.blinkTime,
+          stepInterval: 0.09,
+        };
+      }
+
+      return state.contactVisualWalker;
+    }
+
+    function stepContactVisualWalker(qrMatrix) {
+      const walker = getContactVisualWalker(qrMatrix);
+      const elapsed = state.blinkTime - walker.lastStepTime;
+      if (elapsed < walker.stepInterval) return walker;
+
+      const directions = [
+        { dr: -1, dc: 0 },
+        { dr: 1, dc: 0 },
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 },
+      ];
+
+      let steps = Math.max(1, Math.floor(elapsed / walker.stepInterval));
+      while (steps > 0) {
+        let moved = false;
+
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+          const pick = pseudoRandom01((contactSeed() + walker.stepCounter * 17 + attempt * 101) * 0.0137);
+          const dir = directions[Math.floor(pick * directions.length) % directions.length];
+          const nextRow = wrapIndex(walker.row + dir.dr, walker.size);
+          const nextCol = wrapIndex(walker.col + dir.dc, walker.size);
+
+          if (qrMatrix[nextRow][nextCol]) {
+            walker.row = nextRow;
+            walker.col = nextCol;
+            moved = true;
+            break;
+          }
+        }
+
+        walker.stepCounter += 1;
+        if (!moved) break;
+        steps -= 1;
+      }
+
+      walker.lastStepTime = state.blinkTime;
+      return walker;
+    }
+
+    function drawHighResContactCard(layout) {
+      const qrMatrix = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
+      const qrSize = qrMatrix.length;
+      if (!qrSize) return;
+
+      const visualSpec = computeContactVisualSpec(qrSize, layout);
+      const moduleGap = visualSpec.moduleGap;
+      const moduleSize = visualSpec.moduleSize;
+      const qrBounds = visualSpec.qrBounds;
+      const lineDefs = visualSpec.lineDefs;
+      const padX = visualSpec.padX;
+      const padY = visualSpec.padY;
+      const lineGap = visualSpec.lineGap;
+      const rotateText = visualSpec.rotateText;
+
+      const markedCell = null;
+
+      drawRoundedRect(layout.cardX, layout.cardY, layout.cardW, layout.cardH, 28, "#0a2a56");
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(layout.cardX + 28, layout.cardY);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY, layout.cardX + layout.cardW, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX + layout.cardW, layout.cardY + layout.cardH, layout.cardX, layout.cardY + layout.cardH, 28);
+      ctx.arcTo(layout.cardX, layout.cardY + layout.cardH, layout.cardX, layout.cardY, 28);
+      ctx.arcTo(layout.cardX, layout.cardY, layout.cardX + layout.cardW, layout.cardY, 28);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.save();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      if (!rotateText) {
+        let y = layout.cardY + padY + lineDefs[0].fontSize;
+        const x = layout.cardX + padX;
+        lineDefs.forEach((line, index) => {
+          ctx.font = line.font;
+          ctx.fillStyle = line.color;
+          ctx.fillText(line.text, x, y);
+          y += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+        });
+      } else {
+        const tx = layout.cardX + padX + Math.max(10, lineDefs[0].fontSize * 0.8);
+        const ty = layout.cardY + layout.cardH - padY;
+        ctx.translate(tx, ty);
+        ctx.rotate(-Math.PI / 2);
+        let y = lineDefs[0].fontSize;
+        lineDefs.forEach((line, index) => {
+          ctx.font = line.font;
+          ctx.fillStyle = line.color;
+          ctx.fillText(line.text, 0, y);
+          y += line.fontSize + (index < lineDefs.length - 1 ? lineGap : 0);
+        });
+      }
+      ctx.fillStyle = "rgba(255, 255, 255, 0.78)";
+      ctx.font = '13px "SF Mono", "Fira Code", ui-monospace, monospace';
+      if (!rotateText) {
+        ctx.fillText(
+          state.running ? "tap once to return to play" : "tap once to start playing",
+          layout.cardX + padX,
+          layout.cardY + layout.cardH - padY
+        );
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.lineWidth = 0.9;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const baseX = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
+          const baseY = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          const node = getMeshNode(row, col);
+          const x = baseX + node.dx;
+          const y = baseY + node.dy;
+
+          if (col + 1 < qrSize && qrMatrix[row][col + 1]) {
+            const rNode = getMeshNode(row, col + 1);
+            const rx = qrBounds.left + (col + 1) * (moduleSize + moduleGap) + moduleSize / 2 + rNode.dx;
+            const ry = baseY + rNode.dy;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(rx, ry);
+            ctx.stroke();
+          }
+
+          if (row + 1 < qrSize && qrMatrix[row + 1][col]) {
+            const dNode = getMeshNode(row + 1, col);
+            const dx = baseX + dNode.dx;
+            const dy = qrBounds.top + (row + 1) * (moduleSize + moduleGap) + moduleSize / 2 + dNode.dy;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(dx, dy);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!qrMatrix[row][col]) continue;
+          const baseX = qrBounds.left + col * (moduleSize + moduleGap) + moduleSize / 2;
+          const baseY = qrBounds.top + row * (moduleSize + moduleGap) + moduleSize / 2;
+          const node = getMeshNode(row, col);
+          const x = baseX + node.dx;
+          const y = baseY + node.dy;
+          const isMarked = Boolean(markedCell && markedCell.row === row && markedCell.col === col);
+          const radius = Math.max(2.2, moduleSize * 0.37);
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = isMarked ? "#ff4df5" : "#ffffff";
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = isMarked ? "rgba(255, 77, 245, 0.38)" : "rgba(255, 255, 255, 0.2)";
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+      ctx.restore();
+    }
+
+    function isPerimeterChallengeActive() {
+      return state.level >= 4 && state.periodicModeUnlocked;
+    }
+
+    function isRuleLightningLevel() {
+      return state.level === 4 && !state.periodicModeUnlocked;
+    }
+
+    function perimeterLength() {
+      const { width, height } = state.qrBounds;
+      return width > 0 && height > 0 ? (width * 2) + (height * 2) : 0;
+    }
+
+    function defaultPerimeterOffset() {
+      const { width, height } = state.qrBounds;
+      return width + height + width * 0.5;
+    }
+
+    function normalizePerimeterOffset(offset) {
+      const total = perimeterLength();
+      if (!total) return 0;
+      return ((offset % total) + total) % total;
+    }
+
+    function setPerimeterOffset(offset) {
+      state.perimeterOffset = normalizePerimeterOffset(offset);
+    }
+
+    function advancePerimeterSlider(distance) {
+      setPerimeterOffset(state.perimeterOffset + distance);
+    }
+
+    function currentModeNote() {
+      if (SINGLE_LEVEL_ONLY) {
+        return `Level 1 only: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits, then Level 1 resets.`;
+      }
+      if (isPerimeterChallengeActive()) {
+        return "Level 4: periodic walls are live. Run the slider along the full QR frame and keep the ball inside.";
+      }
+      if (state.level === 4) {
+        return `Level 4: game of life rules ignite magenta trajectories until ${LEVEL_TARGETS[4]} hits, then periodic walls take over.`;
+      }
+      if (state.level === 3) {
+        return `Level 3: drive the fractured QR up to ${LEVEL_TARGETS[3]} hits to unlock the rule-based phase.`;
+      }
+      if (state.level === 2) {
+        return `Level 2: cascades return every 10 hits while you work through the damaged QR to ${LEVEL_TARGETS[2]}.`;
+      }
+      return `Level 1: classic breakout on the bright QR until ${LEVEL_TARGETS[1]} hits.`;
+    }
+
+    function currentLevelTarget() {
+      return LEVEL_TARGETS[state.level] ?? null;
+    }
+
+    function currentLevelProgressLabel() {
+      const target = currentLevelTarget();
+      if (!target) return `${state.levelHits}`;
+      return `${Math.min(state.levelHits, target)}/${target}`;
+    }
+
+    function currentSaveNote() {
+      if (state.saveFeedback) return state.saveFeedback;
+      if (state.qrLoading) return "Preparing your contact QR...";
+      if (state.contactOpen) {
+        return "Readable mode active. Double-tap to re-enter play mode.";
+      }
+      return state.running
+        ? "Play mode active. Double-tap leaves mode. Touch left/right controls bar speed."
+        : "Double-tap enters play mode. Touch left/right controls bar speed.";
+    }
+
+    function loadQrLibrary() {
+      if (typeof window.qrcode === "function") {
+        return Promise.resolve();
+      }
+
+      if (qrLibraryPromise) {
+        return qrLibraryPromise;
+      }
+
+      qrLibraryPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-contact-qr-lib="true"]');
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true });
+          existing.addEventListener("error", () => reject(new Error("QR script failed to load.")), { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = QR_LIBRARY_URL;
+        script.async = true;
+        script.defer = true;
+        script.dataset.contactQrLib = "true";
+        script.addEventListener("load", () => resolve(), { once: true });
+        script.addEventListener("error", () => reject(new Error("QR script failed to load.")), { once: true });
+        document.head.appendChild(script);
+      }).catch((error) => {
+        qrLibraryPromise = null;
+        throw error;
+      });
+
+      return qrLibraryPromise;
+    }
+
+    function parseContactPayload(payload) {
+      if (payload.startsWith("BEGIN:VCARD")) {
+        const fields = {};
+        const urls = [];
+        const lines = payload.split(/\r?\n/);
+        for (const line of lines) {
+          if (!line || !line.includes(":")) continue;
+          const idx = line.indexOf(":");
+          const rawKey = line.slice(0, idx);
+          const value = line.slice(idx + 1).trim();
+          const key = rawKey.split(";")[0].toUpperCase();
+          if (key === "URL") {
+            urls.push(value);
+            continue;
+          }
+          if (!(key in fields)) fields[key] = value;
+        }
+        return {
+          fullName: fields.FN || "",
+          organization: fields.ORG || "",
+          phone: fields.TEL || "",
+          email: fields.EMAIL || "",
+          url: urls[0] || "",
+        };
+      }
+
+      const fields = {};
+      const parts = payload.replace(/^MECARD:/, "").split(";");
+      for (const part of parts) {
+        if (!part || !part.includes(":")) continue;
+        const [key, ...valueParts] = part.split(":");
+        fields[key] = valueParts.join(":");
+      }
+      return {
+        fullName: fields.N || "",
+        organization: fields.ORG || "",
+        phone: fields.TEL || "",
+        email: fields.EMAIL || "",
+        url: fields.URL || "",
+      };
+    }
+
+    function setSaveFeedback(message) {
+      state.saveFeedback = message;
+      saveNoteNode.textContent = currentSaveNote();
+    }
+
+    function saveContactLocally() {
+      try {
+        const contact = parseContactPayload(CONTACT_PAYLOAD);
+        const record = {
+          payload: CONTACT_PAYLOAD,
+          savedAt: new Date().toISOString(),
+          ...contact,
+        };
+        window.localStorage.setItem(LOCAL_CONTACT_KEY, JSON.stringify(record));
+        setSaveFeedback("Contact stored locally on this device.");
+        return true;
+      } catch (_error) {
+        setSaveFeedback("Local contact storage is unavailable in this browser.");
+        return false;
+      }
+    }
+
+    function syncPeriodicUnlockState() {
+      const shouldUnlock = state.level >= 4 && state.levelHits >= LEVEL_TARGETS[4];
+      if (shouldUnlock && !state.periodicModeUnlocked) {
+        state.periodicModeUnlocked = true;
+        setPerimeterOffset(defaultPerimeterOffset());
+        resetBallAndPaddle();
+        state.paused = true;
+        syncGameUi();
+      } else if (!shouldUnlock) {
+        state.periodicModeUnlocked = false;
+      }
+    }
+
+    function getPerimeterSlider() {
+      if (!isPerimeterChallengeActive()) return null;
+
+      const { left, top, right, bottom, width, height } = state.qrBounds;
+      if (!width || !height) return null;
+
+      const thickness = 14;
+      const horizontalLength = clamp(width * 0.26, 92, 156);
+      const verticalLength = clamp(height * 0.26, 82, 132);
+      let offset = normalizePerimeterOffset(state.perimeterOffset || defaultPerimeterOffset());
+
+      if (offset < width) {
+        const centerX = clamp(left + offset, left + horizontalLength / 2, right - horizontalLength / 2);
+        return {
+          side: "top",
+          x: centerX - horizontalLength / 2,
+          y: top - thickness / 2,
+          w: horizontalLength,
+          h: thickness,
+          centerX,
+          centerY: top,
+        };
+      }
+
+      offset -= width;
+      if (offset < height) {
+        const centerY = clamp(top + offset, top + verticalLength / 2, bottom - verticalLength / 2);
+        return {
+          side: "right",
+          x: right - thickness / 2,
+          y: centerY - verticalLength / 2,
+          w: thickness,
+          h: verticalLength,
+          centerX: right,
+          centerY,
+        };
+      }
+
+      offset -= height;
+      if (offset < width) {
+        const centerX = clamp(right - offset, left + horizontalLength / 2, right - horizontalLength / 2);
+        return {
+          side: "bottom",
+          x: centerX - horizontalLength / 2,
+          y: bottom - thickness / 2,
+          w: horizontalLength,
+          h: thickness,
+          centerX,
+          centerY: bottom,
+        };
+      }
+
+      offset -= width;
+      const centerY = clamp(bottom - offset, top + verticalLength / 2, bottom - verticalLength / 2);
+      return {
+        side: "left",
+        x: left - thickness / 2,
+        y: centerY - verticalLength / 2,
+        w: thickness,
+        h: verticalLength,
+        centerX: left,
+        centerY,
+      };
+    }
+
+    function closestPerimeterOffset(x, y) {
+      const { left, top, right, bottom, width, height } = state.qrBounds;
+      const candidates = [
+        { distance: Math.abs(y - top), offset: clamp(x - left, 0, width) },
+        { distance: Math.abs(x - right), offset: width + clamp(y - top, 0, height) },
+        { distance: Math.abs(y - bottom), offset: width + height + (width - clamp(x - left, 0, width)) },
+        { distance: Math.abs(x - left), offset: width + height + width + (height - clamp(y - top, 0, height)) },
+      ];
+      candidates.sort((a, b) => a.distance - b.distance);
+      return candidates[0].offset;
+    }
+
+    function drawQrBoundary() {
+      // Keep gameplay logic intact, but remove extra visual boundary lines.
+      return;
+      if (state.contactOpen) return;
+
+      const { left, top, width, height } = state.qrBounds;
+      if (!width || !height) return;
+
+      const crispLeft = Math.round(left) + 0.5;
+      const crispTop = Math.round(top) + 0.5;
+      const crispWidth = Math.round(width);
+      const crispHeight = Math.round(height);
+
+      ctx.save();
+      ctx.strokeStyle = isPerimeterChallengeActive()
+        ? "rgba(255, 214, 94, 0.88)"
+        : state.level >= 2
+          ? "rgba(191, 248, 255, 0.86)"
+          : "rgba(90, 203, 225, 0.38)";
+      ctx.lineWidth = isPerimeterChallengeActive() ? 3.2 : state.level >= 2 ? 2.6 : 1.4;
+      ctx.setLineDash(isPerimeterChallengeActive() ? [12, 8] : []);
+      ctx.shadowBlur = state.level >= 2 ? 20 : 0;
+      ctx.shadowColor = isPerimeterChallengeActive()
+        ? "rgba(255, 214, 94, 0.34)"
+        : "rgba(255, 255, 255, 0.28)";
+      ctx.strokeRect(crispLeft, crispTop, crispWidth, crispHeight);
+      ctx.restore();
+    }
+
+    function drawSlider() {
+      const slider = getPerimeterSlider();
+      if (!slider) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(255,255,255,0.6)";
+        drawRoundedRect(state.paddle.x, state.paddle.y, state.paddle.w, state.paddle.h, 9, "#ffffff");
+        ctx.shadowBlur = 0;
+        return;
+      }
+
+      ctx.save();
+      ctx.shadowBlur = 22;
+      ctx.shadowColor = "rgba(255, 214, 94, 0.45)";
+      drawRoundedRect(slider.x, slider.y, slider.w, slider.h, 10, "#ffd65e");
+      ctx.restore();
+    }
+
+    function isBallOutsideQrBounds() {
+      const { left, top, right, bottom } = state.qrBounds;
+      const pad = state.ball.r + 1;
+      return state.ball.x < left - pad
+        || state.ball.x > right + pad
+        || state.ball.y < top - pad
+        || state.ball.y > bottom + pad;
+    }
+
+    function dropBackFromPerimeter() {
+      state.score = Math.max(0, state.score - PERIMETER_SCORE_PENALTY);
+      state.level = PERIMETER_DROP_LEVEL;
+      state.periodicModeUnlocked = false;
+      state.patternHits = 0;
+      state.levelHits = 0;
+      resetBricks();
+      resetBallAndPaddle();
+      state.paused = true;
+      syncHud();
+      syncGameUi();
+    }
+
+    function resetBricks() {
+      const baseWall = state.previewMatrix || buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: state.initialized });
+      if (!baseWall) {
+        state.bricks = [];
+        state.rows = 0;
+        state.cols = 0;
+        state.totalBricks = 0;
+        state.automataBursts = [];
+        return;
+      }
+      const wall = baseWall;
+      const qrSize = wall.length;
+      const seed = contactSeed();
+      const cardLayout = getContactCardLayout();
+      const visualSpec = computeContactVisualSpec(qrSize, cardLayout);
+      const gap = visualSpec.moduleGap;
+      const moduleSize = visualSpec.moduleSize;
+      const contactLayout = getContactCardLayout();
+      const top = visualSpec.qrBounds.top;
+      const left = visualSpec.qrBounds.left;
+      state.qrBounds = {
+        left,
+        top,
+        right: visualSpec.qrBounds.right,
+        bottom: visualSpec.qrBounds.bottom,
+        width: visualSpec.qrBounds.width,
+        height: visualSpec.qrBounds.height,
+      };
+      state.bricks = [];
+      state.meshNodes = Object.create(null);
+      state.qrModuleSize = moduleSize;
+      state.rows = qrSize;
+      state.cols = qrSize;
+      state.levelHits = 0;
+      state.automataBursts = [];
+      state.explosions = [];
+      state.ball.r = Math.max(4, Math.floor(moduleSize * 0.5));
+      if (!state.perimeterOffset) {
+        state.perimeterOffset = defaultPerimeterOffset();
+      }
+      let activeCount = 0;
+      const splitterCandidates = [];
+      for (let row = 0; row < qrSize; row += 1) {
+        for (let col = 0; col < qrSize; col += 1) {
+          if (!baseWall[row][col]) continue;
+          const active = !!wall[row][col];
+          if (active) activeCount += 1;
+          const brick = {
+            x: left + col * (moduleSize + gap),
+            y: top + row * (moduleSize + gap),
+            w: moduleSize,
+            h: moduleSize,
+            glow: "rgba(255, 255, 255, 0.18)",
+            phase: (row * 0.37) + (col * 0.21),
+            alive: true,
+            active: true,
+            row,
+            col,
+            catcher: isCatcherCell(row, col, qrSize, seed),
+            notchAngle: catcherNotchAngle(row, col, seed),
+            spinSpeed: catcherSpinSpeed(row, col, seed),
+            splitter: false,
+            pendingBlast: false,
+            mulMark: false,
+          };
+          state.bricks.push(brick);
+          if (brick.row >= 0 && brick.col >= 0 && !isQrReservedCell(row, col, qrSize)) {
+            splitterCandidates.push({ brick, rank: splitterRank(row, col, seed) });
+          }
+        }
+      }
+
+      splitterCandidates.sort((a, b) => a.rank - b.rank);
+      for (let i = 0; i < Math.min(SPLITTER_BRICK_MAX, splitterCandidates.length); i += 1) {
+        splitterCandidates[i].brick.splitter = true;
+      }
+
+      const centerRow = (qrSize - 1) / 2;
+      const centerCol = (qrSize - 1) / 2;
+      const markCandidate = state.bricks
+        .filter((brick) => brick.row >= 0 && brick.col >= 0 && !brick.catcher)
+        .map((brick) => ({
+          brick,
+          dist: (brick.row - centerRow) ** 2 + (brick.col - centerCol) ** 2,
+        }))
+        .sort((a, b) => a.dist - b.dist)[0];
+      if (markCandidate?.brick) {
+        markCandidate.brick.mulMark = true;
+        state.contactVisualWalker = {
+          size: qrSize,
+          row: markCandidate.brick.row,
+          col: markCandidate.brick.col,
+          stepCounter: 0,
+          lastStepTime: state.blinkTime,
+          stepInterval: 0.09,
+        };
+      }
+
+      const textBrickSize = Math.max(8, moduleSize + 1);
+      const textBrickGap = Math.max(1, Math.floor(gap * 0.5));
+      const textBricks = buildTextBricks(contactLayout, textBrickSize, textBrickGap);
+      state.bricks.push(...textBricks);
+      activeCount += textBricks.length;
+      state.totalBricks = activeCount;
+    }
+
+    function resetBallAndPaddle() {
+      state.ballTrap = null;
+      state.ballTrail = [];
+      state.extraBalls = [];
+      if (isPerimeterChallengeActive()) {
+        const { left, top, right, bottom, width, height } = state.qrBounds;
+        setPerimeterOffset(state.perimeterOffset || defaultPerimeterOffset());
+        state.ball.x = left + width * 0.5;
+        state.ball.y = top + height * 0.5;
+        state.ball.dx = state.ball.speedBase + 28;
+        state.ball.dy = -(state.ball.speedBase + 12);
+        state.paddle.x = left + width * 0.5;
+        state.paddle.y = bottom;
+        return;
+      }
+
+      const narrowScreen = window.innerWidth <= 640;
+      const landscapePhone = narrowScreen && window.innerWidth > window.innerHeight;
+      const qrBottom = state.bricks.length
+        ? Math.max(...state.bricks.map((brick) => brick.y + brick.h))
+        : canvas.height - 120;
+      const laneTop = qrBottom + (landscapePhone ? 18 : 24);
+
+      state.paddle.x = (canvas.width - state.paddle.w) / 2;
+      state.paddle.y = Math.min(canvas.height - state.paddle.h - 18, laneTop);
+      state.ball.x = canvas.width / 2;
+      state.ball.y = Math.max(state.ball.r + 12, state.paddle.y - state.ball.r - 14);
+      state.ball.dx = state.ball.speedBase + (state.level - 1) * 24;
+      state.ball.dy = -(state.ball.speedBase + (state.level - 1) * 24);
+    }
+
+    function resetGame() {
+      state.score = 0;
+      state.lives = 3;
+      state.level = 1;
+      state.patternHits = 0;
+      state.levelHits = 0;
+      state.patternTimer = 0;
+      state.patternSeed = 0;
+      state.playSeconds = 0;
+      state.periodicModeUnlocked = false;
+      state.contactOpen = false;
+      state.gameOver = false;
+      state.previewMatrix = null;
+      resetBricks();
+      setPerimeterOffset(defaultPerimeterOffset());
+      resetBallAndPaddle();
+      syncHud();
+      syncGameUi();
+    }
+
+    function syncHud() {
+      scoreNode.textContent = String(state.score);
+      livesNode.textContent = String(state.lives);
+      levelNode.textContent = isPerimeterChallengeActive() ? "4P" : String(state.level);
+      patternNode.textContent = isPerimeterChallengeActive()
+        ? `${state.patternHits}/${state.totalBricks}`
+        : currentLevelProgressLabel();
+      mailQueueNode.textContent = `Mail queues current score: ${state.score}`;
+      modeNoteNode.textContent = currentModeNote();
+      saveNoteNode.textContent = currentSaveNote();
+    }
+
+    function resetCurrentLevelLayout() {
+      const wasPaused = state.paused;
+      resetBricks();
+      resetBallAndPaddle();
+      state.paused = wasPaused;
+      syncHud();
+    }
+
+    function resetContactState() {
+      state.contactOpen = false;
+      state.gameOver = false;
+      state.qrLoading = false;
+      state.saveFeedback = "";
+      state.ballTrap = null;
+      state.extraBalls = [];
+      syncHud();
+      syncGameUi();
+      draw();
+    }
+
+    function captureGameplaySnapshot() {
+      if (!canvas || state.contactOpen) return;
+      try {
+        state.lastGameplaySnapshot = canvas.toDataURL("image/png");
+      } catch (_error) {
+        state.lastGameplaySnapshot = "";
+      }
+    }
+
+    function canvasToBlob(targetCanvas) {
+      return new Promise((resolve, reject) => {
+        targetCanvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Canvas snapshot failed."));
+        }, "image/png");
+      });
+    }
+
+    async function dataUrlToBlob(dataUrl) {
+      const response = await fetch(dataUrl);
+      return response.blob();
+    }
+
+    async function getMailSnapshotBlob() {
+      if (!state.contactOpen) {
+        return canvasToBlob(canvas);
+      }
+      if (state.lastGameplaySnapshot) {
+        return dataUrlToBlob(state.lastGameplaySnapshot);
+      }
+      return canvasToBlob(canvas);
+    }
+
+    function downloadSnapshot(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    function resumeAfterMailAction() {
+      resetContactState();
+      if (state.running) {
+        state.paused = false;
+        state.lastTime = 0;
+        requestAnimationFrame(frame);
+      }
+    }
+
+    async function openMail() {
+      const subjectText = `Breakout run score ${state.score}`;
+      const bodyText = `Hi,\n\nI finished the Breakout QR run.\n\nScore: ${state.score}\nPattern hits: ${state.patternHits}/${state.totalBricks}\nLevel: ${state.level}\n\n`;
+      const subject = encodeURIComponent(subjectText);
+      const body = encodeURIComponent(bodyText);
+      const fileName = `calyr-breakout-level-${state.level}-score-${state.score}.png`;
+
+      let snapshotBlob = null;
+      try {
+        snapshotBlob = await getMailSnapshotBlob();
+      } catch (_error) {
+        snapshotBlob = null;
+      }
+
+      if (snapshotBlob && navigator.share) {
+        const snapshotFile = new File([snapshotBlob], fileName, { type: "image/png" });
+        if (!navigator.canShare || navigator.canShare({ files: [snapshotFile] })) {
+          try {
+            await navigator.share({
+              title: subjectText,
+              text: bodyText,
+              files: [snapshotFile],
+            });
+            resumeAfterMailAction();
+            return;
+          } catch (_error) {
+          }
+        }
+      }
+
+      if (snapshotBlob) {
+        downloadSnapshot(snapshotBlob, fileName);
+        setSaveFeedback("Snapshot downloaded. Attach it to the mail draft if your device cannot share it directly.");
+      }
+
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+      resumeAfterMailAction();
+    }
+
+    async function showContactQr() {
+      state.saveFeedback = "";
+      state.qrLoading = true;
+      syncHud();
+      syncGameUi();
+
+      try {
+        await loadQrLibrary();
+        state.previewMatrix = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
+      } catch (_error) {
+        state.saveFeedback = "Contact QR could not be loaded right now. Mail and local save still use your vCard.";
+        state.previewMatrix = buildContactMatrix(CONTACT_PAYLOAD, { allowFallback: true });
+      }
+
+      state.qrLoading = false;
+      if (!state.initialized) {
+        resetBricks();
+      }
+      syncHud();
+      syncGameUi();
+      draw();
+    }
+
+    function pauseIntoContact() {
+      if (!state.initialized) return;
+      state.paused = true;
+      state.contactOpen = true;
+      state.gameOver = false;
+      syncGameUi();
+      if (!state.previewMatrix && !state.qrLoading) {
+        void showContactQr();
+        return;
+      }
+      draw();
+    }
+
+    function endToContact(reasonText) {
+      captureGameplaySnapshot();
+      state.running = false;
+      state.paused = true;
+      state.contactOpen = false;
+      state.gameOver = true;
+      state.saveFeedback = reasonText || "";
+      syncHud();
+      syncGameUi();
+    }
+
+    function syncGameUi() {
+      document.body.classList.toggle("game-over", !!state.gameOver);
+      document.body.classList.toggle("mail-available", true);
+    }
+
+    function drawRoundedRect(x, y, w, h, r, fill) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+
+    function drawHalfOpenDisk(cx, cy, radius, strokeStyle, shadowColor, phase = 0, rotationSpeed = 1.6, gapScale = 0.14) {
+      const gap = Math.PI * gapScale;
+      const rotation = state.blinkTime * rotationSpeed + (phase || 0) * 0.35;
+      const start = rotation + gap * 0.5;
+      const end = rotation + Math.PI * 2 - gap * 0.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, start, end);
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = Math.max(1.6, radius * 0.38);
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = shadowColor;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    function isGameplayQrBrick(brick) {
+      return !!(brick && brick.alive && brick.active && brick.row >= 0 && brick.col >= 0 && !brick.textPattern);
+    }
+
+    function isMeshActivated() {
+      return state.running && !state.paused && !state.gameOver;
+    }
+
+    function meshNodeKey(row, col) {
+      return `${row}:${col}`;
+    }
+
+    function hashed01(a, b, c = 0) {
+      return pseudoRandom01((a * 12.9898 + b * 78.233 + c * 37.719) * 0.137);
+    }
+
+    function baseDiscScale(a, b, c = 0) {
+      return 0.22 + hashed01(a, b, c) * 0.58;
+    }
+
+    function getTileGridGeometry(layout) {
+      return {
+        x: layout.cardX,
+        y: layout.cardY,
+        w: layout.cardW,
+        h: layout.cardH,
+        cols: TILE_GRID_COLS,
+        rows: TILE_GRID_ROWS,
+      };
+    }
+
+    function gridNodeKey(col, row) {
+      return `${col}:${row}`;
+    }
+
+    function getGridNode(col, row) {
+      const key = gridNodeKey(col, row);
+      let node = state.gridNodes[key];
+      if (!node) {
+        node = { dx: 0, dy: 0, vx: 0, vy: 0 };
+        state.gridNodes[key] = node;
+      }
+      return node;
+    }
+
+    function getGridNodePosition(layout, col, row) {
+      const grid = getTileGridGeometry(layout);
+      const baseX = grid.x + (grid.w * col) / grid.cols;
+      const baseY = grid.y + (grid.h * row) / grid.rows;
+      const node = getGridNode(col, row);
+      return {
+        x: baseX + node.dx,
+        y: baseY + node.dy,
+      };
+    }
+
+    function applyGridImpactAt(x, y, magnitude = 1) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      const radius = Math.min(grid.w, grid.h) * 0.42;
+      const maxShift = 34;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const baseX = grid.x + (grid.w * col) / grid.cols;
+          const baseY = grid.y + (grid.h * row) / grid.rows;
+          const node = getGridNode(col, row);
+          const nx = baseX + node.dx;
+          const ny = baseY + node.dy;
+          const dx = nx - x;
+          const dy = ny - y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const influence = Math.max(0, 1 - dist / radius);
+          if (influence <= 0) continue;
+
+          const impulse = influence * influence * (0.45 + magnitude * 1.25);
+          node.vx += (dx / dist) * impulse;
+          node.vy += (dy / dist) * impulse;
+          node.dx += (dx / dist) * impulse * 0.38;
+          node.dy += (dy / dist) * impulse * 0.38;
+
+          node.dx = clamp(node.dx, -maxShift, maxShift);
+          node.dy = clamp(node.dy, -maxShift, maxShift);
+        }
+      }
+    }
+
+    function updateGridDeformation(dt) {
+      if (!state.running || state.paused || state.contactOpen) return;
+
+      applyGridImpactAt(state.ball.x, state.ball.y, 0.9);
+      for (const b of state.extraBalls) {
+        applyGridImpactAt(b.x, b.y, 0.55);
+      }
+
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      const velocityDamping = Math.pow(0.86, dt * 60);
+      const spring = Math.min(0.22, dt * 7.8);
+      const maxShift = 34;
+      let accumulated = 0;
+      let count = 0;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const node = getGridNode(col, row);
+          node.vx *= velocityDamping;
+          node.vy *= velocityDamping;
+          node.dx += node.vx;
+          node.dy += node.vy;
+          node.dx += (0 - node.dx) * spring;
+          node.dy += (0 - node.dy) * spring;
+          node.dx = clamp(node.dx, -maxShift, maxShift);
+          node.dy = clamp(node.dy, -maxShift, maxShift);
+          accumulated += Math.hypot(node.dx, node.dy);
+          count += 1;
+        }
+      }
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const center = getGridNode(col, row);
+          const neighbors = [
+            state.gridNodes[gridNodeKey(col - 1, row)],
+            state.gridNodes[gridNodeKey(col + 1, row)],
+            state.gridNodes[gridNodeKey(col, row - 1)],
+            state.gridNodes[gridNodeKey(col, row + 1)],
+          ].filter(Boolean);
+          if (!neighbors.length) continue;
+          const avgDx = neighbors.reduce((sum, n) => sum + n.dx, 0) / neighbors.length;
+          const avgDy = neighbors.reduce((sum, n) => sum + n.dy, 0) / neighbors.length;
+          center.dx += (avgDx - center.dx) * 0.052;
+          center.dy += (avgDy - center.dy) * 0.052;
+        }
+      }
+
+      state.gridEnergy = count ? accumulated / count : 0;
+    }
+
+    function sampleGridLensingForce(x, y) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      const grid = getTileGridGeometry(layout);
+      let fx = 0;
+      let fy = 0;
+
+      for (let col = 0; col <= grid.cols; col += 1) {
+        for (let row = 0; row <= grid.rows; row += 1) {
+          const baseX = grid.x + (grid.w * col) / grid.cols;
+          const baseY = grid.y + (grid.h * row) / grid.rows;
+          const node = getGridNode(col, row);
+          const mass = Math.hypot(node.dx, node.dy);
+          if (mass < 0.22) continue;
+
+          const nx = baseX + node.dx;
+          const ny = baseY + node.dy;
+          const dx = nx - x;
+          const dy = ny - y;
+          const distSq = dx * dx + dy * dy + 320;
+          const strength = Math.min(2800, mass * 310) / distSq;
+          fx += dx * strength;
+          fy += dy * strength;
+        }
+      }
+
+      return { fx, fy };
+    }
+
+    function applyRelativityLensing(ball, dt) {
+      if (!state.running || state.paused || state.contactOpen) return;
+      const speed = Math.hypot(ball.dx, ball.dy) || ball.speedBase || state.ball.speedBase;
+      const force = sampleGridLensingForce(ball.x, ball.y);
+      if (Math.abs(force.fx) < 1e-6 && Math.abs(force.fy) < 1e-6) return;
+
+      ball.dx += force.fx * dt * 42;
+      ball.dy += force.fy * dt * 42;
+
+      const adjustedSpeed = Math.hypot(ball.dx, ball.dy) || 1;
+      const scale = speed / adjustedSpeed;
+      ball.dx *= scale;
+      ball.dy *= scale;
+    }
+
+    function getMeshNode(row, col) {
+      const key = meshNodeKey(row, col);
+      let node = state.meshNodes[key];
+      if (!node) {
+        node = { dx: 0, dy: 0, vx: 0, vy: 0 };
+        state.meshNodes[key] = node;
+      }
+      return node;
+    }
+
+    function meshOffsetForPoint(row, col, px, py, phase = 0) {
+      const node = getMeshNode(row, col);
+      const active = isMeshActivated();
+      const waveX = active ? Math.sin(py * 0.018 + state.blinkTime * 1.2 + phase * 0.6) * 0.24 : 0;
+      const waveY = active ? Math.cos(px * 0.016 + state.blinkTime * 1.0 + phase * 0.6) * 0.2 : 0;
+      return {
+        x: node.dx + waveX,
+        y: node.dy + waveY,
+      };
+    }
+
+    function applyMeshImpactAt(x, y, magnitude = 1) {
+      const qrBricks = state.bricks.filter(isGameplayQrBrick);
+      if (!qrBricks.length) return;
+
+      const radius = 164;
+      const maxShift = 24;
+      for (const brick of qrBricks) {
+        const node = getMeshNode(brick.row, brick.col);
+        const cx = brick.x + brick.w * 0.5 + node.dx;
+        const cy = brick.y + brick.h * 0.5 + node.dy;
+        const dx = cx - x;
+        const dy = cy - y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const influence = Math.max(0, 1 - dist / radius);
+        if (influence <= 0) continue;
+
+        const impulse = influence * influence * (0.6 + magnitude * 1.1);
+        node.vx += (dx / dist) * impulse;
+        node.vy += (dy / dist) * impulse;
+        node.dx += (dx / dist) * impulse * 0.42;
+        node.dy += (dy / dist) * impulse * 0.42;
+
+        node.dx = Math.max(-maxShift, Math.min(maxShift, node.dx));
+        node.dy = Math.max(-maxShift, Math.min(maxShift, node.dy));
+      }
+    }
+
+    function updateMeshDeformation(dt) {
+      if (!state.running || state.paused) return;
+
+      applyMeshImpactAt(state.ball.x, state.ball.y, 1.2);
+      for (const b of state.extraBalls) {
+        applyMeshImpactAt(b.x, b.y, 0.9);
+      }
+
+      const velocityDamping = Math.pow(0.9, dt * 60);
+      const maxShift = 24;
+      let accumulated = 0;
+      let count = 0;
+      for (const brick of state.bricks) {
+        if (!isGameplayQrBrick(brick)) continue;
+        const node = getMeshNode(brick.row, brick.col);
+        node.vx *= velocityDamping;
+        node.vy *= velocityDamping;
+        node.dx = Math.max(-maxShift, Math.min(maxShift, node.dx + node.vx));
+        node.dy = Math.max(-maxShift, Math.min(maxShift, node.dy + node.vy));
+        accumulated += Math.hypot(node.dx, node.dy);
+        count += 1;
+      }
+
+      // Light neighbor coupling keeps the net coherent while preserving deformation memory.
+      for (const brick of state.bricks) {
+        if (!isGameplayQrBrick(brick)) continue;
+        const center = getMeshNode(brick.row, brick.col);
+        const neighbors = [
+          state.meshNodes[meshNodeKey(brick.row, brick.col + 1)],
+          state.meshNodes[meshNodeKey(brick.row, brick.col - 1)],
+          state.meshNodes[meshNodeKey(brick.row + 1, brick.col)],
+          state.meshNodes[meshNodeKey(brick.row - 1, brick.col)],
+        ].filter(Boolean);
+        if (!neighbors.length) continue;
+        const avgDx = neighbors.reduce((sum, n) => sum + n.dx, 0) / neighbors.length;
+        const avgDy = neighbors.reduce((sum, n) => sum + n.dy, 0) / neighbors.length;
+        center.dx += (avgDx - center.dx) * 0.03;
+        center.dy += (avgDy - center.dy) * 0.03;
+      }
+
+      state.meshEnergy = count ? accumulated / count : 0;
+    }
+
+    function drawImpressumInfo(layout) {
+      if (!state.contactOpen) return;
+      const narrowScreen = window.innerWidth <= 640;
+      const x = layout.cardX + (narrowScreen ? 18 : 28);
+      const lineH = narrowScreen ? 22 : 28;
+      let y = layout.cardY + (narrowScreen ? 28 : 40);
+      ctx.save();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+
+      ctx.font = `700 ${narrowScreen ? 15 : 18}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(246, 251, 255, 0.96)";
+      ctx.fillText(PERSON_NAME, x, y);
+      y += lineH;
+
+      ctx.font = `${narrowScreen ? 11 : 13}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(200, 230, 255, 0.82)";
+      ctx.fillText(ORG_TITLE, x, y);
+      y += lineH * 1.3;
+
+      ctx.font = `${narrowScreen ? 10 : 12}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(180, 210, 255, 0.72)";
+      ctx.fillText(CONTACT_EMAIL, x, y);
+      y += lineH;
+      ctx.fillText(CONTACT_WEBSITE, x, y);
+      y += lineH * 1.4;
+
+      ctx.font = `500 ${narrowScreen ? 9 : 10}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(180, 210, 255, 0.44)";
+      ctx.letterSpacing = "0.12em";
+      ctx.fillText("TAP INSIDE GAME TO PLAY", x, y);
+      y += lineH * 0.9;
+
+      ctx.font = `${narrowScreen ? 8 : 9}px "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.fillStyle = "rgba(196, 224, 255, 0.52)";
+      ctx.fillText("Deformable nodes curve trajectories like light in warped space.", x, y);
+
+      ctx.restore();
+    }
+
+    function drawTileBoard(layout) {
+      const grid = getTileGridGeometry(layout);
+      const x = grid.x;
+      const y = grid.y;
+      const w = grid.w;
+      const h = grid.h;
+      const cols = grid.cols;
+      const rows = grid.rows;
+
+      ctx.fillStyle = "rgba(10, 24, 50, 0.74)";
+      ctx.fillRect(x, y, w, h);
+
+      ctx.save();
+      const tension = 0.14 + Math.min(0.18, state.gridEnergy * 0.015);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+      ctx.lineWidth = 1.1;
+
+      for (let c = 1; c < cols; c += 1) {
+        const first = getGridNodePosition(layout, c, 0);
+        ctx.beginPath();
+        ctx.moveTo(first.x, first.y);
+        for (let r = 1; r <= rows; r += 1) {
+          const p = getGridNodePosition(layout, c, r);
+          const prev = getGridNodePosition(layout, c, r - 1);
+          const cx = prev.x + (p.x - prev.x) * tension;
+          const cy = prev.y + (p.y - prev.y) * tension;
+          ctx.quadraticCurveTo(cx, cy, p.x, p.y);
+        }
+        ctx.stroke();
+      }
+
+      for (let r = 1; r < rows; r += 1) {
+        const first = getGridNodePosition(layout, 0, r);
+        ctx.beginPath();
+        ctx.moveTo(first.x, first.y);
+        for (let c = 1; c <= cols; c += 1) {
+          const p = getGridNodePosition(layout, c, r);
+          const prev = getGridNodePosition(layout, c - 1, r);
+          const cx = prev.x + (p.x - prev.x) * tension;
+          const cy = prev.y + (p.y - prev.y) * tension;
+          ctx.quadraticCurveTo(cx, cy, p.x, p.y);
+        }
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "rgba(214, 236, 255, 0.7)";
+      for (let c = 0; c <= cols; c += 1) {
+        for (let r = 0; r <= rows; r += 1) {
+          const node = getGridNodePosition(layout, c, r);
+          const model = getGridNode(c, r);
+          const radius = 1.1 + Math.min(1.7, Math.hypot(model.dx, model.dy) * 0.05);
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.34)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      ctx.restore();
+    }
+
+    function drawDeformableQrMesh() {
+      const qrBricks = state.bricks.filter(isGameplayQrBrick);
+      if (!qrBricks.length) return;
+
+      const lookup = new Map();
+      for (const brick of qrBricks) {
+        lookup.set(`${brick.row}:${brick.col}`, brick);
+      }
+
+      const centers = new Map();
+      for (const brick of qrBricks) {
+        const cx = brick.x + brick.w * 0.5;
+        const cy = brick.y + brick.h * 0.5;
+        const offset = meshOffsetForPoint(brick.row, brick.col, cx, cy, brick.phase || 0);
+        centers.set(`${brick.row}:${brick.col}`, { x: cx + offset.x, y: cy + offset.y, brick });
+      }
+
+      ctx.save();
+      ctx.lineWidth = 0.9;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+      for (const [key, node] of centers) {
+        const [row, col] = key.split(":").map(Number);
+        const right = centers.get(`${row}:${col + 1}`);
+        const down = centers.get(`${row + 1}:${col}`);
+        if (right) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(right.x, right.y);
+          ctx.stroke();
+        }
+        if (down) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(down.x, down.y);
+          ctx.stroke();
+        }
+      }
+
+      const energyFactor = 1 + Math.min(0.4, state.meshEnergy * 0.04);
+      for (const node of centers.values()) {
+        const brick = node.brick;
+        const isMarked = !!brick.mulMark;
+        const isSplitter = !!brick.splitter;
+        const nodeModel = getMeshNode(brick.row, brick.col);
+        const motionFactor = 1 + Math.min(0.35, Math.hypot(nodeModel.dx, nodeModel.dy) * 0.025);
+        const individualScale = baseDiscScale(brick.row + 1, brick.col + 1, 19);
+        const radius = Math.max(1.8, state.qrModuleSize * individualScale * motionFactor * energyFactor);
+        const baseSpin = 0.85 + (((brick.row * 17 + brick.col * 13) % 100) / 100) * 1.35;
+        const direction = (brick.row + brick.col) % 2 === 0 ? 1 : -1;
+        const rotationSpeed = isMeshActivated() ? baseSpin * direction : 0;
+        drawHalfOpenDisk(
+          node.x,
+          node.y,
+          radius,
+          isMarked || isSplitter ? "#ff4df5" : "#ffffff",
+          isMarked || isSplitter ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
+          brick.phase || 0,
+          rotationSpeed,
+          0.24
+        );
+      }
+      ctx.restore();
+    }
+
+    function drawQrBrick(brick) {
+      const { x, y, w, h } = brick;
+      if (state.contactOpen) {
+        const radius = Math.max(3.2, Math.min(w, h) * (brick.circleScale || 0.42));
+        const cx = x + w / 2;
+        const cy = y + h / 2;
+        ctx.save();
+        const isMarked = !!brick.mulMark;
+        drawHalfOpenDisk(
+          cx,
+          cy,
+          radius,
+          isMarked ? "#ff4df5" : "#ffffff",
+          isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.28)",
+          brick.phase
+        );
+        if (isMarked) {
+          ctx.fillStyle = "#ff4df5";
+          ctx.font = `${Math.max(9, Math.floor(radius * 1.8))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("\u00D7", cx, cy + 0.5);
+        }
+        ctx.restore();
+        return;
+      }
+
+      const cyan = "#ffffff";
+      const magenta = "#ff4df5";
+      const blink = 1;
+      const points = [state.ball, ...state.extraBalls];
+      let proximity = 0;
+      for (const source of points) {
+        if (!source) continue;
+        const dist = Math.hypot((x + w * 0.5) - source.x, (y + h * 0.5) - source.y);
+        proximity = Math.max(proximity, Math.max(0, 1 - dist / 180));
+      }
+      const dynamicFactor = 1 + Math.min(0.4, state.meshEnergy * 0.05) + proximity * 0.25;
+      const radius = Math.max(3.2, Math.min(w, h) * (brick.circleScale || 0.68) * dynamicFactor);
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+
+      if (brick.catcher) {
+        const notch = Math.PI * 0.24;
+        const rotation = state.blinkTime * (brick.spinSpeed || 0);
+        const start = brick.notchAngle + rotation + notch * 0.5;
+        const end = brick.notchAngle + rotation + Math.PI * 2 - notch * 0.5;
+        ctx.save();
+        ctx.globalAlpha = blink;
+        ctx.lineWidth = Math.max(2, radius * 0.34);
+        ctx.strokeStyle = brick.splitter ? magenta : cyan;
+        ctx.shadowBlur = brick.splitter ? 10 : 7;
+        ctx.shadowColor = brick.splitter ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)";
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.stroke();
+        ctx.restore();
+        return;
+      }
+
+      ctx.save();
+      ctx.globalAlpha = blink;
+      const isMarked = !!brick.mulMark;
+      drawHalfOpenDisk(
+        cx,
+        cy,
+        radius,
+        isMarked ? magenta : cyan,
+        isMarked ? "rgba(255, 77, 245, 0.45)" : "rgba(255, 255, 255, 0.3)",
+        brick.phase,
+        1.6,
+        0.24
+      );
+      if (isMarked) {
+        ctx.fillStyle = magenta;
+        ctx.font = `${Math.max(9, Math.floor(radius * 1.8))}px "SF Mono", "Fira Code", ui-monospace, monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("\u00D7", cx, cy + 0.5);
+      }
+      ctx.restore();
+    }
+
+    function drawExplosion(effect) {
+      const progress = 1 - effect.life / effect.maxLife;
+      const alpha = Math.max(0, effect.life / effect.maxLife);
+      const radius = effect.radius * (0.55 + progress * 1.4);
+      const tail = effect.radius * (0.8 + progress * 1.6);
+      const fillStyle = effect.fillStyle || "rgba(255, 108, 245, 0.32)";
+      const strokeStyle = effect.strokeStyle || "rgba(191, 248, 255, 0.92)";
+      const shadowColor = effect.shadowColor || strokeStyle;
+
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.9;
+      ctx.beginPath();
+      ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = Math.max(1.4, effect.radius * 0.18);
+      ctx.strokeStyle = strokeStyle;
+      ctx.shadowBlur = effect.ruleLightning ? 18 : 0;
+      ctx.shadowColor = shadowColor;
+      ctx.beginPath();
+      ctx.moveTo(effect.x, effect.y);
+      ctx.lineTo(effect.x + effect.dx * tail, effect.y + effect.dy * tail);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateBallTrail(dt) {
+      const speed = Math.hypot(state.ball.dx, state.ball.dy);
+      const targetLength = speed > 180 ? 22 : 16;
+      state.ballTrail.unshift({ x: state.ball.x, y: state.ball.y, life: 1 });
+      if (state.ballTrail.length > targetLength) {
+        state.ballTrail.length = targetLength;
+      }
+
+      const decay = Math.max(0.09, dt * 2.2);
+      state.ballTrail = state.ballTrail
+        .map((node) => ({ x: node.x, y: node.y, life: node.life - decay }))
+        .filter((node) => node.life > 0);
+    }
+
+    function drawBallWithTrail() {
+      const b = state.ball;
+      const max = Math.max(1, state.ballTrail.length);
+
+      for (let i = 0; i < state.ballTrail.length; i += 1) {
+        const node = state.ballTrail[i];
+        const t = 1 - i / max;
+        const alpha = Math.max(0, node.life) * t * 0.56;
+        const r = Math.max(2.2, b.r * (0.34 + t * 0.52));
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff7bf8";
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = "rgba(255, 77, 245, 0.45)";
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.shadowBlur = 28;
+      ctx.shadowColor = "rgba(255, 77, 245, 0.75)";
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r + 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 77, 245, 0.34)";
+      ctx.fill();
+
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = "rgba(255, 170, 248, 0.66)";
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff4df5";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(255, 236, 253, 0.86)";
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawAuxBall(ball) {
+      ctx.save();
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = "rgba(255, 77, 245, 0.52)";
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r * 0.94, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 77, 245, 0.9)";
+      ctx.fill();
+      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = "rgba(255, 219, 252, 0.75)";
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function spawnTripleBallsFromBall(sourceBall) {
+      const speed = Math.max(sourceBall.speedBase || state.ball.speedBase, Math.hypot(sourceBall.dx, sourceBall.dy));
+      const baseAngle = Math.atan2(sourceBall.dy, sourceBall.dx);
+      const spread = 0.32;
+      sourceBall.dx = Math.cos(baseAngle) * speed;
+      sourceBall.dy = Math.sin(baseAngle) * speed;
+
+      state.extraBalls = [-spread, spread].map((offset) => {
+        const angle = baseAngle + offset;
+        return {
+          x: sourceBall.x,
+          y: sourceBall.y,
+          r: sourceBall.r,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          speedBase: sourceBall.speedBase || state.ball.speedBase,
+        };
+      });
+    }
+
+    function spawnExplosion(brick, directionX, directionY, intensity = 1, options = {}) {
+      const length = Math.hypot(directionX, directionY) || 1;
+      state.explosions.push({
+        x: brick.x + brick.w / 2,
+        y: brick.y + brick.h / 2,
+        dx: directionX / length,
+        dy: directionY / length,
+        radius: Math.max(brick.w, brick.h) * (0.7 + intensity * 0.7),
+        life: 0.34 + intensity * 0.08,
+        maxLife: 0.34 + intensity * 0.08,
+        fillStyle: options.fillStyle,
+        strokeStyle: options.strokeStyle,
+        shadowColor: options.shadowColor,
+        ruleLightning: !!options.ruleLightning,
+      });
+    }
+
+    function destroyBrick(brick, options = {}) {
+      if (!brick || !brick.alive || !brick.active) return false;
+
+      brick.alive = false;
+      brick.active = false;
+      brick.pendingBlast = false;
+      state.patternHits += 1;
+      if (options.countHit !== false) {
+        state.levelHits += 1;
+      }
+      state.score += options.score ?? 100;
+      spawnExplosion(brick, options.directionX ?? 0, options.directionY ?? -1, options.intensity ?? 1, {
+        fillStyle: options.fillStyle,
+        strokeStyle: options.strokeStyle,
+        shadowColor: options.shadowColor,
+        ruleLightning: options.ruleLightning,
+      });
+      return true;
+    }
+
+    function brickKey(row, col) {
+      return `${row}:${col}`;
+    }
+
+    function findBrickByCell(row, col) {
+      return state.bricks.find((brick) => brick.row === row && brick.col === col);
+    }
+
+    function startAutomataBurst(originBrick, directionX, directionY) {
+      const length = Math.hypot(directionX, directionY) || 1;
+      const nx = directionX / length;
+      const ny = directionY / length;
+      const ruleLightning = isRuleLightningLevel();
+      state.automataBursts.push({
+        directionX: nx,
+        directionY: ny,
+        stepTimer: 0,
+        stepInterval: 0.06,
+        ttl: ruleLightning ? 12 : 9,
+        frontier: new Set([brickKey(originBrick.row, originBrick.col)]),
+        visited: new Set([brickKey(originBrick.row, originBrick.col)]),
+        ruleLightning,
+      });
+    }
+
+    function remainingBricks() {
+      return state.bricks.reduce((count, brick) => count + (brick.alive && brick.active ? 1 : 0), 0);
+    }
+
+    function updateExplosions(dt) {
+      state.explosions = state.explosions.filter((effect) => {
+        effect.life -= dt;
+        return effect.life > 0;
+      });
+    }
+
+    function updateAutomataBursts(dt) {
+      if (!state.automataBursts.length) return;
+
+      let changed = false;
+      const survivors = [];
+
+      for (const burst of state.automataBursts) {
+        burst.stepTimer += dt;
+        if (burst.stepTimer < burst.stepInterval) {
+          survivors.push(burst);
+          continue;
+        }
+
+        burst.stepTimer = 0;
+        burst.ttl -= 1;
+
+        const candidateScores = new Map();
+        for (const key of burst.frontier) {
+          const [row, col] = key.split(":").map(Number);
+          for (let dRow = -1; dRow <= 1; dRow += 1) {
+            for (let dCol = -1; dCol <= 1; dCol += 1) {
+              if (dRow === 0 && dCol === 0) continue;
+              const nextRow = row + dRow;
+              const nextCol = col + dCol;
+              const nextKey = brickKey(nextRow, nextCol);
+              if (burst.visited.has(nextKey)) continue;
+
+              const alignment = (dCol * burst.directionX) + (dRow * burst.directionY);
+              const lateral = Math.abs((dCol * -burst.directionY) + (dRow * burst.directionX));
+              const score = alignment * 1.4 - lateral * 0.55;
+
+              if (score < -0.35) continue;
+              candidateScores.set(nextKey, Math.max(candidateScores.get(nextKey) ?? -Infinity, score));
+            }
+          }
+        }
+
+        const nextFrontier = new Set();
+        for (const [key, score] of candidateScores) {
+          const [row, col] = key.split(":").map(Number);
+          const brick = findBrickByCell(row, col);
+          burst.visited.add(key);
+          if (!brick || !brick.alive || !brick.active) continue;
+
+          const intensity = Math.max(0.35, Math.min(1.2, 0.6 + score * 0.35));
+          if (destroyBrick(brick, {
+            directionX: burst.directionX,
+            directionY: burst.directionY,
+            intensity,
+            fillStyle: burst.ruleLightning ? "rgba(255, 77, 245, 0.42)" : undefined,
+            strokeStyle: burst.ruleLightning ? "rgba(255, 77, 245, 0.96)" : undefined,
+            shadowColor: burst.ruleLightning ? "rgba(255, 77, 245, 0.72)" : undefined,
+            ruleLightning: burst.ruleLightning,
+          })) {
+            changed = true;
+            nextFrontier.add(key);
+          }
+        }
+
+        if (nextFrontier.size > 0 && burst.ttl > 0) {
+          burst.frontier = nextFrontier;
+          survivors.push(burst);
+        }
+      }
+
+      state.automataBursts = survivors;
+      if (!changed) return;
+      syncPeriodicUnlockState();
+      syncHud();
+
+      const target = currentLevelTarget();
+      if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+        nextLevel();
+        return;
+      }
+
+      if (remainingBricks() > 0) return;
+
+      if (!isPerimeterChallengeActive() && state.levelHits < (target ?? 0)) {
+        resetCurrentLevelLayout();
+        return;
+      }
+
+      nextLevel();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      ctx.save();
+      ctx.fillStyle = "#06142d";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (!state.initialized) {
+        ctx.save();
+        ctx.fillStyle = "rgba(10, 28, 58, 0.96)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+        ctx.font = '24px "SF Mono", "Fira Code", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText("Loading contact QR...", canvas.width / 2, canvas.height / 2);
+        ctx.restore();
+        return;
+      }
+
+      if (state.contactOpen) {
+        drawHighResContactCard(layout);
+        ctx.restore();
+        return;
+      }
+
+      drawTileBoard(layout);
+      drawDeformableQrMesh();
+      drawImpressumInfo(layout);
+
+      for (const brick of state.bricks) {
+        if (!brick.alive) continue;
+        if (isGameplayQrBrick(brick)) continue;
+        drawQrBrick(brick);
+      }
+
+      drawQrBoundary();
+
+      for (const effect of state.explosions) {
+        drawExplosion(effect);
+      }
+
+      if (!state.contactOpen) {
+        drawSlider();
+        drawBallWithTrail();
+        for (const extraBall of state.extraBalls) {
+          drawAuxBall(extraBall);
+        }
+      }
+    }
+
+    function clampPaddle() {
+      state.paddle.x = Math.max(0, Math.min(canvas.width - state.paddle.w, state.paddle.x));
+    }
+
+    function updatePaddle(dt) {
+      let steer = 0;
+      if (state.keys.left) steer -= 1;
+      if (state.keys.right) steer += 1;
+      if (Math.abs(state.touchSteer) > Math.abs(steer)) {
+        steer = state.touchSteer;
+      }
+
+      if (isPerimeterChallengeActive()) {
+        const perimeterSpeed = state.paddle.speed * 0.85;
+        const travel = perimeterSpeed * steer * dt;
+        if (travel) advancePerimeterSlider(travel);
+        return;
+      }
+
+      state.paddle.dx = state.paddle.speed * steer;
+      state.paddle.x += state.paddle.dx * dt;
+      clampPaddle();
+    }
+
+    function loseLife() {
+      state.lives -= 1;
+      syncHud();
+      if (state.lives <= 0) {
+        endToContact(`Final score: ${state.score}. Play again or mail the run?`);
+        return;
+      }
+      state.paused = true;
+      resetBallAndPaddle();
+      syncGameUi();
+    }
+
+    function nextLevel() {
+      if (SINGLE_LEVEL_ONLY) {
+        state.level = 1;
+        state.patternHits = 0;
+        state.levelHits = 0;
+        state.periodicModeUnlocked = false;
+        resetBricks();
+        resetBallAndPaddle();
+        syncHud();
+        state.paused = true;
+        syncGameUi();
+        return;
+      }
+
+      if (state.level < MAX_LEVEL) {
+        state.level += 1;
+        state.patternHits = 0;
+        state.levelHits = 0;
+        state.periodicModeUnlocked = false;
+        state.lives += LEVEL_UP_LIFE_BONUS;
+        resetBricks();
+        resetBallAndPaddle();
+        syncHud();
+        state.paused = true;
+        syncGameUi();
+        return;
+      }
+
+      syncPeriodicUnlockState();
+      if (!isPerimeterChallengeActive()) return;
+
+      state.patternHits = 0;
+      resetBricks();
+      setPerimeterOffset(defaultPerimeterOffset());
+      resetBallAndPaddle();
+      syncHud();
+      state.paused = true;
+      syncGameUi();
+    }
+
+    function normalizeBallVelocity(ball = state.ball) {
+      const b = ball;
+      const speed = Math.hypot(b.dx, b.dy) || b.speedBase;
+      const minAxis = Math.max(70, speed * 0.24);
+
+      if (Math.abs(b.dx) < minAxis) b.dx = Math.sign(b.dx || 1) * minAxis;
+      if (Math.abs(b.dy) < minAxis) b.dy = Math.sign(b.dy || -1) * minAxis;
+
+      const scale = speed / Math.hypot(b.dx, b.dy);
+      b.dx *= scale;
+      b.dy *= scale;
+    }
+
+    function collideWithPaddle(ball = state.ball) {
+      if (isPerimeterChallengeActive()) {
+        const slider = getPerimeterSlider();
+        const b = ball;
+        if (!slider) return;
+
+        const overlaps = b.x + b.r >= slider.x
+          && b.x - b.r <= slider.x + slider.w
+          && b.y + b.r >= slider.y
+          && b.y - b.r <= slider.y + slider.h;
+
+        if (!overlaps) return;
+
+        const speed = Math.hypot(b.dx, b.dy) * 1.04;
+        if (slider.side === "top" && b.dy < 0) {
+          const hit = (b.x - slider.centerX) / (slider.w / 2);
+          b.dx = speed * hit * 0.92;
+          b.dy = Math.abs(Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000)));
+          b.y = slider.y + slider.h + b.r + 1;
+        } else if (slider.side === "bottom" && b.dy > 0) {
+          const hit = (b.x - slider.centerX) / (slider.w / 2);
+          b.dx = speed * hit * 0.92;
+          b.dy = -Math.abs(Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000)));
+          b.y = slider.y - b.r - 1;
+        } else if (slider.side === "left" && b.dx < 0) {
+          const hit = (b.y - slider.centerY) / (slider.h / 2);
+          b.dy = speed * hit * 0.92;
+          b.dx = Math.abs(Math.sqrt(Math.max(speed * speed - b.dy * b.dy, 16000)));
+          b.x = slider.x + slider.w + b.r + 1;
+        } else if (slider.side === "right" && b.dx > 0) {
+          const hit = (b.y - slider.centerY) / (slider.h / 2);
+          b.dy = speed * hit * 0.92;
+          b.dx = -Math.abs(Math.sqrt(Math.max(speed * speed - b.dy * b.dy, 16000)));
+          b.x = slider.x - b.r - 1;
+        } else {
+          return;
+        }
+
+        normalizeBallVelocity(b);
+        return;
+      }
+
+      const p = state.paddle;
+      const b = ball;
+      if (
+        b.x + b.r >= p.x &&
+        b.x - b.r <= p.x + p.w &&
+        b.y + b.r >= p.y &&
+        b.y - b.r <= p.y + p.h &&
+        b.dy > 0
+      ) {
+        const hit = (b.x - (p.x + p.w / 2)) / (p.w / 2);
+        const speed = Math.hypot(b.dx, b.dy) * 1.02;
+        b.dx = speed * hit;
+        b.dy = -Math.sqrt(Math.max(speed * speed - b.dx * b.dx, 16000));
+        b.y = p.y - b.r - 1;
+        normalizeBallVelocity(b);
+      }
+    }
+
+    function collideWithBricks(ball = state.ball, allowTrap = true) {
+      const b = ball;
+
+      for (const brick of state.bricks) {
+        if (!brick.alive || !brick.active) continue;
+        const nearestX = Math.max(brick.x, Math.min(b.x, brick.x + brick.w));
+        const nearestY = Math.max(brick.y, Math.min(b.y, brick.y + brick.h));
+        const dx = b.x - nearestX;
+        const dy = b.y - nearestY;
+
+        if (dx * dx + dy * dy > b.r * b.r) continue;
+
+        const impactX = b.dx;
+        const impactY = b.dy;
+
+        if (brick.catcher) {
+          if (brick.splitter) {
+            destroyBrick(brick, {
+              directionX: impactX,
+              directionY: impactY,
+              intensity: 1.2,
+              fillStyle: "rgba(255, 77, 245, 0.36)",
+              strokeStyle: "rgba(255, 77, 245, 0.98)",
+              shadowColor: "rgba(255, 77, 245, 0.74)",
+            });
+            if (b === state.ball) {
+              spawnTripleBallsFromBall(b);
+            }
+            syncPeriodicUnlockState();
+            syncHud();
+
+            if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+            else b.dy *= -1;
+            normalizeBallVelocity(b);
+          
+            const target = currentLevelTarget();
+            if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+              nextLevel();
+              return;
+            }
+
+            if (remainingBricks() <= 0) {
+              if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+                resetCurrentLevelLayout();
+              } else {
+                nextLevel();
+              }
+            }
+            return;
+          }
+
+          const inLen = Math.hypot(impactX, impactY) || 1;
+          const incomingToCenterX = -impactX / inLen;
+          const incomingToCenterY = -impactY / inLen;
+          const openingAngle = brick.notchAngle + state.blinkTime * (brick.spinSpeed || 0);
+          const openX = Math.cos(openingAngle);
+          const openY = Math.sin(openingAngle);
+          const throughOpening = (incomingToCenterX * openX + incomingToCenterY * openY) > 0.72;
+
+          if (allowTrap && throughOpening) {
+            const speed = Math.max(b.speedBase || state.ball.speedBase, Math.hypot(impactX, impactY));
+            state.ballTrap = {
+              brick,
+              hold: CATCHER_HOLD_SECONDS,
+              elapsed: 0,
+              speed,
+              incomingX: impactX,
+              incomingY: impactY,
+            };
+            b.x = brick.x + brick.w / 2;
+            b.y = brick.y + brick.h / 2;
+            b.dx = 0;
+            b.dy = 0;
+            state.score += 15;
+            syncHud();
+            return;
+          }
+
+          destroyBrick(brick, {
+            directionX: impactX,
+            directionY: impactY,
+            intensity: 1.1,
+          });
+          syncPeriodicUnlockState();
+          syncHud();
+
+          if (state.paused) return;
+
+          if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+          else b.dy *= -1;
+          normalizeBallVelocity(b);
+
+          if ((state.level === 2 || isRuleLightningLevel()) && state.levelHits % 10 === 0) {
+            startAutomataBurst(brick, impactX, impactY);
+          }
+
+          const target = currentLevelTarget();
+          if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+            nextLevel();
+            return;
+          }
+
+          if (remainingBricks() <= 0) {
+            if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+              resetCurrentLevelLayout();
+            } else {
+              nextLevel();
+            }
+          }
+          return;
+        }
+
+        destroyBrick(brick, {
+          directionX: impactX,
+          directionY: impactY,
+          intensity: 1.1,
+        });
+        syncPeriodicUnlockState();
+        syncHud();
+
+        if (state.paused) return;
+
+        if (Math.abs(dx) > Math.abs(dy)) b.dx *= -1;
+        else b.dy *= -1;
+        normalizeBallVelocity(b);
+
+        if ((state.level === 2 || isRuleLightningLevel()) && state.levelHits % 10 === 0) {
+          startAutomataBurst(brick, impactX, impactY);
+        }
+
+        const target = currentLevelTarget();
+        if (!isPerimeterChallengeActive() && target && state.levelHits >= target) {
+          nextLevel();
+          return;
+        }
+
+        if (remainingBricks() <= 0) {
+          if (!isPerimeterChallengeActive() && target && state.levelHits < target) {
+            resetCurrentLevelLayout();
+          } else {
+            nextLevel();
+          }
+        }
+        return;
+      }
+    }
+
+    function updateBall(dt) {
+      const b = state.ball;
+
+      if (state.ballTrap) {
+        const trap = state.ballTrap;
+        const centerX = trap.brick.x + trap.brick.w / 2;
+        const centerY = trap.brick.y + trap.brick.h / 2;
+        b.x = centerX;
+        b.y = centerY;
+        trap.elapsed += dt;
+
+        if (trap.elapsed < trap.hold) {
+          return;
+        }
+
+        const baseAngle = Math.atan2(-trap.incomingY, -trap.incomingX);
+        const scatter = (Math.random() * 2 - 1) * CATCHER_REDIRECT_SPREAD;
+        const nextAngle = baseAngle + scatter;
+        const outSpeed = trap.speed * (0.96 + Math.random() * 0.12);
+        b.dx = Math.cos(nextAngle) * outSpeed;
+        b.dy = Math.sin(nextAngle) * outSpeed;
+        b.x = centerX + Math.cos(nextAngle) * (trap.brick.w * 0.58 + b.r + 2);
+        b.y = centerY + Math.sin(nextAngle) * (trap.brick.h * 0.58 + b.r + 2);
+        normalizeBallVelocity(b);
+        state.ballTrap = null;
+      }
+
+      applyRelativityLensing(b, dt);
+      b.x += b.dx * dt;
+      b.y += b.dy * dt;
+
+      if (isPerimeterChallengeActive()) {
+        if (b.x + b.r < 0) {
+          b.x = canvas.width + b.r;
+        } else if (b.x - b.r > canvas.width) {
+          b.x = -b.r;
+        }
+
+        if (b.y + b.r < 0) {
+          b.y = canvas.height + b.r;
+        } else if (b.y - b.r > canvas.height) {
+          b.y = -b.r;
+        }
+      } else {
+        if (b.x - b.r <= 0) {
+          b.x = b.r;
+          b.dx = Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        } else if (b.x + b.r >= canvas.width) {
+          b.x = canvas.width - b.r;
+          b.dx = -Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        }
+
+        if (b.y - b.r <= 0) {
+          b.y = b.r;
+          b.dy = Math.abs(b.dy);
+          normalizeBallVelocity(b);
+        } else if (b.y - b.r > canvas.height) {
+          if (state.extraBalls.length > 0) {
+            const promoted = state.extraBalls.shift();
+            state.ball.x = promoted.x;
+            state.ball.y = promoted.y;
+            state.ball.dx = promoted.dx;
+            state.ball.dy = promoted.dy;
+            state.ball.speedBase = promoted.speedBase || state.ball.speedBase;
+            state.ball.r = promoted.r || state.ball.r;
+            state.ballTrail = [];
+            return;
+          }
+          loseLife();
+          return;
+        }
+      }
+
+      collideWithPaddle(b);
+      collideWithBricks(b, true);
+      updateBallTrail(dt);
+
+      if (isPerimeterChallengeActive() && isBallOutsideQrBounds()) {
+        dropBackFromPerimeter();
+      }
+    }
+
+    function updateExtraBalls(dt) {
+      if (!state.extraBalls.length) return;
+
+      const survivors = [];
+      for (const b of state.extraBalls) {
+        applyRelativityLensing(b, dt);
+        b.x += b.dx * dt;
+        b.y += b.dy * dt;
+
+        if (b.x - b.r <= 0) {
+          b.x = b.r;
+          b.dx = Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        } else if (b.x + b.r >= canvas.width) {
+          b.x = canvas.width - b.r;
+          b.dx = -Math.abs(b.dx);
+          normalizeBallVelocity(b);
+        }
+
+        if (b.y - b.r <= 0) {
+          b.y = b.r;
+          b.dy = Math.abs(b.dy);
+          normalizeBallVelocity(b);
+        } else if (b.y - b.r > canvas.height) {
+          continue;
+        }
+
+        collideWithPaddle(b);
+        collideWithBricks(b, false);
+
+        survivors.push(b);
+      }
+
+      state.extraBalls = survivors;
+    }
+
+    function updatePattern(dt) {
+      if (state.contactOpen || state.paused || !state.running) return;
+      state.patternTimer += dt;
+    }
+
+    function updatePlayClock(dt) {
+      state.playSeconds += dt;
+      if (state.playSeconds >= 120 && !state.contactOpen) {
+        endToContact("Two minutes are up. Mail opens from the contact pill, or you can play again.");
+      }
+    }
+
+    function frame(ts) {
+      if (!state.lastTime) state.lastTime = ts;
+      const rawDt = (ts - state.lastTime) / 1000;
+      const dt = Math.min(MAX_FRAME_DELTA, Math.max(0, rawDt));
+      state.lastTime = ts;
+      state.blinkTime += dt;
+      simulationAccumulator = Math.min(
+        simulationAccumulator + dt,
+        SIMULATION_STEP * MAX_SIM_STEPS_PER_FRAME
+      );
+
+      if (!state.running) {
+        draw();
+        requestAnimationFrame(frame);
+        return;
+      }
+
+      let steps = 0;
+      while (simulationAccumulator >= SIMULATION_STEP && steps < MAX_SIM_STEPS_PER_FRAME) {
+        updateExplosions(SIMULATION_STEP);
+
+        if (!state.paused) {
+          updatePlayClock(SIMULATION_STEP);
+          if (!state.running) {
+            draw();
+            return;
+          }
+          updatePattern(SIMULATION_STEP);
+          updatePaddle(SIMULATION_STEP);
+          updateBall(SIMULATION_STEP);
+          updateExtraBalls(SIMULATION_STEP);
+          updateGridDeformation(SIMULATION_STEP);
+          updateMeshDeformation(SIMULATION_STEP);
+          updateAutomataBursts(SIMULATION_STEP);
+        }
+
+        simulationAccumulator -= SIMULATION_STEP;
+        steps += 1;
+      }
+
+      draw();
+      requestAnimationFrame(frame);
+    }
+
+    function startOrResume() {
+      if (!state.running) {
+        resetGame();
+        state.running = true;
+      }
+      if (state.contactOpen || state.gameOver) {
+        resetContactState();
+      }
+      state.paused = false;
+      syncGameUi();
+      state.lastTime = 0;
+      simulationAccumulator = 0;
+    }
+
+    function hardResetIntoPlay() {
+      resetGame();
+      state.running = true;
+      state.paused = false;
+      state.contactOpen = false;
+      state.gameOver = false;
+      syncGameUi();
+      syncHud();
+      state.lastTime = 0;
+      simulationAccumulator = 0;
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") state.keys.left = true;
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = true;
+      if (event.key === " ") {
+        event.preventDefault();
+        if (!state.running || state.paused) startOrResume();
+        else {
+          state.paused = true;
+          syncGameUi();
+        }
+      }
+    });
+
+    window.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") state.keys.left = false;
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") state.keys.right = false;
+    });
+
+    function movePaddleFromCanvasPoint(x, y) {
+      if (isPerimeterChallengeActive()) {
+        setPerimeterOffset(closestPerimeterOffset(x, y));
+        return;
+      }
+
+      state.paddle.x = x - state.paddle.w / 2;
+      clampPaddle();
+    }
+
+    function getCanvasContentPoint(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const styles = window.getComputedStyle(canvas);
+      const borderLeft = parseFloat(styles.borderLeftWidth) || 0;
+      const borderRight = parseFloat(styles.borderRightWidth) || 0;
+      const borderTop = parseFloat(styles.borderTopWidth) || 0;
+      const borderBottom = parseFloat(styles.borderBottomWidth) || 0;
+      const contentWidth = Math.max(1, rect.width - borderLeft - borderRight);
+      const contentHeight = Math.max(1, rect.height - borderTop - borderBottom);
+      const x = ((clientX - rect.left - borderLeft) * canvas.width) / contentWidth;
+      const y = ((clientY - rect.top - borderTop) * canvas.height) / contentHeight;
+
+      return {
+        x: clamp(x, 0, canvas.width),
+        y: clamp(y, 0, canvas.height),
+      };
+    }
+
+    function movePaddleFromClientPoint(clientX, clientY) {
+      const point = getCanvasContentPoint(clientX, clientY);
+      movePaddleFromCanvasPoint(point.x, point.y);
+    }
+
+    function updateTouchSteerFromClientPoint(clientX, clientY) {
+      const point = getCanvasContentPoint(clientX, clientY);
+      const half = Math.max(1, canvas.width / 2);
+      let normalized = (point.x - half) / half;
+      normalized = clamp(normalized, -1, 1);
+      const deadZone = 0.06;
+      if (Math.abs(normalized) <= deadZone) {
+        state.touchSteer = 0;
+        return;
+      }
+      const magnitude = (Math.abs(normalized) - deadZone) / (1 - deadZone);
+      const curved = Math.pow(clamp(magnitude, 0, 1), 1.15);
+      state.touchSteer = Math.sign(normalized) * curved;
+    }
+
+    function clearTouchSteer() {
+      state.touchSteer = 0;
+    }
+
+    function getCanvasPointFromMouseLikeEvent(event) {
+      if (event.currentTarget === canvas && typeof event.offsetX === "number" && typeof event.offsetY === "number") {
+        return {
+          x: clamp((event.offsetX * canvas.width) / Math.max(1, canvas.clientWidth), 0, canvas.width),
+          y: clamp((event.offsetY * canvas.height) / Math.max(1, canvas.clientHeight), 0, canvas.height),
+        };
+      }
+
+      return getCanvasContentPoint(event.clientX, event.clientY);
+    }
+
+    function movePaddleFromMouseEvent(event) {
+      const point = getCanvasPointFromMouseLikeEvent(event);
+      movePaddleFromCanvasPoint(point.x, point.y);
+      if (state.running && !state.paused && !state.contactOpen) {
+        applyGridImpactAt(point.x, point.y, 1.3);
+      }
+
+      // Keep pointer-driven motion visually locked to the cursor instead of waiting
+      // for the next animation frame, which can feel slightly behind in the iframe.
+      if (state.running && !state.paused && !state.contactOpen) {
+        draw();
+      }
+    }
+
+    function getCanvasPointFromEvent(event) {
+      return getCanvasContentPoint(event.clientX, event.clientY);
+    }
+
+    function isPointInsideCurrentCard(x, y) {
+      const layout = getContactCardLayout(state.qrBounds.width, state.qrBounds.height);
+      return (
+        x >= layout.cardX &&
+        x <= layout.cardX + layout.cardW &&
+        y >= layout.cardY &&
+        y <= layout.cardY + layout.cardH
+      );
+    }
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      if (state.contactOpen) {
+        const point = getCanvasPointFromMouseLikeEvent(event);
+        applyMeshImpactAt(point.x, point.y, 2.2);
+        draw();
+        return;
+      }
+      movePaddleFromMouseEvent(event);
+    });
+
+    canvas.addEventListener(
+      "touchstart",
+      (event) => {
+        if (!event.touches || !event.touches[0]) return;
+        event.preventDefault();
+        suppressClickUntil = performance.now() + 420;
+        if (state.contactOpen) {
+          const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+          applyMeshImpactAt(point.x, point.y, 2.2);
+          draw();
+          return;
+        }
+        const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+        applyGridImpactAt(point.x, point.y, 1.5);
+        updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchmove",
+      (event) => {
+        if (!event.touches || !event.touches[0]) return;
+        event.preventDefault();
+        suppressClickUntil = performance.now() + 420;
+        if (state.contactOpen) {
+          const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+          applyMeshImpactAt(point.x, point.y, 2.2);
+          draw();
+          return;
+        }
+        const point = getCanvasContentPoint(event.touches[0].clientX, event.touches[0].clientY);
+        applyGridImpactAt(point.x, point.y, 1.35);
+        updateTouchSteerFromClientPoint(event.touches[0].clientX, event.touches[0].clientY);
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchend",
+      (event) => {
+        event.preventDefault();
+        clearTouchSteer();
+        const now = performance.now();
+        if (now - lastTouchEndTime < 280) {
+          lastTouchEndTime = 0;
+          suppressClickUntil = now + 420;
+          handleDoubleTouchAction();
+          return;
+        }
+        lastTouchEndTime = now;
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchcancel",
+      (event) => {
+        event.preventDefault();
+        clearTouchSteer();
+      },
+      { passive: false }
+    );
+
+    mailBtn.addEventListener("click", () => {
+      openMail();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      resetGame();
+      state.running = false;
+      state.paused = true;
+      state.contactOpen = true;
+      state.gameOver = false;
+      state.saveFeedback = "";
+      state.lastTime = 0;
+      simulationAccumulator = 0;
+      syncGameUi();
+      syncHud();
+      void showContactQr();
+    });
+
+    function getFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    async function requestFullscreenFor(element) {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen();
+        return;
+      }
+      if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+        return;
+      }
+      throw new Error("Fullscreen request is unsupported.");
+    }
+
+    async function exitFullscreenMode() {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+        return;
+      }
+      if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+        return;
+      }
+      throw new Error("Fullscreen exit is unsupported.");
+    }
+
+    async function toggleFullscreenMode() {
+      try {
+        if (getFullscreenElement()) {
+          await exitFullscreenMode();
+        } else {
+          await requestFullscreenFor(document.documentElement);
+        }
+      } catch (_error) {
+        setSaveFeedback("Fullscreen mode is unavailable in this browser.");
+      }
+    }
+
+    function handleDoubleTouchAction() {
+      if (state.running && !state.paused && !state.contactOpen && !state.gameOver) {
+        pauseIntoContact();
+        return;
+      }
+
+      if (state.contactOpen) {
+        state.contactOpen = false;
+        startOrResume();
+        return;
+      }
+
+      if (state.gameOver) {
+        hardResetIntoPlay();
+        return;
+      }
+
+      startOrResume();
+    }
+
+    canvas.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      suppressClickUntil = performance.now() + 320;
+      handleDoubleTouchAction();
+    });
+
+    canvas.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (performance.now() < suppressClickUntil) return;
+      // Interaction mode intentionally uses double-touch only for enter/leave/reset.
+    });
+
+    canvas.addEventListener(
+      "pointerup",
+      (event) => {
+        if (event.pointerType === "mouse" || event.pointerType === "touch") return;
+        const now = performance.now();
+        if (now - state.lastPointerUp < 260) {
+          state.lastPointerUp = 0;
+          suppressClickUntil = now + 320;
+          handleDoubleTouchAction();
+          return;
+        }
+        state.lastPointerUp = now;
+        // Single touch release is reserved for steering only.
+      },
+      { passive: true }
+    );
+
+    function shouldSwitchBackFromTarget(target) {
+      if (!(target instanceof Element)) return false;
+      if (target.closest("canvas")) return false;
+      if (target.closest("button, a, input, textarea, select, label")) return false;
+      return true;
+    }
+
+    document.addEventListener(
+      "pointerup",
+      (event) => {
+        if (!shouldSwitchBackFromTarget(event.target)) return;
+        // Single-window mode: ignore outside taps.
+      },
+      { passive: true }
+    );
+
+    let layoutSyncTimer = null;
+    let canvasSizeObserver = null;
+
+    function scheduleLayoutSync() {
+      if (layoutSyncTimer) {
+        window.clearTimeout(layoutSyncTimer);
+      }
+      layoutSyncTimer = window.setTimeout(() => {
+        layoutSyncTimer = null;
+        if (!state.initialized) return;
+
+        resetCurrentLevelLayout();
+        draw();
+      }, 90);
+    }
+
+    window.addEventListener("resize", scheduleLayoutSync, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleLayoutSync, { passive: true });
+    }
+    if (typeof ResizeObserver === "function") {
+      canvasSizeObserver = new ResizeObserver(() => {
+        scheduleLayoutSync();
+      });
+      canvasSizeObserver.observe(canvas);
+    }
+
+    function bootWhenReady(startMs) {
+      applyControlLabels();
+      state.initialized = true;
+      state.running = false;
+      state.paused = true;
+      state.contactOpen = true;
+      state.lastTime = 0;
+      if (startMs) {
+        draw();
+      }
+      void showContactQr();
+      requestAnimationFrame(frame);
+    }
+
+    bootWhenReady(true);
   </script>
-
-  <script src="contact.game.js"></script>
 </body>
 </html>

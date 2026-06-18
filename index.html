@@ -4,8 +4,8 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Calyr.aí - Molecular Deeptech</title>
-  <link rel="stylesheet" href="./calyrai_font/out/calyrai-sans.css" />
-  <script src="./vendor/gsap/gsap.min.js"></script>
+	<link rel="stylesheet" href="calyrai_font/out/calyrai-sans.css" />
+	<script src="vendor/gsap/gsap.min.js"></script>
   <style>
 		:root {
 			--bg: #0b0b0b;
@@ -17,49 +17,74 @@
 		body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Avenir Next", "Segoe UI", Arial, sans-serif; }
 		.layout-grid { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.9; }
 		.hero { position: relative; z-index: 2; padding: 2.8rem 0 0.6rem; }
-		.hero-copy { width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: linear-gradient(145deg, rgba(8,12,24,0.66) 0%, rgba(5,10,20,0.58) 54%, rgba(2,7,16,0.68) 100%); }
-		.hero-title { margin: 0; font-size: clamp(3.2rem, 7.8vw, 7rem); line-height: 0.98; }
-		.hero-home-link { color: inherit; text-decoration: none; display: inline-block; }
-		.hero-home-link:focus-visible { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 4px; }
-		.hero-subtitle { margin-top: 1rem; margin-bottom: 0; max-width: 900px; line-height: 1.6; }
-		.hero-brand {
-			color: #f8fdff;
-			text-shadow: 0 0 10px rgba(255, 77, 245, 0.46), 0 0 22px rgba(255, 77, 245, 0.32), 0 0 34px rgba(255, 77, 245, 0.2);
-			animation: hero-brand-glow 2.8s ease-in-out infinite;
-		}
-		.hero-acute {
-			color: #ff4df5;
-			text-shadow: 0 0 8px rgba(255, 77, 245, 0.8), 0 0 18px rgba(255, 77, 245, 0.54), 0 0 30px rgba(255, 77, 245, 0.34);
-		}
-		@keyframes hero-brand-glow {
-			0%, 100% { text-shadow: 0 0 10px rgba(255, 77, 245, 0.46), 0 0 22px rgba(255, 77, 245, 0.32), 0 0 34px rgba(255, 77, 245, 0.2); }
-			50% { text-shadow: 0 0 14px rgba(255, 77, 245, 0.62), 0 0 28px rgba(255, 77, 245, 0.44), 0 0 44px rgba(255, 77, 245, 0.28); }
-		}
+		.hero-copy { width: var(--frame-width); margin: 0 auto; padding: 24px; border: 1px solid rgba(255,255,255,0.84); background: rgba(8,12,24,0.56); }
+		.hero-title { margin: 0; font-size: clamp(3.2rem, 7vw, 6.4rem); line-height: 1.02; }
+		.hero-subtitle { margin-top: 0.9rem; margin-bottom: 0; max-width: 900px; line-height: 1.25; font-size: clamp(1.2rem, 2.2vw, 2rem); font-weight: 600; }
+		.hero-acute { color: #ff4df5; }
+		.hero-acute-glow { color: #ff4df5; text-shadow: 0 0 8px rgba(255, 77, 245, 0.92), 0 0 18px rgba(255, 77, 245, 0.64), 0 0 28px rgba(255, 77, 245, 0.44); }
 		.hero-slogan { margin: 0.85rem 0 0; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.88; }
+		.hero-red-dot { color: #ff4df5; }
 		.corner-menu-toggle { position: fixed; top: 26px; right: var(--frame-gutter); width: 72px; height: 54px; border: 1px solid rgba(255,255,255,0.9); background: transparent; z-index: 20; }
 		.corner-menu-line { display: block; width: 30px; height: 1px; margin: 6px auto; background: #fff; }
 		.corner-menu-panel { position: fixed; top: 72px; right: var(--frame-gutter); min-width: 260px; max-height: min(72vh, 640px); overflow: auto; padding: 14px; background: rgba(8,8,8,0.98); border: 1px solid rgba(255,255,255,0.26); z-index: 25; }
 		.corner-menu-panel[hidden] { display: none; }
 		.corner-menu-link { display: block; color: #fff; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
 		.corner-menu-link.is-active { color: #7ff3ff; border-bottom-color: rgba(127, 243, 255, 0.96); }
-		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }
-		.study-layout::-webkit-scrollbar { display: none; width: 0; height: 0; }
+		.study-layout { position: relative; z-index: 2; width: var(--frame-width); margin: 0 auto; padding: 0.4rem 0 3.6rem; max-height: min(78vh, 980px); overflow: auto; overscroll-behavior: contain; }
 		.study-graph-toolbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: center; border: 1px solid rgba(255,255,255,0.52); border-bottom: 0; padding: 0.52rem 0.7rem; background: rgba(7, 14, 28, 0.72); }
 		.study-graph-label { margin: 0; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.68rem; color: rgba(255,255,255,0.86); }
 		.study-graph-input { width: 100%; border: 1px solid rgba(255,255,255,0.38); background: rgba(2, 6, 15, 0.85); color: #fff; padding: 0.52rem 0.65rem; font-size: 0.86rem; }
 		.study-graph-input:focus { outline: none; border-color: rgba(255,255,255,0.8); }
-		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 6px; border: 1px solid rgba(255,255,255,0.84); padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }
-		.study-content::-webkit-scrollbar { display: none; width: 0; height: 0; }
-		.study-section { position: relative; border: 1px solid rgba(255,255,255,0.64); background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		.study-content { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 54px; grid-auto-flow: dense; align-content: start; gap: 2px; border: 0; padding: 8px; min-height: 520px; max-height: min(72vh, 900px); overflow: auto; overscroll-behavior: contain; }
+		.study-section { position: relative; border: 0; background: transparent; overflow: hidden; transition: transform 240ms ease, box-shadow 240ms ease, flex-basis 240ms ease, width 240ms ease, min-height 240ms ease, background 240ms ease, border-color 240ms ease, opacity 200ms ease, filter 200ms ease; }
+		body.perf-desktop-lite .study-section,
+		body.perf-desktop-lite .study-section.is-open,
+		body.perf-desktop-lite .study-section.is-collapsed {
+			backdrop-filter: none !important;
+			-webkit-backdrop-filter: none !important;
+			filter: none !important;
+			box-shadow: none !important;
+			transition: transform 140ms ease, opacity 140ms ease, background 160ms ease;
+		}
+		body.perf-desktop-lite .study-section .living-surface { opacity: 0.78 !important; }
+		body.perf-desktop-lite .study-section.is-open .living-surface { opacity: 0.58 !important; }
+		body.skin-glass .study-section.is-collapsed { backdrop-filter: blur(7px) saturate(122%); -webkit-backdrop-filter: blur(7px) saturate(122%); }
+		body.skin-atlas .study-section.is-collapsed { filter: saturate(1.16) contrast(1.03); }
+		.study-section .living-surface {
+			position: absolute;
+			inset: 0;
+			overflow: hidden;
+			z-index: 1;
+			opacity: 0.94;
+			transition: opacity 220ms ease, transform 260ms ease;
+		}
+		.study-section .living-mesh {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			pointer-events: auto;
+		}
+		body.skin-living .study-section .living-surface { opacity: 0.96; }
+		body.skin-classic .study-section .living-surface { display: block; opacity: 0.92; }
+		.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; }
+		body.skin-living .study-section.is-open .living-surface,
+		body.skin-classic .study-section.is-open .living-surface,
+		body.skin-glass .study-section.is-open .living-surface,
+		body.skin-atlas .study-section.is-open .living-surface {
+				opacity: 0.92 !important;
+			z-index: 1 !important;
+			mix-blend-mode: normal !important;
+			pointer-events: none;
+		}
+		.study-section.is-open .living-mesh { pointer-events: none; }
 		.study-section.is-search-muted { opacity: 0.58; filter: saturate(0.65); }
 		.study-trigger { width: 100%; height: 100%; border: 0; background: transparent; padding: 0; color: #fff; cursor: pointer; position: relative; z-index: 2; display: block; }
-				.study-section .living-surface { position: absolute; inset: 0; overflow: hidden; z-index: 1; opacity: 0.94; transition: opacity 220ms ease, transform 260ms ease; pointer-events: none; }
-		.study-section .living-mesh { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-		.study-section.is-open .living-surface { opacity: 0.96 !important; transform: scale(1.01); z-index: 1; mix-blend-mode: normal; pointer-events: none; filter: grayscale(1) contrast(1.08); }
-		.study-section.is-open .living-mesh { pointer-events: none; }
 		.study-detail-link { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.55rem 0.9rem; border: 1px solid rgba(255,255,255,0.72); background: rgba(5, 11, 23, 0.92); color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; white-space: nowrap; }
 		.study-detail-link:hover,
 		.study-detail-link:focus-visible { border-color: rgba(255,255,255,0.96); background: rgba(12, 22, 40, 0.98); }
+		.study-detail-link.tile-detail-footer { margin-top: 0.8rem; align-self: flex-end; }
 		.tile-open-state { display: none; height: 100%; padding: 0.72rem; text-align: left; overflow: hidden; }
 		.tile-open-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
 		.tile-open-copy { min-width: 0; flex: 1 1 auto; }
@@ -76,166 +101,260 @@
 		.study-keyword:nth-child(4) { opacity: 0.82; }
 		.study-keyword:nth-child(5) { opacity: 0.78; }
 		.study-keyword:nth-child(6) { opacity: 0.74; }
-		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
-		.study-fulltext::-webkit-scrollbar { display: none; width: 0; height: 0; }
-		.study-section[data-tile-kind="empty"] { border-color: rgba(255,255,255,0.22); background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); pointer-events: none; }
-		.study-section[data-tile-kind="empty"] .living-surface { display: none !important; }
-		.tile-empty-state { width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.0) 60%); }
-		.tile-open-state-visit-card { padding: 0; color: #ffffff; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
-		.visit-embed-frame { width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }
-		.study-section[data-visit-defer="true"] .visit-embed-frame { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 220ms ease; }
-		.study-section.visit-card-visible[data-visit-defer="true"] .visit-embed-frame { opacity: 1; visibility: visible; pointer-events: auto; }
-		.study-section[data-visit-knob="true"] .visit-knob {
-			position: absolute;
-			left: 10px;
-			bottom: 10px;
-			width: 42px;
-			height: 42px;
-			border-radius: 999px;
-			border: 1.35px solid rgba(214, 242, 255, 0.88);
-			background: radial-gradient(circle at 30% 30%, rgba(151, 226, 255, 0.22), rgba(7, 17, 36, 0.76));
-			box-shadow: 0 0 12px rgba(143, 224, 255, 0.22), inset 0 0 0 1px rgba(230, 247, 255, 0.16);
-			display: grid;
-			place-items: center;
-			opacity: 0;
-			transform: scale(0.9) rotate(0deg);
-			transition: opacity 220ms ease, transform 220ms ease;
-			pointer-events: none;
-		}
-		.study-section[data-visit-knob="true"] .visit-knob-core { position: relative; width: 20px; height: 20px; border-radius: 999px; border: 1px solid rgba(228, 246, 255, 0.9); }
-		.study-section[data-visit-knob="true"] .visit-knob-core::before,
-		.study-section[data-visit-knob="true"] .visit-knob-core::after { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 999px; border: 1px solid rgba(228, 246, 255, 0.8); }
-		.study-section[data-visit-knob="true"] .visit-knob-core::before { width: 12px; height: 12px; }
-		.study-section[data-visit-knob="true"] .visit-knob-core::after { width: 5px; height: 5px; background: rgba(233, 248, 255, 0.92); border: 0; }
-		.study-section[data-visit-knob="true"] .visit-knob-spoke { position: absolute; width: 1px; height: 7px; background: rgba(229, 247, 255, 0.9); left: 50%; top: 2px; transform-origin: 50% 18px; }
-		.study-section[data-visit-knob="true"] .visit-knob-spoke.s2 { transform: rotate(120deg); }
-		.study-section[data-visit-knob="true"] .visit-knob-spoke.s3 { transform: rotate(240deg); }
-		.study-section.is-collapsed[data-visit-knob="true"] .visit-knob { opacity: 1; transform: scale(1) rotate(0deg); animation: visit-knob-spin 7s linear infinite; }
-		.study-section.is-collapsed[data-visit-knob="true"] .study-trigger:hover .visit-knob,
-		.study-section.is-collapsed[data-visit-knob="true"] .study-trigger:focus-visible .visit-knob { animation-duration: 2.2s; }
-		.study-section.is-open[data-visit-knob="true"] .visit-knob { opacity: 0; transform: scale(0.9) rotate(180deg); animation: none; }
-		@keyframes visit-knob-spin { from { transform: scale(1) rotate(0deg); } to { transform: scale(1) rotate(360deg); } }
-		.study-section[data-visit-mesh="true"] .visit-mesh {
-			position: absolute;
-			left: 10px;
-			bottom: 10px;
-			width: 46px;
-			height: 46px;
-			opacity: 0;
-			transform: scale(0.9);
-			transition: opacity 220ms ease, transform 220ms ease;
-			pointer-events: none;
-		}
-		.study-section[data-visit-mesh="true"] .visit-mesh-line { position: absolute; height: 1px; background: rgba(227, 246, 255, 0.88); transform-origin: left center; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l1 { left: 6px; top: 8px; width: 30px; transform: rotate(12deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l2 { left: 7px; top: 20px; width: 28px; transform: rotate(-8deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l3 { left: 9px; top: 32px; width: 26px; transform: rotate(10deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l4 { left: 7px; top: 9px; width: 24px; transform: rotate(64deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-line.l5 { left: 19px; top: 11px; width: 24px; transform: rotate(116deg); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node { position: absolute; width: 4px; height: 4px; border-radius: 999px; background: rgba(236, 250, 255, 0.95); box-shadow: 0 0 8px rgba(143, 224, 255, 0.5); }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n1 { left: 7px; top: 7px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n2 { left: 34px; top: 13px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n3 { left: 10px; top: 33px; }
-		.study-section[data-visit-mesh="true"] .visit-mesh-node.n4 { left: 33px; top: 31px; }
-		.study-section.is-collapsed[data-visit-mesh="true"] .visit-mesh { opacity: 1; transform: scale(1); animation: visit-mesh-pulse 2.8s ease-in-out infinite; }
-		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:hover .visit-mesh,
-		.study-section.is-collapsed[data-visit-mesh="true"] .study-trigger:focus-visible .visit-mesh { animation-duration: 1.3s; }
-		.study-section.is-open[data-visit-mesh="true"] .visit-mesh { opacity: 0; transform: scale(0.9); animation: none; }
-		@keyframes visit-mesh-pulse { 0%, 100% { filter: drop-shadow(0 0 2px rgba(136, 231, 255, 0.24)); } 50% { filter: drop-shadow(0 0 8px rgba(136, 231, 255, 0.5)); } }
+		.study-fulltext { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 0.18rem; margin-top: 0.6rem; }
+			.tile-open-state-visit-card { padding: 0; color: #ffffff; overflow: hidden; display: block; min-height: 0; background: transparent; }
+			.visit-card-label { display: none; }
+			.visit-embed-frame { width: 100%; height: 100%; min-height: 360px; border: 0; background: #050816; display: block; }
+			#lisnig-impressum { order: -10; }
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded .visit-embed-frame { min-height: 460px; }
 		.tile-open-state-visit-card .study-paragraph { color: #ffffff; }
 		.study-paragraph { margin: 0 0 0.48rem; line-height: 1.54; font-size: 0.98rem; }
 		.study-section.is-collapsed { grid-column: span 2; grid-row: span 2; border-color: rgba(255, 255, 255, 0.38); background: linear-gradient(135deg, rgba(53, 231, 255, 0.82) 0%, rgba(255, 63, 209, 0.84) 100%); box-shadow: 0 0 18px rgba(53, 231, 255, 0.18), 0 0 24px rgba(255, 63, 209, 0.16); }
-		.study-section.tile-1.is-collapsed { grid-column: span 4; grid-row: span 2; background: linear-gradient(135deg, rgba(112, 255, 213, 0.95) 0%, rgba(72, 201, 255, 0.92) 52%, rgba(123, 134, 255, 0.9) 100%); }
-		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 3; background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%); }
-		.study-section.tile-3.is-collapsed { grid-column: span 1; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.0) 100%); }
-		.study-section.tile-4.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%); }
-		.study-section.tile-5.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%); }
-		.study-section.tile-6.is-collapsed { grid-column: span 4; grid-row: span 2; background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%); }
-		.study-section.tile-7.is-collapsed { grid-column: span 2; grid-row: span 1; background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.0) 100%); }
-		.study-section.tile-8.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%); }
-		.study-section.tile-1.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%); }
-		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%); }
-		.study-section.tile-3.is-collapsed { grid-column: span 3; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(223, 231, 244, 0.92) 100%); box-shadow: 0 0 16px rgba(255, 255, 255, 0.26), 0 0 28px rgba(255, 255, 255, 0.18); }
+		.study-section.tile-1.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(112, 255, 213, 0.95) 0%, rgba(72, 201, 255, 0.92) 52%, rgba(123, 134, 255, 0.9) 100%); }
+		.study-section.tile-2.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(116, 207, 255, 0.88) 0%, rgba(214, 71, 215, 0.88) 100%); }
+		.study-section.tile-3.is-collapsed { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%); }
+		.study-section.tile-4.is-collapsed { grid-column: span 3; grid-row: span 3; background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%); }
+		.study-section.tile-5.is-collapsed { grid-column: span 5; grid-row: span 2; background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%); }
+		.study-section.tile-6.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%); }
+		.study-section.tile-7.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%); }
+		.study-section.tile-8.is-collapsed { grid-column: span 3; grid-row: span 2; background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%); }
+		.study-section.tile-1.is-collapsed { grid-column: span 4; grid-row: span 3; background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(223, 231, 244, 0.92) 100%); box-shadow: 0 0 16px rgba(255, 255, 255, 0.26), 0 0 28px rgba(255, 255, 255, 0.18); }
 		.study-section.is-collapsed .tile-open-state { display: none; }
-		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 210px; border-color: rgba(184, 226, 255, 0.36); background: linear-gradient(165deg, rgba(2, 8, 22, 0.98) 0%, rgba(2, 14, 38, 0.96) 52%, rgba(1, 6, 16, 0.98) 100%); box-shadow: inset 0 0 0 1px rgba(180, 225, 255, 0.16), 0 14px 30px rgba(0,0,0,0.54); backdrop-filter: blur(6px); }
-		@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-			.study-section.is-open {
-				background: linear-gradient(165deg, rgba(2, 8, 22, 0.995) 0%, rgba(2, 12, 30, 0.995) 56%, rgba(1, 5, 14, 0.998) 100%);
-			}
+		.study-section.is-open { grid-column: span 6; grid-row: span 5; min-height: 190px; border-color: rgba(255,255,255,0.2); background: linear-gradient(135deg, rgba(80, 198, 255, 0.34) 0%, rgba(220, 104, 236, 0.3) 100%), rgba(4, 12, 28, 0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.2); backdrop-filter: blur(6px); }
+		/* Borderless mesh mode: keep Mondrian geometry but remove frame visuals. */
+		.study-section.is-collapsed,
+		.study-section.is-open,
+		.study-section[class*="tile-"].is-collapsed,
+		.study-section[class*="tile-"].is-open {
+			border: 0.5px solid rgba(255, 255, 255, 0.78) !important;
+			border-radius: 18px !important;
+			box-shadow: none !important;
+			background: transparent !important;
+			backdrop-filter: none !important;
+		}
+		.study-section.is-open,
+		.study-section[class*="tile-"].is-open {
+			background: linear-gradient(135deg, rgba(112, 234, 255, 0.72) 0%, rgba(112, 170, 255, 0.68) 100%), rgba(4, 12, 28, 0) !important;
+		}
+		/* Keep open tiles in the same color family as their collapsed state. */
+		.study-section.tile-1.is-open { background: linear-gradient(135deg, rgba(92, 140, 198, 0.9) 0%, rgba(71, 96, 156, 0.9) 100%) !important; }
+		.study-section.tile-2.is-open { background: linear-gradient(135deg, rgba(112, 238, 255, 0.88) 0%, rgba(94, 172, 255, 0.86) 100%) !important; }
+		.study-section.tile-3.is-open { background: linear-gradient(135deg, rgba(0, 208, 255, 0.86) 0%, rgba(126, 96, 255, 0.86) 100%) !important; }
+		.study-section.tile-4.is-open { background: linear-gradient(135deg, rgba(78, 255, 201, 0.86) 0%, rgba(46, 164, 225, 0.86) 100%) !important; }
+		.study-section.tile-5.is-open { background: linear-gradient(135deg, rgba(245, 171, 79, 0.88) 0%, rgba(225, 80, 128, 0.88) 100%) !important; }
+		.study-section.tile-6.is-open { background: linear-gradient(135deg, rgba(94, 255, 198, 0.92) 0%, rgba(38, 205, 255, 0.9) 46%, rgba(32, 116, 255, 0.88) 100%) !important; }
+		.study-section.tile-7.is-open { background: linear-gradient(135deg, rgba(255, 205, 120, 0.9) 0%, rgba(255, 130, 160, 0.88) 48%, rgba(140, 120, 255, 0.86) 100%) !important; }
+		.study-section.tile-8.is-open { background: linear-gradient(135deg, rgba(181, 255, 246, 0.92) 0%, rgba(102, 184, 255, 0.9) 50%, rgba(186, 113, 255, 0.88) 100%) !important; }
+		/* Final open-state surface: keep it airy so no dark front panel remains. */
+		.study-section.is-open[data-tile-kind="text"],
+		.study-section.is-open[data-tile-kind="visit_card"] {
+			background: linear-gradient(135deg, rgba(126, 221, 255, 0.12) 0%, rgba(124, 179, 255, 0.08) 100%) !important;
+			border-color: rgba(198, 239, 255, 0.72) !important;
+			box-shadow: inset 0 0 0 1px rgba(208, 244, 255, 0.42), 0 8px 20px rgba(66, 154, 218, 0.14) !important;
+			backdrop-filter: none !important;
+		}
+		/* Text-only projection mode: render open text tiles without mesh/background effects. */
+		.study-section.is-open[data-tile-kind="text"] {
+			background: transparent !important;
+			box-shadow: none !important;
+		}
+		.study-section.is-open[data-tile-kind="text"] .living-surface {
+			display: none !important;
+		}
+		.study-section.is-open[data-tile-kind="text"] .tile-open-copy,
+		.study-section.is-open[data-tile-kind="text"] .study-heading,
+		.study-section.is-open[data-tile-kind="text"] .study-teaser,
+		.study-section.is-open[data-tile-kind="text"] .study-paragraph,
+		.study-section.is-open[data-tile-kind="text"] .study-keyword {
+			text-shadow: none !important;
+		}
+		.study-section.is-open .tile-open-copy {
+			text-shadow: 0 1px 0 rgba(5, 12, 24, 0.9), 0 0 14px rgba(91, 206, 255, 0.16);
+		}
+		.study-section.is-open .study-heading {
+			font-weight: 700;
+			font-size: clamp(1.44rem, 2.3vw, 2.2rem);
+			letter-spacing: 0.015em;
+			text-shadow: 0 1px 0 rgba(4, 10, 20, 0.92), 0 0 16px rgba(120, 227, 255, 0.2);
+		}
+		.study-section.is-open .study-teaser {
+			color: rgba(236, 244, 255, 0.96);
+			font-size: clamp(1.14rem, 1.55vw, 1.4rem);
+			line-height: 1.35;
+			text-shadow: 0 1px 0 rgba(6, 12, 24, 0.9);
+		}
+		.study-section.is-open .study-keyword {
+			font-size: calc(0.82rem * var(--keyword-scale, 1));
+		}
+		.study-section.is-open .study-paragraph {
+			color: rgba(242, 247, 255, 0.98);
+			font-size: clamp(1.18rem, 1.34vw, 1.34rem);
+			line-height: 1.58;
+			text-shadow: 0 1px 0 rgba(6, 12, 24, 0.9);
 		}
 		.study-section[data-tile-kind="visit_card"].is-open { grid-row: span 6; min-height: 340px; }
 		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; }
 		.study-section.tile-2.is-open[data-tile-kind="text"], .study-section.tile-2.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 4; }
-		.study-section.tile-4.is-open[data-tile-kind="text"], .study-section.tile-4.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-5.is-open[data-tile-kind="text"], .study-section.tile-5.is-open[data-tile-kind="visit_card"] { grid-column: span 5; grid-row: span 4; }
-		.study-section.tile-6.is-open[data-tile-kind="text"], .study-section.tile-6.is-open[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 4; }
+		.study-section.tile-3.is-open[data-tile-kind="text"], .study-section.tile-3.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-4.is-open[data-tile-kind="text"], .study-section.tile-4.is-open[data-tile-kind="visit_card"] { grid-column: span 5; grid-row: span 4; }
+		.study-section.tile-5.is-open[data-tile-kind="text"], .study-section.tile-5.is-open[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 4; }
+		.study-section.tile-6.is-open[data-tile-kind="text"], .study-section.tile-6.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
+		.study-section.tile-7.is-open[data-tile-kind="text"], .study-section.tile-7.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
 		.study-section.tile-8.is-open[data-tile-kind="text"], .study-section.tile-8.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-2.is-open[data-tile-kind="text"], .study-section.tile-2.is-open[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; }
-		.study-section.tile-3.is-open[data-tile-kind="text"], .study-section.tile-3.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 6; }
+		.study-section.tile-1.is-open[data-tile-kind="text"], .study-section.tile-1.is-open[data-tile-kind="visit_card"] { grid-column: span 6; grid-row: span 6; }
 		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 11; grid-row: span 7; z-index: 3; }
 		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-2.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 5; z-index: 3; }
-		.study-section.tile-4.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-4.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-5.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-5.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; z-index: 3; }
-		.study-section.tile-6.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-6.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 10; grid-row: span 5; z-index: 3; }
+		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-3.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-4.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-4.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 7; grid-row: span 5; z-index: 3; }
+		.study-section.tile-5.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-5.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 10; grid-row: span 5; z-index: 3; }
+		.study-section.tile-6.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-6.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
+		.study-section.tile-7.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-7.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
 		.study-section.tile-8.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-8.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-2.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-2.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 9; grid-row: span 6; z-index: 3; }
-		.study-section.tile-3.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-3.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
-		.study-content.has-open-tile { grid-auto-flow: row; }
-		.study-content.has-open-tile .study-section.is-open[data-tile-kind="text"],
-		.study-content.has-open-tile .study-section.is-open[data-tile-kind="visit_card"] {
-			grid-column: 1 / -1 !important;
-			grid-row: span 10 !important;
-			min-height: min(74vh, 760px);
-			z-index: 4;
-			background: radial-gradient(circle at 50% 45%, rgba(22, 40, 66, 0.36) 0%, rgba(2, 10, 24, 0.98) 58%, rgba(0, 0, 0, 0.99) 100%) !important;
-			box-shadow: inset 0 0 0 1px rgba(206, 235, 255, 0.16), 0 0 34px rgba(0, 0, 0, 0.9), 0 0 90px rgba(0, 0, 0, 0.72) !important;
+		.study-section.tile-1.is-open.is-expanded[data-tile-kind="text"], .study-section.tile-1.is-open.is-expanded[data-tile-kind="visit_card"] { grid-column: span 8; grid-row: span 7; z-index: 3; }
+		/* Content tiles should be less tall while keeping width behavior unchanged. */
+		.study-section.is-open[data-tile-kind="text"] {
+			grid-row: span 2 !important;
+			min-height: 110px;
 		}
-		.study-content.has-open-tile .study-section.is-open .tile-open-state {
-			padding: 1rem;
+		.study-section.is-open.is-expanded[data-tile-kind="text"] {
+			grid-row: span 3 !important;
+			min-height: 150px;
 		}
-		.study-content.has-open-tile .study-section.is-open .study-fulltext {
-			font-size: 1.05rem;
-			line-height: 1.6;
+		/* Allow manual tile resizing (vertical) when open. */
+		.study-section.is-open[data-tile-kind="text"],
+		.study-section.is-open[data-tile-kind="visit_card"] {
+			resize: none;
+			overflow: auto;
+			min-width: 320px;
+			min-height: 160px;
+			max-height: 85vh;
+			scrollbar-width: thin;
+			scrollbar-color: rgba(220, 240, 255, 0.38) rgba(255, 255, 255, 0.08);
 		}
-		.study-section.is-open .tile-open-state { display: flex; flex-direction: column; }
-		.study-section.is-open .study-detail-link {
-			display: inline-flex;
-			border-color: rgba(255,255,255,0.84) !important;
-			background: rgba(0,0,0,0.64) !important;
-			box-shadow: none !important;
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar-track,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.08);
+			border-radius: 999px;
+		}
+		.study-section.is-open[data-tile-kind="text"]::-webkit-scrollbar-thumb,
+		.study-section.is-open[data-tile-kind="visit_card"]::-webkit-scrollbar-thumb {
+			background: rgba(220, 240, 255, 0.42);
+			border: 1px solid rgba(255, 255, 255, 0.34);
+			border-radius: 999px;
+		}
+		.study-section.is-open .study-fulltext {
+			scrollbar-width: thin;
+			scrollbar-color: rgba(220, 240, 255, 0.4) rgba(255, 255, 255, 0.06);
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.06);
+			border-radius: 999px;
+		}
+		.study-section.is-open .study-fulltext::-webkit-scrollbar-thumb {
+			background: rgba(220, 240, 255, 0.4);
+			border: 1px solid rgba(255, 255, 255, 0.32);
+			border-radius: 999px;
+		}
+		.tile-resize-handle {
+			display: none;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			width: 34px;
+			height: 22px;
+			cursor: ns-resize;
+			z-index: 6;
+			background: rgba(255, 255, 255, 0.14);
+			border: 1px solid rgba(255, 255, 255, 0.82);
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(112, 228, 255, 0.22);
+		}
+		.tile-resize-handle::before {
+			content: '↕';
+			display: block;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 20px;
+			text-align: center;
+			color: rgba(255, 255, 255, 0.96);
+		}
+		.tile-resize-handle::after {
+			display: none;
+		}
+		.study-section.is-open[data-tile-kind="text"] .tile-resize-handle,
+		.study-section.is-open[data-tile-kind="visit_card"] .tile-resize-handle {
+			display: block;
+		}
+		.study-section:not(.is-open) .tile-resize-handle,
+		.study-section.is-collapsed .tile-resize-handle {
+			display: none !important;
+		}
+		.study-section.is-open .tile-open-state {
+			display: flex;
+			flex-direction: column;
+			background: transparent;
+			backdrop-filter: none;
 			color: #ffffff;
 		}
-		.study-section.is-open .study-detail-link:hover,
-		.study-section.is-open .study-detail-link:focus-visible {
-			border-color: rgba(255,255,255,0.98) !important;
-			background: rgba(0,0,0,0.82) !important;
+		.study-section.is-open .study-heading,
+		.study-section.is-open .study-teaser,
+		.study-section.is-open .study-paragraph,
+		.study-section.is-open .study-keyword,
+		.study-section.is-open .study-detail-link {
+			color: #ffffff;
+		}
+		.study-section.is-open .study-detail-link { display: none; }
+		.study-section.is-open .study-keywords { cursor: default; }
+		.study-section.is-open .study-keyword {
+			cursor: pointer;
+			transition: transform 170ms ease, border-color 170ms ease, background 170ms ease, opacity 170ms ease;
+			transform-origin: center;
+		}
+		.study-section.is-open .study-keyword:nth-child(1) { --kw-hover-scale: 1.18; }
+		.study-section.is-open .study-keyword:nth-child(2) { --kw-hover-scale: 1.14; }
+		.study-section.is-open .study-keyword:nth-child(3) { --kw-hover-scale: 1.1; }
+		.study-section.is-open .study-keyword:nth-child(4) { --kw-hover-scale: 1.12; }
+		.study-section.is-open .study-keyword:nth-child(5) { --kw-hover-scale: 1.08; }
+		.study-section.is-open .study-keyword:nth-child(6) { --kw-hover-scale: 1.06; }
+		.study-section.is-open .study-keywords:hover .study-keyword { opacity: 0.62; }
+		.study-section.is-open .study-keywords:hover .study-keyword:hover,
+		.study-section.is-open .study-keyword:focus-visible {
+			opacity: 1;
+			transform: translateY(-1px) scale(var(--kw-hover-scale, 1.1));
+			border-color: rgba(255,255,255,0.86);
+			background: rgba(10, 30, 56, 0.62);
+			outline: none;
 		}
 		.study-section.is-open.is-expanded { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 14px 36px rgba(0,0,0,0.34); }
 		.study-section[data-tile-kind="visit_card"].is-open.is-expanded { grid-row: span 7; min-height: 420px; }
 		.study-content.has-expanded-open .study-section.is-collapsed { transform: scale(0.96); opacity: 0.84; filter: saturate(0.85); }
-		.study-content[data-density="compact"] .study-section.is-collapsed { grid-column: span 2; grid-row: span 1; }
-		.study-content[data-density="dense"] .study-section.is-collapsed { grid-column: span 1; grid-row: span 1; }
+		/* Keep Mondrian proportions: do not flatten collapsed tiles in compact/dense modes. */
 		.study-section[data-tile-kind="glyph"].is-open .tile-open-state-glyph { display: grid; }
-		@media (min-width: 1200px) {
-			:root { --frame-width: min(100% - 72px, 1540px); }
-			.hero { padding: 3.3rem 0 0.9rem; }
-			.hero-copy { padding: 30px 34px; }
-			.hero-subtitle { font-size: 1.06rem; line-height: 1.7; max-width: 1020px; opacity: 0.96; }
-			.study-layout { max-height: min(82vh, 1040px); }
-			.study-content { grid-auto-rows: 62px; gap: 10px; padding: 10px; min-height: 640px; max-height: min(74vh, 960px); }
-			.study-section.is-collapsed .study-trigger { padding: 0.24rem; }
-			.study-section.is-collapsed .study-heading { font-size: clamp(1.1rem, 1.35vw, 1.45rem); }
-			.study-section.is-collapsed .study-teaser { font-size: 0.98rem; opacity: 0.9; }
-			.study-section.is-collapsed:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,0.34), 0 0 20px rgba(115, 209, 255, 0.16); }
-		}
 		@media (max-width: 940px) {
 			:root { --frame-width: min(100% - 36px, 1280px); }
 			.study-layout { max-height: min(82vh, 980px); overflow: auto; }
 			.study-content { min-height: auto; max-height: min(72vh, 760px); overflow: auto; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 44px; }
 			.study-section.is-collapsed { grid-column: span 2 !important; grid-row: span 2 !important; }
+			.study-section.tile-1.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			.study-section.tile-2.is-collapsed { grid-column: span 2 !important; grid-row: span 2 !important; }
+			.study-section.tile-3.is-collapsed { grid-column: span 2 !important; grid-row: span 3 !important; }
+			.study-section.tile-4.is-collapsed { grid-column: span 3 !important; grid-row: span 3 !important; }
+			.study-section.tile-5.is-collapsed { grid-column: span 4 !important; grid-row: span 2 !important; }
+			.study-section.tile-6.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			.study-section.tile-7.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			.study-section.tile-8.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
 			.study-section.is-open { grid-column: span 6 !important; grid-row: span 5 !important; min-height: 300px; }
 			.study-section[data-tile-kind="visit_card"].is-open { grid-row: span 6 !important; min-height: 360px; }
 			.study-section[data-tile-kind="visit_card"].is-open.is-expanded { grid-row: span 7 !important; min-height: 420px; }
@@ -260,9 +379,9 @@
 				background: rgba(6, 17, 26, 0.84);
 				box-shadow: 0 0 20px rgba(57, 231, 255, 0.14), inset 0 0 0 1px rgba(57, 231, 255, 0.14);
 			}
-			body.arte-mobile-theme .hero-kicker { font-size: 0.62rem; letter-spacing: 0.16em; opacity: 0.76; }
-			body.arte-mobile-theme .hero-title { font-size: clamp(2.36rem, 12vw, 3.7rem); line-height: 1.02; }
-			body.arte-mobile-theme .hero-subtitle { margin-top: 0.62rem; font-size: 0.84rem; line-height: 1.38; opacity: 0.92; }
+			body.arte-mobile-theme .hero-kicker { font-size: 0.78rem; letter-spacing: 0.14em; opacity: 0.9; }
+			body.arte-mobile-theme .hero-title { font-size: clamp(2.4rem, 10vw, 3.4rem); line-height: 1.04; }
+			body.arte-mobile-theme .hero-subtitle { margin-top: 0.58rem; font-size: 1.12rem; line-height: 1.24; opacity: 0.96; }
 			body.arte-mobile-theme .hero-slogan { margin-top: 0.64rem; font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.72; }
 			body.arte-mobile-theme .corner-menu-toggle {
 				top: 14px;
@@ -298,12 +417,15 @@
 			body.arte-mobile-theme .study-graph-label { font-size: 0.6rem; letter-spacing: 0.13em; }
 			body.arte-mobile-theme .study-graph-input { font-size: 0.8rem; padding: 0.42rem 0.5rem; min-height: 2rem; }
 			body.arte-mobile-theme .study-content {
+				grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
 				grid-auto-rows: 42px;
+				grid-auto-flow: row;
 				border-color: rgba(142, 244, 255, 0.46);
 				border-radius: 14px;
 				padding: 6px;
-				gap: 6px;
+				gap: 8px;
 				background: rgba(3, 8, 19, 0.46);
+				overflow: auto;
 			}
 			body.arte-mobile-theme .study-section {
 				border-radius: 10px;
@@ -311,9 +433,32 @@
 				box-shadow: inset 0 0 0 1px rgba(142, 244, 255, 0.08);
 			}
 			body.arte-mobile-theme .study-section.is-open {
+				position: relative;
+				z-index: 8;
+				grid-row: span 7 !important;
+				min-height: 460px;
+				background: rgba(4, 13, 28, 0.985);
 				border-color: rgba(142, 244, 255, 0.66);
 				box-shadow: inset 0 0 0 1px rgba(142, 244, 255, 0.2), 0 10px 24px rgba(2, 8, 18, 0.5);
 			}
+			body.arte-mobile-theme .study-section.is-open .tile-open-state {
+				overflow-y: auto;
+				padding: 0.84rem;
+				background: rgba(3, 10, 22, 0.92);
+			}
+			body.arte-mobile-theme .study-section.is-collapsed {
+				z-index: 1;
+				grid-column: span 2 !important;
+				grid-row: span 2 !important;
+			}
+			body.arte-mobile-theme .study-section.tile-1.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			body.arte-mobile-theme .study-section.tile-2.is-collapsed { grid-column: span 2 !important; grid-row: span 2 !important; }
+			body.arte-mobile-theme .study-section.tile-3.is-collapsed { grid-column: span 2 !important; grid-row: span 3 !important; }
+			body.arte-mobile-theme .study-section.tile-4.is-collapsed { grid-column: span 3 !important; grid-row: span 3 !important; }
+			body.arte-mobile-theme .study-section.tile-5.is-collapsed { grid-column: span 4 !important; grid-row: span 2 !important; }
+			body.arte-mobile-theme .study-section.tile-6.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			body.arte-mobile-theme .study-section.tile-7.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
+			body.arte-mobile-theme .study-section.tile-8.is-collapsed { grid-column: span 3 !important; grid-row: span 2 !important; }
 			body.arte-mobile-theme .study-heading { margin-bottom: 0.36rem; font-size: clamp(0.95rem, 3.8vw, 1.2rem); }
 			body.arte-mobile-theme .study-teaser { margin-bottom: 0.42rem; font-size: 0.8rem; line-height: 1.36; }
 			body.arte-mobile-theme .study-fulltext { margin-top: 0.42rem; }
@@ -335,6 +480,85 @@
 			body.arte-mobile-theme .visit-embed-frame { min-height: 320px; }
 			body.arte-mobile-theme .study-section[data-tile-kind="visit_card"].is-open.is-expanded .visit-embed-frame { min-height: 380px; }
 		}
+
+		@media (max-width: 900px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+			body.arte-mobile-theme .study-layout {
+				max-height: none;
+				padding: 0;
+			}
+			body.arte-mobile-theme .study-content {
+				max-height: none;
+			}
+			body.arte-mobile-theme #lisnig-impressum.is-open {
+				position: fixed;
+				inset: 0;
+				z-index: 120;
+				margin: 0;
+				min-height: 100dvh;
+				grid-column: auto !important;
+				grid-row: auto !important;
+				border: 0;
+				border-radius: 0;
+				background: #050816;
+				box-shadow: none;
+			}
+			body.arte-mobile-theme #lisnig-impressum.is-open .tile-open-state {
+				height: 100%;
+				padding: 0;
+				overflow: hidden;
+				background: #050816;
+			}
+			body.arte-mobile-theme #lisnig-impressum.is-open .tile-open-head {
+				display: none;
+			}
+			body.arte-mobile-theme #lisnig-impressum.is-open .visit-card-label {
+				display: none;
+			}
+			body.arte-mobile-theme #lisnig-impressum.is-open .visit-embed-frame {
+				width: 100vw;
+				height: 100dvh;
+				min-height: 100dvh;
+				border: 0;
+				border-radius: 0;
+			}
+		}
+
+		.landing-legal-note {
+			position: relative;
+			z-index: 3;
+			width: var(--frame-width);
+			margin: 0 auto 1.4rem;
+			padding: 0.85rem 1rem;
+			border: 1px solid rgba(255, 255, 255, 0.24);
+			background: rgba(8, 12, 24, 0.72);
+			color: rgba(242, 246, 255, 0.92);
+			font-family: "Avenir Next", "Avenir", "Segoe UI", Arial, sans-serif;
+			font-size: 0.78rem;
+			line-height: 1.45;
+		}
+
+		.landing-legal-note h2 {
+			margin: 0 0 0.38rem;
+			font-size: 0.82rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			font-weight: 700;
+		}
+
+		.landing-legal-note p {
+			margin: 0.2rem 0;
+		}
+
+		.landing-legal-note a {
+			color: rgba(197, 233, 255, 0.98);
+			text-decoration: none;
+			border-bottom: 1px solid rgba(197, 233, 255, 0.5);
+		}
+
+		.landing-legal-note a:hover {
+			color: #ffffff;
+			border-bottom-color: rgba(255, 255, 255, 0.82);
+		}
 		
 	</style>
 </head>
@@ -354,26 +578,26 @@
 		<a class="corner-menu-link" href="#engine-project-description">Engine Project Description</a>
 		<a class="corner-menu-link" href="#page-design">Page Design</a>
 		<a class="corner-menu-link" href="#current-projects-page">Current Projects Page</a>
+		<a class="corner-menu-link" href="#visualization-procedure">Visualization Procedure</a>
 		<a class="corner-menu-link" href="#lisnig-impressum">Ǵlisnig Impressum</a>
 		<a class="corner-menu-link" href="#engine">Explore the OO Engine</a>
 	</nav>
 	<section class="hero" data-template="calyr_titlepage_orbit">
 		<div class="hero-copy">
-			<div class="hero-kicker">AI-Native Scientific Design</div>
-			<h1 class="hero-title"><a class="hero-home-link" href="/" aria-label="Go to homepage"><span class="hero-brand">Calyr.a<span class="hero-acute" tabindex="0">í</span></span></a></h1>
-			<p class="hero-subtitle">Transforming simulations, experiments and data into interactive surrogate models.</p>
-			<p class="hero-slogan" aria-live="polite">Molecular Intelligence · Adaptive Systems · Reproducible Oracles</p>
+			<div class="hero-kicker">From Data to Discovery</div>
+			<h1 class="hero-title">Calyr.a<span class="hero-acute-glow">í</span></h1>
+			<p class="hero-subtitle">Knowledge made executable<span class="hero-red-dot">.</span></p>
 		</div>
 	</section>
 	<main class="study-layout" id="explore">
 	<div class="study-content">
-		<section class="study-section tile-1 is-collapsed" id="projects" data-node-id="projects" data-keywords="projects,flagship,sbpa,core-facility,oracle,medtech,asc,infrastructure" data-neighbors="theory,calyrai,engine,access" data-search-text="projects flagship projects and current programs. flagship programs are the practical layer of calyr.aí. they show what is currently being built, tested, and integrated into the atlas. open current projects to view active programs, scientific directions, and infrastructure. projects flagship sbpa core-facility oracle medtech asc infrastructure" data-tile-kind="text" data-tile-index="1">
+		<section class="study-section tile-1 is-collapsed" id="projects" data-node-id="projects" data-keywords="projects,flagship,sbpa,core-facility,oracle,medtech,asc,infrastructure" data-neighbors="theory,calyrai,engine,access" data-search-text="projects innovation rapid prototyping. flagship programs are the practical layer of calyr.aí. they show what is currently being built, tested, and integrated into the atlas. open current projects to view active programs, scientific directions, and infrastructure. projects flagship sbpa core-facility oracle medtech asc infrastructure" data-tile-kind="text" data-tile-index="1">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-projects">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
 					<div class="tile-open-copy">
 						<h2 class="study-heading">Projects</h2>
-						<p class="study-teaser">Flagship projects and current programs.</p>
+						<p class="study-teaser">Innovation rapid prototyping.</p>
 <div class="study-keywords" aria-label="Section keywords"><span class="study-keyword" style="--keyword-scale:1.38;">projects</span><span class="study-keyword" style="--keyword-scale:1.12;">flagship</span><span class="study-keyword" style="--keyword-scale:0.98;">sbpa</span><span class="study-keyword" style="--keyword-scale:0.9;">core-facility</span><span class="study-keyword" style="--keyword-scale:0.82;">oracle</span><span class="study-keyword" style="--keyword-scale:0.76;">medtech</span></div>
 					</div>
 		<a class="study-detail-link" href="pages/calyr-current-projects.html">Open current projects</a>
@@ -405,10 +629,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-3 tile-empty is-collapsed" id="void-axis-a" data-node-id="void-axis-a" data-keywords="" data-neighbors="" data-search-text="" data-tile-kind="empty" data-tile-index="3">
-		<div class="tile-empty-state" aria-hidden="true"></div>
-	</section>
-		<section class="study-section tile-4 is-collapsed" id="calyrai" data-node-id="calyrai" data-keywords="ai,learning,semantics,relation" data-neighbors="projects,theory,access,engine" data-search-text="calyrai learning systems continuously update how structure, data, and interpretation connect. learning systems continuously update how structure, data, and interpretation connect. they support adaptive model behavior rather than static one-time fitting. use this layer when iterative improvement and semantic consistency are required. ai learning semantics relation" data-tile-kind="text" data-tile-index="4">
+		<section class="study-section tile-3 is-collapsed" id="calyrai" data-node-id="calyrai" data-keywords="ai,learning,semantics,relation" data-neighbors="projects,theory,access,engine" data-search-text="calyrai learning systems continuously update how structure, data, and interpretation connect. learning systems continuously update how structure, data, and interpretation connect. they support adaptive model behavior rather than static one-time fitting. use this layer when iterative improvement and semantic consistency are required. ai learning semantics relation" data-tile-kind="text" data-tile-index="3">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-calyrai">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -426,7 +647,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-5 is-collapsed" id="access" data-node-id="access" data-keywords="reproducibility,trust,interface,oracle" data-neighbors="projects,theory,calyrai,engine" data-search-text="access reproducible oracles are the public promise of the system. reproducible oracles are the public promise of the system. predictions and outputs must remain traceable, repeatable, and interpretable. use this layer for reliable decision surfaces that preserve scientific trust. reproducibility trust interface oracle" data-tile-kind="text" data-tile-index="5">
+		<section class="study-section tile-4 is-collapsed" id="access" data-node-id="access" data-keywords="reproducibility,trust,interface,oracle" data-neighbors="projects,theory,calyrai,engine" data-search-text="access reproducible oracles are the public promise of the system. reproducible oracles are the public promise of the system. predictions and outputs must remain traceable, repeatable, and interpretable. use this layer for reliable decision surfaces that preserve scientific trust. reproducibility trust interface oracle" data-tile-kind="text" data-tile-index="4">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-access">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -444,7 +665,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-6 is-collapsed" id="engine" data-node-id="engine" data-keywords="object-oriented,engine,projections,renderers,runtime" data-neighbors="projects,theory,calyrai,access,engine-project-description" data-search-text="engine calyr.ai is ai-native scientific design in executable form. calyr.ai is ai-native scientific design in executable form. supercomputing infrastructure, surrogate modelling, and semantic engineering converge in this engine layer. use this tile to move from narrative to operational design of molecular, nano biological, and physical systems. object-oriented engine projections renderers runtime" data-tile-kind="text" data-tile-index="6">
+		<section class="study-section tile-5 is-collapsed" id="engine" data-node-id="engine" data-keywords="object-oriented,engine,projections,renderers,runtime" data-neighbors="projects,theory,calyrai,access,engine-project-description" data-search-text="engine calyr.ai is ai-native scientific design in executable form. calyr.ai is ai-native scientific design in executable form. supercomputing infrastructure, surrogate modelling, and semantic engineering converge in this engine layer. use this tile to move from narrative to operational design of molecular, nano biological, and physical systems. object-oriented engine projections renderers runtime" data-tile-kind="text" data-tile-index="5">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-engine">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -462,10 +683,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-7 tile-empty is-collapsed" id="void-axis-b" data-node-id="void-axis-b" data-keywords="" data-neighbors="" data-search-text="" data-tile-kind="empty" data-tile-index="7">
-		<div class="tile-empty-state" aria-hidden="true"></div>
-	</section>
-		<section class="study-section tile-8 is-collapsed" id="engine-project-description" data-node-id="engine-project-description" data-keywords="engine,project-description,workflow,alphafold,asc" data-neighbors="engine,projects,design-page" data-search-text="engine project description project description for engine workflows in the same detail-page layout. open the engine project description as a dedicated subpoint tile of engine. this tile keeps the same detail-page layout used by current projects. use it to review scope, workflow stages, and asc integration readiness. engine project-description workflow alphafold asc" data-tile-kind="text" data-tile-index="8">
+		<section class="study-section tile-6 is-collapsed" id="engine-project-description" data-node-id="engine-project-description" data-keywords="engine,project-description,workflow,alphafold,asc" data-neighbors="engine,projects,design-page" data-search-text="engine project description project description for engine workflows in the same detail-page layout. open the engine project description as a dedicated subpoint tile of engine. this tile keeps the same detail-page layout used by current projects. use it to review scope, workflow stages, and asc integration readiness. engine project-description workflow alphafold asc" data-tile-kind="text" data-tile-index="6">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-engine-project-description">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -484,7 +702,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-1 is-collapsed" id="page-design" data-node-id="design-page" data-keywords="design,page,markdown,layout,oo-engine" data-neighbors="engine,theory,projects" data-search-text="page design design principles of the page system from markdown to render output. open the page design detail page directly from this tile. this tile documents how markdown, yaml, and rendering stay aligned. use it to inspect design decisions without changing the current layout shell. design page markdown layout oo-engine" data-tile-kind="text" data-tile-index="9">
+		<section class="study-section tile-7 is-collapsed" id="page-design" data-node-id="design-page" data-keywords="design,page,markdown,layout,oo-engine" data-neighbors="engine,theory,projects" data-search-text="page design design principles of the page system from markdown to render output. open the page design detail page directly from this tile. this tile documents how markdown, yaml, and rendering stay aligned. use it to inspect design decisions without changing the current layout shell. design page markdown layout oo-engine" data-tile-kind="text" data-tile-index="7">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-page-design">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -503,7 +721,7 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-2 is-collapsed" id="current-projects-page" data-node-id="current-projects-page" data-keywords="inspect,projects-page,layout,detail" data-neighbors="projects,theory,engine" data-search-text="current projects page inspect the current projects detail page in the same layout style. open the current projects detail page directly from this tile. this tile exists for inspection and keeps the same detail layout style. use it to verify content, index behavior, and section rendering. inspect projects-page layout detail" data-tile-kind="text" data-tile-index="10">
+		<section class="study-section tile-8 is-collapsed" id="current-projects-page" data-node-id="current-projects-page" data-keywords="inspect,projects-page,layout,detail" data-neighbors="projects,theory,engine" data-search-text="current projects page inspect the current projects detail page in the same layout style. open the current projects detail page directly from this tile. this tile exists for inspection and keeps the same detail layout style. use it to verify content, index behavior, and section rendering. inspect projects-page layout detail" data-tile-kind="text" data-tile-index="8">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-current-projects-page">
 			<div class="tile-open-state">
 				<div class="tile-open-head">
@@ -522,16 +740,40 @@
 			</div>
 		</div>
 	</section>
-		<section class="study-section tile-3 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum visit card + impressum impressum (local) name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum" data-tile-kind="visit_card" data-tile-index="11" data-visit-defer="true" data-visit-knob="false" data-visit-mesh="true">
+		<section class="study-section tile-2 is-collapsed" id="visualization-procedure" data-node-id="visualization-procedure" data-keywords="visualization,architecture,plotly,molstar,react-flow,sigma" data-neighbors="engine,page-design,theory" data-search-text="visualization procedure Calyr visualization architecture and discussion reference. markdown to semantic objects to nexus to projection engine to visualization. opens the architecture reference for scientific, structural, workflow and knowledge graph visualization layers." data-tile-kind="text" data-tile-index="9">
+		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-visualization-procedure">
+			<div class="tile-open-state">
+				<div class="tile-open-head">
+					<div class="tile-open-copy">
+						<h2 class="study-heading">Visualization Procedure</h2>
+						<p class="study-teaser">Reference discussion tile for the CALYR visualization architecture.</p>
+<div class="study-keywords" aria-label="Section keywords"><span class="study-keyword" style="--keyword-scale:1.38;">visualization</span><span class="study-keyword" style="--keyword-scale:1.12;">architecture</span><span class="study-keyword" style="--keyword-scale:0.98;">plotly</span><span class="study-keyword" style="--keyword-scale:0.9;">react-flow</span><span class="study-keyword" style="--keyword-scale:0.82;">sigma</span></div>
+					</div>
+		<a class="study-detail-link" href="pages/calyr-visualization-procedure.html">Open visualization procedure</a>
+				</div>
+				<div class="study-fulltext" id="detail-visualization-procedure">
+				<p class="study-paragraph">This tile anchors the CALYR visualization architecture as a discussion reference.</p>
+				<p class="study-paragraph">It separates scientific visualization, semantic graphs, workflows, structures, and knowledge flow layers.</p>
+				<p class="study-paragraph">Open the dedicated page for full recommendations, engine stack, and tiered rollout.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+		<section class="study-section tile-1 is-collapsed" id="lisnig-impressum" data-node-id="impressum" data-keywords="contact,legal,impressum,game,qr,mesh" data-neighbors="projects,theory" data-search-text="ǵlisnig impressum interactive legal contact game. deformable qr mesh game embedded directly in homepage tile. name: rupert glis’nig e-mail: rupert.tscheliessnig@calyr.ai web: https://calyr.ai for legal inquiries, use the contact channels listed above. contact legal impressum game qr mesh" data-tile-kind="visit_card" data-tile-index="10">
 		<div class="study-trigger" role="button" tabindex="0" aria-expanded="false" aria-controls="detail-lisnig-impressum">
 			<div class="tile-open-state tile-open-state-visit-card">
-				<div class="visit-mesh" aria-hidden="true"><span class="visit-mesh-line l1"></span><span class="visit-mesh-line l2"></span><span class="visit-mesh-line l3"></span><span class="visit-mesh-line l4"></span><span class="visit-mesh-line l5"></span><span class="visit-mesh-node n1"></span><span class="visit-mesh-node n2"></span><span class="visit-mesh-node n3"></span><span class="visit-mesh-node n4"></span></div>
-				<iframe class="visit-embed-frame" data-src="pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+							<iframe class="visit-embed-frame" src="about:blank" data-src="pages/contact.html" title="Contact Game" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
 </div>
 		</div>
 	</section>
 	</div>
 </main>
+	<footer class="landing-legal-note" aria-label="Legal Notice">
+		<h2>Legal Notice</h2>
+		<p>Media owner and responsible for content: Rupert Tscheliessnig</p>
+		<p>calyr.ai · Ogugasse 3/3/13, 1220 Vienna, Austria</p>
+		<p>Email: <a href="mailto:rupert.tscheliessnig@calyr.ai">rupert.tscheliessnig@calyr.ai</a> · Web: <a href="https://calyr.ai">https://calyr.ai</a></p>
+	</footer>
 	<script>
 (() => {
 	const menuToggle = document.querySelector('.corner-menu-toggle');
@@ -554,6 +796,22 @@
 	}
 
 	const sections = Array.from(document.querySelectorAll('.study-section'));
+	const desktopLiteMode = Boolean(window.innerWidth >= 1024 || (window.matchMedia && window.matchMedia('(pointer:fine)').matches));
+	if (desktopLiteMode) {
+		document.body.classList.add('perf-desktop-lite');
+	}
+	const globalPointer = { x: 0, y: 0, active: false };
+	window.addEventListener('pointermove', (event) => {
+		globalPointer.x = event.clientX;
+		globalPointer.y = event.clientY;
+		globalPointer.active = true;
+	}, { passive: true });
+	window.addEventListener('pointerleave', () => {
+		globalPointer.active = false;
+	}, { passive: true });
+	window.addEventListener('blur', () => {
+		globalPointer.active = false;
+	});
 	const studyContent = document.querySelector('.study-content');
 	const graphSearchInput = document.querySelector('#graph-search-input');
 	const isTextualTile = (section) => section && (section.dataset.tileKind === 'text' || section.dataset.tileKind === 'visit_card');
@@ -561,7 +819,7 @@
 	const sectionByNode = new Map(
 		sections.map((section) => [section.dataset.nodeId || section.id, section])
 	);
-		const defaultOpenId = "";
+		const defaultOpenId = "projects";
 		const activeTextSections = new Set();
 	let openIsExpanded = false;
 	const QR_LIBRARY_URL = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
@@ -577,6 +835,15 @@
 		"END:VCARD",
 	].join("\n");
 	let qrLibraryPromise = null;
+	const AVAILABLE_SKINS = ['classic', 'glass', 'living', 'atlas'];
+	const DEFAULT_SKIN = 'living';
+	const MATERIAL_BY_TILE = {
+		theory: { stiffness: 0.95, damping: 0.8, iridescence: 0.55, hue: 226 },
+		projects: { stiffness: 1.15, damping: 0.86, iridescence: 0.62, hue: 198 },
+		calyrai: { stiffness: 0.72, damping: 0.5, iridescence: 0.78, hue: 252 },
+		access: { stiffness: 0.6, damping: 0.54, iridescence: 0.42, hue: 238 },
+		engine: { stiffness: 1.4, damping: 0.9, iridescence: 0.66, hue: 214 },
+	};
 
 	const loadQrLibrary = () => {
 		if (typeof window.qrcode === 'function') return Promise.resolve();
@@ -594,6 +861,909 @@
 		});
 		return qrLibraryPromise;
 	};
+
+	const getSkinFromQuery = () => {
+		const params = new URLSearchParams(window.location.search);
+		const requested = (params.get('skin') || '').trim().toLowerCase();
+		return AVAILABLE_SKINS.includes(requested) ? requested : DEFAULT_SKIN;
+	};
+
+	const applySkinClass = (skin) => {
+		for (const value of AVAILABLE_SKINS) {
+			document.body.classList.remove(`skin-${value}`);
+		}
+		document.body.classList.add(`skin-${skin}`);
+		document.body.dataset.skin = skin;
+	};
+
+	const hashSeed = (value) => {
+		let hash = 2166136261;
+		const text = String(value || 'tile');
+		for (let i = 0; i < text.length; i += 1) {
+			hash ^= text.charCodeAt(i);
+			hash = Math.imul(hash, 16777619);
+		}
+		return Math.abs(hash >>> 0) + 1;
+	};
+
+	const seededRandom = (seed) => {
+		let state = Math.max(1, seed % 2147483647);
+		return () => {
+			state = (state * 48271) % 2147483647;
+			return state / 2147483647;
+		};
+	};
+
+	const hashGrid = (x, y) => {
+		const sx = Number(x) || 0;
+		const sy = Number(y) || 0;
+		const v = Math.sin(sx * 127.1 + sy * 311.7) * 43758.5453123;
+		return v - Math.floor(v);
+	};
+
+	const getTileConfig = (section) => {
+		const id = section.dataset.nodeId || section.id || 'tile';
+		const tileIndex = Number(section.dataset.tileIndex || '1') || 1;
+		const material = MATERIAL_BY_TILE[id] || { stiffness: 0.9, damping: 0.72, iridescence: 0.58, hue: 210 };
+		return {
+			id,
+			title: section.querySelector('.study-heading')?.textContent?.trim() || id,
+			seed: hashSeed(id),
+			density: Math.round(44 + tileIndex * 5 + material.iridescence * 18),
+			minSize: 3,
+			maxSize: 16,
+			stiffness: material.stiffness,
+			damping: material.damping,
+			iridescence: material.iridescence,
+			hue: material.hue,
+		};
+	};
+
+	class LivingMeshEngine {
+		constructor(section, tileConfig) {
+			this.section = section;
+			this.config = tileConfig;
+			this.mouse = { x: 0, y: 0, active: false };
+			this.hoverMix = 0;
+			this.reveal = 0;
+			this.revealTarget = 0;
+			this.nodes = [];
+			this.cellFlip = [];
+			this.microDots = [];
+			this.textAttractors = [];
+			this.textAttractorTimer = 0;
+			this.mouseOverText = false;
+			this.hoverPillKey = '';
+			this.hoverPillIsLink = false;
+			this.lastOpenState = false;
+			this.isVisible = true;
+			this.restSpring = 0.035 * this.config.stiffness;
+			this.linkSpring = 0.0048 * this.config.stiffness;
+			this.worldOffsetX = 0;
+			this.worldOffsetY = 0;
+			this.cellSize = 22;
+			this.cols = Math.min(20, Math.max(10, Math.round(Math.sqrt(this.config.density) * 1.8)));
+			this.rows = this.cols;
+
+			let surface = section.querySelector('.living-surface');
+			if (!(surface instanceof HTMLElement)) {
+				surface = document.createElement('div');
+				surface.className = 'living-surface';
+				section.prepend(surface);
+			}
+			this.surface = surface;
+			this.canvas = document.createElement('canvas');
+			this.canvas.className = 'living-mesh';
+			this.surface.textContent = '';
+			this.surface.appendChild(this.canvas);
+			this.ctx = this.canvas.getContext('2d', { alpha: true });
+			this.random = seededRandom(this.config.seed);
+
+			this.resize();
+			this.syncWorldOffset();
+			this.bindEvents();
+			if (typeof ResizeObserver !== 'undefined') {
+				this.resizeObserver = new ResizeObserver(() => this.resize());
+				this.resizeObserver.observe(this.section);
+			}
+		}
+
+		syncWorldOffset() {
+			const sectionRect = this.section.getBoundingClientRect();
+			const containerRect = studyContent instanceof HTMLElement
+				? studyContent.getBoundingClientRect()
+				: { left: 0, top: 0 };
+			this.worldOffsetX = sectionRect.left - containerRect.left;
+			this.worldOffsetY = sectionRect.top - containerRect.top;
+		}
+
+		bindEvents() {
+			const updateMouse = (event) => {
+				const rect = this.section.getBoundingClientRect();
+				this.mouse.x = event.clientX - rect.left;
+				this.mouse.y = event.clientY - rect.top;
+				this.mouse.active = true;
+			};
+			this.section.addEventListener('pointermove', updateMouse, { passive: true });
+			this.canvas.addEventListener('pointermove', updateMouse, { passive: true });
+
+			const clearMouse = () => {
+				this.mouse.active = false;
+			};
+			this.section.addEventListener('pointerleave', clearMouse, { passive: true });
+			this.canvas.addEventListener('pointerleave', clearMouse, { passive: true });
+
+			this.canvas.addEventListener('click', (event) => {
+				if (event.detail > 1) return;
+				const rect = this.canvas.getBoundingClientRect();
+				this.injectImpulse(event.clientX - rect.left, event.clientY - rect.top, 40, 12);
+			});
+			this.canvas.addEventListener('dblclick', (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(this.section);
+				activeTextSections.clear();
+				if (!wasOnlyOpen) activeTextSections.add(this.section);
+				enforceMondrianState();
+				this.revealTarget = wasOnlyOpen ? 0 : 1;
+				this.injectImpulse(this.width * 0.5, this.height * 0.5, 34, 10);
+			});
+		}
+
+		resize() {
+			const rect = this.section.getBoundingClientRect();
+			const width = Math.max(10, Math.round(rect.width));
+			const height = Math.max(10, Math.round(rect.height));
+			if (width === this.width && height === this.height && this.nodes.length) return;
+			this.width = width;
+			this.height = height;
+			const ratio = window.devicePixelRatio || 1;
+			this.canvas.width = Math.max(1, Math.floor(width * ratio));
+			this.canvas.height = Math.max(1, Math.floor(height * ratio));
+			this.canvas.style.width = `${width}px`;
+			this.canvas.style.height = `${height}px`;
+			if (this.ctx) this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+			const areaDensity = Math.max(0.65, Math.min(1.45, (width * height) / 98000));
+			this.cellSize = Math.max(18, Math.min(30, Math.round(24 / areaDensity)));
+			this.syncWorldOffset();
+			this.initGrid();
+			this.refreshTextAttractors();
+		}
+
+		refreshTextAttractors() {
+			const trigger = this.section.querySelector('.study-trigger');
+			if (!(trigger instanceof HTMLElement)) {
+				this.textAttractors = [];
+				return;
+			}
+			const normalizeKey = (value) => String(value || '').trim().toLowerCase().replace(/\s+/g, '-');
+			const sectionRect = this.section.getBoundingClientRect();
+			const points = [];
+			const maxPoints = 140;
+			const walker = document.createTreeWalker(trigger, NodeFilter.SHOW_TEXT, {
+				acceptNode: (node) => {
+					if (!node || !node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+					const parent = node.parentElement;
+					if (!(parent instanceof HTMLElement)) return NodeFilter.FILTER_REJECT;
+					const style = window.getComputedStyle(parent);
+					if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.05) {
+						return NodeFilter.FILTER_REJECT;
+					}
+					return NodeFilter.FILTER_ACCEPT;
+				},
+			});
+
+			let textNode = walker.nextNode();
+			while (textNode && points.length < maxPoints) {
+				const parent = textNode.parentElement;
+				const chip = parent instanceof HTMLElement
+					? parent.closest('.study-keyword, .study-detail-link')
+					: null;
+				const chipText = chip instanceof HTMLElement ? (chip.textContent || '') : '';
+				const chipKey = normalizeKey(chipText);
+				const chipIsLink = chip instanceof HTMLAnchorElement || (chip instanceof HTMLElement && !!chip.closest('a'));
+				const chipKind = chip instanceof HTMLElement
+					? (chip.classList.contains('study-keyword') ? 'pill' : 'link')
+					: 'text';
+				const range = document.createRange();
+				range.selectNodeContents(textNode);
+				const rects = range.getClientRects();
+				for (const rect of rects) {
+					if (points.length >= maxPoints) break;
+					if (!rect || rect.width < 6 || rect.height < 8) continue;
+					const y = rect.top + rect.height * 0.62 - sectionRect.top;
+					const pad = 4;
+					const startX = rect.left + pad;
+					const endX = rect.right - pad;
+					for (let x = startX; x <= endX && points.length < maxPoints; x += 20) {
+						points.push({
+							x: x - sectionRect.left,
+							y,
+							kind: chipKind,
+							key: chipKey,
+							isLink: chipIsLink,
+						});
+					}
+				}
+				textNode = walker.nextNode();
+			}
+
+			this.textAttractors = points;
+		}
+
+		initGrid() {
+			this.nodes = [];
+			this.cellFlip = [];
+			this.microDots = [];
+			const stepX = this.cellSize;
+			const stepY = this.cellSize;
+			const modX = ((this.worldOffsetX % stepX) + stepX) % stepX;
+			const modY = ((this.worldOffsetY % stepY) + stepY) % stepY;
+			const startX = -modX + stepX * 0.5;
+			const startY = -modY + stepY * 0.5;
+			const xPositions = [];
+			const yPositions = [];
+			for (let x = startX; x <= this.width + stepX * 0.5; x += stepX) xPositions.push(x);
+			for (let y = startY; y <= this.height + stepY * 0.5; y += stepY) yPositions.push(y);
+
+			const ensureEdgeAnchors = (positions, minValue, maxValue) => {
+				const eps = 0.001;
+				if (!positions.length || Math.abs(positions[0] - minValue) > eps) positions.unshift(minValue);
+				if (Math.abs(positions[positions.length - 1] - maxValue) > eps) positions.push(maxValue);
+				positions.sort((a, b) => a - b);
+			};
+			ensureEdgeAnchors(xPositions, 0, this.width);
+			ensureEdgeAnchors(yPositions, 0, this.height);
+			this.cols = xPositions.length;
+			this.rows = yPositions.length;
+
+			for (let row = 0; row < this.rows; row += 1) {
+				for (let col = 0; col < this.cols; col += 1) {
+					const ox = xPositions[col];
+					const oy = yPositions[row];
+					const globalCol = Math.floor((this.worldOffsetX + ox) / stepX);
+					const globalRow = Math.floor((this.worldOffsetY + oy) / stepY);
+					const pinned = col === 0 || row === 0 || col === this.cols - 1 || row === this.rows - 1;
+					const jitterAmp = stepX * 0.12;
+					const jx = pinned ? 0 : (hashGrid(globalCol + 17, globalRow + 23) - 0.5) * jitterAmp;
+					const jy = pinned ? 0 : (hashGrid(globalCol + 53, globalRow + 71) - 0.5) * jitterAmp;
+					const localX = ox + jx;
+					const localY = oy + jy;
+					this.nodes.push({
+						ox: localX,
+						oy: localY,
+						x: localX,
+						y: localY,
+						vx: 0,
+						vy: 0,
+						pinned,
+						globalCol,
+						globalRow,
+						hueOffset: this.random() * 1.2,
+					});
+				}
+			}
+			for (let row = 0; row < this.rows - 1; row += 1) {
+				for (let col = 0; col < this.cols - 1; col += 1) {
+					const idx = row * this.cols + col;
+					const n = this.nodes[idx];
+					this.cellFlip.push(hashGrid(n.globalCol + 5, n.globalRow + 9) > 0.47 ? 1 : 0);
+				}
+			}
+
+			const dotCount = Math.max(16, Math.min(56, Math.round((this.width * this.height) / 5200)));
+			for (let i = 0; i < dotCount; i += 1) {
+				this.microDots.push({
+					x: this.random() * this.width,
+					y: this.random() * this.height,
+					size: 0.35 + this.random() * 0.95,
+					alpha: 0.08 + this.random() * 0.22,
+					phase: this.random() * Math.PI * 2,
+				});
+			}
+		}
+
+		injectImpulse(px, py, radius, strength) {
+			const radiusSq = radius * radius;
+			for (const node of this.nodes) {
+				const dx = node.x - px;
+				const dy = node.y - py;
+				const distSq = dx * dx + dy * dy;
+				if (distSq >= radiusSq) continue;
+				const dist = Math.sqrt(distSq) || 1;
+				const force = (1 - dist / radius) * strength;
+				node.vx += (dx / dist) * force * 0.02;
+				node.vy += (dy / dist) * force * 0.024;
+			}
+		}
+
+		applyMouseForce(node) {
+			if (!this.mouse.active) return;
+			const dx = this.mouse.x - node.x;
+			const dy = this.mouse.y - node.y;
+			const dist = Math.hypot(dx, dy);
+			if (dist >= 210) return;
+			const t = (210 - dist) / 210;
+			const force = t * t;
+			const openBoost = this.section.classList.contains('is-open') ? 1.15 : 1;
+			const textBoost = this.mouseOverText ? 1.85 : 1.2;
+			const repel = 0.038 * openBoost * textBoost;
+			node.vx -= dx * force * repel;
+			node.vy -= dy * force * (repel * 1.05);
+		}
+
+		applyTextForce(node) {
+			if (!this.textAttractors.length) return;
+			const repelFromText = this.mouse.active && this.mouseOverText;
+			const hoverKey = this.hoverPillKey;
+			const hasPillFocus = !!hoverKey;
+			for (const target of this.textAttractors) {
+				const dx = target.x - node.x;
+				const dy = target.y - node.y;
+				const dist = Math.hypot(dx, dy);
+				if (dist >= 95 || dist < 0.001) continue;
+				const t = 1 - dist / 95;
+				let dir = repelFromText ? -1 : 1;
+				let magnitude = t * t * (0.007 + this.reveal * 0.01);
+
+				if (hasPillFocus && (target.kind === 'pill' || target.kind === 'link')) {
+					const sameKey = target.key === hoverKey;
+					if (this.hoverPillIsLink) {
+						dir = sameKey ? 1.6 : -1.2;
+						magnitude *= sameKey ? 2.3 : 1.55;
+					} else {
+						dir = sameKey ? -1.8 : -1.15;
+						magnitude *= sameKey ? 2.4 : 1.35;
+					}
+				} else if (target.kind === 'pill' && !target.isLink) {
+					// Keep non-linked pills gently repulsive as default guidance.
+					dir = -1;
+					magnitude *= 1.25;
+				}
+
+				node.vx += dx * magnitude * dir;
+				node.vy += dy * magnitude * 1.02 * dir;
+			}
+		}
+
+		updateTextHoverState() {
+			if (!this.mouse.active) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			const normalizeKey = (value) => String(value || '').trim().toLowerCase().replace(/\s+/g, '-');
+			const rect = this.section.getBoundingClientRect();
+			const clientX = rect.left + this.mouse.x;
+			const clientY = rect.top + this.mouse.y;
+			const hovered = document.elementFromPoint(clientX, clientY);
+			if (!(hovered instanceof HTMLElement)) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			if (!this.section.contains(hovered)) {
+				this.mouseOverText = false;
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+				return;
+			}
+			const textNode = hovered.closest('.study-heading, .study-teaser, .study-paragraph, .study-keyword, .study-detail-link, .visit-card-label');
+			this.mouseOverText = !!textNode;
+			const pillNode = hovered.closest('.study-keyword, .study-detail-link');
+			if (pillNode instanceof HTMLElement) {
+				this.hoverPillKey = normalizeKey(pillNode.textContent || '');
+				this.hoverPillIsLink = pillNode instanceof HTMLAnchorElement || !!pillNode.closest('a');
+			} else {
+				this.hoverPillKey = '';
+				this.hoverPillIsLink = false;
+			}
+		}
+
+		textInfluenceAt(x, y, radius = 44) {
+			if (!this.textAttractors.length) return 0;
+			let influence = 0;
+			for (const target of this.textAttractors) {
+				const dist = Math.hypot(target.x - x, target.y - y);
+				if (dist >= radius) continue;
+				const t = 1 - dist / radius;
+				if (t > influence) influence = t;
+			}
+			return influence;
+		}
+
+		update(dt, timeSec, skin) {
+			if (!this.ctx) return;
+
+			if (globalPointer.active) {
+				const rect = this.section.getBoundingClientRect();
+				const inside = globalPointer.x >= rect.left
+					&& globalPointer.x <= rect.right
+					&& globalPointer.y >= rect.top
+					&& globalPointer.y <= rect.bottom;
+				if (inside) {
+					this.mouse.active = true;
+					this.mouse.x = globalPointer.x - rect.left;
+					this.mouse.y = globalPointer.y - rect.top;
+				} else {
+					this.mouse.active = false;
+				}
+			} else {
+				this.mouse.active = false;
+			}
+			this.updateTextHoverState();
+
+			const isOpen = this.section.classList.contains('is-open');
+			if (isOpen !== this.lastOpenState) {
+				this.lastOpenState = isOpen;
+				this.textAttractorTimer = 0;
+			}
+			this.textAttractorTimer -= dt;
+			if (this.textAttractorTimer <= 0) {
+				this.refreshTextAttractors();
+				this.textAttractorTimer = isOpen ? 0.2 : 0.45;
+			}
+
+			this.revealTarget = isOpen ? 1 : 0;
+			this.reveal += (this.revealTarget - this.reveal) * Math.min(1, dt * 9.5);
+			this.hoverMix += ((this.mouse.active ? 1 : 0) - this.hoverMix) * Math.min(1, dt * 16);
+			const damping = Math.max(0.78, this.config.damping);
+			const cols = this.cols;
+			const rows = this.rows;
+			const step = Math.min(0.035, dt);
+
+			const springBoost = this.mouse.active ? 1.28 : 1;
+
+			for (const node of this.nodes) {
+				if (node.pinned) {
+					node.vx = 0;
+					node.vy = 0;
+					node.x = node.ox;
+					node.y = node.oy;
+					continue;
+				}
+				node.vx += (node.ox - node.x) * this.restSpring * springBoost;
+				node.vy += (node.oy - node.y) * this.restSpring * springBoost;
+				this.applyMouseForce(node);
+				if (this.reveal > 0.05) this.applyTextForce(node);
+			}
+
+			for (let row = 0; row < rows; row += 1) {
+				for (let col = 0; col < cols; col += 1) {
+					const idx = row * cols + col;
+					const a = this.nodes[idx];
+					if (col < cols - 1) {
+						const b = this.nodes[idx + 1];
+						const dx = b.x - a.x;
+						const dy = b.y - a.y;
+						a.vx += dx * this.linkSpring;
+						a.vy += dy * this.linkSpring;
+						b.vx -= dx * this.linkSpring;
+						b.vy -= dy * this.linkSpring;
+					}
+					if (row < rows - 1) {
+						const b = this.nodes[idx + cols];
+						const dx = b.x - a.x;
+						const dy = b.y - a.y;
+						a.vx += dx * this.linkSpring;
+						a.vy += dy * this.linkSpring;
+						b.vx -= dx * this.linkSpring;
+						b.vy -= dy * this.linkSpring;
+					}
+				}
+			}
+
+			for (const node of this.nodes) {
+				if (node.pinned) {
+					node.vx = 0;
+					node.vy = 0;
+					node.x = node.ox;
+					node.y = node.oy;
+					continue;
+				}
+				node.vx *= damping;
+				node.vy *= damping;
+				node.x += node.vx * (step * 60);
+				node.y += node.vy * (step * 60);
+			}
+
+			this.syncWorldOffset();
+
+			this.draw(timeSec);
+		}
+
+		draw(timeSec) {
+			const ctx = this.ctx;
+			ctx.clearRect(0, 0, this.width, this.height);
+			const isOpen = this.section.classList.contains('is-open');
+			const wireRgb = '255, 255, 255';
+			const openBoost = 0.95 + this.reveal * 0.58;
+			const openFill = isOpen ? 0.22 : (0.76 + (1 - this.reveal) * 0.2);
+			const lineVisibility = isOpen ? 1.26 : (0.62 + this.reveal * 0.28);
+			const meshStrokeBoost = isOpen ? 2.55 : 1;
+			const readabilityMode = this.reveal > 0.2;
+			const cx = this.width * 0.5;
+			const cy = this.height * 0.5;
+			const maxDist = Math.max(1, Math.hypot(cx, cy));
+			const nodes2d = new Array(this.nodes.length);
+			const ox = this.worldOffsetX;
+			const oy = this.worldOffsetY;
+
+			for (let i = 0; i < this.nodes.length; i += 1) {
+				const node = this.nodes[i];
+				const dx = node.x - cx;
+				const dy = node.y - cy;
+				const dist = Math.hypot(dx, dy) || 1;
+				const ux = dx / dist;
+				const uy = dy / dist;
+				const revealPush = this.reveal * 14 * Math.max(0, 1 - dist / (Math.max(this.width, this.height) * 0.56));
+				const px = node.x + ux * revealPush;
+				const py = node.y + uy * revealPush;
+				const radial = dist / maxDist;
+				const gx = px + ox;
+				const gy = py + oy;
+				const wave = Math.sin(gx * 0.016 + timeSec * 1.12) * Math.cos(gy * 0.013 - timeSec * 0.93);
+				const stream = Math.sin((gx + gy) * 0.008 + timeSec * 0.48) * 0.4;
+				let mouseLift = 0;
+				if (this.mouse.active) {
+					const md = Math.hypot(px - this.mouse.x, py - this.mouse.y);
+					if (md < 180) mouseLift = (1 - md / 180) * 3.8;
+				}
+				const h = ((wave + stream) * (0.85 + this.config.iridescence) + mouseLift) * (1 - radial * 0.28);
+				nodes2d[i] = { x: px, y: py, h };
+			}
+
+			for (const dot of this.microDots) {
+				let px = dot.x;
+				let py = dot.y;
+				if (this.mouse.active) {
+					const dx = this.mouse.x - px;
+					const dy = this.mouse.y - py;
+					const dist = Math.hypot(dx, dy) || 1;
+					if (dist < 170) {
+						const pull = (1 - dist / 170) * 7.5 * this.hoverMix;
+						px += (dx / dist) * pull;
+						py += (dy / dist) * pull;
+					}
+				}
+				const twinkle = 0.72 + 0.28 * Math.sin(timeSec * 0.9 + dot.phase);
+				ctx.beginPath();
+				ctx.arc(px, py, dot.size, 0, Math.PI * 2);
+				const dotAlpha = isOpen
+					? Math.min(0.18, dot.alpha * (0.82 - this.reveal * 0.1))
+					: Math.min(0.12, dot.alpha * (0.52 - this.reveal * 0.28));
+				ctx.fillStyle = `rgba(138, 196, 236, ${dotAlpha.toFixed(3)})`;
+				ctx.fill();
+			}
+
+			const light = { x: -0.32, y: -0.42, z: 0.85 };
+			const hueBase = Number(this.config.hue || 210);
+			ctx.lineJoin = 'round';
+
+			const drawTri = (a, b, c, hueJitter = 0) => {
+				const ux = b.x - a.x;
+				const uy = b.y - a.y;
+				const uz = b.h - a.h;
+				const vx = c.x - a.x;
+				const vy = c.y - a.y;
+				const vz = c.h - a.h;
+				const nx = uy * vz - uz * vy;
+				const ny = uz * vx - ux * vz;
+				const nz = ux * vy - uy * vx;
+				const nLen = Math.hypot(nx, ny, nz) || 1;
+				const dot = Math.max(0, (nx * light.x + ny * light.y + nz * light.z) / nLen);
+				const shade = 0.38 + dot * 0.62;
+				const avgH = (a.h + b.h + c.h) / 3;
+				const hue = hueBase + hueJitter + avgH * 5.5 + this.config.iridescence * 10;
+				const sat = 66 + this.config.iridescence * 10;
+				const lum = 40 + shade * 24;
+				const cxTri = (a.x + b.x + c.x) / 3;
+				const cyTri = (a.y + b.y + c.y) / 3;
+				let hover = 0;
+				let attraction = 0;
+				if (this.mouse.active) {
+					const md = Math.hypot(cxTri - this.mouse.x, cyTri - this.mouse.y);
+					if (md < 185) {
+						attraction = 1 - md / 185;
+						hover = attraction;
+					}
+				}
+				const reflectBoost = Math.pow(attraction, 1.35) * this.hoverMix;
+				const baseAlpha = (0.62 + shade * 0.28 + hover * 0.07 + reflectBoost * 0.13) * openBoost * openFill;
+				const alpha = isOpen ? Math.min(0.18, baseAlpha * 0.34) : baseAlpha;
+
+				ctx.beginPath();
+				ctx.moveTo(a.x, a.y);
+				ctx.lineTo(b.x, b.y);
+				ctx.lineTo(c.x, c.y);
+				ctx.closePath();
+				if (isOpen) {
+					ctx.fillStyle = `rgba(12, 42, 74, ${Math.min(0.08, alpha * 0.45).toFixed(3)})`;
+					ctx.fill();
+					const triStrokeAlpha = (0.58 + shade * 0.18) * lineVisibility * meshStrokeBoost;
+					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.94, triStrokeAlpha + 0.06).toFixed(3)})`;
+					ctx.lineWidth = 0.24;
+					ctx.stroke();
+				} else {
+					ctx.fillStyle = `hsla(${hue.toFixed(1)}, ${sat.toFixed(1)}%, ${lum.toFixed(1)}%, ${alpha.toFixed(3)})`;
+					ctx.fill();
+					const triStrokeAlpha = (0.34 + shade * 0.18) * lineVisibility * meshStrokeBoost;
+					ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.995, triStrokeAlpha).toFixed(3)})`;
+					ctx.lineWidth = 0.22;
+					ctx.stroke();
+				}
+
+				if (hover > 0.01) {
+					const g = ctx.createRadialGradient(cxTri, cyTri, 0, cxTri, cyTri, 42 + reflectBoost * 22);
+					if (isOpen) {
+						g.addColorStop(0, `rgba(0,0,0, ${(0.14 * hover + reflectBoost * 0.18).toFixed(3)})`);
+						g.addColorStop(1, 'rgba(0,0,0,0)');
+					} else {
+						g.addColorStop(0, `rgba(255,255,255, ${(0.2 * hover + reflectBoost * 0.38).toFixed(3)})`);
+						g.addColorStop(1, 'rgba(255,255,255,0)');
+					}
+					ctx.fillStyle = g;
+					ctx.fill();
+				}
+			};
+
+			let flipIdx = 0;
+			for (let row = 0; row < this.rows - 1; row += 1) {
+				for (let col = 0; col < this.cols - 1; col += 1) {
+					const i = row * this.cols + col;
+					const a = nodes2d[i];
+					const b = nodes2d[i + 1];
+					const c = nodes2d[i + this.cols];
+					const d = nodes2d[i + this.cols + 1];
+					const flip = this.cellFlip[flipIdx++] || 0;
+					if (flip) {
+						drawTri(a, b, d, -1.1);
+						drawTri(a, d, c, 0.9);
+					} else {
+						drawTri(a, b, c, -0.8);
+						drawTri(b, d, c, 1.0);
+					}
+				}
+			}
+
+			ctx.beginPath();
+			for (let row = 0; row < this.rows; row += 1) {
+				for (let col = 0; col < this.cols; col += 1) {
+					const i = row * this.cols + col;
+					const a = nodes2d[i];
+					if (col < this.cols - 1 && (row + col) % 2 === 0) {
+						const b = nodes2d[i + 1];
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+					}
+					if (row < this.rows - 1 && (row + col) % 2 === 1) {
+						const b = nodes2d[i + this.cols];
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+					}
+				}
+			}
+			ctx.strokeStyle = `rgba(${wireRgb}, ${Math.min(0.94, isOpen ? 0.68 : 0.42).toFixed(3)})`;
+			ctx.lineWidth = isOpen ? 0.24 : 0.2;
+			ctx.stroke();
+
+			for (const node of nodes2d) {
+				let pointBoost = 0;
+				let textBoost = 0;
+				if (this.mouse.active) {
+					const d = Math.hypot(node.x - this.mouse.x, node.y - this.mouse.y);
+					if (d < 170) pointBoost = 1 - d / 170;
+				}
+				if (this.reveal > 0.05) {
+					textBoost = this.textInfluenceAt(node.x, node.y, 38) * this.reveal;
+				}
+				const baseR = 0.42 + pointBoost * 1.55 + textBoost * 1.15;
+				ctx.beginPath();
+				ctx.arc(node.x, node.y, baseR * 1.35, 0, Math.PI * 2);
+				const outerNodeAlpha = Math.max(
+					isOpen ? 0.2 : 0.1,
+					Math.min(0.96, ((0.08 + pointBoost * 0.22 + textBoost * 0.24) * lineVisibility * (isOpen ? 1.36 : 1)))
+				);
+				ctx.fillStyle = `rgba(${wireRgb}, ${outerNodeAlpha.toFixed(3)})`;
+				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(node.x, node.y, baseR, 0, Math.PI * 2);
+				const innerNodeAlpha = Math.max(
+					isOpen ? 0.36 : 0.2,
+					Math.min(0.995, ((0.18 + pointBoost * 0.52 + textBoost * 0.4) * lineVisibility * (isOpen ? 1.32 : 1)))
+				);
+				ctx.fillStyle = `rgba(${wireRgb}, ${innerNodeAlpha.toFixed(3)})`;
+				ctx.fill();
+			}
+
+			if (this.mouse.active || this.hoverMix > 0.02) {
+				const mx = this.mouse.x;
+				const my = this.mouse.y;
+
+				const magentaR = 168;
+				const magenta = ctx.createRadialGradient(mx, my, 0, mx, my, magentaR);
+				if (isOpen) {
+					magenta.addColorStop(0, `rgba(0, 0, 0, ${(0.035 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(0.5, `rgba(0, 0, 0, ${(0.02 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(1, 'rgba(0,0,0,0)');
+				} else {
+					magenta.addColorStop(0, `rgba(255, 92, 220, ${(0.24 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(0.5, `rgba(220, 96, 255, ${(0.14 * this.hoverMix).toFixed(3)})`);
+					magenta.addColorStop(1, 'rgba(220,96,255,0)');
+				}
+				ctx.fillStyle = magenta;
+				ctx.beginPath();
+				ctx.arc(mx, my, magentaR, 0, Math.PI * 2);
+				ctx.fill();
+
+				const spotR = 190;
+				const hot = ctx.createRadialGradient(mx, my, 0, mx, my, spotR);
+				if (isOpen) {
+					hot.addColorStop(0, `rgba(0,0,0, ${(0.03 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(0.35, `rgba(0,0,0, ${(0.018 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(1, 'rgba(0,0,0,0)');
+				} else {
+					hot.addColorStop(0, `rgba(255,255,255, ${(0.12 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(0.35, `rgba(255,182,240, ${(0.1 * this.hoverMix).toFixed(3)})`);
+					hot.addColorStop(1, 'rgba(180,235,255,0)');
+				}
+				ctx.fillStyle = hot;
+				ctx.beginPath();
+				ctx.arc(mx, my, spotR, 0, Math.PI * 2);
+				ctx.fill();
+
+				for (const node of nodes2d) {
+					const d = Math.hypot(node.x - mx, node.y - my);
+					if (d >= 170) continue;
+					const near = (1 - d / 170) * this.hoverMix;
+					const r = 0.6 + near * 2.05;
+					ctx.beginPath();
+					ctx.arc(node.x, node.y, r * 1.3, 0, Math.PI * 2);
+					ctx.fillStyle = isOpen
+						? `rgba(0, 0, 0, ${((0.08 + near * 0.18) * openBoost).toFixed(3)})`
+						: (readabilityMode
+							? `rgba(220, 245, 255, ${((0.07 + near * 0.24) * openBoost).toFixed(3)})`
+							: `rgba(255, 116, 230, ${((0.08 + near * 0.28) * openBoost).toFixed(3)})`);
+					ctx.fill();
+					ctx.beginPath();
+					ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+					ctx.fillStyle = isOpen
+						? `rgba(0, 0, 0, ${((0.14 + near * 0.42) * openBoost).toFixed(3)})`
+						: (readabilityMode
+							? `rgba(170, 230, 255, ${((0.14 + near * 0.56) * openBoost).toFixed(3)})`
+							: `rgba(164, 248, 255, ${((0.24 + near * 0.8) * openBoost).toFixed(3)})`);
+					ctx.fill();
+				}
+			}
+		}
+	}
+
+	const livingMeshes = [];
+	const livingMeshBySection = new WeakMap();
+	let livingMeshObserver = null;
+
+	const buildLivingSurface = (section, tileConfig) => {
+		const engine = new LivingMeshEngine(section, tileConfig);
+		livingMeshes.push(engine);
+		livingMeshBySection.set(section, engine);
+		return engine;
+	};
+
+	const initLivingSurfaceLayer = () => {
+		if ('IntersectionObserver' in window) {
+			livingMeshObserver = new IntersectionObserver((entries) => {
+				for (const entry of entries) {
+					const engine = livingMeshBySection.get(entry.target);
+					if (!engine) continue;
+					engine.isVisible = entry.isIntersecting || entry.intersectionRatio > 0;
+				}
+			}, {
+				root: studyContent instanceof HTMLElement ? studyContent : null,
+				threshold: 0.01,
+			});
+		}
+		sections.forEach((section) => {
+			if (!(section instanceof HTMLElement)) return;
+			if (section.dataset.tileKind === 'visit_card') return;
+			buildLivingSurface(section, getTileConfig(section));
+			if (livingMeshObserver) livingMeshObserver.observe(section);
+		});
+	};
+
+	const startLivingLoop = () => {
+		let last = performance.now();
+		const maxFps = desktopLiteMode ? 30 : 60;
+		const minFrameGap = 1000 / maxFps;
+		const frame = (now) => {
+			requestAnimationFrame(frame);
+			if (document.hidden) {
+				last = now;
+				return;
+			}
+			if ((now - last) < minFrameGap) {
+				return;
+			}
+			const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000));
+			last = now;
+			const skin = document.body.dataset.skin || DEFAULT_SKIN;
+			for (const engine of livingMeshes) {
+				const isOpen = engine.section.classList.contains('is-open');
+				if (!isOpen && !engine.isVisible) continue;
+				engine.update(dt, now / 1000, skin);
+			}
+		};
+		requestAnimationFrame(frame);
+	};
+
+	const initSkinSystem = () => {
+		const skin = getSkinFromQuery();
+		applySkinClass(skin);
+		initLivingSurfaceLayer();
+		startLivingLoop();
+		window.calyrSkin = {
+			available: AVAILABLE_SKINS,
+			current: skin,
+			set: (nextSkin) => {
+				const normalized = String(nextSkin || '').toLowerCase();
+				if (!AVAILABLE_SKINS.includes(normalized)) return;
+				applySkinClass(normalized);
+				window.calyrSkin.current = normalized;
+			},
+		};
+	};
+
+	const moveDetailLinksToTileEnd = () => {
+		document.querySelectorAll('.tile-open-state').forEach((state) => {
+			if (!(state instanceof HTMLElement)) return;
+			const link = state.querySelector('.tile-open-head .study-detail-link');
+			if (!(link instanceof HTMLElement)) return;
+			state.appendChild(link);
+			link.classList.add('tile-detail-footer');
+		});
+	};
+
+	const enableKeywordChainLinks = () => {
+		document.querySelectorAll('.study-section').forEach((section) => {
+			if (!(section instanceof HTMLElement)) return;
+			const link = section.querySelector('.study-detail-link');
+			const keywords = section.querySelector('.study-keywords');
+			if (!(link instanceof HTMLAnchorElement) || !(keywords instanceof HTMLElement)) return;
+			const chips = Array.from(keywords.querySelectorAll('.study-keyword'));
+			const navigate = () => {
+				window.location.href = link.href;
+			};
+			keywords.setAttribute('role', 'group');
+			keywords.setAttribute('aria-label', (link.textContent || 'Open detail page').trim());
+			keywords.addEventListener('click', (event) => {
+				if (event.target instanceof HTMLElement && event.target.closest('.study-keyword')) return;
+				navigate();
+			});
+			chips.forEach((chip, index) => {
+				if (!(chip instanceof HTMLElement)) return;
+				const label = chip.textContent?.trim() || `Keyword ${index + 1}`;
+				chip.setAttribute('role', 'link');
+				chip.setAttribute('tabindex', '0');
+				chip.setAttribute('aria-label', `${label} - ${(link.textContent || 'Open detail page').trim()}`);
+				chip.addEventListener('click', (event) => {
+					event.preventDefault();
+					event.stopPropagation();
+					navigate();
+				});
+				chip.addEventListener('keydown', (event) => {
+					if (event.key !== 'Enter' && event.key !== ' ') return;
+					event.preventDefault();
+					event.stopPropagation();
+					navigate();
+				});
+			});
+		});
+	};
+
+	moveDetailLinksToTileEnd();
+	enableKeywordChainLinks();
+	initSkinSystem();
 
 	const buildFallbackMatrix = (size = 29) => {
 		const matrix = Array.from({ length: size }, () => Array(size).fill(0));
@@ -693,69 +1863,18 @@
 	};
 
 	const initVisitGames = () => {
-		for (const section of sections) {
-			if (!(section instanceof HTMLElement)) continue;
-			if (section.dataset.tileKind !== 'visit_card') continue;
-			const shouldDefer = section.dataset.visitDefer === 'true';
-			const frame = section.querySelector('.visit-embed-frame');
-			if (!(frame instanceof HTMLIFrameElement)) continue;
+		// Contact tile is now embedded as a standalone iframe page.
+	};
 
-			if (!shouldDefer) {
-				section.classList.add('visit-card-visible');
-				continue;
-			}
-
-			const deferredSrc = frame.dataset.src || frame.getAttribute('src') || '';
-			if (deferredSrc) {
-				frame.dataset.src = deferredSrc;
-				frame.removeAttribute('src');
-			}
-
-			let observer = null;
-			const activate = () => {
-				if (frame.dataset.loaded === 'true') {
-					section.classList.add('visit-card-visible');
-					return;
-				}
-				const src = frame.dataset.src || '';
-				if (src) {
-					frame.setAttribute('src', src);
-					frame.dataset.loaded = 'true';
-				}
-				section.classList.add('visit-card-visible');
-				if (observer) {
-					observer.disconnect();
-					observer = null;
-				}
-				window.removeEventListener('scroll', checkProximity);
-				window.removeEventListener('resize', checkProximity);
-			};
-
-			const checkProximity = () => {
-				const rect = section.getBoundingClientRect();
-				const entersViewport = rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * 0.08;
-				if (entersViewport) activate();
-			};
-
-			if ('IntersectionObserver' in window) {
-				observer = new IntersectionObserver((entries) => {
-					for (const entry of entries) {
-						if (entry.isIntersecting) {
-							activate();
-							break;
-						}
-					}
-				}, { threshold: 0.15, rootMargin: '0px 0px 120px 0px' });
-				observer.observe(section);
-			}
-
-			window.addEventListener('scroll', checkProximity, { passive: true });
-			window.addEventListener('resize', checkProximity, { passive: true });
-			requestAnimationFrame(checkProximity);
-			window.setTimeout(checkProximity, 220);
-			section.addEventListener('pointerenter', activate, { once: true });
-			section.addEventListener('focusin', activate, { once: true });
-		}
+	const hydrateVisitCardEmbed = (section) => {
+		if (!(section instanceof HTMLElement)) return;
+		if (section.dataset.tileKind !== 'visit_card') return;
+		const iframe = section.querySelector('.visit-embed-frame');
+		if (!(iframe instanceof HTMLIFrameElement)) return;
+		const desiredSrc = iframe.dataset.src || '';
+		if (!desiredSrc) return;
+		if (iframe.getAttribute('src') === desiredSrc) return;
+		iframe.setAttribute('src', desiredSrc);
 	};
 
 	const updateDensityMode = () => {
@@ -829,10 +1948,193 @@
 		section.classList.toggle('is-open', expanded);
 		section.classList.toggle('is-collapsed', !expanded);
 		section.classList.toggle('is-expanded', expanded && expandedMode && isTextualTile(section));
+		const getGridMetrics = () => {
+			if (!(studyContent instanceof HTMLElement)) {
+				return { rowHeight: 54, rowGap: 2, colGap: 2, cols: 12 };
+			}
+			const gridStyles = window.getComputedStyle(studyContent);
+			return {
+				rowHeight: parseFloat(gridStyles.gridAutoRows || '54') || 54,
+				rowGap: parseFloat(gridStyles.rowGap || '2') || 2,
+				colGap: parseFloat(gridStyles.columnGap || gridStyles.gap || '2') || 2,
+				cols: 12,
+			};
+		};
+		const measureStateHeightAtWidth = (state, widthPx) => {
+			if (!(state instanceof HTMLElement)) return 0;
+			const clone = state.cloneNode(true);
+			if (!(clone instanceof HTMLElement)) return 0;
+			clone.style.position = 'absolute';
+			clone.style.left = '-99999px';
+			clone.style.top = '0';
+			clone.style.width = `${Math.max(260, Math.floor(widthPx))}px`;
+			clone.style.height = 'auto';
+			clone.style.minHeight = '0';
+			clone.style.maxHeight = 'none';
+			clone.style.overflow = 'visible';
+			clone.style.display = 'flex';
+			clone.style.visibility = 'hidden';
+			clone.style.pointerEvents = 'none';
+			document.body.appendChild(clone);
+			const measured = Math.ceil(clone.scrollHeight + 16);
+			clone.remove();
+			return measured;
+		};
+		if (!expanded) {
+			section.style.removeProperty('grid-row');
+			section.style.removeProperty('grid-column');
+			section.style.removeProperty('min-height');
+			const collapsedStyles = window.getComputedStyle(section);
+			const start = parseInt(collapsedStyles.gridRowStart, 10);
+			const end = parseInt(collapsedStyles.gridRowEnd, 10);
+			if (Number.isFinite(start) && Number.isFinite(end) && end > start) {
+				section.dataset.collapsedRowSpan = String(end - start);
+			}
+		} else {
+			const savedSpan = Number(section.dataset.customRowSpan || '0');
+			const { rowHeight, rowGap, colGap, cols } = getGridMetrics();
+			let span = savedSpan;
+			let colSpan = 0;
+			if (span <= 0) {
+				const isVisitCard = section.dataset.tileKind === 'visit_card';
+				const state = section.querySelector('.tile-open-state');
+				const unit = rowHeight + rowGap;
+				const maxViewport = Math.floor(window.innerHeight * (isVisitCard ? 0.9 : 0.82));
+				const minSpan = isVisitCard ? 4 : 3;
+				const maxSpan = isVisitCard ? 14 : 12;
+				if (!isVisitCard && studyContent instanceof HTMLElement && state instanceof HTMLElement) {
+					const contentWidth = studyContent.clientWidth;
+					const colUnit = (contentWidth - colGap * (cols - 1)) / cols;
+					let best = {
+						col: 6,
+						row: 7,
+						area: Number.POSITIVE_INFINITY,
+						overflow: Number.POSITIVE_INFINITY,
+						rowComfort: Number.POSITIVE_INFINITY,
+						spare: Number.POSITIVE_INFINITY,
+						score: Number.POSITIVE_INFINITY,
+					};
+					for (let c = 5; c <= 10; c += 1) {
+						const frameWidth = colUnit * c + colGap * (c - 1) - 16;
+						const desired = Math.max(160, measureStateHeightAtWidth(state, frameWidth));
+						const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
+						const rows = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
+						const overflow = Math.max(0, rows - 8);
+						const area = c * rows;
+						const tileHeight = rows * rowHeight + Math.max(0, rows - 1) * rowGap;
+						const spare = Math.max(0, tileHeight - desired);
+						const rowComfort = rows >= 5 && rows <= 6 ? 0 : Math.abs(rows - 6);
+						const widthPenalty = Math.max(0, c - 5) * 4;
+						const score = spare + widthPenalty;
+						if (
+							overflow < best.overflow
+							|| (overflow === best.overflow && rowComfort < best.rowComfort)
+							|| (overflow === best.overflow && rowComfort === best.rowComfort && score < best.score)
+							|| (overflow === best.overflow && rowComfort === best.rowComfort && score === best.score && area < best.area)
+						) {
+							best = { col: c, row: rows, area, overflow, rowComfort, spare, score };
+						}
+					}
+					colSpan = best.col;
+					span = best.row;
+				} else {
+					const desired = state instanceof HTMLElement
+						? Math.max(160, Math.ceil(state.scrollHeight + 16))
+						: rowHeight * 4;
+					const capped = Math.min(Math.max(160, desired), Math.max(240, maxViewport));
+					span = Math.max(minSpan, Math.min(maxSpan, Math.ceil((capped + rowGap) / unit)));
+				}
+				if (colSpan > 0) {
+					section.dataset.autoColSpan = String(colSpan);
+				}
+				section.dataset.autoRowSpan = String(span);
+			}
+			if (colSpan > 0) {
+				section.style.setProperty('grid-column', `span ${colSpan}`, 'important');
+			}
+			section.style.setProperty('grid-row', `span ${span}`, 'important');
+			section.style.setProperty('min-height', `${Math.max(160, span * rowHeight)}px`);
+		}
 		const trigger = section.querySelector('.study-trigger');
 		if (trigger instanceof HTMLElement) {
 			trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
 		}
+		if (expanded) {
+			hydrateVisitCardEmbed(section);
+		}
+	};
+
+	const ensureResizeHandles = () => {
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			const kind = section.dataset.tileKind || 'text';
+			if (kind !== 'text' && kind !== 'visit_card') continue;
+			if (section.querySelector('.tile-resize-handle')) continue;
+			const handle = document.createElement('div');
+			handle.className = 'tile-resize-handle';
+			handle.setAttribute('role', 'separator');
+			handle.setAttribute('aria-orientation', 'vertical');
+			handle.setAttribute('aria-label', 'Resize tile vertically');
+			section.appendChild(handle);
+		}
+	};
+
+	const initVerticalTileResize = () => {
+		if (!(studyContent instanceof HTMLElement)) return;
+		ensureResizeHandles();
+		let resizeState = null;
+
+		const onDragMove = (event) => {
+			if (!resizeState) return;
+			const y = Number(event.clientY);
+			if (!Number.isFinite(y)) return;
+			const deltaY = y - resizeState.startY;
+			const targetHeight = resizeState.startHeight + deltaY;
+			const unit = resizeState.rowHeight + resizeState.rowGap;
+			const span = Math.max(3, Math.min(10, Math.round((targetHeight + resizeState.rowGap) / unit)));
+			resizeState.section.dataset.customRowSpan = String(span);
+			resizeState.section.style.setProperty('grid-row', `span ${span}`, 'important');
+			resizeState.section.style.setProperty('min-height', `${Math.max(160, span * resizeState.rowHeight)}px`);
+			event.preventDefault();
+		};
+
+		const onDragEnd = () => {
+			if (!resizeState) return;
+			window.removeEventListener('pointermove', onDragMove);
+			window.removeEventListener('pointerup', onDragEnd);
+			window.removeEventListener('mousemove', onDragMove);
+			window.removeEventListener('mouseup', onDragEnd);
+			resizeState = null;
+		};
+
+		const startDrag = (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const handle = target.closest('.tile-resize-handle');
+			if (!(handle instanceof HTMLElement)) return;
+			const section = handle.closest('.study-section');
+			if (!(section instanceof HTMLElement) || !section.classList.contains('is-open')) return;
+			const y = Number(event.clientY);
+			if (!Number.isFinite(y)) return;
+			const gridStyles = window.getComputedStyle(studyContent);
+			const rowHeight = parseFloat(gridStyles.gridAutoRows || '54') || 54;
+			const rowGap = parseFloat(gridStyles.rowGap || '2') || 2;
+			resizeState = {
+				section,
+				startY: y,
+				startHeight: section.getBoundingClientRect().height,
+				rowHeight,
+				rowGap,
+			};
+			window.addEventListener('pointermove', onDragMove, { passive: false });
+			window.addEventListener('pointerup', onDragEnd, { passive: true });
+			window.addEventListener('mousemove', onDragMove, { passive: false });
+			window.addEventListener('mouseup', onDragEnd, { passive: true });
+			event.preventDefault();
+		};
+
+		studyContent.addEventListener('pointerdown', startDrag);
+		studyContent.addEventListener('mousedown', startDrag);
 	};
 
 	const enforceMondrianState = () => {
@@ -862,16 +2164,18 @@
 		enforceMondrianState();
 	};
 
+	initVerticalTileResize();
+
 	updateDensityMode();
 	initVisitGames();
 	restoreSectionOrder();
-	if (defaultOpenId) {
-		const defaultSection = document.getElementById(defaultOpenId);
-		if (defaultSection instanceof HTMLElement) {
-			activeTextSections.add(defaultSection);
-		}
-	}
 	enforceMondrianState();
+	const initialTargetId = (window.location.hash || '').replace(/^#/, '');
+	if (initialTargetId) {
+		activateById(initialTargetId);
+	} else if (defaultOpenId) {
+		activateById(defaultOpenId);
+	}
 	if (graphSearchInput instanceof HTMLInputElement) {
 		graphSearchInput.addEventListener('input', () => {
 			applyGraphSearch(graphSearchInput.value);
@@ -882,16 +2186,13 @@
 		studyContent.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
-			if (target.closest('a')) return;
 			const trigger = target.closest('.study-trigger');
 			if (!(trigger instanceof HTMLElement)) return;
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
-			const wasActive = activeTextSections.has(section);
+			const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(section);
 			activeTextSections.clear();
-			if (!wasActive) {
-				activeTextSections.add(section);
-			}
+			if (!wasOnlyOpen) activeTextSections.add(section);
 			enforceMondrianState();
 		});
 
@@ -904,11 +2205,9 @@
 			event.preventDefault();
 			const section = trigger.closest('.study-section');
 			if (!(section instanceof HTMLElement)) return;
-			const wasActive = activeTextSections.has(section);
+			const wasOnlyOpen = activeTextSections.size === 1 && activeTextSections.has(section);
 			activeTextSections.clear();
-			if (!wasActive) {
-				activeTextSections.add(section);
-			}
+			if (!wasOnlyOpen) activeTextSections.add(section);
 			enforceMondrianState();
 		});
 	}
@@ -923,11 +2222,13 @@
 		});
 	});
 
-	if (window.location.hash) {
-		activateById(window.location.hash.replace(/^#/, ''));
-	}
-
 	window.addEventListener('resize', () => {
+		for (const section of sections) {
+			if (!(section instanceof HTMLElement)) continue;
+			if (!section.classList.contains('is-open')) continue;
+			if (Number(section.dataset.customRowSpan || '0') > 0) continue;
+			setExpanded(section, true, false);
+		}
 		buildInterfaceMap();
 	});
 
@@ -945,313 +2246,6 @@
 		activateById(window.location.hash.replace(/^#/, ''));
 	});
 
-})();
-</script>
-	<script>
-(() => {
-	const MATERIAL_BY_TILE = {
-		theory:   { stiffness: 0.95, damping: 0.80, iridescence: 0.55, hue: 226 },
-		projects: { stiffness: 1.15, damping: 0.86, iridescence: 0.62, hue: 198 },
-		calyrai:  { stiffness: 0.72, damping: 0.50, iridescence: 0.78, hue: 252 },
-		access:   { stiffness: 0.60, damping: 0.54, iridescence: 0.42, hue: 238 },
-		engine:   { stiffness: 1.40, damping: 0.90, iridescence: 0.66, hue: 214 },
-	};
-	const hashSeed = (v) => {
-		let h = 2166136261; const t = String(v || 'tile');
-		for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); }
-		return Math.abs(h >>> 0) + 1;
-	};
-	const seededRandom = (seed) => {
-		let s = Math.max(1, seed % 2147483647);
-		return () => { s = (s * 48271) % 2147483647; return s / 2147483647; };
-	};
-	const hashGrid = (x, y) => {
-		const v = Math.sin((x||0)*127.1 + (y||0)*311.7) * 43758.5453123;
-		return v - Math.floor(v);
-	};
-	const getTileConfig = (section) => {
-		const id = section.dataset.nodeId || section.id || 'tile';
-		const m = MATERIAL_BY_TILE[id] || { stiffness: 0.9, damping: 0.72, iridescence: 0.58, hue: 210 };
-		return { id, seed: hashSeed(id), stiffness: m.stiffness, damping: m.damping, iridescence: m.iridescence, hue: m.hue };
-	};
-	const studyContent = document.querySelector('.study-content');
-	class LivingMeshEngine {
-		constructor(section, cfg) {
-			this.section = section; this.config = cfg;
-			this.mouse = { x: 0, y: 0, active: false };
-			this.hoverMix = 0; this.reveal = 0; this.revealTarget = 0;
-			this.nodes = []; this.cellFlip = []; this.microDots = [];
-			this.textAttractors = []; this.textAttractorTimer = 0;
-			this.mouseOverText = false; this.hoverPillKey = ''; this.hoverPillIsLink = false;
-			this.lastOpenState = false;
-			this.restSpring = 0.035 * cfg.stiffness; this.linkSpring = 0.0048 * cfg.stiffness;
-			this.worldOffsetX = 0; this.worldOffsetY = 0; this.cellSize = 22;
-			this.width = 0; this.height = 0; this.cols = 0; this.rows = 0;
-			this.random = seededRandom(cfg.seed);
-			let surface = section.querySelector('.living-surface');
-			if (!(surface instanceof HTMLElement)) { surface = document.createElement('div'); surface.className = 'living-surface'; section.prepend(surface); }
-			this.surface = surface;
-			this.canvas = document.createElement('canvas'); this.canvas.className = 'living-mesh';
-			this.surface.textContent = ''; this.surface.appendChild(this.canvas);
-			this.ctx = this.canvas.getContext('2d', { alpha: true });
-			this.resize(); this.syncWorldOffset(); this.bindEvents();
-			if (typeof ResizeObserver !== 'undefined') { this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(section); }
-		}
-		syncWorldOffset() {
-			const sr = this.section.getBoundingClientRect();
-			const cr = studyContent instanceof HTMLElement ? studyContent.getBoundingClientRect() : { left: 0, top: 0 };
-			this.worldOffsetX = sr.left - cr.left; this.worldOffsetY = sr.top - cr.top;
-		}
-		bindEvents() {
-			const upd = (e) => { const r = this.section.getBoundingClientRect(); this.mouse.x = e.clientX - r.left; this.mouse.y = e.clientY - r.top; this.mouse.active = true; };
-			const clr = () => { this.mouse.active = false; };
-			this.section.addEventListener('pointermove', upd, { passive: true });
-			this.canvas.addEventListener('pointermove', upd, { passive: true });
-			this.section.addEventListener('pointerleave', clr, { passive: true });
-			this.canvas.addEventListener('pointerleave', clr, { passive: true });
-			this.canvas.addEventListener('click', (e) => {
-				if (e.detail > 1) return;
-				const r = this.canvas.getBoundingClientRect();
-				this.injectImpulse(e.clientX - r.left, e.clientY - r.top, 40, 12);
-			});
-			this.canvas.addEventListener('dblclick', (e) => {
-				e.preventDefault(); e.stopPropagation();
-				const ats = window._activeTextSections; const emf = window._enforceMondrianState;
-				if (ats && emf) { const was = ats.size === 1 && ats.has(this.section); ats.clear(); if (!was) ats.add(this.section); emf(); this.revealTarget = was ? 0 : 1; }
-				this.injectImpulse(this.width * 0.5, this.height * 0.5, 34, 10);
-			});
-		}
-		resize() {
-			const r = this.section.getBoundingClientRect();
-			const w = Math.max(10, Math.round(r.width)), h = Math.max(10, Math.round(r.height));
-			if (w === this.width && h === this.height && this.nodes.length) return;
-			this.width = w; this.height = h;
-			const ratio = window.devicePixelRatio || 1;
-			this.canvas.width = Math.max(1, Math.floor(w * ratio));
-			this.canvas.height = Math.max(1, Math.floor(h * ratio));
-			this.canvas.style.width = w + 'px'; this.canvas.style.height = h + 'px';
-			if (this.ctx) this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-			const ad = Math.max(0.65, Math.min(1.45, (w * h) / 98000));
-			this.cellSize = Math.max(18, Math.min(30, Math.round(24 / ad)));
-			this.syncWorldOffset(); this.initGrid(); this.refreshTextAttractors();
-		}
-		refreshTextAttractors() {
-			const trigger = this.section.querySelector('.study-trigger');
-			if (!(trigger instanceof HTMLElement)) { this.textAttractors = []; return; }
-			const sr = this.section.getBoundingClientRect(); const pts = []; const maxPts = 140;
-			const walker = document.createTreeWalker(trigger, NodeFilter.SHOW_TEXT, {
-				acceptNode: (n) => {
-					if (!n.nodeValue?.trim()) return NodeFilter.FILTER_REJECT;
-					const p = n.parentElement;
-					if (!(p instanceof HTMLElement)) return NodeFilter.FILTER_REJECT;
-					const s = getComputedStyle(p);
-					return (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) < 0.05) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
-				}
-			});
-			let tn = walker.nextNode();
-			while (tn && pts.length < maxPts) {
-				const par = tn.parentElement;
-				const chip = par instanceof HTMLElement ? par.closest('.study-keyword,.study-detail-link') : null;
-				const chipKey = chip instanceof HTMLElement ? (chip.textContent||'').trim().toLowerCase().replace(/\s+/g,'-') : '';
-				const chipIsLink = chip instanceof HTMLAnchorElement || !!(chip instanceof HTMLElement && chip.closest('a'));
-				const chipKind = chip instanceof HTMLElement ? (chip.classList.contains('study-keyword') ? 'pill' : 'link') : 'text';
-				const range = document.createRange(); range.selectNodeContents(tn);
-				for (const rect of range.getClientRects()) {
-					if (pts.length >= maxPts || !rect || rect.width < 6 || rect.height < 8) continue;
-					const y = rect.top + rect.height * 0.62 - sr.top;
-					for (let x = rect.left + 4; x <= rect.right - 4 && pts.length < maxPts; x += 20)
-						pts.push({ x: x - sr.left, y, kind: chipKind, key: chipKey, isLink: chipIsLink });
-				}
-				tn = walker.nextNode();
-			}
-			this.textAttractors = pts;
-		}
-		initGrid() {
-			this.nodes = []; this.cellFlip = []; this.microDots = [];
-			const sx = this.cellSize, sy = this.cellSize;
-			const mx = ((this.worldOffsetX % sx) + sx) % sx, my = ((this.worldOffsetY % sy) + sy) % sy;
-			const xPos = [], yPos = [];
-			for (let x = -mx + sx * 0.5; x <= this.width + sx * 0.5; x += sx) xPos.push(x);
-			for (let y = -my + sy * 0.5; y <= this.height + sy * 0.5; y += sy) yPos.push(y);
-			const ea = (arr, mn, mx2) => { const eps = 0.001; if (!arr.length || Math.abs(arr[0]-mn)>eps) arr.unshift(mn); if (Math.abs(arr[arr.length-1]-mx2)>eps) arr.push(mx2); arr.sort((a,b)=>a-b); };
-			ea(xPos, 0, this.width); ea(yPos, 0, this.height);
-			this.cols = xPos.length; this.rows = yPos.length;
-			for (let row = 0; row < this.rows; row++) {
-				for (let col = 0; col < this.cols; col++) {
-					const ox = xPos[col], oy = yPos[row];
-					const gc = Math.floor((this.worldOffsetX + ox) / sx), gr = Math.floor((this.worldOffsetY + oy) / sy);
-					const pinned = col===0||row===0||col===this.cols-1||row===this.rows-1;
-					const ja = sx * 0.12;
-					const jx = pinned ? 0 : (hashGrid(gc+17,gr+23)-0.5)*ja;
-					const jy = pinned ? 0 : (hashGrid(gc+53,gr+71)-0.5)*ja;
-					this.nodes.push({ ox: ox+jx, oy: oy+jy, x: ox+jx, y: oy+jy, vx: 0, vy: 0, pinned, globalCol: gc, globalRow: gr, hueOffset: this.random()*1.2 });
-				}
-			}
-			for (let row = 0; row < this.rows-1; row++) {
-				for (let col = 0; col < this.cols-1; col++) {
-					const n = this.nodes[row*this.cols+col];
-					this.cellFlip.push(hashGrid(n.globalCol+5,n.globalRow+9)>0.47?1:0);
-				}
-			}
-			const dc = Math.max(16, Math.min(56, Math.round((this.width*this.height)/5200)));
-			for (let i = 0; i < dc; i++) this.microDots.push({ x: this.random()*this.width, y: this.random()*this.height, size: 0.35+this.random()*0.95, alpha: 0.08+this.random()*0.22, phase: this.random()*Math.PI*2 });
-		}
-		injectImpulse(px, py, radius, strength) {
-			const r2 = radius*radius;
-			for (const n of this.nodes) { const dx=n.x-px,dy=n.y-py,d2=dx*dx+dy*dy; if(d2>=r2) continue; const d=Math.sqrt(d2)||1,f=(1-d/radius)*strength; n.vx+=(dx/d)*f*0.02; n.vy+=(dy/d)*f*0.024; }
-		}
-		applyMouseForce(node) {
-			if (!this.mouse.active) return;
-			const dx=this.mouse.x-node.x, dy=this.mouse.y-node.y, dist=Math.hypot(dx,dy);
-			if (dist>=210) return;
-			const t=(210-dist)/210, force=t*t;
-			const openBoost=this.section.classList.contains('is-open')?1.15:1;
-			const textBoost=this.mouseOverText?1.85:1.2;
-			const repel=0.038*openBoost*textBoost;
-			node.vx-=dx*force*repel; node.vy-=dy*force*(repel*1.05);
-		}
-		applyTextForce(node) {
-			if (!this.textAttractors.length) return;
-			const rep=this.mouse.active&&this.mouseOverText, hk=this.hoverPillKey, hasPill=!!hk;
-			for (const t of this.textAttractors) {
-				const dx=t.x-node.x, dy=t.y-node.y, dist=Math.hypot(dx,dy);
-				if (dist>=95||dist<0.001) continue;
-				const tv=1-dist/95; let dir=rep?-1:1, mag=tv*tv*(0.007+this.reveal*0.01);
-				if (hasPill&&(t.kind==='pill'||t.kind==='link')) { const same=t.key===hk; dir=t.isLink?(same?1.6:-1.2):(same?-1.8:-1.15); mag*=t.isLink?(same?2.3:1.55):(same?2.4:1.35); }
-				else if (t.kind==='pill'&&!t.isLink) { dir=-1; mag*=1.25; }
-				node.vx+=dx*mag*dir; node.vy+=dy*mag*1.02*dir;
-			}
-		}
-		updateTextHoverState() {
-			if (!this.mouse.active) { this.mouseOverText=false; this.hoverPillKey=''; this.hoverPillIsLink=false; return; }
-			const rect=this.section.getBoundingClientRect();
-			const el=document.elementFromPoint(rect.left+this.mouse.x, rect.top+this.mouse.y);
-			if (!(el instanceof HTMLElement)||!this.section.contains(el)) { this.mouseOverText=false; this.hoverPillKey=''; this.hoverPillIsLink=false; return; }
-			const tn2=el.closest('.study-heading,.study-teaser,.study-paragraph,.study-keyword,.study-detail-link');
-			this.mouseOverText=!!tn2;
-			const pn=el.closest('.study-keyword,.study-detail-link');
-			if (pn instanceof HTMLElement) { this.hoverPillKey=(pn.textContent||'').trim().toLowerCase().replace(/\s+/g,'-'); this.hoverPillIsLink=pn instanceof HTMLAnchorElement||!!pn.closest('a'); }
-			else { this.hoverPillKey=''; this.hoverPillIsLink=false; }
-		}
-		textInfluenceAt(x, y, radius=44) {
-			let inf=0;
-			for (const t of this.textAttractors) { const d=Math.hypot(t.x-x,t.y-y); if(d<radius){ const tv=1-d/radius; if(tv>inf) inf=tv; } }
-			return inf;
-		}
-		update(dt, timeSec) {
-			if (!this.ctx) return;
-			const isOpen=this.section.classList.contains('is-open');
-			if (isOpen!==this.lastOpenState) { this.lastOpenState=isOpen; this.textAttractorTimer=0; }
-			this.textAttractorTimer-=dt;
-			if (this.textAttractorTimer<=0) { this.refreshTextAttractors(); this.textAttractorTimer=isOpen?0.2:0.45; }
-			this.revealTarget=isOpen?1:0;
-			this.reveal+=(this.revealTarget-this.reveal)*Math.min(1,dt*9.5);
-			this.hoverMix+=((this.mouse.active?1:0)-this.hoverMix)*Math.min(1,dt*16);
-			const damping=Math.max(0.78,this.config.damping), cols=this.cols, rows=this.rows, step=Math.min(0.035,dt);
-			const sb=this.mouse.active?1.28:1;
-			for (const n of this.nodes) {
-				if(n.pinned){n.vx=0;n.vy=0;n.x=n.ox;n.y=n.oy;continue;}
-				n.vx+=(n.ox-n.x)*this.restSpring*sb; n.vy+=(n.oy-n.y)*this.restSpring*sb;
-				this.applyMouseForce(n);
-				if(this.reveal>0.05) this.applyTextForce(n);
-			}
-			for (let row=0;row<rows;row++) for (let col=0;col<cols;col++) {
-				const idx=row*cols+col, a=this.nodes[idx];
-				if(col<cols-1){const b=this.nodes[idx+1],dx=b.x-a.x,dy=b.y-a.y;a.vx+=dx*this.linkSpring;a.vy+=dy*this.linkSpring;b.vx-=dx*this.linkSpring;b.vy-=dy*this.linkSpring;}
-				if(row<rows-1){const b=this.nodes[idx+cols],dx=b.x-a.x,dy=b.y-a.y;a.vx+=dx*this.linkSpring;a.vy+=dy*this.linkSpring;b.vx-=dx*this.linkSpring;b.vy-=dy*this.linkSpring;}
-			}
-			for (const n of this.nodes) { if(n.pinned){n.vx=0;n.vy=0;n.x=n.ox;n.y=n.oy;continue;} n.vx*=damping;n.vy*=damping;n.x+=n.vx*(step*60);n.y+=n.vy*(step*60); }
-			this.syncWorldOffset(); this.updateTextHoverState(); this.draw(timeSec);
-		}
-		draw(timeSec) {
-			const ctx=this.ctx; ctx.clearRect(0,0,this.width,this.height);
-			const isOpen=this.section.classList.contains('is-open');
-			const wireRgb=isOpen?'246,246,246':'255,255,255';
-			const openBoost=0.9+this.reveal*0.55, openFill=isOpen?0.08:(0.76+(1-this.reveal)*0.2);
-			const lineVis=isOpen?1.0:(0.62+this.reveal*0.28), meshStroke=isOpen?2.2:1;
-			const cx=this.width*0.5, cy=this.height*0.5, maxDist=Math.max(1,Math.hypot(cx,cy));
-			const nodes2d=new Array(this.nodes.length);
-			const ox=this.worldOffsetX, oy=this.worldOffsetY;
-			for (let i=0;i<this.nodes.length;i++) {
-				const n=this.nodes[i],dx=n.x-cx,dy=n.y-cy,dist=Math.hypot(dx,dy)||1,ux=dx/dist,uy=dy/dist;
-				const rp=this.reveal*14*Math.max(0,1-dist/(Math.max(this.width,this.height)*0.56));
-				const px=n.x+ux*rp,py=n.y+uy*rp,gx=px+ox,gy=py+oy;
-				const wave=Math.sin(gx*0.016+timeSec*1.12)*Math.cos(gy*0.013-timeSec*0.93);
-				const stream=Math.sin((gx+gy)*0.008+timeSec*0.48)*0.4;
-				let ml=0; if(this.mouse.active){const md=Math.hypot(px-this.mouse.x,py-this.mouse.y);if(md<180)ml=(1-md/180)*3.8;}
-				nodes2d[i]={x:px,y:py,h:(wave+stream)*(0.85+this.config.iridescence)+ml};
-			}
-			const light={x:-0.32,y:-0.42,z:0.85}, hueBase=Number(this.config.hue||210);
-			ctx.lineJoin='round';
-			const drawTri=(a,b,c,hj=0)=>{
-				const ux=b.x-a.x,uy=b.y-a.y,uz=b.h-a.h,vx=c.x-a.x,vy=c.y-a.y,vz=c.h-a.h;
-				const nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx,nLen=Math.hypot(nx,ny,nz)||1;
-				const dot=Math.max(0,(nx*light.x+ny*light.y+nz*light.z)/nLen),shade=0.38+dot*0.62;
-				const avgH=(a.h+b.h+c.h)/3,hue=hueBase+hj+avgH*5.5+this.config.iridescence*10;
-				const sat=66+this.config.iridescence*10, lum=40+shade*24;
-				const cxT=(a.x+b.x+c.x)/3,cyT=(a.y+b.y+c.y)/3;
-				let att=0; if(this.mouse.active){const md=Math.hypot(cxT-this.mouse.x,cyT-this.mouse.y);if(md<185)att=1-md/185;}
-				const rfl=Math.pow(att,1.35)*this.hoverMix;
-				const baseA=(0.62+shade*0.28+att*0.07+rfl*0.13)*openBoost*openFill;
-				const alpha=isOpen?Math.min(0.04,baseA*0.16):baseA;
-				ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();
-				if(!isOpen){ctx.fillStyle=`hsla(${hue.toFixed(1)},${sat.toFixed(1)}%,${lum.toFixed(1)}%,${alpha.toFixed(3)})`;ctx.fill();const tsa=(0.28+shade*0.22+att*0.22+rfl*0.24)*lineVis*meshStroke;ctx.strokeStyle=`rgba(255,255,255,${Math.min(0.995,tsa).toFixed(3)})`;ctx.lineWidth=0.26+rfl*0.2;ctx.stroke();}
-				if(att>0.01){const g=ctx.createRadialGradient(cxT,cyT,0,cxT,cyT,42+rfl*22);g.addColorStop(0,`rgba(255,255,255,${(0.2*att+rfl*0.38).toFixed(3)})`);g.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fill();}
-			};
-			let fi=0;
-			for (let row=0;row<this.rows-1;row++) for(let col=0;col<this.cols-1;col++){
-				const i=row*this.cols+col,a=nodes2d[i],b=nodes2d[i+1],c=nodes2d[i+this.cols],d=nodes2d[i+this.cols+1],flip=this.cellFlip[fi++]||0;
-				flip?(drawTri(a,b,d,-1.1),drawTri(a,d,c,0.9)):(drawTri(a,b,c,-0.8),drawTri(b,d,c,1.0));
-			}
-			ctx.beginPath();
-			for(let row=0;row<this.rows;row++) for(let col=0;col<this.cols;col++){
-				const i=row*this.cols+col,a=nodes2d[i];
-				if(col<this.cols-1&&(row+col)%2===0){const b=nodes2d[i+1];ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);}
-				if(row<this.rows-1&&(row+col)%2===1){const b=nodes2d[i+this.cols];ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);}
-			}
-			ctx.strokeStyle=`rgba(${wireRgb},${Math.min(0.94,isOpen?0.62:((0.28+this.config.iridescence*0.1)*lineVis*meshStroke)).toFixed(3)})`;
-			ctx.lineWidth=isOpen?0.38:0.2; ctx.stroke();
-			for(const dot of this.microDots){ctx.beginPath();ctx.arc(dot.x,dot.y,dot.size,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(238,238,238,${Math.min(0.1,dot.alpha*(0.44-this.reveal*0.22)).toFixed(3)})`:`rgba(138,196,236,${Math.min(0.12,dot.alpha*(0.52-this.reveal*0.28)).toFixed(3)})`;ctx.fill();}
-			for(const n of nodes2d){
-				let pb=0,tb=0;
-				if(this.mouse.active){const d=Math.hypot(n.x-this.mouse.x,n.y-this.mouse.y);if(d<170)pb=1-d/170;}
-				if(this.reveal>0.05)tb=this.textInfluenceAt(n.x,n.y,38)*this.reveal;
-				const br=0.42+pb*1.55+tb*1.15;
-				ctx.beginPath();ctx.arc(n.x,n.y,br*1.35,0,Math.PI*2);ctx.fillStyle=`rgba(${wireRgb},${Math.min(0.96,(0.08+pb*0.22+tb*0.24)*lineVis*(isOpen?1.36:1)).toFixed(3)})`;ctx.fill();
-				ctx.beginPath();ctx.arc(n.x,n.y,br,0,Math.PI*2);ctx.fillStyle=`rgba(${wireRgb},${Math.min(0.995,(0.18+pb*0.52+tb*0.4)*lineVis*(isOpen?1.32:1)).toFixed(3)})`;ctx.fill();
-			}
-			if(this.mouse.active||this.hoverMix>0.02){
-				const mx=this.mouse.x,my=this.mouse.y,mR=168;
-				const mg=ctx.createRadialGradient(mx,my,0,mx,my,mR);
-				if (isOpen) {
-					mg.addColorStop(0,`rgba(255,255,255,${(0.18*this.hoverMix).toFixed(3)})`);
-					mg.addColorStop(0.5,`rgba(210,210,210,${(0.1*this.hoverMix).toFixed(3)})`);
-					mg.addColorStop(1,'rgba(210,210,210,0)');
-				} else {
-					mg.addColorStop(0,`rgba(255,92,220,${(0.24*this.hoverMix).toFixed(3)})`);
-					mg.addColorStop(0.5,`rgba(220,96,255,${(0.14*this.hoverMix).toFixed(3)})`);
-					mg.addColorStop(1,'rgba(220,96,255,0)');
-				}
-				ctx.fillStyle=mg;ctx.beginPath();ctx.arc(mx,my,mR,0,Math.PI*2);ctx.fill();
-				for(const n of nodes2d){const d=Math.hypot(n.x-mx,n.y-my);if(d>=170)continue;const nr=(1-d/170)*this.hoverMix,r=0.6+nr*2.05;ctx.beginPath();ctx.arc(n.x,n.y,r*1.3,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(240,240,240,${((0.08+nr*0.24)*openBoost).toFixed(3)})`:`rgba(255,116,230,${((0.08+nr*0.28)*openBoost).toFixed(3)})`;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=isOpen?`rgba(255,255,255,${((0.24+nr*0.74)*openBoost).toFixed(3)})`:`rgba(164,248,255,${((0.24+nr*0.8)*openBoost).toFixed(3)})`;ctx.fill();}
-			}
-		}
-	}
-	const livingMeshes = [];
-	document.querySelectorAll('.study-section').forEach((section) => {
-		if (!(section instanceof HTMLElement)) return;
-		if (section.dataset.tileKind === 'visit_card') return;
-		if (section.dataset.tileKind === 'empty') return;
-		livingMeshes.push(new LivingMeshEngine(section, getTileConfig(section)));
-	});
-	let _last = performance.now();
-	const _frame = (now) => {
-		const dt = Math.min(0.034, Math.max(0.001, (now - _last) / 1000));
-		_last = now;
-		for (const engine of livingMeshes) engine.update(dt, now / 1000);
-		requestAnimationFrame(_frame);
-	};
-	requestAnimationFrame(_frame);
 })();
 </script>
 	<script>
