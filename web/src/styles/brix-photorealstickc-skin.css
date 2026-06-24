@@ -3,28 +3,11 @@
  * High-depth lighting and prism mesh treatment for the Brix card.
  */
 
-.tile.tile-brix-fancy {
-  padding: 0;
-  border: 0;
-  min-height: 430px;
-  background: transparent;
-  box-shadow: none;
-}
-
-.tile.tile-brix-fancy .tile-mesh-canvas,
-.tile.tile-brix-fancy .tile-foil-overlay {
-  border-radius: 36px;
-}
-
-.tile.tile-brix-fancy .tile-drag-handle {
-  z-index: 9;
-}
-
 .photorealstickc-brix-card {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  width: 100%;
+  width: min(100%, 1100px);
   min-height: 430px;
   border-radius: 36px;
   border: 2px solid rgba(172, 246, 255, 0.92);
