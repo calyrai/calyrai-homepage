@@ -54,3 +54,21 @@ __pycache__/
 # Local Python env
 /.venv/
 /.venv_build/
+
+# Node / frontend workspace noise
+/node_modules/
+/web/node_modules/
+/web/dist/
+/web/.vite/
+/web/.cache/
+
+# Local deploy scratch (keep committed deploy output under /deploy)
+/web/pages-only/
+
+# Editor and temporary files
+*.swp
+*.swo
+*.tmp
+
+# OS metadata
+Thumbs.db
