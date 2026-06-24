@@ -1,0 +1,52 @@
+{
+  "version": "0.1.0",
+  "sourceSvg": "/logo/CALYR_logo_base.svg",
+  "states": {
+    "idle": {
+      "description": "Ring is stable, particles shimmer slowly",
+      "durationMs": null
+    },
+    "active": {
+      "description": "Hover state, pulse and magnetic response",
+      "durationMs": null
+    },
+    "qr_build": {
+      "description": "Particles migrate into QR matrix",
+      "durationMs": 2600
+    },
+    "qr_show": {
+      "description": "QR remains readable",
+      "durationMs": 12000
+    },
+    "dissolve": {
+      "description": "QR order breaks apart",
+      "durationMs": 3200
+    },
+    "entropy": {
+      "description": "Slow drift into cloud state",
+      "durationMs": 80000
+    },
+    "reassemble": {
+      "description": "Particles return to ring and wordmark",
+      "durationMs": 3600
+    }
+  },
+  "interaction": {
+    "hoverEnter": "active",
+    "hoverLeave": "idle",
+    "click": "qr_build",
+    "idleTimeoutToEntropyMs": 80000,
+    "pointerReturnFromEntropy": "reassemble"
+  },
+  "qr": {
+    "mode": "vcard",
+    "text": "BEGIN:VCARD\\nVERSION:3.0\\nFN:Rupert Tscheliessnig\\nTITLE:PhD, MBA\\nTEL:+4369919200915\\nEND:VCARD",
+    "targetSizePx": 168
+  },
+  "particle": {
+    "countMin": 5000,
+    "countMax": 10000,
+    "baseColor": "#ffffff",
+    "accentColor": "#ff33cc"
+  }
+}

@@ -1,0 +1,82 @@
+.calyr-logo-interactive {
+  position: relative;
+  width: min(240px, 85vw);
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  user-select: none;
+  isolation: isolate;
+  border-radius: 12px;
+  transition: transform 220ms ease, filter 220ms ease, box-shadow 220ms ease;
+}
+
+.logo-element {
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .logo-element {
+    margin-top: 16px;
+  }
+}
+
+.calyr-logo-interactive:focus-visible {
+  outline: 2px solid #ff33cc;
+  outline-offset: 3px;
+}
+
+.calyr-logo-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+.calyr-logo-through-line {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 100vw;
+  height: 1.5px;
+  transform: translateX(-50%);
+  background: rgba(255, 51, 204, 0.78);
+  box-shadow: 0 0 6px rgba(255, 51, 204, 0.34);
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.calyr-logo-through-line.energized {
+  background: rgba(255, 51, 204, 0.9);
+  box-shadow: 0 0 9px rgba(255, 51, 204, 0.5);
+}
+
+.calyr-logo-interactive[data-logo-state='qr_build'] .calyr-logo-through-line,
+.calyr-logo-interactive[data-logo-state='qr_show'] .calyr-logo-through-line {
+  opacity: 0;
+}
+
+.calyr-logo-interactive[data-logo-state='active'],
+.calyr-logo-interactive[data-logo-state='qr_build'] {
+  filter: saturate(1.08) brightness(1.06);
+  box-shadow: 0 0 22px rgba(255, 51, 204, 0.34);
+}
+
+.calyr-logo-interactive[data-logo-state='entropy'] {
+  filter: blur(0.4px) saturate(0.92);
+  opacity: 0.92;
+}
+
+.calyr-logo-interactive[data-logo-state='reassemble'] {
+  animation: calyr-logo-reassemble 900ms ease-out;
+}
+
+@keyframes calyr-logo-reassemble {
+  0% {
+    transform: scale(0.98);
+    filter: blur(1px) saturate(0.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0) saturate(1);
+  }
+}
