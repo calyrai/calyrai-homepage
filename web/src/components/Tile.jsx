@@ -23,6 +23,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSelection } from '../context/SelectionContext'
 import { useRipple } from '../context/RippleContext'
+import BrixPhotorealstickcSkinCard from './BrixPhotorealstickcSkinCard'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -224,6 +225,7 @@ export default function Tile({ node, theme, context = {} }) {
   } = node
   const showTileMesh = true
   const isPlatformTile = PLATFORM_TILE_IDS.has(id)
+  const isBrixTile = id === 'brix'
   const leadDotClass = getTileLeadDotClass(tileAccent)
   const institutions = Array.isArray(node.institutions) ? node.institutions : []
   const visibleInstitutions = institutions.filter((institution) => institution?.visibility?.public !== false)
@@ -235,7 +237,7 @@ export default function Tile({ node, theme, context = {} }) {
   const { ripples } = useRipple()
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [isFoilCovered, setIsFoilCovered] = useState(isPlatformTile)
+  const [isFoilCovered, setIsFoilCovered] = useState(isPlatformTile && !isBrixTile)
   const [ripplePulse, setRipplePulse] = useState(0)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, elementX: 0, elementY: 0 })
@@ -431,8 +433,8 @@ export default function Tile({ node, theme, context = {} }) {
   }, [isDragging, dragStart, position])
 
   useEffect(() => {
-    setIsFoilCovered(isPlatformTile)
-  }, [id, isPlatformTile])
+    setIsFoilCovered(isPlatformTile && !isBrixTile)
+  }, [id, isPlatformTile, isBrixTile])
 
   useEffect(() => {
     if (!showTileMesh) {
@@ -517,7 +519,7 @@ export default function Tile({ node, theme, context = {} }) {
     setSelectedTile(id)
 
     // Platform nodes: toggle metallic foil reveal/cover.
-    if (isPlatformTile) {
+    if (isPlatformTile && !isBrixTile) {
       setIsFoilCovered((prev) => !prev)
       return
     }
@@ -533,6 +535,19 @@ export default function Tile({ node, theme, context = {} }) {
   }
 
   const isSelected = selectedTile === id
+  const showPhotorealstickcSkin = isBrixTile && !isFoilCovered
+
+  const handleBrixArrowClick = (event) => {
+    event.stopPropagation()
+    if (route) {
+      window.location.href = route
+    }
+  }
+
+  const handleBrixReturnClick = (event) => {
+    event.stopPropagation()
+    setIsFoilCovered(true)
+  }
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -576,6 +591,8 @@ export default function Tile({ node, theme, context = {} }) {
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
         isPlatformTile ? 'tile-platform' : ''
+      } ${isBrixTile ? 'tile-brix-fancy' : ''} ${
+        showPhotorealstickcSkin ? 'tile-brix-fancy-open' : ''
       } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'}`}
       id={id}
       data-type="tile"
@@ -607,23 +624,35 @@ export default function Tile({ node, theme, context = {} }) {
         </div>
       )}
 
-      {/* Tile icon */}
-      {shouldShowTopLine && (
-        <div className={`tile-icon ${leadDotClass ? `tile-topline-with-dot ${leadDotClass}` : ''}`}>
-          <span>{topLineText}</span>
-        </div>
+      {showPhotorealstickcSkin ? (
+        <BrixPhotorealstickcSkinCard
+          lead={topLineText || 'ridge'}
+          title={primaryTitle || title || 'brix'}
+          summary={secondarySummary || summary || 'surrogate-assisted engineering design and analysis.'}
+          onArrowClick={handleBrixArrowClick}
+          onReturnClick={handleBrixReturnClick}
+        />
+      ) : (
+        <>
+          {/* Tile icon */}
+          {shouldShowTopLine && (
+            <div className={`tile-icon ${leadDotClass ? `tile-topline-with-dot ${leadDotClass}` : ''}`}>
+              <span>{topLineText}</span>
+            </div>
+          )}
+
+          {/* Tile content */}
+          <div className="tile-content">
+            <>
+              {primaryTitle && <h3 className="tile-title">{primaryTitle}</h3>}
+              {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
+            </>
+          </div>
+        </>
       )}
 
-      {/* Tile content */}
-      <div className="tile-content">
-        <>
-          {primaryTitle && <h3 className="tile-title">{primaryTitle}</h3>}
-          {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
-        </>
-      </div>
-
       {/* Relations indicator (if any edges) */}
-      {relations && (relations.incoming?.length > 0 || relations.outgoing?.length > 0) && (
+      {!showPhotorealstickcSkin && relations && (relations.incoming?.length > 0 || relations.outgoing?.length > 0) && (
         <div className="tile-relations">
           {relations.incoming?.length > 0 && (
             <span className="relation-badge in" title={`${relations.incoming.length} incoming`}>
@@ -639,7 +668,7 @@ export default function Tile({ node, theme, context = {} }) {
       )}
 
       {/* Link indicator */}
-      {route && <div className="tile-link-indicator">→</div>}
+      {!showPhotorealstickcSkin && route && <div className="tile-link-indicator">→</div>}
       
       {/* Drag handle indicator */}
       {isDragging && <div className="tile-drag-handle">✋ Moving...</div>}

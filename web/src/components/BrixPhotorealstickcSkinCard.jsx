@@ -29,6 +29,7 @@ export default function BrixPhotorealstickcSkinCard({
         className="photorealstickc-brix-arrow"
         aria-label="Open brix"
         onClick={onArrowClick}
+        onMouseDown={(event) => event.stopPropagation()}
       >
         →
       </button>
@@ -38,6 +39,7 @@ export default function BrixPhotorealstickcSkinCard({
         className="photorealstickc-brix-return"
         aria-label="Return"
         onClick={onReturnClick}
+        onMouseDown={(event) => event.stopPropagation()}
       >
         ↵
       </button>
