@@ -1,0 +1,164 @@
+colors:
+  primary: "#0A2E45"
+  accent: "#00D4FF"
+  background: "#0B0B0B"
+  surface: "#1A1A1A"
+  surface_light: "#2A2A2A"
+  text_primary: "#FFFFFF"
+  text_secondary: "rgba(255,255,255,0.7)"
+  text_tertiary: "rgba(255,255,255,0.4)"
+  border: "rgba(255,255,255,0.1)"
+  border_light: "rgba(255,255,255,0.05)"
+
+typography:
+  font_family: Avenir
+  font_fallback: "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+  
+  heading:
+    h1:
+      size: 3.2rem
+      weight: 700
+      line_height: 1.1
+      letter_spacing: "-0.02em"
+    h2:
+      size: 2.4rem
+      weight: 600
+      line_height: 1.2
+      letter_spacing: "-0.01em"
+    h3:
+      size: 1.8rem
+      weight: 600
+      line_height: 1.3
+  
+  body:
+    regular:
+      size: 1rem
+      weight: 400
+      line_height: 1.6
+    small:
+      size: 0.875rem
+      weight: 400
+      line_height: 1.5
+    caption:
+      size: 0.75rem
+      weight: 400
+      line_height: 1.4
+      letter_spacing: "0.12em"
+
+radius:
+  none: 0
+  sm: 4px
+  md: 8px
+  lg: 12px
+  xl: 16px
+  full: 999px
+
+spacing:
+  xs: 4px
+  sm: 8px
+  md: 16px
+  lg: 24px
+  xl: 32px
+  2xl: 48px
+  3xl: 64px
+  4xl: 96px
+
+header:
+  height: 80px
+  background: "rgba(11,11,11,0.95)"
+  border_bottom: "1px solid rgba(255,255,255,0.08)"
+  padding_horizontal: 32px
+  logo_height: 40px
+  nav_gap: 32px
+  nav_color: "rgba(255,255,255,0.8)"
+  nav_hover_color: "#00D4FF"
+  nav_active_color: "#00D4FF"
+
+footer:
+  background: "rgba(11,11,11,0.98)"
+  border_top: "1px solid rgba(255,255,255,0.1)"
+  padding: 64px 32px
+  gap: 48px
+  text_color: "rgba(255,255,255,0.6)"
+  link_color: "#00D4FF"
+  link_hover_color: "#FFFFFF"
+  columns: 4
+  column_gap: 48px
+
+tiles:
+  default:
+    background: "rgba(255,255,255,0.02)"
+    background_hover: "rgba(255,255,255,0.05)"
+    border: "1px solid rgba(255,255,255,0.1)"
+    border_hover: "1px solid rgba(0,212,255,0.3)"
+    padding: 24px
+    gap: 12px
+    radius: 12px
+    
+  collapsed:
+    height: 120px
+    title_size: 1.25rem
+    teaser_size: 0.95rem
+    
+  expanded:
+    height: auto
+    max_height: 600px
+    body_size: 0.95rem
+    padding_vertical: 32px
+
+grid:
+  columns: 3
+  gap: 24px
+  gap_mobile: 16px
+  
+landing_page:
+  background: "#0B0B0B"
+  
+  hero:
+    padding_vertical: 96px
+    padding_horizontal: 32px
+    text_align: center
+    
+    kicker:
+      size: 0.875rem
+      weight: 600
+      letter_spacing: "0.12em"
+      text_transform: uppercase
+      color: "rgba(255,255,255,0.5)"
+      margin_bottom: 16px
+    
+    title:
+      size: 4rem
+      weight: 700
+      color: "#FFFFFF"
+      glow_color: "rgba(0,212,255,0.2)"
+      margin_bottom: 16px
+    
+    subtitle:
+      size: 1.5rem
+      weight: 400
+      color: "rgba(255,255,255,0.8)"
+      margin_bottom: 48px
+  
+  section:
+    padding_vertical: 64px
+    padding_horizontal: 32px
+    gap: 32px
+
+borders:
+  width_thin: 1px
+  width_medium: 2px
+  width_thick: 3px
+  style: solid
+
+shadows:
+  sm: "0 2px 4px rgba(0,0,0,0.1)"
+  md: "0 4px 12px rgba(0,0,0,0.15)"
+  lg: "0 12px 32px rgba(0,0,0,0.2)"
+  glow: "0 0 8px rgba(0,212,255,0.2), 0 0 16px rgba(0,212,255,0.1)"
+
+transitions:
+  fast: 150ms
+  normal: 300ms
+  slow: 500ms
+  timing: cubic-bezier(0.4, 0, 0.2, 1)

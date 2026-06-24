@@ -1,0 +1,70 @@
+# Lithos Earthy Skin
+# Warm, natural earth-toned theme for consequence evaluation and impact analysis
+
+skin:
+  id: lithos
+  name: lithos earthy
+  description: Warm, earthy design with natural stone and soil tones
+
+  colors:
+    background: "#f5ede0"
+    surface: "#faf6f1"
+    text_primary: "#3e2817"
+    text_secondary: "rgba(62, 40, 23, 0.7)"
+    text_tertiary: "rgba(62, 40, 23, 0.4)"
+    muted: "#8b7355"
+    primary: "#8b4513"
+    accent: "#d4a574"
+    accent_secondary: "#cd853f"
+    border: "#d9c5b5"
+    border_light: "rgba(212, 165, 116, 0.3)"
+    success: "#6b8e23"
+    warning: "#daa520"
+    error: "#b22222"
+
+  components:
+    tile:
+      background: "{{ colors.surface }}"
+      background_hover: "rgba(212, 165, 116, 0.05)"
+      border: "1px solid {{ colors.border }}"
+      border_hover: "1px solid {{ colors.accent }}"
+      shadow: "0 2px 8px rgba(139, 69, 19, 0.06)"
+      shadow_hover: "0 8px 24px rgba(212, 165, 116, 0.12)"
+      text_color: "{{ colors.text_primary }}"
+      link_color: "{{ colors.primary }}"
+
+    hero:
+      background: "{{ colors.primary }}"
+      text: "{{ colors.surface }}"
+      accent: "{{ colors.accent }}"
+      kicker_color: "rgba(255, 255, 255, 0.7)"
+      subtitle_color: "rgba(255, 255, 255, 0.85)"
+      glow_color: "rgba(212, 165, 116, 0.2)"
+
+    header:
+      background: "rgba(250, 246, 241, 0.95)"
+      border_bottom: "1px solid {{ colors.border_light }}"
+      text_color: "{{ colors.text_primary }}"
+      nav_hover_color: "{{ colors.primary }}"
+      nav_active_color: "{{ colors.accent }}"
+
+    footer:
+      background: "rgba(250, 246, 241, 0.98)"
+      border_top: "1px solid {{ colors.border_light }}"
+      text_color: "{{ colors.text_secondary }}"
+      link_color: "{{ colors.primary }}"
+      link_hover_color: "{{ colors.accent }}"
+
+    graph:
+      node_background: "{{ colors.surface }}"
+      node_border: "{{ colors.accent }}"
+      node_text: "{{ colors.text_primary }}"
+      edge_color: "{{ colors.primary }}"
+      edge_hover_color: "{{ colors.accent }}"
+
+    button:
+      background: "{{ colors.primary }}"
+      text: "{{ colors.surface }}"
+      hover_background: "{{ colors.accent_secondary }}"
+      accent_background: "{{ colors.accent }}"
+      accent_text: "{{ colors.primary }}"

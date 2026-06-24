@@ -1,0 +1,70 @@
+# Calyrai Clean Skin
+# Light, minimalist design focused on clarity and elegance
+
+skin:
+  id: calyrai
+  name: calyrai clean
+  description: Light, minimalist design with cool accents
+
+  colors:
+    background: "#f6fbfd"
+    surface: "#ffffff"
+    text_primary: "#0a2e45"
+    text_secondary: "rgba(10, 46, 69, 0.7)"
+    text_tertiary: "rgba(10, 46, 69, 0.4)"
+    muted: "#5b6b73"
+    primary: "#0a2e45"
+    accent: "#00d4ff"
+    accent_secondary: "#0077a3"
+    border: "#c8e8f2"
+    border_light: "rgba(200, 232, 242, 0.5)"
+    success: "#28a745"
+    warning: "#ffc107"
+    error: "#dc3545"
+
+  components:
+    tile:
+      background: "{{ colors.surface }}"
+      background_hover: "rgba(0, 212, 255, 0.02)"
+      border: "1px solid {{ colors.border_light }}"
+      border_hover: "1px solid {{ colors.accent }}"
+      shadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
+      shadow_hover: "0 8px 24px rgba(0, 212, 255, 0.1)"
+      text_color: "{{ colors.text_primary }}"
+      link_color: "{{ colors.accent }}"
+
+    hero:
+      background: "{{ colors.primary }}"
+      text: "{{ colors.surface }}"
+      accent: "{{ colors.accent }}"
+      kicker_color: "rgba(255, 255, 255, 0.6)"
+      subtitle_color: "rgba(255, 255, 255, 0.8)"
+      glow_color: "rgba(0, 212, 255, 0.2)"
+
+    header:
+      background: "rgba(255, 255, 255, 0.98)"
+      border_bottom: "1px solid {{ colors.border_light }}"
+      text_color: "{{ colors.text_primary }}"
+      nav_hover_color: "{{ colors.accent }}"
+      nav_active_color: "{{ colors.accent }}"
+
+    footer:
+      background: "rgba(255, 255, 255, 0.95)"
+      border_top: "1px solid {{ colors.border_light }}"
+      text_color: "{{ colors.text_secondary }}"
+      link_color: "{{ colors.accent }}"
+      link_hover_color: "{{ colors.primary }}"
+
+    graph:
+      node_background: "{{ colors.surface }}"
+      node_border: "{{ colors.accent }}"
+      node_text: "{{ colors.text_primary }}"
+      edge_color: "{{ colors.primary }}"
+      edge_hover_color: "{{ colors.accent }}"
+
+    button:
+      background: "{{ colors.primary }}"
+      text: "{{ colors.surface }}"
+      hover_background: "{{ colors.accent_secondary }}"
+      accent_background: "{{ colors.accent }}"
+      accent_text: "{{ colors.primary }}"

@@ -145,11 +145,17 @@ class ASTBuilder:
             resolved = self.resolved[node_id]
             node.update({
                 "title": resolved.get("title", ""),
+                "tile_lead": resolved.get("tile_lead", ""),
+                "tile_accent": resolved.get("tile_accent", ""),
+                "tile_title": resolved.get("tile_title", ""),
+                "tile_summary": resolved.get("tile_summary", ""),
                 "subtitle": resolved.get("subtitle", ""),
+                "landing_message": resolved.get("landing_message", ""),
                 "summary": resolved.get("summary", ""),
                 "body": resolved.get("body", ""),
                 "icon": resolved.get("icon", ""),
                 "route": resolved.get("route", ""),
+                "institutions": resolved.get("institutions", []),
             })
 
             # Add relations if they exist and are non-empty

@@ -9,9 +9,11 @@ brand:
 
 logo:
 
+  title: "Calyr.aí"
+
   title_ref: brand.display_name
 
-  route: /
+  route: ""
 
 # --------------------------------------------------
 
@@ -205,6 +207,12 @@ ecosystem:
 
   title: "ecosystem"
 
+  tile_lead: "network"
+
+  tile_accent: "cyan"
+
+  tile_title: "ecosystem"
+
   subtitle: "Interactive architecture"
 
   summary: >
@@ -227,6 +235,12 @@ philosophy:
 
   title: "philosophy"
 
+  tile_lead: "book"
+
+  tile_accent: "magenta"
+
+  tile_title: "philosophy"
+
   subtitle: "Principles and foundations"
 
   summary: >
@@ -248,9 +262,19 @@ philosophy:
 
 contact:
 
-  title: "Contacts"
+  title: "contacts"
 
-  subtitle: "Collaborate"
+  tile_lead: "contacts"
+
+  tile_accent: "yellow"
+
+  tile_title: "swarm"
+
+  tile_summary: "intelligence"
+
+  subtitle: "swarm"
+
+  landing_message: "intelligence"
 
   summary: >
     Research, industry,
@@ -265,6 +289,32 @@ contact:
   icon: mail
 
   route: mailto:rupert.tscheliessnig@calyr.ai
+
+  institutions:
+    - id: asc
+      type: institution
+      name: Austrian Supercomputing Center
+      category: hpc
+      location:
+        city: Vienna
+        country: Austria
+      website: https://asc.ac.at
+      visibility:
+        public: true
+        show_network: true
+      capabilities:
+        - id: hpc
+          label: hpc
+        - id: cfd
+          label: cfd
+        - id: ai
+          label: ai
+        - id: simulation
+          label: simulation
+      projects:
+        - id: aflowtex
+          label: aflowtex
+          route: /aflowtex
 
 # --------------------------------------------------
 

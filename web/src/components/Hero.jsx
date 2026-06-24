@@ -14,10 +14,10 @@ export default function Hero({ node, theme }) {
   const heroStyle = {}
   const heroTheme = theme?.skin?.components?.hero || {}
   const brandColor = '#ff00ff'
-  const brandGlow = 'rgba(255, 0, 255, 0.18)'
   const brandStyle = {
     color: brandColor,
-    textShadow: `0 0 10px ${brandGlow}, 0 0 22px ${brandGlow}`,
+    textShadow:
+      '0 0 8px rgba(255, 0, 255, 0.98), 0 0 18px rgba(255, 0, 255, 0.82), 0 0 34px rgba(255, 0, 255, 0.6)',
   }
   if (theme?.skin?.components?.hero) {
     if (heroTheme.background && !heroTheme.background.includes('{{')) {
@@ -36,7 +36,7 @@ export default function Hero({ node, theme }) {
           <span className="hero-brand-i" style={brandStyle}>í</span>
         </p>
         <p className="hero-manifesto">
-          create what is not here, yet
+          create what is not here yet
           <span className="hero-manifesto-dot" style={brandStyle}>.</span>
         </p>
         {icon && <div className="hero-icon">{icon}</div>}

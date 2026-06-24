@@ -4,6 +4,8 @@ import Navigation from './components/Navigation'
 import QuickContactRail from './components/QuickContactRail'
 import DotRasterBackground from './components/DotRasterBackground'
 import RippleLayer from './components/RippleLayer'
+import BooksPage from './components/BooksPage'
+import ContactPage from './components/ContactPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider, useRipple } from './context/RippleContext'
 import './styles/theme.css'
@@ -16,6 +18,8 @@ import './styles/quick-contact.css'
 function App() {
   const [ast, setAst] = useState(null)
   const [theme, setTheme] = useState(null)
+  const [booksPage, setBooksPage] = useState(null)
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -63,13 +67,19 @@ function App() {
       try {
         // Cache-bust query params to force fresh load of compiled artifacts
         const ts = Date.now()
-        const [astData, themeData] = await Promise.all([
+        const booksPromise = fetch(`/generated/books.page.json?t=${ts}`)
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null)
+
+        const [astData, themeData, booksData] = await Promise.all([
           fetch(`/generated/nexus.ast.json?t=${ts}`).then((r) => r.json()),
           fetch(`/generated/nexus.theme.json?t=${ts}`).then((r) => r.json()),
+          booksPromise,
         ])
         console.log('Theme loaded:', themeData?.skin?.id, themeData?.components?.hero)
         setAst(astData)
         setTheme(themeData)
+        setBooksPage(booksData)
         applyThemeToCSS(themeData)
         setLoading(false)
       } catch (err) {
@@ -80,6 +90,23 @@ function App() {
     }
     loadArtifacts()
   }, [])
+
+  useEffect(() => {
+    const onPopState = () => setCurrentPath(window.location.pathname)
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useEffect(() => {
+    const isBooksRoute = currentPath === '/books' || currentPath === '/philosophy'
+    const isContactRoute = currentPath === '/contact'
+    document.body.classList.toggle('books-route', isBooksRoute)
+    document.body.classList.toggle('contact-route', isContactRoute)
+    return () => {
+      document.body.classList.remove('books-route')
+      document.body.classList.remove('contact-route')
+    }
+  }, [currentPath])
 
   if (loading) {
     return <div>Loading...</div>
@@ -93,17 +120,30 @@ function App() {
     return <div>No data</div>
   }
 
+  const isBooksRoute = currentPath === '/books' || currentPath === '/philosophy'
+  const isContactRoute = currentPath === '/contact'
+  const findNodeById = (node, targetId) => {
+    if (!node) return null
+    if (node.id === targetId) return node
+    if (!Array.isArray(node.children)) return null
+    for (const child of node.children) {
+      const match = findNodeById(child, targetId)
+      if (match) return match
+    }
+    return null
+  }
+  const contactPage = findNodeById(ast, 'contact')
+
   return (
     <SelectionProvider>
-      <DotRasterBackground theme={theme} />
+      <DotRasterBackground theme={theme} isBooksRoute={isBooksRoute || isContactRoute} />
       <RippleLayer />
       {/* Navigation (Stage 8) */}
       <Navigation theme={theme} />
       <QuickContactRail />
       
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000', position: 'relative', zIndex: 1 }}>
-        {/* Tiles View */}
-        {renderNode(ast, theme)}
+        {isBooksRoute ? <BooksPage page={booksPage} /> : isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
       </div>
     </SelectionProvider>
   )

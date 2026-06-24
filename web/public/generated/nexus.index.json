@@ -1,0 +1,240 @@
+{
+  "brand": {
+    "title": "",
+    "summary": "",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": []
+  },
+  "logo": {
+    "title": "Calyr.a\u00ed",
+    "summary": "",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "calyr.a\u00ed"
+    ]
+  },
+  "hero": {
+    "title": "",
+    "summary": "Transforming observations into knowledge, knowledge into models, and models into decisions.\n",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "decisions.",
+      "into",
+      "knowledge",
+      "knowledge,",
+      "models",
+      "models,",
+      "observations",
+      "transforming"
+    ]
+  },
+  "platforms": {
+    "title": "Platforms",
+    "summary": "Core platform modules for engineering, medicine, reasoning, and decision support.\n",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "core",
+      "decision",
+      "engineering,",
+      "for",
+      "medicine,",
+      "modules",
+      "platform",
+      "platforms",
+      "reasoning,",
+      "support."
+    ]
+  },
+  "architecture": {
+    "title": "Architecture",
+    "summary": "Structural overview of module connections, data flow, and reasoning pathways.\n",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "architecture",
+      "connections,",
+      "data",
+      "flow,",
+      "module",
+      "of",
+      "overview",
+      "pathways.",
+      "reasoning",
+      "structural"
+    ]
+  },
+  "footer": {
+    "title": "",
+    "summary": "",
+    "body_preview": "Name: Rupert Tscheliessnig\nRole: Founder, Calyr.a\u00ed\nrupert.tscheliessnig@calyr.ai\n",
+    "route": "",
+    "icon": "",
+    "keywords": []
+  },
+  "core": {
+    "title": "Calyrai core",
+    "summary": "Connects observations, knowledge, models, and decisions.\n",
+    "body_preview": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+    "route": "/core",
+    "icon": "brain",
+    "keywords": [
+      "and",
+      "calyrai",
+      "connects",
+      "core",
+      "decisions.",
+      "knowledge,",
+      "models,",
+      "observations,"
+    ]
+  },
+  "brix": {
+    "title": "brix",
+    "summary": "Surrogate-assisted engineering design and analysis.\n",
+    "body_preview": "Engineering intelligence platform for structural analysis, design exploration, and decision support. Brix combines simulations, measurements, and surrogate models to enable rapid variant evaluation an",
+    "route": "/brix",
+    "icon": "bridge",
+    "keywords": [
+      "analysis.",
+      "and",
+      "brix",
+      "design",
+      "engineering",
+      "surrogate-assisted"
+    ]
+  },
+  "aflowtex": {
+    "title": "aflowtex",
+    "summary": "Patient-specific flow modelling and clinical decision support.\n",
+    "body_preview": "Aflowtex combines clinical data, vascular modelling, flow simulation, and surrogate reasoning to support patient-specific analysis and uncertainty-aware medical decisions.\n",
+    "route": "/aflowtex",
+    "icon": "aorta",
+    "keywords": [
+      "aflowtex",
+      "and",
+      "clinical",
+      "decision",
+      "flow",
+      "modelling",
+      "patient-specific",
+      "support."
+    ]
+  },
+  "lithos": {
+    "title": "lithos",
+    "summary": "Understanding consequences, trade-offs, and impact.\n",
+    "body_preview": "Lithos translates model outputs into actionable decisions by evaluating consequences, risks, trade-offs, and long-term system effects.\n",
+    "route": "/lithos",
+    "icon": "mountain",
+    "keywords": [
+      "and",
+      "consequences,",
+      "impact.",
+      "lithos",
+      "trade-offs,",
+      "understanding"
+    ]
+  },
+  "oracle": {
+    "title": "oracle",
+    "summary": "Extracting knowledge from complex information spaces.\n",
+    "body_preview": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
+    "route": "/oracle",
+    "icon": "crystal-ball",
+    "keywords": [
+      "complex",
+      "extracting",
+      "from",
+      "information",
+      "knowledge",
+      "oracle",
+      "spaces."
+    ]
+  },
+  "delphi": {
+    "title": "delphi",
+    "summary": "Explore knowledge through guided interaction.\n",
+    "body_preview": "Delphi provides an interactive interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
+    "route": "/delphi",
+    "icon": "compass",
+    "keywords": [
+      "delphi",
+      "explore",
+      "guided",
+      "interaction.",
+      "knowledge",
+      "through"
+    ]
+  },
+  "ecosystem": {
+    "title": "ecosystem",
+    "summary": "Explore relationships across the calyrai ecosystem.\n",
+    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge.\n",
+    "route": "/ecosystem",
+    "icon": "network",
+    "keywords": [
+      "across",
+      "calyrai",
+      "ecosystem",
+      "ecosystem.",
+      "explore",
+      "relationships",
+      "the"
+    ]
+  },
+  "philosophy": {
+    "title": "philosophy",
+    "summary": "Scientific rigor, openness, and reproducibility.\n",
+    "body_preview": "Calyr.a\u00ed is founded on scientific transparency, reproducibility, interpretable modelling, and human-centered decision support.\n",
+    "route": "/philosophy",
+    "icon": "book",
+    "keywords": [
+      "and",
+      "openness,",
+      "philosophy",
+      "reproducibility.",
+      "rigor,",
+      "scientific"
+    ]
+  },
+  "contact": {
+    "title": "contacts",
+    "summary": "Research, industry, and partnership inquiries.\n",
+    "body_preview": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development.\n",
+    "route": "mailto:rupert.tscheliessnig@calyr.ai",
+    "icon": "mail",
+    "keywords": [
+      "and",
+      "contacts",
+      "industry,",
+      "inquiries.",
+      "partnership",
+      "research,"
+    ]
+  },
+  "legal": {
+    "title": "legal",
+    "summary": "Legal and platform information.\n",
+    "body_preview": "Impressum, privacy policy, contact information, and external links. Credentials: Rupert Tscheliessnig, Founder of Calyr.a\u00ed, AI and surrogate modelling research.\n",
+    "route": "/legal",
+    "icon": "document",
+    "keywords": [
+      "and",
+      "information.",
+      "legal",
+      "platform"
+    ]
+  }
+}

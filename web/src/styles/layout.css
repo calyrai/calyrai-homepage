@@ -1,0 +1,517 @@
+/**
+ * Layout CSS
+ * 
+ * Layout utilities and responsive design
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Container */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  width: 100%;
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 var(--space-md);
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-gap {
+  gap: var(--space-md);
+}
+
+.flex-gap-lg {
+  gap: var(--space-lg);
+}
+
+/* Grid utilities */
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-gap {
+  gap: var(--space-md);
+}
+
+.grid-gap-lg {
+  gap: var(--space-lg);
+}
+
+/* Spacing utilities */
+.m-0 {
+  margin: 0;
+}
+
+.m-xs {
+  margin: var(--space-xs);
+}
+
+.m-sm {
+  margin: var(--space-sm);
+}
+
+.m-md {
+  margin: var(--space-md);
+}
+
+.m-lg {
+  margin: var(--space-lg);
+}
+
+.m-xl {
+  margin: var(--space-xl);
+}
+
+.m-2xl {
+  margin: var(--space-2xl);
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.p-xs {
+  padding: var(--space-xs);
+}
+
+.p-sm {
+  padding: var(--space-sm);
+}
+
+.p-md {
+  padding: var(--space-md);
+}
+
+.p-lg {
+  padding: var(--space-lg);
+}
+
+.p-xl {
+  padding: var(--space-xl);
+}
+
+.p-2xl {
+  padding: var(--space-2xl);
+}
+
+/* Margin shortcuts */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+.mb-auto {
+  margin-bottom: auto;
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-muted {
+  color: var(--color-muted);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-white {
+  color: var(--color-white);
+}
+
+.text-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.text-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.text-light {
+  font-weight: var(--font-weight-light);
+}
+
+/* Display utilities */
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+/* Visibility utilities */
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+/* Overflow utilities */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hidden-small {
+    display: none;
+  }
+
+  .text-center-mobile {
+    text-align: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+/* ============================================
+   Stage 8: Mobile Responsive Layout
+   ============================================ */
+
+/* Responsive Grid: 3-col → 2-col → 1-col */
+@media (min-width: 1024px) {
+  .section-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .section-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .section-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Collapsible Section Styles */
+.section-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all var(--transition-normal);
+  padding: var(--space-md);
+  margin: var(--space-lg) 0 var(--space-md);
+  border-radius: var(--border-radius-sm);
+  user-select: none;
+}
+
+.section-header:hover {
+  background-color: rgba(0, 212, 255, 0.05);
+}
+
+.section-header-content {
+  flex: 1;
+  min-width: 0; /* Prevent text overflow */
+}
+
+.section-header.collapsed {
+  background-color: rgba(0, 212, 255, 0.1);
+}
+
+/* Collapse Icon Animation */
+.collapse-icon {
+  display: none;
+  font-size: 1.25rem;
+  color: var(--color-accent);
+  transition: transform var(--transition-normal);
+  margin-left: var(--space-md);
+  flex-shrink: 0;
+}
+
+.collapse-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Show collapse icon on mobile */
+@media (max-width: 767px) {
+  .collapse-icon {
+    display: inline-block;
+  }
+}
+
+/* Touch-Friendly Targets (44px minimum) */
+@media (max-width: 768px) {
+  .tile {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .toggle-btn {
+    min-height: 44px;
+    min-width: 60px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.875rem;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  a, [role="button"] {
+    min-height: 44px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --font-size-h1: 24px;
+    --font-size-h2: 18px;
+    --font-size-h3: 16px;
+    --font-size-body: 14px;
+    --font-size-small: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-h1: 18px;
+    --font-size-h2: 16px;
+    --font-size-h3: 14px;
+    --font-size-body: 13px;
+    --font-size-small: 11px;
+  }
+
+  .section {
+    padding: var(--space-md) 0;
+  }
+
+  .section-grid {
+    gap: var(--space-sm);
+  }
+
+  .tile {
+    padding: var(--space-sm);
+  }
+}
+
+/* Responsive Hero Section */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 265px;
+  }
+
+  .hero-content {
+    min-height: 265px;
+    justify-content: center;
+  }
+
+  .hero-title {
+    font-size: var(--font-size-h1);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-body);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 235px;
+    padding: var(--space-md);
+  }
+
+  .hero-content {
+    min-height: 235px;
+  }
+}
+
+/* Responsive Spacing */
+@media (max-width: 768px) {
+  .section-header {
+    padding: var(--space-md) var(--space-sm);
+    margin: var(--space-md) 0 var(--space-sm);
+  }
+
+  .page {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 0;
+  }
+
+  .section {
+    padding: var(--space-sm) 0;
+  }
+
+  .section-grid {
+    gap: var(--space-xs);
+  }
+}
+
+/* Responsive View Toggle */
+@media (max-width: 768px) {
+  .view-toggle {
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+    top: calc(env(safe-area-inset-top) + 1rem);
+    right: calc(env(safe-area-inset-right) + 1rem);
+  }
+
+  .toggle-btn {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* Prevent zoom on double-tap buttons/links (iOS) */
+@media (max-width: 768px) {
+  button, a {
+    touch-action: manipulation;
+  }
+}
+
+/* Disable pinch-zoom on inputs */
+input,
+textarea,
+select {
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Responsive overflow handling */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .section-grid {
+    overflow-x: hidden;
+  }
+}

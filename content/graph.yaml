@@ -1,0 +1,14 @@
+nodes:
+  - core
+  - brix
+  - aflowtex
+  - lithos
+  - oracle
+  - delphi
+
+edges:
+  - [core, brix]
+  - [core, aflowtex]
+  - [core, lithos]
+  - [core, oracle]
+  - [oracle, delphi]

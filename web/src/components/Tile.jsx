@@ -27,6 +27,37 @@ import { useRipple } from '../context/RippleContext'
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
 
+function getTileLeadDotClass(accent) {
+  if (accent === 'magenta') return 'tile-inline-dot-magenta'
+  if (accent === 'yellow') return 'tile-inline-dot-yellow'
+  if (accent === 'cyan') return 'tile-inline-dot-cyan'
+  return null
+}
+
+function normalizeContactLinkItem(item, fallbackRoutePrefix = '/') {
+  if (typeof item === 'string') {
+    return {
+      key: item,
+      label: item,
+      href: fallbackRoutePrefix ? `${fallbackRoutePrefix}${item}` : null,
+    }
+  }
+
+  if (!item || typeof item !== 'object') {
+    return {
+      key: 'unknown',
+      label: '',
+      href: null,
+    }
+  }
+
+  return {
+    key: item.id || item.label || item.name || item.route || item.href || item.url || 'unknown',
+    label: item.label || item.id || item.name || item.route || item.href || item.url || '',
+    href: item.route || item.href || item.url || null,
+  }
+}
+
 function hashSeed(input) {
   let hash = 2166136261
   for (let index = 0; index < input.length; index += 1) {
@@ -96,12 +127,27 @@ function buildTriangleMesh(width, height, base, seed, layer = 0) {
   return triangles
 }
 
-function mixedMeshColor(tint, alpha) {
+function mixedMeshFillColor(tint, alpha, focus = 0, highlight = 0) {
+  const clamp = (v) => Math.max(0, Math.min(1, v))
+  const c = clamp(tint)
+  const f = clamp(focus)
+  const h = clamp(highlight)
+
   const cyan = { r: 0, g: 224, b: 255 }
-  const shimmer = 0.85 + Math.max(0, Math.min(1, tint)) * 0.15
-  const r = Math.round(cyan.r * shimmer)
-  const g = Math.round(cyan.g * shimmer)
-  const b = Math.round(cyan.b * shimmer)
+  const magenta = { r: 255, g: 0, b: 214 }
+  const white = { r: 255, g: 255, b: 255 }
+
+  // Base blend across cyan ↔ magenta, then push toward white where highlight is strong.
+  const baseR = cyan.r * (1 - c) + magenta.r * c
+  const baseG = cyan.g * (1 - c) + magenta.g * c
+  const baseB = cyan.b * (1 - c) + magenta.b * c
+
+  const whiten = 0.2 + f * 0.28 + h * 0.7
+  const blend = clamp(whiten)
+
+  const r = Math.round(baseR * (1 - blend) + white.r * blend)
+  const g = Math.round(baseG * (1 - blend) + white.g * blend)
+  const b = Math.round(baseB * (1 - blend) + white.b * blend)
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`
 }
 
@@ -136,8 +182,13 @@ function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverAc
     const cdist = Math.hypot(cdx, cdy)
     const focus = pointer.active ? Math.max(0, 1 - cdist / influenceRadius) : 0
 
+    // Directional highlight gives a pseudo-reflective look that follows the mouse.
+    const angle = Math.atan2(cdy, cdx)
+    const reflectiveBand = (Math.sin(angle * 2 + time * 0.7) + 1) * 0.5
+    const highlight = pointer.active ? focus * reflectiveBand : 0
+
     const strokeAlpha = 0.26 + triangle.depth * 0.08 + focus * 0.62
-    const fillAlpha = focus > 0.02 ? 0.05 + focus * 0.22 : 0.03
+    const fillAlpha = focus > 0.02 ? 0.08 + focus * 0.28 : 0.04
     const lineWidth = 0.42 + triangle.depth * 0.2 + focus * 0.95
 
     ctx.beginPath()
@@ -146,20 +197,40 @@ function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverAc
     ctx.lineTo(deformed[2].x, deformed[2].y)
     ctx.closePath()
 
-    ctx.fillStyle = mixedMeshColor(triangle.tint, fillAlpha)
+    ctx.fillStyle = mixedMeshFillColor(triangle.tint, fillAlpha, focus, highlight)
     ctx.fill()
 
     ctx.lineWidth = lineWidth
-    ctx.strokeStyle = mixedMeshColor(triangle.tint, strokeAlpha)
+    // Keep edges subtle and mostly neutral so the reflective effect lives in triangle areas.
+    ctx.strokeStyle = `rgba(170, 220, 232, ${strokeAlpha.toFixed(3)})`
     ctx.stroke()
   }
 }
 
 export default function Tile({ node, theme, context = {} }) {
-  const { id, title, summary, icon, route, relations = {} } = node
+  const {
+    id,
+    title,
+    tile_lead: tileLead,
+    tile_accent: tileAccent,
+    tile_title: tileTitle,
+    tile_summary: tileSummary,
+    subtitle,
+    landing_message: landingMessage,
+    summary,
+    icon,
+    route,
+    relations = {},
+  } = node
   const showTileMesh = true
   const isPlatformTile = PLATFORM_TILE_IDS.has(id)
-  const shouldShowIcon = Boolean(icon) && id !== 'contact'
+  const leadDotClass = getTileLeadDotClass(tileAccent)
+  const institutions = Array.isArray(node.institutions) ? node.institutions : []
+  const visibleInstitutions = institutions.filter((institution) => institution?.visibility?.public !== false)
+  const topLineText = tileLead || icon
+  const primaryTitle = tileTitle || (tileLead ? subtitle || title : title)
+  const secondarySummary = tileSummary || (tileLead ? landingMessage || summary : summary)
+  const shouldShowTopLine = Boolean(topLineText)
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
   const [isHovered, setIsHovered] = useState(false)
@@ -451,8 +522,13 @@ export default function Tile({ node, theme, context = {} }) {
       return
     }
     
-    if (route && !e.target.closest('.tile-link-indicator')) {
-      window.location.href = route
+    if ((route || id === 'contact') && !e.target.closest('.tile-link-indicator')) {
+      const normalizedRoute = id === 'contact'
+        ? '/contact'
+        : route === '/philosophy'
+          ? '/books'
+          : route
+      window.location.href = normalizedRoute
     }
   }
 
@@ -532,12 +608,18 @@ export default function Tile({ node, theme, context = {} }) {
       )}
 
       {/* Tile icon */}
-      {shouldShowIcon && <div className="tile-icon">{icon}</div>}
+      {shouldShowTopLine && (
+        <div className={`tile-icon ${leadDotClass ? `tile-topline-with-dot ${leadDotClass}` : ''}`}>
+          <span>{topLineText}</span>
+        </div>
+      )}
 
       {/* Tile content */}
       <div className="tile-content">
-        {title && <h3 className="tile-title">{title}</h3>}
-        {summary && <p className="tile-summary">{summary}</p>}
+        <>
+          {primaryTitle && <h3 className="tile-title">{primaryTitle}</h3>}
+          {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
+        </>
       </div>
 
       {/* Relations indicator (if any edges) */}
