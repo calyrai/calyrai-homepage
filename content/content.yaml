@@ -1,0 +1,290 @@
+brand:
+
+  display_name: "Calyr.aí"
+
+  domain: "calyr.ai"
+
+  tagline: >
+    Surrogate modelling for complex systems
+
+logo:
+
+  title_ref: brand.display_name
+
+  route: /
+
+# --------------------------------------------------
+
+hero:
+
+  title_ref: brand.display_name
+
+  subtitle_ref: brand.tagline
+
+  summary: >
+    Transforming observations into knowledge,
+    knowledge into models,
+    and models into decisions.
+
+platforms:
+
+  title: "Platforms"
+
+  subtitle: "Applied intelligence modules"
+
+  summary: >
+    Core platform modules for engineering,
+    medicine, reasoning, and decision support.
+
+architecture:
+
+  title: "Architecture"
+
+  subtitle: "System relationships"
+
+  summary: >
+    Structural overview of module connections,
+    data flow, and reasoning pathways.
+
+footer:
+
+  title: ""
+
+  subtitle: ""
+
+  summary: ""
+
+  body: |
+    Name: Rupert Tscheliessnig
+    Role: Founder, Calyr.aí
+    rupert.tscheliessnig@calyr.ai
+
+# --------------------------------------------------
+
+core:
+
+  title: "Calyrai core"
+
+  subtitle: "Central reasoning engine"
+
+  summary: >
+    Connects observations,
+    knowledge,
+    models,
+    and decisions.
+
+  body: >
+    Calyrai core is the central reasoning engine
+    of the ecosystem. It links observations,
+    knowledge representation, learning workflows,
+    surrogate models, and decision support into
+    a unified framework.
+
+  icon: brain
+
+  route: /core
+
+# --------------------------------------------------
+
+brix:
+
+  title: "brix"
+
+  subtitle: "Engineering intelligence"
+
+  summary: >
+    Surrogate-assisted engineering
+    design and analysis.
+
+  body: >
+    Engineering intelligence platform for
+    structural analysis, design exploration,
+    and decision support. Brix combines
+    simulations, measurements, and surrogate
+    models to enable rapid variant evaluation
+    and uncertainty-aware engineering decisions.
+
+  icon: bridge
+
+  route: /brix
+
+# --------------------------------------------------
+
+aflowtex:
+
+  title: "aflowtex"
+
+  subtitle: "Medical flow intelligence"
+
+  summary: >
+    Patient-specific flow modelling
+    and clinical decision support.
+
+  body: >
+    Aflowtex combines clinical data,
+    vascular modelling, flow simulation,
+    and surrogate reasoning to support
+    patient-specific analysis and
+    uncertainty-aware medical decisions.
+
+  icon: aorta
+
+  route: /aflowtex
+
+# --------------------------------------------------
+
+lithos:
+
+  title: "lithos"
+
+  subtitle: "Consequence intelligence"
+
+  summary: >
+    Understanding consequences,
+    trade-offs, and impact.
+
+  body: >
+    Lithos translates model outputs into
+    actionable decisions by evaluating
+    consequences, risks, trade-offs,
+    and long-term system effects.
+
+  icon: mountain
+
+  route: /lithos
+
+# --------------------------------------------------
+
+oracle:
+
+  title: "oracle"
+
+  subtitle: "Knowledge extraction engine"
+
+  summary: >
+    Extracting knowledge from
+    complex information spaces.
+
+  body: >
+    Oracle transforms biological,
+    technical, scientific, and cultural
+    datasets into structured knowledge
+    graphs, reasoning paths, and
+    machine-readable representations.
+
+  icon: crystal-ball
+
+  route: /oracle
+
+# --------------------------------------------------
+
+delphi:
+
+  title: "delphi"
+
+  subtitle: "Interactive oracle interface"
+
+  summary: >
+    Explore knowledge through
+    guided interaction.
+
+  body: >
+    Delphi provides an interactive
+    interface for navigating knowledge,
+    discovering patterns, and generating
+    insights from oracle-generated
+    knowledge structures.
+
+  icon: compass
+
+  route: /delphi
+
+# --------------------------------------------------
+
+ecosystem:
+
+  title: "ecosystem"
+
+  subtitle: "Interactive architecture"
+
+  summary: >
+    Explore relationships across
+    the calyrai ecosystem.
+
+  body: >
+    Interactive graph showing how
+    calyrai core, brix, aflowtex,
+    lithos, oracle, and delphi
+    connect and exchange knowledge.
+
+  icon: network
+
+  route: /ecosystem
+
+# --------------------------------------------------
+
+philosophy:
+
+  title: "philosophy"
+
+  subtitle: "Principles and foundations"
+
+  summary: >
+    Scientific rigor,
+    openness,
+    and reproducibility.
+
+  body: >
+    Calyr.aí is founded on scientific
+    transparency, reproducibility,
+    interpretable modelling,
+    and human-centered decision support.
+
+  icon: book
+
+  route: /philosophy
+
+# --------------------------------------------------
+
+contact:
+
+  title: "Contacts"
+
+  subtitle: "Collaborate"
+
+  summary: >
+    Research, industry,
+    and partnership inquiries.
+
+  body: >
+    Contact us regarding collaborations,
+    research partnerships, demonstrator
+    projects, funding opportunities,
+    and technology development.
+
+  icon: mail
+
+  route: mailto:rupert.tscheliessnig@calyr.ai
+
+# --------------------------------------------------
+
+legal:
+
+  title: "legal"
+
+  subtitle: "Information"
+
+  summary: >
+    Legal and platform information.
+
+  body: >
+    Impressum, privacy policy,
+    contact information,
+    and external links.
+    Credentials: Rupert Tscheliessnig,
+    Founder of Calyr.aí,
+    AI and surrogate modelling research.
+
+  icon: document
+
+  route: /legal
