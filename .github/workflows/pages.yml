@@ -35,10 +35,16 @@ jobs:
         working-directory: web
         run: npm run build
 
+      - name: Stage single HTML artifact
+        run: |
+          rm -rf ./web/pages-only
+          mkdir -p ./web/pages-only
+          cp ./web/dist/index.html ./web/pages-only/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./web/dist
+          path: ./web/pages-only
 
   deploy:
     needs: build
