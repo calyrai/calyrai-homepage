@@ -8,6 +8,7 @@ import BooksPage from './components/BooksPage'
 import ContactPage from './components/ContactPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider, useRipple } from './context/RippleContext'
+import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
 import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
@@ -16,9 +17,9 @@ import './styles/background-effects.css'
 import './styles/quick-contact.css'
 
 function App() {
-  const [ast, setAst] = useState(null)
-  const [theme, setTheme] = useState(null)
-  const [booksPage, setBooksPage] = useState(null)
+  const [ast] = useState(AST_DATA)
+  const [theme] = useState(THEME_DATA)
+  const [booksPage] = useState(BOOKS_PAGE_DATA)
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -63,32 +64,15 @@ function App() {
   }
 
   useEffect(() => {
-    const loadArtifacts = async () => {
-      try {
-        // Cache-bust query params to force fresh load of compiled artifacts
-        const ts = Date.now()
-        const booksPromise = fetch(`/generated/books.page.json?t=${ts}`)
-          .then((r) => (r.ok ? r.json() : null))
-          .catch(() => null)
-
-        const [astData, themeData, booksData] = await Promise.all([
-          fetch(`/generated/nexus.ast.json?t=${ts}`).then((r) => r.json()),
-          fetch(`/generated/nexus.theme.json?t=${ts}`).then((r) => r.json()),
-          booksPromise,
-        ])
-        console.log('Theme loaded:', themeData?.skin?.id, themeData?.components?.hero)
-        setAst(astData)
-        setTheme(themeData)
-        setBooksPage(booksData)
-        applyThemeToCSS(themeData)
-        setLoading(false)
-      } catch (err) {
-        console.error('Failed to load artifacts:', err)
-        setError(err.message)
-        setLoading(false)
-      }
+    try {
+      console.log('Theme loaded:', theme?.skin?.id, theme?.components?.hero)
+      applyThemeToCSS(theme)
+      setLoading(false)
+    } catch (err) {
+      console.error('Failed to initialize bundled artifacts:', err)
+      setError(err.message)
+      setLoading(false)
     }
-    loadArtifacts()
   }, [])
 
   useEffect(() => {
