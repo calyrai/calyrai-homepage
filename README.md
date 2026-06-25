@@ -8,6 +8,10 @@ A semantic, data-driven homepage for CALYR.aí ecosystem. Uses YAML for configur
 
 **Architecture:** YAML → Semantic Compiler → JSON Artifacts → React Components → Browser
 
+**Repo Guide:** See [docs/site-build-and-deploy-guide.md](docs/site-build-and-deploy-guide.md) for how the site is created from YAML and what matters for deployment.
+
+**Local Usage:** See [LOCAL-README.md](LOCAL-README.md) for day-to-day local operation, editing, build, and deploy preparation.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ CONTENT LAYER                                                   │
@@ -67,8 +71,8 @@ A semantic, data-driven homepage for CALYR.aí ecosystem. Uses YAML for configur
 | 5 | ReactFlow Graph | ✅ Complete | Interactive knowledge graph visualization |
 | 6 | **Tile ↔ Graph Sync** | ✅ Complete | Bidirectional selection with React Context |
 | 7 | **Styling & Polish** | ✅ Complete | Animations, transitions, dark mode, hover effects |
-| 8 | Mobile Responsive | 🚀 Next | Hamburger menu, touch optimization |
-| 9 | GitHub Pages Deploy | ⏳ Ready | Build + push to gh-pages |
+| 8 | Mobile Responsive | ✅ Complete | Hamburger menu, touch optimization |
+| 9 | GitHub Pages Deploy | ✅ Live | GitHub Actions + custom domain `calyr.ai` |
 
 ---
 
@@ -1036,7 +1040,7 @@ function Section({ node, theme, context }) {
 
 ---
 
-## 🚀 Stage 9: GitHub Pages Deploy (Final)
+## 🚀 Stage 9: GitHub Pages Deploy (Live)
 
 ### Pre-Deployment Checklist
 
@@ -1060,110 +1064,104 @@ function Section({ node, theme, context }) {
 - ✅ No deprecated APIs
 - ✅ ReactFlow, Vite, React all latest stable
 
+### Live Deployment Status
+
+- Production URL: `https://calyr.ai/`
+- Publish mode: GitHub Pages via GitHub Actions workflow
+- Workflow file: `.github/workflows/pages.yml`
+- Custom domain: `calyr.ai`
+- HTTPS: enforced
+
+### Incident Log: June 25, 2026
+
+**Symptom**
+- The GitHub Actions deployment completed successfully.
+- `https://calyr.ai/` still returned the default GitHub Pages `404` page.
+- The repository Pages URL redirected to the custom domain, which made the failure look like a missing artifact even though the deployment was green.
+
+**Root Cause**
+- Repository Pages settings were still configured with `build_type: legacy`.
+- The repository was already deploying via `.github/workflows/pages.yml`, so Pages source mode and actual deployment mode were out of sync.
+- `https_enforced` was disabled for the custom domain.
+
+**Verified Fix**
+- Set repository Pages source to `GitHub Actions`.
+- Confirm `build_type: workflow`.
+- Confirm `cname: calyr.ai`.
+- Enable `https_enforced: true`.
+- Trigger one fresh `workflow_dispatch` run of `pages.yml` after changing the Pages mode.
+
+**Result**
+- `https://calyr.ai/` returned `HTTP 200` again.
+- The live site served the application bundle instead of the GitHub Pages 404 page.
+
 ### Production Build Process
 
-**Step 1: Configure Vite for GitHub Pages**
-
-```javascript
-// vite.config.js
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-
-export default defineConfig({
-  plugins: [react()],
-  base: '/calyrai-homepage/',  // Set to repo name
-  build: {
-    outDir: 'dist',
-    sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: { drop_console: true }
-    }
-  }
-})
-```
-
-**Step 2: Create Production Build**
+**Step 1: Build the Published Artifact**
 
 ```bash
 # Install dependencies (first time)
 cd web
 npm install
 
-# Build optimized bundle
+# Build optimized single-file bundle
 npm run build
 
-# Output: web/dist/ directory with minified files
-ls -la dist/
+# Output is copied to the repository deploy artifact
+ls -la ../deploy/
 ```
 
-**Step 3: Push to gh-pages Branch**
+**Step 2: GitHub Pages Repository Settings**
 
 ```bash
-# Install deployment tool
-npm install --save-dev gh-pages
-
-# Add deploy script to package.json
-{
-  "scripts": {
-    "build": "vite build",
-    "deploy": "npm run build && gh-pages -d dist"
-  }
-}
-
-# Deploy to GitHub Pages
-npm run deploy
+# Repository Settings → Pages
+# Source: GitHub Actions
+# Custom domain: calyr.ai
+# Enforce HTTPS: enabled
 ```
 
-**Step 4: Configure GitHub Repository Settings**
+**Step 3: GitHub Actions Workflow**
 
-1. Go to repository Settings → Pages
-2. Source: Deploy from branch
-3. Branch: gh-pages
-4. Folder: / (root)
-5. Save
-
-### GitHub Actions Workflow (Alternative)
-
-Create `.github/workflows/deploy.yml`:
+The active workflow is `.github/workflows/pages.yml`:
 
 ```yaml
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ publications ]  # Trigger on publications branch
-  workflow_dispatch:  # Manual trigger option
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: 'web/package-lock.json'
-    
-    - name: Install dependencies
-      run: cd web && npm ci
-    
-    - name: Compile YAML
-      run: python3 build/compile.py
-    
-    - name: Build React app
-      run: cd web && npm run build
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./web/dist
-        cname: calyrai-homepage.com  # Optional custom domain
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate deploy package
+        run: test -f ./deploy/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./deploy
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
 ### Performance Optimization Checklist
@@ -1206,7 +1204,7 @@ build: {
 
 **Step 1: Verify GitHub Pages URL Works**
 ```bash
-curl -I https://rtscheliessnig.github.io/calyrai-homepage/
+curl -I https://calyr.ai/
 # Should return 200 OK
 ```
 
@@ -1224,7 +1222,7 @@ curl -I https://rtscheliessnig.github.io/calyrai-homepage/
 
 **Step 4: Lighthouse Audit**
 ```bash
-lighthouse https://rtscheliessnig.github.io/calyrai-homepage/
+lighthouse https://calyr.ai/
 # Target: ≥90 in all categories
 ```
 
@@ -1237,14 +1235,21 @@ lighthouse https://rtscheliessnig.github.io/calyrai-homepage/
 ### Deployment Troubleshooting
 
 **Issue: 404 errors on assets**
-- Check vite.config.js `base` matches repo name
-- Ensure dist/ folder uploaded to gh-pages
+- Check that the single-file build was copied into `deploy/index.html`
+- Ensure the Pages workflow uploaded `./deploy`
 - Clear browser cache (Cmd+Shift+R)
 
 **Issue: CSS not loading**
-- Verify `base` path in vite.config.js
-- Check GitHub Pages source branch is gh-pages
+- Verify the generated bundle is present in `deploy/index.html`
+- Check GitHub Pages source is `GitHub Actions`
 - Ensure build succeeded (npm run build)
+
+**Issue: Workflow succeeds but custom domain still shows GitHub Pages 404**
+- Run `gh api repos/calyrai/calyrai-homepage/pages`
+- If `build_type` is `legacy`, switch Pages source to `GitHub Actions`
+- Confirm `https_enforced` is `true`
+- Trigger a fresh `workflow_dispatch` run after changing the Pages source
+- Re-check `curl -I https://calyr.ai/` until it returns `200`
 
 **Issue: Graph not rendering on production**
 - Check generated/ artifacts deployed
@@ -1259,7 +1264,7 @@ lighthouse https://rtscheliessnig.github.io/calyrai-homepage/
 ### Success Criteria
 
 ✅ **Deployed Successfully**
-- ✅ Site loads at https://username.github.io/repo/
+- ✅ Site loads at https://calyr.ai/
 - ✅ Lighthouse score ≥90
 - ✅ All interactive features work
 - ✅ Mobile responsive ✓

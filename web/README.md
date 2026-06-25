@@ -4,7 +4,7 @@ React frontend that consumes Nexus artifacts and renders the interactive, respon
 
 ## Overview
 
-**Project Status:** ✅ Stage 8 Complete (Mobile Responsive) | 🚀 Ready for Stage 9 (GitHub Pages Deployment)
+**Project Status:** ✅ Stage 8 Complete (Mobile Responsive) | ✅ Stage 9 Live on GitHub Pages
 
 The homepage is built on a **semantic compiler + React renderer** architecture that separates content (YAML) from presentation (React components). This enables rapid iteration, responsive design scaling, and maintainable component reuse.
 
@@ -301,10 +301,33 @@ npm run preview  # Preview production build locally
 | Collapsible Sections | ✅ Works | ✅ Works | ✅ Works |
 | Touch Drag | ✅ Supported | ✅ Supported | ✅ Supported |
 
-## Stage 9: GitHub Pages Deployment — 🚀 READY TO IMPLEMENT
+## Stage 9: GitHub Pages Deployment — ✅ LIVE
 
 ### Overview
 Deploy production-ready homepage to GitHub Pages with automated CI/CD pipeline.
+
+### Incident Log: June 25, 2026
+
+**Symptom**
+- The GitHub Actions deployment finished successfully.
+- `https://calyr.ai/` still returned the default GitHub Pages `404` page.
+- The repository Pages URL redirected to the custom domain, which made the issue look like a missing artifact even though the workflow was green.
+
+**Root Cause**
+- Repository Pages settings were still configured with `build_type: legacy`.
+- The repository was already publishing through `.github/workflows/pages.yml`, so GitHub Pages source mode and actual deployment mode were out of sync.
+- `https_enforced` was also disabled for the custom domain.
+
+**Verified Fix**
+- Set repository Pages source to `GitHub Actions`.
+- Confirm `build_type: workflow`.
+- Confirm `cname: calyr.ai`.
+- Enable `https_enforced: true`.
+- Trigger one fresh `workflow_dispatch` run of `pages.yml` after changing the Pages mode.
+
+**Result**
+- `https://calyr.ai/` returned `HTTP 200` again.
+- The live site served the application bundle instead of the GitHub Pages 404 page.
 
 ### Step 1: Build for Production
 ```bash
@@ -319,7 +342,8 @@ npm run build
 ```bash
 # Configure GitHub Pages to deploy from:
 # Repository Settings → Pages → Source: GitHub Actions
-# or Branch: gh-pages (if using git push deploy)
+# Custom domain: calyr.ai
+# Enforce HTTPS: enabled
 ```
 
 ### Step 3: GitHub Actions CI/CD Pipeline
@@ -388,9 +412,27 @@ git push origin main
 - [ ] .github/workflows/deploy.yml created
 - [ ] Push to main triggers GitHub Actions
 - [ ] GitHub Actions workflow completes successfully
+- [ ] Repository Settings → Pages uses GitHub Actions, not Deploy from branch
 - [ ] Deployed site accessible and responsive
 - [ ] All Stage 8 features verified on live site
 - [ ] CNAME configured (if using custom domain)
+- [ ] HTTPS enforcement enabled for the custom domain
+
+### Deployment Verification Commands
+
+```bash
+# Check the live custom domain
+curl -I https://calyr.ai/
+
+# Check Pages configuration through GitHub CLI
+gh api repos/calyrai/calyrai-homepage/pages
+```
+
+Expected Pages fields:
+- `build_type: workflow`
+- `cname: calyr.ai`
+- `https_enforced: true`
+- `html_url: https://calyr.ai/`
 
 ---
 
