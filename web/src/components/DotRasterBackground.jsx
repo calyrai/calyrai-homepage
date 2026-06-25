@@ -43,7 +43,26 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
       ripplesRef.current.push({ x, y, start: performance.now() })
     }
 
+    const isEventInsideTile = (event) => {
+      const path = typeof event.composedPath === 'function' ? event.composedPath() : []
+      for (const node of path) {
+        if (node instanceof Element && node.classList?.contains('tile')) {
+          return true
+        }
+      }
+
+      if (event.target instanceof Element && event.target.closest('.tile')) {
+        return true
+      }
+
+      return false
+    }
+
     const handlePointerDown = (event) => {
+      // Do not activate background pulses when interacting with tiles.
+      if (isEventInsideTile(event)) {
+        return
+      }
       addRippleFromClient(event.clientX, event.clientY)
     }
 

@@ -246,6 +246,8 @@ export default function Tile({ node, theme, context = {} }) {
   const [ripplePulse, setRipplePulse] = useState(0)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, elementX: 0, elementY: 0 })
+  const hasDraggedRef = useRef(false)
+  const dragThreshold = 6
   
   const tileRef = useRef(null)
   const meshCanvasRef = useRef(null)
@@ -334,8 +336,8 @@ export default function Tile({ node, theme, context = {} }) {
     if (route && e.target.closest('.tile-link-indicator')) {
       return
     }
-    
-    setIsDragging(true)
+
+    hasDraggedRef.current = false
     const tile = tileRef.current
     const rect = tile.getBoundingClientRect()
     
@@ -378,10 +380,20 @@ export default function Tile({ node, theme, context = {} }) {
   }
 
   const handleMouseMove = (e) => {
-    if (!isDragging || !dragStart) return
+    if (!dragStart) return
     
     const deltaX = e.clientX - dragStart.x
     const deltaY = e.clientY - dragStart.y
+    const movedDistance = Math.hypot(e.clientX - dragStart.elementX, e.clientY - dragStart.elementY)
+
+    if (movedDistance < dragThreshold) {
+      return
+    }
+
+    if (!isDragging) {
+      hasDraggedRef.current = true
+      setIsDragging(true)
+    }
     
     setPosition({
       x: position.x + deltaX,
@@ -530,7 +542,10 @@ export default function Tile({ node, theme, context = {} }) {
 
   const handleClick = (e) => {
     // Don't trigger click if we were dragging
-    if (isDragging) return
+    if (isDragging || hasDraggedRef.current) {
+      hasDraggedRef.current = false
+      return
+    }
     
     // Toggle selection in context (Stage 6)
     setSelectedTile(id)
