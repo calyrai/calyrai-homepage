@@ -68,7 +68,7 @@ export default function QuickContactRail({ page }) {
     return null
   }
 
-  const tabLabel = page.title || page.id || 'contact'
+  const tabLabel = page.title || page.id || ''
 
   return (
     <aside className={`quick-contact-rail ${isOpen ? 'open' : ''}`} aria-label={tabLabel}>

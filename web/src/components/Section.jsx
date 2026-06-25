@@ -10,7 +10,11 @@ import React from 'react'
 import { renderChildren } from './Renderer'
 
 export default function Section({ node, theme }) {
-  const { id, title, summary, children = [] } = node
+  const { id, title, summary, route, children = [] } = node
+  const titleHref = route || (id ? `#${id}` : null)
+  const titleContent = titleHref
+    ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
+    : title
 
   // Apply theme colors from skin if available
   const sectionStyle = theme?.skin?.components?.section ? {
@@ -33,7 +37,7 @@ export default function Section({ node, theme }) {
       {(title || summary) && (
         <div className="section-header">
           <div className="section-header-content">
-            {title && <h2 className="section-title">{title}</h2>}
+            {title && <h2 className="section-title">{titleContent}</h2>}
             {summary && <p className="section-summary">{summary}</p>}
           </div>
         </div>

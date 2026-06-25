@@ -76,6 +76,8 @@ export default function ContactPage({ page }) {
     return <main className="contact-page contact-page-empty" />
   }
 
+  const pageLabel = page.title || page.id || ''
+
   const institutions = Array.isArray(page.institutions)
     ? page.institutions.filter((institution) => institution?.visibility?.public !== false)
     : []
@@ -85,12 +87,12 @@ export default function ContactPage({ page }) {
     : page.route
 
   return (
-    <main className="contact-page" aria-label={page.title || page.id || 'contact'}>
+    <main className="contact-page" aria-label={pageLabel}>
       <header className="contact-page-hero">
         {kicker && <p className="contact-page-kicker">{kicker}</p>}
         <h2>
-          <a className="contact-page-home-link" href="/" aria-label={page.title || page.id || 'contact'}>
-            {page.title || page.id}
+          <a className="contact-page-home-link" href="/" aria-label={pageLabel}>
+            {pageLabel}
           </a>
         </h2>
         {page.summary && <p>{page.summary}</p>}
