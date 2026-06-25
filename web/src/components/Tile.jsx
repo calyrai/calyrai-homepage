@@ -251,7 +251,6 @@ export default function Tile({ node, theme, context = {} }) {
   const meshLayersRef = useRef([])
   const meshRafRef = useRef(null)
   const meshStartRef = useRef(performance.now())
-  const touchStartRef = useRef(null)
 
   // Load position from localStorage on mount
   useEffect(() => {
@@ -326,14 +325,11 @@ export default function Tile({ node, theme, context = {} }) {
     }
 
     hasDraggedRef.current = false
-    const tile = tileRef.current
-    const rect = tile.getBoundingClientRect()
-    
     setDragStart({
       x: e.clientX,
       y: e.clientY,
-      elementX: rect.left,
-      elementY: rect.top,
+      elementX: e.clientX,
+      elementY: e.clientY,
     })
   }
 
@@ -349,18 +345,14 @@ export default function Tile({ node, theme, context = {} }) {
       return
     }
     
-    setIsDragging(true)
     const touch = e.touches[0]
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY }
-    
-    const tile = tileRef.current
-    const rect = tile.getBoundingClientRect()
+    hasDraggedRef.current = false
     
     setDragStart({
       x: touch.clientX,
       y: touch.clientY,
-      elementX: rect.left,
-      elementY: rect.top,
+      elementX: touch.clientX,
+      elementY: touch.clientY,
     })
     
     // Prevent scroll during drag on non-mobile touch devices.
@@ -397,11 +389,21 @@ export default function Tile({ node, theme, context = {} }) {
 
   // Stage 8: Touch move handler
   const handleTouchMove = (e) => {
-    if (!isDragging || !dragStart) return
+    if (!dragStart) return
     
     const touch = e.touches[0]
     const deltaX = touch.clientX - dragStart.x
     const deltaY = touch.clientY - dragStart.y
+    const movedDistance = Math.hypot(touch.clientX - dragStart.elementX, touch.clientY - dragStart.elementY)
+
+    if (movedDistance < dragThreshold) {
+      return
+    }
+
+    if (!isDragging) {
+      hasDraggedRef.current = true
+      setIsDragging(true)
+    }
     
     setPosition({
       x: position.x + deltaX,
@@ -428,7 +430,6 @@ export default function Tile({ node, theme, context = {} }) {
   const handleTouchEnd = () => {
     if (isDragging) {
       setIsDragging(false)
-      touchStartRef.current = null
     }
   }
 

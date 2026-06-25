@@ -4,9 +4,6 @@
  * Container for organizing tiles/elements into groups
  * Renders as CSS Grid by default
  * Children are typically tiles
- * 
- * Stage 8: Collapsible sections on mobile (<768px)
- * Stage 9: Scroll-based tile open/close on mobile
  */
 
 import React from 'react'
