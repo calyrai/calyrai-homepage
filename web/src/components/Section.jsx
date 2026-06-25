@@ -46,7 +46,7 @@ export default function Section({ node, theme }) {
           className="section-collapse-toggle"
           onClick={() => setIsExpanded(true)}
           aria-expanded={isExpanded}
-          aria-label={`Open ${title || id}`}
+          aria-label={title || id || ''}
         >
           <span className="section-collapse-line" aria-hidden="true" />
         </button>
