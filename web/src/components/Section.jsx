@@ -6,11 +6,13 @@
  * Children are typically tiles
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { renderChildren } from './Renderer'
 
 export default function Section({ node, theme }) {
   const { id, title, summary, route, children = [] } = node
+  const isLineCollapsedSection = id === 'platforms' || id === 'architecture'
+  const [isExpanded, setIsExpanded] = useState(!isLineCollapsedSection)
   const titleHref = route || (id ? `#${id}` : null)
   const titleContent = titleHref
     ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
@@ -32,9 +34,26 @@ export default function Section({ node, theme }) {
   )
 
   return (
-    <section className="section" id={id} data-type="section" style={sectionStyle}>
+    <section
+      className={`section ${isLineCollapsedSection ? 'section-collapsible' : ''}`}
+      id={id}
+      data-type="section"
+      style={sectionStyle}
+    >
+      {isLineCollapsedSection && !isExpanded && (
+        <button
+          type="button"
+          className="section-collapse-toggle"
+          onClick={() => setIsExpanded(true)}
+          aria-expanded={isExpanded}
+          aria-label={`Open ${title || id}`}
+        >
+          <span className="section-collapse-line" aria-hidden="true" />
+        </button>
+      )}
+
       {/* Static section header for identical desktop/mobile behavior */}
-      {(title || summary) && (
+      {(title || summary) && isExpanded && (
         <div className="section-header">
           <div className="section-header-content">
             {title && <h2 className="section-title">{titleContent}</h2>}
@@ -43,7 +62,7 @@ export default function Section({ node, theme }) {
         </div>
       )}
 
-      {renderGrid()}
+      {isExpanded && renderGrid()}
     </section>
   )
 }
