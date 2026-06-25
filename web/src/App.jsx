@@ -9,6 +9,7 @@ import ContactPage from './components/ContactPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider, useRipple } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
+import { isInteractiveSurfaceEvent } from './utils/interactionFilters'
 import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
@@ -147,11 +148,7 @@ function AppContent() {
   useEffect(() => {
     const handleGlobalClick = (e) => {
       // Only create ripples from actual content clicks, not UI elements
-      if (
-        e.target.closest('.navigation') ||
-        e.target.closest('[role="button"]') ||
-        e.target.closest('.tile')
-      ) {
+      if (isInteractiveSurfaceEvent(e)) {
         return
       }
       createRipple(e.clientX, e.clientY)

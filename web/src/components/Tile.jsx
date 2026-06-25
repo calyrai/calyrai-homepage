@@ -23,7 +23,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSelection } from '../context/SelectionContext'
 import { useRipple } from '../context/RippleContext'
-import { useScrollCenterContext } from '../hooks/useScrollCenter.jsx'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -234,11 +233,7 @@ export default function Tile({ node, theme, context = {} }) {
   const shouldShowTopLine = Boolean(topLineText)
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
-  const scrollContext = useScrollCenterContext()
-  const centerTileId = scrollContext?.centerTileId ?? null
-  const registerTile = scrollContext?.registerTile
   const isMobileViewport = window.innerWidth < 768
-  const isScrollCentered = centerTileId === id
   
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -257,13 +252,6 @@ export default function Tile({ node, theme, context = {} }) {
   const meshRafRef = useRef(null)
   const meshStartRef = useRef(performance.now())
   const touchStartRef = useRef(null)
-
-  // Register tile with scroll center context
-  useEffect(() => {
-    if (registerTile && tileRef.current) {
-      registerTile(id, tileRef.current)
-    }
-  }, [id, registerTile])
 
   // Load position from localStorage on mount
   useEffect(() => {
@@ -610,9 +598,7 @@ export default function Tile({ node, theme, context = {} }) {
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
         isPlatformTile ? 'tile-platform' : ''
-      } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'} ${
-        isScrollCentered ? 'tile-scroll-centered' : ''
-      }`}
+      } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'}`}
       id={id}
       data-type="tile"
       data-draggable="true"
