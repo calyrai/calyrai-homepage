@@ -94,7 +94,6 @@ function buildTriangleMesh(width, height, base, seed, layer = 0) {
         x: x + rowOffset + (nx - 0.5) * base * (0.55 + layer * 0.08),
         y: y + (ny - 0.5) * rowStep * (0.55 + layer * 0.08),
         phase,
-        active: (rowIndex + colIndex) % 2 === 0,
       })
     }
 
@@ -126,7 +125,7 @@ function buildTriangleMesh(width, height, base, seed, layer = 0) {
     }
   }
 
-  return { triangles, nodes: rows.flat() }
+  return triangles
 }
 
 function mixedMeshFillColor(tint, alpha, focus = 0, highlight = 0) {
@@ -206,47 +205,6 @@ function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverAc
     // Keep edges subtle and mostly neutral so the reflective effect lives in triangle areas.
     ctx.strokeStyle = `rgba(170, 220, 232, ${strokeAlpha.toFixed(3)})`
     ctx.stroke()
-  }
-}
-
-function drawMeshNodes(ctx, nodes, pointer, time, width, height, hoverActive = false) {
-  const influenceRadius = Math.max(width, height) * 0.42
-
-  for (const node of nodes) {
-    if (!node.active) continue
-
-    const drift = Math.sin(time * 1.1 + node.phase) * 0.24
-    const x = node.x + drift
-    const y = node.y + drift * 0.45
-
-    const dx = x - pointer.x
-    const dy = y - pointer.y
-    const distance = Math.hypot(dx, dy) || 1
-    const focus = pointer.active ? Math.max(0, 1 - distance / influenceRadius) : 0
-    const pulse = 0.5 + 0.5 * Math.sin(time * 2.1 + node.phase)
-
-    const coreRadius = 2.2 + pulse * 0.9 + focus * 1.6 + (hoverActive ? 0.2 : 0)
-    const ringRadius = coreRadius + 4.5 + pulse * 3.2 + focus * 6.5
-    const ringAlpha = 0.08 + focus * 0.28 + pulse * 0.08
-
-    ctx.beginPath()
-    ctx.arc(x, y, coreRadius, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.95, 0.58 + focus * 0.3).toFixed(3)})`
-    ctx.fill()
-
-    ctx.beginPath()
-    ctx.arc(x, y, ringRadius, 0, Math.PI * 2)
-    ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.58, ringAlpha).toFixed(3)})`
-    ctx.lineWidth = 1 + focus * 0.85
-    ctx.stroke()
-
-    if (focus > 0.08) {
-      ctx.beginPath()
-      ctx.arc(x, y, ringRadius + 6 + focus * 8, 0, Math.PI * 2)
-      ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.26, focus * 0.22).toFixed(3)})`
-      ctx.lineWidth = 0.8
-      ctx.stroke()
-    }
   }
 }
 
@@ -533,8 +491,7 @@ export default function Tile({ node, theme, context = {} }) {
 
       context2d.clearRect(0, 0, width, height)
       for (const layer of meshLayersRef.current) {
-        drawMeshTriangles(context2d, layer.triangles, pointer, time, width, height, meshHoverRef.current)
-        drawMeshNodes(context2d, layer.nodes, pointer, time, width, height, meshHoverRef.current)
+        drawMeshTriangles(context2d, layer, pointer, time, width, height, meshHoverRef.current)
       }
 
       if (pointer.active) {
