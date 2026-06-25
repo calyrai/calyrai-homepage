@@ -45,6 +45,7 @@ export default function QuickContactRail({ page }) {
   const [isDragging, setIsDragging] = useState(false)
   const [topPx, setTopPx] = useState(null)
   const railRef = useRef(null)
+  const suppressNextClickRef = useRef(false)
   const dragRef = useRef({
     active: false,
     pointerId: null,
@@ -98,6 +99,7 @@ export default function QuickContactRail({ page }) {
       const target = event.target
       const isLinkTarget = target instanceof Element && !!target.closest('a')
       if (!drag.moved && !isLinkTarget) {
+        suppressNextClickRef.current = true
         setIsOpen((prev) => !prev)
       }
     }
@@ -128,6 +130,14 @@ export default function QuickContactRail({ page }) {
     setIsDragging(true)
   }
 
+  const handleTabClick = () => {
+    if (suppressNextClickRef.current) {
+      suppressNextClickRef.current = false
+      return
+    }
+    setIsOpen((prev) => !prev)
+  }
+
   const tabLabel = page.title || page.id || ''
   const railStyle = topPx == null ? undefined : { top: `${topPx}px`, bottom: 'auto' }
 
@@ -142,6 +152,7 @@ export default function QuickContactRail({ page }) {
         className="quick-contact-tab"
         type="button"
         onPointerDown={handlePointerDown}
+        onClick={handleTabClick}
         aria-expanded={isOpen}
         aria-controls="quick-contact-links"
       >
