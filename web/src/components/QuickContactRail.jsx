@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import '../styles/quick-contact.css'
 
 function normalizeLinkItem(item) {
   if (!item) return null
@@ -141,6 +140,10 @@ export default function QuickContactRail({ page }) {
     setIsDragging(true)
   }
 
+  const handleTabClick = () => {
+    setIsOpen((prev) => !prev)
+  }
+
   const tabLabel = page.title || page.id || ''
   const railStyle = topPx == null ? undefined : { top: `${topPx}px`, bottom: 'auto' }
 
@@ -149,17 +152,13 @@ export default function QuickContactRail({ page }) {
       className={`quick-contact-rail ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`}
       aria-label={tabLabel}
       style={railStyle}
-      onPointerDown={handlePointerDown}
       ref={railRef}
     >
       <button
         className="quick-contact-tab"
         type="button"
-        onClick={() => {
-          if (isOpen) {
-            setIsOpen(false)
-          }
-        }}
+        onPointerDown={handlePointerDown}
+        onClick={handleTabClick}
         aria-expanded={isOpen}
         aria-controls="quick-contact-links"
       >

@@ -4,7 +4,6 @@ import logoSpec from '../../data/logo/logo.json'
 import ringPointSet from '../../data/logo/calyr_ring_dots_1000.json'
 import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
-import '../../styles/logo.css'
 
 export default function LogoAnimation({ className = '', label = '', layout = 'inline' }) {
   const [state, setState] = useState('idle')

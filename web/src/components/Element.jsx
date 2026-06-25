@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import LogoAnimation from './logo/logo-animation'
+import LogoAnimation from './logo/LogoAnimation'
 
 export default function Element({ node, theme }) {
   const { id, title, summary, body, icon, route } = node

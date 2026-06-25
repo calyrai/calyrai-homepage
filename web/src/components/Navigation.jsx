@@ -10,7 +10,6 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import '../styles/navigation.css'
 
 function buildNavItemsFromAst(ast) {
   const children = Array.isArray(ast?.children) ? ast.children : []
