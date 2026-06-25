@@ -28,6 +28,15 @@
       }
     },
     {
+      "id": "movie",
+      "label": "Teaser",
+      "data": {
+        "title": "Teaser",
+        "summary": "Visual short section.\n",
+        "icon": ""
+      }
+    },
+    {
       "id": "platforms",
       "label": "Platforms",
       "data": {

@@ -32,6 +32,19 @@
       "yet."
     ]
   },
+  "movie": {
+    "title": "Teaser",
+    "summary": "Visual short section.\n",
+    "body_preview": "Place your short file path in route to load and play it here.\n",
+    "route": "/media/short.mp4",
+    "icon": "",
+    "keywords": [
+      "section.",
+      "short",
+      "teaser",
+      "visual"
+    ]
+  },
   "platforms": {
     "title": "Platforms",
     "summary": "Core platform modules for engineering, medicine, reasoning, and decision support.\n",
