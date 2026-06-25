@@ -9,25 +9,11 @@
  * Stage 9: Scroll-based tile open/close on mobile
  */
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { renderChildren } from './Renderer'
 
-export default function Section({ node, theme, renderNode }) {
+export default function Section({ node, theme }) {
   const { id, title, summary, children = [] } = node
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
-  const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth < 768)
-
-  useEffect(() => {
-    const handleResize = () => {
-      const nextIsMobile = window.innerWidth < 768
-      setIsMobile(nextIsMobile)
-      setIsCollapsed(nextIsMobile)
-    }
-
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
   // Apply theme colors from skin if available
   const sectionStyle = theme?.skin?.components?.section ? {
@@ -46,34 +32,17 @@ export default function Section({ node, theme, renderNode }) {
 
   return (
     <section className="section" id={id} data-type="section" style={sectionStyle}>
-      {/* Section header (clickable on mobile for collapse) */}
+      {/* Static section header for identical desktop/mobile behavior */}
       {(title || summary) && (
-        <div
-          className={`section-header ${isCollapsed ? 'collapsed' : ''} ${isMobile ? 'mobile' : ''}`}
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          role="button"
-          tabIndex={0}
-          aria-expanded={!isCollapsed}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              setIsCollapsed(!isCollapsed)
-            }
-          }}
-        >
+        <div className="section-header">
           <div className="section-header-content">
             {title && <h2 className="section-title">{title}</h2>}
             {summary && <p className="section-summary">{summary}</p>}
           </div>
-          {/* Collapse indicator (mobile only) */}
-          <span className={`collapse-icon ${isCollapsed ? 'open' : ''}`}>↓</span>
         </div>
       )}
 
-      {/* Tile grid (hidden when collapsed) */}
-      {!isCollapsed ? (
-        renderGrid()
-      ) : null}
+      {renderGrid()}
     </section>
   )
 }
