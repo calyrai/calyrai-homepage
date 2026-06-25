@@ -95,11 +95,19 @@ class NexusCompiler:
 
     def compile(self) -> bool:
         """Execute full compilation pipeline."""
+        self._reset_state()
         print("🏗️  CALYR.aí Nexus Compiler\n")
         for stage in (self._stage_parse, self._stage_validate, self._stage_resolve, self._stage_build):
             if not stage():
                 return self._exit_failure()
         return self._exit_success()
+
+    def _reset_state(self) -> None:
+        """Reset mutable compiler state so instances can be reused safely."""
+        self.source.clear()
+        self.resolved.clear()
+        self.errors.clear()
+        self.warnings.clear()
 
     def _stage_parse(self) -> bool:
         """Stage 1: Parse YAML source files."""
