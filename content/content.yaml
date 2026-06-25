@@ -322,6 +322,12 @@ contact:
     - id: youtube
       label: YouTube
       route: https://www.youtube.com
+    - id: lithos
+      label: lithos.ai
+      route: https://lithos.ai
+    - id: lidar
+      label: lidar
+      route: https://lidar.ai
 
   institutions:
     - id: asc
@@ -412,3 +418,38 @@ legal:
   icon: document
 
   route: /legal
+
+# --------------------------------------------------
+
+__graph:
+
+  nodes:
+    - core
+    - brix
+    - aflowtex
+    - lithos
+    - oracle
+    - delphi
+
+  edges:
+    - [core, brix]
+    - [core, aflowtex]
+    - [core, lithos]
+    - [core, oracle]
+    - [oracle, delphi]
+
+# --------------------------------------------------
+
+__interaction:
+
+  click:
+    tile:
+      action: openNode
+
+  hover:
+    tile:
+      action: highlight
+
+  graph:
+    node:
+      action: focusNode

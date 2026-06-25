@@ -51,8 +51,7 @@
       "icon": "",
       "route": "/media/short.mp4",
       "links": [],
-      "institutions": [],
-      "children": []
+      "institutions": []
     },
     {
       "type": "section",
@@ -289,6 +288,16 @@
               "id": "youtube",
               "label": "YouTube",
               "route": "https://www.youtube.com"
+            },
+            {
+              "id": "lithos",
+              "label": "lithos.ai",
+              "route": "https://lithos.ai"
+            },
+            {
+              "id": "lidar",
+              "label": "lidar",
+              "route": "https://lidar.ai"
             }
           ],
           "institutions": [
