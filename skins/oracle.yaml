@@ -37,6 +37,7 @@ skin:
       background: "#000000"
       text: "#ffffff"
       brand_color: "#ff00ff"
+      logo_layout: "stacked"
       accent: "{{ colors.accent }}"
       kicker_color: "rgba(255, 255, 255, 0.82)"
       subtitle_color: "rgba(255, 255, 255, 0.88)"

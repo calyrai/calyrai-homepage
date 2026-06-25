@@ -11,10 +11,18 @@
 
 .calyr-logo-wrap {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 20px;
+}
+
+.calyr-logo-wrap--inline {
+  flex-direction: row;
+}
+
+.calyr-logo-wrap--stacked {
+  flex-direction: column;
+  gap: 10px;
 }
 
 .logo-element {

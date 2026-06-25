@@ -6,7 +6,7 @@ import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
 import '../../styles/logo.css'
 
-export default function LogoAnimation({ className = '' }) {
+export default function LogoAnimation({ className = '', label = '', layout = 'inline' }) {
   const [state, setState] = useState('idle')
   const machineRef = useRef(null)
   const engineRef = useRef(null)
@@ -104,30 +104,48 @@ export default function LogoAnimation({ className = '' }) {
     }
   }
 
-  return (
-    <div
-      className={`calyr-logo-interactive ${className}`.trim()}
-      data-logo-state={state}
-      aria-label="CALYR interactive logo"
-      onMouseEnter={handlePointerEnter}
-      onMouseLeave={handlePointerLeave}
-      onMouseMove={handlePointerMove}
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          handleClick()
-        }
-      }}
-    >
-      <div
-        className={`calyr-logo-through-line ${state === 'active' || state === 'qr_build' ? 'energized' : ''}`}
-        aria-hidden="true"
-      />
-      <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
+  const renderLabel = (value) => {
+    if (!value) return null
+    const normalized = String(value)
+    const accentIndex = normalized.lastIndexOf('í')
+    if (accentIndex === -1) {
+      return <span>{normalized}</span>
+    }
+    const base = normalized.slice(0, accentIndex)
+    return (
+      <>
+        <span>{base}</span>
+        <span className="calyr-logo-label-accent">í</span>
+      </>
+    )
+  }
 
+  return (
+    <div className={`calyr-logo-wrap calyr-logo-wrap--${layout}`}>
+      <div
+        className={`calyr-logo-interactive ${className}`.trim()}
+        data-logo-state={state}
+        aria-label="CALYR interactive logo"
+        onMouseEnter={handlePointerEnter}
+        onMouseLeave={handlePointerLeave}
+        onMouseMove={handlePointerMove}
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            handleClick()
+          }
+        }}
+      >
+        <div
+          className={`calyr-logo-through-line ${state === 'active' || state === 'qr_build' ? 'energized' : ''}`}
+          aria-hidden="true"
+        />
+        <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
+      </div>
+      {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
     </div>
   )
 }

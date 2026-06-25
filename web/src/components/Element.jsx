@@ -12,7 +12,9 @@ export default function Element({ node, theme }) {
   const { id, title, summary, body, icon, route } = node
 
   if (id === 'logo') {
-    return <LogoAnimation className="logo-element" />
+    const heroTheme = theme?.skin?.components?.hero || {}
+    const logoLayout = heroTheme.logo_layout || 'inline'
+    return <LogoAnimation className="logo-element" label={title} layout={logoLayout} />
   }
 
   // Use footer theme for footer nodes, generic element theme otherwise.
