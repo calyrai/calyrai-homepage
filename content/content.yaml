@@ -26,6 +26,20 @@ hero:
   summary: >
     create what is not here yet.
 
+movie:
+
+  title: "Movie"
+
+  subtitle: "Short"
+
+  summary: >
+    Visual short section.
+
+  body: >
+    Place your short file path in route to load and play it here.
+
+  route: /media/short.mp4
+
 platforms:
 
   title: "Platforms"

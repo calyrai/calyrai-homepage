@@ -16,6 +16,7 @@ from typing import Any
 # These map node IDs to their semantic types
 NODE_TYPE_RULES = {
     "homepage": "page",
+    "movie": "section",
     "platforms": "section",
     "architecture": "section",
     "hero": "hero",
@@ -95,6 +96,11 @@ class ASTBuilder:
         # Grid nodes -> semantic sections
         grid_def = homepage_def.get("grid", {}) if isinstance(homepage_def, dict) else {}
         tiles = grid_def.get("tiles", []) if isinstance(grid_def, dict) else []
+
+        # Optional movie section rendered above platforms/architecture
+        if "movie" in self.content or "movie" in self.structure:
+            children.append(self._build_node("movie", {"children": []}))
+
         if isinstance(tiles, list) and tiles:
             platforms_tiles = tiles[:6]
             architecture_tiles = tiles[6:]

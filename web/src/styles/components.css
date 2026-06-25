@@ -142,6 +142,35 @@
   max-width: 800px;
 }
 
+.section-movie {
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+}
+
+.section-movie-shell {
+  width: min(980px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.section-movie-video {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 56vh;
+  border-radius: 10px;
+  background: #000;
+  display: block;
+}
+
+.section-movie-caption {
+  margin: 10px 4px 4px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
 .section-collapsible {
   padding-top: var(--space-lg);
   padding-bottom: var(--space-lg);

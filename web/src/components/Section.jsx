@@ -11,6 +11,7 @@ import { renderChildren } from './Renderer'
 
 export default function Section({ node, theme }) {
   const { id, title, summary, route, children = [] } = node
+  const isMovieSection = id === 'movie'
   const isLineCollapsedSection = id === 'platforms' || id === 'architecture'
   const [isExpanded, setIsExpanded] = useState(!isLineCollapsedSection)
   const titleHref = route || (id ? `#${id}` : null)
@@ -32,6 +33,32 @@ export default function Section({ node, theme }) {
       ))}
     </div>
   )
+
+  if (isMovieSection) {
+    return (
+      <section className="section section-movie" id={id} data-type="section" style={sectionStyle}>
+        {(title || summary) && (
+          <div className="section-header">
+            <div className="section-header-content">
+              {title && <h2 className="section-title">{titleContent}</h2>}
+              {summary && <p className="section-summary">{summary}</p>}
+            </div>
+          </div>
+        )}
+
+        <div className="section-movie-shell">
+          <video
+            className="section-movie-video"
+            controls
+            playsInline
+            preload="metadata"
+            src={route || undefined}
+          />
+          {node.body && <p className="section-movie-caption">{node.body}</p>}
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section
