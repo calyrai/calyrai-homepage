@@ -80,6 +80,52 @@ export default function QuickContactRail({ page }) {
     return () => window.removeEventListener('resize', initializePosition)
   }, [])
 
+  useEffect(() => {
+    if (!dragRef.current.active) return
+
+    const handleDocPointerMove = (event) => {
+      const drag = dragRef.current
+      if (!drag.active) return
+
+      const deltaY = event.clientY - drag.startPointerY
+      if (Math.abs(deltaY) > 4) {
+        dragRef.current.moved = true
+      }
+
+      setTopPx(clampTop(drag.startTopPx + deltaY))
+    }
+
+    const handleDocPointerUp = (event) => {
+      const drag = dragRef.current
+      if (!drag.active) return
+
+      dragRef.current.active = false
+      setIsDragging(false)
+
+      if (drag.moved || event.target.closest('a')) {
+        return
+      }
+
+      const now = Date.now()
+      if (now - lastTapRef.current < 320) {
+        setIsOpen((prev) => !prev)
+        lastTapRef.current = 0
+        return
+      }
+      lastTapRef.current = now
+    }
+
+    document.addEventListener('pointermove', handleDocPointerMove, true)
+    document.addEventListener('pointerup', handleDocPointerUp, true)
+    document.addEventListener('pointercancel', handleDocPointerUp, true)
+
+    return () => {
+      document.removeEventListener('pointermove', handleDocPointerMove, true)
+      document.removeEventListener('pointerup', handleDocPointerUp, true)
+      document.removeEventListener('pointercancel', handleDocPointerUp, true)
+    }
+  }, [topPx])
+
   const handlePointerDown = (event) => {
     if (event.target.closest('a')) return
     if (event.pointerType === 'mouse' && event.button !== 0) return
@@ -93,40 +139,6 @@ export default function QuickContactRail({ page }) {
       moved: false,
     }
     setIsDragging(true)
-    event.currentTarget.setPointerCapture?.(event.pointerId)
-  }
-
-  const handlePointerMove = (event) => {
-    const drag = dragRef.current
-    if (!drag.active || drag.pointerId !== event.pointerId) return
-
-    const deltaY = event.clientY - drag.startPointerY
-    if (Math.abs(deltaY) > 4) {
-      dragRef.current.moved = true
-    }
-
-    setTopPx(clampTop(drag.startTopPx + deltaY))
-  }
-
-  const handlePointerUp = (event) => {
-    const drag = dragRef.current
-    if (!drag.active || drag.pointerId !== event.pointerId) return
-
-    event.currentTarget.releasePointerCapture?.(event.pointerId)
-    dragRef.current.active = false
-    setIsDragging(false)
-
-    if (drag.moved || event.target.closest('a')) {
-      return
-    }
-
-    const now = Date.now()
-    if (now - lastTapRef.current < 320) {
-      setIsOpen((prev) => !prev)
-      lastTapRef.current = 0
-      return
-    }
-    lastTapRef.current = now
   }
 
   const tabLabel = page.title || page.id || ''
@@ -138,9 +150,7 @@ export default function QuickContactRail({ page }) {
       aria-label={tabLabel}
       style={railStyle}
       onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      ref={railRef}
     >
       <button
         className="quick-contact-tab"
