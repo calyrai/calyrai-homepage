@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../styles/quick-contact.css'
 
 function normalizeLinkItem(item) {
@@ -43,20 +43,113 @@ function buildContactLinks(page) {
 
 export default function QuickContactRail({ page }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [topPx, setTopPx] = useState(null)
+  const railRef = useRef(null)
+  const lastTapRef = useRef(0)
+  const dragRef = useRef({
+    active: false,
+    pointerId: null,
+    startPointerY: 0,
+    startTopPx: 0,
+    moved: false,
+  })
   const contactLinks = buildContactLinks(page)
 
   if (!page || contactLinks.length === 0) {
     return null
   }
 
+  const clampTop = (nextTop) => {
+    if (typeof window === 'undefined') return nextTop
+    const railHeight = railRef.current?.offsetHeight || 220
+    const minTop = 12
+    const maxTop = Math.max(minTop, window.innerHeight - railHeight - 12)
+    return Math.max(minTop, Math.min(maxTop, nextTop))
+  }
+
+  useEffect(() => {
+    const initializePosition = () => {
+      if (typeof window === 'undefined') return
+      const defaultTop = Math.round(window.innerHeight * 0.3)
+      setTopPx((prev) => clampTop(prev == null ? defaultTop : prev))
+    }
+
+    initializePosition()
+    window.addEventListener('resize', initializePosition)
+    return () => window.removeEventListener('resize', initializePosition)
+  }, [])
+
+  const handlePointerDown = (event) => {
+    if (event.target.closest('a')) return
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+
+    const safeTop = topPx ?? Math.round((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.3)
+    dragRef.current = {
+      active: true,
+      pointerId: event.pointerId,
+      startPointerY: event.clientY,
+      startTopPx: safeTop,
+      moved: false,
+    }
+    setIsDragging(true)
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  const handlePointerMove = (event) => {
+    const drag = dragRef.current
+    if (!drag.active || drag.pointerId !== event.pointerId) return
+
+    const deltaY = event.clientY - drag.startPointerY
+    if (Math.abs(deltaY) > 4) {
+      dragRef.current.moved = true
+    }
+
+    setTopPx(clampTop(drag.startTopPx + deltaY))
+  }
+
+  const handlePointerUp = (event) => {
+    const drag = dragRef.current
+    if (!drag.active || drag.pointerId !== event.pointerId) return
+
+    event.currentTarget.releasePointerCapture?.(event.pointerId)
+    dragRef.current.active = false
+    setIsDragging(false)
+
+    if (drag.moved || event.target.closest('a')) {
+      return
+    }
+
+    const now = Date.now()
+    if (now - lastTapRef.current < 320) {
+      setIsOpen((prev) => !prev)
+      lastTapRef.current = 0
+      return
+    }
+    lastTapRef.current = now
+  }
+
   const tabLabel = page.title || page.id || ''
+  const railStyle = topPx == null ? undefined : { top: `${topPx}px`, bottom: 'auto' }
 
   return (
-    <aside className={`quick-contact-rail ${isOpen ? 'open' : ''}`} aria-label={tabLabel}>
+    <aside
+      className={`quick-contact-rail ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`}
+      aria-label={tabLabel}
+      style={railStyle}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
       <button
         className="quick-contact-tab"
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          if (isOpen) {
+            setIsOpen(false)
+          }
+        }}
         aria-expanded={isOpen}
         aria-controls="quick-contact-links"
       >
