@@ -44,7 +44,10 @@ export default function Section({ node, theme }) {
         <button
           type="button"
           className="section-collapse-toggle"
-          onClick={() => setIsExpanded((prev) => !prev)}
+          onPointerDown={(event) => {
+            event.preventDefault()
+            setIsExpanded((prev) => !prev)
+          }}
           aria-expanded={isExpanded}
           aria-label={title || id || ''}
         >

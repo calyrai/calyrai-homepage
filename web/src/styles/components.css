@@ -157,6 +157,7 @@
   align-items: flex-start;
   gap: 10px;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .section-collapse-line {
