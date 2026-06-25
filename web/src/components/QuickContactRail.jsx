@@ -80,31 +80,22 @@ export default function QuickContactRail({ page }) {
   }, [])
 
   useEffect(() => {
-    if (!dragRef.current.active) return
+    if (!isDragging) return
 
     const handleDocPointerMove = (event) => {
       const drag = dragRef.current
       if (!drag.active) return
-
       const deltaY = event.clientY - drag.startPointerY
-      if (Math.abs(deltaY) > 4) {
-        dragRef.current.moved = true
-      }
-
+      if (Math.abs(deltaY) > 4) dragRef.current.moved = true
       setTopPx(clampTop(drag.startTopPx + deltaY))
     }
 
     const handleDocPointerUp = (event) => {
       const drag = dragRef.current
       if (!drag.active) return
-
       dragRef.current.active = false
       setIsDragging(false)
-
-      if (drag.moved || event.target.closest('a')) {
-        return
-      }
-
+      if (drag.moved || event.target.closest('a')) return
       const now = Date.now()
       if (now - lastTapRef.current < 320) {
         setIsOpen((prev) => !prev)
@@ -123,7 +114,7 @@ export default function QuickContactRail({ page }) {
       document.removeEventListener('pointerup', handleDocPointerUp, true)
       document.removeEventListener('pointercancel', handleDocPointerUp, true)
     }
-  }, [topPx])
+  }, [isDragging])
 
   const handlePointerDown = (event) => {
     if (event.target.closest('a')) return
