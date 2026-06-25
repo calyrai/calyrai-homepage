@@ -6,21 +6,25 @@
  * Children are typically tiles
  * 
  * Stage 8: Collapsible sections on mobile (<768px)
+ * Stage 9: Scroll-based tile open/close on mobile
  */
 
 import React, { useEffect, useState } from 'react'
 import { renderChildren } from './Renderer'
+import { ScrollCenterProvider } from '../hooks/useScrollCenter.jsx'
 
 export default function Section({ node, theme, renderNode }) {
   const { id, title, summary, children = [] } = node
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth < 768)
+  const [scrollMode, setScrollMode] = useState(() => window.innerWidth < 768)
 
   useEffect(() => {
     const handleResize = () => {
       const nextIsMobile = window.innerWidth < 768
       setIsMobile(nextIsMobile)
       setIsCollapsed(nextIsMobile)
+      setScrollMode(nextIsMobile)
     }
 
     handleResize()
@@ -34,6 +38,14 @@ export default function Section({ node, theme, renderNode }) {
     color: theme.skin.components.section.text_color,
     borderColor: theme.skin.components.section.border,
   } : {}
+
+  const renderGrid = () => (
+    <div className={`section-grid ${scrollMode ? 'scroll-mode' : ''}`}>
+      {renderChildren(children, theme).map((child, idx) => (
+        <React.Fragment key={idx}>{child}</React.Fragment>
+      ))}
+    </div>
+  )
 
   return (
     <section className="section" id={id} data-type="section" style={sectionStyle}>
@@ -62,13 +74,13 @@ export default function Section({ node, theme, renderNode }) {
       )}
 
       {/* Tile grid (hidden when collapsed) */}
-      {!isCollapsed && (
-        <div className="section-grid">
-          {renderChildren(children, theme).map((child, idx) => (
-            <React.Fragment key={idx}>{child}</React.Fragment>
-          ))}
-        </div>
-      )}
+      {!isCollapsed && scrollMode ? (
+        <ScrollCenterProvider>
+          {renderGrid()}
+        </ScrollCenterProvider>
+      ) : !isCollapsed ? (
+        renderGrid()
+      ) : null}
     </section>
   )
 }

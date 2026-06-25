@@ -166,6 +166,41 @@
   .section-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* Scroll mode: tiles stack vertically and expand/collapse on scroll */
+  .section-grid.scroll-mode {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    scroll-snap-type: y proximity;
+  }
+
+  .section-grid.scroll-mode .tile {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    /* Default: collapsed state */
+    max-height: 120px;
+    opacity: 0.7;
+    border-color: var(--border-color);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .section-grid.scroll-mode .tile-scroll-centered {
+    /* Center tile: expanded state */
+    max-height: 500px;
+    opacity: 1;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
+    background-color: #fafafa;
+  }
+
+  .section-grid.scroll-mode .tile-scroll-centered::before {
+    opacity: 1;
+  }
+
+  .section-grid.scroll-mode .tile-scroll-centered .tile-mesh-canvas {
+    opacity: 0.9;
+    filter: saturate(1.25) brightness(1.2);
+  }
 }
 
 @media (max-width: 480px) {
