@@ -10,26 +10,13 @@ Constructs the four Nexus JSON artifacts:
 Each builder is independent and responsible for one artifact.
 """
 
+import copy
+import re
 from typing import Any
 
-# Type inference rules for AST nodes
-# These map node IDs to their semantic types
-NODE_TYPE_RULES = {
-    "homepage": "page",
-    "movie": "section",
-    "platforms": "section",
-    "architecture": "section",
-    "hero": "hero",
-    "core": "tile",
-    "brix": "tile",
-    "aflowtex": "tile",
-    "lithos": "tile",
-    "oracle": "tile",
-    "delphi": "tile",
-    "ecosystem": "tile",
-    "philosophy": "tile",
-    "contact": "tile",
-}
+from .schema import GRAPH_EDGES_KEY, NODE_LIST_FIELDS, NODE_TEXT_FIELDS, NODE_TYPE_RULES
+
+_TEMPLATE_RE = re.compile(r'\{\{\s*([^}]+)\s*\}\}')
 
 
 class ASTBuilder:
@@ -84,12 +71,12 @@ class ASTBuilder:
         children: list[dict[str, Any]] = []
 
         # Header nodes (optional)
-        for node_id in homepage_def.get("header", []) if isinstance(homepage_def, dict) else []:
+        for node_id in self._layout_ids(homepage_def, "header"):
             child_def = self.structure.get(node_id, {})
             children.append(self._build_node(node_id, child_def))
 
         # Hero nodes
-        for node_id in homepage_def.get("hero", []) if isinstance(homepage_def, dict) else []:
+        for node_id in self._layout_ids(homepage_def, "hero"):
             child_def = self.structure.get(node_id, {})
             children.append(self._build_node(node_id, child_def))
 
@@ -112,15 +99,24 @@ class ASTBuilder:
                 children.append(self._build_node("architecture", {"children": architecture_tiles}))
 
         # Footer wrapper with optional footer children
-        footer_ids = homepage_def.get("footer", []) if isinstance(homepage_def, dict) else []
-        if isinstance(footer_ids, list):
-            footer_def = {"children": footer_ids}
-            children.append(self._build_node("footer", footer_def))
+        footer_ids = self._layout_ids(homepage_def, "footer")
+        if footer_ids:
+            children.append(self._build_node("footer", {"children": footer_ids}))
 
         if children:
             page_node["children"] = children
 
         return page_node
+
+    def _layout_ids(self, homepage_def: Any, key: str) -> list[str]:
+        """Return valid string node IDs from a layout list key."""
+        if not isinstance(homepage_def, dict):
+            return []
+
+        values = homepage_def.get(key, [])
+        if not isinstance(values, list):
+            return []
+        return [item for item in values if isinstance(item, str)]
 
     def _build_node(
         self, node_id: str, node_def: dict[str, Any]
@@ -147,40 +143,52 @@ class ASTBuilder:
         }
 
         # Add content if available in resolved data
-        if node_id in self.resolved:
-            resolved = self.resolved[node_id]
-            node.update({
-                "title": resolved.get("title", ""),
-                "tile_lead": resolved.get("tile_lead", ""),
-                "tile_accent": resolved.get("tile_accent", ""),
-                "tile_title": resolved.get("tile_title", ""),
-                "tile_summary": resolved.get("tile_summary", ""),
-                "subtitle": resolved.get("subtitle", ""),
-                "landing_message": resolved.get("landing_message", ""),
-                "summary": resolved.get("summary", ""),
-                "body": resolved.get("body", ""),
-                "icon": resolved.get("icon", ""),
-                "route": resolved.get("route", ""),
-                "links": resolved.get("links", []),
-                "institutions": resolved.get("institutions", []),
-            })
-
-            # Add relations if they exist and are non-empty
-            relations = resolved.get("relations", {})
-            if relations and (relations.get("incoming") or relations.get("outgoing")):
-                node["relations"] = relations
+        resolved = self.resolved.get(node_id)
+        if isinstance(resolved, dict):
+            node.update(self._extract_node_content(resolved))
+            self._add_relations(node, resolved)
 
         # Recursively add children
-        if isinstance(node_def, dict) and "children" in node_def:
-            children = node_def["children"]
-            if isinstance(children, list):
-                node["children"] = []
-                for child_id in children:
-                    child_def = self.structure.get(child_id, {})
-                    child_node = self._build_node(child_id, child_def)
-                    node["children"].append(child_node)
+        children = self._build_children(node_def)
+        if children:
+            node["children"] = children
 
         return node
+
+    def _extract_node_content(self, resolved: dict[str, Any]) -> dict[str, Any]:
+        """Extract normalized content fields from a resolved node."""
+        payload: dict[str, Any] = {}
+        for field in NODE_TEXT_FIELDS:
+            payload[field] = resolved.get(field, "")
+        for field in NODE_LIST_FIELDS:
+            value = resolved.get(field, [])
+            payload[field] = value if isinstance(value, list) else []
+        return payload
+
+    def _add_relations(self, node: dict[str, Any], resolved: dict[str, Any]) -> None:
+        """Attach relations when incoming/outgoing references exist."""
+        relations = resolved.get("relations", {})
+        if not isinstance(relations, dict):
+            return
+        if relations.get("incoming") or relations.get("outgoing"):
+            node["relations"] = relations
+
+    def _build_children(self, node_def: Any) -> list[dict[str, Any]]:
+        """Recursively build child nodes from structure definition."""
+        if not isinstance(node_def, dict):
+            return []
+
+        children = node_def.get("children", [])
+        if not isinstance(children, list):
+            return []
+
+        built_children: list[dict[str, Any]] = []
+        for child_id in children:
+            if not isinstance(child_id, str):
+                continue
+            child_def = self.structure.get(child_id, {})
+            built_children.append(self._build_node(child_id, child_def))
+        return built_children
 
     def _infer_type(self, node_id: str) -> str:
         """
@@ -202,14 +210,6 @@ class GraphBuilder:
     """Builds the knowledge graph for visualization and navigation."""
 
     def __init__(self, source: dict[str, Any], resolved: dict[str, Any]) -> None:
-        """
-        Initialize graph builder.
-        
-        Args:
-            source: Raw YAML sources
-            resolved: Resolved node data from Resolver
-        """
-        self.source = source
         self.resolved = resolved
         self.graph = source.get("graph", {})
 
@@ -242,37 +242,26 @@ class GraphBuilder:
 
     def _build_nodes(self) -> list[dict[str, Any]]:
         """Build graph nodes from resolved data."""
-        nodes: list[dict[str, Any]] = []
-
-        for node_id in self.resolved:
-            resolved = self.resolved[node_id]
-            node = {
-                "id": node_id,
-                "label": resolved.get("title", node_id),
-                "data": {
-                    "title": resolved.get("title", ""),
-                    "summary": resolved.get("summary", ""),
-                    "icon": resolved.get("icon", ""),
-                },
+        return [
+            {
+                "id": nid,
+                "label": r.get("title", nid),
+                "data": {"title": r.get("title", ""), "summary": r.get("summary", ""), "icon": r.get("icon", "")},
             }
-            nodes.append(node)
-
-        return nodes
+            for nid, r in self.resolved.items()
+        ]
 
     def _build_edges(self) -> list[dict[str, Any]]:
         """Build graph edges from structure."""
-        edges: list[dict[str, Any]] = []
-        graph_edges = self.graph.get("edges", [])
-
-        for source, target in graph_edges:
-            edge = {
-                "source": source,
-                "target": target,
-                "id": f"{source}→{target}",
-            }
-            edges.append(edge)
-
-        return edges
+        raw = self.graph.get(GRAPH_EDGES_KEY, [])
+        if not isinstance(raw, list):
+            return []
+        return [
+            {"source": s, "target": t, "id": f"{s}→{t}"}
+            for edge in raw
+            if isinstance(edge, (list, tuple)) and len(edge) == 2
+            for s, t in (edge,)
+        ]
 
 
 class ThemeBuilder:
@@ -288,109 +277,32 @@ class ThemeBuilder:
         self.theme = source.get("theme", {})
 
     def build(self) -> dict[str, Any]:
-        """
-        Build compiled design system with template resolution.
-        
-        Performs:
-            • Variable expansion (e.g., {{ colors.primary }} → #0A2E45)
-            • Recursive resolution of nested references
-        
-        Returns:
-            dict[str, Any]: Complete theme configuration with resolved variables
-        """
-        # Build a flat resolution context from the theme structure
-        # This allows skin components to reference colors directly: {{ colors.primary }}
-        resolution_context = {
-            'colors': self.theme.get('skin', {}).get('colors', {}),
-            **self.theme.get('skin', {}),  # Also include direct skin references
-        }
-        
-        # Deep copy to avoid modifying original
-        import copy
-        resolved_theme = copy.deepcopy(self.theme)
-        
-        # Resolve templates in the theme
-        resolved_theme = self._resolve_with_context(resolved_theme, resolution_context)
-        return resolved_theme
+        """Build compiled design system with {{ }} template variable resolution."""
+        skin = self.theme.get('skin', {})
+        context = {'colors': skin.get('colors', {}), **skin}
+        return self._resolve_with_context(copy.deepcopy(self.theme), context)
 
     def _resolve_with_context(self, obj: Any, context: dict[str, Any], max_depth: int = 5) -> Any:
-        """
-        Recursively resolve template references using a provided context.
-        
-        Args:
-            obj: The object to resolve (dict, list, str, etc.)
-            context: The resolution context (dict with colors, components, etc.)
-            max_depth: Maximum recursion depth to prevent infinite loops
-        
-        Returns:
-            The object with all templates resolved
-        """
+        """Recursively resolve {{ }} templates; stops at max_depth to prevent loops."""
         if max_depth <= 0:
             return obj
-        
         if isinstance(obj, dict):
-            resolved = {}
-            for key, value in obj.items():
-                resolved[key] = self._resolve_with_context(value, context, max_depth - 1)
-            return resolved
-        elif isinstance(obj, list):
+            return {k: self._resolve_with_context(v, context, max_depth - 1) for k, v in obj.items()}
+        if isinstance(obj, list):
             return [self._resolve_with_context(item, context, max_depth - 1) for item in obj]
-        elif isinstance(obj, str):
-            return self._resolve_template_string_with_context(obj, context)
-        else:
-            return obj
+        if isinstance(obj, str):
+            return _TEMPLATE_RE.sub(lambda m: self._lookup(context, m.group(1).strip()), obj)
+        return obj
 
-    def _resolve_template_string_with_context(self, s: str, context: dict[str, Any]) -> str:
-        """
-        Resolve {{ ... }} template references in a string using provided context.
-        
-        Examples:
-            "{{ colors.primary }}" → "#0a2e45" (from context['colors']['primary'])
-            "1px solid {{ colors.border }}" → "1px solid #c8e8f2"
-        
-        Args:
-            s: The string to resolve
-            context: The resolution context
-        
-        Returns:
-            The string with all templates resolved
-        """
-        import re
-        
-        def replace_template(match):
-            path = match.group(1).strip()  # Extract "colors.primary" from {{ colors.primary }}
-            value = self._get_nested_value(context, path)
-            if value is None:
-                # If not found, return the original template (for debugging)
-                return f"/* UNRESOLVED: {path} */"
-            return str(value)
-        
-        # Find all {{ ... }} templates and replace them
-        return re.sub(r'\{\{\s*([^}]+)\s*\}\}', replace_template, s)
-
-    def _get_nested_value(self, obj: Any, path: str) -> Any:
-        """
-        Get value from nested dict using dot notation.
-        
-        Examples:
-            path="colors.primary" → obj["colors"]["primary"]
-            path="skin.components.tile.background" → obj["skin"]["components"]["tile"]["background"]
-        
-        Args:
-            obj: The object to query
-            path: Dot-notation path (e.g., "colors.primary")
-        
-        Returns:
-            The value at the path, or None if not found
-        """
-        keys = path.split('.')
-        current = obj
-        for key in keys:
+    def _lookup(self, context: dict[str, Any], path: str) -> str:
+        """Resolve a dot-notation path against context; returns comment string if missing."""
+        current: Any = context
+        for key in path.split('.'):
             if isinstance(current, dict) and key in current:
                 current = current[key]
             else:
-                return None
-        return current
+                return f"/* UNRESOLVED: {path} */"
+        return str(current)
 
 
 class IndexBuilder:
@@ -406,68 +318,19 @@ class IndexBuilder:
         self.resolved = resolved
 
     def build(self) -> dict[str, Any]:
-        """
-        Build searchable index for discovery and autocomplete.
-        
-        Format:
-            {
-              "nodeId": {
-                "title": "...",
-                "summary": "...",
-                "keywords": ["..."],
-                "route": "/...",
-                "body_preview": "..."
-              },
-              ...
+        """Build searchable index keyed by node ID."""
+        return {
+            nid: {
+                "title": r.get("title", ""),
+                "summary": r.get("summary", ""),
+                "body_preview": r.get("body", "")[:200],
+                "route": r.get("route", ""),
+                "icon": r.get("icon", ""),
+                "keywords": self._extract_keywords(r.get("title", ""), r.get("summary", "")),
             }
-        
-        Returns:
-            dict[str, Any]: Searchable index
-        """
-        index: dict[str, Any] = {}
-
-        for node_id, resolved in self.resolved.items():
-            # Extract keywords from title and summary
-            keywords = self._extract_keywords(
-                resolved.get("title", ""),
-                resolved.get("summary", ""),
-            )
-
-            entry = {
-                "title": resolved.get("title", ""),
-                "summary": resolved.get("summary", ""),
-                "body_preview": resolved.get("body", "")[:200],
-                "route": resolved.get("route", ""),
-                "icon": resolved.get("icon", ""),
-                "keywords": keywords,
-            }
-
-            index[node_id] = entry
-
-        return index
+            for nid, r in self.resolved.items()
+        }
 
     def _extract_keywords(self, *texts: str) -> list[str]:
-        """
-        Extract unique keywords from text fields.
-        
-        Simple tokenization: split on whitespace and lowercase.
-        Could be improved with:
-            • Stop word removal
-            • Lemmatization
-            • N-grams
-            • Semantic similarity
-        
-        Args:
-            *texts: Variable text fields to extract keywords from
-            
-        Returns:
-            list[str]: Unique keywords
-        """
-        keywords: set[str] = set()
-
-        for text in texts:
-            if text:
-                words = text.lower().split()
-                keywords.update(words)
-
-        return sorted(list(keywords))
+        """Tokenize and deduplicate words from all text fields."""
+        return sorted({w for t in texts if t for w in t.lower().split()})
