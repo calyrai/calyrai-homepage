@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { isInteractiveSurfaceEvent } from '../utils/interactionFilters'
 
 export default function DotRasterBackground({ theme, isBooksRoute = false }) {
   const canvasRef = useRef(null)
@@ -15,6 +16,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     const dotRadius = 1.2
     const rippleDuration = 820
     const rippleRadius = spacing * 7
+    const activationCellSize = spacing * 3
     let rafId = 0
 
     const colors = theme?.skin?.colors || {}
@@ -44,7 +46,23 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
       ripplesRef.current.push({ x, y, start: performance.now() })
     }
 
+    const isActiveCheckerCell = (clientX, clientY) => {
+      const column = Math.floor(clientX / activationCellSize)
+      const row = Math.floor(clientY / activationCellSize)
+      return (row + column) % 2 === 0
+    }
+
     const handlePointerDown = (event) => {
+      // Never react to clicks intended for pressable foreground UI.
+      if (isInteractiveSurfaceEvent(event, ['.tile', '.navigation', '.logo-element', '.quick-contact-rail', 'a', 'button', 'input', 'textarea', 'select', '[role="button"]'])) {
+        return
+      }
+
+      // Transparent checkerboard activation: only every second cell is "live".
+      if (!isActiveCheckerCell(event.clientX, event.clientY)) {
+        return
+      }
+
       addRippleFromClient(event.clientX, event.clientY)
     }
 
@@ -55,9 +73,10 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
 
       // Dot raster base layer.
       ctx.fillStyle = dotColor
-      ctx.globalAlpha = 0.28
       for (let y = 0; y <= h; y += spacing) {
         for (let x = 0; x <= w; x += spacing) {
+          const activeCell = isActiveCheckerCell(x, y)
+          ctx.globalAlpha = activeCell ? 0.3 : 0.16
           ctx.beginPath()
           ctx.arc(x, y, dotRadius, 0, Math.PI * 2)
           ctx.fill()
@@ -96,12 +115,12 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
 
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
-    canvas.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointerdown', handlePointerDown)
     rafId = requestAnimationFrame(draw)
 
     return () => {
       window.removeEventListener('resize', setCanvasSize)
-      canvas.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('pointerdown', handlePointerDown)
       if (rafId) {
         cancelAnimationFrame(rafId)
       }
