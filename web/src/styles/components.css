@@ -1657,12 +1657,27 @@ button:active {
 }
 
 .section-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--space-md);
 }
 
 .tile {
   padding: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+
+  .section-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .tile {
+    width: 100%;
+  }
 }
 
 .tile-icon {
