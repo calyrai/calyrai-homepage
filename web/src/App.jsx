@@ -147,7 +147,11 @@ function AppContent() {
   useEffect(() => {
     const handleGlobalClick = (e) => {
       // Only create ripples from actual content clicks, not UI elements
-      if (e.target.closest('.navigation') || e.target.closest('[role="button"]')) {
+      if (
+        e.target.closest('.navigation') ||
+        e.target.closest('[role="button"]') ||
+        e.target.closest('.tile')
+      ) {
         return
       }
       createRipple(e.clientX, e.clientY)
