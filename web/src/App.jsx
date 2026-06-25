@@ -120,7 +120,7 @@ function App() {
       <DotRasterBackground theme={theme} isBooksRoute={isBooksRoute || isContactRoute} />
       <RippleLayer />
       {/* Navigation (Stage 8) */}
-      <Navigation theme={theme} />
+      <Navigation theme={theme} ast={ast} />
       <QuickContactRail page={contactPage} />
       
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>

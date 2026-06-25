@@ -77,34 +77,40 @@ function BooksSection({ section }) {
 
 export default function BooksPage({ page }) {
   if (!page) {
-    return (
-      <main className="books-page books-page-empty">
-        <h2>Books</h2>
-        <p>Books artifact not loaded yet.</p>
-      </main>
-    )
+    return <main className="books-page books-page-empty" />
   }
 
   const sections = Array.isArray(page.sections) ? page.sections : []
-  const heroTitleRaw = page?.hero?.title || 'book'
+  const heroTitleRaw = page?.hero?.title || page?.header?.page_label || ''
   const heroTitle = heroTitleRaw.replace(/[.]+\s*$/, '')
+  const heroSubtitle = page?.hero?.subtitle || ''
+  const heroKicker = page?.header?.section_label || ''
+  const homeLabel = page?.header?.brand || page?.id || ''
+  const generatedLabel = page?.metadata?.labels?.generated || page?.metadata?.generated_label || ''
+  const generatedValue = page?.metadata?.generated_at || ''
+  const booksLabel = page?.metadata?.labels?.books || page?.metadata?.book_count_label || ''
+  const booksValue = page?.metadata?.book_count
 
   return (
-    <main className="books-page" aria-label="Books page">
+    <main className="books-page" aria-label={page?.id || ''}>
       <header className="books-page-hero">
-        <p className="books-page-kicker">Research Stream</p>
+        {heroKicker && <p className="books-page-kicker">{heroKicker}</p>}
         <h2>
-          <a className="books-page-home-link" href="/" aria-label="Go to landing page">
+          <a className="books-page-home-link" href="/" aria-label={homeLabel}>
             <span>{heroTitle}</span>
             <span aria-hidden="true" className="books-page-title-dot" />
           </a>
         </h2>
-        <p>{page?.hero?.subtitle || 'Long-form concepts and frameworks'}</p>
+        {heroSubtitle && <p>{heroSubtitle}</p>}
       </header>
 
       <div className="books-page-meta">
-        <span>Generated: {page?.metadata?.generated_at || 'n/a'}</span>
-        <span>Books: {page?.metadata?.book_count ?? 0}</span>
+        {(generatedLabel || generatedValue) && (
+          <span>{[generatedLabel, generatedValue].filter(Boolean).join(' ')}</span>
+        )}
+        {(booksLabel || booksValue !== undefined) && (
+          <span>{[booksLabel, booksValue].filter((value) => value !== '' && value !== null && value !== undefined).join(' ')}</span>
+        )}
       </div>
 
       {sections.map((section) => (

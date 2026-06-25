@@ -6,6 +6,14 @@ function ContactInstitution({ institution }) {
   const city = institution.location?.city
   const country = institution.location?.country
   const locationLabel = [city, country].filter(Boolean).join(', ')
+  const websiteLabel = (() => {
+    if (!institution.website) return ''
+    try {
+      return new URL(institution.website).hostname.replace(/^www\./, '')
+    } catch {
+      return institution.website
+    }
+  })()
 
   return (
     <article className="contact-page-card">
@@ -62,7 +70,7 @@ function ContactInstitution({ institution }) {
       {institution.website && (
         <div className="contact-page-links">
           <a href={institution.website} className="contact-page-link" target="_blank" rel="noreferrer">
-            <span>Website</span>
+            <span>{websiteLabel}</span>
             <span aria-hidden="true" className="contact-page-link-arrow">→</span>
           </a>
         </div>

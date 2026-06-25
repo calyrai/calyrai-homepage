@@ -17,37 +17,55 @@ export default function BooksPipelinePreview({ page }) {
   }
 
   const sections = Array.isArray(page.sections) ? page.sections : []
+  const pipelineTitle = page?.pipeline?.title || page?.hero?.title || page?.header?.page_label || ''
+  const pipelineSubtitle = page?.pipeline?.subtitle || ''
+  const generatedLabel = page?.metadata?.labels?.generated || page?.metadata?.generated_label || ''
+  const generatedValue = page?.metadata?.generated_at || ''
+  const booksLabel = page?.metadata?.labels?.books || page?.metadata?.book_count_label || ''
+  const booksValue = page?.metadata?.book_count
+  const itemsLabel = page?.pipeline?.items_label || page?.metadata?.labels?.items || ''
+  const statusTitle = page?.pipeline?.status_title || ''
 
   return (
-    <section className="books-pipeline" aria-label="Books pipeline preview">
+    <section className="books-pipeline" aria-label={pipelineTitle}>
       <div className="books-pipeline-header">
-        <h2 className="books-pipeline-title">Books Pipeline</h2>
-        <p className="books-pipeline-subtitle">YAML to JSON artifact loaded from generated/books.page.json</p>
+        {pipelineTitle && <h2 className="books-pipeline-title">{pipelineTitle}</h2>}
+        {pipelineSubtitle && <p className="books-pipeline-subtitle">{pipelineSubtitle}</p>}
       </div>
 
       <div className="books-pipeline-meta">
-        <div className="books-pipeline-meta-card">
-          <span className="books-pipeline-meta-label">Generated</span>
-          <span className="books-pipeline-meta-value">{page?.metadata?.generated_at || 'n/a'}</span>
-        </div>
-        <div className="books-pipeline-meta-card">
-          <span className="books-pipeline-meta-label">Books</span>
-          <span className="books-pipeline-meta-value">{page?.metadata?.book_count ?? 0}</span>
-        </div>
+        {(generatedLabel || generatedValue) && (
+          <div className="books-pipeline-meta-card">
+            {generatedLabel && <span className="books-pipeline-meta-label">{generatedLabel}</span>}
+            {generatedValue && <span className="books-pipeline-meta-value">{generatedValue}</span>}
+          </div>
+        )}
+        {(booksLabel || booksValue !== undefined) && (
+          <div className="books-pipeline-meta-card">
+            {booksLabel && <span className="books-pipeline-meta-label">{booksLabel}</span>}
+            {booksValue !== undefined && <span className="books-pipeline-meta-value">{booksValue}</span>}
+          </div>
+        )}
       </div>
 
       <div className="books-pipeline-section-grid">
         {sections.map((section) => (
           <article key={section.id} className="books-pipeline-section-card">
             <h3>{section.title || section.id}</h3>
-            <p>{section.description || 'No description'}</p>
-            <div className="books-pipeline-section-count">Items: {Array.isArray(section.items) ? section.items.length : 0}</div>
+            {section.description && <p>{section.description}</p>}
+            {(itemsLabel || Array.isArray(section.items)) && (
+              <div className="books-pipeline-section-count">
+                {[itemsLabel, Array.isArray(section.items) ? section.items.length : 0]
+                  .filter((value) => value !== '' && value !== null && value !== undefined)
+                  .join(' ')}
+              </div>
+            )}
           </article>
         ))}
       </div>
 
       <div className="books-pipeline-status">
-        <h3>Status breakdown</h3>
+        {statusTitle && <h3>{statusTitle}</h3>}
         <ul>{renderStatusItems(page?.metadata?.books_by_status)}</ul>
       </div>
     </section>

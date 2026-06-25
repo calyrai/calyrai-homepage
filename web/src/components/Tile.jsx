@@ -533,7 +533,7 @@ export default function Tile({ node, theme, context = {} }) {
       hasDraggedRef.current = false
       return
     }
-    
+
     // Toggle selection in context (Stage 6)
     setSelectedTile(id)
 
@@ -542,14 +542,15 @@ export default function Tile({ node, theme, context = {} }) {
       setIsFoilCovered((prev) => !prev)
       return
     }
-    
-    if ((route || id === 'contact') && !e.target.closest('.tile-link-indicator')) {
-      const normalizedRoute = id === 'contact'
-        ? '/contact'
-        : route === '/philosophy'
-          ? '/books'
-          : route
-      window.location.href = normalizedRoute
+
+    if (!e.target.closest('.tile-link-indicator')) {
+      const normalizedRoute = (route && !String(route).startsWith('mailto:'))
+        ? route
+        : (visibleInstitutions.length > 0 && id ? `/${id}` : route)
+
+      if (normalizedRoute) {
+        window.location.href = normalizedRoute
+      }
     }
   }
 
