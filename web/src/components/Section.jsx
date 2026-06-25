@@ -12,10 +12,10 @@ import { renderChildren } from './Renderer'
 export default function Section({ node, theme }) {
   const { id, title, summary, route, children = [] } = node
   const isMovieSection = id === 'movie'
-  const isLineCollapsedSection = id === 'platforms' || id === 'architecture'
+  const isLineCollapsedSection = id === 'movie' || id === 'platforms' || id === 'architecture'
   const [isExpanded, setIsExpanded] = useState(!isLineCollapsedSection)
   const lastPointerToggleTsRef = useRef(0)
-  const titleHref = route || (id ? `#${id}` : null)
+  const titleHref = isMovieSection ? (id ? `#${id}` : null) : (route || (id ? `#${id}` : null))
   const titleContent = titleHref
     ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
     : title
@@ -35,7 +35,32 @@ export default function Section({ node, theme }) {
     </div>
   )
 
-  if (isMovieSection) {
+  const renderMovie = () => (
+    <div className="section-movie-shell">
+      <video
+        className="section-movie-video"
+        controls
+        playsInline
+        preload="metadata"
+        src={route || undefined}
+      />
+      {node.body && <p className="section-movie-caption">{node.body}</p>}
+    </div>
+  )
+
+  const handleTogglePointerDown = () => {
+    lastPointerToggleTsRef.current = Date.now()
+    setIsExpanded((prev) => !prev)
+  }
+
+  const handleToggleClick = () => {
+    if (Date.now() - lastPointerToggleTsRef.current < 350) {
+      return
+    }
+    setIsExpanded((prev) => !prev)
+  }
+
+  if (isMovieSection && !isLineCollapsedSection) {
     return (
       <section className="section section-movie" id={id} data-type="section" style={sectionStyle}>
         {(title || summary) && (
@@ -47,16 +72,7 @@ export default function Section({ node, theme }) {
           </div>
         )}
 
-        <div className="section-movie-shell">
-          <video
-            className="section-movie-video"
-            controls
-            playsInline
-            preload="metadata"
-            src={route || undefined}
-          />
-          {node.body && <p className="section-movie-caption">{node.body}</p>}
-        </div>
+        {renderMovie()}
       </section>
     )
   }
@@ -72,16 +88,8 @@ export default function Section({ node, theme }) {
         <button
           type="button"
           className="section-collapse-toggle"
-          onPointerDown={() => {
-            lastPointerToggleTsRef.current = Date.now()
-            setIsExpanded((prev) => !prev)
-          }}
-          onClick={() => {
-            if (Date.now() - lastPointerToggleTsRef.current < 350) {
-              return
-            }
-            setIsExpanded((prev) => !prev)
-          }}
+          onPointerDown={handleTogglePointerDown}
+          onClick={handleToggleClick}
           aria-expanded={isExpanded}
           aria-label={title || id || ''}
         >
@@ -100,7 +108,7 @@ export default function Section({ node, theme }) {
         </div>
       )}
 
-      {isExpanded && renderGrid()}
+      {isExpanded && (isMovieSection ? renderMovie() : renderGrid())}
     </section>
   )
 }
