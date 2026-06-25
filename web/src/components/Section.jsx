@@ -40,11 +40,11 @@ export default function Section({ node, theme }) {
       data-type="section"
       style={sectionStyle}
     >
-      {isLineCollapsedSection && !isExpanded && (
+      {isLineCollapsedSection && (
         <button
           type="button"
           className="section-collapse-toggle"
-          onClick={() => setIsExpanded(true)}
+          onClick={() => setIsExpanded((prev) => !prev)}
           aria-expanded={isExpanded}
           aria-label={title || id || ''}
         >
@@ -54,7 +54,7 @@ export default function Section({ node, theme }) {
       )}
 
       {/* Static section header for identical desktop/mobile behavior */}
-      {(title || summary) && isExpanded && (
+      {(title || summary) && isExpanded && !isLineCollapsedSection && (
         <div className="section-header">
           <div className="section-header-content">
             {title && <h2 className="section-title">{titleContent}</h2>}
