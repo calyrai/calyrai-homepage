@@ -372,6 +372,7 @@ export default class LogoCanvasEngine {
     this.#drawBackgroundRaster(ctx, t)
 
     if (this.state === 'qr_show') {
+      this.#drawRingBaseline(ctx, 0.28)
       this.#drawQrMotionField(ctx, t)
       this.#drawExactQr(ctx)
       return
@@ -379,6 +380,21 @@ export default class LogoCanvasEngine {
 
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
+  }
+
+  #drawRingBaseline(ctx, alpha = 0.22) {
+    if (!this.ringTargets.length) return
+    for (let i = 0; i < this.ringTargets.length; i += 1) {
+      const p = this.ringTargets[i]
+      const px = p.x * this.width
+      const py = p.y * this.height
+      const w = p.weight || 1
+      const a = Math.max(0.04, Math.min(0.5, alpha * (0.55 + w * 0.45)))
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`
+      ctx.beginPath()
+      ctx.arc(px, py, 0.7, 0, Math.PI * 2)
+      ctx.fill()
+    }
   }
 
   #drawQrMotionField(ctx, t) {
@@ -493,9 +509,15 @@ export default class LogoCanvasEngine {
         }
       } else if (mode === 'dissolve') {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.08)
+        const dissolveProgress = this.#stateProgress('dissolve', 3200)
+        const pullBack = this.#easeInOutCubic(dissolveProgress)
         target = {
-          x: p.x + (hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.012,
-          y: p.y + (hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.012,
+          x:
+            p.x + (hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.012 * (1 - pullBack) +
+            (ringTarget.x - p.x) * (0.08 + pullBack * 0.22),
+          y:
+            p.y + (hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.012 * (1 - pullBack) +
+            (ringTarget.y - p.y) * (0.08 + pullBack * 0.22),
         }
       } else if (mode === 'entropy') {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.05)

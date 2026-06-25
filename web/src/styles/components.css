@@ -1786,7 +1786,8 @@ button:active {
   cursor: pointer;
   user-select: none;
   isolation: isolate;
-  border-radius: 12px;
+  border-radius: 50%;
+  overflow: hidden;
   transition: filter 220ms ease;
 }
 
@@ -1852,7 +1853,7 @@ button:active {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: 50%;
 }
 
 .calyr-logo-through-line {

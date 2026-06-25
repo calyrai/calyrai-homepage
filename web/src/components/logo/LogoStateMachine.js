@@ -100,7 +100,7 @@ export default class LogoStateMachine {
     }
 
     if (state === 'dissolve') {
-      this.#setTimer(states.dissolve?.durationMs || 2200, () => this.transitionTo('idle'))
+      this.#setTimer(states.dissolve?.durationMs || 2200, () => this.transitionTo('reassemble'))
       return
     }
 
