@@ -11,20 +11,17 @@
 
 import React, { useEffect, useState } from 'react'
 import { renderChildren } from './Renderer'
-import { ScrollCenterProvider } from '../hooks/useScrollCenter.jsx'
 
 export default function Section({ node, theme, renderNode }) {
   const { id, title, summary, children = [] } = node
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth < 768)
-  const [scrollMode, setScrollMode] = useState(() => window.innerWidth < 768)
 
   useEffect(() => {
     const handleResize = () => {
       const nextIsMobile = window.innerWidth < 768
       setIsMobile(nextIsMobile)
       setIsCollapsed(nextIsMobile)
-      setScrollMode(nextIsMobile)
     }
 
     handleResize()
@@ -40,7 +37,7 @@ export default function Section({ node, theme, renderNode }) {
   } : {}
 
   const renderGrid = () => (
-    <div className={`section-grid ${scrollMode ? 'scroll-mode' : ''}`}>
+    <div className="section-grid">
       {renderChildren(children, theme).map((child, idx) => (
         <React.Fragment key={idx}>{child}</React.Fragment>
       ))}
@@ -74,11 +71,7 @@ export default function Section({ node, theme, renderNode }) {
       )}
 
       {/* Tile grid (hidden when collapsed) */}
-      {!isCollapsed && scrollMode ? (
-        <ScrollCenterProvider>
-          {renderGrid()}
-        </ScrollCenterProvider>
-      ) : !isCollapsed ? (
+      {!isCollapsed ? (
         renderGrid()
       ) : null}
     </section>
