@@ -6,7 +6,7 @@
   user-select: none;
   isolation: isolate;
   border-radius: 12px;
-  transition: transform 220ms ease, filter 220ms ease, box-shadow 220ms ease;
+  transition: transform 220ms ease, filter 220ms ease;
 }
 
 .calyr-logo-wrap {
@@ -100,7 +100,6 @@
 .calyr-logo-interactive[data-logo-state='active'],
 .calyr-logo-interactive[data-logo-state='qr_build'] {
   filter: saturate(1.08) brightness(1.06);
-  box-shadow: 0 0 22px rgba(255, 51, 204, 0.34);
 }
 
 .calyr-logo-interactive[data-logo-state='entropy'] {
