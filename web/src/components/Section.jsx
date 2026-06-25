@@ -6,7 +6,7 @@
  * Children are typically tiles
  */
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { renderChildren } from './Renderer'
 
 export default function Section({ node, theme }) {
@@ -14,6 +14,7 @@ export default function Section({ node, theme }) {
   const isMovieSection = id === 'movie'
   const isLineCollapsedSection = id === 'platforms' || id === 'architecture'
   const [isExpanded, setIsExpanded] = useState(!isLineCollapsedSection)
+  const lastPointerToggleTsRef = useRef(0)
   const titleHref = route || (id ? `#${id}` : null)
   const titleContent = titleHref
     ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
@@ -71,8 +72,14 @@ export default function Section({ node, theme }) {
         <button
           type="button"
           className="section-collapse-toggle"
-          onPointerDown={(event) => {
-            event.preventDefault()
+          onPointerDown={() => {
+            lastPointerToggleTsRef.current = Date.now()
+            setIsExpanded((prev) => !prev)
+          }}
+          onClick={() => {
+            if (Date.now() - lastPointerToggleTsRef.current < 350) {
+              return
+            }
             setIsExpanded((prev) => !prev)
           }}
           aria-expanded={isExpanded}
