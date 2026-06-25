@@ -292,6 +292,23 @@ contact:
 
   route: mailto:rupert.tscheliessnig@calyr.ai
 
+  links:
+    - id: whatsapp
+      label: WhatsApp
+      route: https://wa.me/?text=Hello%20Calyr.a%C3%AD
+    - id: linkedin
+      label: LinkedIn
+      route: https://www.linkedin.com
+    - id: bluesky
+      label: Bluesky
+      route: https://bsky.app
+    - id: x
+      label: X
+      route: https://x.com
+    - id: youtube
+      label: YouTube
+      route: https://www.youtube.com
+
   institutions:
     - id: asc
       type: institution

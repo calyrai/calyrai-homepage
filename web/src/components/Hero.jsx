@@ -9,6 +9,10 @@ import React from 'react'
 
 export default function Hero({ node, theme }) {
   const { id, title, subtitle, summary, body, icon, route } = node
+  const summaryText = typeof summary === 'string' ? summary.trim() : summary
+  const summaryBase = typeof summaryText === 'string'
+    ? summaryText.replace(/[.\s]+$/g, '')
+    : summaryText
 
   // Build inline style from theme
   const heroStyle = {}
@@ -41,7 +45,12 @@ export default function Hero({ node, theme }) {
 
         {subtitle && <p className="hero-subtitle">{subtitle}</p>}
 
-        {summary && <p className="hero-manifesto">{summary}</p>}
+        {summaryText && (
+          <p className="hero-manifesto">
+            <span>{summaryBase}</span>
+            <span className="hero-manifesto-dot" aria-hidden="true">.</span>
+          </p>
+        )}
 
         {body && <div className="hero-body">{body}</div>}
       </div>

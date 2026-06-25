@@ -32,25 +32,6 @@ function buildContactLinks(page) {
     })
   }
 
-  if (Array.isArray(page?.institutions)) {
-    page.institutions.forEach((institution) => {
-      if (institution?.website) {
-        links.push({
-          id: `${institution.id || institution.name}-website`,
-          label: institution.name || institution.website,
-          href: institution.website,
-        })
-      }
-
-      if (Array.isArray(institution?.capabilities)) {
-        institution.capabilities.forEach((capability) => {
-          const normalized = normalizeLinkItem(capability)
-          if (normalized) links.push(normalized)
-        })
-      }
-    })
-  }
-
   const seen = new Set()
   return links.filter((item) => {
     const key = `${item.label}|${item.href}`
