@@ -155,6 +155,7 @@ class ASTBuilder:
                 "body": resolved.get("body", ""),
                 "icon": resolved.get("icon", ""),
                 "route": resolved.get("route", ""),
+                "links": resolved.get("links", []),
                 "institutions": resolved.get("institutions", []),
             })
 

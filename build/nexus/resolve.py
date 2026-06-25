@@ -85,6 +85,7 @@ class Resolver:
             "body": content_data.get("body", ""),
             "icon": content_data.get("icon", ""),
             "route": content_data.get("route", ""),
+            "links": content_data.get("links", []),
             "institutions": content_data.get("institutions", []),
         }
 

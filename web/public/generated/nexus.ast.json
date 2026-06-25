@@ -16,6 +16,7 @@
       "body": "",
       "icon": "",
       "route": "",
+      "links": [],
       "institutions": []
     },
     {
@@ -32,6 +33,7 @@
       "body": "",
       "icon": "",
       "route": "",
+      "links": [],
       "institutions": []
     },
     {
@@ -48,6 +50,7 @@
       "body": "",
       "icon": "",
       "route": "",
+      "links": [],
       "institutions": [],
       "children": [
         {
@@ -64,6 +67,7 @@
           "body": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
           "icon": "brain",
           "route": "/core",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [],
@@ -89,6 +93,7 @@
           "body": "Engineering intelligence platform for structural analysis, design exploration, and decision support. Brix combines simulations, measurements, and surrogate models to enable rapid variant evaluation and uncertainty-aware engineering decisions.\n",
           "icon": "bridge",
           "route": "/brix",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [
@@ -111,6 +116,7 @@
           "body": "Aflowtex combines clinical data, vascular modelling, flow simulation, and surrogate reasoning to support patient-specific analysis and uncertainty-aware medical decisions.\n",
           "icon": "aorta",
           "route": "/aflowtex",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [
@@ -133,6 +139,7 @@
           "body": "Lithos translates model outputs into actionable decisions by evaluating consequences, risks, trade-offs, and long-term system effects.\n",
           "icon": "mountain",
           "route": "/lithos",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [
@@ -155,6 +162,7 @@
           "body": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
           "icon": "crystal-ball",
           "route": "/oracle",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [
@@ -179,6 +187,7 @@
           "body": "Delphi provides an interactive interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
           "icon": "compass",
           "route": "/delphi",
+          "links": [],
           "institutions": [],
           "relations": {
             "incoming": [
@@ -203,6 +212,7 @@
       "body": "",
       "icon": "",
       "route": "",
+      "links": [],
       "institutions": [],
       "children": [
         {
@@ -219,6 +229,7 @@
           "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge.\n",
           "icon": "network",
           "route": "/ecosystem",
+          "links": [],
           "institutions": []
         },
         {
@@ -235,6 +246,33 @@
           "body": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use email or the direct channels listed on the contact page.\n",
           "icon": "mail",
           "route": "mailto:rupert.tscheliessnig@calyr.ai",
+          "links": [
+            {
+              "id": "whatsapp",
+              "label": "WhatsApp",
+              "route": "https://wa.me/?text=Hello%20Calyr.a%C3%AD"
+            },
+            {
+              "id": "linkedin",
+              "label": "LinkedIn",
+              "route": "https://www.linkedin.com"
+            },
+            {
+              "id": "bluesky",
+              "label": "Bluesky",
+              "route": "https://bsky.app"
+            },
+            {
+              "id": "x",
+              "label": "X",
+              "route": "https://x.com"
+            },
+            {
+              "id": "youtube",
+              "label": "YouTube",
+              "route": "https://www.youtube.com"
+            }
+          ],
           "institutions": [
             {
               "id": "asc",
@@ -358,6 +396,7 @@
           "body": "Calyr.a\u00ed is founded on scientific transparency, reproducibility, interpretable modelling, and human-centered decision support.\n",
           "icon": "book",
           "route": "/philosophy",
+          "links": [],
           "institutions": []
         }
       ]
@@ -376,6 +415,7 @@
       "body": "Name: Rupert Tscheliessnig\nRole: Founder, Calyr.a\u00ed\nrupert.tscheliessnig@calyr.ai\n",
       "icon": "",
       "route": "",
+      "links": [],
       "institutions": [],
       "children": [
         {
@@ -392,6 +432,7 @@
           "body": "Impressum, privacy policy, contact information, and external links. Credentials: Rupert Tscheliessnig, Founder of Calyr.a\u00ed, AI and surrogate modelling research.\n",
           "icon": "document",
           "route": "/legal",
+          "links": [],
           "institutions": []
         }
       ]
