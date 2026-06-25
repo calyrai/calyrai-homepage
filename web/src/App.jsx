@@ -33,8 +33,6 @@ function App() {
     const colors = themeData.skin.colors || {}
     const components = themeData.skin.components || {}
 
-    console.log('Applying theme:', themeData.skin.id, 'hero bg:', components.hero?.background)
-
     // Apply color variables
     Object.entries(colors).forEach(([key, value]) => {
       // Skip template references
@@ -46,7 +44,6 @@ function App() {
     // Apply component-specific styles
     if (components.hero) {
       if (components.hero.background && !components.hero.background.includes('{{')) {
-        console.log('Setting hero bg to:', components.hero.background)
         root.style.setProperty('--hero-bg', components.hero.background)
       }
       if (components.hero.text && !components.hero.text.includes('{{')) {
@@ -66,7 +63,6 @@ function App() {
 
   useEffect(() => {
     try {
-      console.log('Theme loaded:', theme?.skin?.id, theme?.components?.hero)
       applyThemeToCSS(theme)
       setLoading(false)
     } catch (err) {
@@ -125,9 +121,9 @@ function App() {
       <RippleLayer />
       {/* Navigation (Stage 8) */}
       <Navigation theme={theme} />
-      <QuickContactRail />
+      <QuickContactRail page={contactPage} />
       
-      <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000', position: 'relative', zIndex: 1 }}>
+      <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
         {isBooksRoute ? <BooksPage page={booksPage} /> : isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
       </div>
     </SelectionProvider>

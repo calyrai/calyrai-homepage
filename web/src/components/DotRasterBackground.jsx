@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { isTileInteractionEvent } from '../utils/interactionFilters'
 
 export default function DotRasterBackground({ theme, isBooksRoute = false }) {
   const canvasRef = useRef(null)
@@ -46,10 +45,6 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     }
 
     const handlePointerDown = (event) => {
-      // Do not activate background pulses when interacting with tiles.
-      if (isTileInteractionEvent(event)) {
-        return
-      }
       addRippleFromClient(event.clientX, event.clientY)
     }
 
@@ -101,12 +96,12 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
 
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
-    window.addEventListener('pointerdown', handlePointerDown)
+    canvas.addEventListener('pointerdown', handlePointerDown)
     rafId = requestAnimationFrame(draw)
 
     return () => {
       window.removeEventListener('resize', setCanvasSize)
-      window.removeEventListener('pointerdown', handlePointerDown)
+      canvas.removeEventListener('pointerdown', handlePointerDown)
       if (rafId) {
         cancelAnimationFrame(rafId)
       }

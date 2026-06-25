@@ -73,54 +73,46 @@ function ContactInstitution({ institution }) {
 
 export default function ContactPage({ page }) {
   if (!page) {
-    return (
-      <main className="contact-page contact-page-empty">
-        <h2>Contacts</h2>
-        <p>Contact artifact not loaded yet.</p>
-      </main>
-    )
+    return <main className="contact-page contact-page-empty" />
   }
 
   const institutions = Array.isArray(page.institutions)
     ? page.institutions.filter((institution) => institution?.visibility?.public !== false)
     : []
+  const kicker = [page.tile_title, page.landing_message].filter(Boolean).join(' ')
+  const primaryLinkLabel = typeof page.route === 'string' && page.route.startsWith('mailto:')
+    ? page.route.replace('mailto:', '')
+    : page.route
 
   return (
-    <main className="contact-page" aria-label="Contact page">
+    <main className="contact-page" aria-label={page.title || page.id || 'contact'}>
       <header className="contact-page-hero">
-        <p className="contact-page-kicker">Swarm Intelligence Network</p>
+        {kicker && <p className="contact-page-kicker">{kicker}</p>}
         <h2>
-          <a className="contact-page-home-link" href="/" aria-label="Go to landing page">
-            {page.title || 'Contacts'}
+          <a className="contact-page-home-link" href="/" aria-label={page.title || page.id || 'contact'}>
+            {page.title || page.id}
           </a>
         </h2>
-        <p>{page.summary || 'Research, industry, and partnership inquiries.'}</p>
+        {page.summary && <p>{page.summary}</p>}
       </header>
 
       <div className="contact-page-meta">
-        <span>{page.subtitle || 'swarm intelligence'}</span>
+        {page.subtitle && <span>{page.subtitle}</span>}
         {page.route && (
           <a href={page.route} className="contact-page-primary-link">
-            Email contact
+            {primaryLinkLabel}
           </a>
         )}
       </div>
 
       {page.body && (
         <section className="contact-page-section">
-          <header className="contact-page-section-head">
-            <h3>Contact</h3>
-          </header>
           <p className="contact-page-body">{page.body}</p>
         </section>
       )}
 
       {institutions.length > 0 && (
         <section className="contact-page-section">
-          <header className="contact-page-section-head">
-            <h3>Institutions</h3>
-            <p>Public swarm intelligence and infrastructure network</p>
-          </header>
           <div className="contact-page-grid">
             {institutions.map((institution) => (
               <ContactInstitution key={institution.id || institution.name} institution={institution} />
