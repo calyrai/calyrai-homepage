@@ -232,7 +232,7 @@
           "subtitle": "swarm",
           "landing_message": "intelligence",
           "summary": "Research, industry, and partnership inquiries.\n",
-          "body": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development.\n",
+          "body": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use email or the direct channels listed on the contact page.\n",
           "icon": "mail",
           "route": "mailto:rupert.tscheliessnig@calyr.ai",
           "institutions": [
@@ -273,6 +273,72 @@
                   "id": "aflowtex",
                   "label": "aflowtex",
                   "route": "/aflowtex"
+                },
+                {
+                  "id": "core",
+                  "label": "calyrai core",
+                  "route": "/core"
+                },
+                {
+                  "id": "oracle",
+                  "label": "oracle",
+                  "route": "/oracle"
+                }
+              ]
+            },
+            {
+              "id": "calyrai",
+              "type": "institution",
+              "name": "Calyr.a\u00ed",
+              "category": "research-and-engineering",
+              "location": {
+                "city": "Vienna",
+                "country": "Austria"
+              },
+              "website": "https://calyr.ai/",
+              "visibility": {
+                "public": true,
+                "show_network": true
+              },
+              "capabilities": [
+                {
+                  "id": "contact",
+                  "label": "email contact",
+                  "route": "mailto:rupert.tscheliessnig@calyr.ai"
+                },
+                {
+                  "id": "collaborations",
+                  "label": "collaborations"
+                },
+                {
+                  "id": "research",
+                  "label": "research"
+                },
+                {
+                  "id": "demonstrators",
+                  "label": "demonstrators"
+                }
+              ],
+              "projects": [
+                {
+                  "id": "brix",
+                  "label": "brix",
+                  "route": "/brix"
+                },
+                {
+                  "id": "aflowtex",
+                  "label": "aflowtex",
+                  "route": "/aflowtex"
+                },
+                {
+                  "id": "lithos",
+                  "label": "lithos",
+                  "route": "/lithos"
+                },
+                {
+                  "id": "oracle",
+                  "label": "oracle",
+                  "route": "/oracle"
                 }
               ]
             }
