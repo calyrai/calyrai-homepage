@@ -16,6 +16,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     const dotRadius = 1.2
     const rippleDuration = 820
     const rippleRadius = spacing * 7
+    let rafId = 0
 
     const colors = theme?.skin?.colors || {}
     const dotColor = isBooksRoute ? '#ffffff' : (colors.text_primary || '#ffffff')
@@ -95,17 +96,20 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
       ripplesRef.current = next
       ctx.globalAlpha = 1
 
-      requestAnimationFrame(draw)
+      rafId = requestAnimationFrame(draw)
     }
 
     setCanvasSize()
     window.addEventListener('resize', setCanvasSize)
     window.addEventListener('pointerdown', handlePointerDown)
-    requestAnimationFrame(draw)
+    rafId = requestAnimationFrame(draw)
 
     return () => {
       window.removeEventListener('resize', setCanvasSize)
       window.removeEventListener('pointerdown', handlePointerDown)
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+      }
     }
   }, [theme, isBooksRoute])
 

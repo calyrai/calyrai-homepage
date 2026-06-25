@@ -240,7 +240,7 @@ export default function Tile({ node, theme, context = {} }) {
   const [isFoilCovered, setIsFoilCovered] = useState(isPlatformTile)
   const [ripplePulse, setRipplePulse] = useState(0)
   const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0, elementX: 0, elementY: 0 })
+  const [dragStart, setDragStart] = useState(null)
   const hasDraggedRef = useRef(false)
   const dragThreshold = 6
   
@@ -421,34 +421,32 @@ export default function Tile({ node, theme, context = {} }) {
   }
 
   const handleMouseUp = () => {
-    if (isDragging) {
-      setIsDragging(false)
-    }
+    setIsDragging(false)
+    setDragStart(null)
   }
 
   // Stage 8: Touch end handler
   const handleTouchEnd = () => {
-    if (isDragging) {
-      setIsDragging(false)
-    }
+    setIsDragging(false)
+    setDragStart(null)
   }
 
-  // Global mouse event listeners for dragging
+  // Track pointer movement from press -> release to detect drag threshold.
   useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      document.addEventListener('touchmove', handleTouchMove)
-      document.addEventListener('touchend', handleTouchEnd)
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-        document.removeEventListener('touchmove', handleTouchMove)
-        document.removeEventListener('touchend', handleTouchEnd)
-      }
+    if (!dragStart) return undefined
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+    document.addEventListener('touchmove', handleTouchMove)
+    document.addEventListener('touchend', handleTouchEnd)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('touchmove', handleTouchMove)
+      document.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [isDragging, dragStart, position])
+  }, [dragStart, position, isDragging])
 
   useEffect(() => {
     setIsFoilCovered(isPlatformTile)

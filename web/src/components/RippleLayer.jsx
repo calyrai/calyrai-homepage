@@ -17,6 +17,8 @@ export default function RippleLayer() {
       canvas.height = window.innerHeight
     }
 
+    let rafId = 0
+
     const render = () => {
       resizeCanvas()
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -53,14 +55,16 @@ export default function RippleLayer() {
         ctx.stroke()
       }
 
-      requestAnimationFrame(render)
+      rafId = requestAnimationFrame(render)
     }
 
     resizeCanvas()
-    const raf = requestAnimationFrame(render)
+    rafId = requestAnimationFrame(render)
 
     return () => {
-      cancelAnimationFrame(raf)
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+      }
     }
   }, [ripples])
 
