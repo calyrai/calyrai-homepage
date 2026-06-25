@@ -49,6 +49,7 @@ export default function Section({ node, theme }) {
           aria-label={title || id || ''}
         >
           <span className="section-collapse-line" aria-hidden="true" />
+          {(title || id) && <span className="section-collapse-label">{title || id}</span>}
         </button>
       )}
 
