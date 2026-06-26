@@ -3,13 +3,11 @@ import { renderNode } from './components/Renderer'
 import Navigation from './components/Navigation'
 import QuickContactRail from './components/QuickContactRail'
 import DotRasterBackground from './components/DotRasterBackground'
-import RippleLayer from './components/RippleLayer'
 import BooksPage from './components/pages/BooksPage'
 import ContactPage from './components/pages/ContactPage'
 import { SelectionProvider } from './context/SelectionContext'
-import { RippleProvider, useRipple } from './context/RippleContext'
+import { RippleProvider } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
-import { isInteractiveSurfaceEvent } from './utils/interactionFilters'
 import { ThemeVariableApplier } from './services/ThemeVariableApplier'
 import { RouteStateService } from './services/RouteStateService'
 import { NodeQueryService } from './services/NodeQueryService'
@@ -70,7 +68,6 @@ function App() {
   return (
     <SelectionProvider>
       <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} />
-      <RippleLayer />
       {/* Navigation (Stage 8) */}
       <Navigation theme={theme} ast={ast} />
       <QuickContactRail page={contactPage} />
@@ -85,28 +82,9 @@ function App() {
 function AppWithRipple() {
   return (
     <RippleProvider>
-      <AppContent />
+      <App />
     </RippleProvider>
   )
-}
-
-function AppContent() {
-  const { createRipple } = useRipple()
-
-  useEffect(() => {
-    const handleGlobalClick = (e) => {
-      // Only create ripples from actual content clicks, not UI elements
-      if (isInteractiveSurfaceEvent(e)) {
-        return
-      }
-      createRipple(e.clientX, e.clientY)
-    }
-
-    document.addEventListener('click', handleGlobalClick)
-    return () => document.removeEventListener('click', handleGlobalClick)
-  }, [createRipple])
-
-  return <App />
 }
 
 export default AppWithRipple
