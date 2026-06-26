@@ -218,7 +218,7 @@
   position: relative;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .hero {
     padding: var(--space-sm) var(--space-lg) var(--space-md);
   }
@@ -1639,7 +1639,7 @@ button:active {
   transform: rotate(90deg);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .hamburger {
     display: flex;
   }

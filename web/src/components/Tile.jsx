@@ -23,6 +23,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSelection } from '../context/SelectionContext'
 import { useRipple } from '../context/RippleContext'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -209,7 +210,7 @@ export default function Tile({ node, theme, context = {} }) {
   const shouldShowTopLine = Boolean(topLineText)
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
-  const isMobileViewport = window.innerWidth < 768
+  const isMobileViewport = useIsMobile()
   
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
