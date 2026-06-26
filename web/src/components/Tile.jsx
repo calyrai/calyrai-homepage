@@ -29,6 +29,33 @@ import { useScrollCenterContext } from '../hooks/useScrollCenter'
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
 const DEFAULT_TILE_POSITION = { x: 0, y: 0 }
+const MAIL_FALLBACK_ROUTE = 'mailto:rupert.tscheliessnig@calyr.ai'
+const SPA_SAFE_ROUTES = new Set(['/books', '/philosophy', '/contact'])
+
+function isGeneratedStaticRoute(route) {
+  return /^\/research\/(platforms\/[a-z0-9-]+\/index\.html|positioning\/index\.html)$/i.test(route)
+}
+
+function normalizeTileRoute(route) {
+  if (!route) {
+    return null
+  }
+
+  const normalized = String(route).trim()
+  if (!normalized) {
+    return null
+  }
+
+  if (normalized.startsWith('mailto:') || /^https?:\/\//i.test(normalized)) {
+    return normalized
+  }
+
+  if (SPA_SAFE_ROUTES.has(normalized) || isGeneratedStaticRoute(normalized)) {
+    return normalized
+  }
+
+  return MAIL_FALLBACK_ROUTE
+}
 
 function getTileLeadDotClass(accent) {
   if (accent === 'magenta') return 'tile-inline-dot-magenta'
@@ -559,12 +586,16 @@ export default function Tile({ node, theme, context = {} }) {
     }
 
     if (!e.target.closest('.tile-link-indicator')) {
-      const normalizedRoute = (route && !String(route).startsWith('mailto:'))
-        ? route
-        : (visibleInstitutions.length > 0 && id ? `/${id}` : route)
+      const preferredRoute = route || (visibleInstitutions.length > 0 && id ? `/${id}` : route)
+      const normalizedRoute = normalizeTileRoute(preferredRoute)
 
       if (normalizedRoute) {
-        window.location.href = normalizedRoute
+        if (SPA_SAFE_ROUTES.has(normalizedRoute)) {
+          window.history.pushState({}, '', normalizedRoute)
+          window.dispatchEvent(new PopStateEvent('popstate'))
+        } else {
+          window.location.href = normalizedRoute
+        }
       }
     }
   }
