@@ -17,6 +17,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build
+        run: cd web && npm install && npm run build && cd .. && cp -r web/dist deploy
+
       - name: Validate deploy package
         run: test -f ./deploy/index.html
 

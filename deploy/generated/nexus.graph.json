@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "brand",
+      "label": "",
+      "data": {
+        "title": "",
+        "summary": "",
+        "icon": ""
+      }
+    },
+    {
+      "id": "logo",
+      "label": "Calyr.a\u00ed",
+      "data": {
+        "title": "Calyr.a\u00ed",
+        "summary": "",
+        "icon": ""
+      }
+    },
+    {
+      "id": "hero",
+      "label": "",
+      "data": {
+        "title": "",
+        "summary": "create what is not here yet.\n",
+        "icon": ""
+      }
+    },
+    {
+      "id": "movie",
+      "label": "Teaser",
+      "data": {
+        "title": "Teaser",
+        "summary": "Visual short section.\n",
+        "icon": ""
+      }
+    },
+    {
+      "id": "platforms",
+      "label": "Platforms",
+      "data": {
+        "title": "Platforms",
+        "summary": "Core platform modules for engineering, medicine, reasoning, and decision support.\n",
+        "icon": ""
+      }
+    },
+    {
+      "id": "architecture",
+      "label": "Architecture",
+      "data": {
+        "title": "Architecture",
+        "summary": "Structural overview of module connections, data flow, and reasoning pathways.\n",
+        "icon": ""
+      }
+    },
+    {
+      "id": "footer",
+      "label": "",
+      "data": {
+        "title": "",
+        "summary": "",
+        "icon": ""
+      }
+    },
+    {
+      "id": "core",
+      "label": "Calyrai core",
+      "data": {
+        "title": "Calyrai core",
+        "summary": "Connects observations, knowledge, models, and decisions.\n",
+        "icon": "brain"
+      }
+    },
+    {
+      "id": "brix",
+      "label": "brix",
+      "data": {
+        "title": "brix",
+        "summary": "Surrogate-assisted engineering design and analysis.\n",
+        "icon": "bridge"
+      }
+    },
+    {
+      "id": "aflowtex",
+      "label": "aflowtex",
+      "data": {
+        "title": "aflowtex",
+        "summary": "Patient-specific flow modelling and clinical decision support.\n",
+        "icon": "aorta"
+      }
+    },
+    {
+      "id": "lithos",
+      "label": "lithos",
+      "data": {
+        "title": "lithos",
+        "summary": "Understanding consequences, trade-offs, and impact.\n",
+        "icon": "mountain"
+      }
+    },
+    {
+      "id": "oracle",
+      "label": "oracle",
+      "data": {
+        "title": "oracle",
+        "summary": "Extracting knowledge from complex information spaces.\n",
+        "icon": "crystal-ball"
+      }
+    },
+    {
+      "id": "delphi",
+      "label": "delphi",
+      "data": {
+        "title": "delphi",
+        "summary": "Explore knowledge through guided interaction.\n",
+        "icon": "compass"
+      }
+    },
+    {
+      "id": "ecosystem",
+      "label": "ecosystem",
+      "data": {
+        "title": "ecosystem",
+        "summary": "Explore relationships across the calyrai ecosystem.\n",
+        "icon": "network"
+      }
+    },
+    {
+      "id": "philosophy",
+      "label": "philosophy",
+      "data": {
+        "title": "philosophy",
+        "summary": "Scientific rigor, openness, and reproducibility.\n",
+        "icon": "book"
+      }
+    },
+    {
+      "id": "contact",
+      "label": "contacts",
+      "data": {
+        "title": "contacts",
+        "summary": "Research, industry, and partnership inquiries.\n",
+        "icon": "mail"
+      }
+    },
+    {
+      "id": "legal",
+      "label": "legal",
+      "data": {
+        "title": "legal",
+        "summary": "Legal and platform information.\n",
+        "icon": "document"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "core",
+      "target": "brix",
+      "id": "core\u2192brix"
+    },
+    {
+      "source": "core",
+      "target": "aflowtex",
+      "id": "core\u2192aflowtex"
+    },
+    {
+      "source": "core",
+      "target": "lithos",
+      "id": "core\u2192lithos"
+    },
+    {
+      "source": "core",
+      "target": "oracle",
+      "id": "core\u2192oracle"
+    },
+    {
+      "source": "oracle",
+      "target": "delphi",
+      "id": "oracle\u2192delphi"
+    }
+  ]
+}
