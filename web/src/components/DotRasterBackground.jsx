@@ -21,7 +21,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
 
     const colors = theme?.skin?.colors || {}
     const dotColor = isBooksRoute ? '#ffffff' : (colors.text_primary || '#ffffff')
-    const waveColor = theme?.skin?.components?.hero?.brand_color || '#ff00ff'
+    const waveColor = 'rgba(245, 245, 245, 0.28)'
 
     const setCanvasSize = () => {
       const dpr = window.devicePixelRatio || 1
@@ -93,14 +93,14 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
         const radius = Math.max(0, age * rippleRadius)
         const alpha = 1 - age
 
-        ctx.globalAlpha = 0.9 * alpha
-        ctx.lineWidth = Math.max(1, 2.2 * alpha)
+        ctx.globalAlpha = 0.35 * alpha
+        ctx.lineWidth = Math.max(0.6, 1.1 * alpha)
         ctx.beginPath()
         ctx.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2)
         ctx.stroke()
 
         // Pulse the origin point.
-        ctx.globalAlpha = 0.95 * alpha
+        ctx.globalAlpha = 0.4 * alpha
         ctx.fillStyle = waveColor
         ctx.beginPath()
         ctx.arc(ripple.x, ripple.y, 2.2 + age * 1.6, 0, Math.PI * 2)
