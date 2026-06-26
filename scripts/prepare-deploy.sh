@@ -9,9 +9,9 @@ cd "$repo_root"
 npm --prefix web ci
 npm --prefix web run build
 
-# Keep deploy output minimal and deterministic (no duplicate artifacts).
+# Keep deploy output minimal and deterministic.
 mkdir -p deploy
-find deploy -type f ! -name '.gitkeep' -delete
+find deploy -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
 
 cp web/dist/index.html deploy/index.html
 

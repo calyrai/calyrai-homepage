@@ -222,6 +222,22 @@ Preferred artifact set:
 - `nexus.index.json`
 - `nexus.flowchart.json`
 
+## Publication Boundary
+
+For the minimal public homepage, compiler artifacts are local engineering outputs.
+
+- YAML remains the authored source locally.
+- The compiler produces inspectable local artifacts.
+- Local compiler output may be synced into bundled runtime source during the build workflow.
+- The public homepage should publish only the minimal deploy package.
+- `deploy/` is the online boundary for the homepage.
+
+This means:
+
+- `generated/` is for local compilation, validation, and inspection.
+- compiler internals are not required online for the public homepage.
+- the public site should not depend on online availability of compiler artifacts to function.
+
 ## Editability Rules
 
 A change should have one obvious home.

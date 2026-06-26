@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build
-        run: cd web && npm install && npm run build && cd .. && cp -r web/dist deploy
+      - name: Prepare minimal deploy package
+        run: ./scripts/prepare-deploy.sh
 
       - name: Validate deploy package
         run: test -f ./deploy/index.html

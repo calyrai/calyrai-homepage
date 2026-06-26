@@ -13,15 +13,14 @@ import { isInteractiveSurfaceEvent } from './utils/interactionFilters'
 import { ThemeVariableApplier } from './services/ThemeVariableApplier'
 import { RouteStateService } from './services/RouteStateService'
 import { NodeQueryService } from './services/NodeQueryService'
-import { RuntimeArtifactLoader } from './services/RuntimeArtifactLoader'
 import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
 
 function App() {
-  const [ast, setAst] = useState(AST_DATA)
-  const [theme, setTheme] = useState(THEME_DATA)
-  const [booksPage, setBooksPage] = useState(BOOKS_PAGE_DATA)
+  const [ast] = useState(AST_DATA)
+  const [theme] = useState(THEME_DATA)
+  const [booksPage] = useState(BOOKS_PAGE_DATA)
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -31,34 +30,13 @@ function App() {
   const contactPage = new NodeQueryService(ast).findById('contact')
 
   useEffect(() => {
-    let isCancelled = false
-
-    const initializeArtifacts = async () => {
-      try {
-        const artifactLoader = new RuntimeArtifactLoader()
-        const runtime = await artifactLoader.loadAll()
-        if (isCancelled) {
-          return
-        }
-
-        setAst(runtime.ast || AST_DATA)
-        setTheme(runtime.theme || THEME_DATA)
-        setBooksPage(runtime.booksPage || BOOKS_PAGE_DATA)
-        themeVariableApplier.apply(runtime.theme || THEME_DATA)
-        setLoading(false)
-      } catch (err) {
-        console.error('Failed to initialize runtime artifacts:', err)
-        if (!isCancelled) {
-          setError(err.message)
-          setLoading(false)
-        }
-      }
-    }
-
-    initializeArtifacts()
-
-    return () => {
-      isCancelled = true
+    try {
+      themeVariableApplier.apply(theme)
+      setLoading(false)
+    } catch (err) {
+      console.error('Failed to initialize bundled runtime artifacts:', err)
+      setError(err.message)
+      setLoading(false)
     }
   }, [])
 

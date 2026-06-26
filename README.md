@@ -130,7 +130,6 @@ calyrai-homepage/
 │       │   ├── LinkItemService.js
 │       │   ├── NavigationItemService.js
 │       │   ├── NodeQueryService.js
-│       │   ├── RuntimeArtifactLoader.js
 │       │   ├── RouteStateService.js
 │       │   ├── SectionLayoutService.js
 │       │   └── ThemeVariableApplier.js
@@ -247,7 +246,8 @@ Current logo implementation notes:
 - The main page structure comes from compiled content data, not from hardcoded page assembly:
 	- `build/compile.py` produces `generated/nexus.ast.json`.
 	- `build/compile.py` also produces `generated/nexus.flowchart.json` from authored flow definitions in YAML.
-	- `web/src/App.jsx` prefers compiled artifacts from `web/public/generated/` and falls back to `web/src/data/runtimeArtifacts.js` only if artifact loading fails.
+	- `build/compile.py` syncs local compiler output into `web/src/data/runtimeArtifacts.js` for the minimal homepage build.
+	- the deployed homepage uses the bundled runtime data and does not depend on `generated/*.json` being online.
 	- `web/src/components/Renderer.jsx` dispatches nodes by `node.type` through the renderer registry.
 - That means the page behaves more like a renderer for a precompiled document tree than a traditional OO widget hierarchy.
 - The OO part exists mainly in helper/service classes such as `NodeQueryService`, `RouteStateService`, `ThemeVariableApplier`, and `SectionLayoutService`.
@@ -259,12 +259,12 @@ Current logo implementation notes:
 
 - The frontend now uses a lightweight OO service layer to keep component files focused:
 	- RouteStateService and NodeQueryService in App routing/data selection.
-	- RuntimeArtifactLoader for compiled artifact loading with fallback.
 	- ThemeVariableApplier for CSS variable injection.
 	- LinkItemService and NavigationItemService for link/navigation normalization.
 	- SectionLayoutService for section behavior decisions.
 - Reusable hooks include useIsMobile.js for responsive component behavior.
 - The content model is consolidated in content/content.yaml (including graph and interaction blocks).
 - The semantic construction method intended for publication is documented in `docs/calyrai-semantic-construction.md`.
+- Only the minimal `deploy/` package is intended to go online.
 - Use LOCAL-README.md for personal local workflow details.
 - Keep deploy/ synchronized with web/dist before pushing if deploying static output directly.

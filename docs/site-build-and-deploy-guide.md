@@ -40,24 +40,25 @@ The main generated artifacts are written to `generated/`:
 Conceptually, the pipeline is:
 
 ```text
-YAML -> Python compiler -> resolved JSON artifacts -> React renderer -> deployed HTML
+YAML -> Python compiler -> resolved JSON artifacts -> bundled runtimeArtifacts.js -> deployed HTML
 ```
 
 ## 3. How the React Site Uses the Data
 
-The current app prefers compiled artifacts served from `web/public/generated/` and falls back to bundled runtime data only if loading fails.
+The production homepage uses bundled runtime data.
+
+Current pattern:
+
+1. `python3 build/compile.py` generates the local JSON artifacts in `generated/`.
+2. The same compiler run syncs the latest local AST and theme into `web/src/data/runtimeArtifacts.js`.
+3. The React app imports that bundled runtime module directly.
 
 Runtime entry points:
 
 - `web/src/App.jsx`
-- `web/src/services/RuntimeArtifactLoader.js`
+- `web/src/data/runtimeArtifacts.js`
 
-Current pattern:
-
-- `generated/nexus.ast.json` becomes the page tree.
-- `generated/nexus.theme.json` becomes the live theme input.
-- `generated/books.page.json` is used for the books route.
-- `web/src/data/runtimeArtifacts.js` remains a fallback, not the primary construction path.
+This keeps compiler outputs and auxiliary generated JSON local, while the published homepage stays minimal and self-contained.
 
 ## 4. Rendering Model
 
@@ -73,8 +74,8 @@ In short:
 
 1. YAML defines content and structure.
 2. Python resolves the semantic model.
-3. Compiled artifacts are served to the runtime.
-4. React renders the compiled model into the final page.
+3. Compiler output is bundled into the runtime source locally.
+4. React renders the bundled model into the final page.
 
 ## 5. Build Output for Production
 
@@ -103,6 +104,8 @@ The published artifact is therefore intentionally minimal:
 
 - `deploy/index.html`
 - `deploy/CNAME`
+
+No generated compiler artifacts need to be published online for the homepage to function.
 
 ## 6. GitHub Pages Deployment
 
@@ -184,7 +187,7 @@ If you change homepage content or structure:
 1. update the YAML under `content/`,
 2. run `python3 build/compile.py`,
 3. verify the generated artifacts are correct,
-4. verify the generated artifacts in `web/public/generated/` reflect the content meant for production,
+4. verify `web/src/data/runtimeArtifacts.js` was refreshed by the compiler run,
 5. run the frontend build,
 6. prepare the deploy artifact,
 7. deploy and verify `https://calyr.ai/` returns `200`.

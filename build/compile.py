@@ -23,6 +23,7 @@ Build Pipeline:
     2. Validate    → Cross-check all references
     3. Resolve     → Merge data from all sources
     4. Build       → Generate Nexus artifacts (AST, Graph, Theme, Index, Flowchart)
+    5. Bundle      → Sync local runtimeArtifacts.js for the minimal homepage build
 
 Nexus Artifacts (generated/):
     • nexus.ast.json    — fully resolved homepage AST
@@ -272,6 +273,7 @@ def main() -> int:
         if success:
             # Auto-copy artifacts to web/public/generated for dev server
             _sync_artifacts_to_web_public(build_dir.parent, output_dir)
+            _sync_runtime_artifacts_module(build_dir.parent, output_dir)
 
         return 0 if success else 1
     except KeyboardInterrupt:
@@ -291,6 +293,32 @@ def _sync_artifacts_to_web_public(project_root: Path, output_dir: Path) -> None:
     for artifact in output_dir.glob("nexus.*.json"):
         shutil.copy2(artifact, web_public_gen / artifact.name)
     print("📦 Synced to web/public/generated/")
+
+
+def _sync_runtime_artifacts_module(project_root: Path, output_dir: Path) -> None:
+    """Sync compiled local artifacts into the bundled runtime source used by production."""
+    runtime_module = project_root / "web" / "src" / "data" / "runtimeArtifacts.js"
+    books_page_path = project_root / "web" / "public" / "generated" / "books.page.json"
+
+    ast = _read_json_file(output_dir / "nexus.ast.json")
+    theme = _read_json_file(output_dir / "nexus.theme.json")
+    books_page = _read_json_file(books_page_path) if books_page_path.exists() else {}
+
+    content = "\n".join([
+        f"export const AST_DATA = {json.dumps(ast, ensure_ascii=False)}",
+        f"export const THEME_DATA = {json.dumps(theme, ensure_ascii=False)}",
+        f"export const BOOKS_PAGE_DATA = {json.dumps(books_page, ensure_ascii=False)}",
+        "",
+    ])
+
+    runtime_module.write_text(content, encoding="utf-8")
+    rel_path = runtime_module.relative_to(project_root)
+    print(f"🧩 Synced bundled runtime artifacts to {rel_path}")
+
+
+def _read_json_file(path: Path) -> Any:
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 if __name__ == "__main__":
