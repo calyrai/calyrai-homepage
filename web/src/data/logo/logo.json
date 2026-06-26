@@ -36,7 +36,8 @@
     "hoverLeave": "idle",
     "click": "qr_build",
     "idleTimeoutToEntropyMs": 80000,
-    "pointerReturnFromEntropy": "reassemble"
+    "pointerReturnFromEntropy": "reassemble",
+    "upperActivationZoneFraction": 0.36
   },
   "qr": {
     "mode": "vcard",

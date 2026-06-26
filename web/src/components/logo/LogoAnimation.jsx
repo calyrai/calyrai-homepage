@@ -89,9 +89,10 @@ export default function LogoAnimation({ className = '', label = '', layout = 'in
   const handlePointerMove = (event) => {
     machineRef.current?.handlePointerReturn()
 
+    const activationZone = logoSpec?.interaction?.upperActivationZoneFraction ?? 0.36
     const rect = event.currentTarget.getBoundingClientRect()
     const y = event.clientY - rect.top
-    const inUpperActivationZone = y <= rect.height * 0.36
+    const inUpperActivationZone = y <= rect.height * activationZone
 
     if (inUpperActivationZone && !hasTriggeredUpperHoverRef.current) {
       hasTriggeredUpperHoverRef.current = true

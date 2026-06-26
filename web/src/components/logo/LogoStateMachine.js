@@ -85,27 +85,22 @@ export default class LogoStateMachine {
     this.timers.clear()
   }
 
+  // Maps each state to its auto-transition: [nextState, configDurationKey, fallbackMs]
+  static #SCHEDULE = [
+    ['qr_build',   'qr_show',    'qr_build',   2600],
+    ['qr_show',    'dissolve',   'qr_show',    12000],
+    ['dissolve',   'reassemble', 'dissolve',   3200],
+    ['reassemble', 'idle',       'reassemble', 3600],
+  ]
+
   #scheduleByState(state) {
     const states = this.config?.states || {}
     const interaction = this.config?.interaction || {}
 
-    if (state === 'qr_build') {
-      this.#setTimer(states.qr_build?.durationMs || 1400, () => this.transitionTo('qr_show'))
-      return
-    }
-
-    if (state === 'qr_show') {
-      this.#setTimer(states.qr_show?.durationMs || 10000, () => this.transitionTo('dissolve'))
-      return
-    }
-
-    if (state === 'dissolve') {
-      this.#setTimer(states.dissolve?.durationMs || 2200, () => this.transitionTo('reassemble'))
-      return
-    }
-
-    if (state === 'reassemble') {
-      this.#setTimer(states.reassemble?.durationMs || 2600, () => this.transitionTo('idle'))
+    const entry = LogoStateMachine.#SCHEDULE.find(([from]) => from === state)
+    if (entry) {
+      const [, nextState, durationKey, fallback] = entry
+      this.#setTimer(states[durationKey]?.durationMs || fallback, () => this.transitionTo(nextState))
       return
     }
 

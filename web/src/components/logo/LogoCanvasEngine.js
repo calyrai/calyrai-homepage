@@ -19,6 +19,8 @@ function angleDiff(a, b) {
 }
 
 export default class LogoCanvasEngine {
+  #resizeListenerAttached = false
+
   constructor(canvas, config = {}) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
@@ -45,6 +47,7 @@ export default class LogoCanvasEngine {
 
     this.resize = this.resize.bind(this)
     this.render = this.render.bind(this)
+    this.#resizeListenerAttached = false
 
     this.#buildGridDots()
     this.#buildRingTargets()
@@ -52,6 +55,7 @@ export default class LogoCanvasEngine {
     this.#initParticles()
 
     window.addEventListener('resize', this.resize)
+    this.#resizeListenerAttached = true
     this.resize()
     this.rafId = requestAnimationFrame(this.render)
   }
@@ -75,7 +79,10 @@ export default class LogoCanvasEngine {
       cancelAnimationFrame(this.rafId)
       this.rafId = null
     }
-    window.removeEventListener('resize', this.resize)
+    if (this.#resizeListenerAttached) {
+      window.removeEventListener('resize', this.resize)
+      this.#resizeListenerAttached = false
+    }
   }
 
   resize() {
@@ -375,6 +382,8 @@ export default class LogoCanvasEngine {
       this.#drawRingBaseline(ctx, 0.28)
       this.#drawQrMotionField(ctx, t)
       this.#drawExactQr(ctx)
+      // Keep ring particles alive with a gentle drift pass during qr_show
+      this.#updateRingDrift(t)
       return
     }
 
@@ -394,6 +403,19 @@ export default class LogoCanvasEngine {
       ctx.beginPath()
       ctx.arc(px, py, 0.7, 0, Math.PI * 2)
       ctx.fill()
+    }
+  }
+
+  // Gentle ring-particle drift during qr_show so the logo stays alive.
+  #updateRingDrift(t) {
+    const ring = this.ringTargets
+    if (!ring.length) return
+    for (let i = 0; i < this.particles.length; i += 1) {
+      const p = this.particles[i]
+      const rt = ring[i % ring.length]
+      const drift = Math.sin(t * 0.28 + i * 0.011) * 0.00006
+      p.x += (rt.x - p.x) * 0.004 + drift
+      p.y += (rt.y - p.y) * 0.004
     }
   }
 
