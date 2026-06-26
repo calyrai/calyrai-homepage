@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+const DRAG_THRESHOLD_PX = 2
+const DRAG_SAFETY_TIMEOUT_MS = 8000
+
 function normalizeLinkItem(item) {
   if (!item) return null
   if (typeof item === 'string') {
@@ -48,7 +51,6 @@ export default function QuickContactRail({ page }) {
   const suppressNextClickRef = useRef(false)
   const dragRef = useRef({
     active: false,
-    pointerId: null,
     startPointerY: 0,
     startTopPx: 0,
     moved: false,
@@ -65,9 +67,11 @@ export default function QuickContactRail({ page }) {
     const timeout = setTimeout(() => {
       setIsDragging(false)
       dragRef.current.active = false
-    }, 8000)
+    }, DRAG_SAFETY_TIMEOUT_MS)
     return () => clearTimeout(timeout)
   }, [isDragging])
+
+  const toggleOpen = () => setIsOpen((prev) => !prev)
 
   const clampTop = (nextTop) => {
     if (typeof window === 'undefined') return nextTop
@@ -96,7 +100,7 @@ export default function QuickContactRail({ page }) {
       const drag = dragRef.current
       if (!drag.active) return
       const deltaY = event.clientY - drag.startPointerY
-      if (Math.abs(deltaY) > 2) dragRef.current.moved = true
+      if (Math.abs(deltaY) > DRAG_THRESHOLD_PX) dragRef.current.moved = true
       setTopPx(clampTop(drag.startTopPx + deltaY))
     }
 
@@ -111,7 +115,7 @@ export default function QuickContactRail({ page }) {
       const isLinkTarget = target instanceof Element && !!target.closest('a')
       if (!drag.moved && !isLinkTarget) {
         suppressNextClickRef.current = true
-        setIsOpen((prev) => !prev)
+        toggleOpen()
       }
     }
 
@@ -133,7 +137,6 @@ export default function QuickContactRail({ page }) {
     const safeTop = topPx ?? Math.round((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.3)
     dragRef.current = {
       active: true,
-      pointerId: event.pointerId,
       startPointerY: event.clientY,
       startTopPx: safeTop,
       moved: false,
@@ -146,7 +149,7 @@ export default function QuickContactRail({ page }) {
       suppressNextClickRef.current = false
       return
     }
-    setIsOpen((prev) => !prev)
+    toggleOpen()
   }
 
   const tabLabel = page.title || page.id || ''
