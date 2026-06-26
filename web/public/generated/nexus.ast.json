@@ -31,6 +31,7 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "contacts": [],
       "intent": {},
       "render": {},
       "behavior": {},
@@ -63,6 +64,7 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "contacts": [],
       "intent": {
         "purpose": "brand-positioning",
         "audience": "first-visit"
@@ -114,6 +116,7 @@
       "route": "/media/short.mp4",
       "links": [],
       "institutions": [],
+      "contacts": [],
       "intent": {},
       "render": {
         "variant": "media-feature"
@@ -165,6 +168,7 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "contacts": [],
       "intent": {
         "purpose": "capability-overview",
         "audience": "first-visit"
@@ -228,6 +232,7 @@
           "route": "/research/platforms/core/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {
             "purpose": "architecture-positioning",
             "audience": "first-visit"
@@ -290,6 +295,7 @@
           "route": "/research/platforms/brix/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -328,6 +334,7 @@
           "route": "/research/platforms/aflowtex/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -366,6 +373,7 @@
           "route": "/research/platforms/lithos/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -404,6 +412,7 @@
           "route": "/research/platforms/oracle/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -444,6 +453,7 @@
           "route": "/research/platforms/delphi/index.html",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -484,6 +494,7 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "contacts": [],
       "intent": {
         "purpose": "ecosystem-context",
         "audience": "returning-visitor"
@@ -545,6 +556,7 @@
           "route": "/ecosystem",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -720,6 +732,7 @@
               ]
             }
           ],
+          "contacts": [],
           "intent": {
             "purpose": "conversion",
             "audience": "partner-or-collaborator"
@@ -773,6 +786,7 @@
           "route": "/philosophy",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},
@@ -794,19 +808,49 @@
     {
       "type": "element",
       "id": "footer",
-      "title": "",
+      "title": "Connect",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "",
+      "subtitle": "CALYR.AI contact registry",
       "landing_message": "",
-      "summary": "",
-      "body": "Name: Rupert Tscheliessnig\nRole: Founder, Calyr.a\u00ed\nrupert.tscheliessnig@calyr.ai\n",
+      "summary": "Research, engineering, and collaboration channels.",
+      "body": "Contact profile and channels are configured in YAML and can be updated without touching frontend code.\n",
       "icon": "",
       "route": "",
       "links": [],
       "institutions": [],
+      "contacts": [
+        {
+          "id": "principal",
+          "label": "Principal",
+          "value": "Rupert Tscheliessnig"
+        },
+        {
+          "id": "role",
+          "label": "Role",
+          "value": "Founder, Calyr.a\u00ed"
+        },
+        {
+          "id": "email",
+          "label": "Email",
+          "value": "rupert.tscheliessnig@calyr.ai",
+          "route": "mailto:rupert.tscheliessnig@calyr.ai"
+        },
+        {
+          "id": "phone",
+          "label": "Phone",
+          "value": "TBD",
+          "status": "pending"
+        },
+        {
+          "id": "office",
+          "label": "Office",
+          "value": "TBD",
+          "status": "pending"
+        }
+      ],
       "intent": {},
       "render": {},
       "behavior": {},
@@ -840,6 +884,7 @@
           "route": "/legal",
           "links": [],
           "institutions": [],
+          "contacts": [],
           "intent": {},
           "render": {},
           "behavior": {},

@@ -9,7 +9,7 @@ import React from 'react'
 import LogoAnimation from './logo/LogoAnimation'
 
 export default function Element({ node, theme }) {
-  const { id, title, summary, body, icon, route } = node
+  const { id, title, summary, body, icon, route, contacts = [] } = node
 
   if (id === 'logo') {
     const heroTheme = theme?.skin?.components?.hero || {}
@@ -34,6 +34,7 @@ export default function Element({ node, theme }) {
   const WrapperTag = isFooter ? 'footer' : 'div'
   const dataType = isFooter ? 'footer' : 'element'
   const className = isFooter ? 'element footer-element' : 'element'
+  const footerContacts = Array.isArray(contacts) ? contacts : []
 
   return (
     <WrapperTag className={className} id={id} data-type={dataType} style={elementStyle}>
@@ -49,6 +50,29 @@ export default function Element({ node, theme }) {
             {body.split('\n').map((line, idx) => (
               <p key={idx}>{line}</p>
             ))}
+          </div>
+        )}
+
+        {isFooter && footerContacts.length > 0 && (
+          <div className="footer-contact-grid">
+            {footerContacts.map((entry, idx) => {
+              const label = entry?.label || entry?.id || `Contact ${idx + 1}`
+              const value = entry?.value || 'TBD'
+              const href = entry?.route || entry?.href || entry?.url || null
+              const status = entry?.status || ''
+
+              return (
+                <article key={entry?.id || `${label}-${idx}`} className="footer-contact-item">
+                  <p className="footer-contact-label">{label}</p>
+                  {href ? (
+                    <a href={href} className="footer-contact-value">{value}</a>
+                  ) : (
+                    <p className="footer-contact-value">{value}</p>
+                  )}
+                  {status && <p className="footer-contact-status">{status}</p>}
+                </article>
+              )
+            })}
           </div>
         )}
 

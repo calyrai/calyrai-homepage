@@ -36,6 +36,7 @@ NODE_TEXT_FIELDS = (
 NODE_LIST_FIELDS = (
     "links",
     "institutions",
+    "contacts",
 )
 
 NODE_STRUCTURED_FIELDS = (

@@ -19,6 +19,15 @@
       }
     },
     {
+      "id": "route_policy",
+      "label": "",
+      "data": {
+        "title": "",
+        "summary": "",
+        "icon": ""
+      }
+    },
+    {
       "id": "hero",
       "label": "",
       "data": {
@@ -56,10 +65,10 @@
     },
     {
       "id": "footer",
-      "label": "",
+      "label": "Connect",
       "data": {
-        "title": "",
-        "summary": "",
+        "title": "Connect",
+        "summary": "Research, engineering, and collaboration channels.",
         "icon": ""
       }
     },

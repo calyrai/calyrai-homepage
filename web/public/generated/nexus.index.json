@@ -94,12 +94,19 @@
     ]
   },
   "footer": {
-    "title": "",
-    "summary": "",
-    "body_preview": "Name: Rupert Tscheliessnig\nRole: Founder, Calyr.a\u00ed\nrupert.tscheliessnig@calyr.ai\n",
+    "title": "Connect",
+    "summary": "Research, engineering, and collaboration channels.",
+    "body_preview": "Contact profile and channels are configured in YAML and can be updated without touching frontend code.\n",
     "route": "",
     "icon": "",
-    "keywords": []
+    "keywords": [
+      "and",
+      "channels.",
+      "collaboration",
+      "connect",
+      "engineering,",
+      "research,"
+    ]
   },
   "core": {
     "title": "Calyrai core",

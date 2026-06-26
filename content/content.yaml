@@ -122,16 +122,34 @@ architecture:
 
 footer:
 
-  title: ""
+  title: "Connect"
 
-  subtitle: ""
+  subtitle: "CALYR.AI contact registry"
 
-  summary: ""
+  summary: "Research, engineering, and collaboration channels."
 
-  body: |
-    Name: Rupert Tscheliessnig
-    Role: Founder, Calyr.aí
-    rupert.tscheliessnig@calyr.ai
+  body: >
+    Contact profile and channels are configured in YAML and can be updated without touching frontend code.
+
+  contacts:
+    - id: principal
+      label: Principal
+      value: Rupert Tscheliessnig
+    - id: role
+      label: Role
+      value: Founder, Calyr.aí
+    - id: email
+      label: Email
+      value: rupert.tscheliessnig@calyr.ai
+      route: mailto:rupert.tscheliessnig@calyr.ai
+    - id: phone
+      label: Phone
+      value: TBD
+      status: pending
+    - id: office
+      label: Office
+      value: TBD
+      status: pending
 
 # --------------------------------------------------
 

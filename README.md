@@ -54,12 +54,40 @@ This regenerates:
 - generated/nexus.index.json
 - generated/nexus.flowchart.json
 
+And syncs route governance artifacts:
+
+- web/public/generated/route.policy.json
+- web/public/generated/route.audit.json
+
 Strict compile policy:
 
 - The compiler requires explicit page hierarchy in content/structure.yaml.
 - structure.homepage must define children explicitly.
 - Legacy inferred homepage layout mode (header/hero/grid/footer synthesis) has been removed.
 - If compile fails, fix the structure YAML instead of relying on compiler-side layout inference.
+
+### YAML Route Policy and Route Audit
+
+Route fallback behavior is source-of-truth driven from YAML.
+
+Configure this in content/content.yaml:
+
+- route_policy.fallback_mailto
+- route_policy.spa_routes
+
+What compile.py now does:
+
+1. Reads all route fields recursively from content/content.yaml.
+2. Writes web/public/generated/route.policy.json with fallback_mailto and spa_routes.
+3. Validates internal routes against existing web/public files.
+4. Writes unresolved internal routes to web/public/generated/route.audit.json.
+5. Prints compile-time warnings for each unresolved internal route.
+
+Runtime behavior:
+
+- web/src/components/Tile.jsx reads ROUTE_POLICY_DATA and ROUTE_AUDIT_DATA from web/src/data/runtimeArtifacts.js.
+- If a tile route is unresolved, routing falls back to fallback_mailto.
+- This prevents unresolved internal links from going to a 404 page.
 
 ### Explicit Homepage Documentation Map
 
