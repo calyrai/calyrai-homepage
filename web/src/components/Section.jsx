@@ -9,10 +9,13 @@
 import React, { useRef, useState } from 'react'
 import { renderChildren } from './Renderer'
 import { SectionLayoutService } from '../services/SectionLayoutService'
+import { ScrollCenterProvider } from '../hooks/useScrollCenter'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export default function Section({ node, theme }) {
   const { id, title, summary, route, children = [] } = node
   const layout = SectionLayoutService.create(node)
+  const isMobileViewport = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(layout.defaultExpanded)
   const lastPointerToggleTsRef = useRef(0)
   const titleHref = layout.titleHref
@@ -28,9 +31,11 @@ export default function Section({ node, theme }) {
   } : {}
 
   const renderGrid = () => (
-    <div className="section-grid">
-      {renderChildren(children, theme)}
-    </div>
+    <ScrollCenterProvider>
+      <div className={`section-grid ${isMobileViewport ? 'scroll-mode' : ''}`.trim()}>
+        {renderChildren(children, theme)}
+      </div>
+    </ScrollCenterProvider>
   )
 
   const renderMovie = () => (

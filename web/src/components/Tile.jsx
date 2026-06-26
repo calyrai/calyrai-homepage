@@ -24,6 +24,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useSelection } from '../context/SelectionContext'
 import { useRipple } from '../context/RippleContext'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useScrollCenterContext } from '../hooks/useScrollCenter'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -212,6 +213,12 @@ export default function Tile({ node, theme, context = {} }) {
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
   const isMobileViewport = useIsMobile()
+  const scrollCenter = useScrollCenterContext()
+  const isScrollCentered = Boolean(
+    isMobileViewport &&
+    scrollCenter &&
+    scrollCenter.centerTileId === id,
+  )
   
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -246,6 +253,17 @@ export default function Tile({ node, theme, context = {} }) {
       }
     }
   }, [id, isMobileViewport])
+
+  useEffect(() => {
+    if (!scrollCenter?.registerTile) {
+      return undefined
+    }
+
+    scrollCenter.registerTile(id, tileRef.current)
+    return () => {
+      scrollCenter.registerTile(id, null)
+    }
+  }, [id, scrollCenter])
 
   // Save position to localStorage when it changes
   useEffect(() => {
@@ -597,7 +615,9 @@ export default function Tile({ node, theme, context = {} }) {
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
         isPlatformTile ? 'tile-platform' : ''
-      } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'}`}
+      } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'} ${
+        isScrollCentered ? 'tile-scroll-centered' : ''
+      }`}
       id={id}
       data-type="tile"
       data-draggable="true"
