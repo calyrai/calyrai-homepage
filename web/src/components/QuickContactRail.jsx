@@ -101,10 +101,12 @@ export default function QuickContactRail({ page }) {
     }
 
     const handleDocPointerUp = (event) => {
+      const drag = dragRef.current
+      if (!drag.active) return
+      
       dragRef.current.active = false
       setIsDragging(false)
 
-      const drag = dragRef.current
       const target = event.target
       const isLinkTarget = target instanceof Element && !!target.closest('a')
       if (!drag.moved && !isLinkTarget) {
@@ -113,17 +115,14 @@ export default function QuickContactRail({ page }) {
       }
     }
 
-    // Use capture phase to ensure we catch events even if they're prevented
     document.addEventListener('pointermove', handleDocPointerMove, true)
     document.addEventListener('pointerup', handleDocPointerUp, true)
     document.addEventListener('pointercancel', handleDocPointerUp, true)
-    document.addEventListener('pointerleave', handleDocPointerUp, true)
 
     return () => {
       document.removeEventListener('pointermove', handleDocPointerMove, true)
       document.removeEventListener('pointerup', handleDocPointerUp, true)
       document.removeEventListener('pointercancel', handleDocPointerUp, true)
-      document.removeEventListener('pointerleave', handleDocPointerUp, true)
     }
   }, [isDragging])
 
