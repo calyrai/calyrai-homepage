@@ -139,10 +139,6 @@ export default function LogoAnimation({ className = '', label = '', layout = 'in
           }
         }}
       >
-        <div
-          className={`calyr-logo-through-line ${state === 'active' || state === 'qr_build' ? 'energized' : ''}`}
-          aria-hidden="true"
-        />
         <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
       </div>
       {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}

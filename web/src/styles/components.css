@@ -1893,30 +1893,6 @@ button:active {
   border-radius: 50%;
 }
 
-.calyr-logo-through-line {
-  position: absolute;
-  left: 50%;
-  top: 62%;
-  width: 100vw;
-  height: 1.5px;
-  transform: translateX(-50%);
-  background: rgba(255, 51, 204, 0.78);
-  box-shadow: 0 0 6px rgba(255, 51, 204, 0.34);
-  z-index: 2;
-  pointer-events: none;
-  transition: opacity 220ms ease;
-}
-
-.calyr-logo-through-line.energized {
-  background: rgba(255, 51, 204, 0.9);
-  box-shadow: 0 0 9px rgba(255, 51, 204, 0.5);
-}
-
-.calyr-logo-interactive[data-logo-state='qr_build'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='qr_show'] .calyr-logo-through-line {
-  opacity: 0;
-}
-
 .calyr-logo-interactive[data-logo-state='active'],
 .calyr-logo-interactive[data-logo-state='qr_build'] {
   filter: saturate(1.08) brightness(1.06);

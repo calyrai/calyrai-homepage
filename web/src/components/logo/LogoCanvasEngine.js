@@ -379,11 +379,7 @@ export default class LogoCanvasEngine {
     this.#drawBackgroundRaster(ctx, t)
 
     if (this.state === 'qr_show') {
-      this.#drawRingBaseline(ctx, 0.28)
-      this.#drawQrMotionField(ctx, t)
       this.#drawExactQr(ctx)
-      // Keep ring particles alive with a gentle drift pass during qr_show
-      this.#updateRingDrift(t)
       return
     }
 
