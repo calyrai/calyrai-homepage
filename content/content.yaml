@@ -15,6 +15,15 @@ logo:
 
   route: ""
 
+route_policy:
+
+  fallback_mailto: mailto:rupert.tscheliessnig@calyr.ai
+
+  spa_routes:
+    - /books
+    - /philosophy
+    - /contact
+
 # --------------------------------------------------
 
 hero:

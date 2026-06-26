@@ -1,0 +1,28 @@
+{
+  "checked_routes": [
+    "/ecosystem",
+    "/legal",
+    "/media/short.mp4",
+    "/philosophy",
+    "/research/platforms/aflowtex/index.html",
+    "/research/platforms/brix/index.html",
+    "/research/platforms/core/index.html",
+    "/research/platforms/delphi/index.html",
+    "/research/platforms/lithos/index.html",
+    "/research/platforms/oracle/index.html",
+    "https://bsky.app",
+    "https://lidar.ai",
+    "https://lithos.ai",
+    "https://wa.me/?text=Hello%20Calyr.a%C3%AD",
+    "https://www.linkedin.com",
+    "https://www.youtube.com",
+    "https://x.com",
+    "mailto:rupert.tscheliessnig@calyr.ai"
+  ],
+  "unresolved_routes": [
+    "/ecosystem",
+    "/legal",
+    "/media/short.mp4"
+  ],
+  "generated_at": "2026-06-26T10:05:40.284831+00:00"
+}

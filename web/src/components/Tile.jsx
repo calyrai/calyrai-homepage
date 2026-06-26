@@ -25,16 +25,27 @@ import { useSelection } from '../context/SelectionContext'
 import { useRipple } from '../context/RippleContext'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useScrollCenterContext } from '../hooks/useScrollCenter'
+import { ROUTE_POLICY_DATA, ROUTE_AUDIT_DATA } from '../data/runtimeArtifacts'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
 const DEFAULT_TILE_POSITION = { x: 0, y: 0 }
-const MAIL_FALLBACK_ROUTE = 'mailto:rupert.tscheliessnig@calyr.ai'
-const SPA_SAFE_ROUTES = new Set(['/books', '/philosophy', '/contact'])
+const MAIL_FALLBACK_ROUTE =
+  (ROUTE_POLICY_DATA && typeof ROUTE_POLICY_DATA.fallback_mailto === 'string' && ROUTE_POLICY_DATA.fallback_mailto.trim())
+    ? ROUTE_POLICY_DATA.fallback_mailto.trim()
+    : 'mailto:rupert.tscheliessnig@calyr.ai'
 
-function isGeneratedStaticRoute(route) {
-  return /^\/research\/(platforms\/[a-z0-9-]+\/index\.html|positioning\/index\.html)$/i.test(route)
-}
+const SPA_SAFE_ROUTES = new Set(
+  Array.isArray(ROUTE_POLICY_DATA?.spa_routes) && ROUTE_POLICY_DATA.spa_routes.length > 0
+    ? ROUTE_POLICY_DATA.spa_routes
+    : ['/books', '/philosophy', '/contact'],
+)
+
+const UNRESOLVED_INTERNAL_ROUTES = new Set(
+  Array.isArray(ROUTE_AUDIT_DATA?.unresolved_routes)
+    ? ROUTE_AUDIT_DATA.unresolved_routes
+    : [],
+)
 
 function normalizeTileRoute(route) {
   if (!route) {
@@ -50,7 +61,11 @@ function normalizeTileRoute(route) {
     return normalized
   }
 
-  if (SPA_SAFE_ROUTES.has(normalized) || isGeneratedStaticRoute(normalized)) {
+  if (normalized.startsWith('/') && UNRESOLVED_INTERNAL_ROUTES.has(normalized)) {
+    return MAIL_FALLBACK_ROUTE
+  }
+
+  if (SPA_SAFE_ROUTES.has(normalized) || normalized.startsWith('/')) {
     return normalized
   }
 

@@ -288,6 +288,7 @@ def main() -> int:
             _sync_books_page_from_yaml(build_dir.parent)
             _sync_positioning_page_from_yaml(build_dir.parent)
             _sync_platform_pages_from_yaml(build_dir.parent)
+            _sync_route_policy_and_audit(build_dir.parent)
             # Auto-copy artifacts to web/public/generated for dev server
             _sync_artifacts_to_web_public(build_dir.parent, output_dir)
             _sync_runtime_artifacts_module(build_dir.parent, output_dir)
@@ -316,15 +317,21 @@ def _sync_runtime_artifacts_module(project_root: Path, output_dir: Path) -> None
     """Sync compiled local artifacts into the bundled runtime source used by production."""
     runtime_module = project_root / "web" / "src" / "data" / "runtimeArtifacts.js"
     books_page_path = project_root / "web" / "public" / "generated" / "books.page.json"
+    route_policy_path = project_root / "web" / "public" / "generated" / "route.policy.json"
+    route_audit_path = project_root / "web" / "public" / "generated" / "route.audit.json"
 
     ast = _read_json_file(output_dir / "nexus.ast.json")
     theme = _read_json_file(output_dir / "nexus.theme.json")
     books_page = _read_json_file(books_page_path) if books_page_path.exists() else {}
+    route_policy = _read_json_file(route_policy_path) if route_policy_path.exists() else {}
+    route_audit = _read_json_file(route_audit_path) if route_audit_path.exists() else {}
 
     content = "\n".join([
         f"export const AST_DATA = {json.dumps(ast, ensure_ascii=False)}",
         f"export const THEME_DATA = {json.dumps(theme, ensure_ascii=False)}",
         f"export const BOOKS_PAGE_DATA = {json.dumps(books_page, ensure_ascii=False)}",
+        f"export const ROUTE_POLICY_DATA = {json.dumps(route_policy, ensure_ascii=False)}",
+        f"export const ROUTE_AUDIT_DATA = {json.dumps(route_audit, ensure_ascii=False)}",
         "",
     ])
 
@@ -858,6 +865,85 @@ def _read_optional_yaml(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"Expected mapping in YAML file: {path}")
     return payload
+
+
+def _sync_route_policy_and_audit(project_root: Path) -> None:
+    """Build route policy + unresolved internal route audit from YAML source."""
+    content_cfg = _read_optional_yaml(project_root / "content" / "content.yaml")
+    if not content_cfg:
+        return
+
+    route_policy_cfg = content_cfg.get("route_policy", {}) if isinstance(content_cfg, dict) else {}
+    contact_cfg = content_cfg.get("contact", {}) if isinstance(content_cfg.get("contact"), dict) else {}
+    contact_route = str(contact_cfg.get("route", "")).strip()
+
+    fallback_mailto = str(route_policy_cfg.get("fallback_mailto", "")).strip() if isinstance(route_policy_cfg, dict) else ""
+    if not fallback_mailto:
+        fallback_mailto = contact_route if contact_route.startswith("mailto:") else "mailto:rupert.tscheliessnig@calyr.ai"
+
+    spa_routes_cfg = route_policy_cfg.get("spa_routes", []) if isinstance(route_policy_cfg, dict) else []
+    if not isinstance(spa_routes_cfg, list):
+        spa_routes_cfg = []
+    spa_routes = [str(route).strip() for route in spa_routes_cfg if isinstance(route, str) and str(route).strip()]
+    if not spa_routes:
+        spa_routes = ["/books", "/philosophy", "/contact"]
+
+    collected_routes: list[str] = []
+
+    def collect_routes(obj: Any) -> None:
+        if isinstance(obj, dict):
+            route = obj.get("route")
+            if isinstance(route, str) and route.strip():
+                collected_routes.append(route.strip())
+            for value in obj.values():
+                collect_routes(value)
+            return
+        if isinstance(obj, list):
+            for item in obj:
+                collect_routes(item)
+
+    collect_routes(content_cfg)
+
+    public_root = project_root / "web" / "public"
+    unresolved: list[str] = []
+
+    for route in sorted(set(collected_routes)):
+        if not route.startswith("/"):
+            continue
+        if route in spa_routes:
+            continue
+
+        normalized = route.lstrip("/")
+        direct_file = public_root / normalized
+        index_file = public_root / normalized / "index.html"
+        if direct_file.exists() or index_file.exists():
+            continue
+        unresolved.append(route)
+
+    generated_dir = public_root / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+
+    policy_payload = {
+        "fallback_mailto": fallback_mailto,
+        "spa_routes": spa_routes,
+    }
+    audit_payload = {
+        "checked_routes": sorted(set(collected_routes)),
+        "unresolved_routes": unresolved,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+    policy_path = generated_dir / "route.policy.json"
+    audit_path = generated_dir / "route.audit.json"
+    policy_path.write_text(json.dumps(policy_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    audit_path.write_text(json.dumps(audit_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    rel_policy = policy_path.relative_to(project_root)
+    rel_audit = audit_path.relative_to(project_root)
+    print(f"📬 Synced route policy to {rel_policy}")
+    print(f"🚨 Synced route audit to {rel_audit}")
+    for route in unresolved:
+        print(f"   ⚠️  Unresolved internal route in YAML: {route}")
 
 
 def _read_json_file(path: Path) -> Any:

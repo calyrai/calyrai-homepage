@@ -47,7 +47,7 @@ NODE_STRUCTURED_FIELDS = (
 
 # Validation-related structure keys
 # brand: meta-node never in structure
-SKIP_STRUCTURE_CHECK = {"brand"}
+SKIP_STRUCTURE_CHECK = {"brand", "route_policy"}
 STRUCTURE_NODE_LIST_KEYS = {"children"}
 
 # Graph mapping keys
