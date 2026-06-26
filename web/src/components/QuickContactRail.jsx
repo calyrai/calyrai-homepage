@@ -151,6 +151,11 @@ export default function QuickContactRail({ page }) {
 
   const tabLabel = page.title || page.id || ''
   const railStyle = topPx == null ? undefined : { top: `${topPx}px`, bottom: 'auto' }
+  const linksStyle = {
+    transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+    opacity: isOpen ? 1 : 0,
+    pointerEvents: isOpen ? 'auto' : 'none',
+  }
 
   return (
     <aside
@@ -170,7 +175,7 @@ export default function QuickContactRail({ page }) {
         {tabLabel}
       </button>
 
-      <div className="quick-contact-links" id="quick-contact-links">
+      <div className="quick-contact-links" id="quick-contact-links" style={linksStyle}>
         {contactLinks.map((item) => (
           <a
             key={item.id}
