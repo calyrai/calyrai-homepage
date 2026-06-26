@@ -118,23 +118,44 @@ export default class LogoCanvasEngine {
   #buildRingTargets() {
     this.ringTargets = []
 
-    const stepX = 0.0065
-    const stepY = 0.008
-    const lineY = 0.54
-    const left = 0.08
-    const right = 0.92
+    const externalPoints = this.config?.ringPointSet
+    if (Array.isArray(externalPoints) && externalPoints.length > 0) {
+      this.#buildRingTargetsFromExternal(externalPoints, this.config?.ringPointBounds)
+      if (this.ringTargets.length > 0) {
+        return
+      }
+    }
 
-    for (let y = lineY - 0.036; y <= lineY + 0.036; y += stepY) {
-      for (let x = left; x <= right; x += stepX) {
-        const lineDelta = Math.abs(y - lineY)
-        const density = gaussian(lineDelta, 0.014)
+    const step = 0.0082
 
-        if (density < 0.16) {
+    for (let y = 0.06; y <= 0.94; y += step) {
+      for (let x = 0.06; x <= 0.94; x += step) {
+        const dx = x - this.ringCenterX
+        const dy = y - this.ringCenterY
+        const r = Math.hypot(dx, dy)
+        const a = Math.atan2(dy, dx)
+
+        const radialDelta = Math.abs(r - this.ringRadius)
+        const ringCore = gaussian(radialDelta, this.ringThickness)
+
+        const leftFlare = gaussian(angleDiff(a, Math.PI), 0.26) * gaussian(radialDelta, 0.11)
+        const rightFlare = gaussian(angleDiff(a, 0), 0.26) * gaussian(radialDelta, 0.11)
+
+        const topCrown = gaussian(angleDiff(a, -Math.PI / 2), 0.34) * gaussian(radialDelta, 0.095)
+
+        const lowerMask = 1 - gaussian(a - Math.PI / 2, 0.55) * 0.12
+
+        const density = Math.max(
+          0,
+          (ringCore * 0.92 + leftFlare * 0.95 + rightFlare * 0.95 + topCrown * 0.68) * lowerMask
+        )
+
+        if (density < 0.13) {
           continue
         }
 
-        const noise = hash2(x * 1731.7, y * 2467.1)
-        const threshold = 1 - Math.min(1, density * 0.92)
+        const noise = hash2(x * 1973.3, y * 2671.7)
+        const threshold = 1 - Math.min(1, density * 0.98)
 
         if (noise > threshold) {
           this.ringTargets.push({
@@ -144,6 +165,42 @@ export default class LogoCanvasEngine {
           })
         }
       }
+    }
+  }
+
+  #buildRingTargetsFromExternal(points, bounds) {
+    const minX = Number.isFinite(bounds?.minX)
+      ? bounds.minX
+      : Math.min(...points.map((p) => p.x))
+    const maxX = Number.isFinite(bounds?.maxX)
+      ? bounds.maxX
+      : Math.max(...points.map((p) => p.x))
+    const minY = Number.isFinite(bounds?.minY)
+      ? bounds.minY
+      : Math.min(...points.map((p) => p.y))
+    const maxY = Number.isFinite(bounds?.maxY)
+      ? bounds.maxY
+      : Math.max(...points.map((p) => p.y))
+
+    const spanX = Math.max(1, maxX - minX)
+    const spanY = Math.max(1, maxY - minY)
+    const targetW = 0.82
+    const targetH = 0.74
+    const left = this.ringCenterX - targetW / 2
+    const top = this.ringCenterY - targetH / 2
+
+    for (const pt of points) {
+      const nx = (pt.x - minX) / spanX
+      const ny = (pt.y - minY) / spanY
+
+      const x = left + nx * targetW
+      const y = top + ny * targetH
+
+      this.ringTargets.push({
+        x,
+        y,
+        weight: 0.84,
+      })
     }
   }
 
