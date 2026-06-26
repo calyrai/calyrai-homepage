@@ -1,47 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { LinkItemService } from '../services/LinkItemService'
 
 const DRAG_THRESHOLD_PX = 2
 const DRAG_SAFETY_TIMEOUT_MS = 8000
-
-function normalizeLinkItem(item) {
-  if (!item) return null
-  if (typeof item === 'string') {
-    return { id: item, label: item, href: item }
-  }
-
-  const href = item.route || item.href || item.url
-  if (!href) return null
-
-  const label = item.label || item.name || item.id || href
-  const id = item.id || `${label}-${href}`
-  return { id, label, href }
-}
-
-function buildContactLinks(page) {
-  const links = []
-
-  if (page?.route) {
-    const routeLabel = typeof page.route === 'string' && page.route.startsWith('mailto:')
-      ? page.route.replace('mailto:', '')
-      : page.route
-    links.push({ id: 'primary-route', label: routeLabel, href: page.route })
-  }
-
-  if (Array.isArray(page?.links)) {
-    page.links.forEach((item) => {
-      const normalized = normalizeLinkItem(item)
-      if (normalized) links.push(normalized)
-    })
-  }
-
-  const seen = new Set()
-  return links.filter((item) => {
-    const key = `${item.label}|${item.href}`
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
-}
 
 export default function QuickContactRail({ page }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -55,7 +16,7 @@ export default function QuickContactRail({ page }) {
     startTopPx: 0,
     moved: false,
   })
-  const contactLinks = buildContactLinks(page)
+  const contactLinks = LinkItemService.buildContactLinks(page)
 
   if (!page || contactLinks.length === 0) {
     return null
@@ -154,6 +115,7 @@ export default function QuickContactRail({ page }) {
 
   const tabLabel = page.title || page.id || ''
   const railStyle = topPx == null ? undefined : { top: `${topPx}px`, bottom: 'auto' }
+  // Keep the hidden panel non-interactive to avoid an invisible touch-blocking layer on mobile.
   const linksStyle = {
     transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
     opacity: isOpen ? 1 : 0,

@@ -34,30 +34,6 @@ function getTileLeadDotClass(accent) {
   return null
 }
 
-function normalizeContactLinkItem(item, fallbackRoutePrefix = '/') {
-  if (typeof item === 'string') {
-    return {
-      key: item,
-      label: item,
-      href: fallbackRoutePrefix ? `${fallbackRoutePrefix}${item}` : null,
-    }
-  }
-
-  if (!item || typeof item !== 'object') {
-    return {
-      key: 'unknown',
-      label: '',
-      href: null,
-    }
-  }
-
-  return {
-    key: item.id || item.label || item.name || item.route || item.href || item.url || 'unknown',
-    label: item.label || item.id || item.name || item.route || item.href || item.url || '',
-    href: item.route || item.href || item.url || null,
-  }
-}
-
 function hashSeed(input) {
   let hash = 2166136261
   for (let index = 0; index < input.length; index += 1) {

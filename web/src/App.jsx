@@ -10,6 +10,9 @@ import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider, useRipple } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
 import { isInteractiveSurfaceEvent } from './utils/interactionFilters'
+import { ThemeVariableApplier } from './services/ThemeVariableApplier'
+import { RouteStateService } from './services/RouteStateService'
+import { NodeQueryService } from './services/NodeQueryService'
 import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
@@ -22,45 +25,13 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Helper to inject theme colors into CSS variables
-  const applyThemeToCSS = (themeData) => {
-    if (!themeData?.skin) return
-
-    const root = document.documentElement
-    const colors = themeData.skin.colors || {}
-    const components = themeData.skin.components || {}
-
-    // Apply color variables
-    Object.entries(colors).forEach(([key, value]) => {
-      // Skip template references
-      if (typeof value === 'string' && !value.includes('{{')) {
-        root.style.setProperty(`--color-${key.replace(/_/g, '-')}`, value)
-      }
-    })
-
-    // Apply component-specific styles
-    if (components.hero) {
-      if (components.hero.background && !components.hero.background.includes('{{')) {
-        root.style.setProperty('--hero-bg', components.hero.background)
-      }
-      if (components.hero.text && !components.hero.text.includes('{{')) {
-        root.style.setProperty('--hero-text', components.hero.text)
-      }
-    }
-
-    if (components.tile) {
-      if (components.tile.background && !components.tile.background.includes('{{')) {
-        root.style.setProperty('--tile-bg', components.tile.background)
-      }
-      if (components.tile.text_color && !components.tile.text_color.includes('{{')) {
-        root.style.setProperty('--tile-text', components.tile.text_color)
-      }
-    }
-  }
+  const themeVariableApplier = new ThemeVariableApplier()
+  const routeState = RouteStateService.create(currentPath)
+  const contactPage = new NodeQueryService(ast).findById('contact')
 
   useEffect(() => {
     try {
-      applyThemeToCSS(theme)
+      themeVariableApplier.apply(theme)
       setLoading(false)
     } catch (err) {
       console.error('Failed to initialize bundled artifacts:', err)
@@ -76,15 +47,13 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const isBooksRoute = currentPath === '/books' || currentPath === '/philosophy'
-    const isContactRoute = currentPath === '/contact'
-    document.body.classList.toggle('books-route', isBooksRoute)
-    document.body.classList.toggle('contact-route', isContactRoute)
+    document.body.classList.toggle('books-route', routeState.isBooksRoute)
+    document.body.classList.toggle('contact-route', routeState.isContactRoute)
     return () => {
       document.body.classList.remove('books-route')
       document.body.classList.remove('contact-route')
     }
-  }, [currentPath])
+  }, [routeState.isBooksRoute, routeState.isContactRoute])
 
   if (loading) {
     return <div>Loading...</div>
@@ -98,30 +67,16 @@ function App() {
     return <div>No data</div>
   }
 
-  const isBooksRoute = currentPath === '/books' || currentPath === '/philosophy'
-  const isContactRoute = currentPath === '/contact'
-  const findNodeById = (node, targetId) => {
-    if (!node) return null
-    if (node.id === targetId) return node
-    if (!Array.isArray(node.children)) return null
-    for (const child of node.children) {
-      const match = findNodeById(child, targetId)
-      if (match) return match
-    }
-    return null
-  }
-  const contactPage = findNodeById(ast, 'contact')
-
   return (
     <SelectionProvider>
-      <DotRasterBackground theme={theme} isBooksRoute={isBooksRoute || isContactRoute} />
+      <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} />
       <RippleLayer />
       {/* Navigation (Stage 8) */}
       <Navigation theme={theme} ast={ast} />
       <QuickContactRail page={contactPage} />
       
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {isBooksRoute ? <BooksPage page={booksPage} /> : isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
+        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
       </div>
     </SelectionProvider>
   )
