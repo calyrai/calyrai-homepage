@@ -277,6 +277,92 @@ Latest phone stability note:
 2. Mobile now ignores stored tile offsets, keeps tiles at their default origin, and does not save drag positions back while in phone mode.
 3. Result: desktop free-position behavior stays desktop-only, while phone layout remains stable and deterministic.
 
+## Footer Contacts System
+
+The footer displays structured contact information configured entirely in YAML, with no hardcoded frontend contact data. Updates can be made without touching React code.
+
+### Configuration
+
+Edit `content/content.yaml` under the `footer:` root node:
+
+```yaml
+footer:
+  title: "Connect"
+  subtitle: "CALYR.AI contact registry"
+  summary: "Research, engineering, and collaboration channels."
+  body: >
+    Contact profile and channels are configured in YAML and can be updated without touching frontend code.
+
+  contacts:
+    - id: principal
+      label: Principal
+      value: Rupert Tscheliessnig
+    - id: role
+      label: Role
+      value: CEO, Founder
+    - id: email
+      label: Email
+      value: rupert.tscheliessnig@calyr.ai
+      route: mailto:rupert.tscheliessnig@calyr.ai
+    - id: phone
+      label: Phone
+      value: "069 919 200915"
+      route: "tel:+43699192009155"
+    - id: office
+      label: Office
+      value: TBA
+      hide: true
+```
+
+### Contact Entry Schema
+
+Each contact object supports:
+
+- `id` (string, required): Unique identifier for the contact item.
+- `label` (string, required): Display label shown to user.
+- `value` (string, required): Contact value (name, number, address, etc.).
+- `route` (string, optional): URL or mailto/tel URI for clickable items. Renders as `<a>` if present.
+- `hide` (boolean, optional): If true, item is not rendered.
+
+### Display Logic
+
+The footer contact grid is rendered by `web/src/components/Element.jsx`. Each contact item is automatically hidden if:
+
+1. `hide: true` is explicitly set
+2. `value` is empty string
+3. `value` is "TBD"
+4. `value` is "TBA"
+
+This allows non-technical editors to mark entries as pending without leaving them blank in YAML.
+
+### Rendering
+
+Contacts are displayed as a CSS Grid with cards showing:
+
+- Label (bold)
+- Value (clickable as link if `route` present, plain text otherwise)
+- Optional status field (if `status` key exists)
+
+Styling is defined in `web/src/styles/components.css`:
+
+- `.footer-contact-grid`: Auto-fit grid with 180px min columns, 10px gap
+- `.footer-contact-item`: Subtle rounded border, 12px radius, hover effects
+- `.footer-contact-value`: Hover color #ff78bd, word-break for long values
+
+### Compile and Build Flow
+
+1. **Compile YAML**: `python3 build/compile.py` reads `content/content.yaml` and includes footer contacts in `generated/nexus.ast.json`.
+2. **Build frontend**: `npm run build` in web/ transpiles JSX and bundles runtime artifacts.
+3. **Renderer dispatch**: `web/src/components/Renderer.jsx` detects `type: "footer"` and routes to `Element.jsx`.
+4. **Runtime rendering**: `Element.jsx` unpacks contacts array and renders card grid only if contacts present and not filtered by hide logic.
+
+### Recent Updates (2026-06-26)
+
+- Added CEO/Founder role designation
+- Added phone number 069 919 200915 with tel: URI for calling
+- Implemented conditional hiding of TBA/TBD/empty entries
+- Updated schema to support `hide` flag for non-technical editors
+
 ## Logo Subsystem
 
 Primary files:
