@@ -377,6 +377,19 @@ export default function Tile({ node, theme, context = {} }) {
 
   // Stage 8: Touch event handlers
   const handleTouchStart = (e) => {
+    const touchPoint = e.touches?.[0]
+    if (touchPoint) {
+      meshHoverRef.current = true
+      const rect = tileRef.current?.getBoundingClientRect()
+      if (rect) {
+        meshPointerRef.current = {
+          x: touchPoint.clientX - rect.left,
+          y: touchPoint.clientY - rect.top,
+          active: true,
+        }
+      }
+    }
+
     // On mobile we prioritize native page scrolling over tile dragging.
     if (isMobileViewport) {
       return
@@ -431,9 +444,20 @@ export default function Tile({ node, theme, context = {} }) {
 
   // Stage 8: Touch move handler
   const handleTouchMove = (e) => {
+    const touch = e.touches?.[0]
+    if (touch) {
+      const rect = tileRef.current?.getBoundingClientRect()
+      if (rect) {
+        meshPointerRef.current = {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top,
+          active: true,
+        }
+      }
+    }
+
     if (!dragStart) return
-    
-    const touch = e.touches[0]
+
     const deltaX = touch.clientX - dragStart.x
     const deltaY = touch.clientY - dragStart.y
     const movedDistance = Math.hypot(touch.clientX - dragStart.elementX, touch.clientY - dragStart.elementY)
@@ -471,6 +495,8 @@ export default function Tile({ node, theme, context = {} }) {
   const handleTouchEnd = () => {
     setIsDragging(false)
     setDragStart(null)
+    meshHoverRef.current = false
+    meshPointerRef.current.active = false
   }
 
   // Track pointer movement from press -> release to detect drag threshold.
@@ -656,6 +682,9 @@ export default function Tile({ node, theme, context = {} }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={showTileMesh ? handleCursorMove : undefined}
+      onTouchMove={showTileMesh ? handleTouchMove : undefined}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       onClick={handleClick}
