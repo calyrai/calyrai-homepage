@@ -96,7 +96,7 @@ export default function QuickContactRail({ page }) {
       const drag = dragRef.current
       if (!drag.active) return
       const deltaY = event.clientY - drag.startPointerY
-      if (Math.abs(deltaY) > 4) dragRef.current.moved = true
+      if (Math.abs(deltaY) > 2) dragRef.current.moved = true
       setTopPx(clampTop(drag.startTopPx + deltaY))
     }
 
