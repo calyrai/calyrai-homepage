@@ -23,6 +23,16 @@ hero:
 
   subtitle_ref: brand.tagline
 
+  intent:
+    purpose: brand-positioning
+    audience: first-visit
+
+  render:
+    variant: hero-banner
+
+  explain:
+    why: Introduce the brand promise before module exploration.
+
   summary: >
     create what is not here yet.
 
@@ -31,6 +41,16 @@ movie:
   title: "Teaser"
 
   subtitle: "Short"
+
+  render:
+    variant: media-feature
+
+  behavior:
+    collapsible: true
+    default_expanded: false
+
+  explain:
+    why: Keep the teaser present but initially compressed so it does not dominate the opening scan path.
 
   summary: >
     Visual short section.
@@ -46,6 +66,22 @@ platforms:
 
   subtitle: "Applied intelligence modules"
 
+  intent:
+    purpose: capability-overview
+    audience: first-visit
+
+  render:
+    variant: tile-grid
+    source: homepage.grid.first-band
+
+  behavior:
+    collapsible: true
+    default_expanded: false
+    persistence: none
+
+  explain:
+    why: Present the primary product modules before the broader ecosystem context.
+
   summary: >
     Core platform modules for engineering,
     medicine, reasoning, and decision support.
@@ -55,6 +91,21 @@ architecture:
   title: "Architecture"
 
   subtitle: "System relationships"
+
+  intent:
+    purpose: ecosystem-context
+    audience: returning-visitor
+
+  render:
+    variant: tile-grid-secondary
+    source: homepage.grid.second-band
+
+  behavior:
+    collapsible: true
+    default_expanded: false
+
+  explain:
+    why: Show how ecosystem navigation, contact, and philosophy follow the core module overview.
 
   summary: >
     Structural overview of module connections,
@@ -306,6 +357,17 @@ contact:
 
   route: mailto:rupert.tscheliessnig@calyr.ai
 
+  intent:
+    purpose: conversion
+    audience: partner-or-collaborator
+
+  behavior:
+    quick_contact: enabled
+    mobile_panel: toggle-rail
+
+  explain:
+    why: Provide a direct contact path after users understand the platform and ecosystem.
+
   links:
     - id: whatsapp
       label: WhatsApp
@@ -453,3 +515,51 @@ __interaction:
   graph:
     node:
       action: focusNode
+
+# --------------------------------------------------
+
+__flowchart:
+
+  homepage:
+
+    title: "Homepage Narrative Flow"
+
+    direction: TD
+
+    nodes:
+      - id: landing
+        label: "Visitor lands"
+        kind: start
+        explain:
+          why: Entry point for a new or returning visitor.
+
+      - id: hero_stage
+        ref: hero
+        label: "Brand promise"
+        intent:
+          purpose: orient-visitor
+
+      - id: platforms_stage
+        ref: platforms
+        label: "Platform overview"
+        intent:
+          purpose: explain-capabilities
+
+      - id: architecture_stage
+        ref: architecture
+        label: "Ecosystem context"
+        intent:
+          purpose: explain-relationships
+
+      - id: contact_stage
+        ref: contact
+        label: "Contact / conversion"
+        kind: terminal
+        intent:
+          purpose: trigger-outreach
+
+    edges:
+      - [landing, hero_stage]
+      - [hero_stage, platforms_stage]
+      - [platforms_stage, architecture_stage]
+      - [architecture_stage, contact_stage, "reach out"]

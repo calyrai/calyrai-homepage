@@ -4,15 +4,15 @@ This page explains how the CALYR.aí homepage is created from YAML, how that dat
 
 ## 1. Source of Truth
 
-The homepage starts in five YAML files under `content/`:
+The homepage starts in YAML under `content/`:
 
 - `content/structure.yaml` defines the page hierarchy and layout.
-- `content/content.yaml` defines titles, summaries, icons, routes, and text.
-- `content/graph.yaml` defines relationships between nodes.
-- `content/interaction.yaml` defines interaction behavior.
+- `content/content.yaml` defines titles, summaries, icons, routes, text, inline graph data, inline interaction data, intent blocks, behavior policy, render policy, and flowchart definitions.
 - `content/theme.yaml` defines design tokens and theme values.
 
-These YAML files are the semantic source of truth for the homepage structure and content.
+Optional split files such as `content/graph.yaml`, `content/interaction.yaml`, or `content/flowchart.yaml` can exist, but the current repository keeps those auxiliary definitions inline in `content/content.yaml`.
+
+These YAML files are the semantic source of truth for homepage structure, content, behavior intent, and visualization intent.
 
 ## 2. Compilation Pipeline
 
@@ -35,6 +35,7 @@ The main generated artifacts are written to `generated/`:
 - `generated/nexus.graph.json`
 - `generated/nexus.theme.json`
 - `generated/nexus.index.json`
+- `generated/nexus.flowchart.json`
 
 Conceptually, the pipeline is:
 
@@ -44,23 +45,19 @@ YAML -> Python compiler -> resolved JSON artifacts -> React renderer -> deployed
 
 ## 3. How the React Site Uses the Data
 
-Historically, the app fetched JSON artifacts at runtime. That no longer works well for the current single-file GitHub Pages deployment.
+The current app prefers compiled artifacts served from `web/public/generated/` and falls back to bundled runtime data only if loading fails.
 
-The production app now imports embedded runtime data from:
-
-- `web/src/data/runtimeArtifacts.js`
-
-The React entry point reads those exports directly in:
+Runtime entry points:
 
 - `web/src/App.jsx`
+- `web/src/services/RuntimeArtifactLoader.js`
 
 Current pattern:
 
-- `AST_DATA` becomes the page tree.
-- `THEME_DATA` becomes the live theme input.
-- `BOOKS_PAGE_DATA` is used for the books route.
-
-This means the deployed site does not depend on runtime fetches for `generated/*.json`.
+- `generated/nexus.ast.json` becomes the page tree.
+- `generated/nexus.theme.json` becomes the live theme input.
+- `generated/books.page.json` is used for the books route.
+- `web/src/data/runtimeArtifacts.js` remains a fallback, not the primary construction path.
 
 ## 4. Rendering Model
 
@@ -76,8 +73,8 @@ In short:
 
 1. YAML defines content and structure.
 2. Python resolves the semantic model.
-3. Runtime data is embedded into source.
-4. React renders the embedded model into the final page.
+3. Compiled artifacts are served to the runtime.
+4. React renders the compiled model into the final page.
 
 ## 5. Build Output for Production
 
@@ -187,7 +184,7 @@ If you change homepage content or structure:
 1. update the YAML under `content/`,
 2. run `python3 build/compile.py`,
 3. verify the generated artifacts are correct,
-4. verify `web/src/data/runtimeArtifacts.js` reflects the content meant for production,
+4. verify the generated artifacts in `web/public/generated/` reflect the content meant for production,
 5. run the frontend build,
 6. prepare the deploy artifact,
 7. deploy and verify `https://calyr.ai/` returns `200`.

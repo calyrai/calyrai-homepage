@@ -38,6 +38,13 @@ NODE_LIST_FIELDS = (
     "institutions",
 )
 
+NODE_STRUCTURED_FIELDS = (
+    "intent",
+    "render",
+    "behavior",
+    "explain",
+)
+
 # Validation-related structure keys
 # brand: meta-node never in structure
 # movie/platforms/architecture/footer: synthetic layout sections built at runtime

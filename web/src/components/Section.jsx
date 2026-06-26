@@ -77,9 +77,12 @@ export default function Section({ node, theme }) {
 
   return (
     <section
-      className={`section ${layout.isCollapsible ? 'section-collapsible' : ''}`}
+      className={`section ${layout.isCollapsible ? 'section-collapsible' : ''} ${layout.renderVariant ? `section-variant-${layout.renderVariant}` : ''}`.trim()}
       id={id}
       data-type="section"
+      data-variant={layout.renderVariant || undefined}
+      data-source={layout.renderSource || undefined}
+      data-intent={layout.intentPurpose || undefined}
       style={sectionStyle}
     >
       {layout.isCollapsible && (

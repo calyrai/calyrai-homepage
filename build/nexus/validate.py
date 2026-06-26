@@ -29,6 +29,7 @@ class Validator:
         self.structure = source.get("structure", {})
         self.content = source.get("content", {})
         self.graph = source.get("graph", {})
+        self.flowchart = source.get("flowchart", {})
         self.errors: list[str] = []
         self.warnings: list[str] = []
 
@@ -40,10 +41,57 @@ class Validator:
             bool: True if no errors (warnings are acceptable)
         """
         self._check_graph_validity()
+        self._check_flowchart_validity()
         structure_node_ids = self._extract_all_node_ids()
         self._check_structure_completeness(structure_node_ids)
         self._check_content_completeness(structure_node_ids)
         return len(self.errors) == 0
+
+    def _check_flowchart_validity(self) -> None:
+        """Verify flowchart definitions reference valid authored nodes."""
+        if not isinstance(self.flowchart, dict):
+            self.errors.append("Flowchart source must be a mapping")
+            return
+
+        for flow_id, flow_def in self.flowchart.items():
+            if not isinstance(flow_def, dict):
+                self.errors.append(f"Flowchart '{flow_id}' must be a mapping")
+                continue
+
+            nodes = flow_def.get("nodes", [])
+            if not isinstance(nodes, list):
+                self.errors.append(f"Flowchart '{flow_id}' nodes must be a list")
+                continue
+
+            node_ids: set[str] = set()
+            for node_def in nodes:
+                if not isinstance(node_def, dict):
+                    self.errors.append(f"Flowchart '{flow_id}' node must be a mapping: {node_def}")
+                    continue
+
+                node_id = node_def.get("id")
+                if not isinstance(node_id, str) or not node_id:
+                    self.errors.append(f"Flowchart '{flow_id}' node is missing a string id: {node_def}")
+                    continue
+
+                node_ids.add(node_id)
+                ref = node_def.get("ref")
+                if ref is not None and ref not in self.content:
+                    self.errors.append(f"Flowchart '{flow_id}' node ref '{ref}' not found in content")
+
+            edges = flow_def.get("edges", [])
+            if not isinstance(edges, list):
+                self.errors.append(f"Flowchart '{flow_id}' edges must be a list")
+                continue
+
+            for edge in edges:
+                if not isinstance(edge, (list, tuple)) or len(edge) < 2:
+                    self.errors.append(f"Flowchart '{flow_id}' edge must be [source, target] or [source, target, label]: {edge}")
+                    continue
+                if edge[0] not in node_ids:
+                    self.errors.append(f"Flowchart '{flow_id}' edge source '{edge[0]}' not found in flowchart nodes")
+                if edge[1] not in node_ids:
+                    self.errors.append(f"Flowchart '{flow_id}' edge target '{edge[1]}' not found in flowchart nodes")
 
     def _check_graph_validity(self) -> None:
         """Verify graph nodes and edges reference valid content nodes."""

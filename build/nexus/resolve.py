@@ -19,7 +19,7 @@ Cache Strategy:
 
 from typing import Any
 
-from .schema import GRAPH_EDGES_KEY, NODE_LIST_FIELDS, NODE_TEXT_FIELDS
+from .schema import GRAPH_EDGES_KEY, NODE_LIST_FIELDS, NODE_STRUCTURED_FIELDS, NODE_TEXT_FIELDS
 
 
 class Resolver:
@@ -80,6 +80,9 @@ class Resolver:
         for f in NODE_LIST_FIELDS:
             v = content_data.get(f, [])
             payload[f] = v if isinstance(v, list) else []
+        for f in NODE_STRUCTURED_FIELDS:
+            v = content_data.get(f, {})
+            payload[f] = v if isinstance(v, dict) else {}
         return payload
 
     def _resolve_relations(self, node_id: str) -> dict[str, list[str]]:

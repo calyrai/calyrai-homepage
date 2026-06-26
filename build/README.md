@@ -42,7 +42,7 @@ Resolve complete node objects by merging:
 - Theme styling (how to display)
 
 ### Stage 4: Build Nexus Artifacts
-Generate four JSON files in `generated/`:
+Generate five JSON files in `generated/`:
 
 #### `nexus.ast.json` — Homepage AST
 Fully resolved abstract syntax tree:
@@ -145,6 +145,32 @@ Used by:
 - Auto-complete
 - Site navigation
 
+#### `nexus.flowchart.json` — Authored Page Flow
+Flowchart-friendly representation compiled from YAML-authored flow definitions:
+```json
+{
+  "flows": {
+    "homepage": {
+      "direction": "TD",
+      "nodes": [
+        {"id": "landing", "label": "Visitor lands", "kind": "start"},
+        {"id": "hero_stage", "ref": "hero", "label": "Brand promise", "kind": "step"}
+      ],
+      "edges": [
+        {"source": "landing", "target": "hero_stage"}
+      ],
+      "mermaid": "flowchart TD\n    landing([Visitor lands])\n    hero_stage[Brand promise]\n    landing --> hero_stage"
+    }
+  }
+}
+```
+
+Used by:
+- documentation
+- architecture reviews
+- future visual flow renderers
+- explainability and authoring audits
+
 ## Build Modules
 
 ### `compile.py`
@@ -189,6 +215,7 @@ Classes:
 - `GraphBuilder` — build knowledge graph
 - `ThemeBuilder` — compile theme (pass-through currently)
 - `IndexBuilder` — build search index
+- `FlowchartBuilder` — compile YAML-authored page flows into JSON + Mermaid
 
 ## Running the Build
 
@@ -211,7 +238,8 @@ Output:
    ✓ generated/nexus.ast.json
    ✓ generated/nexus.graph.json
    ✓ generated/nexus.theme.json
-   ✓ generated/nexus.index.json
+  ✓ generated/nexus.index.json
+  ✓ generated/nexus.flowchart.json
 
 ✅ Nexus compilation complete!
 

@@ -22,13 +22,14 @@ Build Pipeline:
     1. Parse       → Load YAML source bundle
     2. Validate    → Cross-check all references
     3. Resolve     → Merge data from all sources
-    4. Build       → Generate Nexus artifacts (AST, Graph, Theme, Index)
+    4. Build       → Generate Nexus artifacts (AST, Graph, Theme, Index, Flowchart)
 
 Nexus Artifacts (generated/):
     • nexus.ast.json    — fully resolved homepage AST
     • nexus.graph.json  — knowledge graph for visualization
     • nexus.theme.json  — compiled design system
     • nexus.index.json  — searchable index
+    • nexus.flowchart.json — authored page flow definitions with Mermaid output
 """
 
 import json
@@ -45,7 +46,7 @@ except ImportError as e:
     sys.exit(1)
 
 # Nexus semantic compiler package
-from nexus import Validator, Resolver, ASTBuilder, GraphBuilder, ThemeBuilder, IndexBuilder
+from nexus import Validator, Resolver, ASTBuilder, GraphBuilder, ThemeBuilder, IndexBuilder, FlowchartBuilder
 
 
 # Configuration constants
@@ -59,6 +60,7 @@ CONFIG = {
         "graph": "nexus.graph.json",
         "theme": "nexus.theme.json",
         "index": "nexus.index.json",
+        "flowchart": "nexus.flowchart.json",
     },
     "default_skin": "oracle",
 }
@@ -114,7 +116,7 @@ class NexusCompiler:
         print("📖 Stage 1: Parsing YAML source layer...")
         try:
             self._load_required_source_bundle()
-            self._load_graph_and_interaction()
+            self._load_auxiliary_sources()
             self._load_theme_bundle()
 
             print(f"   ✓ Parsed content bundle + theme/base.yaml + skins/{self.skin}.yaml")
@@ -135,15 +137,15 @@ class NexusCompiler:
             path = self.content_dir / filename
             self.source[key] = self._read_mapping_yaml(path, required=True)
 
-    def _load_graph_and_interaction(self) -> None:
-        """Load graph and interaction from inline blocks with legacy fallback."""
+    def _load_auxiliary_sources(self) -> None:
+        """Load graph, interaction, and flowchart from inline blocks with file fallback."""
         blob = self.source.get("content", {})
         if isinstance(blob, dict):
-            for key in ("graph", "interaction"):
+            for key in ("graph", "interaction", "flowchart"):
                 inline = blob.pop(f"__{key}", None)
                 if isinstance(inline, dict):
                     self.source[key] = inline
-        for key in ("graph", "interaction"):
+        for key in ("graph", "interaction", "flowchart"):
             self.source.setdefault(
                 key,
                 self._read_mapping_yaml(self.content_dir / f"{key}.yaml", required=False),
@@ -219,6 +221,7 @@ class NexusCompiler:
         yield "graph", GraphBuilder(self.source, self.resolved)
         yield "theme", ThemeBuilder(self.source)
         yield "index", IndexBuilder(self.resolved)
+        yield "flowchart", FlowchartBuilder(self.source, self.resolved)
 
     def _write_artifact(self, artifact_type: str, data: dict[str, Any]) -> None:
         """Write artifact to JSON file."""

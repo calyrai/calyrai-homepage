@@ -1,6 +1,18 @@
 {
   "type": "page",
   "id": "homepage",
+  "meta": {
+    "source": {
+      "contentNodeId": null,
+      "structureNodeId": "homepage"
+    },
+    "nodeType": "page",
+    "transformations": [
+      "BuildHomepageRoot",
+      "ApplyNodeTypeInference",
+      "AttachResolvedContent"
+    ]
+  },
   "children": [
     {
       "type": "element",
@@ -17,7 +29,22 @@
       "icon": "",
       "route": "",
       "links": [],
-      "institutions": []
+      "institutions": [],
+      "intent": {},
+      "render": {},
+      "behavior": {},
+      "explain": {},
+      "meta": {
+        "source": {
+          "contentNodeId": "logo",
+          "structureNodeId": null
+        },
+        "nodeType": "element",
+        "transformations": [
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent"
+        ]
+      }
     },
     {
       "type": "hero",
@@ -34,7 +61,41 @@
       "icon": "",
       "route": "",
       "links": [],
-      "institutions": []
+      "institutions": [],
+      "intent": {
+        "purpose": "brand-positioning",
+        "audience": "first-visit"
+      },
+      "render": {
+        "variant": "hero-banner"
+      },
+      "behavior": {},
+      "explain": {
+        "why": "Introduce the brand promise before module exploration."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "hero",
+          "structureNodeId": null
+        },
+        "nodeType": "hero",
+        "transformations": [
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "brand-positioning",
+            "audience": "first-visit"
+          },
+          "render": {
+            "variant": "hero-banner"
+          },
+          "explain": {
+            "why": "Introduce the brand promise before module exploration."
+          }
+        }
+      }
     },
     {
       "type": "section",
@@ -51,7 +112,42 @@
       "icon": "",
       "route": "/media/short.mp4",
       "links": [],
-      "institutions": []
+      "institutions": [],
+      "intent": {},
+      "render": {
+        "variant": "media-feature"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": false
+      },
+      "explain": {
+        "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "movie",
+          "structureNodeId": null
+        },
+        "nodeType": "section",
+        "transformations": [
+          "SplitGridIntoSemanticSections",
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent"
+        ],
+        "authored": {
+          "render": {
+            "variant": "media-feature"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": false
+          },
+          "explain": {
+            "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
+          }
+        }
+      }
     },
     {
       "type": "section",
@@ -69,6 +165,53 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "intent": {
+        "purpose": "capability-overview",
+        "audience": "first-visit"
+      },
+      "render": {
+        "variant": "tile-grid",
+        "source": "homepage.grid.first-band"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": false,
+        "persistence": "none"
+      },
+      "explain": {
+        "why": "Present the primary product modules before the broader ecosystem context."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "platforms",
+          "structureNodeId": null
+        },
+        "nodeType": "section",
+        "transformations": [
+          "SplitGridIntoSemanticSections",
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "capability-overview",
+            "audience": "first-visit"
+          },
+          "render": {
+            "variant": "tile-grid",
+            "source": "homepage.grid.first-band"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": false,
+            "persistence": "none"
+          },
+          "explain": {
+            "why": "Present the primary product modules before the broader ecosystem context."
+          }
+        }
+      },
       "children": [
         {
           "type": "tile",
@@ -86,6 +229,10 @@
           "route": "/core",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [],
             "outgoing": [
@@ -93,6 +240,17 @@
               "aflowtex",
               "lithos",
               "oracle"
+            ]
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "core",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
             ]
           }
         },
@@ -112,11 +270,26 @@
           "route": "/brix",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [
               "core"
             ],
             "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "brix",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
           }
         },
         {
@@ -135,11 +308,26 @@
           "route": "/aflowtex",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [
               "core"
             ],
             "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "aflowtex",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
           }
         },
         {
@@ -158,11 +346,26 @@
           "route": "/lithos",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [
               "core"
             ],
             "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "lithos",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
           }
         },
         {
@@ -181,12 +384,27 @@
           "route": "/oracle",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [
               "core"
             ],
             "outgoing": [
               "delphi"
+            ]
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "oracle",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
             ]
           }
         },
@@ -206,11 +424,26 @@
           "route": "/delphi",
           "links": [],
           "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
           "relations": {
             "incoming": [
               "oracle"
             ],
             "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "delphi",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
           }
         }
       ]
@@ -231,6 +464,51 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "intent": {
+        "purpose": "ecosystem-context",
+        "audience": "returning-visitor"
+      },
+      "render": {
+        "variant": "tile-grid-secondary",
+        "source": "homepage.grid.second-band"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": false
+      },
+      "explain": {
+        "why": "Show how ecosystem navigation, contact, and philosophy follow the core module overview."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "architecture",
+          "structureNodeId": null
+        },
+        "nodeType": "section",
+        "transformations": [
+          "SplitGridIntoSemanticSections",
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "ecosystem-context",
+            "audience": "returning-visitor"
+          },
+          "render": {
+            "variant": "tile-grid-secondary",
+            "source": "homepage.grid.second-band"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": false
+          },
+          "explain": {
+            "why": "Show how ecosystem navigation, contact, and philosophy follow the core module overview."
+          }
+        }
+      },
       "children": [
         {
           "type": "tile",
@@ -247,7 +525,22 @@
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
-          "institutions": []
+          "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "ecosystem",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
+          }
         },
         {
           "type": "tile",
@@ -407,7 +700,43 @@
                 }
               ]
             }
-          ]
+          ],
+          "intent": {
+            "purpose": "conversion",
+            "audience": "partner-or-collaborator"
+          },
+          "render": {},
+          "behavior": {
+            "quick_contact": "enabled",
+            "mobile_panel": "toggle-rail"
+          },
+          "explain": {
+            "why": "Provide a direct contact path after users understand the platform and ecosystem."
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "contact",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "intent": {
+                "purpose": "conversion",
+                "audience": "partner-or-collaborator"
+              },
+              "behavior": {
+                "quick_contact": "enabled",
+                "mobile_panel": "toggle-rail"
+              },
+              "explain": {
+                "why": "Provide a direct contact path after users understand the platform and ecosystem."
+              }
+            }
+          }
         },
         {
           "type": "tile",
@@ -424,7 +753,22 @@
           "icon": "book",
           "route": "/philosophy",
           "links": [],
-          "institutions": []
+          "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "philosophy",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
+          }
         }
       ]
     },
@@ -444,6 +788,23 @@
       "route": "",
       "links": [],
       "institutions": [],
+      "intent": {},
+      "render": {},
+      "behavior": {},
+      "explain": {},
+      "meta": {
+        "source": {
+          "contentNodeId": "footer",
+          "structureNodeId": null
+        },
+        "nodeType": "element",
+        "transformations": [
+          "SplitGridIntoSemanticSections",
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ]
+      },
       "children": [
         {
           "type": "element",
@@ -460,7 +821,22 @@
           "icon": "document",
           "route": "/legal",
           "links": [],
-          "institutions": []
+          "institutions": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "legal",
+              "structureNodeId": null
+            },
+            "nodeType": "element",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
+          }
         }
       ]
     }

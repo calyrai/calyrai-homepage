@@ -1,0 +1,81 @@
+{
+  "flows": {
+    "homepage": {
+      "id": "homepage",
+      "title": "Homepage Narrative Flow",
+      "direction": "TD",
+      "nodes": [
+        {
+          "id": "landing",
+          "ref": null,
+          "label": "Visitor lands",
+          "kind": "start",
+          "intent": {},
+          "explain": {
+            "why": "Entry point for a new or returning visitor."
+          }
+        },
+        {
+          "id": "hero_stage",
+          "ref": "hero",
+          "label": "Brand promise",
+          "kind": "step",
+          "intent": {
+            "purpose": "orient-visitor"
+          },
+          "explain": {}
+        },
+        {
+          "id": "platforms_stage",
+          "ref": "platforms",
+          "label": "Platform overview",
+          "kind": "step",
+          "intent": {
+            "purpose": "explain-capabilities"
+          },
+          "explain": {}
+        },
+        {
+          "id": "architecture_stage",
+          "ref": "architecture",
+          "label": "Ecosystem context",
+          "kind": "step",
+          "intent": {
+            "purpose": "explain-relationships"
+          },
+          "explain": {}
+        },
+        {
+          "id": "contact_stage",
+          "ref": "contact",
+          "label": "Contact / conversion",
+          "kind": "terminal",
+          "intent": {
+            "purpose": "trigger-outreach"
+          },
+          "explain": {}
+        }
+      ],
+      "edges": [
+        {
+          "source": "landing",
+          "target": "hero_stage"
+        },
+        {
+          "source": "hero_stage",
+          "target": "platforms_stage"
+        },
+        {
+          "source": "platforms_stage",
+          "target": "architecture_stage"
+        },
+        {
+          "source": "architecture_stage",
+          "target": "contact_stage",
+          "label": "reach out"
+        }
+      ],
+      "mermaid": "flowchart TD\n    landing([Visitor lands])\n    hero_stage[Brand promise]\n    platforms_stage[Platform overview]\n    architecture_stage[Ecosystem context]\n    contact_stage([Contact / conversion])\n    landing --> hero_stage\n    hero_stage --> platforms_stage\n    platforms_stage --> architecture_stage\n    architecture_stage -->|reach out| contact_stage"
+    }
+  }
+}

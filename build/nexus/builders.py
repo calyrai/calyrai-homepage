@@ -1,11 +1,12 @@
 """
 Builders Layer — Nexus Artifact Construction
 
-Constructs the four Nexus JSON artifacts:
+Constructs the Nexus JSON artifacts:
     • nexus.ast.json   → Abstract syntax tree (fully resolved homepage)
     • nexus.graph.json → Knowledge graph (for ReactFlow, Oracle, Delphi)
     • nexus.theme.json → Design system (colors, typography, spacing)
     • nexus.index.json → Search index (for discovery, autocomplete)
+    • nexus.flowchart.json → Authored page flow definitions with Mermaid output
 
 Each builder is independent and responsible for one artifact.
 """
@@ -14,7 +15,7 @@ import copy
 import re
 from typing import Any
 
-from .schema import GRAPH_EDGES_KEY, NODE_LIST_FIELDS, NODE_TEXT_FIELDS, NODE_TYPE_RULES
+from .schema import GRAPH_EDGES_KEY, NODE_LIST_FIELDS, NODE_STRUCTURED_FIELDS, NODE_TEXT_FIELDS, NODE_TYPE_RULES
 
 _TEMPLATE_RE = re.compile(r'\{\{\s*([^}]+)\s*\}\}')
 
@@ -147,6 +148,7 @@ class ASTBuilder:
         if isinstance(resolved, dict):
             node.update(self._extract_node_content(resolved))
             self._add_relations(node, resolved)
+        node["meta"] = self._build_node_meta(node_id, node_type, node_def, resolved)
 
         # Recursively add children
         children = self._build_children(node_def)
@@ -163,6 +165,9 @@ class ASTBuilder:
         for field in NODE_LIST_FIELDS:
             value = resolved.get(field, [])
             payload[field] = value if isinstance(value, list) else []
+        for field in NODE_STRUCTURED_FIELDS:
+            value = resolved.get(field, {})
+            payload[field] = copy.deepcopy(value) if isinstance(value, dict) else {}
         return payload
 
     def _add_relations(self, node: dict[str, Any], resolved: dict[str, Any]) -> None:
@@ -204,6 +209,128 @@ class ASTBuilder:
             str: Semantic type (page, section, hero, tile, element)
         """
         return NODE_TYPE_RULES.get(node_id, "element")
+
+    def _build_node_meta(self, node_id: str, node_type: str, node_def: Any, resolved: Any) -> dict[str, Any]:
+        """Build trace metadata so generated nodes explain their origin."""
+        transformations = ["ApplyNodeTypeInference", "AttachResolvedContent"]
+
+        if node_id == "homepage":
+            transformations.insert(0, "BuildHomepageRoot")
+        elif node_id in {"movie", "platforms", "architecture", "footer"}:
+            transformations.insert(0, "SplitGridIntoSemanticSections")
+
+        if isinstance(node_def, dict) and node_def.get("children"):
+            transformations.append("BuildChildNodes")
+
+        meta: dict[str, Any] = {
+            "source": {
+                "contentNodeId": node_id if node_id in self.content else None,
+                "structureNodeId": node_id if node_id in self.structure or node_id == "homepage" else None,
+            },
+            "nodeType": node_type,
+            "transformations": transformations,
+        }
+
+        if isinstance(resolved, dict):
+            authored_blocks = {
+                field: copy.deepcopy(resolved.get(field, {}))
+                for field in NODE_STRUCTURED_FIELDS
+                if isinstance(resolved.get(field), dict) and resolved.get(field)
+            }
+            if authored_blocks:
+                meta["authored"] = authored_blocks
+
+        return meta
+
+
+class FlowchartBuilder:
+    """Build flowchart-friendly artifacts from YAML-authored page flow definitions."""
+
+    def __init__(self, source: dict[str, Any], resolved: dict[str, Any]) -> None:
+        self.flowchart = source.get("flowchart", {})
+        self.resolved = resolved
+
+    def build(self) -> dict[str, Any]:
+        flows = {}
+        if not isinstance(self.flowchart, dict):
+            return {"flows": flows}
+
+        for flow_id, flow_def in self.flowchart.items():
+            if not isinstance(flow_def, dict):
+                continue
+            flows[flow_id] = self._build_flow(flow_id, flow_def)
+
+        return {"flows": flows}
+
+    def _build_flow(self, flow_id: str, flow_def: dict[str, Any]) -> dict[str, Any]:
+        direction = flow_def.get("direction", "TD")
+        nodes = [
+            self._build_flow_node(node_def)
+            for node_def in flow_def.get("nodes", [])
+            if isinstance(node_def, dict)
+        ]
+        edges = [
+            self._build_flow_edge(edge)
+            for edge in flow_def.get("edges", [])
+            if isinstance(edge, (list, tuple)) and len(edge) >= 2
+        ]
+        return {
+            "id": flow_id,
+            "title": flow_def.get("title", flow_id),
+            "direction": direction,
+            "nodes": nodes,
+            "edges": edges,
+            "mermaid": self._build_mermaid(direction, nodes, edges),
+        }
+
+    def _build_flow_node(self, node_def: dict[str, Any]) -> dict[str, Any]:
+        ref = node_def.get("ref")
+        resolved = self.resolved.get(ref, {}) if isinstance(ref, str) else {}
+        label = node_def.get("label") or resolved.get("title") or ref or node_def.get("id", "")
+        return {
+            "id": node_def.get("id"),
+            "ref": ref,
+            "label": label,
+            "kind": node_def.get("kind", "step"),
+            "intent": copy.deepcopy(node_def.get("intent", {})) if isinstance(node_def.get("intent"), dict) else {},
+            "explain": copy.deepcopy(node_def.get("explain", {})) if isinstance(node_def.get("explain"), dict) else {},
+        }
+
+    def _build_flow_edge(self, edge: list[Any] | tuple[Any, ...]) -> dict[str, Any]:
+        payload = {
+            "source": edge[0],
+            "target": edge[1],
+        }
+        if len(edge) >= 3 and isinstance(edge[2], str):
+            payload["label"] = edge[2]
+        return payload
+
+    def _build_mermaid(self, direction: str, nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> str:
+        lines = [f"flowchart {direction}"]
+        for node in nodes:
+            node_id = self._mermaid_id(node.get("id", "node"))
+            label = self._escape_mermaid_label(node.get("label", node_id))
+            lines.append(f"    {node_id}{self._node_shape(node.get('kind'), label)}")
+        for edge in edges:
+            source = self._mermaid_id(edge.get("source", "source"))
+            target = self._mermaid_id(edge.get("target", "target"))
+            label = edge.get("label")
+            connector = f" -->|{self._escape_mermaid_label(label)}| " if label else " --> "
+            lines.append(f"    {source}{connector}{target}")
+        return "\n".join(lines)
+
+    def _node_shape(self, kind: Any, label: str) -> str:
+        if kind in {"start", "terminal"}:
+            return f"([{label}])"
+        if kind == "decision":
+            return f"{{{label}}}"
+        return f"[{label}]"
+
+    def _mermaid_id(self, raw: Any) -> str:
+        return re.sub(r"[^A-Za-z0-9_]", "_", str(raw or "node"))
+
+    def _escape_mermaid_label(self, value: Any) -> str:
+        return str(value).replace('"', "'")
 
 
 class GraphBuilder:
