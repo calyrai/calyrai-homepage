@@ -12,6 +12,8 @@ The site is generated from YAML content through a Python compiler into JSON arti
 4. Presentation layer: React app in web/src/
 5. Deployment layer: deploy/ served by GitHub Pages
 
+Publication rule: only the minimal content in `deploy/` is intended to go online.
+
 ## Tech Stack
 
 - Content: YAML
@@ -51,6 +53,50 @@ This regenerates:
 - generated/nexus.theme.json
 - generated/nexus.index.json
 - generated/nexus.flowchart.json
+
+Strict compile policy:
+
+- The compiler requires explicit page hierarchy in content/structure.yaml.
+- structure.homepage must define children explicitly.
+- Legacy inferred homepage layout mode (header/hero/grid/footer synthesis) has been removed.
+- If compile fails, fix the structure YAML instead of relying on compiler-side layout inference.
+
+### Explicit Homepage Documentation Map
+
+Use this as the canonical map of where each concern is defined.
+
+Authoring (source of truth):
+
+- Page hierarchy and section membership: `content/structure.yaml`
+- Node content and semantic intent (`intent`, `render`, `behavior`, `explain`): `content/content.yaml`
+- Theme tokens and skin values: `theme/base.yaml`, `skins/oracle.yaml`
+
+Compiler (enforcement and transformation):
+
+- Compile orchestration and artifact sync: `build/compile.py`
+- Strict homepage schema enforcement (`homepage.children` required): `build/nexus/validate.py`
+- AST construction from authored structure: `build/nexus/builders.py`
+- Shared schema keys and validation constants: `build/nexus/schema.py`
+
+Runtime (execution of compiled model):
+
+- AST node renderer dispatch: `web/src/components/Renderer.jsx`
+- App-level route and data wiring: `web/src/App.jsx`
+- Section behavior interpretation: `web/src/services/SectionLayoutService.js`
+- Route and node query services: `web/src/services/RouteStateService.js`, `web/src/services/NodeQueryService.js`
+- Theme variable application: `web/src/services/ThemeVariableApplier.js`
+
+Interaction and responsive behavior:
+
+- Tile interaction behavior: `web/src/components/Tile.jsx`
+- Quick contact rail behavior: `web/src/components/QuickContactRail.jsx`
+- Mobile breakpoint behavior: `web/src/hooks/useIsMobile.js`
+- Interaction filtering for background/ripple layers: `web/src/utils/interactionFilters.js`
+
+Generated outputs:
+
+- Compiler artifacts: `generated/nexus.ast.json`, `generated/nexus.graph.json`, `generated/nexus.theme.json`, `generated/nexus.index.json`, `generated/nexus.flowchart.json`
+- Bundled runtime artifact module: `web/src/data/runtimeArtifacts.js`
 
 ### Build frontend
 
@@ -256,6 +302,10 @@ Current logo implementation notes:
 	- page intent can move into YAML through `intent`, `render`, `behavior`, and `explain` blocks,
 	- compiler steps can emit inspectable metadata instead of only implicit structure,
 	- authored page flow can now be represented as YAML and compiled into a flowchart artifact.
+
+- Migration note:
+	- the legacy inferred layout path has been removed from the compiler.
+	- homepage composition now depends on explicit `children` declarations in `content/structure.yaml`.
 
 - The frontend now uses a lightweight OO service layer to keep component files focused:
 	- RouteStateService and NodeQueryService in App routing/data selection.

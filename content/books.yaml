@@ -1,0 +1,243 @@
+brains_tile:
+  node_id: core
+  route: /research/platforms/core/index.html
+  label: positioning
+
+positioning_source:
+  path: ../calyrai-perspectives-pack/docs/positioning.html
+
+architecture_books:
+  section:
+    id: architecture_books
+    title: Architecture Books
+    description: YAML-first positioning and architecture notes wired to homepage workflow.
+  item:
+    id: calyr-positioning
+    type: architecture-note
+    title: CALYR.AI Positioning
+    year: 2026
+    authors:
+      - Tscheliessnig, Rupert
+    tags:
+      - architecture
+      - positioning
+      - compiler
+      - ssot
+    objective: Establish a clear, compiler-driven positioning narrative for CALYR.AI as a knowledge-first publishing architecture.
+    summary: Structured positioning note connected to the brain tile and generated in homepage workflow.
+    cta:
+      type: positioning
+      label: Open positioning page
+      url: /research/positioning/
+
+platform_books:
+  section:
+    id: platform_books
+    title: Platform Books
+    description: Book-rooted explanation pages for each core platform.
+  items:
+    - id: platform-core
+      platform_id: core
+      type: platform-book
+      title: Calyrai Core Foundations
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - reasoning
+        - architecture
+        - compiler
+      objective: Explain the central reasoning architecture and why it anchors the platform family.
+      summary: Core links observations, knowledge structures, workflows, and decision support in one reasoning loop.
+      canonical_claim: Core compiles semantic research context into decision-ready structures across tools and outputs.
+      source:
+        path: ../calyrai-perspectives-pack/docs/positioning.html
+      sections:
+        - id: scope
+          title: Scope
+          bullets:
+            - Semantic object model for research entities and relations
+            - Unified reasoning context across modules
+            - Traceable transitions from evidence to decision
+        - id: mechanism
+          title: Mechanism
+          columns:
+            -
+              - Knowledge ingest
+              - Structured representation
+              - Reasoning graph update
+            -
+              - Scenario evaluation
+              - Recommendation surfaces
+              - Explainable output packaging
+    - id: platform-brix
+      platform_id: brix
+      type: platform-book
+      title: Brix Engineering Intelligence
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - engineering
+        - surrogate-models
+        - simulation
+      objective: Document how surrogate-assisted engineering decisions are modeled and operationalized.
+      summary: Brix compresses expensive simulation space into faster, uncertainty-aware design exploration.
+      canonical_claim: Engineering decisions become faster and more robust when surrogate spaces are coupled to semantic constraints.
+      sections:
+        - id: capability
+          title: Capability
+          bullets:
+            - Design-space exploration at reduced cost
+            - Constraint-aware surrogate ranking
+            - Decision support under uncertainty bounds
+        - id: outputs
+          title: Output Forms
+          columns:
+            -
+              - Candidate variants
+              - Confidence intervals
+              - Trade-off maps
+            -
+              - Engineering notes
+              - Report snippets
+              - Decision checkpoints
+    - id: platform-aflowtex
+      platform_id: aflowtex
+      type: platform-book
+      title: Aflowtex Medical Flow Intelligence
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - medicine
+        - hemodynamics
+        - patient-specific-modeling
+      objective: Explain patient-specific flow analysis from data capture to uncertainty-aware recommendation.
+      summary: Aflowtex aligns clinical data, vascular models, and flow simulation to support case decisions.
+      canonical_claim: Clinical flow reasoning improves when simulation evidence is joined with explicit semantic case context.
+      sections:
+        - id: pipeline
+          title: Pipeline
+          bullets:
+            - Clinical data harmonization
+            - Case-specific geometric modeling
+            - Flow simulation and surrogate projection
+            - Recommendation and explainability output
+        - id: decision-support
+          title: Decision Support
+          body: Aflowtex keeps assumptions explicit, supports scenario comparison, and surfaces uncertainty boundaries for clinicians.
+    - id: platform-lithos
+      platform_id: lithos
+      type: platform-book
+      title: Lithos Consequence Intelligence
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - consequences
+        - risk
+        - trade-offs
+      objective: Frame consequence analysis as a first-class semantic reasoning task.
+      summary: Lithos translates model outputs into impact pathways, risks, and option-level trade-offs.
+      canonical_claim: Good decisions require consequence structure, not only predictions.
+      sections:
+        - id: reasoning-frame
+          title: Reasoning Frame
+          bullets:
+            - Outcome pathways over time
+            - Risk and downside articulation
+            - Counterfactual option comparison
+        - id: governance
+          title: Governance Use
+          body: Lithos supports transparent justification by connecting decision choices to explicit consequence narratives.
+    - id: platform-oracle
+      platform_id: oracle
+      type: platform-book
+      title: Oracle Knowledge Extraction Engine
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - knowledge-graphs
+        - extraction
+        - representation
+      objective: Describe transformation from heterogeneous source material into structured knowledge assets.
+      summary: Oracle converts complex technical and scientific corpora into graph-ready, queryable structures.
+      canonical_claim: Extraction quality is highest when semantic model constraints are part of the transformation pipeline.
+      sections:
+        - id: extraction
+          title: Extraction Layers
+          columns:
+            -
+              - Entity and relation capture
+              - Taxonomy alignment
+              - Provenance binding
+            -
+              - Graph assembly
+              - Query surfaces
+              - Downstream module handoff
+    - id: platform-delphi
+      platform_id: delphi
+      type: platform-book
+      title: Delphi Interactive Oracle Interface
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - interaction
+        - exploration
+        - insights
+      objective: Explain interactive navigation patterns for discovering insights from oracle-generated knowledge structures.
+      summary: Delphi is the interaction layer for guided exploration, pattern finding, and insight capture.
+      canonical_claim: Human insight quality improves when graph exploration is guided by semantic context and reasoning cues.
+      sections:
+        - id: interaction-model
+          title: Interaction Model
+          bullets:
+            - Guided traversal of related entities
+            - Context-sensitive prompts
+            - Insight bookmarking and export
+        - id: value
+          title: Value
+          body: Delphi closes the loop between extracted knowledge and actionable human understanding.
+
+platform_pages:
+  route_prefix: /research/platforms
+  items:
+    - platform_id: core
+      book_id: platform-core
+      eyebrow: CALYR.AI Platform
+      subtitle: Calyrai Core
+      lead: Central reasoning architecture that aligns semantic context with decision pathways.
+      footer_note: Core page generated from platform-core book entry in content/books.yaml.
+    - platform_id: brix
+      book_id: platform-brix
+      eyebrow: CALYR.AI Platform
+      subtitle: Brix
+      lead: Engineering intelligence with surrogate-assisted design exploration and uncertainty framing.
+      footer_note: Brix page generated from platform-brix book entry in content/books.yaml.
+    - platform_id: aflowtex
+      book_id: platform-aflowtex
+      eyebrow: CALYR.AI Platform
+      subtitle: Aflowtex
+      lead: Patient-specific flow intelligence connecting models, simulation, and clinical reasoning.
+      footer_note: Aflowtex page generated from platform-aflowtex book entry in content/books.yaml.
+    - platform_id: lithos
+      book_id: platform-lithos
+      eyebrow: CALYR.AI Platform
+      subtitle: Lithos
+      lead: Consequence intelligence for transparent trade-off and risk-aware decisions.
+      footer_note: Lithos page generated from platform-lithos book entry in content/books.yaml.
+    - platform_id: oracle
+      book_id: platform-oracle
+      eyebrow: CALYR.AI Platform
+      subtitle: Oracle
+      lead: Knowledge extraction engine converting complex source material into structured graphs.
+      footer_note: Oracle page generated from platform-oracle book entry in content/books.yaml.
+    - platform_id: delphi
+      book_id: platform-delphi
+      eyebrow: CALYR.AI Platform
+      subtitle: Delphi
+      lead: Interactive interface for graph exploration and insight generation.
+      footer_note: Delphi page generated from platform-delphi book entry in content/books.yaml.

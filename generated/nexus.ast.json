@@ -10,7 +10,8 @@
     "transformations": [
       "BuildHomepageRoot",
       "ApplyNodeTypeInference",
-      "AttachResolvedContent"
+      "AttachResolvedContent",
+      "BuildChildNodes"
     ]
   },
   "children": [
@@ -127,11 +128,10 @@
       "meta": {
         "source": {
           "contentNodeId": "movie",
-          "structureNodeId": null
+          "structureNodeId": "movie"
         },
         "nodeType": "section",
         "transformations": [
-          "SplitGridIntoSemanticSections",
           "ApplyNodeTypeInference",
           "AttachResolvedContent"
         ],
@@ -184,11 +184,10 @@
       "meta": {
         "source": {
           "contentNodeId": "platforms",
-          "structureNodeId": null
+          "structureNodeId": "platforms"
         },
         "nodeType": "section",
         "transformations": [
-          "SplitGridIntoSemanticSections",
           "ApplyNodeTypeInference",
           "AttachResolvedContent",
           "BuildChildNodes"
@@ -226,13 +225,21 @@
           "summary": "Connects observations, knowledge, models, and decisions.\n",
           "body": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
           "icon": "brain",
-          "route": "/core",
+          "route": "/research/platforms/core/index.html",
           "links": [],
           "institutions": [],
-          "intent": {},
-          "render": {},
+          "intent": {
+            "purpose": "architecture-positioning",
+            "audience": "first-visit"
+          },
+          "render": {
+            "variant": "linked-positioning",
+            "source": "content/positioning.yaml"
+          },
           "behavior": {},
-          "explain": {},
+          "explain": {
+            "why": "Route the brain tile to the architecture positioning page generated from YAML and linked source content."
+          },
           "relations": {
             "incoming": [],
             "outgoing": [
@@ -251,7 +258,20 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "intent": {
+                "purpose": "architecture-positioning",
+                "audience": "first-visit"
+              },
+              "render": {
+                "variant": "linked-positioning",
+                "source": "content/positioning.yaml"
+              },
+              "explain": {
+                "why": "Route the brain tile to the architecture positioning page generated from YAML and linked source content."
+              }
+            }
           }
         },
         {
@@ -267,7 +287,7 @@
           "summary": "Surrogate-assisted engineering design and analysis.\n",
           "body": "Engineering intelligence platform for structural analysis, design exploration, and decision support. Brix combines simulations, measurements, and surrogate models to enable rapid variant evaluation and uncertainty-aware engineering decisions.\n",
           "icon": "bridge",
-          "route": "/brix",
+          "route": "/research/platforms/brix/index.html",
           "links": [],
           "institutions": [],
           "intent": {},
@@ -305,7 +325,7 @@
           "summary": "Patient-specific flow modelling and clinical decision support.\n",
           "body": "Aflowtex combines clinical data, vascular modelling, flow simulation, and surrogate reasoning to support patient-specific analysis and uncertainty-aware medical decisions.\n",
           "icon": "aorta",
-          "route": "/aflowtex",
+          "route": "/research/platforms/aflowtex/index.html",
           "links": [],
           "institutions": [],
           "intent": {},
@@ -343,7 +363,7 @@
           "summary": "Understanding consequences, trade-offs, and impact.\n",
           "body": "Lithos translates model outputs into actionable decisions by evaluating consequences, risks, trade-offs, and long-term system effects.\n",
           "icon": "mountain",
-          "route": "/lithos",
+          "route": "/research/platforms/lithos/index.html",
           "links": [],
           "institutions": [],
           "intent": {},
@@ -381,7 +401,7 @@
           "summary": "Extracting knowledge from complex information spaces.\n",
           "body": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
           "icon": "crystal-ball",
-          "route": "/oracle",
+          "route": "/research/platforms/oracle/index.html",
           "links": [],
           "institutions": [],
           "intent": {},
@@ -421,7 +441,7 @@
           "summary": "Explore knowledge through guided interaction.\n",
           "body": "Delphi provides an interactive interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
           "icon": "compass",
-          "route": "/delphi",
+          "route": "/research/platforms/delphi/index.html",
           "links": [],
           "institutions": [],
           "intent": {},
@@ -482,11 +502,10 @@
       "meta": {
         "source": {
           "contentNodeId": "architecture",
-          "structureNodeId": null
+          "structureNodeId": "architecture"
         },
         "nodeType": "section",
         "transformations": [
-          "SplitGridIntoSemanticSections",
           "ApplyNodeTypeInference",
           "AttachResolvedContent",
           "BuildChildNodes"
@@ -630,17 +649,17 @@
                 {
                   "id": "aflowtex",
                   "label": "aflowtex",
-                  "route": "/aflowtex"
+                  "route": "/research/platforms/aflowtex/index.html"
                 },
                 {
                   "id": "core",
                   "label": "calyrai core",
-                  "route": "/core"
+                  "route": "/research/platforms/core/index.html"
                 },
                 {
                   "id": "oracle",
                   "label": "oracle",
-                  "route": "/oracle"
+                  "route": "/research/platforms/oracle/index.html"
                 }
               ]
             },
@@ -681,22 +700,22 @@
                 {
                   "id": "brix",
                   "label": "brix",
-                  "route": "/brix"
+                  "route": "/research/platforms/brix/index.html"
                 },
                 {
                   "id": "aflowtex",
                   "label": "aflowtex",
-                  "route": "/aflowtex"
+                  "route": "/research/platforms/aflowtex/index.html"
                 },
                 {
                   "id": "lithos",
                   "label": "lithos",
-                  "route": "/lithos"
+                  "route": "/research/platforms/lithos/index.html"
                 },
                 {
                   "id": "oracle",
                   "label": "oracle",
-                  "route": "/oracle"
+                  "route": "/research/platforms/oracle/index.html"
                 }
               ]
             }
@@ -795,11 +814,10 @@
       "meta": {
         "source": {
           "contentNodeId": "footer",
-          "structureNodeId": null
+          "structureNodeId": "footer"
         },
         "nodeType": "element",
         "transformations": [
-          "SplitGridIntoSemanticSections",
           "ApplyNodeTypeInference",
           "AttachResolvedContent",
           "BuildChildNodes"

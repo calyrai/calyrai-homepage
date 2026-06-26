@@ -23,7 +23,11 @@ _TEMPLATE_RE = re.compile(r'\{\{\s*([^}]+)\s*\}\}')
 class ASTBuilder:
     """Builds the abstract syntax tree for rendering."""
 
-    def __init__(self, source: dict[str, Any], resolved: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        source: dict[str, Any],
+        resolved: dict[str, Any],
+    ) -> None:
         """
         Initialize AST builder.
         
@@ -47,77 +51,13 @@ class ASTBuilder:
         """
         homepage_def = self.structure.get("homepage", {})
 
-        # Preferred schema: explicit recursive children
+        # Required schema: explicit recursive children
         if isinstance(homepage_def, dict) and "children" in homepage_def:
             return self._build_node("homepage", homepage_def)
 
-        # Legacy/layout schema: header/hero/grid/footer blocks
-        return self._build_homepage_from_layout(homepage_def)
-
-    def _build_homepage_from_layout(self, homepage_def: dict[str, Any]) -> dict[str, Any]:
-        """
-        Build AST from layout-style homepage definitions.
-
-        Supported layout keys:
-            - header: [node ids]
-            - hero: [node ids]
-            - grid: { tiles: [node ids] }
-            - footer: [node ids]
-
-        The grid is mapped to two semantic sections for the current homepage:
-            first 6 tiles  -> platforms section
-            remaining tiles -> architecture section
-        """
-        page_node = self._build_node("homepage", {})
-        children: list[dict[str, Any]] = []
-
-        # Header nodes (optional)
-        for node_id in self._layout_ids(homepage_def, "header"):
-            child_def = self.structure.get(node_id, {})
-            children.append(self._build_node(node_id, child_def))
-
-        # Hero nodes
-        for node_id in self._layout_ids(homepage_def, "hero"):
-            child_def = self.structure.get(node_id, {})
-            children.append(self._build_node(node_id, child_def))
-
-        # Grid nodes -> semantic sections
-        grid_def = homepage_def.get("grid", {}) if isinstance(homepage_def, dict) else {}
-        tiles = grid_def.get("tiles", []) if isinstance(grid_def, dict) else []
-
-        # Optional movie section rendered above platforms/architecture
-        if "movie" in self.content or "movie" in self.structure:
-            children.append(self._build_node("movie", {"children": []}))
-
-        if isinstance(tiles, list) and tiles:
-            platforms_tiles = tiles[:6]
-            architecture_tiles = tiles[6:]
-
-            if platforms_tiles:
-                children.append(self._build_node("platforms", {"children": platforms_tiles}))
-
-            if architecture_tiles:
-                children.append(self._build_node("architecture", {"children": architecture_tiles}))
-
-        # Footer wrapper with optional footer children
-        footer_ids = self._layout_ids(homepage_def, "footer")
-        if footer_ids:
-            children.append(self._build_node("footer", {"children": footer_ids}))
-
-        if children:
-            page_node["children"] = children
-
-        return page_node
-
-    def _layout_ids(self, homepage_def: Any, key: str) -> list[str]:
-        """Return valid string node IDs from a layout list key."""
-        if not isinstance(homepage_def, dict):
-            return []
-
-        values = homepage_def.get(key, [])
-        if not isinstance(values, list):
-            return []
-        return [item for item in values if isinstance(item, str)]
+        raise ValueError(
+            "Invalid structure.homepage: explicit 'children' is required."
+        )
 
     def _build_node(
         self, node_id: str, node_def: dict[str, Any]
@@ -216,8 +156,6 @@ class ASTBuilder:
 
         if node_id == "homepage":
             transformations.insert(0, "BuildHomepageRoot")
-        elif node_id in {"movie", "platforms", "architecture", "footer"}:
-            transformations.insert(0, "SplitGridIntoSemanticSections")
 
         if isinstance(node_def, dict) and node_def.get("children"):
             transformations.append("BuildChildNodes")

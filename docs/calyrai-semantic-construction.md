@@ -66,6 +66,38 @@ Render:
 - search index
 - docs-ready artifacts
 
+## Explicit Implementation Map
+
+This section binds the policy to concrete files in this repository.
+
+Authoring (source of truth):
+- page hierarchy and section membership: `content/structure.yaml`
+- node content and semantic blocks (`intent`, `render`, `behavior`, `explain`): `content/content.yaml`
+- theme tokens and skin values: `theme/base.yaml`, `skins/oracle.yaml`
+
+Compiler (enforcement and transformation):
+- compile orchestration and artifact sync: `build/compile.py`
+- strict homepage schema enforcement (`homepage.children` required): `build/nexus/validate.py`
+- AST construction from authored structure: `build/nexus/builders.py`
+- shared schema constants and validation keys: `build/nexus/schema.py`
+
+Runtime (execution of compiled model):
+- AST dispatch renderer: `web/src/components/Renderer.jsx`
+- app-level route and data wiring: `web/src/App.jsx`
+- section behavior interpretation: `web/src/services/SectionLayoutService.js`
+- route and node lookup services: `web/src/services/RouteStateService.js`, `web/src/services/NodeQueryService.js`
+- theme variable application: `web/src/services/ThemeVariableApplier.js`
+
+Interaction and responsive behavior:
+- tile interaction behavior: `web/src/components/Tile.jsx`
+- quick contact rail behavior: `web/src/components/QuickContactRail.jsx`
+- mobile breakpoint behavior: `web/src/hooks/useIsMobile.js`
+- interaction filtering for background and ripple systems: `web/src/utils/interactionFilters.js`
+
+Generated outputs:
+- compiler artifacts: `generated/nexus.ast.json`, `generated/nexus.graph.json`, `generated/nexus.theme.json`, `generated/nexus.index.json`, `generated/nexus.flowchart.json`
+- bundled runtime artifact module: `web/src/data/runtimeArtifacts.js`
+
 ## Canonical Authoring Model
 
 Every authored node may contain five categories of information.

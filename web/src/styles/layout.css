@@ -306,7 +306,7 @@ body,
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .section-grid {
     grid-template-columns: 1fr;
   }
@@ -353,14 +353,14 @@ body,
 }
 
 /* Show collapse icon on mobile */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .collapse-icon {
     display: inline-block;
   }
 }
 
 /* Touch-Friendly Targets (44px minimum) */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .tile {
     min-height: 44px;
     min-width: 44px;

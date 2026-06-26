@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CALYR.AI Positioning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #11223a;
+      --ink-soft: #2f4666;
+      --paper: #f6f3ec;
+      --card: rgba(255, 255, 255, 0.82);
+      --line: rgba(17, 34, 58, 0.14);
+      --accent: #d05f1f;
+      --accent-soft: #f3c5a7;
+      --focus: #0e7a6b;
+      --shadow: 0 18px 40px rgba(17, 34, 58, 0.12);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(1200px 700px at 6% 8%, rgba(208, 95, 31, 0.2), transparent 55%),
+        radial-gradient(900px 600px at 92% 16%, rgba(14, 122, 107, 0.2), transparent 58%),
+        repeating-linear-gradient(
+          135deg,
+          rgba(17, 34, 58, 0.02) 0,
+          rgba(17, 34, 58, 0.02) 5px,
+          transparent 5px,
+          transparent 16px
+        ),
+        var(--paper);
+      min-height: 100vh;
+      line-height: 1.5;
+      animation: loadIn 0.7s ease-out;
+    }
+
+    .layout {
+      width: min(1080px, 92vw);
+      margin: 42px auto 64px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+      padding: 26px;
+      transform: translateY(14px);
+      opacity: 0;
+      animation: rise 0.6s ease-out forwards;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.08s; }
+    .card:nth-child(3) { animation-delay: 0.16s; }
+    .card:nth-child(4) { animation-delay: 0.24s; }
+    .card:nth-child(5) { animation-delay: 0.32s; }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--focus);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      max-width: 22ch;
+    }
+
+    h2 {
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+    }
+
+    p {
+      margin: 8px 0;
+      color: var(--ink-soft);
+    }
+
+    .lead {
+      font-size: clamp(1.04rem, 1.8vw, 1.2rem);
+      max-width: 70ch;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 14px;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--ink-soft);
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .pipeline {
+      margin-top: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(17, 34, 58, 0.03);
+      overflow-x: auto;
+    }
+
+    .pipeline pre {
+      margin: 0;
+      color: var(--ink);
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+
+    .claim {
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: rgba(208, 95, 31, 0.07);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-size: 1.04rem;
+    }
+
+    .avoid {
+      background: rgba(14, 122, 107, 0.09);
+      border-left-color: var(--focus);
+    }
+
+    .footer-note {
+      font-size: 0.93rem;
+      color: var(--ink-soft);
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    @keyframes rise {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes loadIn {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 820px) {
+      .layout {
+        width: min(1120px, 94vw);
+        margin-top: 20px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .grid-two {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <section class="card">
+      <div class="eyebrow">CALYR.AI Positioning</div>
+      <h1>A Knowledge-First Compiler for Research Publishing</h1>
+      <p class="lead">
+        CALYR.AI applies established compiler and model-driven techniques to a less common domain:
+        representing research knowledge as semantic objects that compile into synchronized outputs.
+      </p>
+      <div class="pipeline">
+        <pre>knowledge
+  -> compiler
+  -> website | paper | presentation | graph | workflow | code | interactive objects</pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Established Techniques We Use</h2>
+      <div class="grid-two">
+        <div class="mini">
+          <ul>
+            <li>YAML-first architecture</li>
+            <li>Single Source of Truth (SSOT)</li>
+            <li>Model-Driven Engineering (MDE)</li>
+            <li>Domain-Specific Language (DSL)</li>
+            <li>Compiler-based architecture</li>
+          </ul>
+        </div>
+        <div class="mini">
+          <ul>
+            <li>AST (Abstract Syntax Tree)</li>
+            <li>Multi-target code generation</li>
+            <li>Declarative configuration</li>
+            <li>Component/block-based rendering</li>
+            <li>Schema-driven validation</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Where CALYR.AI Is Distinctive</h2>
+      <p>
+        The DSL does not only model page structure. It models research semantics and relationships.
+        A single source can describe and synchronize:
+      </p>
+      <div class="grid-two">
+        <div class="mini">
+          <h3>Research Objects</h3>
+          <ul>
+            <li>Project</li>
+            <li>Paper</li>
+            <li>Figure</li>
+            <li>Workflow</li>
+            <li>Dataset</li>
+            <li>Publication</li>
+            <li>Person</li>
+            <li>Presentation</li>
+          </ul>
+        </div>
+        <div class="mini">
+          <h3>Publishing Targets</h3>
+          <ul>
+            <li>Website</li>
+            <li>PDF</li>
+            <li>Presentation and poster</li>
+            <li>Grant and documentation assets</li>
+            <li>ReactFlow and graph outputs</li>
+            <li>Storyboard assets</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Claim Boundary</h2>
+      <p class="claim avoid">
+        We do not claim YAML-first or compiler architecture as novel by itself.
+      </p>
+      <p class="claim">
+        We claim novelty in applying these established methods to a research knowledge graph that compiles to synchronized, multi-modal research outputs.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Canonical Positioning Statement</h2>
+      <p class="claim">
+        A semantic, YAML-based domain-specific language for representing research knowledge,
+        compiled into synchronized interactive publications, presentations, software interfaces,
+        and computational workflows from a single source of truth.
+      </p>
+      <p class="footer-note">Version: v1 positioning draft for Perspectives Pack</p>
+    </section>
+  </main>
+</body>
+</html>

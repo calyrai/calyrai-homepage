@@ -147,7 +147,18 @@ core:
 
   icon: brain
 
-  route: /core
+  route: /research/platforms/core/index.html
+
+  intent:
+    purpose: architecture-positioning
+    audience: first-visit
+
+  render:
+    variant: linked-positioning
+    source: content/positioning.yaml
+
+  explain:
+    why: Route the brain tile to the architecture positioning page generated from YAML and linked source content.
 
 # --------------------------------------------------
 
@@ -171,7 +182,7 @@ brix:
 
   icon: bridge
 
-  route: /brix
+  route: /research/platforms/brix/index.html
 
 # --------------------------------------------------
 
@@ -194,7 +205,7 @@ aflowtex:
 
   icon: aorta
 
-  route: /aflowtex
+  route: /research/platforms/aflowtex/index.html
 
 # --------------------------------------------------
 
@@ -216,7 +227,7 @@ lithos:
 
   icon: mountain
 
-  route: /lithos
+  route: /research/platforms/lithos/index.html
 
 # --------------------------------------------------
 
@@ -239,7 +250,7 @@ oracle:
 
   icon: crystal-ball
 
-  route: /oracle
+  route: /research/platforms/oracle/index.html
 
 # --------------------------------------------------
 
@@ -262,7 +273,7 @@ delphi:
 
   icon: compass
 
-  route: /delphi
+  route: /research/platforms/delphi/index.html
 
 # --------------------------------------------------
 
@@ -415,13 +426,13 @@ contact:
       projects:
         - id: aflowtex
           label: aflowtex
-          route: /aflowtex
+          route: /research/platforms/aflowtex/index.html
         - id: core
           label: calyrai core
-          route: /core
+          route: /research/platforms/core/index.html
         - id: oracle
           label: oracle
-          route: /oracle
+          route: /research/platforms/oracle/index.html
 
     - id: calyrai
       type: institution
@@ -447,16 +458,16 @@ contact:
       projects:
         - id: brix
           label: brix
-          route: /brix
+          route: /research/platforms/brix/index.html
         - id: aflowtex
           label: aflowtex
-          route: /aflowtex
+          route: /research/platforms/aflowtex/index.html
         - id: lithos
           label: lithos
-          route: /lithos
+          route: /research/platforms/lithos/index.html
         - id: oracle
           label: oracle
-          route: /oracle
+          route: /research/platforms/oracle/index.html
 
 # --------------------------------------------------
 

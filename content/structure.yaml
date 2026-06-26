@@ -1,28 +1,35 @@
 homepage:
 
-  header:
+  children:
     - logo
-
-  hero:
     - hero
+    - movie
+    - platforms
+    - architecture
+    - footer
 
-  grid:
+movie:
 
-    columns: 3
+  children: []
 
-    tiles:
+platforms:
 
-      - core
-      - brix
-      - aflowtex
+  children:
+    - core
+    - brix
+    - aflowtex
+    - lithos
+    - oracle
+    - delphi
 
-      - lithos
-      - oracle
-      - delphi
+architecture:
 
-      - ecosystem
-      - contact
-      - philosophy
+  children:
+    - ecosystem
+    - contact
+    - philosophy
 
-  footer:
+footer:
+
+  children:
     - legal

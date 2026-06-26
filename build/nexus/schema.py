@@ -47,11 +47,8 @@ NODE_STRUCTURED_FIELDS = (
 
 # Validation-related structure keys
 # brand: meta-node never in structure
-# movie/platforms/architecture/footer: synthetic layout sections built at runtime
-# from the grid definition — they live in content for copy but are not
-# explicitly referenced in structure.yaml
-SKIP_STRUCTURE_CHECK = {"brand", "movie", "platforms", "architecture", "footer"}
-STRUCTURE_NODE_LIST_KEYS = {"children", "header", "hero", "footer", "tiles"}
+SKIP_STRUCTURE_CHECK = {"brand"}
+STRUCTURE_NODE_LIST_KEYS = {"children"}
 
 # Graph mapping keys
 GRAPH_NODES_KEY = "nodes"

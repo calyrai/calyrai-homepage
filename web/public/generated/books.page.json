@@ -191,6 +191,189 @@
       "title": "Newsletter",
       "description": null,
       "items": []
+    },
+    {
+      "id": "architecture_books",
+      "title": "Architecture Books",
+      "description": "YAML-first positioning and architecture notes wired to homepage workflow.",
+      "items": [
+        {
+          "id": "calyr-positioning",
+          "type": "architecture-note",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "CALYR.AI Positioning",
+          "year": 2026,
+          "tags": [
+            "architecture",
+            "positioning",
+            "compiler",
+            "ssot"
+          ],
+          "objective": "Establish a clear, compiler-driven positioning narrative for CALYR.AI as a knowledge-first publishing architecture.",
+          "summary": "Structured positioning note connected to the brain tile and generated in homepage workflow.",
+          "ctas": [
+            {
+              "type": "positioning",
+              "label": "Open positioning page",
+              "url": "/research/positioning/",
+              "online": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "platform_books",
+      "title": "Platform Books",
+      "description": "Book-rooted explanation pages for each core platform.",
+      "items": [
+        {
+          "id": "platform-core",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Calyrai Core Foundations",
+          "year": 2026,
+          "tags": [
+            "reasoning",
+            "architecture",
+            "compiler"
+          ],
+          "objective": "Explain the central reasoning architecture and why it anchors the platform family.",
+          "summary": "Core links observations, knowledge structures, workflows, and decision support in one reasoning loop.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/core/index.html",
+              "online": true
+            }
+          ]
+        },
+        {
+          "id": "platform-brix",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Brix Engineering Intelligence",
+          "year": 2026,
+          "tags": [
+            "engineering",
+            "surrogate-models",
+            "simulation"
+          ],
+          "objective": "Document how surrogate-assisted engineering decisions are modeled and operationalized.",
+          "summary": "Brix compresses expensive simulation space into faster, uncertainty-aware design exploration.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/brix/index.html",
+              "online": true
+            }
+          ]
+        },
+        {
+          "id": "platform-aflowtex",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Aflowtex Medical Flow Intelligence",
+          "year": 2026,
+          "tags": [
+            "medicine",
+            "hemodynamics",
+            "patient-specific-modeling"
+          ],
+          "objective": "Explain patient-specific flow analysis from data capture to uncertainty-aware recommendation.",
+          "summary": "Aflowtex aligns clinical data, vascular models, and flow simulation to support case decisions.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/aflowtex/index.html",
+              "online": true
+            }
+          ]
+        },
+        {
+          "id": "platform-lithos",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Lithos Consequence Intelligence",
+          "year": 2026,
+          "tags": [
+            "consequences",
+            "risk",
+            "trade-offs"
+          ],
+          "objective": "Frame consequence analysis as a first-class semantic reasoning task.",
+          "summary": "Lithos translates model outputs into impact pathways, risks, and option-level trade-offs.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/lithos/index.html",
+              "online": true
+            }
+          ]
+        },
+        {
+          "id": "platform-oracle",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Oracle Knowledge Extraction Engine",
+          "year": 2026,
+          "tags": [
+            "knowledge-graphs",
+            "extraction",
+            "representation"
+          ],
+          "objective": "Describe transformation from heterogeneous source material into structured knowledge assets.",
+          "summary": "Oracle converts complex technical and scientific corpora into graph-ready, queryable structures.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/oracle/index.html",
+              "online": true
+            }
+          ]
+        },
+        {
+          "id": "platform-delphi",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Delphi Interactive Oracle Interface",
+          "year": 2026,
+          "tags": [
+            "interaction",
+            "exploration",
+            "insights"
+          ],
+          "objective": "Explain interactive navigation patterns for discovering insights from oracle-generated knowledge structures.",
+          "summary": "Delphi is the interaction layer for guided exploration, pattern finding, and insight capture.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open platform page",
+              "url": "/research/platforms/delphi/index.html",
+              "online": true
+            }
+          ]
+        }
+      ]
     }
   ],
   "footer": {
@@ -210,8 +393,8 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-06-24T10:02:23.388441+00:00",
-    "book_count": 2,
+    "generated_at": "2026-06-26T09:48:56.386295+00:00",
+    "book_count": 9,
     "books_by_status": {
       "draft": 1,
       "concept": 1

@@ -27,6 +27,7 @@ import { useIsMobile } from '../hooks/useIsMobile'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
+const DEFAULT_TILE_POSITION = { x: 0, y: 0 }
 
 function getTileLeadDotClass(accent) {
   if (accent === 'magenta') return 'tile-inline-dot-magenta'
@@ -216,7 +217,7 @@ export default function Tile({ node, theme, context = {} }) {
   const [isDragging, setIsDragging] = useState(false)
   const [isFoilCovered, setIsFoilCovered] = useState(isPlatformTile)
   const [ripplePulse, setRipplePulse] = useState(0)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [position, setPosition] = useState(DEFAULT_TILE_POSITION)
   const [dragStart, setDragStart] = useState(null)
   const hasDraggedRef = useRef(false)
   const dragThreshold = 6
@@ -229,8 +230,13 @@ export default function Tile({ node, theme, context = {} }) {
   const meshRafRef = useRef(null)
   const meshStartRef = useRef(performance.now())
 
-  // Load position from localStorage on mount
+  // Desktop supports persistent tile placement; phone always renders tiles at origin.
   useEffect(() => {
+    if (isMobileViewport) {
+      setPosition(DEFAULT_TILE_POSITION)
+      return
+    }
+
     const savedPosition = localStorage.getItem(STORAGE_KEY_PREFIX + id)
     if (savedPosition) {
       try {
@@ -239,14 +245,28 @@ export default function Tile({ node, theme, context = {} }) {
         console.warn(`Failed to load position for tile ${id}`, e)
       }
     }
-  }, [id])
+  }, [id, isMobileViewport])
 
   // Save position to localStorage when it changes
   useEffect(() => {
+    if (isMobileViewport) {
+      return
+    }
+
     if (position.x !== 0 || position.y !== 0) {
       localStorage.setItem(STORAGE_KEY_PREFIX + id, JSON.stringify(position))
     }
-  }, [position, id])
+  }, [position, id, isMobileViewport])
+
+  useEffect(() => {
+    if (!isMobileViewport) {
+      return
+    }
+
+    setIsDragging(false)
+    setDragStart(null)
+    hasDraggedRef.current = false
+  }, [isMobileViewport])
 
   // Detect ripple pulses passing through this tile
   useEffect(() => {
@@ -555,8 +575,10 @@ export default function Tile({ node, theme, context = {} }) {
     }
   }
 
+  const activePosition = isMobileViewport ? DEFAULT_TILE_POSITION : position
+
   const tileStyle = {
-    transform: `translate(${position.x}px, ${position.y}px)`,
+    transform: `translate(${activePosition.x}px, ${activePosition.y}px)`,
     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
     cursor: isMobileViewport ? 'pointer' : isDragging ? 'grabbing' : 'grab',
     userSelect: 'none',
@@ -620,22 +642,6 @@ export default function Tile({ node, theme, context = {} }) {
           {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
         </>
       </div>
-
-      {/* Relations indicator (if any edges) */}
-      {relations && (relations.incoming?.length > 0 || relations.outgoing?.length > 0) && (
-        <div className="tile-relations">
-          {relations.incoming?.length > 0 && (
-            <span className="relation-badge in" title={`${relations.incoming.length} incoming`}>
-              ↵
-            </span>
-          )}
-          {relations.outgoing?.length > 0 && (
-            <span className="relation-badge out" title={`${relations.outgoing.length} outgoing`}>
-              ↦
-            </span>
-          )}
-        </div>
-      )}
 
       {/* Link indicator */}
       {route && <div className="tile-link-indicator">→</div>}

@@ -40,12 +40,28 @@ class Validator:
         Returns:
             bool: True if no errors (warnings are acceptable)
         """
+        self._check_homepage_schema()
         self._check_graph_validity()
         self._check_flowchart_validity()
         structure_node_ids = self._extract_all_node_ids()
         self._check_structure_completeness(structure_node_ids)
         self._check_content_completeness(structure_node_ids)
         return len(self.errors) == 0
+
+    def _check_homepage_schema(self) -> None:
+        """Validate homepage strict structure schema."""
+        homepage = self.structure.get("homepage")
+        if not isinstance(homepage, dict):
+            self.errors.append("structure.homepage must be a mapping")
+            return
+
+        children = homepage.get("children")
+        if isinstance(children, list):
+            return
+
+        self.errors.append(
+            "structure.homepage must declare explicit 'children'."
+        )
 
     def _check_flowchart_validity(self) -> None:
         """Verify flowchart definitions reference valid authored nodes."""

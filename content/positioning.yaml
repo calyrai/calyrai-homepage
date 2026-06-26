@@ -1,0 +1,54 @@
+page:
+  title: CALYR.AI Positioning
+  eyebrow: CALYR.AI Positioning
+  subtitle: A knowledge-first compiler for research publishing
+  lead: CALYR.AI applies established compiler and model-driven techniques to research knowledge so one semantic source can compile to synchronized outputs.
+  claim: knowledge -> compiler -> website | paper | presentation | graph | workflow | code | interactive objects
+
+sections:
+  - id: established
+    title: Established Techniques We Use
+    columns:
+      -
+        - YAML-first architecture
+        - Single Source of Truth (SSOT)
+        - Model-Driven Engineering (MDE)
+        - Domain-Specific Language (DSL)
+        - Compiler-based architecture
+      -
+        - AST (Abstract Syntax Tree)
+        - Multi-target generation
+        - Declarative configuration
+        - Component and block rendering
+        - Schema-driven validation
+
+  - id: distinctive
+    title: Where CALYR.AI Is Distinctive
+    body: The DSL models research semantics and relationships, not only page layout, and keeps outputs synchronized.
+    columns:
+      -
+        - Project
+        - Paper
+        - Figure
+        - Workflow
+        - Dataset
+        - Publication
+        - Person
+        - Presentation
+      -
+        - Website
+        - PDF
+        - Presentation
+        - Knowledge graph
+        - Workflow view
+        - Interactive objects
+
+  - id: avoid
+    title: What To Avoid
+    class_name: avoid
+    bullets:
+      - Copy pasted content across outputs
+      - Hidden structure in ad hoc component logic
+      - One-off static pages that drift from source knowledge
+
+footer_note: Source linked into homepage workflow from calyrai-perspectives-pack/docs/positioning.html and regenerated on compile.
