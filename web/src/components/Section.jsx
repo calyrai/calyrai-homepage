@@ -8,14 +8,14 @@
 
 import React, { useRef, useState } from 'react'
 import { renderChildren } from './Renderer'
+import { SectionLayoutService } from '../services/SectionLayoutService'
 
 export default function Section({ node, theme }) {
   const { id, title, summary, route, children = [] } = node
-  const isMovieSection = id === 'movie'
-  const isLineCollapsedSection = id === 'movie' || id === 'platforms' || id === 'architecture'
-  const [isExpanded, setIsExpanded] = useState(!isLineCollapsedSection)
+  const layout = SectionLayoutService.create(node)
+  const [isExpanded, setIsExpanded] = useState(layout.defaultExpanded)
   const lastPointerToggleTsRef = useRef(0)
-  const titleHref = isMovieSection ? (id ? `#${id}` : null) : (route || (id ? `#${id}` : null))
+  const titleHref = layout.titleHref
   const titleContent = titleHref
     ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
     : title
@@ -29,9 +29,7 @@ export default function Section({ node, theme }) {
 
   const renderGrid = () => (
     <div className="section-grid">
-      {renderChildren(children, theme).map((child, idx) => (
-        <React.Fragment key={idx}>{child}</React.Fragment>
-      ))}
+      {renderChildren(children, theme)}
     </div>
   )
 
@@ -60,7 +58,7 @@ export default function Section({ node, theme }) {
     setIsExpanded((prev) => !prev)
   }
 
-  if (isMovieSection && !isLineCollapsedSection) {
+  if (layout.isMovieSection && !layout.isCollapsible) {
     return (
       <section className="section section-movie" id={id} data-type="section" style={sectionStyle}>
         {(title || summary) && (
@@ -79,12 +77,12 @@ export default function Section({ node, theme }) {
 
   return (
     <section
-      className={`section ${isLineCollapsedSection ? 'section-collapsible' : ''}`}
+      className={`section ${layout.isCollapsible ? 'section-collapsible' : ''}`}
       id={id}
       data-type="section"
       style={sectionStyle}
     >
-      {isLineCollapsedSection && (
+      {layout.isCollapsible && (
         <button
           type="button"
           className="section-collapse-toggle"
@@ -99,7 +97,7 @@ export default function Section({ node, theme }) {
       )}
 
       {/* Static section header for identical desktop/mobile behavior */}
-      {(title || summary) && isExpanded && !isLineCollapsedSection && (
+      {(title || summary) && isExpanded && !layout.isCollapsible && (
         <div className="section-header">
           <div className="section-header-content">
             {title && <h2 className="section-title">{titleContent}</h2>}
@@ -108,7 +106,7 @@ export default function Section({ node, theme }) {
         </div>
       )}
 
-      {isExpanded && (isMovieSection ? renderMovie() : renderGrid())}
+      {isExpanded && (layout.isMovieSection ? renderMovie() : renderGrid())}
     </section>
   )
 }

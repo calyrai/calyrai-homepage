@@ -22,9 +22,7 @@ export default function Page({ node, theme, renderNode }) {
 
       {/* Render all children (hero, sections, footer, etc.) */}
       <main className="page-main">
-        {renderChildren(children, theme).map((child, idx) => (
-          <React.Fragment key={idx}>{child}</React.Fragment>
-        ))}
+        {renderChildren(children, theme)}
       </main>
     </div>
   )

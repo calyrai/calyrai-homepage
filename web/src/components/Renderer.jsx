@@ -16,6 +16,14 @@ import Hero from './Hero'
 import Tile from './Tile'
 import Element from './Element'
 
+const NODE_COMPONENTS = {
+  page: Page,
+  section: Section,
+  hero: Hero,
+  tile: Tile,
+  element: Element,
+}
+
 /**
  * Main render dispatcher
  * 
@@ -36,26 +44,13 @@ export function renderNode(node, theme, context = {}) {
     renderNode, // Pass renderer for recursive rendering
   }
 
-  switch (node.type) {
-    case 'page':
-      return <Page {...props} />
-
-    case 'section':
-      return <Section {...props} />
-
-    case 'hero':
-      return <Hero {...props} />
-
-    case 'tile':
-      return <Tile {...props} />
-
-    case 'element':
-      return <Element {...props} />
-
-    default:
-      console.warn(`Unknown node type: ${node.type}`)
-      return <div className="node-unknown">Unknown: {node.type}</div>
+  const Component = NODE_COMPONENTS[node.type]
+  if (!Component) {
+    console.warn(`Unknown node type: ${node.type}`)
+    return <div className="node-unknown">Unknown: {node.type}</div>
   }
+
+  return <Component {...props} />
 }
 
 /**
