@@ -2071,6 +2071,10 @@ button:active {
   padding: var(--space-2xl) var(--space-md);
 }
 
+.page-main > .logo-element + .hero {
+  padding-top: var(--space-sm);
+}
+
 .hero-content {
   max-width: 1080px;
 }
@@ -2132,6 +2136,10 @@ button:active {
 @media (max-width: 768px) {
   .hero {
     padding: var(--space-xl) var(--space-sm);
+  }
+
+  .page-main > .logo-element + .hero {
+    padding-top: var(--space-xs);
   }
 
   .section {
