@@ -137,19 +137,19 @@ footer:
       value: Rupert Tscheliessnig
     - id: role
       label: Role
-      value: Founder, Calyr.aí
+      value: CEO, Founder
     - id: email
       label: Email
       value: rupert.tscheliessnig@calyr.ai
       route: mailto:rupert.tscheliessnig@calyr.ai
     - id: phone
       label: Phone
-      value: TBD
-      status: pending
+      value: "069 919 200915"
+      route: "tel:+43699192009155"
     - id: office
       label: Office
-      value: TBD
-      status: pending
+      value: TBA
+      hide: true
 
 # --------------------------------------------------
 

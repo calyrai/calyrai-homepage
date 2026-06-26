@@ -830,7 +830,7 @@
         {
           "id": "role",
           "label": "Role",
-          "value": "Founder, Calyr.a\u00ed"
+          "value": "CEO, Founder"
         },
         {
           "id": "email",
@@ -841,14 +841,14 @@
         {
           "id": "phone",
           "label": "Phone",
-          "value": "TBD",
-          "status": "pending"
+          "value": "069 919 200915",
+          "route": "tel:+43699192009155"
         },
         {
           "id": "office",
           "label": "Office",
-          "value": "TBD",
-          "status": "pending"
+          "value": "TBA",
+          "hide": true
         }
       ],
       "intent": {},

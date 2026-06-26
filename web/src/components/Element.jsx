@@ -60,6 +60,9 @@ export default function Element({ node, theme }) {
               const value = entry?.value || 'TBD'
               const href = entry?.route || entry?.href || entry?.url || null
               const status = entry?.status || ''
+              const shouldHide = entry?.hide || !value || value === 'TBD' || value === 'TBA'
+
+              if (shouldHide) return null
 
               return (
                 <article key={entry?.id || `${label}-${idx}`} className="footer-contact-item">
