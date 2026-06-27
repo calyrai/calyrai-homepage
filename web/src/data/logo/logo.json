@@ -35,7 +35,7 @@
     "hoverEnter": "active",
     "hoverLeave": "idle",
     "click": "qr_build",
-    "idleTimeoutToEntropyMs": 80000,
+    "idleTimeoutToEntropyMs": null,
     "pointerReturnFromEntropy": "reassemble",
     "upperActivationZoneFraction": 0.36
   },

@@ -1913,7 +1913,10 @@ button:active {
 }
 
 .calyr-logo-interactive[data-logo-state='qr_build'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='qr_show'] .calyr-logo-through-line {
+.calyr-logo-interactive[data-logo-state='qr_show'] .calyr-logo-through-line,
+.calyr-logo-interactive[data-logo-state='dissolve'] .calyr-logo-through-line,
+.calyr-logo-interactive[data-logo-state='entropy'] .calyr-logo-through-line,
+.calyr-logo-interactive[data-logo-state='reassemble'] .calyr-logo-through-line {
   opacity: 0;
 }
 
