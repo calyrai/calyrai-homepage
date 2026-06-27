@@ -10,12 +10,18 @@
     "/research/platforms/delphi/index.html",
     "/research/platforms/lithos/index.html",
     "/research/platforms/oracle/index.html",
-    "mailto:rupert.tscheliessnig@calyr.ai"
+    "https://bsky.app",
+    "https://wa.me/4369919200915",
+    "https://www.instagram.com",
+    "https://www.youtube.com",
+    "https://x.com",
+    "mailto:rupert.tscheliessnig@calyr.ai",
+    "tel:+4369919200915"
   ],
   "unresolved_routes": [
     "/ecosystem",
     "/legal",
     "/media/short.mp4"
   ],
-  "generated_at": "2026-06-27T19:28:36.196818+00:00"
+  "generated_at": "2026-06-27T19:57:47.283811+00:00"
 }

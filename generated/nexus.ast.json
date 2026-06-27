@@ -680,9 +680,45 @@
       "institutions": [],
       "contacts": [
         {
-          "id": "email",
-          "label": "Email",
-          "value": "rupert.tscheliessnig@calyr.ai",
+          "id": "phone",
+          "label": "Phone",
+          "value": "069 919 200915",
+          "route": "tel:+4369919200915"
+        },
+        {
+          "id": "whatsapp",
+          "label": "WhatsApp",
+          "value": "WhatsApp",
+          "route": "https://wa.me/4369919200915"
+        },
+        {
+          "id": "x",
+          "label": "X",
+          "value": "X",
+          "route": "https://x.com"
+        },
+        {
+          "id": "bluesky",
+          "label": "Bluesky",
+          "value": "Bluesky",
+          "route": "https://bsky.app"
+        },
+        {
+          "id": "youtube",
+          "label": "YouTube",
+          "value": "YouTube",
+          "route": "https://www.youtube.com"
+        },
+        {
+          "id": "instagram",
+          "label": "Instagram",
+          "value": "Instagram",
+          "route": "https://www.instagram.com"
+        },
+        {
+          "id": "mail",
+          "label": "Mail",
+          "value": "Mail",
           "route": "mailto:rupert.tscheliessnig@calyr.ai"
         }
       ],
