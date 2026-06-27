@@ -96,7 +96,7 @@
   "footer": {
     "title": "Connect",
     "summary": "Research, engineering, and collaboration channels.",
-    "body_preview": "Contact profile and channels are configured in YAML and can be updated without touching frontend code.\n",
+    "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
@@ -206,7 +206,7 @@
   "ecosystem": {
     "title": "ecosystem",
     "summary": "Explore relationships across the calyrai ecosystem.\n",
-    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge.\n",
+    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [

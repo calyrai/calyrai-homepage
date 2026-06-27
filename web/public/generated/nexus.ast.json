@@ -551,7 +551,7 @@
           "subtitle": "Interactive architecture",
           "landing_message": "",
           "summary": "Explore relationships across the calyrai ecosystem.\n",
-          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge.\n",
+          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
@@ -584,154 +584,11 @@
           "subtitle": "swarm",
           "landing_message": "intelligence",
           "summary": "Research, industry, and partnership inquiries.\n",
-          "body": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use email or the direct channels listed on the contact page.\n",
+          "body": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use email.\n",
           "icon": "mail",
           "route": "mailto:rupert.tscheliessnig@calyr.ai",
-          "links": [
-            {
-              "id": "whatsapp",
-              "label": "WhatsApp",
-              "route": "https://wa.me/?text=Hello%20Calyr.a%C3%AD"
-            },
-            {
-              "id": "linkedin",
-              "label": "LinkedIn",
-              "route": "https://www.linkedin.com"
-            },
-            {
-              "id": "bluesky",
-              "label": "Bluesky",
-              "route": "https://bsky.app"
-            },
-            {
-              "id": "x",
-              "label": "X",
-              "route": "https://x.com"
-            },
-            {
-              "id": "youtube",
-              "label": "YouTube",
-              "route": "https://www.youtube.com"
-            },
-            {
-              "id": "lithos",
-              "label": "lithos.ai",
-              "route": "https://lithos.ai"
-            },
-            {
-              "id": "lidar",
-              "label": "lidar",
-              "route": "https://lidar.ai"
-            }
-          ],
-          "institutions": [
-            {
-              "id": "asc",
-              "type": "institution",
-              "name": "Austrian Supercomputing Center",
-              "category": "hpc",
-              "location": {
-                "city": "Vienna",
-                "country": "Austria"
-              },
-              "website": "https://asc.ac.at",
-              "visibility": {
-                "public": true,
-                "show_network": true
-              },
-              "capabilities": [
-                {
-                  "id": "hpc",
-                  "label": "hpc"
-                },
-                {
-                  "id": "cfd",
-                  "label": "cfd"
-                },
-                {
-                  "id": "ai",
-                  "label": "ai"
-                },
-                {
-                  "id": "simulation",
-                  "label": "simulation"
-                }
-              ],
-              "projects": [
-                {
-                  "id": "aflowtex",
-                  "label": "aflowtex",
-                  "route": "/research/platforms/aflowtex/index.html"
-                },
-                {
-                  "id": "core",
-                  "label": "calyrai core",
-                  "route": "/research/platforms/core/index.html"
-                },
-                {
-                  "id": "oracle",
-                  "label": "oracle",
-                  "route": "/research/platforms/oracle/index.html"
-                }
-              ]
-            },
-            {
-              "id": "calyrai",
-              "type": "institution",
-              "name": "Calyr.a\u00ed",
-              "category": "research-and-engineering",
-              "location": {
-                "city": "Vienna",
-                "country": "Austria"
-              },
-              "website": "https://calyr.ai/",
-              "visibility": {
-                "public": true,
-                "show_network": true
-              },
-              "capabilities": [
-                {
-                  "id": "contact",
-                  "label": "email contact",
-                  "route": "mailto:rupert.tscheliessnig@calyr.ai"
-                },
-                {
-                  "id": "collaborations",
-                  "label": "collaborations"
-                },
-                {
-                  "id": "research",
-                  "label": "research"
-                },
-                {
-                  "id": "demonstrators",
-                  "label": "demonstrators"
-                }
-              ],
-              "projects": [
-                {
-                  "id": "brix",
-                  "label": "brix",
-                  "route": "/research/platforms/brix/index.html"
-                },
-                {
-                  "id": "aflowtex",
-                  "label": "aflowtex",
-                  "route": "/research/platforms/aflowtex/index.html"
-                },
-                {
-                  "id": "lithos",
-                  "label": "lithos",
-                  "route": "/research/platforms/lithos/index.html"
-                },
-                {
-                  "id": "oracle",
-                  "label": "oracle",
-                  "route": "/research/platforms/oracle/index.html"
-                }
-              ]
-            }
-          ],
+          "links": [],
+          "institutions": [],
           "contacts": [],
           "intent": {
             "purpose": "conversion",
@@ -816,39 +673,17 @@
       "subtitle": "CALYR.AI contact registry",
       "landing_message": "",
       "summary": "Research, engineering, and collaboration channels.",
-      "body": "Contact profile and channels are configured in YAML and can be updated without touching frontend code.\n",
+      "body": "",
       "icon": "",
       "route": "",
       "links": [],
       "institutions": [],
       "contacts": [
         {
-          "id": "principal",
-          "label": "Principal",
-          "value": "Rupert Tscheliessnig"
-        },
-        {
-          "id": "role",
-          "label": "Role",
-          "value": "CEO, Founder"
-        },
-        {
           "id": "email",
           "label": "Email",
           "value": "rupert.tscheliessnig@calyr.ai",
           "route": "mailto:rupert.tscheliessnig@calyr.ai"
-        },
-        {
-          "id": "phone",
-          "label": "Phone",
-          "value": "069 919 200915",
-          "route": "tel:+43699192009155"
-        },
-        {
-          "id": "office",
-          "label": "Office",
-          "value": "TBA",
-          "hide": true
         }
       ],
       "intent": {},
