@@ -325,6 +325,9 @@ ecosystem:
     calyrai core, brix, aflowtex,
     lithos, oracle, and delphi
     connect and exchange knowledge.
+    Atlas Copilot extends this with
+    specialized scientific agents and
+    pipeline orchestration.
 
   icon: network
 
@@ -410,24 +413,6 @@ contact:
     - id: whatsapp
       label: WhatsApp
       route: https://wa.me/?text=Hello%20Calyr.a%C3%AD
-    - id: linkedin
-      label: LinkedIn
-      route: https://www.linkedin.com
-    - id: bluesky
-      label: Bluesky
-      route: https://bsky.app
-    - id: x
-      label: X
-      route: https://x.com
-    - id: youtube
-      label: YouTube
-      route: https://www.youtube.com
-    - id: lithos
-      label: lithos.ai
-      route: https://lithos.ai
-    - id: lidar
-      label: lidar
-      route: https://lidar.ai
 
   institutions:
     - id: asc
@@ -530,6 +515,14 @@ __graph:
     - lithos
     - oracle
     - delphi
+    - atlas-copilot
+    - calyrai-reader
+    - calyrai-extract
+    - calyrai-relate
+    - calyrai-cite
+    - calyrai-atlas
+    - calyrai-reason
+    - calyrai-runtime
 
   edges:
     - [core, brix]
@@ -537,6 +530,60 @@ __graph:
     - [core, lithos]
     - [core, oracle]
     - [oracle, delphi]
+    - [oracle, atlas-copilot]
+    - [delphi, atlas-copilot]
+    - [atlas-copilot, calyrai-reader]
+    - [atlas-copilot, calyrai-extract]
+    - [atlas-copilot, calyrai-relate]
+    - [atlas-copilot, calyrai-cite]
+    - [atlas-copilot, calyrai-atlas]
+    - [atlas-copilot, calyrai-reason]
+    - [atlas-copilot, calyrai-runtime]
+
+# --------------------------------------------------
+
+networks:
+
+  atlas_copilot:
+
+    title: "CALYRAI Atlas Copilot Network"
+
+    subtitle: "Scientific agent layer and orchestration"
+
+    summary: >
+      Candidate-first reasoning workspace where
+      accepted decisions commit nodes, relations,
+      citations, and history into the atlas.
+
+    namespaces:
+      - calyrai.reader
+      - calyrai.extract
+      - calyrai.relate
+      - calyrai.cite
+      - calyrai.atlas
+      - calyrai.reason
+      - calyrai.write
+      - calyrai.present
+      - calyrai.search
+      - calyrai.runtime
+
+    pipelines:
+      - reader-pipeline
+      - knowledge-pipeline
+      - discussion-pipeline
+      - graph-pipeline
+      - writing-pipeline
+      - presentation-pipeline
+
+    model_stack:
+      - reasoning-llm
+      - embedding-model
+      - reranker
+
+    sources:
+      - ../calyrai-protein-oracle/projects/atlas-copilot/spec/agent-layer.yaml
+      - ../calyrai-protein-oracle/projects/atlas-copilot/spec/pipeline-architecture.yaml
+      - ../calyrai-protein-oracle/projects/atlas-copilot/spec/model-stack.yaml
 
 # --------------------------------------------------
 

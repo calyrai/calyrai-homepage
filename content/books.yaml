@@ -241,3 +241,72 @@ platform_pages:
       subtitle: Delphi
       lead: Interactive interface for graph exploration and insight generation.
       footer_note: Delphi page generated from platform-delphi book entry in content/books.yaml.
+
+atlas_books:
+  section:
+    id: atlas_books
+    title: Atlas Books
+    description: Knowledge atlas architecture and reasoning workspace specifications.
+  items:
+    - id: atlas-reasoning-workspace
+      type: atlas-book
+      title: CALYRAI Atlas Copilot - Reasoning Workspace
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - atlas
+        - knowledge-graph
+        - scientific-dialogue
+        - decision-logging
+      objective: Define a candidate-first scientific dialogue system where each accepted decision updates the knowledge atlas.
+      summary: Replaces classic answer chat with proposal, decision, relation, and citation workflows.
+      source:
+        path: ../calyrai-protein-oracle/projects/atlas-copilot/spec/reasoning-workspace.yaml
+      sections:
+        - id: candidate-contract
+          title: Candidate Contract
+          bullets:
+            - candidate
+            - confidence
+            - reason
+            - possible_nodes
+            - possible_relations
+            - possible_actions
+        - id: decisions
+          title: Decision Loop
+          bullets:
+            - uebernehmen
+            - diskutieren
+            - ignorieren
+
+    - id: atlas-agent-layer
+      type: atlas-book
+      title: CALYRAI Scientific Agent Layer
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - agents
+        - modular-architecture
+        - runtime
+      objective: Specify specialized agents and responsibilities behind the atlas workflow.
+      summary: Reader, extract, relate, cite, reason, atlas, learn, write, search, present, runtime.
+      source:
+        path: ../calyrai-protein-oracle/projects/atlas-copilot/spec/agent-layer.yaml
+
+    - id: atlas-pipelines-and-models
+      type: atlas-book
+      title: CALYRAI Pipelines and Model Stack
+      year: 2026
+      authors:
+        - Tscheliessnig, Rupert
+      tags:
+        - pipelines
+        - llm
+        - embeddings
+        - reranking
+      objective: Define end-to-end processing pipelines and model stack selection profiles.
+      summary: Reader -> Knowledge -> Discussion -> Graph -> Writing -> Presentation with reasoning LLM, embeddings, and reranker.
+      source:
+        path: ../calyrai-protein-oracle/projects/atlas-copilot/spec/pipeline-architecture.yaml
