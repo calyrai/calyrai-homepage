@@ -387,9 +387,7 @@ contact:
     projects, funding opportunities,
     and technology development.
     For scientific, industrial, and
-    infrastructure inquiries, use email
-    or the direct channels listed on the
-    contact page.
+    infrastructure inquiries, use email.
 
   icon: mail
 
@@ -405,11 +403,6 @@ contact:
 
   explain:
     why: Provide a direct contact path after users understand the platform and ecosystem.
-
-  links:
-    - id: whatsapp
-      label: WhatsApp
-      route: https://wa.me/?text=Hello%20Calyr.a%C3%AD
 
   institutions:
     - id: asc
