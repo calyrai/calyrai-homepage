@@ -128,9 +128,6 @@ footer:
 
   summary: "Research, engineering, and collaboration channels."
 
-  body: >
-    Contact profile and channels are configured in YAML and can be updated without touching frontend code.
-
   contacts:
     - id: principal
       label: Principal
