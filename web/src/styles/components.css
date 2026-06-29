@@ -1912,14 +1912,6 @@ button:active {
   box-shadow: 0 0 9px rgba(255, 51, 204, 0.5);
 }
 
-.calyr-logo-interactive[data-logo-state='qr_build'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='qr_show'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='dissolve'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='entropy'] .calyr-logo-through-line,
-.calyr-logo-interactive[data-logo-state='reassemble'] .calyr-logo-through-line {
-  opacity: 0;
-}
-
 .calyr-logo-interactive[data-logo-state='active'],
 .calyr-logo-interactive[data-logo-state='qr_build'] {
   filter: saturate(1.08) brightness(1.06);
