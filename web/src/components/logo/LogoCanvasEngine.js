@@ -1,25 +1,25 @@
-function fract(v) {
-  return v - Math.floor(v)
-}
-
-function hash2(x, y) {
-  const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123
-  return fract(s)
-}
-
-function gaussian(x, sigma) {
-  return Math.exp(-(x * x) / (2 * sigma * sigma))
-}
-
-function angleDiff(a, b) {
-  let d = a - b
-  while (d > Math.PI) d -= Math.PI * 2
-  while (d < -Math.PI) d += Math.PI * 2
-  return d
-}
-
 export default class LogoCanvasEngine {
   #resizeListenerAttached = false
+
+  #fract(v) {
+    return v - Math.floor(v)
+  }
+
+  #hash2(x, y) {
+    const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123
+    return this.#fract(s)
+  }
+
+  #gaussian(x, sigma) {
+    return Math.exp(-(x * x) / (2 * sigma * sigma))
+  }
+
+  #angleDiff(a, b) {
+    let d = a - b
+    while (d > Math.PI) d -= Math.PI * 2
+    while (d < -Math.PI) d += Math.PI * 2
+    return d
+  }
 
   constructor(canvas, config = {}) {
     this.canvas = canvas
@@ -46,7 +46,7 @@ export default class LogoCanvasEngine {
     this.ringThickness = 0.048
 
     this.constellations = []
-    this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + hash2(7.3, 2.1) * 5, duration: 2.8 }
+    this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + this.#hash2(7.3, 2.1) * 5, duration: 2.8 }
 
     this.resize = this.resize.bind(this)
     this.render = this.render.bind(this)
@@ -114,7 +114,7 @@ export default class LogoCanvasEngine {
 
     for (let y = 0.03; y <= 0.97; y += step) {
       for (let x = 0.03; x <= 0.97; x += step) {
-        this.gridDots.push({ x, y, seed: hash2(x * 500, y * 500) * Math.PI * 2 })
+        this.gridDots.push({ x, y, seed: this.#hash2(x * 500, y * 500) * Math.PI * 2 })
       }
     }
   }
@@ -140,14 +140,14 @@ export default class LogoCanvasEngine {
         const a = Math.atan2(dy, dx)
 
         const radialDelta = Math.abs(r - this.ringRadius)
-        const ringCore = gaussian(radialDelta, this.ringThickness)
+        const ringCore = this.#gaussian(radialDelta, this.ringThickness)
 
-        const leftFlare = gaussian(angleDiff(a, Math.PI), 0.26) * gaussian(radialDelta, 0.11)
-        const rightFlare = gaussian(angleDiff(a, 0), 0.26) * gaussian(radialDelta, 0.11)
+        const leftFlare = this.#gaussian(this.#angleDiff(a, Math.PI), 0.26) * this.#gaussian(radialDelta, 0.11)
+        const rightFlare = this.#gaussian(this.#angleDiff(a, 0), 0.26) * this.#gaussian(radialDelta, 0.11)
 
-        const topCrown = gaussian(angleDiff(a, -Math.PI / 2), 0.34) * gaussian(radialDelta, 0.095)
+        const topCrown = this.#gaussian(this.#angleDiff(a, -Math.PI / 2), 0.34) * this.#gaussian(radialDelta, 0.095)
 
-        const lowerMask = 1 - gaussian(a - Math.PI / 2, 0.55) * 0.12
+        const lowerMask = 1 - this.#gaussian(a - Math.PI / 2, 0.55) * 0.12
 
         const density = Math.max(
           0,
@@ -158,7 +158,7 @@ export default class LogoCanvasEngine {
           continue
         }
 
-        const noise = hash2(x * 1973.3, y * 2671.7)
+        const noise = this.#hash2(x * 1973.3, y * 2671.7)
         const threshold = 1 - Math.min(1, density * 0.98)
 
         if (noise > threshold) {
@@ -223,7 +223,7 @@ export default class LogoCanvasEngine {
       let bestDiff = Infinity
       for (let i = 0; i < ring.length; i++) {
         const pa = Math.atan2(ring[i].y - cy, ring[i].x - cx)
-        const diff = Math.abs(angleDiff(pa, a))
+        const diff = Math.abs(this.#angleDiff(pa, a))
         if (diff < bestDiff) { bestDiff = diff; best = i }
       }
       return best
@@ -260,10 +260,10 @@ export default class LogoCanvasEngine {
 
     // Trigger next constellation flash
     if (t >= cycle.nextAt) {
-      const roll = hash2(Math.floor(t * 11.3), cycle.patternIndex + 1.7)
+      const roll = this.#hash2(Math.floor(t * 11.3), cycle.patternIndex + 1.7)
       cycle.patternIndex = Math.floor(roll * this.constellations.length) % this.constellations.length
       cycle.startT = t
-      cycle.nextAt = t + 8 + hash2(Math.floor(t * 7.1), 3.3) * 4
+      cycle.nextAt = t + 8 + this.#hash2(Math.floor(t * 7.1), 3.3) * 4
     }
 
     if (cycle.patternIndex < 0) return
@@ -296,37 +296,92 @@ export default class LogoCanvasEngine {
       }
     }
 
-    // Draw constellation edges as faint dashed lines
+    // Build outward growth order from a single root star.
+    const nodeCount = pat.indices.length
+    const rootNode = 0
+    const adjacency = Array.from({ length: nodeCount }, () => [])
+    for (const [ai, bi] of pat.edges) {
+      if (ai < 0 || bi < 0 || ai >= nodeCount || bi >= nodeCount) continue
+      adjacency[ai].push(bi)
+      adjacency[bi].push(ai)
+    }
+
+    const nodeDist = new Array(nodeCount).fill(Infinity)
+    nodeDist[rootNode] = 0
+    const queue = [rootNode]
+    for (let qi = 0; qi < queue.length; qi += 1) {
+      const n = queue[qi]
+      const nextDist = nodeDist[n] + 1
+      for (const m of adjacency[n]) {
+        if (nodeDist[m] !== Infinity) continue
+        nodeDist[m] = nextDist
+        queue.push(m)
+      }
+    }
+    for (let i = 0; i < nodeDist.length; i += 1) {
+      if (nodeDist[i] === Infinity) nodeDist[i] = 0
+    }
+
+    const maxDist = nodeDist.reduce((acc, d) => Math.max(acc, d), 0)
+    const edgeOrder = pat.edges.map(([ai, bi], edgeIdx) => {
+      const da = nodeDist[ai] ?? 0
+      const db = nodeDist[bi] ?? 0
+      const fromA = da <= db
+      const depth = Math.min(da, db)
+      const order = depth + edgeIdx * 0.0001
+      return { ai, bi, fromA, depth, order }
+    }).sort((a, b) => a.order - b.order)
+
+    // Draw constellation edges as faint dashed lines growing outward from root.
     ctx.save()
     ctx.strokeStyle = `rgba(180, 215, 255, ${(alpha * 0.42).toFixed(3)})`
     ctx.lineWidth = 0.65
     ctx.setLineDash([3, 5])
-    for (const [ai, bi] of pat.edges) {
-      const aRaw = ring[pat.indices[ai]]
-      const bRaw = ring[pat.indices[bi]]
+    const growPhase = this.#easeInOutCubic(Math.max(0, Math.min(1, progress / 0.72)))
+    const depthSteps = Math.max(1, maxDist + 1)
+    const stepWidth = 0.95 / depthSteps
+    for (const edge of edgeOrder) {
+      const aRaw = ring[pat.indices[edge.ai]]
+      const bRaw = ring[pat.indices[edge.bi]]
       if (!aRaw || !bRaw) continue
-      const a = mapPoint(aRaw)
-      const b = mapPoint(bRaw)
+
+      const startRaw = edge.fromA ? aRaw : bRaw
+      const endRaw = edge.fromA ? bRaw : aRaw
+      const start = mapPoint(startRaw)
+      const end = mapPoint(endRaw)
+
+      const edgeStart = edge.depth * stepWidth
+      const local = Math.max(0, Math.min(1, (growPhase - edgeStart) / Math.max(0.001, stepWidth)))
+      if (local <= 0) continue
+
+      const ex = start.x + (end.x - start.x) * local
+      const ey = start.y + (end.y - start.y) * local
       ctx.beginPath()
-      ctx.moveTo(a.x * this.width, a.y * this.height)
-      ctx.lineTo(b.x * this.width, b.y * this.height)
+      ctx.moveTo(start.x * this.width, start.y * this.height)
+      ctx.lineTo(ex * this.width, ey * this.height)
       ctx.stroke()
     }
     ctx.setLineDash([])
     ctx.restore()
 
     // Draw star glows at constellation points
-    for (const idx of pat.indices) {
+    for (let starIndex = 0; starIndex < pat.indices.length; starIndex += 1) {
+      const idx = pat.indices[starIndex]
       const raw = ring[idx]
       if (!raw) continue
       const pt = mapPoint(raw)
       const px = pt.x * this.width
       const py = pt.y * this.height
 
+      const starDepth = nodeDist[starIndex] ?? 0
+      const starReveal = Math.max(0, Math.min(1, (growPhase - starDepth * stepWidth) / Math.max(0.001, stepWidth)))
+      if (starReveal <= 0) continue
+      const starAlpha = alpha * (0.34 + 0.66 * this.#easeInOutCubic(starReveal))
+
       // Outer radial glow
       const grd = ctx.createRadialGradient(px, py, 0.4, px, py, 5.8)
-      grd.addColorStop(0, `rgba(255, 248, 220, ${(alpha * 0.94).toFixed(3)})`)
-      grd.addColorStop(0.38, `rgba(200, 228, 255, ${(alpha * 0.52).toFixed(3)})`)
+      grd.addColorStop(0, `rgba(255, 248, 220, ${(starAlpha * 0.94).toFixed(3)})`)
+      grd.addColorStop(0.38, `rgba(200, 228, 255, ${(starAlpha * 0.52).toFixed(3)})`)
       grd.addColorStop(1, 'rgba(160, 200, 255, 0)')
       ctx.fillStyle = grd
       ctx.beginPath()
@@ -334,7 +389,7 @@ export default class LogoCanvasEngine {
       ctx.fill()
 
       // Bright core point
-      ctx.fillStyle = `rgba(255, 252, 238, ${(alpha * 0.97).toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 252, 238, ${(starAlpha * 0.97).toFixed(3)})`
       ctx.beginPath()
       ctx.arc(px, py, 1.9, 0, Math.PI * 2)
       ctx.fill()
@@ -426,15 +481,15 @@ export default class LogoCanvasEngine {
 
     const clusterCount = Math.max(5, Math.min(10, Math.floor(Math.sqrt(Math.max(1, ringCount)) * 0.7)))
     const clusterCenters = Array.from({ length: clusterCount }, (_, idx) => {
-      const roll = hash2(idx * 11.3, 0.73)
+      const roll = this.#hash2(idx * 11.3, 0.73)
       return Math.floor(roll * Math.max(1, ringCount)) % Math.max(1, ringCount)
     })
 
     const particleOrder = Array.from({ length: count }, (_, idx) => idx).sort(
-      (a, b) => hash2(a * 3.17, a * 9.31) - hash2(b * 3.17, b * 9.31)
+      (a, b) => this.#hash2(a * 3.17, a * 9.31) - this.#hash2(b * 3.17, b * 9.31)
     )
     const qrOrder = Array.from({ length: qrCount }, (_, idx) => idx).sort(
-      (a, b) => hash2(a * 7.41, a * 1.73) - hash2(b * 7.41, b * 1.73)
+      (a, b) => this.#hash2(a * 7.41, a * 1.73) - this.#hash2(b * 7.41, b * 1.73)
     )
     const qrAssignments = new Array(count).fill(-1)
 
@@ -446,27 +501,27 @@ export default class LogoCanvasEngine {
 
     for (let i = 0; i < count; i += 1) {
       const uniformIndex = i % ringCount
-      const clusterId = Math.floor(hash2(i * 4.1, i * 1.9) * clusterCount) % clusterCount
+      const clusterId = Math.floor(this.#hash2(i * 4.1, i * 1.9) * clusterCount) % clusterCount
       const clusterCenter = clusterCenters[clusterId]
-      const clusterSpan = Math.floor(8 + hash2(i * 9.4, i * 2.6) * 24)
-      const clusterOffset = Math.floor((hash2(i * 7.7, i * 3.3) - 0.5) * clusterSpan)
+      const clusterSpan = Math.floor(8 + this.#hash2(i * 9.4, i * 2.6) * 24)
+      const clusterOffset = Math.floor((this.#hash2(i * 7.7, i * 3.3) - 0.5) * clusterSpan)
       const clusterIndex = (clusterCenter + clusterOffset + ringCount) % ringCount
-      const clusterMix = 0.24 + hash2(i * 2.1, i * 8.8) * 0.66
+      const clusterMix = 0.24 + this.#hash2(i * 2.1, i * 8.8) * 0.66
       const mixedIndex = Math.round(uniformIndex * (1 - clusterMix) + clusterIndex * clusterMix)
       const ringAnchorIndex = ((mixedIndex % ringCount) + ringCount) % ringCount
 
       const base = this.ringTargets[ringAnchorIndex]
       const qrTargetIndex = qrAssignments[i]
-      const qrLag = hash2(i * 6.7, i * 2.9) * 0.22
-      const heteroAmp = 0.3 + hash2(i * 4.8, i * 1.1) * 0.9
-      const radialBias = (hash2(i * 1.4, i * 7.3) - 0.5) * 2
-      const swirlPhase = hash2(i * 5.2, i * 9.9) * Math.PI * 2
+      const qrLag = this.#hash2(i * 6.7, i * 2.9) * 0.22
+      const heteroAmp = 0.3 + this.#hash2(i * 4.8, i * 1.1) * 0.9
+      const radialBias = (this.#hash2(i * 1.4, i * 7.3) - 0.5) * 2
+      const swirlPhase = this.#hash2(i * 5.2, i * 9.9) * Math.PI * 2
       this.particles.push({
-        x: base.x + (hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
-        y: base.y + (hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
+        x: base.x + (this.#hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
+        y: base.y + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
         vx: 0,
         vy: 0,
-        size: 0.82 + hash2(i * 3.1, i * 1.7) * 0.72,
+        size: 0.82 + this.#hash2(i * 3.1, i * 1.7) * 0.72,
         baseWeight: base.weight,
         ringAnchorIndex,
         heteroAmp,
@@ -482,7 +537,7 @@ export default class LogoCanvasEngine {
   }
 
   #sampleSignedNoise(i, t, kx, ky) {
-    return hash2(i * kx + t * 0.17, i * ky + t * 0.11) - 0.5
+    return this.#hash2(i * kx + t * 0.17, i * ky + t * 0.11) - 0.5
   }
 
   #easeInOutCubic(x) {
@@ -522,10 +577,10 @@ export default class LogoCanvasEngine {
     p.vx += nx * 0.0027 + diffX
     p.vy += ny * 0.0027 + diffY
 
-    const jumpGate = hash2(i * 9.7 + Math.floor(t * 4.1), i * 5.1 + Math.floor(t * 2.6))
+    const jumpGate = this.#hash2(i * 9.7 + Math.floor(t * 4.1), i * 5.1 + Math.floor(t * 2.6))
     if (jumpGate > 0.9955) {
-      const theta = hash2(i * 13.3 + t, i * 2.7 + t) * Math.PI * 2
-      const jumpAmp = 0.008 + hash2(i * 17.9, t * 2.2) * 0.016
+      const theta = this.#hash2(i * 13.3 + t, i * 2.7 + t) * Math.PI * 2
+      const jumpAmp = 0.008 + this.#hash2(i * 17.9, t * 2.2) * 0.016
       p.vx += Math.cos(theta) * jumpAmp
       p.vy += Math.sin(theta) * jumpAmp
     }
@@ -544,7 +599,7 @@ export default class LogoCanvasEngine {
 
     if (isOutOfView && this.ringTargets.length > 0) {
       if (p.respawnAt == null) {
-        const stagger = 0.12 + hash2(i * 15.3 + t, i * 8.1) * 0.72
+        const stagger = 0.12 + this.#hash2(i * 15.3 + t, i * 8.1) * 0.72
         p.respawnAt = t + stagger
       }
 
@@ -556,15 +611,15 @@ export default class LogoCanvasEngine {
 
       const rollA = (i + 1) * (p.respawnCount + 1) * 13.37
       const rollB = (p.respawnCount + 1) * 7.11 + t * 1.91
-      const ringIndex = Math.floor(hash2(rollA, rollB) * this.ringTargets.length)
+      const ringIndex = Math.floor(this.#hash2(rollA, rollB) * this.ringTargets.length)
       const ringSeed = this.ringTargets[Math.max(0, Math.min(this.ringTargets.length - 1, ringIndex))]
-      const jitterX = (hash2(i * 21.7 + p.respawnCount, i * 3.1 + t) - 0.5) * 0.012
-      const jitterY = (hash2(i * 5.9 + t, i * 19.3 + p.respawnCount) - 0.5) * 0.012
+      const jitterX = (this.#hash2(i * 21.7 + p.respawnCount, i * 3.1 + t) - 0.5) * 0.012
+      const jitterY = (this.#hash2(i * 5.9 + t, i * 19.3 + p.respawnCount) - 0.5) * 0.012
 
       p.x = ringSeed.x + jitterX
       p.y = ringSeed.y + jitterY
-      p.vx = (hash2(i * 11.7 + p.respawnCount, t * 0.9) - 0.5) * 0.0008
-      p.vy = (hash2(i * 4.3, t * 1.2 + p.respawnCount) - 0.5) * 0.0008
+      p.vx = (this.#hash2(i * 11.7 + p.respawnCount, t * 0.9) - 0.5) * 0.0008
+      p.vy = (this.#hash2(i * 4.3, t * 1.2 + p.respawnCount) - 0.5) * 0.0008
       p.respawnCount += 1
       p.respawnAt = null
     }
@@ -718,7 +773,7 @@ export default class LogoCanvasEngine {
         } else {
           if (mode === 'qr_build') {
             const localProgress = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
-            const theta = hash2(i * 12.1, i * 4.3) * Math.PI * 2 + t * 0.33
+            const theta = this.#hash2(i * 12.1, i * 4.3) * Math.PI * 2 + t * 0.33
             const peel = localProgress * 0.03
             target = {
               x: ringTarget.x + Math.cos(theta) * peel,
@@ -746,13 +801,13 @@ export default class LogoCanvasEngine {
         target = {
           x:
             p.x +
-            (hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.007 * (1 - pullBack) +
+            (this.#hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.007 * (1 - pullBack) +
             (ringTarget.x - p.x) * (0.11 - pullBack * 0.09) +
             nx * outward +
             tx * swirl,
           y:
             p.y +
-            (hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.007 * (1 - pullBack) +
+            (this.#hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.007 * (1 - pullBack) +
             (ringTarget.y - p.y) * (0.11 - pullBack * 0.09) +
             ny * outward +
             ty * swirl,
@@ -767,7 +822,7 @@ export default class LogoCanvasEngine {
         const ny = dy / radialLen
 
         const angle = Math.atan2(dy, dx)
-        const seed = hash2(i * 5.31, i * 1.97)
+        const seed = this.#hash2(i * 5.31, i * 1.97)
         const spreadStart = 0.014 + seed * 0.012
         const spreadEnd = 0.092 + seed * 0.083
         const spread = spreadStart + (spreadEnd - spreadStart) * this.#easeInOutCubic(entropyProgress)
@@ -822,7 +877,7 @@ export default class LogoCanvasEngine {
         // slightly more, creating a gentle lopsided melting feel
         const asymX = (p.x - this.ringCenterX) * 0.000052
         const asymY = (p.y - this.ringCenterY) * 0.000044
-        const seedNoise = (hash2(i * 3.7, i * 1.3) - 0.5) * 0.000022
+        const seedNoise = (this.#hash2(i * 3.7, i * 1.3) - 0.5) * 0.000022
         p.x += asymX + seedNoise
         p.y += asymY * 1.35
       }
