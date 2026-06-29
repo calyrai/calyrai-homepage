@@ -45,6 +45,9 @@ export default class LogoCanvasEngine {
     this.ringRadius = 0.285
     this.ringThickness = 0.048
 
+    this.constellations = []
+    this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + hash2(7.3, 2.1) * 5, duration: 2.8 }
+
     this.resize = this.resize.bind(this)
     this.render = this.render.bind(this)
     this.#resizeListenerAttached = false
@@ -52,6 +55,7 @@ export default class LogoCanvasEngine {
     this.#buildGridDots()
     this.#buildRingTargets()
     this.#buildQrTargets(config?.qrMatrix)
+    this.#buildConstellations()
     this.#initParticles()
 
     window.addEventListener('resize', this.resize)
@@ -201,6 +205,182 @@ export default class LogoCanvasEngine {
         y,
         weight: 0.84,
       })
+    }
+  }
+
+  #buildConstellations() {
+    this.constellations = []
+    if (!this.ringTargets.length) return
+
+    const ring = this.ringTargets
+    const cx = this.ringCenterX
+    const cy = this.ringCenterY
+
+    // Find ring point index closest to a given angle (degrees)
+    const byAngle = (angleDeg) => {
+      const a = angleDeg * Math.PI / 180
+      let best = 0
+      let bestDiff = Infinity
+      for (let i = 0; i < ring.length; i++) {
+        const pa = Math.atan2(ring[i].y - cy, ring[i].x - cx)
+        const diff = Math.abs(angleDiff(pa, a))
+        if (diff < bestDiff) { bestDiff = diff; best = i }
+      }
+      return best
+    }
+
+    // 6 constellation patterns defined by ring-angles (degrees) + connecting edges
+    const patterns = [
+      // Orion belt + shoulders
+      { angles: [-85, -60, -38, 28, 148], edges: [[0,1],[1,2],[0,3],[2,4],[3,4]] },
+      // Cassiopeia W
+      { angles: [168, 128, 90, 52, 12], edges: [[0,1],[1,2],[2,3],[3,4]] },
+      // Triangulum
+      { angles: [-90, 30, 150], edges: [[0,1],[1,2],[2,0]] },
+      // Southern Cross
+      { angles: [-90, 0, 90, 180, -45], edges: [[0,2],[1,3],[0,4]] },
+      // Dipper handle + bowl
+      { angles: [210, 230, 250, 270, 310, 330, 350], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]] },
+      // Diamond
+      { angles: [-90, 0, 90, 180], edges: [[0,1],[1,2],[2,3],[3,0],[0,2]] },
+    ]
+
+    for (const pat of patterns) {
+      const indices = pat.angles.map(a => byAngle(a))
+      this.constellations.push({ indices, edges: pat.edges })
+    }
+  }
+
+  #drawConstellations(ctx, t) {
+    const mode = this.state
+    if (mode !== 'idle' && mode !== 'active' && mode !== 'reassemble' && mode !== 'entropy' && mode !== 'dissolve') return
+    if (!this.constellations.length) return
+
+    const cycle = this.constellationCycle
+
+    // Trigger next constellation flash
+    if (t >= cycle.nextAt) {
+      const roll = hash2(Math.floor(t * 11.3), cycle.patternIndex + 1.7)
+      cycle.patternIndex = Math.floor(roll * this.constellations.length) % this.constellations.length
+      cycle.startT = t
+      cycle.nextAt = t + 8 + hash2(Math.floor(t * 7.1), 3.3) * 4
+    }
+
+    if (cycle.patternIndex < 0) return
+    const elapsed = t - cycle.startT
+    const { duration } = cycle
+    if (elapsed <= 0 || elapsed > duration) return
+
+    // Bell-curve alpha: fade-in 30%, hold 40%, fade-out 30%
+    const progress = elapsed / duration
+    let alpha
+    if (progress < 0.3) {
+      alpha = this.#easeInOutCubic(progress / 0.3)
+    } else if (progress < 0.7) {
+      alpha = 1.0
+    } else {
+      alpha = this.#easeInOutCubic(1 - (progress - 0.7) / 0.3)
+    }
+
+    const pat = this.constellations[cycle.patternIndex]
+    const ring = this.ringTargets
+    const cloudTransform = this.#getConstellationCloudTransform()
+    const mapPoint = (pt) => {
+      const dx = pt.x - this.ringCenterX
+      const dy = pt.y - this.ringCenterY
+      const x = this.ringCenterX + dx * cloudTransform.scaleX + dy * cloudTransform.shear
+      const y = this.ringCenterY + dy * cloudTransform.scaleY
+      return {
+        x: Math.max(0.02, Math.min(0.98, x)),
+        y: Math.max(0.02, Math.min(0.98, y)),
+      }
+    }
+
+    // Draw constellation edges as faint dashed lines
+    ctx.save()
+    ctx.strokeStyle = `rgba(180, 215, 255, ${(alpha * 0.42).toFixed(3)})`
+    ctx.lineWidth = 0.65
+    ctx.setLineDash([3, 5])
+    for (const [ai, bi] of pat.edges) {
+      const aRaw = ring[pat.indices[ai]]
+      const bRaw = ring[pat.indices[bi]]
+      if (!aRaw || !bRaw) continue
+      const a = mapPoint(aRaw)
+      const b = mapPoint(bRaw)
+      ctx.beginPath()
+      ctx.moveTo(a.x * this.width, a.y * this.height)
+      ctx.lineTo(b.x * this.width, b.y * this.height)
+      ctx.stroke()
+    }
+    ctx.setLineDash([])
+    ctx.restore()
+
+    // Draw star glows at constellation points
+    for (const idx of pat.indices) {
+      const raw = ring[idx]
+      if (!raw) continue
+      const pt = mapPoint(raw)
+      const px = pt.x * this.width
+      const py = pt.y * this.height
+
+      // Outer radial glow
+      const grd = ctx.createRadialGradient(px, py, 0.4, px, py, 5.8)
+      grd.addColorStop(0, `rgba(255, 248, 220, ${(alpha * 0.94).toFixed(3)})`)
+      grd.addColorStop(0.38, `rgba(200, 228, 255, ${(alpha * 0.52).toFixed(3)})`)
+      grd.addColorStop(1, 'rgba(160, 200, 255, 0)')
+      ctx.fillStyle = grd
+      ctx.beginPath()
+      ctx.arc(px, py, 5.8, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Bright core point
+      ctx.fillStyle = `rgba(255, 252, 238, ${(alpha * 0.97).toFixed(3)})`
+      ctx.beginPath()
+      ctx.arc(px, py, 1.9, 0, Math.PI * 2)
+      ctx.fill()
+    }
+  }
+
+  #getConstellationCloudTransform() {
+    if (!this.particles.length) {
+      return { scaleX: 1, scaleY: 1, shear: 0 }
+    }
+
+    let minX = Infinity
+    let maxX = -Infinity
+    let minY = Infinity
+    let maxY = -Infinity
+    let sumX = 0
+    let sumY = 0
+
+    for (let i = 0; i < this.particles.length; i += 1) {
+      const p = this.particles[i]
+      minX = Math.min(minX, p.x)
+      maxX = Math.max(maxX, p.x)
+      minY = Math.min(minY, p.y)
+      maxY = Math.max(maxY, p.y)
+      sumX += p.x
+      sumY += p.y
+    }
+
+    const cx = sumX / this.particles.length
+    const cy = sumY / this.particles.length
+    const spanX = Math.max(0.001, maxX - minX)
+    const spanY = Math.max(0.001, maxY - minY)
+
+    const baseSpanX = 0.82
+    const baseSpanY = 0.74
+    const sx = Math.max(0.92, Math.min(1.48, spanX / baseSpanX))
+    const sy = Math.max(0.9, Math.min(1.34, spanY / baseSpanY))
+
+    const centerDx = cx - this.ringCenterX
+    const centerDy = cy - this.ringCenterY
+    const shear = Math.max(-0.42, Math.min(0.42, centerDx * 0.95 + centerDy * 0.55))
+
+    return {
+      scaleX: sx,
+      scaleY: sy,
+      shear,
     }
   }
 
@@ -384,6 +564,7 @@ export default class LogoCanvasEngine {
 
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
+    this.#drawConstellations(ctx, t)
   }
 
   #drawRingBaseline(ctx, alpha = 0.22) {
@@ -538,17 +719,37 @@ export default class LogoCanvasEngine {
         }
       } else if (mode === 'entropy') {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.05)
+        const dx = ringTarget.x - this.ringCenterX
+        const dy = ringTarget.y - this.ringCenterY
+        const radialLen = Math.hypot(dx, dy) || 1
+        const nx = dx / radialLen
+        const ny = dy / radialLen
+
+        const angle = Math.atan2(dy, dx)
+        const seed = hash2(i * 5.31, i * 1.97)
+        const spread = 0.075 + seed * 0.06
+        const asym = 1 + Math.max(0, Math.cos(angle - 0.22)) * 0.42
+        const breathing = Math.sin(t * 0.42 + i * 0.013) * 0.006
+
+        // Keep the dissolving symbol coherent: outward expansion on stable vectors
+        // plus tiny time-coherent wobble instead of frame-random noise.
         target = {
-          x: p.x + (hash2(i * 1.9 + t * 0.2, i * 5.2) - 0.5) * 0.006,
-          y: p.y + (hash2(i * 2.2, i * 2.6 + t * 0.2) - 0.5) * 0.006,
+          x:
+            ringTarget.x +
+            nx * spread * asym +
+            Math.cos(angle * 2.1 + t * 0.53 + i * 0.007) * breathing,
+          y:
+            ringTarget.y +
+            ny * spread * asym +
+            Math.sin(angle * 1.7 + t * 0.49 + i * 0.009) * breathing,
         }
       } else {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.1)
         target = ringTarget
       }
 
-      const spring = mode === 'qr_build' ? 0.0102 : mode === 'qr_show' ? 0.0094 : mode === 'entropy' ? 0.0058 : 0.0108
-      const damping = mode === 'qr_show' ? 0.972 : mode === 'entropy' ? 0.988 : 0.968
+      const spring = mode === 'qr_build' ? 0.0102 : mode === 'qr_show' ? 0.0094 : mode === 'entropy' ? 0.0076 : 0.0108
+      const damping = mode === 'qr_show' ? 0.972 : mode === 'entropy' ? 0.981 : 0.968
 
       p.vx += (target.x - p.x) * spring
       p.vy += (target.y - p.y) * spring
@@ -561,6 +762,13 @@ export default class LogoCanvasEngine {
       if (mode === 'idle' || mode === 'active') {
         const drift = Math.sin(t * 0.26 + i * 0.009) * 0.00009
         p.x += drift
+        // Asymmetric positional bias — particles on the right/lower side drift outward
+        // slightly more, creating a gentle lopsided melting feel
+        const asymX = (p.x - this.ringCenterX) * 0.000052
+        const asymY = (p.y - this.ringCenterY) * 0.000044
+        const seedNoise = (hash2(i * 3.7, i * 1.3) - 0.5) * 0.000022
+        p.x += asymX + seedNoise
+        p.y += asymY * 1.35
       }
     }
   }
