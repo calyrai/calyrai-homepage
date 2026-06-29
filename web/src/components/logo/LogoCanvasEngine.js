@@ -424,6 +424,12 @@ export default class LogoCanvasEngine {
     const qrCount = this.qrTargets.length
     const count = Math.max(ringCount, qrCount)
 
+    const clusterCount = Math.max(5, Math.min(10, Math.floor(Math.sqrt(Math.max(1, ringCount)) * 0.7)))
+    const clusterCenters = Array.from({ length: clusterCount }, (_, idx) => {
+      const roll = hash2(idx * 11.3, 0.73)
+      return Math.floor(roll * Math.max(1, ringCount)) % Math.max(1, ringCount)
+    })
+
     const particleOrder = Array.from({ length: count }, (_, idx) => idx).sort(
       (a, b) => hash2(a * 3.17, a * 9.31) - hash2(b * 3.17, b * 9.31)
     )
@@ -439,9 +445,22 @@ export default class LogoCanvasEngine {
     }
 
     for (let i = 0; i < count; i += 1) {
-      const base = this.ringTargets[i % ringCount]
+      const uniformIndex = i % ringCount
+      const clusterId = Math.floor(hash2(i * 4.1, i * 1.9) * clusterCount) % clusterCount
+      const clusterCenter = clusterCenters[clusterId]
+      const clusterSpan = Math.floor(8 + hash2(i * 9.4, i * 2.6) * 24)
+      const clusterOffset = Math.floor((hash2(i * 7.7, i * 3.3) - 0.5) * clusterSpan)
+      const clusterIndex = (clusterCenter + clusterOffset + ringCount) % ringCount
+      const clusterMix = 0.24 + hash2(i * 2.1, i * 8.8) * 0.66
+      const mixedIndex = Math.round(uniformIndex * (1 - clusterMix) + clusterIndex * clusterMix)
+      const ringAnchorIndex = ((mixedIndex % ringCount) + ringCount) % ringCount
+
+      const base = this.ringTargets[ringAnchorIndex]
       const qrTargetIndex = qrAssignments[i]
       const qrLag = hash2(i * 6.7, i * 2.9) * 0.22
+      const heteroAmp = 0.3 + hash2(i * 4.8, i * 1.1) * 0.9
+      const radialBias = (hash2(i * 1.4, i * 7.3) - 0.5) * 2
+      const swirlPhase = hash2(i * 5.2, i * 9.9) * Math.PI * 2
       this.particles.push({
         x: base.x + (hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
         y: base.y + (hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
@@ -449,6 +468,10 @@ export default class LogoCanvasEngine {
         vy: 0,
         size: 0.82 + hash2(i * 3.1, i * 1.7) * 0.72,
         baseWeight: base.weight,
+        ringAnchorIndex,
+        heteroAmp,
+        radialBias,
+        swirlPhase,
         qrTargetIndex,
         qrLag,
         qrBlend: 0,
@@ -669,7 +692,8 @@ export default class LogoCanvasEngine {
 
     for (let i = 0; i < this.particles.length; i += 1) {
       const p = this.particles[i]
-      const ringTarget = ring[i % ring.length]
+      const ringIndex = p.ringAnchorIndex == null ? i % ring.length : p.ringAnchorIndex % ring.length
+      const ringTarget = ring[ringIndex]
 
       let target
       const isQrMode = mode === 'qr_build' || mode === 'qr_show'
@@ -709,16 +733,33 @@ export default class LogoCanvasEngine {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.08)
         const dissolveProgress = this.#stateProgress('dissolve', 3200)
         const pullBack = this.#easeInOutCubic(dissolveProgress)
+        const dx = ringTarget.x - this.ringCenterX
+        const dy = ringTarget.y - this.ringCenterY
+        const radialLen = Math.hypot(dx, dy) || 1
+        const nx = dx / radialLen
+        const ny = dy / radialLen
+        const tx = -ny
+        const ty = nx
+        const hetero = p.heteroAmp || 0.5
+        const outward = (0.004 + hetero * 0.013) * pullBack
+        const swirl = Math.sin(t * 0.62 + (p.swirlPhase || 0)) * (0.0018 + hetero * 0.0016)
         target = {
           x:
-            p.x + (hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.012 * (1 - pullBack) +
-            (ringTarget.x - p.x) * (0.08 + pullBack * 0.22),
+            p.x +
+            (hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.007 * (1 - pullBack) +
+            (ringTarget.x - p.x) * (0.11 - pullBack * 0.09) +
+            nx * outward +
+            tx * swirl,
           y:
-            p.y + (hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.012 * (1 - pullBack) +
-            (ringTarget.y - p.y) * (0.08 + pullBack * 0.22),
+            p.y +
+            (hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.007 * (1 - pullBack) +
+            (ringTarget.y - p.y) * (0.11 - pullBack * 0.09) +
+            ny * outward +
+            ty * swirl,
         }
       } else if (mode === 'entropy') {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.05)
+        const entropyProgress = this.#stateProgress('entropy', 7000)
         const dx = ringTarget.x - this.ringCenterX
         const dy = ringTarget.y - this.ringCenterY
         const radialLen = Math.hypot(dx, dy) || 1
@@ -727,7 +768,9 @@ export default class LogoCanvasEngine {
 
         const angle = Math.atan2(dy, dx)
         const seed = hash2(i * 5.31, i * 1.97)
-        const spread = 0.075 + seed * 0.06
+        const spreadStart = 0.014 + seed * 0.012
+        const spreadEnd = 0.092 + seed * 0.083
+        const spread = spreadStart + (spreadEnd - spreadStart) * this.#easeInOutCubic(entropyProgress)
         const asym = 1 + Math.max(0, Math.cos(angle - 0.22)) * 0.42
         const breathing = Math.sin(t * 0.42 + i * 0.013) * 0.006
 
@@ -745,7 +788,20 @@ export default class LogoCanvasEngine {
         }
       } else {
         p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.1)
-        target = ringTarget
+        const dx = ringTarget.x - this.ringCenterX
+        const dy = ringTarget.y - this.ringCenterY
+        const radialLen = Math.hypot(dx, dy) || 1
+        const nx = dx / radialLen
+        const ny = dy / radialLen
+        const tx = -ny
+        const ty = nx
+        const hetero = p.heteroAmp || 0.5
+        const radialOffset = (p.radialBias || 0) * (mode === 'reassemble' ? 0.0028 : 0.0068)
+        const tangentialOffset = Math.sin(t * 0.29 + (p.swirlPhase || 0)) * (mode === 'reassemble' ? 0.0013 : 0.0037) * hetero
+        target = {
+          x: ringTarget.x + nx * radialOffset + tx * tangentialOffset,
+          y: ringTarget.y + ny * radialOffset + ty * tangentialOffset,
+        }
       }
 
       const spring = mode === 'qr_build' ? 0.0102 : mode === 'qr_show' ? 0.0094 : mode === 'entropy' ? 0.0076 : 0.0108
