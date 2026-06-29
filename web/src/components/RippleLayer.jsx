@@ -25,35 +25,10 @@ export default function RippleLayer() {
 
       const now = performance.now()
 
-      for (const ripple of ripples) {
-        const age = now - ripple.startTime
-        const progress = Math.min(1, age / ripple.duration)
-
-        // Expanding circle
-        const maxRadius = Math.hypot(canvas.width, canvas.height)
-        const radius = progress * maxRadius
-
-        // Glow/fade effect
-        const alpha = Math.max(0, 1 - progress)
-
-        // Cyan to magenta gradient in the ring
-        const innerRadius = Math.max(0, radius - 12)
-        const outerRadius = Math.max(innerRadius + 1, radius + 12)
-        const glow = ctx.createRadialGradient(ripple.x, ripple.y, innerRadius, ripple.x, ripple.y, outerRadius)
-        glow.addColorStop(0, `rgba(0, 222, 255, ${alpha * 0.6})`)
-        glow.addColorStop(0.5, `rgba(255, 45, 212, ${alpha * 0.8})`)
-        glow.addColorStop(1, `rgba(0, 222, 255, ${alpha * 0.4})`)
-
-        ctx.fillStyle = glow
-        ctx.beginPath()
-        ctx.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2)
-        ctx.fill()
-
-        // Inner bright line
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.5})`
-        ctx.lineWidth = 1.5
-        ctx.stroke()
-      }
+      // Magenta ripple circles are intentionally disabled.
+      // Keep canvas clear so no large ring overlay can appear.
+      void now
+      void ripples
 
       rafId = requestAnimationFrame(render)
     }

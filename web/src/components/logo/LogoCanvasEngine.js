@@ -633,11 +633,6 @@ export default class LogoCanvasEngine {
 
     this.#drawBackgroundRaster(ctx, t)
 
-    if (this.state === 'qr_show') {
-      this.#drawExactQr(ctx)
-      return
-    }
-
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
     this.#drawConstellations(ctx, t)
@@ -742,143 +737,57 @@ export default class LogoCanvasEngine {
     const ring = this.ringTargets
     const hasQr = this.qrTargets.length > 0
     const qrBuildProgress = this.#stateProgress('qr_build', 2600)
+    if (!ring.length) return
 
     for (let i = 0; i < this.particles.length; i += 1) {
       const p = this.particles[i]
       const ringIndex = p.ringAnchorIndex == null ? i % ring.length : p.ringAnchorIndex % ring.length
       const ringTarget = ring[ringIndex]
 
-      let target
+      const dx = ringTarget.x - this.ringCenterX
+      const dy = ringTarget.y - this.ringCenterY
+      const radialLen = Math.hypot(dx, dy) || 1
+      const nx = dx / radialLen
+      const ny = dy / radialLen
+      const tx = -ny
+      const ty = nx
+
+      // Very subtle motion around each anchor point to keep the ring alive.
+      const hetero = p.heteroAmp || 0.5
+      const phase = (p.swirlPhase || 0) + t * 0.24 + i * 0.002
+      const radialOffset = Math.sin(phase * 0.93) * (0.00045 + hetero * 0.00035)
+      const tangentialOffset = Math.cos(phase * 0.77) * (0.0009 + hetero * 0.0007)
+
+      const ringWanderX = ringTarget.x + nx * radialOffset + tx * tangentialOffset
+      const ringWanderY = ringTarget.y + ny * radialOffset + ty * tangentialOffset
       const isQrMode = mode === 'qr_build' || mode === 'qr_show'
+      const isQrParticle = hasQr && p.qrTargetIndex >= 0 && p.qrTargetIndex < this.qrTargets.length
 
-      if (isQrMode) {
-        if (hasQr && p.qrTargetIndex >= 0) {
-          const qrTarget = this.qrTargets[p.qrTargetIndex]
-          if (mode === 'qr_build') {
-            const localProgress = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
-            p.qrBlend = this.#advanceBlend(p.qrBlend, localProgress, 0.12)
-            target = {
-              x: ringTarget.x * (1 - p.qrBlend) + qrTarget.x * p.qrBlend,
-              y: ringTarget.y * (1 - p.qrBlend) + qrTarget.y * p.qrBlend,
-            }
-          } else {
-            p.qrBlend = this.#advanceBlend(p.qrBlend, 1, 0.06)
-            target = {
-              x: ringTarget.x * (1 - p.qrBlend) + qrTarget.x * p.qrBlend,
-              y: ringTarget.y * (1 - p.qrBlend) + qrTarget.y * p.qrBlend,
-            }
-          }
-        } else {
-          if (mode === 'qr_build') {
-            const localProgress = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
-            const theta = this.#hash2(i * 12.1, i * 4.3) * Math.PI * 2 + t * 0.33
-            const peel = localProgress * 0.03
-            target = {
-              x: ringTarget.x + Math.cos(theta) * peel,
-              y: ringTarget.y + Math.sin(theta) * peel,
-            }
-          } else {
-            this.#applyJumpDiffusionDrift(p, i, t)
-            continue
-          }
-        }
-      } else if (mode === 'dissolve') {
-        p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.08)
-        const dissolveProgress = this.#stateProgress('dissolve', 3200)
-        const pullBack = this.#easeInOutCubic(dissolveProgress)
-        const dx = ringTarget.x - this.ringCenterX
-        const dy = ringTarget.y - this.ringCenterY
-        const radialLen = Math.hypot(dx, dy) || 1
-        const nx = dx / radialLen
-        const ny = dy / radialLen
-        const tx = -ny
-        const ty = nx
-        const hetero = p.heteroAmp || 0.5
-        const outward = (0.004 + hetero * 0.013) * pullBack
-        const swirl = Math.sin(t * 0.62 + (p.swirlPhase || 0)) * (0.0018 + hetero * 0.0016)
-        target = {
-          x:
-            p.x +
-            (this.#hash2(i * 4.9 + t, i * 1.9) - 0.5) * 0.007 * (1 - pullBack) +
-            (ringTarget.x - p.x) * (0.11 - pullBack * 0.09) +
-            nx * outward +
-            tx * swirl,
-          y:
-            p.y +
-            (this.#hash2(i * 2.4, i * 7.1 + t) - 0.5) * 0.007 * (1 - pullBack) +
-            (ringTarget.y - p.y) * (0.11 - pullBack * 0.09) +
-            ny * outward +
-            ty * swirl,
-        }
-      } else if (mode === 'entropy') {
-        p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.05)
-        const entropyProgress = this.#stateProgress('entropy', 7000)
-        const dx = ringTarget.x - this.ringCenterX
-        const dy = ringTarget.y - this.ringCenterY
-        const radialLen = Math.hypot(dx, dy) || 1
-        const nx = dx / radialLen
-        const ny = dy / radialLen
+      let targetX = ringWanderX
+      let targetY = ringWanderY
 
-        const angle = Math.atan2(dy, dx)
-        const seed = this.#hash2(i * 5.31, i * 1.97)
-        const spreadStart = 0.014 + seed * 0.012
-        const spreadEnd = 0.092 + seed * 0.083
-        const spread = spreadStart + (spreadEnd - spreadStart) * this.#easeInOutCubic(entropyProgress)
-        const asym = 1 + Math.max(0, Math.cos(angle - 0.22)) * 0.42
-        const breathing = Math.sin(t * 0.42 + i * 0.013) * 0.006
-
-        // Keep the dissolving symbol coherent: outward expansion on stable vectors
-        // plus tiny time-coherent wobble instead of frame-random noise.
-        target = {
-          x:
-            ringTarget.x +
-            nx * spread * asym +
-            Math.cos(angle * 2.1 + t * 0.53 + i * 0.007) * breathing,
-          y:
-            ringTarget.y +
-            ny * spread * asym +
-            Math.sin(angle * 1.7 + t * 0.49 + i * 0.009) * breathing,
-        }
-      } else {
-        p.qrBlend = this.#advanceBlend(p.qrBlend, 0, 0.1)
-        const dx = ringTarget.x - this.ringCenterX
-        const dy = ringTarget.y - this.ringCenterY
-        const radialLen = Math.hypot(dx, dy) || 1
-        const nx = dx / radialLen
-        const ny = dy / radialLen
-        const tx = -ny
-        const ty = nx
-        const hetero = p.heteroAmp || 0.5
-        const radialOffset = (p.radialBias || 0) * (mode === 'reassemble' ? 0.0028 : 0.0068)
-        const tangentialOffset = Math.sin(t * 0.29 + (p.swirlPhase || 0)) * (mode === 'reassemble' ? 0.0013 : 0.0037) * hetero
-        target = {
-          x: ringTarget.x + nx * radialOffset + tx * tangentialOffset,
-          y: ringTarget.y + ny * radialOffset + ty * tangentialOffset,
-        }
+      let desiredQrBlend = 0
+      if (isQrMode && isQrParticle) {
+        desiredQrBlend = mode === 'qr_build'
+          ? this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
+          : 1
       }
 
-      const spring = mode === 'qr_build' ? 0.0102 : mode === 'qr_show' ? 0.0094 : mode === 'entropy' ? 0.0076 : 0.0108
-      const damping = mode === 'qr_show' ? 0.972 : mode === 'entropy' ? 0.981 : 0.968
+      // One shared blend path in both directions avoids any hard switch.
+      p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, mode === 'qr_show' ? 0.1 : 0.075)
 
-      p.vx += (target.x - p.x) * spring
-      p.vy += (target.y - p.y) * spring
-      p.vx *= damping
-      p.vy *= damping
-
-      p.x += p.vx
-      p.y += p.vy
-
-      if (mode === 'idle' || mode === 'active') {
-        const drift = Math.sin(t * 0.26 + i * 0.009) * 0.00009
-        p.x += drift
-        // Asymmetric positional bias — particles on the right/lower side drift outward
-        // slightly more, creating a gentle lopsided melting feel
-        const asymX = (p.x - this.ringCenterX) * 0.000052
-        const asymY = (p.y - this.ringCenterY) * 0.000044
-        const seedNoise = (this.#hash2(i * 3.7, i * 1.3) - 0.5) * 0.000022
-        p.x += asymX + seedNoise
-        p.y += asymY * 1.35
+      if (isQrParticle) {
+        const qrTarget = this.qrTargets[p.qrTargetIndex]
+        targetX = ringWanderX * (1 - p.qrBlend) + qrTarget.x * p.qrBlend
+        targetY = ringWanderY * (1 - p.qrBlend) + qrTarget.y * p.qrBlend
       }
+
+      // Smooth pull without spring oscillation.
+      const follow = isQrMode ? (mode === 'qr_show' ? 0.2 : 0.16) : 0.12
+      p.x += (targetX - p.x) * follow
+      p.y += (targetY - p.y) * follow
+      p.vx = 0
+      p.vy = 0
     }
   }
 
@@ -895,7 +804,7 @@ export default class LogoCanvasEngine {
 
       const pulse = energized ? 0.52 + (Math.sin(t * 3.2 + i * 0.17) + 1) * 0.2 : 0.5
       let alpha = this.state === 'entropy' ? 0.26 : pulse * (0.72 + p.baseWeight * 0.46)
-      const isQrParticle = qrMode && p.qrTargetIndex >= 0
+      const isQrParticle = p.qrTargetIndex >= 0 && (qrMode || (p.qrBlend || 0) > 0.02)
       const size = this.state === 'qr_show' && isQrParticle ? 1.14 : p.size
 
       if (qrMode && !isQrParticle) {
@@ -903,34 +812,37 @@ export default class LogoCanvasEngine {
       }
 
       if (isQrParticle) {
-        const reveal = qrMode ? Math.max(0, Math.min(1, p.qrBlend || 0)) : 0
+        const reveal = Math.max(0, Math.min(1, p.qrBlend || 0))
+        const sizeJitter = 0.88 + this.#hash2(i * 9.17, i * 3.71) * 0.32
 
         if (this.state === 'qr_show' && p.qrTargetIndex >= 0) {
-          // Lock final QR to canonical grid so modules stay distinct and scan-friendly.
+          // Final QR: keep particles circular (no squares) with subtle size diversity.
           const q = this.qrTargets[p.qrTargetIndex]
           const qx = q.x * this.width
           const qy = q.y * this.height
-          const side = Math.max(1.4, qrPx * 0.76)
-          const half = side * 0.5
-          const sx = Math.round(qx - half)
-          const sy = Math.round(qy - half)
+          const radius = Math.max(0.92, qrPx * 0.37 * sizeJitter)
 
-          ctx.fillStyle = 'rgba(255,255,255,1)'
-          ctx.fillRect(sx, sy, Math.round(side), Math.round(side))
+          ctx.fillStyle = 'rgba(255,255,255,0.98)'
+          ctx.beginPath()
+          ctx.arc(qx, qy, radius, 0, Math.PI * 2)
+          ctx.fill()
           continue
         }
 
-        const side = Math.max(1.5, qrPx * (0.72 + reveal * 0.16))
-        const half = side * 0.5
+        const radius = Math.max(0.9, qrPx * (0.34 + reveal * 0.09) * sizeJitter)
         const shadowOffset = 0.55
         const shadowAlpha = 0.08 + reveal * 0.12
 
         ctx.fillStyle = `rgba(0, 0, 0, ${shadowAlpha.toFixed(3)})`
-        ctx.fillRect(px - half + shadowOffset, py - half + shadowOffset, side, side)
+        ctx.beginPath()
+        ctx.arc(px + shadowOffset, py + shadowOffset, radius, 0, Math.PI * 2)
+        ctx.fill()
 
         const qrAlpha = Math.min(1, 0.82 + reveal * 0.18)
         ctx.fillStyle = `rgba(255,255,255,${qrAlpha.toFixed(3)})`
-        ctx.fillRect(px - half, py - half, side, side)
+        ctx.beginPath()
+        ctx.arc(px, py, radius, 0, Math.PI * 2)
+        ctx.fill()
         continue
       }
 
