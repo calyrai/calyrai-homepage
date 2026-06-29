@@ -332,11 +332,10 @@ export default class LogoCanvasEngine {
       return { ai, bi, fromA, depth, order }
     }).sort((a, b) => a.order - b.order)
 
-    // Draw constellation edges as faint dashed lines growing outward from root.
+    // Draw constellation edges as solid lines growing outward from root.
     ctx.save()
-    ctx.strokeStyle = `rgba(180, 215, 255, ${(alpha * 0.42).toFixed(3)})`
+    ctx.strokeStyle = `rgba(255, 255, 255, ${(alpha * 0.52).toFixed(3)})`
     ctx.lineWidth = 0.65
-    ctx.setLineDash([3, 5])
     const growPhase = this.#easeInOutCubic(Math.max(0, Math.min(1, progress / 0.72)))
     const depthSteps = Math.max(1, maxDist + 1)
     const stepWidth = 0.95 / depthSteps
@@ -361,7 +360,6 @@ export default class LogoCanvasEngine {
       ctx.lineTo(ex * this.width, ey * this.height)
       ctx.stroke()
     }
-    ctx.setLineDash([])
     ctx.restore()
 
     // Draw star glows at constellation points

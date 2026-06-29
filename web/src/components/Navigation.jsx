@@ -68,7 +68,7 @@ export default function Navigation({ theme, ast }) {
                   className="nav-link"
                   onClick={handleNavClick}
                   style={{
-                    color: theme?.colors?.primary || '#0A2E45',
+                    color: '#FFFFFF',
                   }}
                 >
                   {item.label}
