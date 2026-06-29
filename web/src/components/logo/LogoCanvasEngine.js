@@ -755,8 +755,8 @@ export default class LogoCanvasEngine {
       // Very subtle motion around each anchor point to keep the ring alive.
       const hetero = p.heteroAmp || 0.5
       const phase = (p.swirlPhase || 0) + t * 0.24 + i * 0.002
-      const radialOffset = Math.sin(phase * 0.93) * (0.00045 + hetero * 0.00035)
-      const tangentialOffset = Math.cos(phase * 0.77) * (0.0009 + hetero * 0.0007)
+      const radialOffset = Math.sin(phase * 0.93) * (0.00062 + hetero * 0.00046)
+      const tangentialOffset = Math.cos(phase * 0.77) * (0.0012 + hetero * 0.00088)
 
       const ringWanderX = ringTarget.x + nx * radialOffset + tx * tangentialOffset
       const ringWanderY = ringTarget.y + ny * radialOffset + ty * tangentialOffset
@@ -802,10 +802,10 @@ export default class LogoCanvasEngine {
       const px = p.x * this.width
       const py = p.y * this.height
 
-      const pulse = energized ? 0.52 + (Math.sin(t * 3.2 + i * 0.17) + 1) * 0.2 : 0.5
+      const pulse = energized ? 0.52 + (Math.sin(t * 3.2 + i * 0.17) + 1) * 0.2 : 0.54
       let alpha = this.state === 'entropy' ? 0.26 : pulse * (0.72 + p.baseWeight * 0.46)
       const isQrParticle = p.qrTargetIndex >= 0 && (qrMode || (p.qrBlend || 0) > 0.02)
-      const size = this.state === 'qr_show' && isQrParticle ? 1.14 : p.size
+      let size = this.state === 'qr_show' && isQrParticle ? 1.14 : p.size
 
       if (qrMode && !isQrParticle) {
         alpha *= this.state === 'qr_build' ? 0.2 : 0.02
@@ -845,6 +845,16 @@ export default class LogoCanvasEngine {
         ctx.fill()
         continue
       }
+
+      // Crystalline twinkle for logo points: smooth shimmer + occasional tiny glints.
+      const sparkleSeed = this.#hash2(i * 1.91, i * 7.31)
+      const shimmer = 0.5 + 0.5 * Math.sin(t * (2.0 + sparkleSeed * 1.9) + sparkleSeed * Math.PI * 2)
+      const glint = Math.pow(
+        Math.max(0, Math.sin(t * (6.3 + sparkleSeed * 3.1) + sparkleSeed * 13.0)),
+        14
+      )
+      alpha *= 0.78 + shimmer * 0.32 + glint * 0.34
+      size *= 0.9 + shimmer * 0.2 + glint * 0.12
 
       ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha).toFixed(3)})`
       ctx.beginPath()
