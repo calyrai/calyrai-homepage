@@ -1968,7 +1968,7 @@ button:active {
 
 .calyr-logo-lockup {
   min-height: auto;
-  width: 72%;
+  width: 86%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1980,7 +1980,7 @@ button:active {
 
 .calyr-logo-label {
   margin-top: 0;
-  font-size: clamp(3.4rem, 6.8vw, 5.9rem);
+  font-size: clamp(4.2rem, 8.4vw, 7.2rem);
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.02em;
@@ -1992,7 +1992,7 @@ button:active {
 .calyr-logo-tagline {
   margin: 0;
   max-width: 24ch;
-  font-size: clamp(1.15rem, 2.15vw, 1.55rem);
+  font-size: clamp(1.32rem, 2.45vw, 1.9rem);
   font-weight: 500;
   line-height: 1.2;
   color: rgba(245, 245, 245, 0.94);
@@ -2028,7 +2028,7 @@ button:active {
 
   .calyr-logo-lockup {
     min-height: auto;
-    width: 72%;
+    width: 86%;
     align-items: flex-start;
     align-self: center;
     gap: 6px;
@@ -2037,7 +2037,7 @@ button:active {
 
   .calyr-logo-label {
     margin-top: 0;
-    font-size: clamp(2.35rem, 10.8vw, 3.7rem);
+    font-size: clamp(2.9rem, 13vw, 4.6rem);
     text-align: left;
   }
 
