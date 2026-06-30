@@ -41,7 +41,7 @@
   },
   "qr": {
     "mode": "vcard",
-    "text": "BEGIN:VCARD\nVERSION:3.0\nFN:Rupert Tscheliessnig\nTITLE:PhD, MBA\nTEL:+4369919200915\nEND:VCARD",
+    "text": "BEGIN:VCARD\nVERSION:3.0\nFN:Rupert Tscheliessnig\nTITLE:Founder\nORG:CALYR.ai\nURL:https://calyr.ai\nTEL:+4369919200915\nEND:VCARD",
     "targetSizePx": 256
   },
   "particle": {
