@@ -28,7 +28,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       return {
         size,
         modules,
-        normSize: 0.58,
+        normSize: 0.5,
       }
     } catch (error) {
       console.error('Failed to build QR matrix for logo interaction:', error)
