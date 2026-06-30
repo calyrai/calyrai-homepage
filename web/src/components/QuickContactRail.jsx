@@ -7,6 +7,7 @@ const RAIL_EDGE_GUTTER_PX = 8
 
 export default function QuickContactRail({ page, variant = 'floating' }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isInlineOpen, setIsInlineOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [topPx, setTopPx] = useState(null)
   const [leftPx, setLeftPx] = useState(null)
@@ -34,7 +35,22 @@ export default function QuickContactRail({ page, variant = 'floating' }) {
     const tabLabel = page.title || page.id || 'contact'
     return (
       <section className="quick-contact-inline" aria-label={tabLabel}>
-        <div className="quick-contact-inline-links">
+        <div className="quick-contact-inline-shell">
+          <button
+            type="button"
+            className={`quick-contact-inline-toggle ${isInlineOpen ? 'open' : ''}`.trim()}
+            onClick={() => setIsInlineOpen((prev) => !prev)}
+            aria-expanded={isInlineOpen}
+            aria-controls="quick-contact-inline-links"
+            aria-label={tabLabel}
+            title={tabLabel}
+          >
+            <span aria-hidden="true">{tabLabel}</span>
+          </button>
+        <div
+          id="quick-contact-inline-links"
+          className={`quick-contact-inline-links ${isInlineOpen ? 'open' : ''}`.trim()}
+        >
           <button
             type="button"
             className="quick-contact-link quick-contact-link--qr"
@@ -57,6 +73,7 @@ export default function QuickContactRail({ page, variant = 'floating' }) {
               <span className="quick-contact-icon" aria-hidden="true">{LinkItemService.getContactSymbol(item) || '@'}</span>
             </a>
           ))}
+        </div>
         </div>
       </section>
     )
