@@ -2,7 +2,9 @@ export default class LogoStateMachine {
   constructor(config, onTransition) {
     this.config = config
     this.onTransition = onTransition
-    this.state = 'idle'
+    const initialState = config?.interaction?.initialState
+    const allowedInitialStates = new Set(['idle', 'active', 'qr_build', 'qr_show', 'dissolve', 'entropy', 'reassemble'])
+    this.state = allowedInitialStates.has(initialState) ? initialState : 'idle'
     this.timers = new Set()
     this.destroyed = false
     this.#emit(this.state)
@@ -90,17 +92,27 @@ export default class LogoStateMachine {
     ['qr_build',   'qr_show',    'qr_build',   2600],
     ['qr_show',    'dissolve',   'qr_show',    12000],
     ['dissolve',   'reassemble', 'dissolve',   3200],
-    ['reassemble', 'idle',       'reassemble', 3600],
+    // Keep QR as the home state: every cycle reforms into QR again.
+    ['reassemble', 'qr_build',   'reassemble', 3600],
   ]
 
   #scheduleByState(state) {
     const states = this.config?.states || {}
     const interaction = this.config?.interaction || {}
 
+    if (state === 'qr_show' && interaction.holdQrOnStart) {
+      return
+    }
+
     const entry = LogoStateMachine.#SCHEDULE.find(([from]) => from === state)
     if (entry) {
       const [, nextState, durationKey, fallback] = entry
       this.#setTimer(states[durationKey]?.durationMs || fallback, () => this.transitionTo(nextState))
+      return
+    }
+
+    if (state === 'idle' && interaction.idleCycleToQrMs) {
+      this.#setTimer(interaction.idleCycleToQrMs, () => this.transitionTo('qr_build'))
       return
     }
 

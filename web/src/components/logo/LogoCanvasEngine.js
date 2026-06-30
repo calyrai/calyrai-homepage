@@ -26,7 +26,7 @@ export default class LogoCanvasEngine {
     this.ctx = canvas.getContext('2d')
     this.config = config
 
-    this.state = 'idle'
+    this.state = config?.interaction?.initialState || 'idle'
     this.rafId = null
     this.startTime = performance.now()
     this.stateSinceTs = performance.now()
@@ -522,7 +522,12 @@ export default class LogoCanvasEngine {
     this.particles = []
     const ringCount = this.ringTargets.length
     const qrCount = this.qrTargets.length
-    const count = Math.max(ringCount, qrCount)
+    const configuredCount = Number(this.config?.particle?.countExact)
+    const baseCount = Number.isFinite(configuredCount) && configuredCount > 0
+      ? Math.floor(configuredCount)
+      : Math.max(ringCount, qrCount)
+    const count = Math.max(baseCount, qrCount)
+    const startsInQr = this.state === 'qr_show'
     const ringRadiusStats = this.ringTargets.reduce((stats, point) => {
       const radius = Math.hypot(point.x - this.ringCenterX, point.y - this.ringCenterY)
       return {
@@ -539,10 +544,12 @@ export default class LogoCanvasEngine {
     )
     const qrAssignments = new Array(count).fill(-1)
 
-    const assignCount = Math.min(qrCount, count)
-    for (let n = 0; n < assignCount; n += 1) {
-      const particleIdx = particleOrder[n]
-      qrAssignments[particleIdx] = qrOrder[n]
+    // Link every particle to a QR anchor so transitions are continuous.
+    if (qrCount > 0) {
+      for (let n = 0; n < count; n += 1) {
+        const particleIdx = particleOrder[n]
+        qrAssignments[particleIdx] = qrOrder[n % qrCount]
+      }
     }
 
     for (let i = 0; i < count; i += 1) {
@@ -561,9 +568,17 @@ export default class LogoCanvasEngine {
       const armSign = this.#hash2(i * 6.9, i * 2.8) > 0.5 ? 1 : -1
       const armPhase = this.#hash2(i * 8.3, i * 2.2) * Math.PI * 2
       const armDrift = 0.76 + this.#hash2(i * 6.1, i * 7.9) * 0.74
+      const initialQrBlend = startsInQr && qrTargetIndex >= 0 ? 1 : 0
+      const initialQrTarget = qrTargetIndex >= 0 ? this.qrTargets[qrTargetIndex] : null
+      const initialX = initialQrTarget
+        ? base.x * (1 - initialQrBlend) + initialQrTarget.x * initialQrBlend
+        : base.x
+      const initialY = initialQrTarget
+        ? base.y * (1 - initialQrBlend) + initialQrTarget.y * initialQrBlend
+        : base.y
       this.particles.push({
-        x: base.x + (this.#hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
-        y: base.y + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
+        x: initialX + (this.#hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
+        y: initialY + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
         vx: 0,
         vy: 0,
         size: 0.66 + this.#hash2(i * 3.1, i * 1.7) * 1.08,
@@ -577,7 +592,7 @@ export default class LogoCanvasEngine {
         swirlPhase,
         qrTargetIndex,
         qrLag,
-        qrBlend: 0,
+        qrBlend: initialQrBlend,
         respawnAt: null,
         respawnCount: 0,
       })
@@ -686,11 +701,6 @@ export default class LogoCanvasEngine {
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
 
-    if (this.state === 'qr_show') {
-      const lock = this.#easeInOutCubic(this.#stateProgress('qr_show', 900))
-      this.#drawExactQr(ctx, 0.62 + lock * 0.38)
-    }
-
     this.#drawConstellations(ctx, t)
   }
 
@@ -746,50 +756,6 @@ export default class LogoCanvasEngine {
       ctx.arc(px, py, r, 0, Math.PI * 2)
       ctx.fill()
     }
-    ctx.restore()
-  }
-
-  #drawExactQr(ctx, alpha = 1) {
-    if (!this.qrLayout || !Array.isArray(this.qrLayout.modules)) {
-      return
-    }
-
-    const { size, modules, left, top, moduleSizeX, moduleSizeY } = this.qrLayout
-    const x0 = left * this.width
-    const y0 = top * this.height
-    const qrW = size * moduleSizeX * this.width
-    const qrH = size * moduleSizeY * this.height
-    const marginX = moduleSizeX * this.width
-    const marginY = moduleSizeY * this.height
-
-    ctx.save()
-
-    // Quiet zone: suppress raster under and around the code to improve camera decoding.
-    ctx.fillStyle = `rgba(0,0,0,${(0.72 * alpha).toFixed(3)})`
-    ctx.fillRect(x0 - marginX, y0 - marginY, qrW + marginX * 2, qrH + marginY * 2)
-
-    for (let y = 0; y < size; y += 1) {
-      for (let x = 0; x < size; x += 1) {
-        if (!modules[y][x]) continue
-
-        const cx0 = (left + x * moduleSizeX) * this.width
-        const cy0 = (top + y * moduleSizeY) * this.height
-        const cx1 = (left + (x + 1) * moduleSizeX) * this.width
-        const cy1 = (top + (y + 1) * moduleSizeY) * this.height
-
-        const cellW = Math.max(1, cx1 - cx0)
-        const cellH = Math.max(1, cy1 - cy0)
-        const radius = Math.max(0.92, Math.min(cellW, cellH) * 0.34)
-        const cx = cx0 + cellW * 0.5
-        const cy = cy0 + cellH * 0.5
-
-        ctx.fillStyle = `rgba(255,255,255,${(0.98 * alpha).toFixed(3)})`
-        ctx.beginPath()
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
-
     ctx.restore()
   }
 
@@ -889,9 +855,6 @@ export default class LogoCanvasEngine {
     const energized = this.state === 'active' || this.state === 'qr_build'
     const qrMode = this.state === 'qr_build' || this.state === 'qr_show'
     const qrBuildProgress = this.#stateProgress('qr_build', 2600)
-    const qrShowProgress = this.state === 'qr_show'
-      ? this.#easeInOutCubic(this.#stateProgress('qr_show', 1400))
-      : 0
     const qrPx = this.qrModuleSizeNorm > 0 ? this.qrModuleSizeNorm * this.width : 2
 
     for (let i = 0; i < this.particles.length; i += 1) {
@@ -925,7 +888,7 @@ export default class LogoCanvasEngine {
           const q = this.qrTargets[p.qrTargetIndex]
           const qx = q.x * this.width
           const qy = q.y * this.height
-          const lock = Math.max(0, Math.min(1, Math.max(qrShowProgress, reveal * 0.4)))
+          const lock = Math.max(0, Math.min(1, reveal))
           const drawX = px * (1 - lock) + qx * lock
           const drawY = py * (1 - lock) + qy * lock
           const radius = Math.max(0.88, qrPx * 0.31 * sizeJitter * (0.88 + qrShimmer * 0.2 + qrGlint * 0.14))
