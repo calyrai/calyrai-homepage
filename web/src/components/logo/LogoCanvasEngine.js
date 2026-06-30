@@ -886,9 +886,15 @@ export default class LogoCanvasEngine {
       // idle/entropy => asymmetric two-arm galaxy,
       // hover(active)/reassemble => align toward ring,
       // qr_build/qr_show => strongest alignment while transitioning into QR.
-      const modeAlignment = isQrMode
+      const desiredAlignment = isQrMode
         ? (mode === 'qr_show' ? 1 : 0.93)
         : (mode === 'active' ? 0.78 : mode === 'reassemble' ? 0.84 : mode === 'entropy' ? 0.08 : 0.2)
+      p.modeAlignment = this.#advanceBlend(
+        Number.isFinite(p.modeAlignment) ? p.modeAlignment : desiredAlignment,
+        desiredAlignment,
+        0.095
+      )
+      const modeAlignment = p.modeAlignment
 
       const armPhase = (p.armPhase || 0) + t * (0.28 + (p.armDrift || 1) * 0.23)
       const armSign = p.armSign || 1
@@ -906,9 +912,15 @@ export default class LogoCanvasEngine {
       targetY = armY * (1 - modeAlignment) + targetY * modeAlignment
 
       // Smooth pull without spring oscillation.
-      const follow = isQrMode
+      const desiredFollow = isQrMode
         ? (mode === 'qr_show' ? 0.155 : 0.175)
         : (mode === 'active' ? 0.16 : mode === 'reassemble' ? 0.19 : mode === 'entropy' ? 0.06 : 0.085)
+      p.followRate = this.#advanceBlend(
+        Number.isFinite(p.followRate) ? p.followRate : desiredFollow,
+        desiredFollow,
+        0.11
+      )
+      const follow = p.followRate
       p.x += (targetX - p.x) * follow
       p.y += (targetY - p.y) * follow
       p.vx = 0
@@ -933,7 +945,7 @@ export default class LogoCanvasEngine {
       let size = this.state === 'qr_show' && isQrParticle ? 1.14 : p.size
 
       if (qrMode && !isQrParticle) {
-        alpha *= this.state === 'qr_build' ? 0.2 : 0.02
+        alpha *= this.state === 'qr_build' ? 0.32 : 0.12
       }
 
       if (isQrParticle) {
@@ -947,6 +959,7 @@ export default class LogoCanvasEngine {
           Math.max(0, Math.sin(t * (12.8 + sparkleSeed * 4.4) + sparkleSeed * 9.1)),
           11
         )
+        const alwaysSparkle = 0.86 + (Math.sin(t * (2.7 + sparkleSeed * 1.6) + sparkleSeed * 5.2) + 1) * 0.1
 
         if (this.state === 'qr_show' && p.qrTargetIndex >= 0) {
           // Final QR: blend into locked module positions instead of snapping hard.
@@ -959,7 +972,7 @@ export default class LogoCanvasEngine {
           const radius = Math.max(0.88, qrPx * 0.31 * sizeJitter * (0.88 + qrShimmer * 0.2 + qrGlint * 0.14))
           const qrShowAlpha = Math.min(1, 0.76 + qrShimmer * 0.22 + qrGlint * 0.22)
 
-          ctx.fillStyle = `rgba(255,255,255,${qrShowAlpha.toFixed(3)})`
+          ctx.fillStyle = `rgba(255,255,255,${Math.max(0.34, qrShowAlpha * alwaysSparkle).toFixed(3)})`
           ctx.beginPath()
           ctx.arc(drawX, drawY, radius, 0, Math.PI * 2)
           ctx.fill()
@@ -994,8 +1007,10 @@ export default class LogoCanvasEngine {
         14
       )
       const sparkleBurst = Math.pow(Math.max(0, Math.sin(t * 3.8 + sparkleSeed * 21.0)), 8)
-      alpha *= 0.72 + shimmer * 0.34 + glint * 0.42 + sparkleBurst * 0.28
+      const alwaysSparkle = 0.84 + (Math.sin(t * (2.25 + sparkleSeed * 1.2) + sparkleSeed * 8.1) + 1) * 0.11
+      alpha *= (0.72 + shimmer * 0.34 + glint * 0.42 + sparkleBurst * 0.28) * alwaysSparkle
       size *= 0.78 + shimmer * 0.26 + glint * 0.18 + sparkleBurst * 0.16
+      alpha = Math.max(0.075, alpha)
 
       if (glint > 0.65 || sparkleBurst > 0.6) {
         ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha * 0.78 + 0.16).toFixed(3)})`
