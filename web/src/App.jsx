@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { renderNode } from './components/Renderer'
 import Navigation from './components/Navigation'
 import QuickContactRail from './components/QuickContactRail'
@@ -26,16 +26,6 @@ function App() {
   const themeVariableApplier = new ThemeVariableApplier()
   const routeState = RouteStateService.create(currentPath)
   const contactPage = new NodeQueryService(ast).findById('contact')
-  const landingAst = useMemo(() => {
-    if (!ast || !Array.isArray(ast.children)) {
-      return ast
-    }
-
-    return {
-      ...ast,
-      children: ast.children.filter((node) => node?.id !== 'logo'),
-    }
-  }, [ast])
 
   useEffect(() => {
     try {
@@ -83,7 +73,7 @@ function App() {
       <QuickContactRail page={contactPage} />
       
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(landingAst, theme)}
+        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
       </div>
     </SelectionProvider>
   )

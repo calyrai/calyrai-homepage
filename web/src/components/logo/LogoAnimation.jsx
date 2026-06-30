@@ -5,7 +5,7 @@ import ringPointSet from '../../data/logo/calyr_ring_dots_1000.json'
 import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
 
-export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline' }) {
+export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline', showCanvas = true }) {
   const [state, setState] = useState(logoSpec?.interaction?.initialState || 'idle')
   const machineRef = useRef(null)
   const engineRef = useRef(null)
@@ -37,6 +37,10 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   }, [qrText])
 
   useEffect(() => {
+    if (!showCanvas) {
+      return undefined
+    }
+
     let active = true
 
     const machine = new LogoStateMachine(logoSpec, (nextState) => {
@@ -70,16 +74,19 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       engineRef.current?.destroy()
       engineRef.current = null
     }
-  }, [qrMatrix])
+  }, [qrMatrix, showCanvas])
 
   useEffect(() => {
     const onActivateQr = () => {
+      if (!showCanvas) {
+        return
+      }
       machineRef.current?.triggerQrBuild()
     }
 
     window.addEventListener('calyr:activate-qr', onActivateQr)
     return () => window.removeEventListener('calyr:activate-qr', onActivateQr)
-  }, [])
+  }, [showCanvas])
 
   useEffect(() => {
     engineRef.current?.setState(state)
@@ -127,16 +134,18 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
 
   return (
     <div className={`calyr-logo-wrap calyr-logo-wrap--${layout}`}>
-      <div
-        className={`calyr-logo-interactive ${className}`.trim()}
-        data-logo-state={state}
-        aria-label="CALYR interactive logo"
-        onMouseEnter={handlePointerEnter}
-        onMouseLeave={handlePointerLeave}
-        onMouseMove={handlePointerMove}
-      >
-        <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
-      </div>
+      {showCanvas && (
+        <div
+          className={`calyr-logo-interactive ${className}`.trim()}
+          data-logo-state={state}
+          aria-label="CALYR interactive logo"
+          onMouseEnter={handlePointerEnter}
+          onMouseLeave={handlePointerLeave}
+          onMouseMove={handlePointerMove}
+        >
+          <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
+        </div>
+      )}
       {(label || tagline) && (
         <div className="calyr-logo-lockup">
           {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
