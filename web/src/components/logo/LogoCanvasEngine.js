@@ -27,9 +27,12 @@ export default class LogoCanvasEngine {
     this.config = config
 
     this.state = config?.interaction?.initialState || 'idle'
+    this.prevState = this.state
     this.rafId = null
     this.startTime = performance.now()
     this.stateSinceTs = performance.now()
+    this.transitionStartTs = performance.now()
+    this.stateTransitionMs = Number(config?.interaction?.stateTransitionMs) || 1200
 
     this.width = 1
     this.height = 1
@@ -73,7 +76,9 @@ export default class LogoCanvasEngine {
 
   setState(nextState) {
     if (this.state !== nextState) {
+      this.prevState = this.state
       this.stateSinceTs = performance.now()
+      this.transitionStartTs = performance.now()
     }
     this.state = nextState
   }
@@ -773,6 +778,19 @@ export default class LogoCanvasEngine {
     return Math.max(0, Math.min(1, elapsed / Math.max(1, duration)))
   }
 
+  #stateTransitionProgress() {
+    const elapsed = performance.now() - this.transitionStartTs
+    const raw = Math.max(0, Math.min(1, elapsed / Math.max(1, this.stateTransitionMs)))
+    return this.#easeInOutCubic(raw)
+  }
+
+  #modeInfluence(modeKey) {
+    const p = this.#stateTransitionProgress()
+    const current = this.state === modeKey ? 1 : 0
+    const prev = this.prevState === modeKey ? 1 : 0
+    return prev * (1 - p) + current * p
+  }
+
   #particleQrProgress(baseProgress, lag) {
     if (baseProgress <= 0) return 0
     if (baseProgress >= 1) return 1
@@ -864,8 +882,8 @@ export default class LogoCanvasEngine {
 
   #drawEclipseCorona(ctx, t) {
     if (!this.ringTargets.length) return
-    const mode = this.state
-    if (mode === 'qr_build' || mode === 'qr_show') return
+    const ringVisibility = 1 - Math.max(this.#modeInfluence('qr_build'), this.#modeInfluence('qr_show'))
+    if (ringVisibility <= 0.001) return
 
     const eclipse = this.config?.ring?.eclipse || {}
     const glowStrength = Number(eclipse.glowStrength) || 0.9
@@ -880,12 +898,13 @@ export default class LogoCanvasEngine {
     const coronaR = radiusPx * (1 + coronaWidthScale)
 
     const pulse = 0.92 + (Math.sin(t * 1.35) + 1) * 0.09
+    const vis = ringVisibility
 
     // Outer corona glow
     const corona = ctx.createRadialGradient(cx, cy, coreR * (1 - rimSharpness), cx, cy, coronaR)
-    corona.addColorStop(0, `rgba(255,255,255,${(0.08 * glowStrength * pulse).toFixed(3)})`)
-    corona.addColorStop(0.45, `rgba(190,220,255,${(0.16 * glowStrength * pulse).toFixed(3)})`)
-    corona.addColorStop(0.72, `rgba(210,240,255,${(0.24 * glowStrength * pulse).toFixed(3)})`)
+    corona.addColorStop(0, `rgba(255,255,255,${(0.08 * glowStrength * pulse * vis).toFixed(3)})`)
+    corona.addColorStop(0.45, `rgba(190,220,255,${(0.16 * glowStrength * pulse * vis).toFixed(3)})`)
+    corona.addColorStop(0.72, `rgba(210,240,255,${(0.24 * glowStrength * pulse * vis).toFixed(3)})`)
     corona.addColorStop(1, 'rgba(210,240,255,0)')
     ctx.fillStyle = corona
     ctx.beginPath()
@@ -893,13 +912,13 @@ export default class LogoCanvasEngine {
     ctx.fill()
 
     // Dark moon disk for eclipse silhouette
-    ctx.fillStyle = 'rgba(0,0,0,0.92)'
+    ctx.fillStyle = `rgba(0,0,0,${(0.92 * vis).toFixed(3)})`
     ctx.beginPath()
     ctx.arc(cx, cy, coreR, 0, Math.PI * 2)
     ctx.fill()
 
     // Thin bright rim to make the eclipse read clearly
-    ctx.strokeStyle = `rgba(255,255,255,${(0.26 * glowStrength * pulse).toFixed(3)})`
+    ctx.strokeStyle = `rgba(255,255,255,${(0.26 * glowStrength * pulse * vis).toFixed(3)})`
     ctx.lineWidth = Math.max(0.8, radiusPx * 0.014)
     ctx.beginPath()
     ctx.arc(cx, cy, coreR * 1.01, 0, Math.PI * 2)
@@ -974,6 +993,10 @@ export default class LogoCanvasEngine {
     const ring = this.ringTargets
     const hasQr = this.qrTargets.length > 0
     const qrBuildProgress = this.#stateProgress('qr_build', 2600)
+    const qrBuildInfluence = this.#modeInfluence('qr_build')
+    const qrShowInfluence = this.#modeInfluence('qr_show')
+    const dissolveInfluence = this.#modeInfluence('dissolve')
+    const ringInfluence = Math.max(0, 1 - Math.max(qrBuildInfluence, qrShowInfluence))
     if (!ring.length) return
 
     for (let i = 0; i < this.particles.length; i += 1) {
@@ -997,7 +1020,7 @@ export default class LogoCanvasEngine {
 
       const ringWanderX = ringTarget.x + nx * radialOffset + tx * tangentialOffset
       const ringWanderY = ringTarget.y + ny * radialOffset + ty * tangentialOffset
-      const isQrMode = mode === 'qr_build' || mode === 'qr_show'
+      const isQrMode = qrBuildInfluence > 0.001 || qrShowInfluence > 0.001
       const isQrParticle = hasQr && p.qrTargetIndex >= 0 && p.qrTargetIndex < this.qrTargets.length
 
       let targetX = ringWanderX
@@ -1006,17 +1029,14 @@ export default class LogoCanvasEngine {
       const dissolveProgress = this.#stateProgress('dissolve', 3200)
       let desiredQrBlend = 0
       if (isQrParticle) {
-        if (mode === 'qr_build') {
-          desiredQrBlend = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
-        } else if (mode === 'qr_show') {
-          desiredQrBlend = 1
-        } else if (mode === 'dissolve') {
-          desiredQrBlend = 1 - this.#easeInOutCubic(dissolveProgress)
-        }
+        const buildBlend = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0) * qrBuildInfluence
+        const showBlend = 1 * qrShowInfluence
+        const dissolveBlend = (1 - this.#easeInOutCubic(dissolveProgress)) * dissolveInfluence
+        desiredQrBlend = Math.max(0, Math.min(1, buildBlend + showBlend + dissolveBlend))
       }
 
       // Slower blend rates avoid abrupt shape snapping between QR and ring phases.
-      const qrBlendRate = mode === 'qr_show' ? 0.042 : mode === 'dissolve' ? 0.038 : 0.052
+      const qrBlendRate = mode === 'qr_show' ? 0.032 : mode === 'dissolve' ? 0.03 : 0.04
       p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, qrBlendRate)
 
       if (isQrParticle) {
@@ -1029,9 +1049,9 @@ export default class LogoCanvasEngine {
       // idle/entropy => asymmetric two-arm galaxy,
       // hover(active)/reassemble => align toward ring,
       // qr_build/qr_show => strongest alignment while transitioning into QR.
-      const desiredAlignment = isQrMode
-        ? (mode === 'qr_show' ? 1 : 0.93)
-        : (mode === 'active' ? 0.78 : mode === 'reassemble' ? 0.84 : mode === 'entropy' ? 0.08 : 0.2)
+      const ringModeAlignment = mode === 'active' ? 0.78 : mode === 'reassemble' ? 0.84 : mode === 'entropy' ? 0.08 : 0.2
+      const qrModeAlignment = 0.93 + qrShowInfluence * 0.07
+      const desiredAlignment = ringModeAlignment * ringInfluence + qrModeAlignment * (1 - ringInfluence)
       p.modeAlignment = this.#advanceBlend(
         Number.isFinite(p.modeAlignment) ? p.modeAlignment : desiredAlignment,
         desiredAlignment,
@@ -1055,9 +1075,9 @@ export default class LogoCanvasEngine {
       targetY = armY * (1 - modeAlignment) + targetY * modeAlignment
 
       // Smooth pull without spring oscillation.
-      const desiredFollow = isQrMode
-        ? (mode === 'qr_show' ? 0.155 : 0.175)
-        : (mode === 'active' ? 0.16 : mode === 'reassemble' ? 0.19 : mode === 'entropy' ? 0.06 : 0.085)
+      const ringModeFollow = mode === 'active' ? 0.16 : mode === 'reassemble' ? 0.19 : mode === 'entropy' ? 0.06 : 0.085
+      const qrModeFollow = 0.165 - qrShowInfluence * 0.012
+      const desiredFollow = ringModeFollow * ringInfluence + qrModeFollow * (1 - ringInfluence)
       p.followRate = this.#advanceBlend(
         Number.isFinite(p.followRate) ? p.followRate : desiredFollow,
         desiredFollow,

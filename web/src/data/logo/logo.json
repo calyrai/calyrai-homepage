@@ -33,6 +33,7 @@
   },
   "interaction": {
     "initialState": "qr_show",
+    "stateTransitionMs": 1200,
     "hoverEnter": "active",
     "hoverLeave": "idle",
     "click": "qr_build",
