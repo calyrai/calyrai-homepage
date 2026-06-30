@@ -50,6 +50,9 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       engineRef.current = new LogoCanvasEngine(canvasRef.current, {
         ...logoSpec,
         qrMatrix,
+        qrSnapToGrid: true,
+        gridSpacingPx: 26,
+        qrGridQuantumPx: 13,
         ringPointSet,
         ringPointBounds: {
           minX: 26,

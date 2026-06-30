@@ -39,6 +39,9 @@ export default class LogoCanvasEngine {
     this.qrLayout = null
     this.particles = []
     this.qrModuleSizeNorm = 0
+    this.canvasOffsetX = 0
+    this.canvasOffsetY = 0
+    this.qrMatrixSource = config?.qrMatrix || null
 
     this.ringCenterX = 0.5
     this.ringCenterY = 0.525
@@ -54,7 +57,7 @@ export default class LogoCanvasEngine {
 
     this.#buildGridDots()
     this.#buildRingTargets()
-    this.#buildQrTargets(config?.qrMatrix)
+    this.#buildQrTargets(this.qrMatrixSource)
     this.#buildConstellations()
     this.#initParticles()
 
@@ -100,6 +103,13 @@ export default class LogoCanvasEngine {
 
     this.width = Math.max(1, rect.width)
     this.height = Math.max(1, rect.height)
+    this.canvasOffsetX = rect.left
+    this.canvasOffsetY = rect.top
+
+    if (this.qrMatrixSource) {
+      this.#buildQrTargets(this.qrMatrixSource)
+      this.#initParticles()
+    }
   }
 
   render(ts) {
@@ -447,24 +457,58 @@ export default class LogoCanvasEngine {
 
     const size = qrMatrix.size
     const normSize = qrMatrix.normSize || 0.36
-    this.qrModuleSizeNorm = normSize / size
-    const left = this.ringCenterX - normSize / 2
-    const top = this.ringCenterY - normSize / 2
-    const moduleSize = this.qrModuleSizeNorm
+    const shouldSnapToGrid = this.config?.qrSnapToGrid !== false
+    const gridStepPx = Number(this.config?.gridSpacingPx) || 26
+    const quantumPx = Number(this.config?.qrGridQuantumPx) || gridStepPx / 2
+
+    let left
+    let top
+    let moduleSizeX
+    let moduleSizeY
+
+    if (shouldSnapToGrid && this.width > 1 && this.height > 1) {
+      const desiredQrSizePx = normSize * Math.min(this.width, this.height)
+      const rawModulePx = desiredQrSizePx / size
+      const modulePx = Math.max(3, Math.round(rawModulePx / quantumPx) * quantumPx)
+      const qrSizePx = modulePx * size
+
+      const rawLeftPx = (this.width - qrSizePx) * 0.5
+      const rawTopPx = (this.height - qrSizePx) * 0.5
+      const snapToGrid = (localPx, canvasOffset) => {
+        const absolutePx = canvasOffset + localPx
+        return Math.round(absolutePx / quantumPx) * quantumPx - canvasOffset
+      }
+
+      const leftPx = snapToGrid(rawLeftPx, this.canvasOffsetX || 0)
+      const topPx = snapToGrid(rawTopPx, this.canvasOffsetY || 0)
+
+      moduleSizeX = modulePx / this.width
+      moduleSizeY = modulePx / this.height
+      left = leftPx / this.width
+      top = topPx / this.height
+    } else {
+      moduleSizeX = normSize / size
+      moduleSizeY = normSize / size
+      left = this.ringCenterX - normSize / 2
+      top = this.ringCenterY - normSize / 2
+    }
+
+    this.qrModuleSizeNorm = moduleSizeX
     this.qrLayout = {
       size,
       modules: qrMatrix.modules,
       left,
       top,
-      moduleSize,
+      moduleSizeX,
+      moduleSizeY,
     }
 
     for (let y = 0; y < size; y += 1) {
       for (let x = 0; x < size; x += 1) {
         if (!qrMatrix.modules[y][x]) continue
         this.qrTargets.push({
-          x: left + x * moduleSize + moduleSize * 0.5,
-          y: top + y * moduleSize + moduleSize * 0.5,
+          x: left + x * moduleSizeX + moduleSizeX * 0.5,
+          y: top + y * moduleSizeY + moduleSizeY * 0.5,
           weight: 1,
         })
       }
@@ -628,6 +672,12 @@ export default class LogoCanvasEngine {
 
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
+
+    if (this.state === 'qr_show') {
+      const lock = this.#easeInOutCubic(this.#stateProgress('qr_show', 900))
+      this.#drawExactQr(ctx, 0.62 + lock * 0.38)
+    }
+
     this.#drawConstellations(ctx, t)
   }
 
@@ -662,11 +712,11 @@ export default class LogoCanvasEngine {
   #drawQrMotionField(ctx, t) {
     if (!this.qrLayout) return
 
-    const { left, top, moduleSize, size } = this.qrLayout
-    const x0 = (left - moduleSize) * this.width
-    const y0 = (top - moduleSize) * this.height
-    const w = (size + 2) * moduleSize * this.width
-    const h = (size + 2) * moduleSize * this.height
+    const { left, top, moduleSizeX, moduleSizeY, size } = this.qrLayout
+    const x0 = (left - moduleSizeX) * this.width
+    const y0 = (top - moduleSizeY) * this.height
+    const w = (size + 2) * moduleSizeX * this.width
+    const h = (size + 2) * moduleSizeY * this.height
 
     ctx.save()
     ctx.globalAlpha = 0.22
@@ -686,35 +736,48 @@ export default class LogoCanvasEngine {
     ctx.restore()
   }
 
-  #drawExactQr(ctx) {
+  #drawExactQr(ctx, alpha = 1) {
     if (!this.qrLayout || !Array.isArray(this.qrLayout.modules)) {
       return
     }
 
-    const { size, modules, left, top, moduleSize } = this.qrLayout
+    const { size, modules, left, top, moduleSizeX, moduleSizeY } = this.qrLayout
+    const x0 = left * this.width
+    const y0 = top * this.height
+    const qrW = size * moduleSizeX * this.width
+    const qrH = size * moduleSizeY * this.height
+    const marginX = moduleSizeX * this.width
+    const marginY = moduleSizeY * this.height
 
-    // Keep QR on dark field and draw only distinct bright modules (no black-on-white slab).
+    ctx.save()
+
+    // Quiet zone: suppress raster under and around the code to improve camera decoding.
+    ctx.fillStyle = `rgba(0,0,0,${(0.72 * alpha).toFixed(3)})`
+    ctx.fillRect(x0 - marginX, y0 - marginY, qrW + marginX * 2, qrH + marginY * 2)
+
     for (let y = 0; y < size; y += 1) {
       for (let x = 0; x < size; x += 1) {
         if (!modules[y][x]) continue
 
-        const cx0 = (left + x * moduleSize) * this.width
-        const cy0 = (top + y * moduleSize) * this.height
-        const cx1 = (left + (x + 1) * moduleSize) * this.width
-        const cy1 = (top + (y + 1) * moduleSize) * this.height
+        const cx0 = (left + x * moduleSizeX) * this.width
+        const cy0 = (top + y * moduleSizeY) * this.height
+        const cx1 = (left + (x + 1) * moduleSizeX) * this.width
+        const cy1 = (top + (y + 1) * moduleSizeY) * this.height
 
         const cellW = Math.max(1, cx1 - cx0)
         const cellH = Math.max(1, cy1 - cy0)
-        const radius = Math.max(0.9, Math.min(cellW, cellH) * 0.34)
+        const radius = Math.max(0.92, Math.min(cellW, cellH) * 0.34)
         const cx = cx0 + cellW * 0.5
         const cy = cy0 + cellH * 0.5
 
-        ctx.fillStyle = 'rgba(255,255,255,0.98)'
+        ctx.fillStyle = `rgba(255,255,255,${(0.98 * alpha).toFixed(3)})`
         ctx.beginPath()
         ctx.arc(cx, cy, radius, 0, Math.PI * 2)
         ctx.fill()
       }
     }
+
+    ctx.restore()
   }
 
   #drawBackgroundRaster(ctx, t) {
