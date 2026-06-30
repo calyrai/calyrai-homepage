@@ -231,67 +231,55 @@ export default class LogoCanvasEngine {
   }
 
   #buildRingTargetsFromQr() {
-    if (!this.qrTargets.length) return false
-
-    let maxRadius = 0
-    for (let i = 0; i < this.qrTargets.length; i += 1) {
-      const q = this.qrTargets[i]
-      const r = Math.hypot(q.x - this.ringCenterX, q.y - this.ringCenterY)
-      if (r > maxRadius) maxRadius = r
-    }
-    if (maxRadius <= 0) return false
+    const qrCount = this.qrTargets.length
+    if (!qrCount) return false
 
     const asymmetry = Number(this.config?.ring?.fractalAsymmetry) || 0.24
     const fractalStrength = Number(this.config?.ring?.fractalStrength) || 0.82
     const angleWarpStrength = Number(this.config?.ring?.angleWarpStrength) || 0.07
-    const semanticLobeStrength = Number(this.config?.ring?.semanticLobeStrength) || 0.22
-    const semanticLobeWidth = Number(this.config?.ring?.semanticLobeWidth) || 0.3
-    const semanticAngles = this.#getQrSemanticAngles()
+    const arrivalGapStrength = Number(this.config?.ring?.arrivalGapStrength) || 0.26
+    const arrivalStrokeStrength = Number(this.config?.ring?.arrivalStrokeStrength) || 0.2
     const thickness = Math.max(0.008, this.ringThickness)
-    for (let i = 0; i < this.qrTargets.length; i += 1) {
-      const q = this.qrTargets[i]
-      const dx = q.x - this.ringCenterX
-      const dy = q.y - this.ringCenterY
-      const r = Math.hypot(dx, dy)
-      const angle = Math.atan2(dy, dx)
-      const radialNorm = r / maxRadius
 
-      const seedA = this.#hash2(q.x * 947.13, q.y * 619.37)
-      const seedB = this.#hash2(q.x * 137.71 + 5.3, q.y * 311.97 + 1.9)
+    // Ring layout uses ONLY QR point count (not QR point positions).
+    for (let i = 0; i < qrCount; i += 1) {
+      const t = i / qrCount
+      const baseAngle = t * Math.PI * 2
+      const seedA = this.#hash2(i * 7.91, i * 2.37)
+      const seedB = this.#hash2(i * 3.71 + 13.2, i * 11.53 + 7.4)
       const localNoise = (seedA - 0.5) * 2
       const localNoiseB = (seedB - 0.5) * 2
 
-      const asymBias =
-        Math.sin(angle * 1.7 + 0.9) * 0.58 +
-        Math.sin(angle * 0.93 + 2.2) * 0.42 +
-        localNoise * 0.35
+      // Arrival-like lobe/gap character: broad brush structure plus fractured edge.
+      const lobeA = Math.sin(baseAngle * 1.12 + 0.7) * 0.58
+      const lobeB = Math.sin(baseAngle * 2.34 + 2.1) * 0.42
+      const gapField = Math.sin(baseAngle * 1.03 - 0.35) * 0.52 + Math.sin(baseAngle * 3.27 + 1.2) * 0.28
 
       const fractalWave =
-        Math.sin(angle * 2.7 + seedA * Math.PI * 2) * 0.46 +
-        Math.sin(angle * 5.9 + seedB * Math.PI * 2) * 0.32 +
-        Math.sin(angle * 11.3 + (seedA + seedB) * Math.PI) * 0.2
+        Math.sin(baseAngle * 2.9 + seedA * Math.PI * 2) * 0.44 +
+        Math.sin(baseAngle * 6.4 + seedB * Math.PI * 2) * 0.34 +
+        Math.sin(baseAngle * 12.7 + (seedA + seedB) * Math.PI) * 0.22
 
       const angleWarp =
-        (Math.sin(angle * 3.1 + seedA * Math.PI * 2) * 0.62 + localNoiseB * 0.38) * angleWarpStrength
+        (Math.sin(baseAngle * 2.8 + seedA * Math.PI * 2) * 0.66 + localNoiseB * 0.34) * angleWarpStrength
 
-      let semanticLobe = 0
-      for (let k = 0; k < semanticAngles.length; k += 1) {
-        const diff = this.#angleDiff(angle, semanticAngles[k])
-        semanticLobe += this.#gaussian(diff, semanticLobeWidth)
-      }
-      semanticLobe = semanticAngles.length > 0 ? semanticLobe / semanticAngles.length : 0
-
-      // Every ring point is a deterministic transform of a QR point.
-      const radialOffset = (radialNorm - 0.5) * thickness * 1.45
+      const gapBias = Math.max(0, gapField)
+      const radialOffset = localNoise * thickness * 0.64
       const fractalOffset = fractalWave * thickness * fractalStrength
-      const asymOffset = asymBias * thickness * asymmetry
-      const semanticOffset = (semanticLobe - 0.35) * thickness * semanticLobeStrength
-      const targetRadius = Math.max(0.02, this.ringRadius + radialOffset + fractalOffset + asymOffset + semanticOffset)
-      const theta = angle + angleWarp
+      const asymOffset = (lobeA + lobeB + localNoise * 0.24) * thickness * asymmetry
+      const brushOffset = (0.5 - gapBias) * thickness * arrivalStrokeStrength
+      const targetRadius = Math.max(
+        0.02,
+        this.ringRadius + radialOffset + fractalOffset + asymOffset + brushOffset
+      )
+      const theta = baseAngle + angleWarp
 
       const weight = Math.max(
-        0.52,
-        Math.min(1, 0.7 + Math.abs(fractalWave) * 0.19 + Math.abs(localNoise) * 0.07 + semanticLobe * 0.16)
+        0.45,
+        Math.min(
+          1,
+          0.66 + Math.abs(fractalWave) * 0.2 + Math.abs(localNoise) * 0.07 + (1 - gapBias) * arrivalGapStrength
+        )
       )
 
       this.ringTargets.push({

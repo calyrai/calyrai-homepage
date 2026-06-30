@@ -63,8 +63,8 @@
     "fractalStrength": 0.82,
     "fractalAsymmetry": 0.24,
     "angleWarpStrength": 0.07,
-    "semanticLobeStrength": 0.22,
-    "semanticLobeWidth": 0.3,
+    "arrivalGapStrength": 0.26,
+    "arrivalStrokeStrength": 0.2,
     "step": 0.0082,
     "externalTargetSizeNorm": 0.9
   }
