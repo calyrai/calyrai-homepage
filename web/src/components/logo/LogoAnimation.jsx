@@ -28,7 +28,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       return {
         size,
         modules,
-        normSize: 0.5,
+        normSize: 0.44,
+        targetSizePx: logoSpec?.qr?.targetSizePx || null,
       }
     } catch (error) {
       console.error('Failed to build QR matrix for logo interaction:', error)
@@ -52,7 +53,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         qrMatrix,
         qrSnapToGrid: true,
         gridSpacingPx: 26,
-        qrGridQuantumPx: 13,
+        qrGridQuantumPx: 4,
         ringPointSet,
         ringPointBounds: {
           minX: 26,

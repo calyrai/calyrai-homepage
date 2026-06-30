@@ -457,6 +457,7 @@ export default class LogoCanvasEngine {
 
     const size = qrMatrix.size
     const normSize = qrMatrix.normSize || 0.36
+    const targetSizePx = Number(qrMatrix.targetSizePx) || 0
     const shouldSnapToGrid = this.config?.qrSnapToGrid !== false
     const gridStepPx = Number(this.config?.gridSpacingPx) || 26
     const quantumPx = Number(this.config?.qrGridQuantumPx) || gridStepPx / 2
@@ -467,7 +468,9 @@ export default class LogoCanvasEngine {
     let moduleSizeY
 
     if (shouldSnapToGrid && this.width > 1 && this.height > 1) {
-      const desiredQrSizePx = normSize * Math.min(this.width, this.height)
+      const desiredQrSizePx = targetSizePx > 0
+        ? Math.min(targetSizePx, Math.min(this.width, this.height) * 0.92)
+        : normSize * Math.min(this.width, this.height)
       const rawModulePx = desiredQrSizePx / size
       const modulePx = Math.max(3, Math.round(rawModulePx / quantumPx) * quantumPx)
       const qrSizePx = modulePx * size
@@ -520,6 +523,13 @@ export default class LogoCanvasEngine {
     const ringCount = this.ringTargets.length
     const qrCount = this.qrTargets.length
     const count = Math.max(ringCount, qrCount)
+    const ringRadiusStats = this.ringTargets.reduce((stats, point) => {
+      const radius = Math.hypot(point.x - this.ringCenterX, point.y - this.ringCenterY)
+      return {
+        min: Math.min(stats.min, radius),
+        max: Math.max(stats.max, radius),
+      }
+    }, { min: Infinity, max: -Infinity })
 
     const particleOrder = Array.from({ length: count }, (_, idx) => idx).sort(
       (a, b) => this.#hash2(a * 3.17, a * 9.31) - this.#hash2(b * 3.17, b * 9.31)
@@ -541,8 +551,11 @@ export default class LogoCanvasEngine {
 
       const base = this.ringTargets[ringAnchorIndex]
       const qrTargetIndex = qrAssignments[i]
-      const qrLag = this.#hash2(i * 6.7, i * 2.9) * 0.22
-      const heteroAmp = 0.3 + this.#hash2(i * 4.8, i * 1.1) * 0.9
+      const baseRadius = Math.hypot(base.x - this.ringCenterX, base.y - this.ringCenterY)
+      const radiusSpan = Math.max(0.001, ringRadiusStats.max - ringRadiusStats.min)
+      const outerRingPriority = (baseRadius - ringRadiusStats.min) / radiusSpan
+      const qrLag = this.#hash2(i * 6.7, i * 2.9) * 0.12 + (1 - outerRingPriority) * 0.16
+      const heteroAmp = 0.18 + this.#hash2(i * 4.8, i * 1.1) * 1.18
       const radialBias = (this.#hash2(i * 1.4, i * 7.3) - 0.5) * 2
       const swirlPhase = this.#hash2(i * 5.2, i * 9.9) * Math.PI * 2
       const armSign = this.#hash2(i * 6.9, i * 2.8) > 0.5 ? 1 : -1
@@ -553,7 +566,7 @@ export default class LogoCanvasEngine {
         y: base.y + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
         vx: 0,
         vy: 0,
-        size: 0.82 + this.#hash2(i * 3.1, i * 1.7) * 0.72,
+        size: 0.66 + this.#hash2(i * 3.1, i * 1.7) * 1.08,
         baseWeight: base.weight,
         ringAnchorIndex,
         armSign,
@@ -897,7 +910,7 @@ export default class LogoCanvasEngine {
 
       if (isQrParticle) {
         const reveal = Math.max(0, Math.min(1, p.qrBlend || 0))
-        const sizeJitter = 0.72 + this.#hash2(i * 9.17, i * 3.71) * 0.7
+        const sizeJitter = 0.58 + this.#hash2(i * 9.17, i * 3.71) * 1.02
         const sparkleSeed = this.#hash2(i * 2.73, i * 6.19)
         const shimmerA = Math.sin(t * (4.3 + sparkleSeed * 2.1) + sparkleSeed * Math.PI * 2)
         const shimmerB = Math.sin(t * (9.4 + sparkleSeed * 3.7) + sparkleSeed * 11.3)
@@ -915,8 +928,8 @@ export default class LogoCanvasEngine {
           const lock = Math.max(0, Math.min(1, Math.max(qrShowProgress, reveal * 0.4)))
           const drawX = px * (1 - lock) + qx * lock
           const drawY = py * (1 - lock) + qy * lock
-          const radius = Math.max(0.9, qrPx * 0.37 * sizeJitter * (0.9 + qrShimmer * 0.16 + qrGlint * 0.1))
-          const qrShowAlpha = Math.min(1, 0.8 + qrShimmer * 0.2 + qrGlint * 0.16)
+          const radius = Math.max(0.88, qrPx * 0.31 * sizeJitter * (0.88 + qrShimmer * 0.2 + qrGlint * 0.14))
+          const qrShowAlpha = Math.min(1, 0.76 + qrShimmer * 0.22 + qrGlint * 0.22)
 
           ctx.fillStyle = `rgba(255,255,255,${qrShowAlpha.toFixed(3)})`
           ctx.beginPath()
@@ -926,8 +939,8 @@ export default class LogoCanvasEngine {
         }
 
         const radius = Math.max(
-          0.9,
-          qrPx * (0.34 + reveal * 0.11) * sizeJitter * (0.88 + qrShimmer * 0.18 + qrGlint * 0.12)
+          0.82,
+          qrPx * (0.31 + reveal * 0.16) * sizeJitter * (0.86 + qrShimmer * 0.24 + qrGlint * 0.16)
         )
         const shadowOffset = 0.55
         const shadowAlpha = 0.08 + reveal * 0.12
@@ -937,7 +950,7 @@ export default class LogoCanvasEngine {
         ctx.arc(px + shadowOffset, py + shadowOffset, radius, 0, Math.PI * 2)
         ctx.fill()
 
-        const qrAlpha = Math.min(1, 0.72 + reveal * 0.2 + qrShimmer * 0.2 + qrGlint * 0.14)
+        const qrAlpha = Math.min(1, 0.7 + reveal * 0.24 + qrShimmer * 0.26 + qrGlint * 0.22)
         ctx.fillStyle = `rgba(255,255,255,${qrAlpha.toFixed(3)})`
         ctx.beginPath()
         ctx.arc(px, py, radius, 0, Math.PI * 2)
@@ -952,8 +965,16 @@ export default class LogoCanvasEngine {
         Math.max(0, Math.sin(t * (6.3 + sparkleSeed * 3.1) + sparkleSeed * 13.0)),
         14
       )
-      alpha *= 0.78 + shimmer * 0.32 + glint * 0.34
-      size *= 0.9 + shimmer * 0.2 + glint * 0.12
+      const sparkleBurst = Math.pow(Math.max(0, Math.sin(t * 3.8 + sparkleSeed * 21.0)), 8)
+      alpha *= 0.72 + shimmer * 0.34 + glint * 0.42 + sparkleBurst * 0.28
+      size *= 0.78 + shimmer * 0.26 + glint * 0.18 + sparkleBurst * 0.16
+
+      if (glint > 0.65 || sparkleBurst > 0.6) {
+        ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha * 0.78 + 0.16).toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(px + 0.4, py - 0.4, Math.max(0.65, size * 0.42), 0, Math.PI * 2)
+        ctx.fill()
+      }
 
       ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha).toFixed(3)})`
       ctx.beginPath()
