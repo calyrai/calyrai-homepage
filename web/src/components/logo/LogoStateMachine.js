@@ -5,6 +5,8 @@ export default class LogoStateMachine {
     const initialState = config?.interaction?.initialState
     const allowedInitialStates = new Set(['idle', 'active', 'qr_build', 'qr_show', 'dissolve', 'entropy', 'reassemble'])
     this.state = allowedInitialStates.has(initialState) ? initialState : 'idle'
+    this.hasUserInteraction = false
+    this.allowAutoCycleWithoutMouse = config?.interaction?.autoCycleWithoutMouse === true
     this.timers = new Set()
     this.destroyed = false
     this.#emit(this.state)
@@ -16,6 +18,7 @@ export default class LogoStateMachine {
   }
 
   handleHoverEnter() {
+    this.#markUserInteraction()
     if (this.state === 'entropy') {
       this.transitionTo('reassemble')
       return
@@ -26,12 +29,14 @@ export default class LogoStateMachine {
   }
 
   triggerQrBuild() {
+    this.#markUserInteraction()
     if (this.state === 'idle' || this.state === 'active' || this.state === 'reassemble') {
       this.transitionTo('qr_build')
     }
   }
 
   handleHoverLeave() {
+    this.#markUserInteraction()
     if (this.state === 'active') {
       this.transitionTo('idle')
     }
@@ -42,6 +47,7 @@ export default class LogoStateMachine {
   }
 
   handlePointerReturn() {
+    this.#markUserInteraction()
     if (this.state === 'entropy') {
       this.transitionTo('reassemble')
     }
@@ -87,6 +93,10 @@ export default class LogoStateMachine {
     this.timers.clear()
   }
 
+  #markUserInteraction() {
+    this.hasUserInteraction = true
+  }
+
   // Maps each state to its auto-transition: [nextState, configDurationKey, fallbackMs]
   static #SCHEDULE = [
     ['qr_build',   'qr_show',    'qr_build',   2600],
@@ -99,6 +109,11 @@ export default class LogoStateMachine {
   #scheduleByState(state) {
     const states = this.config?.states || {}
     const interaction = this.config?.interaction || {}
+
+    const canAutoCycle = this.allowAutoCycleWithoutMouse || this.hasUserInteraction
+    if (!canAutoCycle) {
+      return
+    }
 
     if (state === 'qr_show' && interaction.holdQrOnStart) {
       return
