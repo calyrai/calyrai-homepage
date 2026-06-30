@@ -78,6 +78,23 @@ export default class LogoCanvasEngine {
     this.state = nextState
   }
 
+  #getQrSemanticAngles() {
+    if (!this.qrLayout) return []
+
+    const { left, top, moduleSizeX, moduleSizeY, size } = this.qrLayout
+    const finderCenters = [
+      { mx: 3.5, my: 3.5 },
+      { mx: size - 3.5, my: 3.5 },
+      { mx: 3.5, my: size - 3.5 },
+    ]
+
+    return finderCenters.map((f) => {
+      const x = left + f.mx * moduleSizeX
+      const y = top + f.my * moduleSizeY
+      return Math.atan2(y - this.ringCenterY, x - this.ringCenterX)
+    })
+  }
+
   getTargetCoordinates() {
     return {
       ring: this.ringTargets,
@@ -227,6 +244,9 @@ export default class LogoCanvasEngine {
     const asymmetry = Number(this.config?.ring?.fractalAsymmetry) || 0.24
     const fractalStrength = Number(this.config?.ring?.fractalStrength) || 0.82
     const angleWarpStrength = Number(this.config?.ring?.angleWarpStrength) || 0.07
+    const semanticLobeStrength = Number(this.config?.ring?.semanticLobeStrength) || 0.22
+    const semanticLobeWidth = Number(this.config?.ring?.semanticLobeWidth) || 0.3
+    const semanticAngles = this.#getQrSemanticAngles()
     const thickness = Math.max(0.008, this.ringThickness)
     for (let i = 0; i < this.qrTargets.length; i += 1) {
       const q = this.qrTargets[i]
@@ -254,16 +274,24 @@ export default class LogoCanvasEngine {
       const angleWarp =
         (Math.sin(angle * 3.1 + seedA * Math.PI * 2) * 0.62 + localNoiseB * 0.38) * angleWarpStrength
 
+      let semanticLobe = 0
+      for (let k = 0; k < semanticAngles.length; k += 1) {
+        const diff = this.#angleDiff(angle, semanticAngles[k])
+        semanticLobe += this.#gaussian(diff, semanticLobeWidth)
+      }
+      semanticLobe = semanticAngles.length > 0 ? semanticLobe / semanticAngles.length : 0
+
       // Every ring point is a deterministic transform of a QR point.
       const radialOffset = (radialNorm - 0.5) * thickness * 1.45
       const fractalOffset = fractalWave * thickness * fractalStrength
       const asymOffset = asymBias * thickness * asymmetry
-      const targetRadius = Math.max(0.02, this.ringRadius + radialOffset + fractalOffset + asymOffset)
+      const semanticOffset = (semanticLobe - 0.35) * thickness * semanticLobeStrength
+      const targetRadius = Math.max(0.02, this.ringRadius + radialOffset + fractalOffset + asymOffset + semanticOffset)
       const theta = angle + angleWarp
 
       const weight = Math.max(
         0.52,
-        Math.min(1, 0.74 + Math.abs(fractalWave) * 0.21 + Math.abs(localNoise) * 0.08)
+        Math.min(1, 0.7 + Math.abs(fractalWave) * 0.19 + Math.abs(localNoise) * 0.07 + semanticLobe * 0.16)
       )
 
       this.ringTargets.push({
@@ -895,15 +923,21 @@ export default class LogoCanvasEngine {
       let targetX = ringWanderX
       let targetY = ringWanderY
 
+      const dissolveProgress = this.#stateProgress('dissolve', 3200)
       let desiredQrBlend = 0
-      if (isQrMode && isQrParticle) {
-        desiredQrBlend = mode === 'qr_build'
-          ? this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
-          : 1
+      if (isQrParticle) {
+        if (mode === 'qr_build') {
+          desiredQrBlend = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0)
+        } else if (mode === 'qr_show') {
+          desiredQrBlend = 1
+        } else if (mode === 'dissolve') {
+          desiredQrBlend = 1 - this.#easeInOutCubic(dissolveProgress)
+        }
       }
 
-      // Slower settling in qr_show keeps the transition into the final form smooth.
-      p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, mode === 'qr_show' ? 0.058 : 0.078)
+      // Slower blend rates avoid abrupt shape snapping between QR and ring phases.
+      const qrBlendRate = mode === 'qr_show' ? 0.042 : mode === 'dissolve' ? 0.038 : 0.052
+      p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, qrBlendRate)
 
       if (isQrParticle) {
         const qrTarget = this.qrTargets[p.qrTargetIndex]
@@ -950,10 +984,13 @@ export default class LogoCanvasEngine {
         0.11
       )
       const follow = p.followRate
-      p.x += (targetX - p.x) * follow
-      p.y += (targetY - p.y) * follow
-      p.vx = 0
-      p.vy = 0
+      // Critically damped-like motion smooths target changes across state boundaries.
+      const ax = (targetX - p.x) * follow * 0.9
+      const ay = (targetY - p.y) * follow * 0.9
+      p.vx = (p.vx + ax) * 0.78
+      p.vy = (p.vy + ay) * 0.78
+      p.x += p.vx
+      p.y += p.vy
     }
   }
 
