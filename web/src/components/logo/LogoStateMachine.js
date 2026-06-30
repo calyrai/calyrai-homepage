@@ -3,7 +3,7 @@ export default class LogoStateMachine {
     this.config = config
     this.onTransition = onTransition
     const initialState = config?.interaction?.initialState
-    const allowedInitialStates = new Set(['idle', 'active', 'qr_build', 'qr_show', 'dissolve', 'entropy', 'reassemble'])
+    const allowedInitialStates = new Set(['idle', 'active', 'qr_build', 'qr_show'])
     this.state = allowedInitialStates.has(initialState) ? initialState : 'idle'
     this.hasUserInteraction = false
     this.allowAutoCycleWithoutMouse = config?.interaction?.autoCycleWithoutMouse === true
@@ -19,10 +19,6 @@ export default class LogoStateMachine {
 
   handleHoverEnter() {
     this.#markUserInteraction()
-    if (this.state === 'entropy') {
-      this.transitionTo('reassemble')
-      return
-    }
     if (this.state === 'idle') {
       this.transitionTo('active')
     }
@@ -30,7 +26,7 @@ export default class LogoStateMachine {
 
   triggerQrBuild() {
     this.#markUserInteraction()
-    if (this.state === 'idle' || this.state === 'active' || this.state === 'reassemble') {
+    if (this.state === 'idle' || this.state === 'active') {
       this.transitionTo('qr_build')
     }
   }
@@ -48,9 +44,6 @@ export default class LogoStateMachine {
 
   handlePointerReturn() {
     this.#markUserInteraction()
-    if (this.state === 'entropy') {
-      this.transitionTo('reassemble')
-    }
   }
 
   transitionTo(nextState) {
@@ -100,10 +93,8 @@ export default class LogoStateMachine {
   // Maps each state to its auto-transition: [nextState, configDurationKey, fallbackMs]
   static #SCHEDULE = [
     ['qr_build',   'qr_show',    'qr_build',   2600],
-    ['qr_show',    'dissolve',   'qr_show',    12000],
-    ['dissolve',   'reassemble', 'dissolve',   3200],
-    // Keep QR as the home state: every cycle reforms into QR again.
-    ['reassemble', 'qr_build',   'reassemble', 3600],
+    // Keep QR readable with sparkle for a while, then return to idle.
+    ['qr_show',    'idle',       'qr_show',    12000],
   ]
 
   #scheduleByState(state) {
@@ -131,8 +122,6 @@ export default class LogoStateMachine {
       return
     }
 
-    if (state === 'idle' || state === 'active') {
-      this.#setTimer(interaction.idleTimeoutToEntropyMs || 80000, () => this.transitionTo('entropy'))
-    }
+    // No entropy/reassemble cycle in simplified flow.
   }
 }

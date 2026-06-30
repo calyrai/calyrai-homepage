@@ -17,18 +17,6 @@
     "qr_show": {
       "description": "QR remains readable",
       "durationMs": 10000
-    },
-    "dissolve": {
-      "description": "QR order breaks apart",
-      "durationMs": 3200
-    },
-    "entropy": {
-      "description": "Slow drift into cloud state",
-      "durationMs": 80000
-    },
-    "reassemble": {
-      "description": "Particles return to ring and wordmark",
-      "durationMs": 3600
     }
   },
   "interaction": {
@@ -41,7 +29,6 @@
     "holdQrOnStart": false,
     "idleCycleToQrMs": null,
     "idleTimeoutToEntropyMs": null,
-    "pointerReturnFromEntropy": "reassemble",
     "upperActivationZoneFraction": 0.36
   },
   "qr": {
