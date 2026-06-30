@@ -3,6 +3,7 @@ import { LinkItemService } from '../services/LinkItemService'
 
 const DRAG_THRESHOLD_PX = 2
 const DRAG_SAFETY_TIMEOUT_MS = 8000
+const RAIL_EDGE_GUTTER_PX = 8
 
 export default function QuickContactRail({ page }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -39,7 +40,7 @@ export default function QuickContactRail({ page }) {
   const clampTop = (nextTop, railHeightOverride) => {
     if (typeof window === 'undefined') return nextTop
     const railHeight = railHeightOverride || railRef.current?.offsetHeight || 220
-    const minTop = 12
+    const minTop = window.innerWidth <= 768 ? 12 : 76
     const maxTop = Math.max(minTop, window.innerHeight - railHeight - 12)
     return Math.max(minTop, Math.min(maxTop, nextTop))
   }
@@ -47,8 +48,8 @@ export default function QuickContactRail({ page }) {
   const clampLeft = (nextLeft, railWidthOverride) => {
     if (typeof window === 'undefined') return nextLeft
     const railWidth = railWidthOverride || railRef.current?.offsetWidth || 96
-    const minLeft = 8
-    const maxLeft = Math.max(minLeft, window.innerWidth - railWidth - 8)
+    const minLeft = RAIL_EDGE_GUTTER_PX
+    const maxLeft = Math.max(minLeft, window.innerWidth - railWidth - RAIL_EDGE_GUTTER_PX)
     return Math.max(minLeft, Math.min(maxLeft, nextLeft))
   }
 
@@ -92,6 +93,15 @@ export default function QuickContactRail({ page }) {
 
       dragRef.current.active = false
       setIsDragging(false)
+
+      const railWidth = railRef.current?.offsetWidth || 96
+      const leftCandidate = clampLeft(drag.startLeftPx + (event.clientX - drag.startPointerX), railWidth)
+      const leftAnchor = RAIL_EDGE_GUTTER_PX
+      const rightAnchor = Math.max(leftAnchor, window.innerWidth - railWidth - RAIL_EDGE_GUTTER_PX)
+      const snappedLeft = Math.abs(leftCandidate - leftAnchor) <= Math.abs(leftCandidate - rightAnchor)
+        ? leftAnchor
+        : rightAnchor
+      setLeftPx(snappedLeft)
 
       const target = event.target
       const isLinkTarget = target instanceof Element && !!target.closest('a')

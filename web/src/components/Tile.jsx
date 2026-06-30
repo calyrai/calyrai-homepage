@@ -376,6 +376,10 @@ export default function Tile({ node, theme, context = {} }) {
   }, [ripples, showTileMesh])
 
   const handleMouseDown = (e) => {
+    if (isMobileViewport) {
+      return
+    }
+
     // Don't drag if clicking on a link
     if (route && e.target.closest('.tile-link-indicator')) {
       return
@@ -712,7 +716,7 @@ export default function Tile({ node, theme, context = {} }) {
           ref={meshCanvasRef} 
           aria-hidden="true"
           style={{
-            opacity: 0.58 + ripplePulse * 0.32,
+            opacity: 0.42 + ripplePulse * 0.28,
             filter: ripplePulse > 0 ? `saturate(${1 + ripplePulse * 0.5}) brightness(${1 + ripplePulse * 0.3})` : 'none',
             transition: 'opacity 0.1s linear, filter 0.1s linear',
           }}

@@ -986,58 +986,6 @@ body.contact-route .app {
   margin-bottom: var(--space-md);
 }
 
-.tile-contact {
-  min-height: 132px;
-  padding: var(--space-md);
-}
-
-.tile-contact .tile-icon {
-  display: none;
-}
-
-.tile-contact .tile-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.8rem;
-}
-
-.tile-contact .tile-link-indicator {
-  top: 10px;
-  right: 12px;
-  font-size: 1rem;
-  opacity: 0.42;
-}
-
-.tile-contact:hover .tile-link-indicator {
-  opacity: 0.8;
-}
-
-.tile-contact .tile-title {
-  margin-bottom: 0;
-}
-
-.tile-contact-symbols {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.tile-contact-symbol {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.96);
-  font-size: 0.92rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
 .tile-content {
   position: relative;
   z-index: 1;
@@ -2361,4 +2309,61 @@ button:active {
   .section-grid {
     gap: var(--space-sm);
   }
+}
+
+/* ============================================
+   Stage 9: Layout Refinement
+   ============================================ */
+
+.section-collapse-line {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: none;
+}
+
+.section-collapse-label {
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(1.24rem, 2.9vw, 1.64rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* Keep Architecture tiles balanced on wide screens. */
+@media (min-width: 1280px) {
+  #architecture .section-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+}
+
+.tile-icon {
+  margin-bottom: 0.38rem;
+}
+
+.tile-title {
+  margin: 0;
+  font-size: clamp(2.05rem, 3.2vw, 2.6rem);
+  line-height: 1.08;
+}
+
+.tile-summary {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.35;
+}
+
+.tile-mesh-canvas {
+  opacity: 0.46;
+}
+
+.tile:hover .tile-mesh-canvas,
+.tile-hovered .tile-mesh-canvas {
+  opacity: 0.68;
+}
+
+.tile-selected .tile-mesh-canvas {
+  opacity: 0.78;
 }
