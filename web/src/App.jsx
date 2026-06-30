@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { renderNode } from './components/Renderer'
 import Navigation from './components/Navigation'
-import QuickContactRail from './components/QuickContactRail'
 import DotRasterBackground from './components/DotRasterBackground'
 import BooksPage from './components/pages/BooksPage'
 import ContactPage from './components/pages/ContactPage'
@@ -70,10 +69,9 @@ function App() {
       <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} />
       {/* Navigation (Stage 8) */}
       <Navigation theme={theme} ast={ast} />
-      <QuickContactRail page={contactPage} />
       
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme)}
+        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme, { contactPage })}
       </div>
     </SelectionProvider>
   )

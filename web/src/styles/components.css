@@ -1910,6 +1910,30 @@ button:active {
   display: none;
 }
 
+.logo-with-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+.quick-contact-inline {
+  width: min(1220px, calc(100% - 2 * var(--space-lg)));
+  margin: 0 auto;
+  padding-right: clamp(8px, 3vw, 56px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quick-contact-inline-links {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  max-width: min(640px, calc(100vw - 84px));
+}
+
 
 @media (max-width: 767px) {
   .quick-contact-rail {
@@ -1919,6 +1943,17 @@ button:active {
 
   .quick-contact-links {
     max-width: 168px;
+  }
+
+  .quick-contact-inline {
+    width: min(360px, calc(100vw - 140px));
+    margin-left: auto;
+    margin-right: 8px;
+    padding-right: 0;
+  }
+
+  .quick-contact-inline-links {
+    max-width: min(320px, calc(100vw - 40px));
   }
 }
 

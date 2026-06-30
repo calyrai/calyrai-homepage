@@ -8,7 +8,7 @@
 import React from 'react'
 import { renderChildren } from './Renderer'
 
-export default function Page({ node, theme, renderNode }) {
+export default function Page({ node, theme, renderNode, context = {} }) {
   const { id, title, children = [] } = node
   const firstChild = children[0]
   const secondChild = children[1]
@@ -24,22 +24,22 @@ export default function Page({ node, theme, renderNode }) {
   const renderedChildren = canFuseLogoHero
     ? [
         <React.Fragment key={firstChild.id || 0}>
-          {renderNode({ ...firstChild, tagline: secondChild.summary?.trim() || '' }, theme)}
+          {renderNode({ ...firstChild, tagline: secondChild.summary?.trim() || '' }, theme, context)}
         </React.Fragment>,
         ...(heroHasStandaloneContent
           ? [
               <React.Fragment key={secondChild.id || 1}>
-                {renderNode({ ...secondChild, summary: '' }, theme)}
+                {renderNode({ ...secondChild, summary: '' }, theme, context)}
               </React.Fragment>,
             ]
           : []),
         ...children.slice(2).map((child, idx) => (
           <React.Fragment key={child.id || idx + 2}>
-            {renderNode(child, theme)}
+            {renderNode(child, theme, context)}
           </React.Fragment>
         )),
       ]
-    : renderChildren(children, theme)
+    : renderChildren(children, theme, context)
 
   return (
     <div className="page" id={id} data-type="page">

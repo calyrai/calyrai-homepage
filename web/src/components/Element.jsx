@@ -7,15 +7,21 @@
 
 import React from 'react'
 import LogoAnimation from './logo/LogoAnimation'
+import QuickContactRail from './QuickContactRail'
 import { renderChildren } from './Renderer'
 
-export default function Element({ node, theme }) {
+export default function Element({ node, theme, context = {} }) {
   const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
 
   if (id === 'logo') {
     const heroTheme = theme?.skin?.components?.hero || {}
     const logoLayout = heroTheme.logo_layout || 'inline'
-    return <LogoAnimation className="logo-element" label={title} tagline={tagline} layout={logoLayout} showCanvas={false} />
+    return (
+      <div className="logo-with-contact">
+        <LogoAnimation className="logo-element" label={title} tagline={tagline} layout={logoLayout} showCanvas={false} />
+        <QuickContactRail page={context?.contactPage} variant="inline" />
+      </div>
+    )
   }
 
   // Use footer theme for footer nodes, generic element theme otherwise.

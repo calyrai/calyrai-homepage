@@ -12,7 +12,7 @@ import { SectionLayoutService } from '../services/SectionLayoutService'
 import { ScrollCenterProvider } from '../hooks/useScrollCenter'
 import { useIsMobile } from '../hooks/useIsMobile'
 
-export default function Section({ node, theme }) {
+export default function Section({ node, theme, context = {} }) {
   const { id, title, summary, route, children = [] } = node
   const layout = SectionLayoutService.create(node)
   const isMobileViewport = useIsMobile()
@@ -33,7 +33,7 @@ export default function Section({ node, theme }) {
   const renderGrid = () => (
     <ScrollCenterProvider>
       <div className={`section-grid ${isMobileViewport ? 'scroll-mode' : ''}`.trim()}>
-        {renderChildren(children, theme)}
+        {renderChildren(children, theme, context)}
       </div>
     </ScrollCenterProvider>
   )

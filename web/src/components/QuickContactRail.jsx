@@ -5,7 +5,7 @@ const DRAG_THRESHOLD_PX = 2
 const DRAG_SAFETY_TIMEOUT_MS = 8000
 const RAIL_EDGE_GUTTER_PX = 8
 
-export default function QuickContactRail({ page }) {
+export default function QuickContactRail({ page, variant = 'floating' }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [topPx, setTopPx] = useState(null)
@@ -24,6 +24,42 @@ export default function QuickContactRail({ page }) {
 
   if (!page || contactLinks.length === 0) {
     return null
+  }
+
+  const handleQrButtonClick = () => {
+    window.dispatchEvent(new CustomEvent('calyr:activate-qr'))
+  }
+
+  if (variant === 'inline') {
+    const tabLabel = page.title || page.id || 'contact'
+    return (
+      <section className="quick-contact-inline" aria-label={tabLabel}>
+        <div className="quick-contact-inline-links">
+          <button
+            type="button"
+            className="quick-contact-link quick-contact-link--qr"
+            onClick={handleQrButtonClick}
+            aria-label="QR"
+            title="QR"
+          >
+            <span className="quick-contact-icon" aria-hidden="true">QR</span>
+          </button>
+          {contactLinks.map((item) => (
+            <a
+              key={item.id}
+              className="quick-contact-link"
+              href={item.href}
+              target={item.href.startsWith('http') ? '_blank' : undefined}
+              rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+              aria-label={item.label}
+              title={item.label}
+            >
+              <span className="quick-contact-icon" aria-hidden="true">{LinkItemService.getContactSymbol(item) || '@'}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
   }
 
   const toggleOpen = () => setIsOpen((prev) => !prev)
@@ -160,10 +196,6 @@ export default function QuickContactRail({ page }) {
     transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
     opacity: isOpen ? 1 : 0,
     pointerEvents: isOpen ? 'auto' : 'none',
-  }
-
-  const handleQrButtonClick = () => {
-    window.dispatchEvent(new CustomEvent('calyr:activate-qr'))
   }
 
   return (
