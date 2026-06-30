@@ -239,7 +239,18 @@ export default class LogoCanvasEngine {
     const angleWarpStrength = Number(this.config?.ring?.angleWarpStrength) || 0.07
     const arrivalGapStrength = Number(this.config?.ring?.arrivalGapStrength) || 0.26
     const arrivalStrokeStrength = Number(this.config?.ring?.arrivalStrokeStrength) || 0.2
+    const thicknessSwing = Number(this.config?.ring?.thicknessSwing) || 0.72
+    const eruptionStrength = Number(this.config?.ring?.eruptionStrength) || 1.12
+    const eruptionWidth = Number(this.config?.ring?.eruptionWidth) || 0.2
+    const eruptionJaggedness = Number(this.config?.ring?.eruptionJaggedness) || 0.28
     const thickness = Math.max(0.008, this.ringThickness)
+    const eruptionOffset = this.#hash2(qrCount * 0.77, qrCount * 1.13) * Math.PI * 2
+
+    const eruptionCenters = [
+      eruptionOffset + 0.3,
+      eruptionOffset + 2.35,
+      eruptionOffset + 4.72,
+    ]
 
     // Ring layout uses ONLY QR point count (not QR point positions).
     for (let i = 0; i < qrCount; i += 1) {
@@ -263,14 +274,34 @@ export default class LogoCanvasEngine {
       const angleWarp =
         (Math.sin(baseAngle * 2.8 + seedA * Math.PI * 2) * 0.66 + localNoiseB * 0.34) * angleWarpStrength
 
+      let eruptionProfile = 0
+      for (let k = 0; k < eruptionCenters.length; k += 1) {
+        eruptionProfile += this.#gaussian(this.#angleDiff(baseAngle, eruptionCenters[k]), eruptionWidth)
+      }
+      eruptionProfile = Math.max(0, Math.min(1.7, eruptionProfile))
+
+      const thicknessProfile =
+        1 +
+        Math.sin(baseAngle * 0.94 + 1.3) * (0.38 * thicknessSwing) +
+        Math.sin(baseAngle * 2.2 + 0.2) * (0.24 * thicknessSwing) +
+        eruptionProfile * (0.75 * thicknessSwing)
+
+      const localThickness = Math.max(0.0065, thickness * thicknessProfile)
+
       const gapBias = Math.max(0, gapField)
-      const radialOffset = localNoise * thickness * 0.64
-      const fractalOffset = fractalWave * thickness * fractalStrength
-      const asymOffset = (lobeA + lobeB + localNoise * 0.24) * thickness * asymmetry
-      const brushOffset = (0.5 - gapBias) * thickness * arrivalStrokeStrength
+      const radialOffset = localNoise * localThickness * 0.64
+      const fractalOffset = fractalWave * localThickness * fractalStrength
+      const asymOffset = (lobeA + lobeB + localNoise * 0.24) * localThickness * asymmetry
+      const brushOffset = (0.5 - gapBias) * localThickness * arrivalStrokeStrength
+      const eruptionOffsetRadial = eruptionProfile * localThickness * eruptionStrength
+      const eruptionSpike =
+        Math.pow(Math.max(0, Math.sin(baseAngle * 16.4 + seedB * Math.PI * 2)), 6) *
+        localThickness *
+        eruptionJaggedness *
+        (0.4 + eruptionProfile)
       const targetRadius = Math.max(
         0.02,
-        this.ringRadius + radialOffset + fractalOffset + asymOffset + brushOffset
+        this.ringRadius + radialOffset + fractalOffset + asymOffset + brushOffset + eruptionOffsetRadial + eruptionSpike
       )
       const theta = baseAngle + angleWarp
 
@@ -278,7 +309,11 @@ export default class LogoCanvasEngine {
         0.45,
         Math.min(
           1,
-          0.66 + Math.abs(fractalWave) * 0.2 + Math.abs(localNoise) * 0.07 + (1 - gapBias) * arrivalGapStrength
+          0.62 +
+            Math.abs(fractalWave) * 0.16 +
+            Math.abs(localNoise) * 0.08 +
+            (1 - gapBias) * arrivalGapStrength +
+            eruptionProfile * 0.15
         )
       )
 
@@ -287,6 +322,18 @@ export default class LogoCanvasEngine {
         y: this.ringCenterY + Math.sin(theta) * targetRadius,
         weight,
       })
+
+      // Corona spray: sparse outward sparks along eruption sectors.
+      const sprayGate = this.#hash2(i * 13.7 + 2.1, i * 1.9 + 5.3)
+      if (eruptionProfile > 0.32 && sprayGate > 0.72) {
+        const sprayRadius = targetRadius + localThickness * (0.38 + sprayGate * 0.8)
+        const sprayTheta = theta + (sprayGate - 0.5) * 0.08
+        this.ringTargets.push({
+          x: this.ringCenterX + Math.cos(sprayTheta) * sprayRadius,
+          y: this.ringCenterY + Math.sin(sprayTheta) * sprayRadius,
+          weight: Math.max(0.35, Math.min(0.82, weight * 0.82)),
+        })
+      }
     }
 
     return this.ringTargets.length > 0

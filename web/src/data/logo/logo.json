@@ -65,6 +65,10 @@
     "angleWarpStrength": 0.07,
     "arrivalGapStrength": 0.26,
     "arrivalStrokeStrength": 0.2,
+    "thicknessSwing": 0.72,
+    "eruptionStrength": 1.12,
+    "eruptionWidth": 0.2,
+    "eruptionJaggedness": 0.28,
     "step": 0.0082,
     "externalTargetSizeNorm": 0.9
   }
