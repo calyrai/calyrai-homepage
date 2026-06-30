@@ -1103,13 +1103,6 @@ export default class LogoCanvasEngine {
           0.82,
           qrPx * (0.31 + reveal * 0.16) * sizeJitter * (0.86 + qrShimmer * 0.24 + qrGlint * 0.16)
         )
-        const shadowOffset = 0.55
-        const shadowAlpha = 0.08 + reveal * 0.12
-
-        ctx.fillStyle = `rgba(0, 0, 0, ${shadowAlpha.toFixed(3)})`
-        ctx.beginPath()
-        ctx.arc(px + shadowOffset, py + shadowOffset, radius, 0, Math.PI * 2)
-        ctx.fill()
 
         const qrAlpha = Math.min(1, 0.7 + reveal * 0.24 + qrShimmer * 0.26 + qrGlint * 0.22)
         ctx.fillStyle = `rgba(255,255,255,${qrAlpha.toFixed(3)})`
@@ -1130,7 +1123,7 @@ export default class LogoCanvasEngine {
       const alwaysSparkle = 0.84 + (Math.sin(t * (2.25 + sparkleSeed * 1.2) + sparkleSeed * 8.1) + 1) * 0.11
       alpha *= (0.72 + shimmer * 0.34 + glint * 0.42 + sparkleBurst * 0.28) * alwaysSparkle
       size *= 0.78 + shimmer * 0.26 + glint * 0.18 + sparkleBurst * 0.16
-      alpha = Math.max(0.075, alpha)
+      alpha = Math.max(0.03, alpha)
 
       if (glint > 0.65 || sparkleBurst > 0.6) {
         ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha * 0.78 + 0.16).toFixed(3)})`

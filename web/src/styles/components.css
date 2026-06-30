@@ -2110,8 +2110,8 @@ button:active {
 }
 
 .calyr-logo-interactive[data-logo-state='entropy'] {
-  filter: blur(0.4px) saturate(0.92);
-  opacity: 0.92;
+  filter: saturate(0.95);
+  opacity: 1;
 }
 
 .calyr-logo-interactive[data-logo-state='reassemble'] {
