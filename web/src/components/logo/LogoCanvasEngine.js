@@ -43,10 +43,10 @@ export default class LogoCanvasEngine {
     this.canvasOffsetY = 0
     this.qrMatrixSource = config?.qrMatrix || null
 
-    this.ringCenterX = 0.5
-    this.ringCenterY = 0.525
-    this.ringRadius = 0.335
-    this.ringThickness = 0.052
+    this.ringCenterX = Number.isFinite(config?.ring?.centerX) ? config.ring.centerX : 0.5
+    this.ringCenterY = Number.isFinite(config?.ring?.centerY) ? config.ring.centerY : 0.525
+    this.ringRadius = Number.isFinite(config?.ring?.radius) ? config.ring.radius : 0.335
+    this.ringThickness = Number.isFinite(config?.ring?.thickness) ? config.ring.thickness : 0.052
 
     this.constellations = []
     this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + this.#hash2(7.3, 2.1) * 5, duration: 2.8 }
@@ -56,8 +56,12 @@ export default class LogoCanvasEngine {
     this.#resizeListenerAttached = false
 
     this.#buildGridDots()
-    this.#buildRingTargets()
     this.#buildQrTargets(this.qrMatrixSource)
+    if (this.#syncRingCenterToQr()) {
+      this.#buildRingTargets()
+    } else {
+      this.#buildRingTargets()
+    }
     this.#buildConstellations()
     this.#initParticles()
 
@@ -108,8 +112,30 @@ export default class LogoCanvasEngine {
 
     if (this.qrMatrixSource) {
       this.#buildQrTargets(this.qrMatrixSource)
+      if (this.#syncRingCenterToQr()) {
+        this.#buildRingTargets()
+        this.#buildConstellations()
+      }
       this.#initParticles()
     }
+  }
+
+  #syncRingCenterToQr() {
+    if (!this.qrLayout) return false
+
+    const qrCenterX = this.qrLayout.left + (this.qrLayout.size * this.qrLayout.moduleSizeX) / 2
+    const qrCenterY = this.qrLayout.top + (this.qrLayout.size * this.qrLayout.moduleSizeY) / 2
+
+    const changed =
+      Math.abs(qrCenterX - this.ringCenterX) > 1e-6 ||
+      Math.abs(qrCenterY - this.ringCenterY) > 1e-6
+
+    if (changed) {
+      this.ringCenterX = qrCenterX
+      this.ringCenterY = qrCenterY
+    }
+
+    return changed
   }
 
   render(ts) {
@@ -132,6 +158,11 @@ export default class LogoCanvasEngine {
   #buildRingTargets() {
     this.ringTargets = []
 
+    const deriveFromQr = this.config?.pointTopology?.deriveAllPointsFromQr !== false
+    if (deriveFromQr && this.#buildRingTargetsFromQr()) {
+      return
+    }
+
     const externalPoints = this.config?.ringPointSet
     if (Array.isArray(externalPoints) && externalPoints.length > 0) {
       this.#buildRingTargetsFromExternal(externalPoints, this.config?.ringPointBounds)
@@ -140,7 +171,7 @@ export default class LogoCanvasEngine {
       }
     }
 
-    const step = 0.0082
+    const step = Number(this.config?.ring?.step) || 0.0082
 
     for (let y = 0.06; y <= 0.94; y += step) {
       for (let x = 0.06; x <= 0.94; x += step) {
@@ -182,6 +213,40 @@ export default class LogoCanvasEngine {
     }
   }
 
+  #buildRingTargetsFromQr() {
+    if (!this.qrTargets.length) return false
+
+    let maxRadius = 0
+    for (let i = 0; i < this.qrTargets.length; i += 1) {
+      const q = this.qrTargets[i]
+      const r = Math.hypot(q.x - this.ringCenterX, q.y - this.ringCenterY)
+      if (r > maxRadius) maxRadius = r
+    }
+    if (maxRadius <= 0) return false
+
+    const thickness = Math.max(0.008, this.ringThickness)
+    for (let i = 0; i < this.qrTargets.length; i += 1) {
+      const q = this.qrTargets[i]
+      const dx = q.x - this.ringCenterX
+      const dy = q.y - this.ringCenterY
+      const r = Math.hypot(dx, dy)
+      const angle = Math.atan2(dy, dx)
+      const radialNorm = r / maxRadius
+
+      // Every ring point is a deterministic transform of a QR point.
+      const radialOffset = (radialNorm - 0.5) * thickness * 1.45
+      const targetRadius = this.ringRadius + radialOffset
+
+      this.ringTargets.push({
+        x: this.ringCenterX + Math.cos(angle) * targetRadius,
+        y: this.ringCenterY + Math.sin(angle) * targetRadius,
+        weight: 0.84,
+      })
+    }
+
+    return this.ringTargets.length > 0
+  }
+
   #buildRingTargetsFromExternal(points, bounds) {
     const minX = Number.isFinite(bounds?.minX)
       ? bounds.minX
@@ -199,7 +264,7 @@ export default class LogoCanvasEngine {
     const spanX = Math.max(1, maxX - minX)
     const spanY = Math.max(1, maxY - minY)
     const sourceSpan = Math.max(spanX, spanY)
-    const targetSize = 0.9
+    const targetSize = Number(this.config?.ring?.externalTargetSizeNorm) || 0.9
     const scale = targetSize / sourceSpan
     const targetW = spanX * scale
     const targetH = spanY * scale

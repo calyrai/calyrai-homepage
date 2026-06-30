@@ -16,7 +16,7 @@
     },
     "qr_show": {
       "description": "QR remains readable",
-      "durationMs": 12000
+      "durationMs": 10000
     },
     "dissolve": {
       "description": "QR order breaks apart",
@@ -32,9 +32,12 @@
     }
   },
   "interaction": {
+    "initialState": "qr_show",
     "hoverEnter": "active",
     "hoverLeave": "idle",
     "click": "qr_build",
+    "holdQrOnStart": false,
+    "idleCycleToQrMs": null,
     "idleTimeoutToEntropyMs": null,
     "pointerReturnFromEntropy": "reassemble",
     "upperActivationZoneFraction": 0.36
@@ -42,12 +45,22 @@
   "qr": {
     "mode": "vcard",
     "text": "BEGIN:VCARD\nVERSION:3.0\nFN:Rupert Tscheliessnig\nTITLE:Founder\nORG:CALYR.ai\nURL:https://calyr.ai\nTEL:+4369919200915\nEND:VCARD",
-    "targetSizePx": 256
+    "targetSizePx": 292
   },
   "particle": {
+    "countExact": 1800,
     "countMin": 5000,
     "countMax": 10000,
     "baseColor": "#ffffff",
     "accentColor": "#ff33cc"
+  },
+  "pointTopology": {
+    "deriveAllPointsFromQr": true
+  },
+  "ring": {
+    "radius": 0.335,
+    "thickness": 0.052,
+    "step": 0.0082,
+    "externalTargetSizeNorm": 0.9
   }
 }
