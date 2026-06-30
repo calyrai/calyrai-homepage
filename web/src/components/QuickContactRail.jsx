@@ -1,11 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LinkItemService } from '../services/LinkItemService'
 
+const DRAG_THRESHOLD_PX = 2
+const DRAG_SAFETY_TIMEOUT_MS = 8000
+
 export default function QuickContactRail({ page }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const [topPx, setTopPx] = useState(null)
   const [leftPx, setLeftPx] = useState(null)
   const railRef = useRef(null)
+  const suppressNextClickRef = useRef(false)
+  const dragRef = useRef({
+    active: false,
+    startPointerX: 0,
+    startPointerY: 0,
+    startTopPx: 0,
+    startLeftPx: 0,
+    moved: false,
+  })
   const contactLinks = LinkItemService.buildContactLinks(page)
 
   if (!page || contactLinks.length === 0) {
@@ -13,6 +26,15 @@ export default function QuickContactRail({ page }) {
   }
 
   const toggleOpen = () => setIsOpen((prev) => !prev)
+
+  useEffect(() => {
+    if (!isDragging) return
+    const timeout = setTimeout(() => {
+      setIsDragging(false)
+      dragRef.current.active = false
+    }, DRAG_SAFETY_TIMEOUT_MS)
+    return () => clearTimeout(timeout)
+  }, [isDragging])
 
   const clampTop = (nextTop, railHeightOverride) => {
     if (typeof window === 'undefined') return nextTop
@@ -31,40 +53,92 @@ export default function QuickContactRail({ page }) {
   }
 
   useEffect(() => {
-    const alignRailToLogoAxis = () => {
+    const initializePosition = () => {
       if (typeof window === 'undefined') return
-      const logo = document.querySelector('.calyr-logo-interactive')
       const railWidth = railRef.current?.offsetWidth || 96
       const railHeight = railRef.current?.offsetHeight || 220
-
-      if (!(logo instanceof Element)) {
-        const fallbackTop = Math.round(window.innerHeight * 0.3)
-        setTopPx(clampTop(fallbackTop, railHeight))
-        setLeftPx(clampLeft(8, railWidth))
-        return
-      }
-
-      const rect = logo.getBoundingClientRect()
-      const gapPx = 12
-      const alignedLeft = clampLeft(rect.left - railWidth - gapPx, railWidth)
-      const alignedTop = clampTop(rect.top + rect.height * 0.5 - railHeight * 0.5, railHeight)
-
-      setLeftPx(alignedLeft)
-      setTopPx(alignedTop)
+      const defaultTop = Math.round(window.innerHeight * 0.3)
+      const defaultLeft = 0
+      setTopPx((prev) => clampTop(prev == null ? defaultTop : prev, railHeight))
+      setLeftPx((prev) => clampLeft(prev == null ? defaultLeft : prev, railWidth))
     }
 
-    alignRailToLogoAxis()
-    window.addEventListener('resize', alignRailToLogoAxis)
-    window.addEventListener('scroll', alignRailToLogoAxis, { passive: true })
+    initializePosition()
+    window.addEventListener('resize', initializePosition)
     return () => {
-      window.removeEventListener('resize', alignRailToLogoAxis)
-      window.removeEventListener('scroll', alignRailToLogoAxis)
+      window.removeEventListener('resize', initializePosition)
     }
   }, [])
 
-  const handleTabClick = () => toggleOpen()
+  useEffect(() => {
+    if (!isDragging) return
 
-  const tabLabel = page.title || page.id || ''
+    const handleDocPointerMove = (event) => {
+      const drag = dragRef.current
+      if (!drag.active) return
+      const deltaX = event.clientX - drag.startPointerX
+      const deltaY = event.clientY - drag.startPointerY
+      if (Math.abs(deltaX) > DRAG_THRESHOLD_PX || Math.abs(deltaY) > DRAG_THRESHOLD_PX) {
+        dragRef.current.moved = true
+      }
+
+      setLeftPx(clampLeft(drag.startLeftPx + deltaX))
+      setTopPx(clampTop(drag.startTopPx + deltaY))
+    }
+
+    const handleDocPointerUp = (event) => {
+      const drag = dragRef.current
+      if (!drag.active) return
+
+      dragRef.current.active = false
+      setIsDragging(false)
+
+      const target = event.target
+      const isLinkTarget = target instanceof Element && !!target.closest('a')
+      if (!drag.moved && !isLinkTarget) {
+        suppressNextClickRef.current = true
+        toggleOpen()
+      }
+    }
+
+    document.addEventListener('pointermove', handleDocPointerMove, true)
+    document.addEventListener('pointerup', handleDocPointerUp, true)
+    document.addEventListener('pointercancel', handleDocPointerUp, true)
+
+    return () => {
+      document.removeEventListener('pointermove', handleDocPointerMove, true)
+      document.removeEventListener('pointerup', handleDocPointerUp, true)
+      document.removeEventListener('pointercancel', handleDocPointerUp, true)
+    }
+  }, [isDragging])
+
+  const handlePointerDown = (event) => {
+    if (event.target.closest('a')) return
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+
+    const fallbackTop = Math.round((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.3)
+    const fallbackLeft = 0
+    dragRef.current = {
+      active: true,
+      startPointerX: event.clientX,
+      startPointerY: event.clientY,
+      startTopPx: topPx ?? fallbackTop,
+      startLeftPx: leftPx ?? fallbackLeft,
+      moved: false,
+    }
+    setIsDragging(true)
+  }
+
+  const handleTabClick = () => {
+    if (suppressNextClickRef.current) {
+      suppressNextClickRef.current = false
+      return
+    }
+    toggleOpen()
+  }
+
+  const tabLabel = page.tile_title || page.title || page.id || ''
+  const accentClass = page.tile_accent ? `quick-contact-rail--${page.tile_accent}` : ''
   const railStyle =
     topPx == null || leftPx == null
       ? undefined
@@ -78,7 +152,7 @@ export default function QuickContactRail({ page }) {
 
   return (
     <aside
-      className={`quick-contact-rail ${isOpen ? 'open' : ''}`}
+      className={`quick-contact-rail ${accentClass} ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`.trim()}
       aria-label={tabLabel}
       style={railStyle}
       ref={railRef}
@@ -86,6 +160,7 @@ export default function QuickContactRail({ page }) {
       <button
         className="quick-contact-tab"
         type="button"
+        onPointerDown={handlePointerDown}
         onClick={handleTabClick}
         aria-expanded={isOpen}
         aria-controls="quick-contact-links"
