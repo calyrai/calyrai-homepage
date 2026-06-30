@@ -162,6 +162,10 @@ export default function QuickContactRail({ page }) {
     pointerEvents: isOpen ? 'auto' : 'none',
   }
 
+  const handleQrButtonClick = () => {
+    window.dispatchEvent(new CustomEvent('calyr:activate-qr'))
+  }
+
   return (
     <aside
       className={`quick-contact-rail ${accentClass} ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`.trim()}
@@ -183,6 +187,15 @@ export default function QuickContactRail({ page }) {
       </button>
 
       <div className="quick-contact-links" id="quick-contact-links" style={linksStyle}>
+        <button
+          type="button"
+          className="quick-contact-link quick-contact-link--qr"
+          onClick={handleQrButtonClick}
+          aria-label="QR"
+          title="QR"
+        >
+          <span className="quick-contact-icon" aria-hidden="true">QR</span>
+        </button>
         {contactLinks.map((item) => (
           <a
             key={item.id}

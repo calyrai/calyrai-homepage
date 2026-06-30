@@ -1883,12 +1883,18 @@ button:active {
   color: #111111;
   text-decoration: none;
   transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+  cursor: pointer;
 }
 
 .quick-contact-link:hover {
   border-color: rgba(0, 0, 0, 0.3);
   background: rgba(245, 245, 245, 1);
   transform: translateX(3px);
+}
+
+.quick-contact-link--qr {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
 }
 
 .quick-contact-icon {
