@@ -1,4 +1,5 @@
 import React from 'react'
+import { LinkItemService } from '../../services/LinkItemService'
 
 function ContactInstitution({ institution }) {
   const capabilities = Array.isArray(institution.capabilities) ? institution.capabilities : []
@@ -89,10 +90,13 @@ export default function ContactPage({ page }) {
   const institutions = Array.isArray(page.institutions)
     ? page.institutions.filter((institution) => institution?.visibility?.public !== false)
     : []
+  const contacts = Array.isArray(page.contacts)
+    ? page.contacts.filter((entry) => LinkItemService.getContactSymbol(entry) && (entry.route || entry.href || entry.url))
+    : []
+  const primaryMetaLink = Array.isArray(page.links) && page.links.length > 0 ? page.links[0] : null
   const kicker = [page.tile_title, page.landing_message].filter(Boolean).join(' ')
-  const primaryLinkLabel = typeof page.route === 'string' && page.route.startsWith('mailto:')
-    ? page.route.replace('mailto:', '')
-    : page.route
+  const primaryLinkHref = primaryMetaLink?.route || primaryMetaLink?.href || primaryMetaLink?.url || ''
+  const primaryLinkLabel = primaryMetaLink?.label || ''
 
   return (
     <main className="contact-page" aria-label={pageLabel}>
@@ -107,13 +111,37 @@ export default function ContactPage({ page }) {
       </header>
 
       <div className="contact-page-meta">
-        {page.subtitle && <span>{page.subtitle}</span>}
-        {page.route && (
-          <a href={page.route} className="contact-page-primary-link">
+        {primaryLinkHref && primaryLinkLabel && (
+          <a href={primaryLinkHref} className="contact-page-primary-link">
             {primaryLinkLabel}
           </a>
         )}
       </div>
+
+      {contacts.length > 0 && (
+        <section className="contact-page-section contact-page-section-compact">
+          <div className="contact-page-symbols" aria-label="Contact channels">
+            {contacts.map((entry) => {
+              const href = entry.route || entry.href || entry.url
+              const symbol = LinkItemService.getContactSymbol(entry)
+
+              return (
+                <a
+                  key={entry.id || entry.label}
+                  href={href}
+                  className="contact-page-symbol-link"
+                  aria-label={entry.label || entry.id || symbol}
+                  title={entry.label || entry.id || symbol}
+                  target={href?.startsWith('http') ? '_blank' : undefined}
+                  rel={href?.startsWith('http') ? 'noreferrer' : undefined}
+                >
+                  <span aria-hidden="true">{symbol}</span>
+                </a>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {page.body && (
         <section className="contact-page-section">

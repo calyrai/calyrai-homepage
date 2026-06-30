@@ -1,4 +1,9 @@
 export class LinkItemService {
+  static getContactSymbol(item) {
+    if (!item) return null
+    return typeof item === 'string' ? null : (item.symbol || null)
+  }
+
   static normalize(item) {
     if (!item) return null
     if (typeof item === 'string') {
@@ -10,21 +15,14 @@ export class LinkItemService {
 
     const label = item.label || item.name || item.id || href
     const id = item.id || `${label}-${href}`
-    return { id, label, href }
+    return { id, label, href, symbol: item.symbol || null }
   }
 
   static buildContactLinks(page) {
     const links = []
 
-    if (page?.route) {
-      const routeLabel = typeof page.route === 'string' && page.route.startsWith('mailto:')
-        ? page.route.replace('mailto:', '')
-        : page.route
-      links.push({ id: 'primary-route', label: routeLabel, href: page.route })
-    }
-
-    if (Array.isArray(page?.links)) {
-      page.links.forEach((item) => {
+    if (Array.isArray(page?.contacts)) {
+      page.contacts.forEach((item) => {
         const normalized = LinkItemService.normalize(item)
         if (normalized) links.push(normalized)
       })

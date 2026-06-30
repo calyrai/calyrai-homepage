@@ -122,41 +122,13 @@ architecture:
 
 footer:
 
-  title: "Connect"
+  title: ""
 
-  subtitle: "CALYR.AI contact registry"
+  subtitle: ""
 
-  summary: "Research, engineering, and collaboration channels."
+  summary: ""
 
-  contacts:
-    - id: phone
-      label: Phone
-      value: "069 919 200915"
-      route: tel:+4369919200915
-    - id: whatsapp
-      label: WhatsApp
-      value: WhatsApp
-      route: https://wa.me/4369919200915
-    - id: x
-      label: X
-      value: X
-      route: https://x.com
-    - id: bluesky
-      label: Bluesky
-      value: Bluesky
-      route: https://bsky.app
-    - id: youtube
-      label: YouTube
-      value: YouTube
-      route: https://www.youtube.com
-    - id: instagram
-      label: Instagram
-      value: Instagram
-      route: https://www.instagram.com
-    - id: mail
-      label: Mail
-      value: Mail
-      route: mailto:rupert.tscheliessnig@calyr.ai
+  contacts: []
 
 # --------------------------------------------------
 
@@ -373,7 +345,7 @@ philosophy:
 
 contact:
 
-  title: "contacts"
+  title: "contact"
 
   tile_lead: "contacts"
 
@@ -388,8 +360,8 @@ contact:
   landing_message: "intelligence"
 
   summary: >
-    Research, industry,
-    and partnership inquiries.
+    Research, engineering,
+    and collaboration channels.
 
   body: >
     Contact us regarding collaborations,
@@ -401,7 +373,41 @@ contact:
 
   icon: mail
 
-  route: mailto:rupert.tscheliessnig@calyr.ai
+  route: /contact
+
+  contacts:
+    - id: mail
+      label: Mail
+      symbol: "@"
+      route: mailto:rupert.tscheliessnig@calyr.ai
+    - id: whatsapp
+      label: WhatsApp
+      symbol: "~"
+      route: https://wa.me/4369919200915
+    - id: x
+      label: X
+      symbol: "X"
+      route: https://x.com
+    - id: linkedin
+      label: LinkedIn
+      symbol: "in"
+      route: https://www.linkedin.com
+    - id: bluesky
+      label: Bluesky
+      symbol: "*"
+      route: https://bsky.app
+    - id: youtube
+      label: YouTube
+      symbol: ">"
+      route: https://www.youtube.com
+    - id: instagram
+      label: Instagram
+      symbol: "o"
+      route: https://www.instagram.com
+    - id: impressum
+      label: Impressum
+      symbol: "i"
+      route: /legal
 
   intent:
     purpose: conversion
@@ -418,22 +424,18 @@ contact:
 
 legal:
 
-  title: "legal"
+  title: "Impressum"
 
-  subtitle: "Information"
+  subtitle: ""
 
-  summary: >
-    Legal and platform information.
+  summary: ""
 
-  body: >
-    Impressum, privacy policy,
-    contact information,
-    and external links.
-    Credentials: Rupert Tscheliessnig,
-    Founder of Calyr.aí,
-    AI and surrogate modelling research.
+  body: |
+    Rupert Tscheliessnig
+    Ogugasse 3/3/13
+    1220 Vienna, Austria
 
-  icon: document
+  icon: ""
 
   route: /legal
 

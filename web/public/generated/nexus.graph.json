@@ -65,10 +65,10 @@
     },
     {
       "id": "footer",
-      "label": "Connect",
+      "label": "",
       "data": {
-        "title": "Connect",
-        "summary": "Research, engineering, and collaboration channels.",
+        "title": "",
+        "summary": "",
         "icon": ""
       }
     },
@@ -146,20 +146,20 @@
     },
     {
       "id": "contact",
-      "label": "contacts",
+      "label": "contact",
       "data": {
-        "title": "contacts",
-        "summary": "Research, industry, and partnership inquiries.\n",
+        "title": "contact",
+        "summary": "Research, engineering, and collaboration channels.\n",
         "icon": "mail"
       }
     },
     {
       "id": "legal",
-      "label": "legal",
+      "label": "Impressum",
       "data": {
-        "title": "legal",
-        "summary": "Legal and platform information.\n",
-        "icon": "document"
+        "title": "Impressum",
+        "summary": "",
+        "icon": ""
       }
     }
   ],

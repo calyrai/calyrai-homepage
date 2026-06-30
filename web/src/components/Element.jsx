@@ -7,14 +7,15 @@
 
 import React from 'react'
 import LogoAnimation from './logo/LogoAnimation'
+import { renderChildren } from './Renderer'
 
 export default function Element({ node, theme }) {
-  const { id, title, summary, body, icon, route, contacts = [] } = node
+  const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
 
   if (id === 'logo') {
     const heroTheme = theme?.skin?.components?.hero || {}
     const logoLayout = heroTheme.logo_layout || 'inline'
-    return <LogoAnimation className="logo-element" label={title} layout={logoLayout} />
+    return <LogoAnimation className="logo-element" label={title} tagline={tagline} layout={logoLayout} />
   }
 
   // Use footer theme for footer nodes, generic element theme otherwise.
@@ -35,6 +36,8 @@ export default function Element({ node, theme }) {
   const dataType = isFooter ? 'footer' : 'element'
   const className = isFooter ? 'element footer-element' : 'element'
   const footerContacts = Array.isArray(contacts) ? contacts : []
+
+  if (id === 'legal') return null
 
   return (
     <WrapperTag className={className} id={id} data-type={dataType} style={elementStyle}>
@@ -83,6 +86,12 @@ export default function Element({ node, theme }) {
           <a href={route} className="element-link">
             {title} →
           </a>
+        )}
+
+        {children.length > 0 && (
+          <div className="element-children">
+            {renderChildren(children, theme)}
+          </div>
         )}
       </div>
     </WrapperTag>

@@ -5,7 +5,7 @@ import ringPointSet from '../../data/logo/calyr_ring_dots_1000.json'
 import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
 
-export default function LogoAnimation({ className = '', label = '', layout = 'inline' }) {
+export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline' }) {
   const [state, setState] = useState('idle')
   const machineRef = useRef(null)
   const engineRef = useRef(null)
@@ -139,13 +139,14 @@ export default function LogoAnimation({ className = '', label = '', layout = 'in
           }
         }}
       >
-        <div
-          className={`calyr-logo-through-line ${state === 'active' || state === 'qr_build' ? 'energized' : ''}`}
-          aria-hidden="true"
-        />
         <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
       </div>
-      {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
+      {(label || tagline) && (
+        <div className="calyr-logo-lockup">
+          {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
+          {tagline && <div className="calyr-logo-tagline">{tagline}</div>}
+        </div>
+      )}
     </div>
   )
 }

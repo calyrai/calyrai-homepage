@@ -41,9 +41,9 @@ export default class LogoCanvasEngine {
     this.qrModuleSizeNorm = 0
 
     this.ringCenterX = 0.5
-    this.ringCenterY = 0.54
-    this.ringRadius = 0.285
-    this.ringThickness = 0.048
+    this.ringCenterY = 0.525
+    this.ringRadius = 0.335
+    this.ringThickness = 0.052
 
     this.constellations = []
     this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + this.#hash2(7.3, 2.1) * 5, duration: 2.8 }
@@ -188,17 +188,17 @@ export default class LogoCanvasEngine {
 
     const spanX = Math.max(1, maxX - minX)
     const spanY = Math.max(1, maxY - minY)
-    const targetW = 0.82
-    const targetH = 0.74
+    const sourceSpan = Math.max(spanX, spanY)
+    const targetSize = 0.9
+    const scale = targetSize / sourceSpan
+    const targetW = spanX * scale
+    const targetH = spanY * scale
     const left = this.ringCenterX - targetW / 2
     const top = this.ringCenterY - targetH / 2
 
     for (const pt of points) {
-      const nx = (pt.x - minX) / spanX
-      const ny = (pt.y - minY) / spanY
-
-      const x = left + nx * targetW
-      const y = top + ny * targetH
+      const x = left + (pt.x - minX) * scale
+      const y = top + (pt.y - minY) * scale
 
       this.ringTargets.push({
         x,
@@ -477,12 +477,6 @@ export default class LogoCanvasEngine {
     const qrCount = this.qrTargets.length
     const count = Math.max(ringCount, qrCount)
 
-    const clusterCount = Math.max(5, Math.min(10, Math.floor(Math.sqrt(Math.max(1, ringCount)) * 0.7)))
-    const clusterCenters = Array.from({ length: clusterCount }, (_, idx) => {
-      const roll = this.#hash2(idx * 11.3, 0.73)
-      return Math.floor(roll * Math.max(1, ringCount)) % Math.max(1, ringCount)
-    })
-
     const particleOrder = Array.from({ length: count }, (_, idx) => idx).sort(
       (a, b) => this.#hash2(a * 3.17, a * 9.31) - this.#hash2(b * 3.17, b * 9.31)
     )
@@ -499,14 +493,7 @@ export default class LogoCanvasEngine {
 
     for (let i = 0; i < count; i += 1) {
       const uniformIndex = i % ringCount
-      const clusterId = Math.floor(this.#hash2(i * 4.1, i * 1.9) * clusterCount) % clusterCount
-      const clusterCenter = clusterCenters[clusterId]
-      const clusterSpan = Math.floor(8 + this.#hash2(i * 9.4, i * 2.6) * 24)
-      const clusterOffset = Math.floor((this.#hash2(i * 7.7, i * 3.3) - 0.5) * clusterSpan)
-      const clusterIndex = (clusterCenter + clusterOffset + ringCount) % ringCount
-      const clusterMix = 0.24 + this.#hash2(i * 2.1, i * 8.8) * 0.66
-      const mixedIndex = Math.round(uniformIndex * (1 - clusterMix) + clusterIndex * clusterMix)
-      const ringAnchorIndex = ((mixedIndex % ringCount) + ringCount) % ringCount
+      const ringAnchorIndex = ((uniformIndex % ringCount) + ringCount) % ringCount
 
       const base = this.ringTargets[ringAnchorIndex]
       const qrTargetIndex = qrAssignments[i]
@@ -514,6 +501,9 @@ export default class LogoCanvasEngine {
       const heteroAmp = 0.3 + this.#hash2(i * 4.8, i * 1.1) * 0.9
       const radialBias = (this.#hash2(i * 1.4, i * 7.3) - 0.5) * 2
       const swirlPhase = this.#hash2(i * 5.2, i * 9.9) * Math.PI * 2
+      const armSign = this.#hash2(i * 6.9, i * 2.8) > 0.5 ? 1 : -1
+      const armPhase = this.#hash2(i * 8.3, i * 2.2) * Math.PI * 2
+      const armDrift = 0.76 + this.#hash2(i * 6.1, i * 7.9) * 0.74
       this.particles.push({
         x: base.x + (this.#hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
         y: base.y + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
@@ -522,6 +512,9 @@ export default class LogoCanvasEngine {
         size: 0.82 + this.#hash2(i * 3.1, i * 1.7) * 0.72,
         baseWeight: base.weight,
         ringAnchorIndex,
+        armSign,
+        armPhase,
+        armDrift,
         heteroAmp,
         radialBias,
         swirlPhase,
@@ -773,8 +766,8 @@ export default class LogoCanvasEngine {
           : 1
       }
 
-      // One shared blend path in both directions avoids any hard switch.
-      p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, mode === 'qr_show' ? 0.1 : 0.075)
+      // Slower settling in qr_show keeps the transition into the final form smooth.
+      p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, mode === 'qr_show' ? 0.058 : 0.078)
 
       if (isQrParticle) {
         const qrTarget = this.qrTargets[p.qrTargetIndex]
@@ -782,8 +775,33 @@ export default class LogoCanvasEngine {
         targetY = ringWanderY * (1 - p.qrBlend) + qrTarget.y * p.qrBlend
       }
 
+      // Story motion:
+      // idle/entropy => asymmetric two-arm galaxy,
+      // hover(active)/reassemble => align toward ring,
+      // qr_build/qr_show => strongest alignment while transitioning into QR.
+      const modeAlignment = isQrMode
+        ? (mode === 'qr_show' ? 1 : 0.93)
+        : (mode === 'active' ? 0.78 : mode === 'reassemble' ? 0.84 : mode === 'entropy' ? 0.08 : 0.2)
+
+      const armPhase = (p.armPhase || 0) + t * (0.28 + (p.armDrift || 1) * 0.23)
+      const armSign = p.armSign || 1
+      const armSpread = 0.135 + 0.045 * Math.sin(t * 0.23 + armPhase * 0.61)
+      const armRadialScale =
+        0.72 +
+        Math.sin(armPhase * 0.91) * 0.07 +
+        (armSign > 0 ? armSpread * 0.2 : -armSpread * 0.16)
+      const armBend = (0.075 + hetero * 0.048) * (0.82 + Math.sin(armPhase * 1.13) * 0.22)
+
+      const armX = this.ringCenterX + dx * armRadialScale + tx * armBend * armSign
+      const armY = this.ringCenterY + dy * armRadialScale + ty * armBend * armSign * 0.78
+
+      targetX = armX * (1 - modeAlignment) + targetX * modeAlignment
+      targetY = armY * (1 - modeAlignment) + targetY * modeAlignment
+
       // Smooth pull without spring oscillation.
-      const follow = isQrMode ? (mode === 'qr_show' ? 0.2 : 0.16) : 0.12
+      const follow = isQrMode
+        ? (mode === 'qr_show' ? 0.155 : 0.175)
+        : (mode === 'active' ? 0.16 : mode === 'reassemble' ? 0.19 : mode === 'entropy' ? 0.06 : 0.085)
       p.x += (targetX - p.x) * follow
       p.y += (targetY - p.y) * follow
       p.vx = 0
@@ -795,6 +813,9 @@ export default class LogoCanvasEngine {
     const energized = this.state === 'active' || this.state === 'qr_build'
     const qrMode = this.state === 'qr_build' || this.state === 'qr_show'
     const qrBuildProgress = this.#stateProgress('qr_build', 2600)
+    const qrShowProgress = this.state === 'qr_show'
+      ? this.#easeInOutCubic(this.#stateProgress('qr_show', 1400))
+      : 0
     const qrPx = this.qrModuleSizeNorm > 0 ? this.qrModuleSizeNorm * this.width : 2
 
     for (let i = 0; i < this.particles.length; i += 1) {
@@ -813,23 +834,38 @@ export default class LogoCanvasEngine {
 
       if (isQrParticle) {
         const reveal = Math.max(0, Math.min(1, p.qrBlend || 0))
-        const sizeJitter = 0.88 + this.#hash2(i * 9.17, i * 3.71) * 0.32
+        const sizeJitter = 0.72 + this.#hash2(i * 9.17, i * 3.71) * 0.7
+        const sparkleSeed = this.#hash2(i * 2.73, i * 6.19)
+        const shimmerA = Math.sin(t * (4.3 + sparkleSeed * 2.1) + sparkleSeed * Math.PI * 2)
+        const shimmerB = Math.sin(t * (9.4 + sparkleSeed * 3.7) + sparkleSeed * 11.3)
+        const qrShimmer = 0.5 + 0.34 * shimmerA + 0.16 * shimmerB
+        const qrGlint = Math.pow(
+          Math.max(0, Math.sin(t * (12.8 + sparkleSeed * 4.4) + sparkleSeed * 9.1)),
+          11
+        )
 
         if (this.state === 'qr_show' && p.qrTargetIndex >= 0) {
-          // Final QR: keep particles circular (no squares) with subtle size diversity.
+          // Final QR: blend into locked module positions instead of snapping hard.
           const q = this.qrTargets[p.qrTargetIndex]
           const qx = q.x * this.width
           const qy = q.y * this.height
-          const radius = Math.max(0.92, qrPx * 0.37 * sizeJitter)
+          const lock = Math.max(0, Math.min(1, Math.max(qrShowProgress, reveal * 0.4)))
+          const drawX = px * (1 - lock) + qx * lock
+          const drawY = py * (1 - lock) + qy * lock
+          const radius = Math.max(0.9, qrPx * 0.37 * sizeJitter * (0.9 + qrShimmer * 0.16 + qrGlint * 0.1))
+          const qrShowAlpha = Math.min(1, 0.8 + qrShimmer * 0.2 + qrGlint * 0.16)
 
-          ctx.fillStyle = 'rgba(255,255,255,0.98)'
+          ctx.fillStyle = `rgba(255,255,255,${qrShowAlpha.toFixed(3)})`
           ctx.beginPath()
-          ctx.arc(qx, qy, radius, 0, Math.PI * 2)
+          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2)
           ctx.fill()
           continue
         }
 
-        const radius = Math.max(0.9, qrPx * (0.34 + reveal * 0.09) * sizeJitter)
+        const radius = Math.max(
+          0.9,
+          qrPx * (0.34 + reveal * 0.11) * sizeJitter * (0.88 + qrShimmer * 0.18 + qrGlint * 0.12)
+        )
         const shadowOffset = 0.55
         const shadowAlpha = 0.08 + reveal * 0.12
 
@@ -838,7 +874,7 @@ export default class LogoCanvasEngine {
         ctx.arc(px + shadowOffset, py + shadowOffset, radius, 0, Math.PI * 2)
         ctx.fill()
 
-        const qrAlpha = Math.min(1, 0.82 + reveal * 0.18)
+        const qrAlpha = Math.min(1, 0.72 + reveal * 0.2 + qrShimmer * 0.2 + qrGlint * 0.14)
         ctx.fillStyle = `rgba(255,255,255,${qrAlpha.toFixed(3)})`
         ctx.beginPath()
         ctx.arc(px, py, radius, 0, Math.PI * 2)

@@ -94,19 +94,12 @@
     ]
   },
   "footer": {
-    "title": "Connect",
-    "summary": "Research, engineering, and collaboration channels.",
+    "title": "",
+    "summary": "",
     "body_preview": "",
     "route": "",
     "icon": "",
-    "keywords": [
-      "and",
-      "channels.",
-      "collaboration",
-      "connect",
-      "engineering,",
-      "research,"
-    ]
+    "keywords": []
   },
   "core": {
     "title": "Calyrai core",
@@ -235,31 +228,28 @@
     ]
   },
   "contact": {
-    "title": "contacts",
-    "summary": "Research, industry, and partnership inquiries.\n",
+    "title": "contact",
+    "summary": "Research, engineering, and collaboration channels.\n",
     "body_preview": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use emai",
-    "route": "mailto:rupert.tscheliessnig@calyr.ai",
+    "route": "/contact",
     "icon": "mail",
     "keywords": [
       "and",
-      "contacts",
-      "industry,",
-      "inquiries.",
-      "partnership",
+      "channels.",
+      "collaboration",
+      "contact",
+      "engineering,",
       "research,"
     ]
   },
   "legal": {
-    "title": "legal",
-    "summary": "Legal and platform information.\n",
-    "body_preview": "Impressum, privacy policy, contact information, and external links. Credentials: Rupert Tscheliessnig, Founder of Calyr.a\u00ed, AI and surrogate modelling research.\n",
+    "title": "Impressum",
+    "summary": "",
+    "body_preview": "Rupert Tscheliessnig\nOgugasse 3/3/13\n1220 Vienna, Austria\n",
     "route": "/legal",
-    "icon": "document",
+    "icon": "",
     "keywords": [
-      "and",
-      "information.",
-      "legal",
-      "platform"
+      "impressum"
     ]
   }
 }

@@ -1,5 +1,6 @@
 {
   "checked_routes": [
+    "/contact",
     "/ecosystem",
     "/legal",
     "/media/short.mp4",
@@ -13,15 +14,15 @@
     "https://bsky.app",
     "https://wa.me/4369919200915",
     "https://www.instagram.com",
+    "https://www.linkedin.com",
     "https://www.youtube.com",
     "https://x.com",
-    "mailto:rupert.tscheliessnig@calyr.ai",
-    "tel:+4369919200915"
+    "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [
     "/ecosystem",
     "/legal",
     "/media/short.mp4"
   ],
-  "generated_at": "2026-06-27T19:57:47.283811+00:00"
+  "generated_at": "2026-06-30T02:44:11.066004+00:00"
 }

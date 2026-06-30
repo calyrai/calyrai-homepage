@@ -136,8 +136,10 @@ export default function QuickContactRail({ page }) {
         onClick={handleTabClick}
         aria-expanded={isOpen}
         aria-controls="quick-contact-links"
+        aria-label={tabLabel}
+        title={tabLabel}
       >
-        {tabLabel}
+        <span aria-hidden="true">{tabLabel}</span>
       </button>
 
       <div className="quick-contact-links" id="quick-contact-links" style={linksStyle}>
@@ -151,8 +153,7 @@ export default function QuickContactRail({ page }) {
             aria-label={item.label}
             title={item.label}
           >
-            <span className="quick-contact-icon" aria-hidden="true">{item.label.slice(0, 2).toUpperCase()}</span>
-            <span className="quick-contact-label">{item.label}</span>
+            <span className="quick-contact-icon" aria-hidden="true">{LinkItemService.getContactSymbol(item) || '@'}</span>
           </a>
         ))}
       </div>

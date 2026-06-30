@@ -26,6 +26,7 @@ import { useRipple } from '../context/RippleContext'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useScrollCenterContext } from '../hooks/useScrollCenter'
 import { ROUTE_POLICY_DATA, ROUTE_AUDIT_DATA } from '../data/runtimeArtifacts'
+import { LinkItemService } from '../services/LinkItemService'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -246,11 +247,15 @@ export default function Tile({ node, theme, context = {} }) {
   const showTileMesh = true
   const isPlatformTile = PLATFORM_TILE_IDS.has(id)
   const leadDotClass = getTileLeadDotClass(tileAccent)
+  const contactEntries = Array.isArray(node.contacts)
+    ? node.contacts.filter((entry) => LinkItemService.getContactSymbol(entry) && (entry.route || entry.href || entry.url))
+    : []
+  const isContactTile = id === 'contact' && contactEntries.length > 0
   const institutions = Array.isArray(node.institutions) ? node.institutions : []
   const visibleInstitutions = institutions.filter((institution) => institution?.visibility?.public !== false)
-  const topLineText = tileLead || icon
+  const topLineText = isContactTile ? null : tileLead || icon
   const primaryTitle = tileTitle || (tileLead ? subtitle || title : title)
-  const secondarySummary = tileSummary || (tileLead ? landingMessage || summary : summary)
+  const secondarySummary = isContactTile ? null : tileSummary || (tileLead ? landingMessage || summary : summary)
   const shouldShowTopLine = Boolean(topLineText)
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
@@ -687,12 +692,16 @@ export default function Tile({ node, theme, context = {} }) {
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
         isPlatformTile ? 'tile-platform' : ''
+      } ${
+        isContactTile ? 'tile-contact' : ''
       } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'} ${
         isScrollCentered ? 'tile-scroll-centered' : ''
       }`}
       id={id}
       data-type="tile"
       data-draggable="true"
+      aria-label={isContactTile ? title || id : undefined}
+      title={isContactTile ? title || id : undefined}
       style={tileStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -734,6 +743,15 @@ export default function Tile({ node, theme, context = {} }) {
       <div className="tile-content">
         <>
           {primaryTitle && <h3 className="tile-title">{primaryTitle}</h3>}
+          {isContactTile && (
+            <div className="tile-contact-symbols" aria-label="Contact channels">
+              {contactEntries.map((entry) => (
+                <span key={entry.id || entry.label} className="tile-contact-symbol" aria-hidden="true">
+                  {LinkItemService.getContactSymbol(entry)}
+                </span>
+              ))}
+            </div>
+          )}
           {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
         </>
       </div>
