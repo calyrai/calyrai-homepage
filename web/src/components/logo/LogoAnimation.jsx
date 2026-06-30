@@ -10,7 +10,6 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   const machineRef = useRef(null)
   const engineRef = useRef(null)
   const canvasRef = useRef(null)
-  const hasTriggeredUpperHoverRef = useRef(false)
 
   const qrText = useMemo(() => logoSpec?.qr?.text || '', [])
   const qrMatrix = useMemo(() => {
@@ -74,6 +73,15 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   }, [qrMatrix])
 
   useEffect(() => {
+    const onActivateQr = () => {
+      machineRef.current?.triggerQrBuild()
+    }
+
+    window.addEventListener('calyr:activate-qr', onActivateQr)
+    return () => window.removeEventListener('calyr:activate-qr', onActivateQr)
+  }, [])
+
+  useEffect(() => {
     engineRef.current?.setState(state)
   }, [state])
 
@@ -82,30 +90,11 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   }
 
   const handlePointerLeave = () => {
-    hasTriggeredUpperHoverRef.current = false
     machineRef.current?.handleHoverLeave()
-  }
-
-  const handleClick = () => {
-    machineRef.current?.triggerQrBuild()
   }
 
   const handlePointerMove = (event) => {
     machineRef.current?.handlePointerReturn()
-
-    const activationZone = logoSpec?.interaction?.upperActivationZoneFraction ?? 0.36
-    const rect = event.currentTarget.getBoundingClientRect()
-    const y = event.clientY - rect.top
-    const inUpperActivationZone = y <= rect.height * activationZone
-
-    if (inUpperActivationZone && !hasTriggeredUpperHoverRef.current) {
-      hasTriggeredUpperHoverRef.current = true
-      machineRef.current?.triggerQrBuild()
-    }
-
-    if (!inUpperActivationZone) {
-      hasTriggeredUpperHoverRef.current = false
-    }
   }
 
   const renderLabel = (value) => {
@@ -145,15 +134,6 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         onMouseEnter={handlePointerEnter}
         onMouseLeave={handlePointerLeave}
         onMouseMove={handlePointerMove}
-        onClick={handleClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-            handleClick()
-          }
-        }}
       >
         <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
       </div>

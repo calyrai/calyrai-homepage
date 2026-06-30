@@ -107,6 +107,7 @@ export default function QuickContactRail({ page }) {
       const isLinkTarget = target instanceof Element && !!target.closest('a')
       if (!drag.moved && !isLinkTarget) {
         suppressNextClickRef.current = true
+        window.dispatchEvent(new CustomEvent('calyr:activate-qr'))
         toggleOpen()
       }
     }
@@ -144,6 +145,7 @@ export default function QuickContactRail({ page }) {
       suppressNextClickRef.current = false
       return
     }
+    window.dispatchEvent(new CustomEvent('calyr:activate-qr'))
     toggleOpen()
   }
 
