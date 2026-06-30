@@ -6,7 +6,7 @@ import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
 
 export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline' }) {
-  const [state, setState] = useState('idle')
+  const [state, setState] = useState(logoSpec?.interaction?.initialState || 'idle')
   const machineRef = useRef(null)
   const engineRef = useRef(null)
   const canvasRef = useRef(null)
@@ -124,6 +124,18 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     )
   }
 
+  const renderTagline = (value) => {
+    if (!value) return null
+    const normalized = String(value).trim()
+    const base = normalized.replace(/[.\s]+$/g, '')
+    return (
+      <>
+        <span>{base}</span>
+        <span className="calyr-logo-label-point" aria-hidden="true">.</span>
+      </>
+    )
+  }
+
   return (
     <div className={`calyr-logo-wrap calyr-logo-wrap--${layout}`}>
       <div
@@ -148,7 +160,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       {(label || tagline) && (
         <div className="calyr-logo-lockup">
           {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
-          {tagline && <div className="calyr-logo-tagline">{tagline}</div>}
+          {tagline && <div className="calyr-logo-tagline">{renderTagline(tagline)}</div>}
         </div>
       )}
     </div>

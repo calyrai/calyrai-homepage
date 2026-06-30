@@ -1979,19 +1979,21 @@ button:active {
   cursor: pointer;
   user-select: none;
   isolation: isolate;
-  border-radius: 50%;
-  overflow: hidden;
+  border-radius: 10px;
+  overflow: visible;
   transition: filter 220ms ease;
 }
 
 .calyr-logo-wrap {
+  --logo-ring-size: min(470px, 82vw);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
+  gap: 10px;
   width: min(1220px, calc(100% - 2 * var(--space-lg)));
   margin: 0 auto;
   padding-right: clamp(8px, 3vw, 56px);
+  align-self: flex-end;
 }
 
 .calyr-logo-wrap--inline {
@@ -2000,8 +2002,9 @@ button:active {
 
 .calyr-logo-wrap--stacked {
   flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
+  gap: 4px;
+  align-items: flex-start;
+  width: var(--logo-ring-size);
 }
 
 .logo-element {
@@ -2009,13 +2012,15 @@ button:active {
 }
 
 .calyr-logo-lockup {
-  min-height: min(470px, 82vw);
+  min-height: auto;
+  width: 72%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
-  gap: 16px;
-  margin-top: 4px;
+  align-items: flex-start;
+  align-self: center;
+  gap: 6px;
+  margin-top: 0;
 }
 
 .calyr-logo-label {
@@ -2025,7 +2030,7 @@ button:active {
   line-height: 1;
   letter-spacing: 0.02em;
   color: #f5f5f5;
-  text-align: right;
+  text-align: left;
   text-rendering: geometricPrecision;
 }
 
@@ -2036,7 +2041,7 @@ button:active {
   font-weight: 500;
   line-height: 1.2;
   color: rgba(245, 245, 245, 0.94);
-  text-align: right;
+  text-align: left;
 }
 
 .calyr-logo-label-accent {
@@ -2044,13 +2049,22 @@ button:active {
   text-shadow: 0 0 11px rgba(255, 51, 204, 0.98), 0 0 26px rgba(255, 51, 204, 0.72);
 }
 
+.calyr-logo-label-point {
+  color: #ff33cc;
+  text-shadow: 0 0 11px rgba(255, 51, 204, 0.98), 0 0 26px rgba(255, 51, 204, 0.72);
+}
+
 @media (max-width: 768px) {
   .calyr-logo-wrap {
+    --logo-ring-size: min(360px, calc(100vw - 140px));
     flex-direction: column;
     gap: 8px;
-    width: auto;
+    width: var(--logo-ring-size);
+    margin-left: auto;
+    margin-right: 8px;
     padding-right: 0;
     justify-content: center;
+    align-self: flex-end;
   }
 
   .logo-element {
@@ -2059,20 +2073,22 @@ button:active {
 
   .calyr-logo-lockup {
     min-height: auto;
-    align-items: flex-end;
-    gap: 12px;
+    width: 72%;
+    align-items: flex-start;
+    align-self: center;
+    gap: 6px;
     margin-top: 0;
   }
 
   .calyr-logo-label {
     margin-top: 0;
     font-size: clamp(2.35rem, 10.8vw, 3.7rem);
-    text-align: right;
+    text-align: left;
   }
 
   .calyr-logo-tagline {
     max-width: 24ch;
-    text-align: right;
+    text-align: left;
   }
 }
 
@@ -2085,7 +2101,7 @@ button:active {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 10px;
 }
 
 .calyr-logo-interactive[data-logo-state='active'],
