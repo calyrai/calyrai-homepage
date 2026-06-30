@@ -854,11 +854,56 @@ export default class LogoCanvasEngine {
     ctx.fillRect(0, 0, this.width, this.height)
 
     this.#drawBackgroundRaster(ctx, t)
+    this.#drawEclipseCorona(ctx, t)
 
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
 
     this.#drawConstellations(ctx, t)
+  }
+
+  #drawEclipseCorona(ctx, t) {
+    if (!this.ringTargets.length) return
+    const mode = this.state
+    if (mode === 'qr_build' || mode === 'qr_show') return
+
+    const eclipse = this.config?.ring?.eclipse || {}
+    const glowStrength = Number(eclipse.glowStrength) || 0.9
+    const coreRadiusScale = Number(eclipse.coreRadiusScale) || 0.82
+    const coronaWidthScale = Number(eclipse.coronaWidthScale) || 0.26
+    const rimSharpness = Number(eclipse.rimSharpness) || 0.2
+
+    const cx = this.ringCenterX * this.width
+    const cy = this.ringCenterY * this.height
+    const radiusPx = this.ringRadius * Math.min(this.width, this.height)
+    const coreR = radiusPx * coreRadiusScale
+    const coronaR = radiusPx * (1 + coronaWidthScale)
+
+    const pulse = 0.92 + (Math.sin(t * 1.35) + 1) * 0.09
+
+    // Outer corona glow
+    const corona = ctx.createRadialGradient(cx, cy, coreR * (1 - rimSharpness), cx, cy, coronaR)
+    corona.addColorStop(0, `rgba(255,255,255,${(0.08 * glowStrength * pulse).toFixed(3)})`)
+    corona.addColorStop(0.45, `rgba(190,220,255,${(0.16 * glowStrength * pulse).toFixed(3)})`)
+    corona.addColorStop(0.72, `rgba(210,240,255,${(0.24 * glowStrength * pulse).toFixed(3)})`)
+    corona.addColorStop(1, 'rgba(210,240,255,0)')
+    ctx.fillStyle = corona
+    ctx.beginPath()
+    ctx.arc(cx, cy, coronaR, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Dark moon disk for eclipse silhouette
+    ctx.fillStyle = 'rgba(0,0,0,0.92)'
+    ctx.beginPath()
+    ctx.arc(cx, cy, coreR, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Thin bright rim to make the eclipse read clearly
+    ctx.strokeStyle = `rgba(255,255,255,${(0.26 * glowStrength * pulse).toFixed(3)})`
+    ctx.lineWidth = Math.max(0.8, radiusPx * 0.014)
+    ctx.beginPath()
+    ctx.arc(cx, cy, coreR * 1.01, 0, Math.PI * 2)
+    ctx.stroke()
   }
 
   #drawRingBaseline(ctx, alpha = 0.22) {

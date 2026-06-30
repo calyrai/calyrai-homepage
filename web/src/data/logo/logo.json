@@ -69,6 +69,12 @@
     "eruptionStrength": 1.12,
     "eruptionWidth": 0.2,
     "eruptionJaggedness": 0.28,
+    "eclipse": {
+      "glowStrength": 0.9,
+      "coreRadiusScale": 0.82,
+      "coronaWidthScale": 0.26,
+      "rimSharpness": 0.2
+    },
     "step": 0.0082,
     "externalTargetSizeNorm": 0.9
   }
