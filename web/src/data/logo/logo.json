@@ -60,6 +60,9 @@
   "ring": {
     "radius": 0.335,
     "thickness": 0.052,
+    "fractalStrength": 0.82,
+    "fractalAsymmetry": 0.24,
+    "angleWarpStrength": 0.07,
     "step": 0.0082,
     "externalTargetSizeNorm": 0.9
   }

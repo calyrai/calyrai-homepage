@@ -224,6 +224,9 @@ export default class LogoCanvasEngine {
     }
     if (maxRadius <= 0) return false
 
+    const asymmetry = Number(this.config?.ring?.fractalAsymmetry) || 0.24
+    const fractalStrength = Number(this.config?.ring?.fractalStrength) || 0.82
+    const angleWarpStrength = Number(this.config?.ring?.angleWarpStrength) || 0.07
     const thickness = Math.max(0.008, this.ringThickness)
     for (let i = 0; i < this.qrTargets.length; i += 1) {
       const q = this.qrTargets[i]
@@ -233,14 +236,40 @@ export default class LogoCanvasEngine {
       const angle = Math.atan2(dy, dx)
       const radialNorm = r / maxRadius
 
+      const seedA = this.#hash2(q.x * 947.13, q.y * 619.37)
+      const seedB = this.#hash2(q.x * 137.71 + 5.3, q.y * 311.97 + 1.9)
+      const localNoise = (seedA - 0.5) * 2
+      const localNoiseB = (seedB - 0.5) * 2
+
+      const asymBias =
+        Math.sin(angle * 1.7 + 0.9) * 0.58 +
+        Math.sin(angle * 0.93 + 2.2) * 0.42 +
+        localNoise * 0.35
+
+      const fractalWave =
+        Math.sin(angle * 2.7 + seedA * Math.PI * 2) * 0.46 +
+        Math.sin(angle * 5.9 + seedB * Math.PI * 2) * 0.32 +
+        Math.sin(angle * 11.3 + (seedA + seedB) * Math.PI) * 0.2
+
+      const angleWarp =
+        (Math.sin(angle * 3.1 + seedA * Math.PI * 2) * 0.62 + localNoiseB * 0.38) * angleWarpStrength
+
       // Every ring point is a deterministic transform of a QR point.
       const radialOffset = (radialNorm - 0.5) * thickness * 1.45
-      const targetRadius = this.ringRadius + radialOffset
+      const fractalOffset = fractalWave * thickness * fractalStrength
+      const asymOffset = asymBias * thickness * asymmetry
+      const targetRadius = Math.max(0.02, this.ringRadius + radialOffset + fractalOffset + asymOffset)
+      const theta = angle + angleWarp
+
+      const weight = Math.max(
+        0.52,
+        Math.min(1, 0.74 + Math.abs(fractalWave) * 0.21 + Math.abs(localNoise) * 0.08)
+      )
 
       this.ringTargets.push({
-        x: this.ringCenterX + Math.cos(angle) * targetRadius,
-        y: this.ringCenterY + Math.sin(angle) * targetRadius,
-        weight: 0.84,
+        x: this.ringCenterX + Math.cos(theta) * targetRadius,
+        y: this.ringCenterY + Math.sin(theta) * targetRadius,
+        weight,
       })
     }
 
