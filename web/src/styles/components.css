@@ -1923,7 +1923,7 @@ button:active {
 .quick-contact-inline {
   width: 100%;
   margin: 0;
-  padding-right: 0;
+  padding-right: clamp(8px, 3vw, 56px);
   display: flex;
   justify-content: flex-end;
   align-self: stretch;
