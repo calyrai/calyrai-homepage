@@ -1914,24 +1914,73 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.45rem;
-}
-
-.quick-contact-inline {
+  gap: 0.18rem;
   width: min(1220px, calc(100% - 2 * var(--space-lg)));
   margin: 0 auto;
   padding-right: clamp(8px, 3vw, 56px);
+}
+
+.quick-contact-inline {
+  width: 100%;
+  margin: 0;
+  padding-right: 0;
   display: flex;
   justify-content: flex-end;
+  align-self: stretch;
+}
+
+.quick-contact-inline-shell {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  position: relative;
+}
+
+.quick-contact-inline-toggle {
+  min-width: 96px;
+  height: 36px;
+  padding: 0 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.98);
+  color: #111111;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .quick-contact-inline-links {
+  position: absolute;
+  right: calc(100% + 0.45rem);
+  top: 0;
   display: flex;
   flex-direction: row-reverse;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   gap: 0.35rem;
-  max-width: min(640px, calc(100vw - 84px));
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-10px);
+  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  pointer-events: none;
+  transition: max-width 260ms ease, opacity 180ms ease, transform 220ms ease;
+  white-space: normal;
+}
+
+.quick-contact-inline-links.open {
+  max-width: min(900px, calc(100vw - 84px));
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 
@@ -1946,14 +1995,18 @@ button:active {
   }
 
   .quick-contact-inline {
-    width: min(360px, calc(100vw - 140px));
-    margin-left: auto;
-    margin-right: 8px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     padding-right: 0;
   }
 
   .quick-contact-inline-links {
-    max-width: min(320px, calc(100vw - 40px));
+    max-width: min(360px, calc(100vw - 30px));
+  }
+
+  .quick-contact-inline-links.open {
+    max-width: min(360px, calc(100vw - 30px));
   }
 }
 
