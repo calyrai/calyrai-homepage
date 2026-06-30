@@ -137,8 +137,8 @@ export default function QuickContactRail({ page }) {
     toggleOpen()
   }
 
-  const tabLabel = page.tile_title || page.title || page.id || ''
-  const accentClass = page.tile_accent ? `quick-contact-rail--${page.tile_accent}` : ''
+  const tabLabel = page.title || page.id || 'contact'
+  const accentClass = ''
   const railStyle =
     topPx == null || leftPx == null
       ? undefined

@@ -1956,37 +1956,6 @@ button:active {
   display: none;
 }
 
-.quick-contact-rail--yellow .quick-contact-tab {
-  border-color: rgba(255, 216, 77, 0.9);
-  background: rgba(255, 230, 132, 0.95);
-  color: #101010;
-  box-shadow: 0 0 16px rgba(255, 216, 77, 0.24);
-}
-
-.quick-contact-rail--yellow .quick-contact-links {
-  border-color: rgba(255, 216, 77, 0.82);
-  background: rgba(26, 22, 6, 0.96);
-  box-shadow: 0 0 26px rgba(255, 216, 77, 0.2);
-}
-
-.quick-contact-rail--yellow .quick-contact-link {
-  border-color: rgba(255, 216, 77, 0.35);
-  background: rgba(255, 216, 77, 0.08);
-  color: #ffe58a;
-}
-
-.quick-contact-rail--yellow .quick-contact-link:hover {
-  border-color: rgba(255, 216, 77, 0.62);
-  background: rgba(255, 216, 77, 0.16);
-}
-
-.quick-contact-rail--yellow .quick-contact-icon {
-  color: #ffe58a;
-}
-
-.contact-page-kicker {
-  color: rgba(255, 216, 77, 0.95);
-}
 
 @media (max-width: 767px) {
   .quick-contact-rail {
