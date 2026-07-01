@@ -195,7 +195,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (!canvas || !engine) return
     const rect = canvas.getBoundingClientRect()
     const pointerField = pointerFieldFromEvent(event, rect, {
-      radius: 0.28,
+      radius: 0.32,
       strength,
     })
     engine.setInteractionField(pointerField)
@@ -215,6 +215,12 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
 
   const handlePointerDown = (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
+    if (typeof event.currentTarget?.setPointerCapture === 'function') {
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }
+    if (typeof event.preventDefault === 'function') {
+      event.preventDefault()
+    }
     swipeRef.current = {
       active: true,
       startX: event.clientX,
@@ -222,18 +228,21 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       endX: event.clientX,
       endY: event.clientY,
     }
-    updateInteractionField(event, 1.05)
+    updateInteractionField(event, 0.82)
   }
 
   const handlePointerDrag = (event) => {
     const swipe = swipeRef.current
     if (!swipe.active) return
+    if (typeof event.preventDefault === 'function') {
+      event.preventDefault()
+    }
     swipeRef.current.endX = event.clientX
     swipeRef.current.endY = event.clientY
-    updateInteractionField(event, 0.95)
+    updateInteractionField(event, 0.72)
   }
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (event) => {
     const swipe = swipeRef.current
     if (swipe.active) {
       const dx = swipe.endX - swipe.startX
@@ -256,6 +265,13 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       }
     }
     swipeRef.current.active = false
+    if (typeof event?.currentTarget?.releasePointerCapture === 'function') {
+      try {
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      } catch {
+        // Ignore release errors when pointer is already lost.
+      }
+    }
     clearInteractionField()
   }
 

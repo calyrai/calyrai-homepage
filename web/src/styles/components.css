@@ -1549,6 +1549,7 @@ body.nav-open {
   width: 36px;
   height: 36px;
   display: block;
+  touch-action: none;
 }
 
 .nav-contact-link:hover,
@@ -1636,6 +1637,7 @@ body.nav-open {
   background: rgba(255, 255, 255, 0.06);
   box-shadow: 0 0 0 var(--line-width, 1px) rgba(255, 255, 255, 0.4), 0 0 18px rgba(255, 255, 255, 0.18);
   overflow: hidden;
+  touch-action: none;
   transition: filter 220ms ease;
 }
 
