@@ -1,3 +1,5 @@
+import { computeDotRepulsion, createInactivePointerField } from '../../utils/dotInteraction'
+
 export default class LogoCanvasEngine {
   #resizeListenerAttached = false
 
@@ -46,6 +48,8 @@ export default class LogoCanvasEngine {
     this.canvasOffsetX = 0
     this.canvasOffsetY = 0
     this.qrMatrixSource = config?.qrMatrix || null
+    this.interactionField = createInactivePointerField()
+    this.qrDotStates = new Map()
 
     this.ringCenterX = Number.isFinite(config?.ring?.centerX) ? config.ring.centerX : 0.5
     this.ringCenterY = Number.isFinite(config?.ring?.centerY) ? config.ring.centerY : 0.525
@@ -82,6 +86,14 @@ export default class LogoCanvasEngine {
       this.transitionStartTs = performance.now()
     }
     this.state = nextState
+  }
+
+  setInteractionField(pointerField) {
+    this.interactionField = pointerField?.active ? pointerField : createInactivePointerField()
+  }
+
+  clearInteractionField() {
+    this.interactionField = createInactivePointerField()
   }
 
   #getQrSemanticAngles() {
@@ -614,6 +626,7 @@ export default class LogoCanvasEngine {
     this.qrTargets = []
     this.qrLayout = null
     this.qrRenderKind = qrMatrix?.kind || 'qr'
+    this.qrDotStates.clear()
 
     if (!qrMatrix || !Array.isArray(qrMatrix.modules) || !qrMatrix.size) {
       return
@@ -624,7 +637,7 @@ export default class LogoCanvasEngine {
     const fullSize = size + quietModules * 2
     const normSize = qrMatrix.normSize || 0.36
     const targetSizePx = Number(qrMatrix.targetSizePx) || 0
-    const shouldSnapToGrid = this.config?.qrSnapToGrid !== false
+    const shouldSnapToGrid = this.config?.qrSnapToGrid !== false && qrMatrix?.kind === 'glyph'
     const gridStepPx = Number(this.config?.gridSpacingPx) || 26
     const quantumPx = Number(this.config?.qrGridQuantumPx) || gridStepPx / 2
 
@@ -633,18 +646,18 @@ export default class LogoCanvasEngine {
     let moduleSizeX
     let moduleSizeY
 
-    if (shouldSnapToGrid && this.width > 1 && this.height > 1) {
+    if (this.width > 1 && this.height > 1) {
       const isGlyphMatrix = qrMatrix?.kind === 'glyph'
       const maxFitFactor = isGlyphMatrix
         ? (Number(this.config?.glyphFitFactor) || 0.96)
-        : (Number(this.config?.qrFitFactor) || 0.84)
-      const edgeInsetPx = Math.max(0, Number(this.config?.qrEdgeInsetPx) || 6)
+        : (Number(this.config?.qrFitFactor) || 0.86)
+      const edgeInsetPx = Math.max(0, Number(this.config?.qrEdgeInsetPx) || 14)
       const desiredQrSizePx = targetSizePx > 0
         ? Math.min(targetSizePx, Math.min(this.width, this.height) * maxFitFactor)
         : normSize * Math.min(this.width, this.height)
       const rawModulePx = desiredQrSizePx / fullSize
       const snappedModulePx = Math.floor(rawModulePx / quantumPx) * quantumPx
-      const minModulePx = isGlyphMatrix ? 5 : 3
+      const minModulePx = isGlyphMatrix ? 5 : 4
       const maxQrSizePx = Math.max(1, Math.min(this.width, this.height) - edgeInsetPx * 2)
       const maxModulePx = Math.max(minModulePx, Math.floor(maxQrSizePx / fullSize))
       const modulePx = Math.min(maxModulePx, Math.max(minModulePx, snappedModulePx || quantumPx))
@@ -657,8 +670,8 @@ export default class LogoCanvasEngine {
         return Math.round(absolutePx / quantumPx) * quantumPx - canvasOffset
       }
 
-      const leftPxUnclamped = snapToGrid(rawLeftPx, this.canvasOffsetX || 0)
-      const topPxUnclamped = snapToGrid(rawTopPx, this.canvasOffsetY || 0)
+      const leftPxUnclamped = shouldSnapToGrid ? snapToGrid(rawLeftPx, this.canvasOffsetX || 0) : rawLeftPx
+      const topPxUnclamped = shouldSnapToGrid ? snapToGrid(rawTopPx, this.canvasOffsetY || 0) : rawTopPx
       const leftPx = Math.max(edgeInsetPx, Math.min(leftPxUnclamped, this.width - qrSizePx - edgeInsetPx))
       const topPx = Math.max(edgeInsetPx, Math.min(topPxUnclamped, this.height - qrSizePx - edgeInsetPx))
 
@@ -899,6 +912,7 @@ export default class LogoCanvasEngine {
 
     this.#updateParticles(t)
     this.#drawParticles(ctx, t)
+    this.#drawLockedQrOverlay(ctx, t)
 
     this.#drawConstellations(ctx, t)
   }
@@ -955,6 +969,108 @@ export default class LogoCanvasEngine {
       ctx.arc(px, py, r, 0, Math.PI * 2)
       ctx.fill()
     }
+    ctx.restore()
+  }
+
+  #drawLockedQrOverlay(ctx, t) {
+    if (this.state !== 'qr_show') return
+    if (this.qrRenderKind !== 'qr') return
+    if (!this.qrLayout || !Array.isArray(this.qrLayout.modules)) return
+
+    const { modules, size, quietModules, left, top, moduleSizeX, moduleSizeY } = this.qrLayout
+    const modulePx = moduleSizeX * this.width
+    const radius = Math.max(1.35, modulePx * 0.34)
+    const fullSize = size + quietModules * 2
+    const plateX = left * this.width
+    const plateY = top * this.height
+    const plateW = fullSize * moduleSizeX * this.width
+    const plateH = fullSize * moduleSizeY * this.height
+
+    ctx.save()
+
+    // Keep the QR quiet-zone clean so scanning remains robust on animated backgrounds.
+    ctx.fillStyle = 'rgba(0,0,0,0.94)'
+    ctx.fillRect(plateX, plateY, plateW, plateH)
+
+    ctx.fillStyle = 'rgba(255,255,255,0.98)'
+
+    for (let y = 0; y < size; y += 1) {
+      const row = modules[y]
+      for (let x = 0; x < size; x += 1) {
+        if (!row?.[x]) continue
+        const nx = left + (x + quietModules + 0.5) * moduleSizeX
+        const ny = top + (y + quietModules + 0.5) * moduleSizeY
+        const cx = nx * this.width
+        const cy = ny * this.height
+        const inFinderPattern =
+          (x <= 6 && y <= 6) ||
+          (x >= size - 7 && y <= 6) ||
+          (x <= 6 && y >= size - 7)
+        const repulsion = inFinderPattern
+          ? { dx: 0, dy: 0 }
+          : computeDotRepulsion(nx, ny, this.interactionField, {
+            maxShift: moduleSizeX * 0.24,
+          })
+        const key = `${x}:${y}`
+        let dotState = this.qrDotStates.get(key)
+        if (!dotState) {
+          dotState = { dx: 0, dy: 0, vx: 0, vy: 0, spark: 0 }
+          this.qrDotStates.set(key, dotState)
+        }
+        const targetDx = repulsion.dx
+        const targetDy = repulsion.dy
+        dotState.vx = (dotState.vx + (targetDx - dotState.dx) * 0.34) * 0.76
+        dotState.vy = (dotState.vy + (targetDy - dotState.dy) * 0.34) * 0.76
+        dotState.dx += dotState.vx
+        dotState.dy += dotState.vy
+        const maxElasticShift = moduleSizeX * 0.28
+        dotState.dx = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dx))
+        dotState.dy = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dy))
+
+        const drawX = (nx + dotState.dx) * this.width
+        const drawY = (ny + dotState.dy) * this.height
+        const baseSeedA = this.#hash2((x + 1) * 7.1, (y + 1) * 11.3)
+        const baseSeedB = this.#hash2((x + 1) * 5.7 + 0.3, (y + 1) * 3.9 + 0.7)
+
+        // Keep finder modules stable, but give interior modules obvious size variance.
+        const sizeVary = inFinderPattern ? 1 : 0.62 + baseSeedA * 0.74
+        const baseRadius = inFinderPattern
+          ? Math.max(modulePx * 0.34, Math.min(modulePx * 0.4, radius * 1.08))
+          : Math.max(modulePx * 0.18, Math.min(modulePx * 0.46, radius * sizeVary))
+        ctx.beginPath()
+        ctx.arc(drawX, drawY, baseRadius, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Stochastic sparkle bursts per module with independent clocks (no wave motion).
+        const sparkleTick = Math.floor(t * (12 + baseSeedB * 15))
+        const trigger = this.#hash2((x + 1) * 29.1 + baseSeedA * 17.3, sparkleTick * 0.73 + (y + 1) * 5.2)
+        if (trigger > 0.978) {
+          dotState.spark = 1
+        }
+        dotState.spark *= 0.94
+
+        if (dotState.spark > 0.02) {
+          const sparkleAlpha = 0.24 + dotState.spark * 0.72
+          const sparkleRadius = Math.max(modulePx * 0.12, baseRadius * (0.32 + baseSeedB * 0.3 + dotState.spark * 0.62))
+
+          ctx.fillStyle = `rgba(255,255,255,${Math.min(1, sparkleAlpha).toFixed(3)})`
+          ctx.beginPath()
+          ctx.arc(drawX, drawY, sparkleRadius, 0, Math.PI * 2)
+          ctx.fill()
+
+          const haloTrigger = this.#hash2((x + 1) * 23.3 + baseSeedB * 17.1, sparkleTick * 1.7 + (y + 1) * 3.1)
+          if (haloTrigger > 0.54) {
+            ctx.fillStyle = `rgba(255,255,255,${(0.08 + dotState.spark * 0.22).toFixed(3)})`
+            ctx.beginPath()
+            ctx.arc(drawX, drawY, Math.min(modulePx * 0.54, baseRadius * (0.92 + dotState.spark * 0.34)), 0, Math.PI * 2)
+            ctx.fill()
+          }
+
+          ctx.fillStyle = 'rgba(255,255,255,0.98)'
+        }
+      }
+    }
+
     ctx.restore()
   }
 
@@ -1093,6 +1209,9 @@ export default class LogoCanvasEngine {
       }
 
       if (isQrParticle) {
+        if (this.state === 'qr_show' && this.qrRenderKind === 'qr') {
+          continue
+        }
         const reveal = Math.max(0, Math.min(1, p.qrBlend || 0))
         const glyphMode = this.qrRenderKind === 'glyph'
         if (glyphMode && this.state === 'qr_show' && (p.qrSlotRank || 0) > 0) {

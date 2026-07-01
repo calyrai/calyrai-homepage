@@ -23,6 +23,9 @@ skin:
     error: "#dc3545"
 
   components:
+    ui:
+      line_width: "1px"
+
     tile:
       background: "{{ colors.surface }}"
       background_hover: "rgba(255, 255, 255, 0.08)"

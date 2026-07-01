@@ -6,6 +6,7 @@ import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
 import { LinkItemService } from '../../services/LinkItemService'
 import { buildGlyphMatrixFromSymbol } from '../../graphics/calyr/GlyphRenderer'
+import { pointerFieldFromEvent } from '../../utils/dotInteraction'
 
 const SWIPE_THRESHOLD_PX = 26
 const TAP_MAX_MOVEMENT_PX = 14
@@ -188,6 +189,22 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     machineRef.current?.handlePointerReturn()
   }
 
+  const updateInteractionField = (event, strength = 1) => {
+    const canvas = canvasRef.current
+    const engine = engineRef.current
+    if (!canvas || !engine) return
+    const rect = canvas.getBoundingClientRect()
+    const pointerField = pointerFieldFromEvent(event, rect, {
+      radius: 0.22,
+      strength,
+    })
+    engine.setInteractionField(pointerField)
+  }
+
+  const clearInteractionField = () => {
+    engineRef.current?.clearInteractionField()
+  }
+
   const stepSwipeTarget = (delta) => {
     if (swipeTargets.length <= 1) return
     setActiveTargetIndex((prev) => {
@@ -205,13 +222,16 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       endX: event.clientX,
       endY: event.clientY,
     }
+    updateInteractionField(event, 1.05)
   }
 
   const handlePointerDrag = (event) => {
     const swipe = swipeRef.current
-    if (!swipe.active) return
-    swipeRef.current.endX = event.clientX
-    swipeRef.current.endY = event.clientY
+    if (swipe.active) {
+      swipeRef.current.endX = event.clientX
+      swipeRef.current.endY = event.clientY
+    }
+    updateInteractionField(event, 0.95)
   }
 
   const handlePointerUp = () => {
@@ -237,6 +257,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       }
     }
     swipeRef.current.active = false
+    clearInteractionField()
   }
 
   const renderLabel = (value) => {
@@ -275,7 +296,10 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
           data-logo-state={state}
           aria-label="CALYR interactive logo"
           onMouseEnter={handlePointerEnter}
-          onMouseLeave={handlePointerLeave}
+          onMouseLeave={() => {
+            handlePointerLeave()
+            clearInteractionField()
+          }}
           onMouseMove={handlePointerMove}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerDrag}

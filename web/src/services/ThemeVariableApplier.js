@@ -8,12 +8,21 @@ export class ThemeVariableApplier {
 
     const colors = themeData.skin.colors || {}
     const components = themeData.skin.components || {}
+    const lineWidth =
+      components?.ui?.line_width ||
+      themeData?.base?.borders?.width_thin ||
+      themeData?.base?.borders?.width_medium
 
     Object.entries(colors).forEach(([key, value]) => {
       if (typeof value === 'string' && !value.includes('{{')) {
         this.root.style.setProperty(`--color-${key.replace(/_/g, '-')}`, value)
       }
     })
+
+    if (typeof lineWidth === 'string' && !lineWidth.includes('{{')) {
+      this.root.style.setProperty('--line-width', lineWidth)
+      this.root.style.setProperty('--border-width', lineWidth)
+    }
 
     this.#applyHeroVariables(components.hero)
     this.#applyTileVariables(components.tile)
