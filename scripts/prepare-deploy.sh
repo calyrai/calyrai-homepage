@@ -17,7 +17,14 @@ npm --prefix "$WEB_DIR" run build
 mkdir -p "$DEPLOY_DIR"
 find "$DEPLOY_DIR" -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
 
-cp "$WEB_DIR/dist/$DEPLOY_HTML" "$DEPLOY_DIR/$DEPLOY_HTML"
+source_html="$WEB_DIR/dist/$DEPLOY_HTML"
+if [[ ! -f "$source_html" ]]; then
+  echo "Expected build artifact not found: $source_html" >&2
+  echo "Check WEB_DIR/DEPLOY_HTML settings and build output path." >&2
+  exit 1
+fi
+
+cp "$source_html" "$DEPLOY_DIR/$DEPLOY_HTML"
 
 if [[ -f CNAME ]]; then
   cp CNAME "$DEPLOY_DIR/CNAME"
