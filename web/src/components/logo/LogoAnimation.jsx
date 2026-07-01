@@ -8,6 +8,8 @@ import { LinkItemService } from '../../services/LinkItemService'
 import { buildGlyphMatrixFromSymbol } from '../../graphics/calyr/GlyphRenderer'
 
 const SWIPE_THRESHOLD_PX = 26
+const TAP_MAX_MOVEMENT_PX = 14
+const DOUBLE_TAP_MAX_DELAY_MS = 320
 const AUTO_RETURN_TO_QR_MS = 6000
 
 export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline', showCanvas = true, contacts = [] }) {
@@ -17,6 +19,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   const engineRef = useRef(null)
   const canvasRef = useRef(null)
   const swipeRef = useRef({ active: false, startX: 0, startY: 0, endX: 0, endY: 0 })
+  const gestureRef = useRef({ lastTapAt: 0 })
 
   const contactLinks = useMemo(() => LinkItemService.buildContactLinks({ contacts }), [contacts])
   const swipeTargets = useMemo(() => {
@@ -216,9 +219,21 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (swipe.active) {
       const dx = swipe.endX - swipe.startX
       const dy = swipe.endY - swipe.startY
-      if (Math.abs(dy) >= SWIPE_THRESHOLD_PX && Math.abs(dy) > Math.abs(dx)) {
-        const direction = dy > 0 ? 1 : -1
+      const absDx = Math.abs(dx)
+      const absDy = Math.abs(dy)
+
+      if (absDx >= SWIPE_THRESHOLD_PX && absDx > absDy) {
+        const direction = dx > 0 ? 1 : -1
         stepSwipeTarget(direction)
+      } else if (absDx <= TAP_MAX_MOVEMENT_PX && absDy <= TAP_MAX_MOVEMENT_PX) {
+        const now = Date.now()
+        const elapsedSinceLastTap = now - gestureRef.current.lastTapAt
+        if (elapsedSinceLastTap <= DOUBLE_TAP_MAX_DELAY_MS) {
+          stepSwipeTarget(1)
+          gestureRef.current.lastTapAt = 0
+        } else {
+          gestureRef.current.lastTapAt = now
+        }
       }
     }
     swipeRef.current.active = false
