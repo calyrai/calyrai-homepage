@@ -638,13 +638,16 @@ export default class LogoCanvasEngine {
       const maxFitFactor = isGlyphMatrix
         ? (Number(this.config?.glyphFitFactor) || 0.96)
         : (Number(this.config?.qrFitFactor) || 0.84)
+      const edgeInsetPx = Math.max(0, Number(this.config?.qrEdgeInsetPx) || 6)
       const desiredQrSizePx = targetSizePx > 0
         ? Math.min(targetSizePx, Math.min(this.width, this.height) * maxFitFactor)
         : normSize * Math.min(this.width, this.height)
       const rawModulePx = desiredQrSizePx / fullSize
       const snappedModulePx = Math.floor(rawModulePx / quantumPx) * quantumPx
       const minModulePx = isGlyphMatrix ? 5 : 3
-      const modulePx = Math.max(minModulePx, snappedModulePx || quantumPx)
+      const maxQrSizePx = Math.max(1, Math.min(this.width, this.height) - edgeInsetPx * 2)
+      const maxModulePx = Math.max(minModulePx, Math.floor(maxQrSizePx / fullSize))
+      const modulePx = Math.min(maxModulePx, Math.max(minModulePx, snappedModulePx || quantumPx))
       const qrSizePx = modulePx * fullSize
 
       const rawLeftPx = (this.width - qrSizePx) * 0.5
@@ -654,8 +657,10 @@ export default class LogoCanvasEngine {
         return Math.round(absolutePx / quantumPx) * quantumPx - canvasOffset
       }
 
-      const leftPx = snapToGrid(rawLeftPx, this.canvasOffsetX || 0)
-      const topPx = snapToGrid(rawTopPx, this.canvasOffsetY || 0)
+      const leftPxUnclamped = snapToGrid(rawLeftPx, this.canvasOffsetX || 0)
+      const topPxUnclamped = snapToGrid(rawTopPx, this.canvasOffsetY || 0)
+      const leftPx = Math.max(edgeInsetPx, Math.min(leftPxUnclamped, this.width - qrSizePx - edgeInsetPx))
+      const topPx = Math.max(edgeInsetPx, Math.min(topPxUnclamped, this.height - qrSizePx - edgeInsetPx))
 
       moduleSizeX = modulePx / this.width
       moduleSizeY = modulePx / this.height
@@ -666,6 +671,8 @@ export default class LogoCanvasEngine {
       moduleSizeY = normSize / fullSize
       left = this.ringCenterX - (moduleSizeX * fullSize) / 2
       top = this.ringCenterY - (moduleSizeY * fullSize) / 2
+      left = Math.max(0, Math.min(left, 1 - moduleSizeX * fullSize))
+      top = Math.max(0, Math.min(top, 1 - moduleSizeY * fullSize))
     }
 
     this.qrModuleSizeNorm = moduleSizeX
