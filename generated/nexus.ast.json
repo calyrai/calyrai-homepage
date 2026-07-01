@@ -617,7 +617,7 @@
             {
               "id": "bluesky",
               "label": "Bluesky",
-              "symbol": "*",
+              "symbol": "\ud83e\udd8b",
               "route": "https://bsky.app"
             },
             {

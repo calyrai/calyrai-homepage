@@ -394,7 +394,7 @@ contact:
       route: https://www.linkedin.com
     - id: bluesky
       label: Bluesky
-      symbol: "*"
+      symbol: "🦋"
       route: https://bsky.app
     - id: youtube
       label: YouTube
