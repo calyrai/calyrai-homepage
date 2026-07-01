@@ -20,7 +20,7 @@
     }
   },
   "interaction": {
-    "initialState": "idle",
+    "initialState": "qr_show",
     "autoCycleWithoutMouse": false,
     "stateTransitionMs": 1200,
     "hoverEnter": "active",
