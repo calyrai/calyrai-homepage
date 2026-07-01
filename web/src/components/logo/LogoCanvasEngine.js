@@ -618,6 +618,8 @@ export default class LogoCanvasEngine {
     }
 
     const size = qrMatrix.size
+    const quietModules = Math.max(0, Number(qrMatrix.quietModules) || 2)
+    const fullSize = size + quietModules * 2
     const normSize = qrMatrix.normSize || 0.36
     const targetSizePx = Number(qrMatrix.targetSizePx) || 0
     const shouldSnapToGrid = this.config?.qrSnapToGrid !== false
@@ -633,9 +635,10 @@ export default class LogoCanvasEngine {
       const desiredQrSizePx = targetSizePx > 0
         ? Math.min(targetSizePx, Math.min(this.width, this.height) * 0.92)
         : normSize * Math.min(this.width, this.height)
-      const rawModulePx = desiredQrSizePx / size
-      const modulePx = Math.max(3, Math.round(rawModulePx / quantumPx) * quantumPx)
-      const qrSizePx = modulePx * size
+      const rawModulePx = desiredQrSizePx / fullSize
+      const snappedModulePx = Math.floor(rawModulePx / quantumPx) * quantumPx
+      const modulePx = Math.max(3, snappedModulePx || quantumPx)
+      const qrSizePx = modulePx * fullSize
 
       const rawLeftPx = (this.width - qrSizePx) * 0.5
       const rawTopPx = (this.height - qrSizePx) * 0.5
@@ -652,10 +655,10 @@ export default class LogoCanvasEngine {
       left = leftPx / this.width
       top = topPx / this.height
     } else {
-      moduleSizeX = normSize / size
-      moduleSizeY = normSize / size
-      left = this.ringCenterX - normSize / 2
-      top = this.ringCenterY - normSize / 2
+      moduleSizeX = normSize / fullSize
+      moduleSizeY = normSize / fullSize
+      left = this.ringCenterX - (moduleSizeX * fullSize) / 2
+      top = this.ringCenterY - (moduleSizeY * fullSize) / 2
     }
 
     this.qrModuleSizeNorm = moduleSizeX
@@ -672,8 +675,8 @@ export default class LogoCanvasEngine {
       for (let x = 0; x < size; x += 1) {
         if (!qrMatrix.modules[y][x]) continue
         this.qrTargets.push({
-          x: left + x * moduleSizeX + moduleSizeX * 0.5,
-          y: top + y * moduleSizeY + moduleSizeY * 0.5,
+          x: left + (x + quietModules) * moduleSizeX + moduleSizeX * 0.5,
+          y: top + (y + quietModules) * moduleSizeY + moduleSizeY * 0.5,
           weight: 1,
         })
       }
