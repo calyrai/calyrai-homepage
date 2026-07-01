@@ -6,6 +6,10 @@ Icon?
 *.log
 .DS_Store
 
+# Allow committed CALYR vector icon path sources under web graphics.
+!web/src/graphics/calyr/icons/
+!web/src/graphics/calyr/icons/IconPaths.js
+
 # Python cache / bytecode
 __pycache__/
 *.pyc
