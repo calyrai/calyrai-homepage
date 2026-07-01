@@ -3,13 +3,11 @@ import { renderNode } from './components/Renderer'
 import Navigation from './components/Navigation'
 import DotRasterBackground from './components/DotRasterBackground'
 import BooksPage from './components/pages/BooksPage'
-import ContactPage from './components/pages/ContactPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
 import { ThemeVariableApplier } from './services/ThemeVariableApplier'
 import { RouteStateService } from './services/RouteStateService'
-import { NodeQueryService } from './services/NodeQueryService'
 import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
@@ -24,7 +22,6 @@ function App() {
 
   const themeVariableApplier = new ThemeVariableApplier()
   const routeState = RouteStateService.create(currentPath)
-  const contactPage = new NodeQueryService(ast).findById('contact')
 
   useEffect(() => {
     try {
@@ -45,12 +42,10 @@ function App() {
 
   useEffect(() => {
     document.body.classList.toggle('books-route', routeState.isBooksRoute)
-    document.body.classList.toggle('contact-route', routeState.isContactRoute)
     return () => {
       document.body.classList.remove('books-route')
-      document.body.classList.remove('contact-route')
     }
-  }, [routeState.isBooksRoute, routeState.isContactRoute])
+  }, [routeState.isBooksRoute])
 
   if (loading) {
     return <div>Loading...</div>
@@ -67,11 +62,10 @@ function App() {
   return (
     <SelectionProvider>
       <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} />
-      {/* Navigation (Stage 8) */}
       <Navigation theme={theme} ast={ast} />
-      
+
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : routeState.isContactRoute ? <ContactPage page={contactPage} /> : renderNode(ast, theme, { contactPage })}
+        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : renderNode(ast, theme)}
       </div>
     </SelectionProvider>
   )

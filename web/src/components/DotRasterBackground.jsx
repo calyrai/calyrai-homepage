@@ -67,7 +67,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
 
     const handlePointerDown = (event) => {
       // Never react to clicks intended for pressable foreground UI.
-      if (isInteractiveSurfaceEvent(event, ['.tile', '.navigation', '.logo-element', '.quick-contact-rail', 'a', 'button', 'input', 'textarea', 'select', '[role="button"]'])) {
+      if (isInteractiveSurfaceEvent(event, ['.tile', '.navigation', '.logo-element', 'a', 'button', 'input', 'textarea', 'select', '[role="button"]'])) {
         return
       }
 
@@ -80,7 +80,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     }
 
     const handlePointerMove = (event) => {
-      if (isInteractiveSurfaceEvent(event, ['.tile', '.navigation', '.logo-element', '.quick-contact-rail', 'a', 'button', 'input', 'textarea', 'select', '[role="button"]'])) {
+      if (isInteractiveSurfaceEvent(event, ['.tile', '.navigation', '.logo-element', 'a', 'button', 'input', 'textarea', 'select', '[role="button"]'])) {
         return
       }
 

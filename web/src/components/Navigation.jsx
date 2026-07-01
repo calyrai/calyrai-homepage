@@ -9,10 +9,9 @@
  *   • Respects safe area (notch support)
  */
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { NavigationItemService } from '../services/NavigationItemService'
-
 export default function Navigation({ theme, ast }) {
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile()
@@ -58,7 +57,7 @@ export default function Navigation({ theme, ast }) {
       )}
 
       {/* Navigation Menu */}
-      <nav className={`mobile-nav ${isOpen ? 'open' : ''}`} style={headerStyle}>
+      <nav className={`navigation mobile-nav ${isOpen ? 'open' : ''}`} style={headerStyle}>
         <div className="nav-content">
           <ul className="nav-list">
             {navItems.map((item, index) => (

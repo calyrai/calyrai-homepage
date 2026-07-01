@@ -13,7 +13,6 @@ export default function Element({ node, theme, context = {} }) {
   const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
 
   if (id === 'logo') {
-    const contactItems = Array.isArray(context?.contactPage?.contacts) ? context.contactPage.contacts : []
     return (
       <LogoAnimation
         className="logo-element"
@@ -21,7 +20,6 @@ export default function Element({ node, theme, context = {} }) {
         tagline={tagline}
         layout="inline"
         showCanvas
-        contacts={contactItems}
       />
     )
   }
