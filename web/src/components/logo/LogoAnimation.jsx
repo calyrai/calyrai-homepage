@@ -195,7 +195,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (!canvas || !engine) return
     const rect = canvas.getBoundingClientRect()
     const pointerField = pointerFieldFromEvent(event, rect, {
-      radius: 0.32,
+      radius: 0.38,
       strength,
     })
     engine.setInteractionField(pointerField)
@@ -228,7 +228,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       endX: event.clientX,
       endY: event.clientY,
     }
-    updateInteractionField(event, 0.82)
+    updateInteractionField(event, 1.35)
   }
 
   const handlePointerDrag = (event) => {
@@ -239,7 +239,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     }
     swipeRef.current.endX = event.clientX
     swipeRef.current.endY = event.clientY
-    updateInteractionField(event, 0.72)
+    updateInteractionField(event, 1.2)
   }
 
   const handlePointerUp = (event) => {

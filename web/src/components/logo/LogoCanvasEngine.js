@@ -1001,8 +1001,6 @@ export default class LogoCanvasEngine {
         if (!row?.[x]) continue
         const nx = left + (x + quietModules + 0.5) * moduleSizeX
         const ny = top + (y + quietModules + 0.5) * moduleSizeY
-        const cx = nx * this.width
-        const cy = ny * this.height
         const inFinderPattern =
           (x <= 6 && y <= 6) ||
           (x >= size - 7 && y <= 6) ||
@@ -1010,7 +1008,7 @@ export default class LogoCanvasEngine {
         const repulsion = inFinderPattern
           ? { dx: 0, dy: 0 }
           : computeDotRepulsion(nx, ny, this.interactionField, {
-            maxShift: moduleSizeX * 0.34,
+            maxShift: moduleSizeX * 0.56,
           })
         const key = `${x}:${y}`
         let dotState = this.qrDotStates.get(key)
@@ -1020,11 +1018,20 @@ export default class LogoCanvasEngine {
         }
         const targetDx = repulsion.dx
         const targetDy = repulsion.dy
-        dotState.vx = (dotState.vx + (targetDx - dotState.dx) * 0.46) * 0.82
-        dotState.vy = (dotState.vy + (targetDy - dotState.dy) * 0.46) * 0.82
+        const relX = nx - (this.interactionField?.x ?? 0.5)
+        const relY = ny - (this.interactionField?.y ?? 0.5)
+        const relLen = Math.hypot(relX, relY) || 1
+        const swirlX = -relY / relLen
+        const swirlY = relX / relLen
+        const swirlShift = moduleSizeX * 0.14 * (repulsion.influence || 0)
+        const flowTargetDx = targetDx + swirlX * swirlShift
+        const flowTargetDy = targetDy + swirlY * swirlShift
+
+        dotState.vx = (dotState.vx + (flowTargetDx - dotState.dx) * 0.34) * 0.86
+        dotState.vy = (dotState.vy + (flowTargetDy - dotState.dy) * 0.34) * 0.86
         dotState.dx += dotState.vx
         dotState.dy += dotState.vy
-        const maxElasticShift = moduleSizeX * 0.42
+        const maxElasticShift = moduleSizeX * 0.68
         dotState.dx = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dx))
         dotState.dy = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dy))
 
@@ -1045,10 +1052,10 @@ export default class LogoCanvasEngine {
         // Stochastic sparkle bursts per module with independent clocks (no wave motion).
         const sparkleTick = Math.floor(t * (12 + baseSeedB * 15))
         const trigger = this.#hash2((x + 1) * 29.1 + baseSeedA * 17.3, sparkleTick * 0.73 + (y + 1) * 5.2)
-        if (trigger > 0.978) {
-          dotState.spark = 1
+        if (trigger > 0.984) {
+          dotState.spark = Math.min(1, dotState.spark + 0.56)
         }
-        dotState.spark *= 0.94
+        dotState.spark *= 0.96
 
         if (dotState.spark > 0.02) {
           const sparkleAlpha = 0.24 + dotState.spark * 0.72
