@@ -13,9 +13,17 @@ export default function Element({ node, theme, context = {} }) {
   const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
 
   if (id === 'logo') {
-    const heroTheme = theme?.skin?.components?.hero || {}
-    const logoLayout = heroTheme.logo_layout || 'inline'
-    return <LogoAnimation className="logo-element" label={title} tagline={tagline} layout={logoLayout} showCanvas />
+    const contactItems = Array.isArray(context?.contactPage?.contacts) ? context.contactPage.contacts : []
+    return (
+      <LogoAnimation
+        className="logo-element"
+        label={title}
+        tagline={tagline}
+        layout="inline"
+        showCanvas
+        contacts={contactItems}
+      />
+    )
   }
 
   // Use footer theme for footer nodes, generic element theme otherwise.

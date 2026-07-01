@@ -4,37 +4,112 @@ import logoSpec from '../../data/logo/logo.json'
 import ringPointSet from '../../data/logo/calyr_ring_dots_1000.json'
 import LogoStateMachine from './LogoStateMachine'
 import LogoCanvasEngine from './LogoCanvasEngine'
+import { LinkItemService } from '../../services/LinkItemService'
+import { buildGlyphMatrixFromSymbol } from '../../graphics/calyr/GlyphRenderer'
 
-export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline', showCanvas = true }) {
+const SWIPE_THRESHOLD_PX = 26
+const AUTO_RETURN_TO_QR_MS = 6000
+
+export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline', showCanvas = true, contacts = [] }) {
   const [state, setState] = useState(logoSpec?.interaction?.initialState || 'idle')
+  const [activeTargetIndex, setActiveTargetIndex] = useState(0)
   const machineRef = useRef(null)
   const engineRef = useRef(null)
   const canvasRef = useRef(null)
+  const swipeRef = useRef({ active: false, startX: 0, startY: 0, endX: 0, endY: 0 })
 
-  const qrText = useMemo(() => logoSpec?.qr?.text || '', [])
+  const contactLinks = useMemo(() => LinkItemService.buildContactLinks({ contacts }), [contacts])
+  const swipeTargets = useMemo(() => {
+    const base = [
+      {
+        id: 'qr-default',
+        kind: 'qr',
+        symbol: 'QR',
+        label: 'Default QR',
+        payload: logoSpec?.qr?.text || '',
+      },
+    ]
+
+    const mapped = contactLinks.map((item) => ({
+      id: item.id,
+      kind: 'glyph',
+      symbol: LinkItemService.getContactSymbol(item) || '@',
+      label: item.label,
+      payload: item.href,
+    }))
+
+    return [...base, ...mapped]
+  }, [contactLinks])
+
+  useEffect(() => {
+    setActiveTargetIndex((prev) => {
+      if (!Number.isFinite(prev)) return 0
+      if (swipeTargets.length === 0) return 0
+      return Math.min(prev, swipeTargets.length - 1)
+    })
+  }, [swipeTargets])
+
+  const activeTarget = swipeTargets[Math.max(0, Math.min(activeTargetIndex, swipeTargets.length - 1))] || swipeTargets[0]
+
+  useEffect(() => {
+    if (!showCanvas) return undefined
+    if (!activeTarget || activeTarget.kind !== 'glyph') return undefined
+
+    const timeoutId = window.setTimeout(() => {
+      setActiveTargetIndex(0)
+      machineRef.current?.triggerQrBuild()
+    }, AUTO_RETURN_TO_QR_MS)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [activeTarget, showCanvas])
+
+  const buildQrMatrix = (text) => {
+    const qr = QRCode.create(text, { errorCorrectionLevel: 'M' })
+    const { size, data } = qr.modules
+    const modules = []
+    for (let y = 0; y < size; y += 1) {
+      const row = []
+      for (let x = 0; x < size; x += 1) {
+        row.push(Boolean(data[y * size + x]))
+      }
+      modules.push(row)
+    }
+    return {
+      kind: 'qr',
+      size,
+      modules,
+      quietModules: 2,
+      normSize: 0.44,
+      targetSizePx: logoSpec?.qr?.targetSizePx || null,
+    }
+  }
+
   const qrMatrix = useMemo(() => {
     try {
-      const qr = QRCode.create(qrText, { errorCorrectionLevel: 'M' })
-      const { size, data } = qr.modules
-      const modules = []
-      for (let y = 0; y < size; y += 1) {
-        const row = []
-        for (let x = 0; x < size; x += 1) {
-          row.push(Boolean(data[y * size + x]))
+      if (!activeTarget) {
+        return buildQrMatrix(logoSpec?.qr?.text || '')
+      }
+
+      if (activeTarget.kind === 'glyph') {
+        const glyphMatrix = buildGlyphMatrixFromSymbol(activeTarget.symbol, {
+          drawSize: 360,
+          matrixSize: 15,
+          threshold: 0.1,
+          gamma: 0.92,
+          normSize: 0.94,
+          targetSizePx: logoSpec?.qr?.targetSizePx || null,
+        })
+        if (glyphMatrix) {
+          return glyphMatrix
         }
-        modules.push(row)
       }
-      return {
-        size,
-        modules,
-        normSize: 0.44,
-        targetSizePx: logoSpec?.qr?.targetSizePx || null,
-      }
+
+      return buildQrMatrix(activeTarget.payload || logoSpec?.qr?.text || '')
     } catch (error) {
       console.error('Failed to build QR matrix for logo interaction:', error)
       return null
     }
-  }, [qrText])
+  }, [activeTarget])
 
   useEffect(() => {
     if (!showCanvas) {
@@ -81,12 +156,18 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
       if (!showCanvas) {
         return
       }
+      setActiveTargetIndex(0)
       machineRef.current?.triggerQrBuild()
     }
 
     window.addEventListener('calyr:activate-qr', onActivateQr)
     return () => window.removeEventListener('calyr:activate-qr', onActivateQr)
   }, [showCanvas])
+
+  useEffect(() => {
+    if (!showCanvas) return
+    machineRef.current?.triggerQrBuild()
+  }, [activeTargetIndex, showCanvas])
 
   useEffect(() => {
     engineRef.current?.setState(state)
@@ -100,8 +181,47 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     machineRef.current?.handleHoverLeave()
   }
 
-  const handlePointerMove = (event) => {
+  const handlePointerMove = () => {
     machineRef.current?.handlePointerReturn()
+  }
+
+  const stepSwipeTarget = (delta) => {
+    if (swipeTargets.length <= 1) return
+    setActiveTargetIndex((prev) => {
+      const next = (prev + delta + swipeTargets.length) % swipeTargets.length
+      return next
+    })
+  }
+
+  const handlePointerDown = (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    swipeRef.current = {
+      active: true,
+      startX: event.clientX,
+      startY: event.clientY,
+      endX: event.clientX,
+      endY: event.clientY,
+    }
+  }
+
+  const handlePointerDrag = (event) => {
+    const swipe = swipeRef.current
+    if (!swipe.active) return
+    swipeRef.current.endX = event.clientX
+    swipeRef.current.endY = event.clientY
+  }
+
+  const handlePointerUp = () => {
+    const swipe = swipeRef.current
+    if (swipe.active) {
+      const dx = swipe.endX - swipe.startX
+      const dy = swipe.endY - swipe.startY
+      if (Math.abs(dy) >= SWIPE_THRESHOLD_PX && Math.abs(dy) > Math.abs(dx)) {
+        const direction = dy > 0 ? 1 : -1
+        stepSwipeTarget(direction)
+      }
+    }
+    swipeRef.current.active = false
   }
 
   const renderLabel = (value) => {
@@ -142,6 +262,10 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
           onMouseEnter={handlePointerEnter}
           onMouseLeave={handlePointerLeave}
           onMouseMove={handlePointerMove}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerDrag}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
         >
           <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
         </div>

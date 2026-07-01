@@ -40,6 +40,7 @@ export default class LogoCanvasEngine {
     this.ringTargets = []
     this.qrTargets = []
     this.qrLayout = null
+    this.qrRenderKind = 'qr'
     this.particles = []
     this.qrModuleSizeNorm = 0
     this.canvasOffsetX = 0
@@ -612,6 +613,7 @@ export default class LogoCanvasEngine {
   #buildQrTargets(qrMatrix) {
     this.qrTargets = []
     this.qrLayout = null
+    this.qrRenderKind = qrMatrix?.kind || 'qr'
 
     if (!qrMatrix || !Array.isArray(qrMatrix.modules) || !qrMatrix.size) {
       return
@@ -632,12 +634,17 @@ export default class LogoCanvasEngine {
     let moduleSizeY
 
     if (shouldSnapToGrid && this.width > 1 && this.height > 1) {
+      const isGlyphMatrix = qrMatrix?.kind === 'glyph'
+      const maxFitFactor = isGlyphMatrix
+        ? (Number(this.config?.glyphFitFactor) || 0.96)
+        : (Number(this.config?.qrFitFactor) || 0.84)
       const desiredQrSizePx = targetSizePx > 0
-        ? Math.min(targetSizePx, Math.min(this.width, this.height) * 0.92)
+        ? Math.min(targetSizePx, Math.min(this.width, this.height) * maxFitFactor)
         : normSize * Math.min(this.width, this.height)
       const rawModulePx = desiredQrSizePx / fullSize
       const snappedModulePx = Math.floor(rawModulePx / quantumPx) * quantumPx
-      const modulePx = Math.max(3, snappedModulePx || quantumPx)
+      const minModulePx = isGlyphMatrix ? 5 : 3
+      const modulePx = Math.max(minModulePx, snappedModulePx || quantumPx)
       const qrSizePx = modulePx * fullSize
 
       const rawLeftPx = (this.width - qrSizePx) * 0.5
@@ -665,6 +672,8 @@ export default class LogoCanvasEngine {
     this.qrLayout = {
       size,
       modules: qrMatrix.modules,
+      quietModules,
+      fullSize,
       left,
       top,
       moduleSizeX,
@@ -673,11 +682,13 @@ export default class LogoCanvasEngine {
 
     for (let y = 0; y < size; y += 1) {
       for (let x = 0; x < size; x += 1) {
-        if (!qrMatrix.modules[y][x]) continue
+        const cell = qrMatrix.modules[y][x]
+        const moduleWeight = typeof cell === 'number' ? Math.max(0, Math.min(1, cell)) : (cell ? 1 : 0)
+        if (!moduleWeight) continue
         this.qrTargets.push({
           x: left + (x + quietModules) * moduleSizeX + moduleSizeX * 0.5,
           y: top + (y + quietModules) * moduleSizeY + moduleSizeY * 0.5,
-          weight: 1,
+          weight: moduleWeight,
         })
       }
     }
@@ -708,6 +719,7 @@ export default class LogoCanvasEngine {
       (a, b) => this.#hash2(a * 7.41, a * 1.73) - this.#hash2(b * 7.41, b * 1.73)
     )
     const qrAssignments = new Array(count).fill(-1)
+    const qrSlotCounts = new Array(Math.max(0, qrCount)).fill(0)
 
     // Link every particle to a QR anchor so transitions are continuous.
     if (qrCount > 0) {
@@ -723,6 +735,7 @@ export default class LogoCanvasEngine {
 
       const base = this.ringTargets[ringAnchorIndex]
       const qrTargetIndex = qrAssignments[i]
+      const qrSlotRank = qrTargetIndex >= 0 ? qrSlotCounts[qrTargetIndex]++ : 0
       const baseRadius = Math.hypot(base.x - this.ringCenterX, base.y - this.ringCenterY)
       const radiusSpan = Math.max(0.001, ringRadiusStats.max - ringRadiusStats.min)
       const outerRingPriority = (baseRadius - ringRadiusStats.min) / radiusSpan
@@ -756,6 +769,7 @@ export default class LogoCanvasEngine {
         radialBias,
         swirlPhase,
         qrTargetIndex,
+        qrSlotRank,
         qrLag,
         qrBlend: initialQrBlend,
         respawnAt: null,
@@ -1073,11 +1087,22 @@ export default class LogoCanvasEngine {
 
       if (isQrParticle) {
         const reveal = Math.max(0, Math.min(1, p.qrBlend || 0))
-        const sizeJitter = 0.58 + this.#hash2(i * 9.17, i * 3.71) * 1.02
+        const glyphMode = this.qrRenderKind === 'glyph'
+        if (glyphMode && this.state === 'qr_show' && (p.qrSlotRank || 0) > 0) {
+          continue
+        }
+        const qrWeight = p.qrTargetIndex >= 0 && p.qrTargetIndex < this.qrTargets.length
+          ? (this.qrTargets[p.qrTargetIndex].weight || 1)
+          : 1
+        const sizeJitter = glyphMode
+          ? 0.72 + this.#hash2(i * 9.17, i * 3.71) * 1.45
+          : 0.58 + this.#hash2(i * 9.17, i * 3.71) * 1.02
         const sparkleSeed = this.#hash2(i * 2.73, i * 6.19)
         const shimmerA = Math.sin(t * (4.3 + sparkleSeed * 2.1) + sparkleSeed * Math.PI * 2)
         const shimmerB = Math.sin(t * (9.4 + sparkleSeed * 3.7) + sparkleSeed * 11.3)
-        const qrShimmer = 0.5 + 0.34 * shimmerA + 0.16 * shimmerB
+        const qrShimmer = glyphMode
+          ? 0.5 + 0.4 * shimmerA + 0.22 * shimmerB
+          : 0.5 + 0.34 * shimmerA + 0.16 * shimmerB
         const qrGlint = Math.pow(
           Math.max(0, Math.sin(t * (12.8 + sparkleSeed * 4.4) + sparkleSeed * 9.1)),
           11
@@ -1092,20 +1117,34 @@ export default class LogoCanvasEngine {
           const lock = Math.max(0, Math.min(1, reveal))
           const drawX = px * (1 - lock) + qx * lock
           const drawY = py * (1 - lock) + qy * lock
-          const radius = Math.max(0.88, qrPx * 0.31 * sizeJitter * (0.88 + qrShimmer * 0.2 + qrGlint * 0.14))
-          const qrShowAlpha = Math.min(1, 0.76 + qrShimmer * 0.22 + qrGlint * 0.22)
+          const glyphSeed = this.#hash2(i * 2.41, i * 8.13)
+          const glyphTwinkle = 0.5 + 0.5 * Math.sin(t * (5.8 + glyphSeed * 2.2) + glyphSeed * 17.3)
+          const glyphGlint = Math.pow(Math.max(0, Math.sin(t * (11.7 + glyphSeed * 3.9) + glyphSeed * 9.7)), 8)
+          const radius = glyphMode
+            ? Math.max(0.86, qrPx * (0.07 + qrWeight * 0.36) * (0.86 + glyphSeed * 0.14 + glyphTwinkle * 0.14))
+            : Math.max(0.88, qrPx * 0.31 * sizeJitter * (0.88 + qrShimmer * 0.2 + qrGlint * 0.14))
+          const qrShowAlpha = glyphMode
+            ? Math.max(0.74, Math.min(1, 0.78 + glyphTwinkle * 0.24 + glyphGlint * 0.22))
+            : Math.min(1, 0.76 + qrShimmer * 0.22 + qrGlint * 0.22)
 
-          ctx.fillStyle = `rgba(255,255,255,${Math.max(0.34, qrShowAlpha * alwaysSparkle).toFixed(3)})`
+          ctx.fillStyle = glyphMode
+            ? `rgba(255,255,255,${qrShowAlpha.toFixed(3)})`
+            : `rgba(255,255,255,${Math.max(0.34, qrShowAlpha * alwaysSparkle).toFixed(3)})`
           ctx.beginPath()
           ctx.arc(drawX, drawY, radius, 0, Math.PI * 2)
           ctx.fill()
           continue
         }
 
-        const radius = Math.max(
-          0.82,
-          qrPx * (0.31 + reveal * 0.16) * sizeJitter * (0.86 + qrShimmer * 0.24 + qrGlint * 0.16)
-        )
+        const radius = glyphMode
+          ? Math.max(
+            0.98,
+            qrPx * (0.38 + reveal * 0.22) * sizeJitter * (0.84 + qrShimmer * 0.28 + qrGlint * 0.18)
+          )
+          : Math.max(
+            0.82,
+            qrPx * (0.31 + reveal * 0.16) * sizeJitter * (0.86 + qrShimmer * 0.24 + qrGlint * 0.16)
+          )
 
         const qrAlpha = Math.min(1, 0.7 + reveal * 0.24 + qrShimmer * 0.26 + qrGlint * 0.22)
         ctx.fillStyle = `rgba(255,255,255,${qrAlpha.toFixed(3)})`
