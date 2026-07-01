@@ -1,5 +1,11 @@
 name: Deploy GitHub Pages
 
+env:
+  NODE_VERSION: "20"
+  WEB_DIR: web
+  DEPLOY_DIR: deploy
+  DEPLOY_HTML: index.html
+
 on:
   push:
     branches: ["main"]
@@ -20,18 +26,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Prepare minimal deploy package
         run: ./scripts/prepare-deploy.sh
 
       - name: Validate deploy package
-        run: test -f ./deploy/index.html
+        run: test -f "./${{ env.DEPLOY_DIR }}/${{ env.DEPLOY_HTML }}"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./deploy
+          path: ./${{ env.DEPLOY_DIR }}
 
   deploy:
     needs: build
