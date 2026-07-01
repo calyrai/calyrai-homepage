@@ -657,10 +657,11 @@ export default class LogoCanvasEngine {
         : normSize * Math.min(this.width, this.height)
       const rawModulePx = desiredQrSizePx / fullSize
       const snappedModulePx = Math.floor(rawModulePx / quantumPx) * quantumPx
-      const minModulePx = isGlyphMatrix ? 5 : 4
+      const minModulePx = isGlyphMatrix ? 5 : 2
       const maxQrSizePx = Math.max(1, Math.min(this.width, this.height) - edgeInsetPx * 2)
-      const maxModulePx = Math.max(minModulePx, Math.floor(maxQrSizePx / fullSize))
-      const modulePx = Math.min(maxModulePx, Math.max(minModulePx, snappedModulePx || quantumPx))
+      const maxModulePx = Math.max(minModulePx, maxQrSizePx / fullSize)
+      const moduleCandidatePx = shouldSnapToGrid ? (snappedModulePx || quantumPx) : rawModulePx
+      const modulePx = Math.min(maxModulePx, Math.max(minModulePx, moduleCandidatePx))
       const qrSizePx = modulePx * fullSize
 
       const rawLeftPx = (this.width - qrSizePx) * 0.5
