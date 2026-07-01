@@ -195,7 +195,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (!canvas || !engine) return
     const rect = canvas.getBoundingClientRect()
     const pointerField = pointerFieldFromEvent(event, rect, {
-      radius: 0.22,
+      radius: 0.28,
       strength,
     })
     engine.setInteractionField(pointerField)

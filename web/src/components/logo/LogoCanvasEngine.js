@@ -1009,7 +1009,7 @@ export default class LogoCanvasEngine {
         const repulsion = inFinderPattern
           ? { dx: 0, dy: 0 }
           : computeDotRepulsion(nx, ny, this.interactionField, {
-            maxShift: moduleSizeX * 0.24,
+            maxShift: moduleSizeX * 0.34,
           })
         const key = `${x}:${y}`
         let dotState = this.qrDotStates.get(key)
@@ -1019,11 +1019,11 @@ export default class LogoCanvasEngine {
         }
         const targetDx = repulsion.dx
         const targetDy = repulsion.dy
-        dotState.vx = (dotState.vx + (targetDx - dotState.dx) * 0.34) * 0.76
-        dotState.vy = (dotState.vy + (targetDy - dotState.dy) * 0.34) * 0.76
+        dotState.vx = (dotState.vx + (targetDx - dotState.dx) * 0.46) * 0.82
+        dotState.vy = (dotState.vy + (targetDy - dotState.dy) * 0.46) * 0.82
         dotState.dx += dotState.vx
         dotState.dy += dotState.vy
-        const maxElasticShift = moduleSizeX * 0.28
+        const maxElasticShift = moduleSizeX * 0.42
         dotState.dx = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dx))
         dotState.dy = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dy))
 

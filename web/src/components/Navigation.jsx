@@ -14,7 +14,7 @@ function DottedContactIcon({ symbol }) {
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
     pointerFieldRef.current = pointerFieldFromEvent(event, rect, {
-      radius: 0.24,
+      radius: 0.3,
       strength,
     })
   }
@@ -88,7 +88,7 @@ function DottedContactIcon({ symbol }) {
           const nx = (x + 0.5) / cols
           const ny = (y + 0.5) / rows
           const repulsion = computeDotRepulsion(nx, ny, pointerFieldRef.current, {
-            maxShift: 0.11,
+            maxShift: 0.18,
           })
           const key = `${x}:${y}`
           let dotState = dotStates.get(key)
@@ -97,8 +97,8 @@ function DottedContactIcon({ symbol }) {
             dotStates.set(key, dotState)
           }
 
-          dotState.vx = (dotState.vx + (repulsion.dx - dotState.dx) * 0.34) * 0.74
-          dotState.vy = (dotState.vy + (repulsion.dy - dotState.dy) * 0.34) * 0.74
+          dotState.vx = (dotState.vx + (repulsion.dx - dotState.dx) * 0.44) * 0.82
+          dotState.vy = (dotState.vy + (repulsion.dy - dotState.dy) * 0.44) * 0.82
           dotState.dx += dotState.vx
           dotState.dy += dotState.vy
 
