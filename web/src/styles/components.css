@@ -1871,61 +1871,71 @@ button:active {
 }
 
 .quick-contact-links--cluster {
-  top: 50%;
-  width: 188px;
-  min-height: 150px;
-  padding: 8px;
-  border: none;
-  transform: translateX(-12px) translateY(-50%) scale(0.96);
-  background: transparent;
-  box-shadow: none;
-  overflow: visible;
+  top: 0;
+  width: 66px;
+  max-height: min(56vh, 380px);
+  padding: 8px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+  transform: translateX(-10px) scale(0.96);
+  background: rgba(5, 8, 18, 0.84);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.18);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 34px;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 36px;
   align-items: center;
   justify-items: center;
-  gap: 6px;
+  gap: 8px;
   position: relative;
 }
 
 .quick-contact-rail.open .quick-contact-links--cluster {
-  transform: translateX(0) translateY(-50%) scale(1);
+  transform: translateX(0) scale(1);
 }
 
 .quick-contact-link--cluster {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   border-color: rgba(255, 255, 255, 0.78);
-  background: rgba(255, 255, 255, 0.9);
-  color: #111111;
-  backdrop-filter: blur(1px);
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.24) 42%, rgba(255, 255, 255, 0.08) 100%),
+    linear-gradient(140deg, rgba(255, 51, 204, 0.66), rgba(56, 224, 255, 0.62));
+  color: #ffffff;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 0 9px rgba(255, 255, 255, 0.4), 0 0 14px rgba(255, 51, 204, 0.26);
+  animation: quick-contact-glitter 2.8s ease-in-out infinite;
 }
 
 .quick-contact-link--cluster .quick-contact-icon {
-  color: #111111;
+  color: #ffffff;
   font-size: 0.84rem;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 12px rgba(255, 51, 204, 0.48);
 }
 
 .quick-contact-link--cluster.quick-contact-link--qr {
-  grid-column: 4;
+  grid-column: 1;
   grid-row: 1;
-  justify-self: end;
-  align-self: start;
+  justify-self: center;
+  align-self: center;
   transform: none !important;
   z-index: 2;
 }
 
-.quick-contact-link--cluster[data-cluster-index="1"] { transform: translate(-4px, -3px); }
-.quick-contact-link--cluster[data-cluster-index="2"] { transform: translate(3px, -2px); }
-.quick-contact-link--cluster[data-cluster-index="3"] { transform: translate(-2px, -4px); }
-.quick-contact-link--cluster[data-cluster-index="4"] { transform: translate(2px, 3px); }
-.quick-contact-link--cluster[data-cluster-index="5"] { transform: translate(-5px, 1px); }
-.quick-contact-link--cluster[data-cluster-index="6"] { transform: translate(4px, 4px); }
-.quick-contact-link--cluster[data-cluster-index="7"] { transform: translate(-3px, 4px); }
-.quick-contact-link--cluster[data-cluster-index="8"] { transform: translate(5px, -1px); }
-.quick-contact-link--cluster[data-cluster-index="9"] { transform: translate(-1px, 2px); }
+.quick-contact-link--cluster[data-cluster-index="1"] { animation-delay: -0.2s; }
+.quick-contact-link--cluster[data-cluster-index="2"] { animation-delay: -0.4s; }
+.quick-contact-link--cluster[data-cluster-index="3"] { animation-delay: -0.6s; }
+.quick-contact-link--cluster[data-cluster-index="4"] { animation-delay: -0.8s; }
+.quick-contact-link--cluster[data-cluster-index="5"] { animation-delay: -1s; }
+.quick-contact-link--cluster[data-cluster-index="6"] { animation-delay: -1.2s; }
+.quick-contact-link--cluster[data-cluster-index="7"] { animation-delay: -1.4s; }
+.quick-contact-link--cluster[data-cluster-index="8"] { animation-delay: -1.6s; }
+.quick-contact-link--cluster[data-cluster-index="9"] { animation-delay: -1.8s; }
 
 .quick-contact-link {
   display: inline-flex;
@@ -2052,8 +2062,8 @@ button:active {
   }
 
   .quick-contact-links--cluster {
-    width: 176px;
-    min-height: 142px;
+    width: 62px;
+    max-height: min(50vh, 300px);
   }
 
   .quick-contact-inline {
@@ -2069,6 +2079,21 @@ button:active {
 
   .quick-contact-inline-links.open {
     max-width: min(360px, calc(100vw - 30px));
+  }
+}
+
+@keyframes quick-contact-glitter {
+  0% {
+    filter: brightness(0.94) saturate(1.05);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.34), 0 0 12px rgba(255, 51, 204, 0.22);
+  }
+  50% {
+    filter: brightness(1.18) saturate(1.26);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.58), 0 0 18px rgba(56, 224, 255, 0.32);
+  }
+  100% {
+    filter: brightness(0.97) saturate(1.1);
+    box-shadow: 0 0 9px rgba(255, 255, 255, 0.4), 0 0 14px rgba(255, 51, 204, 0.24);
   }
 }
 

@@ -23,6 +23,38 @@ export default function QuickContactRail({ page, variant = 'floating' }) {
   })
   const contactLinks = LinkItemService.buildContactLinks(page)
 
+  const clusterAnchors = [
+    [0, 0],
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [1, 1],
+    [-1, 1],
+    [1, -1],
+    [-2, 0],
+    [2, 0],
+    [-2, 1],
+    [2, -1],
+  ]
+
+  const clusterItems = [
+    { id: 'qr', label: 'QR', symbol: 'QR', href: null, isQr: true },
+    ...contactLinks.map((item) => ({
+      id: item.id,
+      label: item.label,
+      symbol: LinkItemService.getContactSymbol(item) || '@',
+      href: item.href,
+      isQr: false,
+    })),
+  ]
+
+  const clusterOrder = clusterItems.map((item, idx) => ({
+    ...item,
+    seed: clusterAnchors[idx % clusterAnchors.length],
+  }))
+
   if (!page || contactLinks.length === 0) {
     return null
   }
@@ -210,7 +242,6 @@ export default function QuickContactRail({ page, variant = 'floating' }) {
       : { top: `${topPx}px`, left: `${leftPx}px`, bottom: 'auto' }
   // Keep the hidden panel non-interactive to avoid an invisible touch-blocking layer on mobile.
   const linksStyle = {
-    transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
     opacity: isOpen ? 1 : 0,
     pointerEvents: isOpen ? 'auto' : 'none',
   }
@@ -235,29 +266,39 @@ export default function QuickContactRail({ page, variant = 'floating' }) {
         <span aria-hidden="true">{tabLabel}</span>
       </button>
 
-      <div className="quick-contact-links" id="quick-contact-links" style={linksStyle}>
-        <button
-          type="button"
-          className="quick-contact-link quick-contact-link--qr"
-          onClick={handleQrButtonClick}
-          aria-label="QR"
-          title="QR"
-        >
-          <span className="quick-contact-icon" aria-hidden="true">QR</span>
-        </button>
-        {contactLinks.map((item) => (
-          <a
-            key={item.id}
-            className="quick-contact-link"
-            href={item.href}
-            target={item.href.startsWith('http') ? '_blank' : undefined}
-            rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
-            aria-label={item.label}
-            title={item.label}
-          >
-            <span className="quick-contact-icon" aria-hidden="true">{LinkItemService.getContactSymbol(item) || '@'}</span>
-          </a>
-        ))}
+      <div className="quick-contact-links quick-contact-links--cluster" id="quick-contact-links" style={linksStyle}>
+        {clusterOrder.map((item, idx) => {
+          if (item.isQr) {
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className="quick-contact-link quick-contact-link--cluster quick-contact-link--qr"
+                data-cluster-index={idx}
+                onClick={handleQrButtonClick}
+                aria-label={item.label}
+                title={item.label}
+              >
+                <span className="quick-contact-icon" aria-hidden="true">{item.symbol}</span>
+              </button>
+            )
+          }
+
+          return (
+            <a
+              key={item.id}
+              className="quick-contact-link quick-contact-link--cluster"
+              data-cluster-index={idx}
+              href={item.href}
+              target={item.href?.startsWith('http') ? '_blank' : undefined}
+              rel={item.href?.startsWith('http') ? 'noreferrer' : undefined}
+              aria-label={item.label}
+              title={item.label}
+            >
+              <span className="quick-contact-icon" aria-hidden="true">{item.symbol}</span>
+            </a>
+          )
+        })}
       </div>
     </aside>
   )
