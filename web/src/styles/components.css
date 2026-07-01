@@ -2077,15 +2077,18 @@ button:active {
    ============================================ */
 
 .calyr-logo-interactive {
-  --logo-ring-size: min(470px, 82vw);
+  --logo-ring-size: clamp(170px, 22vw, 262px);
   position: relative;
   width: var(--logo-ring-size);
   aspect-ratio: 1 / 1;
   cursor: pointer;
   user-select: none;
   isolation: isolate;
-  border-radius: 10px;
-  overflow: visible;
+  border: 2px solid rgba(255, 255, 255, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 18px rgba(255, 255, 255, 0.18);
+  overflow: hidden;
   transition: filter 220ms ease;
 }
 
