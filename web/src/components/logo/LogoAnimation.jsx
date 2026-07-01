@@ -227,10 +227,9 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
 
   const handlePointerDrag = (event) => {
     const swipe = swipeRef.current
-    if (swipe.active) {
-      swipeRef.current.endX = event.clientX
-      swipeRef.current.endY = event.clientY
-    }
+    if (!swipe.active) return
+    swipeRef.current.endX = event.clientX
+    swipeRef.current.endY = event.clientY
     updateInteractionField(event, 0.95)
   }
 

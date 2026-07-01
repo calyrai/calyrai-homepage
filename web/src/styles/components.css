@@ -1429,7 +1429,9 @@ body.nav-open {
   justify-content: flex-start;
   gap: 0.95rem;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .nav-list {
