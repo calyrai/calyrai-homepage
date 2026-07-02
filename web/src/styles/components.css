@@ -2054,6 +2054,31 @@ body.nav-open {
   margin-left: auto;
 }
 
+@media (min-width: 1024px) {
+  #architecture .section-collapse-label {
+    font-size: clamp(3rem, 4.6vw, 3.9rem);
+    line-height: 1.03;
+    font-weight: 780;
+  }
+
+  #architecture .tile#contact .tile-title {
+    font-size: clamp(3rem, 4.6vw, 3.9rem);
+    line-height: 1.03;
+    font-weight: 780;
+  }
+
+  #architecture .tile#contact .tile-summary {
+    font-size: clamp(1.18rem, 1.4vw, 1.34rem);
+    line-height: 1.38;
+  }
+
+  #platforms .section-grid,
+  #architecture .section-grid {
+    margin-top: clamp(14px, 1.3vw, 26px);
+    gap: clamp(18px, 1.7vw, 28px);
+  }
+}
+
 /* Keep Architecture tiles balanced on wide screens. */
 @media (min-width: 1280px) {
   #architecture .section-grid {
@@ -2098,13 +2123,14 @@ body.nav-open {
 /* Dominant emphasis for Architecture: ecosystem + contact */
 #architecture .tile#ecosystem,
 #architecture .tile#contact {
-  min-height: clamp(320px, 40vw, 420px);
+  min-height: clamp(240px, 28vw, 320px);
   border-width: 2px;
   border-color: rgba(255, 255, 255, 0.74);
+  border-radius: var(--border-radius-lg);
   box-shadow:
     0 16px 46px rgba(0, 0, 0, 0.38),
     0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 #architecture .tile#ecosystem {
@@ -2154,7 +2180,7 @@ body.nav-open {
 @media (max-width: 980px) {
   #architecture .tile#ecosystem,
   #architecture .tile#contact {
-    min-height: clamp(260px, 46vw, 340px);
+    min-height: clamp(220px, 44vw, 300px);
   }
 
   #architecture .tile#ecosystem .tile-title,
