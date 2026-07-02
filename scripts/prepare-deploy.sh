@@ -13,9 +13,14 @@ cd "$repo_root"
 npm --prefix "$WEB_DIR" ci
 npm --prefix "$WEB_DIR" run build
 
-# Keep deploy output minimal and deterministic.
+# Keep deploy output deterministic.
 mkdir -p "$DEPLOY_DIR"
 find "$DEPLOY_DIR" -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
+
+# Include generated static routes from web/public (e.g., /research/platforms/*).
+if [[ -d "$WEB_DIR/public" ]]; then
+  cp -R "$WEB_DIR/public/." "$DEPLOY_DIR/"
+fi
 
 source_html="$WEB_DIR/dist/$DEPLOY_HTML"
 if [[ ! -f "$source_html" ]]; then
