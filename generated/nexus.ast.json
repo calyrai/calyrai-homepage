@@ -179,7 +179,7 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false,
+        "default_expanded": true,
         "persistence": "none"
       },
       "explain": {
@@ -207,7 +207,7 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false,
+            "default_expanded": true,
             "persistence": "none"
           },
           "explain": {
@@ -505,7 +505,7 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false
+        "default_expanded": true
       },
       "explain": {
         "why": "Show how ecosystem navigation, contact, and philosophy follow the core module overview."
@@ -532,7 +532,7 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false
+            "default_expanded": true
           },
           "explain": {
             "why": "Show how ecosystem navigation, contact, and philosophy follow the core module overview."
@@ -700,6 +700,103 @@
           "meta": {
             "source": {
               "contentNodeId": "philosophy",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "contact_main",
+      "title": "Impressum",
+      "tile_lead": "",
+      "tile_accent": "",
+      "tile_title": "",
+      "tile_summary": "",
+      "subtitle": "Impressum",
+      "landing_message": "",
+      "summary": "Legal contact details and publisher information.\n",
+      "body": "",
+      "icon": "",
+      "route": "",
+      "links": [],
+      "institutions": [],
+      "contacts": [],
+      "intent": {
+        "purpose": "legal-contact",
+        "audience": "returning-visitor"
+      },
+      "render": {
+        "variant": "tile-grid-secondary",
+        "source": "homepage.grid.legal-band"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": false
+      },
+      "explain": {
+        "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "contact_main",
+          "structureNodeId": "contact_main"
+        },
+        "nodeType": "section",
+        "transformations": [
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "legal-contact",
+            "audience": "returning-visitor"
+          },
+          "render": {
+            "variant": "tile-grid-secondary",
+            "source": "homepage.grid.legal-band"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": false
+          },
+          "explain": {
+            "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "tile",
+          "id": "impressum",
+          "title": "impressum",
+          "tile_lead": "legal",
+          "tile_accent": "",
+          "tile_title": "impressum",
+          "tile_summary": "details",
+          "subtitle": "Legal details",
+          "landing_message": "details",
+          "summary": "Name, function, and address.\n",
+          "body": "Name: Rupert Tscheliessnig\nFunction: Founder\nAddress: Ogugasse 3/3/13, 1220 Vienna, Austria\n",
+          "icon": "",
+          "route": "/legal",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {},
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "impressum",
               "structureNodeId": null
             },
             "nodeType": "tile",

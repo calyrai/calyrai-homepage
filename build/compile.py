@@ -348,6 +348,7 @@ def _sync_books_page_from_yaml(project_root: Path) -> None:
 
     books_page_path = project_root / "web" / "public" / "generated" / "books.page.json"
     books_page = _read_json_file(books_page_path) if books_page_path.exists() else {"id": "books-home", "sections": []}
+    _sync_books_page_style(books_page, config)
 
     architecture = config.get("architecture_books", {}) if isinstance(config, dict) else {}
     section_cfg = architecture.get("section", {}) if isinstance(architecture, dict) else {}
@@ -433,6 +434,31 @@ def _sync_books_page_from_yaml(project_root: Path) -> None:
 
     rel_path = books_page_path.relative_to(project_root)
     print(f"📚 Synced architecture books data to {rel_path}")
+
+
+def _sync_books_page_style(books_page: dict[str, Any], config: dict[str, Any]) -> None:
+    """Sync YAML-driven Books page style tokens into books.page.json."""
+    style_cfg = config.get("books_page_style", {}) if isinstance(config, dict) else {}
+    hero_cfg = style_cfg.get("hero", {}) if isinstance(style_cfg, dict) else {}
+    if not isinstance(hero_cfg, dict) or not hero_cfg:
+        return
+
+    style = books_page.get("style")
+    if not isinstance(style, dict):
+        style = {}
+
+    hero_style = style.get("hero")
+    if not isinstance(hero_style, dict):
+        hero_style = {}
+
+    for key in ("title_color", "title_dot_color", "title_hover_color", "title_dot_glow"):
+        value = hero_cfg.get(key)
+        if isinstance(value, str) and value.strip():
+            hero_style[key] = value.strip()
+
+    if hero_style:
+        style["hero"] = hero_style
+        books_page["style"] = style
 
 
 def _sync_platform_books_section(books_page: dict[str, Any], config: dict[str, Any]) -> None:
@@ -524,6 +550,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
     book_items = platform_books_cfg.get("items", []) if isinstance(platform_books_cfg, dict) else []
+    rainbow_palette = config.get("rainbow_palette", {}) if isinstance(config, dict) else {}
     book_map: dict[str, dict[str, Any]] = {
         str(item.get("id")): item
         for item in book_items
@@ -551,8 +578,14 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
         output_dir = output_root / platform_id
         output_dir.mkdir(parents=True, exist_ok=True)
 
+        accent_color = "#d05f1f"
+        if isinstance(rainbow_palette, dict):
+            palette_color = rainbow_palette.get(platform_id)
+            if isinstance(palette_color, str) and palette_color.strip():
+                accent_color = palette_color.strip()
+
         css_path = output_dir / "platform.css"
-        css_path.write_text(_positioning_css(), encoding="utf-8")
+        css_path.write_text(_platform_page_css(accent_color=accent_color), encoding="utf-8")
 
         source_cfg = book.get("source", {}) if isinstance(book.get("source"), dict) else {}
         source_rel = source_cfg.get("path")
@@ -747,16 +780,16 @@ def _sync_positioning_page_from_yaml(project_root: Path) -> None:
     print(f"🧠 Synced positioning page to {output_html_path.relative_to(project_root)}")
 
 
-def _positioning_css() -> str:
+def _positioning_css(accent_color: str = "#d05f1f") -> str:
     """CSS for positioning page rendered in homepage workflow."""
-    return """
+    css = """
 :root {
   --ink: #11223a;
   --ink-soft: #2f4666;
   --paper: #f6f3ec;
   --card: rgba(255, 255, 255, 0.84);
   --line: rgba(17, 34, 58, 0.14);
-  --accent: #d05f1f;
+        --accent: __ACCENT_COLOR__;
   --focus: #0e7a6b;
   --shadow: 0 18px 40px rgba(17, 34, 58, 0.12);
   --radius: 18px;
@@ -850,6 +883,108 @@ li { margin: 4px 0; }
   .grid-two { grid-template-columns: 1fr; }
 }
 """.strip() + "\n"
+    return css.replace("__ACCENT_COLOR__", accent_color)
+
+
+def _platform_page_css(accent_color: str = "#00c7ff") -> str:
+        """Dark CSS for platform detail pages linked from homepage tiles."""
+        css = """
+:root {
+    --ink: #f2f7ff;
+    --ink-soft: rgba(242, 247, 255, 0.82);
+    --paper: #05070b;
+    --card: rgba(8, 12, 20, 0.88);
+    --line: rgba(255, 255, 255, 0.2);
+    --accent: __ACCENT_COLOR__;
+    --focus: rgba(255, 255, 255, 0.9);
+    --shadow: 0 18px 42px rgba(0, 0, 0, 0.46);
+    --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    color: var(--ink);
+    font-family: Avenir, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
+    background:
+        radial-gradient(1100px 680px at 10% 10%, rgba(255, 255, 255, 0.05), transparent 56%),
+        radial-gradient(900px 580px at 88% 18%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 62%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.13) 0 1px, transparent 1px 100%),
+        var(--paper);
+    background-size: auto, auto, 20px 20px, auto;
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+.layout {
+    width: min(1080px, 92vw);
+    margin: 42px auto 64px;
+    display: grid;
+    gap: 18px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(4px);
+    padding: 26px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+h1, h2 { margin: 0 0 10px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); }
+h1 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); max-width: 26ch; }
+h2 { font-size: clamp(1.15rem, 2.4vw, 1.6rem); }
+p { margin: 8px 0; color: var(--ink-soft); }
+
+.lead { font-size: clamp(1.04rem, 1.8vw, 1.2rem); max-width: 72ch; }
+.pipeline {
+    margin-top: 14px;
+    border: 1px dashed color-mix(in srgb, var(--accent) 50%, rgba(255, 255, 255, 0.35));
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    overflow-x: auto;
+}
+.pipeline pre { margin: 0; color: var(--ink); white-space: pre-wrap; }
+
+.grid-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.mini {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 14px;
+}
+
+ul { margin: 8px 0 0; padding-left: 18px; color: var(--ink-soft); }
+li { margin: 4px 0; }
+
+.avoid {
+    border-left: 4px solid var(--focus);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.link-meta { font-size: 0.85rem; }
+.source-link { color: var(--accent); font-weight: 700; }
+.footer-note { font-size: 0.93rem; color: var(--ink-soft); text-align: center; }
+
+@media (max-width: 820px) {
+    .layout { width: min(1120px, 94vw); margin-top: 20px; }
+    .card { padding: 18px; }
+    .grid-two { grid-template-columns: 1fr; }
+}
+""".strip() + "\n"
+        return css.replace("__ACCENT_COLOR__", accent_color)
 
 
 def _read_optional_yaml(path: Path) -> dict[str, Any]:

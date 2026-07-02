@@ -93,6 +93,22 @@
       "structural"
     ]
   },
+  "contact_main": {
+    "title": "Impressum",
+    "summary": "Legal contact details and publisher information.\n",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "contact",
+      "details",
+      "impressum",
+      "information.",
+      "legal",
+      "publisher"
+    ]
+  },
   "footer": {
     "title": "",
     "summary": "",
@@ -243,6 +259,20 @@
       "contact",
       "engineering,",
       "research,"
+    ]
+  },
+  "impressum": {
+    "title": "impressum",
+    "summary": "Name, function, and address.\n",
+    "body_preview": "Name: Rupert Tscheliessnig\nFunction: Founder\nAddress: Ogugasse 3/3/13, 1220 Vienna, Austria\n",
+    "route": "/legal",
+    "icon": "",
+    "keywords": [
+      "address.",
+      "and",
+      "function,",
+      "impressum",
+      "name,"
     ]
   },
   "legal": {

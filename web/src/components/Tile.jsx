@@ -26,6 +26,7 @@ import { useRipple } from '../context/RippleContext'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useScrollCenterContext } from '../hooks/useScrollCenter'
 import { ROUTE_POLICY_DATA, ROUTE_AUDIT_DATA } from '../data/runtimeArtifacts'
+import { applyTitleDefaults } from '../utils/titleDefaults'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
@@ -239,6 +240,7 @@ export default function Tile({ node, theme, context = {} }) {
     subtitle,
     landing_message: landingMessage,
     summary,
+    body,
     icon,
     route,
     relations = {},
@@ -252,6 +254,8 @@ export default function Tile({ node, theme, context = {} }) {
   const primaryTitle = tileTitle || (tileLead ? subtitle || title : title)
   const secondarySummary = tileSummary || (tileLead ? landingMessage || summary : summary)
   const shouldShowTopLine = Boolean(topLineText)
+  const displayTopLineText = shouldShowTopLine ? applyTitleDefaults(topLineText) : ''
+  const displayPrimaryTitle = primaryTitle ? applyTitleDefaults(primaryTitle) : ''
   const { selectedTile, setSelectedTile } = useSelection()
   const { ripples } = useRipple()
   const isMobileViewport = useIsMobile()
@@ -264,7 +268,6 @@ export default function Tile({ node, theme, context = {} }) {
   
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [isFoilCovered, setIsFoilCovered] = useState(isPlatformTile)
   const [ripplePulse, setRipplePulse] = useState(0)
   const [position, setPosition] = useState(DEFAULT_TILE_POSITION)
   const [dragStart, setDragStart] = useState(null)
@@ -536,10 +539,6 @@ export default function Tile({ node, theme, context = {} }) {
   }, [dragStart, position, isDragging])
 
   useEffect(() => {
-    setIsFoilCovered(isPlatformTile)
-  }, [id, isPlatformTile])
-
-  useEffect(() => {
     if (!showTileMesh) {
       return
     }
@@ -624,12 +623,6 @@ export default function Tile({ node, theme, context = {} }) {
     // Toggle selection in context (Stage 6)
     setSelectedTile(id)
 
-    // Platform nodes: toggle metallic foil reveal/cover.
-    if (isPlatformTile) {
-      setIsFoilCovered((prev) => !prev)
-      return
-    }
-
     if (!e.target.closest('.tile-link-indicator')) {
       const preferredRoute = route || (visibleInstitutions.length > 0 && id ? `/${id}` : route)
       const normalizedRoute = normalizeTileRoute(preferredRoute)
@@ -691,7 +684,7 @@ export default function Tile({ node, theme, context = {} }) {
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
         isPlatformTile ? 'tile-platform' : ''
-      } ${isFoilCovered ? 'tile-foil-covered' : 'tile-foil-open'} ${
+      } ${isPlatformTile ? 'tile-foil-open' : ''} ${
         isScrollCentered ? 'tile-scroll-centered' : ''
       }`}
       id={id}
@@ -732,15 +725,26 @@ export default function Tile({ node, theme, context = {} }) {
       {/* Tile icon */}
       {shouldShowTopLine && (
         <div className={`tile-icon ${leadDotClass ? `tile-topline-with-dot ${leadDotClass}` : ''}`}>
-          <span>{topLineText}</span>
+          <span>{displayTopLineText}</span>
         </div>
       )}
 
       {/* Tile content */}
       <div className="tile-content">
         <>
-          {primaryTitle && <h3 className="tile-title">{primaryTitle}</h3>}
+          {id !== 'impressum' && displayPrimaryTitle && <h3 className="tile-title">{displayPrimaryTitle}</h3>}
           {secondarySummary && <p className="tile-summary">{secondarySummary}</p>}
+
+          {id === 'impressum' && body && (
+            <div className="tile-impressum-panel">
+              {String(body)
+                .split('\n')
+                .filter((line) => line.trim())
+                .map((line, index) => (
+                  <p key={`${id}-impressum-${index}`}>{line}</p>
+                ))}
+            </div>
+          )}
         </>
       </div>
 

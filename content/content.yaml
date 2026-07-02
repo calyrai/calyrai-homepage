@@ -87,7 +87,7 @@ platforms:
 
   behavior:
     collapsible: true
-    default_expanded: false
+    default_expanded: true
     persistence: none
 
   explain:
@@ -113,7 +113,7 @@ architecture:
 
   behavior:
     collapsible: true
-    default_expanded: false
+    default_expanded: true
 
   explain:
     why: Show how ecosystem navigation, contact, and philosophy follow the core module overview.
@@ -121,6 +121,31 @@ architecture:
   summary: >
     Structural overview of module connections,
     data flow, and reasoning pathways.
+
+contact_main:
+
+  title: "Impressum"
+
+  subtitle: "Impressum"
+
+  intent:
+    purpose: legal-contact
+    audience: returning-visitor
+
+  render:
+    variant: tile-grid-secondary
+    source: homepage.grid.legal-band
+
+  behavior:
+    collapsible: true
+    default_expanded: false
+
+  explain:
+    why: Provide a dedicated main-page contact section where Contact means Impressum/legal details.
+
+  summary: >
+    Legal contact details and
+    publisher information.
 
 footer:
 
@@ -421,6 +446,35 @@ contact:
 
   explain:
     why: Provide a direct contact path after users understand the platform and ecosystem.
+
+# --------------------------------------------------
+
+impressum:
+
+  title: "impressum"
+
+  tile_lead: "legal"
+
+  tile_title: "impressum"
+
+  tile_summary: "details"
+
+  subtitle: "Legal details"
+
+  landing_message: "details"
+
+  summary: >
+    Name, function,
+    and address.
+
+  body: |
+    Name: Rupert Tscheliessnig
+    Function: Founder
+    Address: Ogugasse 3/3/13, 1220 Vienna, Austria
+
+  icon: ""
+
+  route: /legal
 
 # --------------------------------------------------
 

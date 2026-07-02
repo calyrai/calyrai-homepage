@@ -6,6 +6,7 @@ homepage:
     - movie
     - platforms
     - architecture
+    - contact_main
     - footer
 
 movie:
@@ -28,6 +29,11 @@ architecture:
     - ecosystem
     - contact
     - philosophy
+
+contact_main:
+
+  children:
+    - impressum
 
 footer:
 

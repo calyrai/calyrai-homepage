@@ -12,11 +12,15 @@ import './styles/theme.css'
 import './styles/components.css'
 import './styles/layout.css'
 
+function getLocationPath() {
+  return `${window.location.pathname}${window.location.hash || ''}`
+}
+
 function App() {
   const [ast] = useState(AST_DATA)
   const [theme] = useState(THEME_DATA)
   const [booksPage] = useState(BOOKS_PAGE_DATA)
-  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+  const [currentPath, setCurrentPath] = useState(getLocationPath())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -35,9 +39,16 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const onPopState = () => setCurrentPath(window.location.pathname)
+    const onPopState = () => setCurrentPath(getLocationPath())
+    const onHashChange = () => setCurrentPath(getLocationPath())
+
     window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
+    window.addEventListener('hashchange', onHashChange)
+
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+      window.removeEventListener('hashchange', onHashChange)
+    }
   }, [])
 
   useEffect(() => {

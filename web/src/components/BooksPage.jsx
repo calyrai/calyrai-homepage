@@ -1,4 +1,5 @@
 import React from 'react'
+import { applyTitleDefaults } from '../utils/titleDefaults'
 
 function BookCard({ item }) {
   const tags = Array.isArray(item.tags) ? item.tags : []
@@ -14,7 +15,7 @@ function BookCard({ item }) {
   return (
     <article className="books-page-card">
       <div className="books-page-card-head">
-        <h4>{item.title || item.id}</h4>
+        <h4>{applyTitleDefaults(item.title || item.id)}</h4>
         {item.year && <span className="books-page-card-year">{item.year}</span>}
       </div>
 
@@ -63,7 +64,7 @@ function BooksSection({ section }) {
   return (
     <section className="books-page-section" id={`books-${section.id}`}>
       <header className="books-page-section-head">
-        <h3>{section.title || section.id}</h3>
+        <h3>{applyTitleDefaults(section.title || section.id)}</h3>
         {section.description && <p>{section.description}</p>}
       </header>
       <div className="books-page-grid">
@@ -82,7 +83,7 @@ export default function BooksPage({ page }) {
 
   const sections = Array.isArray(page.sections) ? page.sections : []
   const heroTitleRaw = page?.hero?.title || page?.header?.page_label || ''
-  const heroTitle = heroTitleRaw.replace(/[.]+\s*$/, '')
+  const heroTitle = applyTitleDefaults(heroTitleRaw)
   const heroSubtitle = page?.hero?.subtitle || ''
   const heroKicker = page?.header?.section_label || ''
   const homeLabel = page?.header?.brand || page?.id || ''
@@ -98,7 +99,6 @@ export default function BooksPage({ page }) {
         <h2>
           <a className="books-page-home-link" href="/" aria-label={homeLabel}>
             <span>{heroTitle}</span>
-            <span aria-hidden="true" className="books-page-title-dot" />
           </a>
         </h2>
         {heroSubtitle && <p>{heroSubtitle}</p>}

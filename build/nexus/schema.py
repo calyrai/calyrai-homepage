@@ -6,6 +6,7 @@ NODE_TYPE_RULES = {
     "movie": "section",
     "platforms": "section",
     "architecture": "section",
+    "contact_main": "section",
     "hero": "hero",
     "core": "tile",
     "brix": "tile",
@@ -16,6 +17,7 @@ NODE_TYPE_RULES = {
     "ecosystem": "tile",
     "philosophy": "tile",
     "contact": "tile",
+    "impressum": "tile",
 }
 
 # Core node payload fields shared by resolver/builders

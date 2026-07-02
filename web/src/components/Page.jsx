@@ -7,9 +7,11 @@
 
 import React from 'react'
 import { renderChildren } from './Renderer'
+import { applyTitleDefaults } from '../utils/titleDefaults'
 
 export default function Page({ node, theme, renderNode, context = {} }) {
   const { id, title, children = [] } = node
+  const displayTitle = title ? applyTitleDefaults(title) : ''
   const firstChild = children[0]
   const secondChild = children[1]
   const canFuseLogoHero = firstChild?.id === 'logo' && secondChild?.type === 'hero' && typeof secondChild?.summary === 'string'
@@ -46,7 +48,7 @@ export default function Page({ node, theme, renderNode, context = {} }) {
       {/* Optional header */}
       {title && (
         <header className="page-header">
-          <h1>{title}</h1>
+          <h1>{displayTitle}</h1>
         </header>
       )}
 

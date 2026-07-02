@@ -5,6 +5,17 @@
   opacity: 0.95;
 }
 
+:root {
+  --book-layout-title-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  --book-layout-title-weight: 800;
+  --book-layout-title-line-height: 1.12;
+  --book-layout-copy-size: clamp(0.95rem, 1.35vw, 1.18rem);
+  --book-layout-copy-line-height: 1.34;
+  --book-layout-section-size: clamp(1.24rem, 2.9vw, 1.64rem);
+  --book-layout-section-size-desktop: clamp(3rem, 4.6vw, 3.9rem);
+  --book-layout-section-weight: 800;
+}
+
 .hero-body {
   font-size: var(--font-size-body);
   margin-bottom: var(--space-xl);
@@ -36,6 +47,15 @@
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+}
+
+.section-anchor-alias {
+  display: block;
+  position: relative;
+  top: -84px;
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .section-header {
@@ -112,8 +132,8 @@
 
 .section-collapse-label {
   color: rgba(255, 255, 255, 0.92);
-  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
-  font-weight: 600;
+  font-size: var(--book-layout-section-size);
+  font-weight: var(--book-layout-section-weight);
   line-height: 1.2;
   text-align: left;
 }
@@ -232,6 +252,13 @@
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tile * {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .section-grid .tile:nth-child(3n + 1) {
@@ -489,15 +516,18 @@ body.books-route .app {
 .books-page-hero h2 {
   margin: var(--space-xs) 0 var(--space-sm);
   color: #fff;
+  font-size: clamp(3.1rem, 9vw, 6rem);
+  line-height: 0.94;
 }
 
 .books-page-home-link {
-  color: #ffffff;
+  color: var(--books-title-color, #ffffff);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   display: inline-flex;
   align-items: center;
   gap: 0.12em;
+  font-weight: 800;
   transition: color 160ms ease, border-color 160ms ease;
 }
 
@@ -505,15 +535,15 @@ body.books-route .app {
   width: 0.4em;
   height: 0.4em;
   border-radius: 999px;
-  background: #ff2a7a;
-  box-shadow: 0 0 12px rgba(255, 42, 122, 0.9);
+  background: var(--books-title-dot-color, #ff2a7a);
+  box-shadow: 0 0 12px var(--books-title-dot-glow, rgba(255, 42, 122, 0.9));
   flex: 0 0 auto;
   transform: translateY(0.08em);
 }
 
 .books-page-home-link:hover,
 .books-page-home-link:focus-visible {
-  color: #ff2a7a;
+  color: var(--books-title-hover-color, #ff2a7a);
   border-color: rgba(255, 42, 122, 0.65);
   outline: none;
 }
@@ -579,8 +609,9 @@ body.books-route .app {
 .books-page-card-head h4 {
   margin: 0;
   color: #fff;
-  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
-  line-height: 1.15;
+  font-size: var(--book-layout-title-size);
+  line-height: var(--book-layout-title-line-height);
+  font-weight: var(--book-layout-title-weight);
 }
 
 .books-page-card-year {
@@ -685,6 +716,50 @@ body.books-route .app {
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
+.tile-platform {
+  border-color: rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.46),
+    0 0 16px rgba(255, 255, 255, 0.22);
+}
+
+.tile-platform .tile-mesh-canvas {
+  opacity: 0.72;
+  filter: saturate(1.18) brightness(1.12);
+}
+
+/* Local rainbow structure for homepage tiles. Each tile keeps one stable color. */
+.page-main .tile {
+  --tile-rgb: 255, 255, 255;
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 14px rgba(255, 255, 255, 0.16);
+}
+
+.page-main .tile .tile-title {
+  color: rgba(255, 255, 255, 0.98);
+}
+
+.page-main .tile .tile-icon {
+  color: rgba(var(--tile-rgb), 0.95);
+}
+
+.page-main .tile .tile-link-indicator {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+#core.tile { --tile-rgb: 255, 59, 48; }
+#brix.tile { --tile-rgb: 255, 140, 26; }
+#aflowtex.tile { --tile-rgb: 255, 214, 10; }
+#lithos.tile { --tile-rgb: 52, 199, 89; }
+#oracle.tile { --tile-rgb: 0, 199, 255; }
+#delphi.tile { --tile-rgb: 47, 107, 255; }
+#ecosystem.tile { --tile-rgb: 125, 66, 255; }
+#contact.tile { --tile-rgb: 191, 90, 242; }
+#philosophy.tile { --tile-rgb: 255, 45, 146; }
+#impressum.tile { --tile-rgb: 255, 55, 95; }
+
 .tile-foil-overlay {
   position: absolute;
   inset: 0;
@@ -733,42 +808,19 @@ body.books-route .app {
 .tile-topline-with-dot {
   display: inline-flex;
   align-items: center;
-  gap: 0.18rem;
-}
-
-.tile-topline-with-dot::after {
-  content: '';
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  display: inline-block;
-  flex: 0 0 auto;
-  transform: translateY(0.02em);
-  box-shadow: 0 0 12px currentColor;
+  gap: 0;
 }
 
 .tile-inline-dot-magenta {
   color: #ff33cc;
 }
 
-.tile-inline-dot-magenta::after {
-  background: currentColor;
-}
-
 .tile-inline-dot-yellow {
   color: #ffd84d;
 }
 
-.tile-inline-dot-yellow::after {
-  background: currentColor;
-}
-
 .tile-inline-dot-cyan {
   color: #48e6ff;
-}
-
-.tile-inline-dot-cyan::after {
-  background: currentColor;
 }
 
 .tile-summary {
@@ -1403,7 +1455,6 @@ body.nav-open {
   padding: max(4.9rem, calc(env(safe-area-inset-top) + 4.35rem)) 1.15rem 1.35rem;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
-  border-bottom: var(--line-width, 1px) solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   transform: translateX(-100%);
@@ -1442,8 +1493,24 @@ body.nav-open {
   gap: 0;
 }
 
+.nav-list li:last-child .nav-link {
+  position: relative;
+}
+
+.nav-list li:last-child .nav-link::before,
+.nav-list li:last-child .nav-link::after {
+  content: none;
+}
+
 .nav-list li {
   margin-bottom: 0;
+}
+
+.nav-contact-combo {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: var(--line-width, 1px) solid var(--color-light);
 }
 
 .nav-link {
@@ -1455,9 +1522,14 @@ body.nav-open {
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
-  border-bottom: none;
+  border-bottom: var(--line-width, 1px) solid var(--color-light);
   transition: all 300ms ease;
   color: inherit;
+}
+
+.nav-link-main {
+  flex: 1;
+  border-bottom: none;
 }
 
 .nav-link-button {
@@ -1509,30 +1581,31 @@ body.nav-open {
   justify-content: center;
   width: 100%;
   height: 42px;
-  border-radius: 12px;
-  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.22);
-  background: #030303;
+  border-radius: 8px;
+  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.34);
+  background: #000000;
   color: #fff;
   text-decoration: none;
-  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+  transition: border-width 160ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease, transform 130ms ease;
 }
 
 .nav-contact-link:hover,
 .nav-contact-link:focus-visible {
-  transform: translateY(-0.5px);
-  border-color: rgba(255, 255, 255, 0.36);
-  background: #070707;
+  border-color: rgba(255, 255, 255, 0.62);
+  background: #101010;
 }
 
-/* Minimal contact controls: square, thin border, no decorative effects. */
+/* Premium contact controls: crisp stroke icons + subtle motion hierarchy. */
 .nav-contact-link {
-  background-color: #050505 !important;
+  background-color: #000000 !important;
   background-image: none !important;
-  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.24) !important;
+  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.34) !important;
   border-radius: 8px !important;
-  box-shadow: none !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 0 rgba(255, 255, 255, 0) !important;
   text-shadow: none !important;
-  transition: none !important;
+  transition: border-width 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 130ms ease !important;
   transform: none !important;
 }
 
@@ -1546,20 +1619,55 @@ body.nav-open {
   aspect-ratio: auto;
 }
 
-.nav-contact-icon-canvas {
-  width: 42px;
-  height: 42px;
+.nav-contact-icon {
+  width: 36px;
+  height: 36px;
   display: block;
-  touch-action: none;
+  color: #ffffff;
+  transition: transform 180ms ease;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.nav-contact-icon-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.nav-contact-icon-fallback {
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 .nav-contact-link:hover,
 .nav-contact-link:focus-visible,
 .nav-link-button.open {
-  background-color: #050505 !important;
+  background-color: #101010 !important;
   background-image: none !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
+  border-width: 2px !important;
+  border-color: rgba(255, 255, 255, 0.68) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 0 18px rgba(255, 255, 255, 0.08) !important;
   transform: none !important;
+}
+
+.nav-contact-link:hover .nav-contact-icon,
+.nav-contact-link:focus-visible .nav-contact-icon {
+  transform: scale(1.05);
+}
+
+.nav-contact-link:active {
+  transform: scale(0.985) !important;
+}
+
+.nav-contact-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
 }
 
 .nav-close {
@@ -1587,13 +1695,6 @@ body.nav-open {
 .nav-close:hover {
   color: #ffffff;
   transform: scale(1.04);
-}
-
-@media (max-width: 767px) {
-  .nav-link {
-    font-size: clamp(1.1rem, 4.2vw, 1.55rem);
-    border-bottom: var(--line-width, 1px) solid var(--color-light);
-  }
 }
 
 @media (min-width: 768px) {
@@ -1648,14 +1749,15 @@ body.nav-open {
   align-items: center;
   justify-content: flex-end;
   gap: 16px;
-  width: min(1220px, calc(100% - 2 * var(--space-lg)));
+  width: min(1280px, calc(100% - 2 * var(--space-md)));
   margin: 0 auto;
-  padding-right: clamp(8px, 3vw, 56px);
+  padding-right: 0;
   align-self: flex-end;
 }
 
 .calyr-logo-wrap--inline {
   flex-direction: row-reverse;
+  align-items: flex-start;
 }
 
 .calyr-logo-wrap--stacked {
@@ -1667,6 +1769,11 @@ body.nav-open {
 
 .logo-element {
   margin-top: 8px;
+}
+
+.calyr-logo-wrap--inline .logo-element {
+  margin-top: clamp(26px, 4.2vw, 56px);
+  margin-left: auto;
 }
 
 .calyr-logo-lockup {
@@ -1726,6 +1833,10 @@ body.nav-open {
   }
 
   .logo-element {
+    margin-top: 12px;
+  }
+
+  .calyr-logo-wrap--inline .logo-element {
     margin-top: 12px;
   }
 
@@ -2032,8 +2143,8 @@ body.nav-open {
 
 .section-collapse-label {
   color: rgba(255, 255, 255, 0.96);
-  font-size: clamp(1.24rem, 2.9vw, 1.64rem);
-  font-weight: 700;
+  font-size: var(--book-layout-section-size);
+  font-weight: var(--book-layout-section-weight);
   letter-spacing: 0.01em;
 }
 
@@ -2062,34 +2173,32 @@ body.nav-open {
   #movie .section-collapse-label,
   #platforms .section-collapse-label,
   #architecture .section-collapse-label {
-    font-size: clamp(3rem, 4.6vw, 3.9rem);
+    font-size: var(--book-layout-section-size-desktop);
     line-height: 1.03;
-    font-weight: 780;
-  }
-
-  #architecture .tile#contact .tile-title {
-    font-size: clamp(3rem, 4.6vw, 3.9rem);
-    line-height: 1.03;
-    font-weight: 780;
-  }
-
-  #architecture .tile#contact .tile-summary {
-    font-size: clamp(1.18rem, 1.4vw, 1.34rem);
-    line-height: 1.38;
+    font-weight: var(--book-layout-section-weight);
   }
 
   #platforms .section-grid,
-  #architecture .section-grid {
+  #architecture .section-grid,
+  #contact_main .section-grid {
     margin-top: clamp(14px, 1.3vw, 26px);
     gap: clamp(18px, 1.7vw, 28px);
   }
 
-  #architecture .section-grid {
+  #platforms .section-grid,
+  #architecture .section-grid,
+  #contact_main .section-grid {
     grid-auto-rows: 1fr;
   }
 
+  #platforms .tile,
   #architecture .tile {
-    min-height: clamp(240px, 28vw, 320px);
+    min-height: clamp(180px, 22vw, 240px);
+    height: 100%;
+  }
+
+  #contact_main .tile {
+    min-height: clamp(180px, 22vw, 240px);
     height: 100%;
   }
 }
@@ -2113,13 +2222,15 @@ body.nav-open {
 
 .tile-title {
   margin: 0;
-  font-size: clamp(2.05rem, 3.2vw, 2.6rem);
-  line-height: 1.08;
+  font-size: var(--book-layout-title-size);
+  line-height: var(--book-layout-title-line-height);
+  font-weight: var(--book-layout-title-weight);
 }
 
 .tile-summary {
   color: rgba(255, 255, 255, 0.8);
-  line-height: 1.35;
+  font-size: var(--book-layout-copy-size);
+  line-height: var(--book-layout-copy-line-height);
 }
 
 .tile-mesh-canvas {
@@ -2135,65 +2246,36 @@ body.nav-open {
   opacity: 0.78;
 }
 
-/* Dominant emphasis for Architecture: ecosystem + contact */
-#architecture .tile#ecosystem,
-#architecture .tile#contact {
-  border-width: 2px;
-  border-color: rgba(255, 255, 255, 0.74);
-  border-radius: var(--border-radius-lg);
-  box-shadow:
-    0 16px 46px rgba(0, 0, 0, 0.38),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-  transform: none;
+.tile-impressum-details {
+  margin-top: 0.42rem;
 }
 
-#architecture .tile#ecosystem {
-  background:
-    radial-gradient(circle at 18% 16%, rgba(0, 214, 255, 0.16), transparent 44%),
-    radial-gradient(circle at 84% 22%, rgba(255, 255, 255, 0.1), transparent 36%),
-    rgba(0, 0, 0, 0.72);
+.tile-impressum-summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  padding-bottom: 3px;
+  width: fit-content;
 }
 
-#architecture .tile#contact {
-  background:
-    radial-gradient(circle at 16% 20%, rgba(255, 211, 0, 0.15), transparent 44%),
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.1), transparent 34%),
-    rgba(0, 0, 0, 0.72);
+.tile-impressum-summary::-webkit-details-marker {
+  display: none;
 }
 
-#architecture .tile#ecosystem .tile-title,
-#architecture .tile#contact .tile-title {
-  font-size: clamp(2.28rem, 3.5vw, 2.9rem);
-  font-weight: 760;
-  letter-spacing: 0.01em;
+.tile-impressum-panel {
+  margin-top: 0.52rem;
+  display: grid;
+  gap: 0.24rem;
 }
 
-#architecture .tile#ecosystem .tile-summary,
-#architecture .tile#contact .tile-summary {
-  color: rgba(255, 255, 255, 0.92);
-  font-size: clamp(1.03rem, 1.35vw, 1.16rem);
-  line-height: 1.42;
+.tile-impressum-panel p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: clamp(0.84rem, 0.94vw, 0.92rem);
+  line-height: 1.33;
 }
 
-#architecture .tile#ecosystem .tile-link-indicator,
-#architecture .tile#contact .tile-link-indicator {
-  font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.96);
-}
-
-#architecture .tile#ecosystem:hover,
-#architecture .tile#contact:hover,
-#architecture .tile#ecosystem.tile-hovered,
-#architecture .tile#contact.tile-hovered {
-  border-color: rgba(255, 255, 255, 0.98);
-  box-shadow:
-    0 24px 62px rgba(0, 0, 0, 0.44),
-    0 0 34px rgba(255, 255, 255, 0.18);
-}
-
-@media (max-width: 980px) {
-  #architecture .tile#ecosystem .tile-title,
-  #architecture .tile#contact .tile-title {
-    font-size: clamp(2.02rem, 7vw, 2.56rem);
-  }
-}

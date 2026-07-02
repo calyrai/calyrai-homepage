@@ -39,14 +39,22 @@ function drawTilde(ctx, size) {
 }
 
 function drawX(ctx, size) {
+  // Ribbon-like X closer to the current brand mark shape.
   ctx.beginPath()
-  ctx.moveTo(size * 0.2, size * 0.2)
-  ctx.lineTo(size * 0.8, size * 0.8)
-  ctx.moveTo(size * 0.8, size * 0.2)
-  ctx.lineTo(size * 0.2, size * 0.8)
-  ctx.lineWidth = size * 0.16
-  ctx.lineCap = 'round'
-  ctx.stroke()
+  ctx.moveTo(size * 0.22, size * 0.18)
+  ctx.lineTo(size * 0.42, size * 0.18)
+  ctx.lineTo(size * 0.78, size * 0.82)
+  ctx.lineTo(size * 0.58, size * 0.82)
+  ctx.closePath()
+  ctx.fill()
+
+  ctx.beginPath()
+  ctx.moveTo(size * 0.78, size * 0.18)
+  ctx.lineTo(size * 0.58, size * 0.18)
+  ctx.lineTo(size * 0.22, size * 0.82)
+  ctx.lineTo(size * 0.42, size * 0.82)
+  ctx.closePath()
+  ctx.fill()
 }
 
 function drawLinkedIn(ctx, size) {
@@ -117,71 +125,87 @@ function drawAsterisk(ctx, size) {
 }
 
 function drawAt(ctx, size) {
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+
   ctx.beginPath()
-  ctx.arc(size * 0.5, size * 0.5, size * 0.3, 0, Math.PI * 2)
-  ctx.lineWidth = size * 0.12
+  ctx.arc(size * 0.5, size * 0.5, size * 0.31, 0, Math.PI * 2)
+  ctx.lineWidth = size * 0.085
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.arc(size * 0.5, size * 0.5, size * 0.14, 0, Math.PI * 2)
-  ctx.lineWidth = size * 0.1
+  ctx.arc(size * 0.5, size * 0.52, size * 0.13, 0.1 * Math.PI, 1.95 * Math.PI)
+  ctx.lineWidth = size * 0.082
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.moveTo(size * 0.62, size * 0.5)
-  ctx.bezierCurveTo(size * 0.76, size * 0.46, size * 0.83, size * 0.56, size * 0.81, size * 0.66)
-  ctx.lineWidth = size * 0.09
+  ctx.moveTo(size * 0.61, size * 0.49)
+  ctx.bezierCurveTo(size * 0.74, size * 0.43, size * 0.82, size * 0.52, size * 0.8, size * 0.63)
+  ctx.lineWidth = size * 0.075
   ctx.stroke()
 }
 
 function drawWhatsApp(ctx, size) {
   const cx = size * 0.5
-  const cy = size * 0.5
-  const bubbleR = size * 0.34
+  const cy = size * 0.49
+  const bubbleR = size * 0.33
 
   ctx.beginPath()
   ctx.arc(cx, cy, bubbleR, 0, Math.PI * 2)
-  ctx.lineWidth = size * 0.085
+  ctx.lineWidth = size * 0.08
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.moveTo(cx - size * 0.14, cy + size * 0.24)
-  ctx.lineTo(cx - size * 0.24, cy + size * 0.36)
-  ctx.lineTo(cx - size * 0.03, cy + size * 0.28)
+  ctx.moveTo(cx - size * 0.14, cy + size * 0.22)
+  ctx.lineTo(cx - size * 0.24, cy + size * 0.34)
+  ctx.lineTo(cx - size * 0.02, cy + size * 0.27)
   ctx.closePath()
   ctx.fill()
 
+  // Handset stroke, simplified for dot readability.
   ctx.beginPath()
-  ctx.moveTo(cx - size * 0.07, cy - size * 0.08)
-  ctx.bezierCurveTo(cx - size * 0.03, cy - size * 0.14, cx + size * 0.05, cy - size * 0.09, cx + size * 0.08, cy - size * 0.03)
-  ctx.lineTo(cx + size * 0.02, cy + size * 0.02)
-  ctx.bezierCurveTo(cx - size * 0.01, cy - size * 0.02, cx - size * 0.05, cy - size * 0.02, cx - size * 0.08, cy + size * 0.03)
-  ctx.closePath()
-  ctx.fill()
+  ctx.moveTo(cx - size * 0.075, cy - size * 0.058)
+  ctx.bezierCurveTo(cx - size * 0.035, cy - size * 0.13, cx + size * 0.055, cy - size * 0.085, cx + size * 0.09, cy - size * 0.015)
+  ctx.lineWidth = size * 0.082
+  ctx.lineCap = 'round'
+  ctx.stroke()
 }
 
 function drawButterfly(ctx, size) {
+  // Geometric butterfly silhouette for better small-dot readability.
   const cx = size * 0.5
-  const cy = size * 0.52
-  const wingR = size * 0.16
+  const cy = size * 0.53
 
   ctx.beginPath()
-  ctx.arc(cx - size * 0.18, cy - size * 0.12, wingR, 0, Math.PI * 2)
-  ctx.arc(cx + size * 0.18, cy - size * 0.12, wingR, 0, Math.PI * 2)
-  ctx.arc(cx - size * 0.14, cy + size * 0.14, wingR * 0.9, 0, Math.PI * 2)
-  ctx.arc(cx + size * 0.14, cy + size * 0.14, wingR * 0.9, 0, Math.PI * 2)
+  ctx.moveTo(cx, cy)
+  ctx.bezierCurveTo(cx - size * 0.06, cy - size * 0.13, cx - size * 0.21, cy - size * 0.24, cx - size * 0.31, cy - size * 0.19)
+  ctx.bezierCurveTo(cx - size * 0.37, cy - size * 0.16, cx - size * 0.37, cy - size * 0.05, cx - size * 0.28, cy + size * 0.01)
+  ctx.bezierCurveTo(cx - size * 0.35, cy + size * 0.1, cx - size * 0.31, cy + size * 0.23, cx - size * 0.2, cy + size * 0.24)
+  ctx.bezierCurveTo(cx - size * 0.11, cy + size * 0.24, cx - size * 0.05, cy + size * 0.14, cx, cy + size * 0.08)
+
+  ctx.bezierCurveTo(cx + size * 0.05, cy + size * 0.14, cx + size * 0.11, cy + size * 0.24, cx + size * 0.2, cy + size * 0.24)
+  ctx.bezierCurveTo(cx + size * 0.31, cy + size * 0.23, cx + size * 0.35, cy + size * 0.1, cx + size * 0.28, cy + size * 0.01)
+  ctx.bezierCurveTo(cx + size * 0.37, cy - size * 0.05, cx + size * 0.37, cy - size * 0.16, cx + size * 0.31, cy - size * 0.19)
+  ctx.bezierCurveTo(cx + size * 0.21, cy - size * 0.24, cx + size * 0.06, cy - size * 0.13, cx, cy)
+  ctx.closePath()
   ctx.fill()
 
+  ctx.globalCompositeOperation = 'destination-out'
   ctx.beginPath()
-  ctx.roundRect(cx - size * 0.03, cy - size * 0.2, size * 0.06, size * 0.4, size * 0.04)
+  ctx.moveTo(cx, cy - size * 0.03)
+  ctx.lineTo(cx - size * 0.05, cy + size * 0.05)
+  ctx.lineTo(cx, cy + size * 0.12)
+  ctx.lineTo(cx + size * 0.05, cy + size * 0.05)
+  ctx.closePath()
   ctx.fill()
+  ctx.globalCompositeOperation = 'source-over'
 }
 
 function drawYouTube(ctx, size) {
-  const boxX = size * 0.16
-  const boxY = size * 0.24
-  const boxW = size * 0.68
-  const boxH = size * 0.52
+  const boxX = size * 0.15
+  const boxY = size * 0.23
+  const boxW = size * 0.7
+  const boxH = size * 0.54
 
   ctx.beginPath()
   ctx.roundRect(boxX, boxY, boxW, boxH, size * 0.12)
@@ -189,18 +213,18 @@ function drawYouTube(ctx, size) {
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.moveTo(size * 0.45, size * 0.39)
-  ctx.lineTo(size * 0.63, size * 0.5)
-  ctx.lineTo(size * 0.45, size * 0.61)
+  ctx.moveTo(size * 0.46, size * 0.39)
+  ctx.lineTo(size * 0.62, size * 0.5)
+  ctx.lineTo(size * 0.46, size * 0.61)
   ctx.closePath()
   ctx.fill()
 }
 
 function drawInstagram(ctx, size) {
-  const boxX = size * 0.17
-  const boxY = size * 0.17
-  const boxW = size * 0.66
-  const boxH = size * 0.66
+  const boxX = size * 0.16
+  const boxY = size * 0.16
+  const boxW = size * 0.68
+  const boxH = size * 0.68
 
   ctx.beginPath()
   ctx.roundRect(boxX, boxY, boxW, boxH, size * 0.16)
@@ -208,24 +232,24 @@ function drawInstagram(ctx, size) {
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.arc(size * 0.5, size * 0.5, size * 0.15, 0, Math.PI * 2)
+  ctx.arc(size * 0.5, size * 0.5, size * 0.155, 0, Math.PI * 2)
   ctx.lineWidth = size * 0.08
   ctx.stroke()
 
   ctx.beginPath()
-  ctx.arc(size * 0.67, size * 0.33, size * 0.045, 0, Math.PI * 2)
+  ctx.arc(size * 0.675, size * 0.325, size * 0.042, 0, Math.PI * 2)
   ctx.fill()
 }
 
 function drawHome(ctx, size) {
   ctx.beginPath()
-  ctx.moveTo(size * 0.2, size * 0.48)
+  ctx.moveTo(size * 0.18, size * 0.49)
   ctx.lineTo(size * 0.5, size * 0.2)
-  ctx.lineTo(size * 0.8, size * 0.48)
-  ctx.lineTo(size * 0.72, size * 0.48)
-  ctx.lineTo(size * 0.72, size * 0.78)
-  ctx.lineTo(size * 0.28, size * 0.78)
-  ctx.lineTo(size * 0.28, size * 0.48)
+  ctx.lineTo(size * 0.82, size * 0.49)
+  ctx.lineTo(size * 0.72, size * 0.49)
+  ctx.lineTo(size * 0.72, size * 0.8)
+  ctx.lineTo(size * 0.28, size * 0.8)
+  ctx.lineTo(size * 0.28, size * 0.49)
   ctx.closePath()
   ctx.fill()
 

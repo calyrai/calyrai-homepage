@@ -64,6 +64,15 @@
       }
     },
     {
+      "id": "contact_main",
+      "label": "Impressum",
+      "data": {
+        "title": "Impressum",
+        "summary": "Legal contact details and publisher information.\n",
+        "icon": ""
+      }
+    },
+    {
       "id": "footer",
       "label": "",
       "data": {
@@ -151,6 +160,15 @@
         "title": "contact",
         "summary": "Research, engineering, and collaboration channels.\n",
         "icon": "mail"
+      }
+    },
+    {
+      "id": "impressum",
+      "label": "impressum",
+      "data": {
+        "title": "impressum",
+        "summary": "Name, function, and address.\n",
+        "icon": ""
       }
     },
     {

@@ -11,6 +11,13 @@ import { renderChildren } from './Renderer'
 import { SectionLayoutService } from '../services/SectionLayoutService'
 import { ScrollCenterProvider } from '../hooks/useScrollCenter'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { applyTitleDefaults } from '../utils/titleDefaults'
+
+const SECTION_ANCHOR_ALIASES = {
+  movie: ['teaser'],
+  platforms: ['platform'],
+  contact_main: ['contact'],
+}
 
 export default function Section({ node, theme, context = {} }) {
   const { id, title, summary, route, children = [] } = node
@@ -18,10 +25,12 @@ export default function Section({ node, theme, context = {} }) {
   const isMobileViewport = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(layout.defaultExpanded)
   const lastPointerToggleTsRef = useRef(0)
+  const formattedTitle = title ? applyTitleDefaults(title) : ''
+  const formattedToggleLabel = applyTitleDefaults(title || id || '')
   const titleHref = layout.titleHref
   const titleContent = titleHref
-    ? <a href={titleHref} className="section-title-link" aria-label={title}>{title}</a>
-    : title
+    ? <a href={titleHref} className="section-title-link" aria-label={formattedTitle}>{formattedTitle}</a>
+    : formattedTitle
 
   // Apply theme colors from skin if available
   const sectionStyle = theme?.skin?.components?.section ? {
@@ -63,6 +72,23 @@ export default function Section({ node, theme, context = {} }) {
     setIsExpanded((prev) => !prev)
   }
 
+  React.useEffect(() => {
+    const aliases = Array.isArray(SECTION_ANCHOR_ALIASES[id]) ? SECTION_ANCHOR_ALIASES[id] : []
+    const targets = new Set([id, ...aliases])
+
+    const syncFromHash = () => {
+      const hashValue = String(window.location.hash || '').replace(/^#/, '')
+      if (!hashValue) return
+      if (layout.isCollapsible && targets.has(hashValue)) {
+        setIsExpanded(true)
+      }
+    }
+
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [id, layout.isCollapsible])
+
   if (layout.isMovieSection && !layout.isCollapsible) {
     return (
       <section className="section section-movie" id={id} data-type="section" style={sectionStyle}>
@@ -90,6 +116,10 @@ export default function Section({ node, theme, context = {} }) {
       data-intent={layout.intentPurpose || undefined}
       style={sectionStyle}
     >
+      {Array.isArray(SECTION_ANCHOR_ALIASES[id]) && SECTION_ANCHOR_ALIASES[id].map((anchorId) => (
+        <span key={anchorId} id={anchorId} className="section-anchor-alias" aria-hidden="true" />
+      ))}
+
       {layout.isCollapsible && (
         <button
           type="button"
@@ -97,10 +127,10 @@ export default function Section({ node, theme, context = {} }) {
           onPointerDown={handleTogglePointerDown}
           onClick={handleToggleClick}
           aria-expanded={isExpanded}
-          aria-label={title || id || ''}
+          aria-label={formattedToggleLabel}
         >
           <span className="section-collapse-line" aria-hidden="true" />
-          {(title || id) && <span className="section-collapse-label">{title || id}</span>}
+          {(title || id) && <span className="section-collapse-label">{formattedToggleLabel}</span>}
         </button>
       )}
 
@@ -115,6 +145,7 @@ export default function Section({ node, theme, context = {} }) {
       )}
 
       {isExpanded && (layout.isMovieSection ? renderMovie() : renderGrid())}
+
     </section>
   )
 }

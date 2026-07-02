@@ -8,9 +8,11 @@
 import React from 'react'
 import LogoAnimation from './logo/LogoAnimation'
 import { renderChildren } from './Renderer'
+import { applyTitleDefaults } from '../utils/titleDefaults'
 
 export default function Element({ node, theme, context = {} }) {
   const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
+  const displayTitle = title ? applyTitleDefaults(title) : ''
 
   if (id === 'logo') {
     return (
@@ -50,7 +52,7 @@ export default function Element({ node, theme, context = {} }) {
       <div className="element-content">
         {icon && <div className="element-icon">{icon}</div>}
 
-        {title && <h4 className="element-title">{title}</h4>}
+        {title && <h4 className="element-title">{displayTitle}</h4>}
 
         {summary && <p className="element-summary">{summary}</p>}
 

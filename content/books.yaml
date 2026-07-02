@@ -3,6 +3,25 @@ brains_tile:
   route: /research/platforms/core/index.html
   label: positioning
 
+books_page_style:
+  hero:
+    title_color: "#ffffff"
+    title_dot_color: "#ff2a7a"
+    title_hover_color: "#ff2a7a"
+    title_dot_glow: "rgba(255, 42, 122, 0.9)"
+
+rainbow_palette:
+  core: "#ff3b30"
+  brix: "#ff8c1a"
+  aflowtex: "#ffd60a"
+  lithos: "#34c759"
+  oracle: "#00c7ff"
+  delphi: "#2f6bff"
+  ecosystem: "#7d42ff"
+  contact: "#bf5af2"
+  philosophy: "#ff2d92"
+  impressum: "#ff375f"
+
 positioning_source:
   path: ../calyrai-perspectives-pack/docs/positioning.html
 
