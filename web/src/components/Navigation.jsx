@@ -5,7 +5,22 @@ import { NodeQueryService } from '../services/NodeQueryService'
 import { buildGlyphMatrixFromSymbol } from '../graphics/calyr/GlyphRenderer'
 import { computeDotRepulsion, createInactivePointerField, pointerFieldFromEvent } from '../utils/dotInteraction'
 
-function DottedContactIcon({ symbol }) {
+function resolveContactGlyph(contactId, fallbackSymbol) {
+  const normalizedId = String(contactId || '').toLowerCase()
+
+  if (normalizedId === 'mail') return '@'
+  if (normalizedId === 'whatsapp') return 'wa'
+  if (normalizedId === 'x') return 'x'
+  if (normalizedId === 'linkedin') return 'in'
+  if (normalizedId === 'bluesky') return 'bs'
+  if (normalizedId === 'youtube') return 'yt'
+  if (normalizedId === 'instagram') return 'ig'
+  if (normalizedId === 'impressum') return 'hm'
+
+  return fallbackSymbol || '@'
+}
+
+function DottedContactIcon({ symbol, contactId }) {
   const canvasRef = useRef(null)
   const pointerFieldRef = useRef(createInactivePointerField())
 
@@ -30,15 +45,16 @@ function DottedContactIcon({ symbol }) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const matrix = buildGlyphMatrixFromSymbol(symbol, {
-      drawSize: 240,
-      matrixSize: 13,
+    const glyph = resolveContactGlyph(contactId, symbol)
+    const matrix = buildGlyphMatrixFromSymbol(glyph, {
+      drawSize: 640,
+      matrixSize: 27,
       threshold: 0.1,
-      gamma: 0.9,
+      gamma: 1.1,
     })
 
-    const size = 36
-    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2))
+    const size = 42
+    const dpr = Math.max(1, Math.min((window.devicePixelRatio || 1) * 1.5, 3))
     canvas.width = Math.floor(size * dpr)
     canvas.height = Math.floor(size * dpr)
     canvas.style.width = `${size}px`
@@ -51,7 +67,7 @@ function DottedContactIcon({ symbol }) {
       ctx.font = '600 18px "Segoe UI", sans-serif'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.fillText(String(symbol || '@').slice(0, 2), size / 2, size / 2)
+      ctx.fillText(String(glyph || '@').slice(0, 2), size / 2, size / 2)
       return
     }
 
@@ -88,7 +104,7 @@ function DottedContactIcon({ symbol }) {
           const nx = (x + 0.5) / cols
           const ny = (y + 0.5) / rows
           const repulsion = computeDotRepulsion(nx, ny, pointerFieldRef.current, {
-            maxShift: 0.18,
+            maxShift: 0.06,
           })
           const key = `${x}:${y}`
           let dotState = dotStates.get(key)
@@ -97,44 +113,25 @@ function DottedContactIcon({ symbol }) {
             dotStates.set(key, dotState)
           }
 
-          const relX = nx - (pointerFieldRef.current?.x ?? 0.5)
-          const relY = ny - (pointerFieldRef.current?.y ?? 0.5)
-          const relLen = Math.hypot(relX, relY) || 1
-          const swirlX = -relY / relLen
-          const swirlY = relX / relLen
-          const swirlShift = 0.045 * (repulsion.influence || 0)
-          const flowDx = repulsion.dx + swirlX * swirlShift
-          const flowDy = repulsion.dy + swirlY * swirlShift
+          const flowDx = repulsion.dx
+          const flowDy = repulsion.dy
 
-          dotState.vx = (dotState.vx + (flowDx - dotState.dx) * 0.24) * 0.9
-          dotState.vy = (dotState.vy + (flowDy - dotState.dy) * 0.24) * 0.9
+          dotState.vx = (dotState.vx + (flowDx - dotState.dx) * 0.12) * 0.94
+          dotState.vy = (dotState.vy + (flowDy - dotState.dy) * 0.12) * 0.94
           dotState.dx += dotState.vx
           dotState.dy += dotState.vy
 
           const seedA = hash2((x + 1) * 9.7, (y + 1) * 13.3)
-          const seedB = hash2((x + 1) * 21.4, (y + 1) * 7.9)
-          const sparkleTick = Math.floor(t * (10 + seedB * 14))
-          const sparkleTrigger = hash2((x + 1) * 31.1 + seedA * 17.7, sparkleTick * 0.81 + (y + 1) * 4.1)
-          if (sparkleTrigger > 0.992) {
-            dotState.spark = Math.min(1, dotState.spark + 0.52)
-          }
-          dotState.spark *= 0.95
+          const microPulse = 0.02 * (Math.sin(t * (1.8 + seedA * 0.7) + seedA * Math.PI * 2) * 0.5 + 0.5)
 
-          const r = cell * (0.18 + 0.24 * w + dotState.spark * 0.12)
+          const r = cell * (0.19 + 0.035 * w + microPulse * 0.7)
           const px = offsetX + x * cell + cell * 0.5 + dotState.dx * size
           const py = offsetY + y * cell + cell * 0.5 + dotState.dy * size
 
-          ctx.fillStyle = `rgba(255,255,255,${(0.72 + dotState.spark * 0.28).toFixed(3)})`
+          ctx.fillStyle = 'rgba(255,255,255,0.94)'
           ctx.beginPath()
           ctx.arc(px, py, r, 0, Math.PI * 2)
           ctx.fill()
-
-          if (dotState.spark > 0.12) {
-            ctx.fillStyle = `rgba(255,255,255,${(0.07 + dotState.spark * 0.16).toFixed(3)})`
-            ctx.beginPath()
-            ctx.arc(px, py, Math.max(r * 1.2, cell * 0.32), 0, Math.PI * 2)
-            ctx.fill()
-          }
         }
       }
 
@@ -147,7 +144,7 @@ function DottedContactIcon({ symbol }) {
       mounted = false
       if (rafId) cancelAnimationFrame(rafId)
     }
-  }, [symbol])
+  }, [symbol, contactId])
 
   return (
     <canvas
@@ -155,7 +152,7 @@ function DottedContactIcon({ symbol }) {
       className="nav-contact-icon-canvas"
       aria-hidden="true"
       onPointerDown={(event) => setPointerFromEvent(event, 1.1)}
-      onPointerMove={(event) => setPointerFromEvent(event, 0.72)}
+      onPointerMove={(event) => setPointerFromEvent(event, 0.42)}
       onPointerUp={clearPointer}
       onPointerCancel={clearPointer}
       onPointerLeave={clearPointer}
@@ -265,7 +262,7 @@ export default function Navigation({ theme, ast }) {
                       title={item.label}
                       onClick={handleNavClick}
                     >
-                      <DottedContactIcon symbol={LinkItemService.getContactSymbol(item) || '@'} />
+                      <DottedContactIcon contactId={item.id} symbol={LinkItemService.getContactSymbol(item) || '@'} />
                     </a>
                   ))}
                 </div>

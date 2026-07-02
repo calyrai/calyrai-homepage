@@ -134,6 +134,108 @@ function drawAt(ctx, size) {
   ctx.stroke()
 }
 
+function drawWhatsApp(ctx, size) {
+  const cx = size * 0.5
+  const cy = size * 0.5
+  const bubbleR = size * 0.34
+
+  ctx.beginPath()
+  ctx.arc(cx, cy, bubbleR, 0, Math.PI * 2)
+  ctx.lineWidth = size * 0.085
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.moveTo(cx - size * 0.14, cy + size * 0.24)
+  ctx.lineTo(cx - size * 0.24, cy + size * 0.36)
+  ctx.lineTo(cx - size * 0.03, cy + size * 0.28)
+  ctx.closePath()
+  ctx.fill()
+
+  ctx.beginPath()
+  ctx.moveTo(cx - size * 0.07, cy - size * 0.08)
+  ctx.bezierCurveTo(cx - size * 0.03, cy - size * 0.14, cx + size * 0.05, cy - size * 0.09, cx + size * 0.08, cy - size * 0.03)
+  ctx.lineTo(cx + size * 0.02, cy + size * 0.02)
+  ctx.bezierCurveTo(cx - size * 0.01, cy - size * 0.02, cx - size * 0.05, cy - size * 0.02, cx - size * 0.08, cy + size * 0.03)
+  ctx.closePath()
+  ctx.fill()
+}
+
+function drawButterfly(ctx, size) {
+  const cx = size * 0.5
+  const cy = size * 0.52
+  const wingR = size * 0.16
+
+  ctx.beginPath()
+  ctx.arc(cx - size * 0.18, cy - size * 0.12, wingR, 0, Math.PI * 2)
+  ctx.arc(cx + size * 0.18, cy - size * 0.12, wingR, 0, Math.PI * 2)
+  ctx.arc(cx - size * 0.14, cy + size * 0.14, wingR * 0.9, 0, Math.PI * 2)
+  ctx.arc(cx + size * 0.14, cy + size * 0.14, wingR * 0.9, 0, Math.PI * 2)
+  ctx.fill()
+
+  ctx.beginPath()
+  ctx.roundRect(cx - size * 0.03, cy - size * 0.2, size * 0.06, size * 0.4, size * 0.04)
+  ctx.fill()
+}
+
+function drawYouTube(ctx, size) {
+  const boxX = size * 0.16
+  const boxY = size * 0.24
+  const boxW = size * 0.68
+  const boxH = size * 0.52
+
+  ctx.beginPath()
+  ctx.roundRect(boxX, boxY, boxW, boxH, size * 0.12)
+  ctx.lineWidth = size * 0.08
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.moveTo(size * 0.45, size * 0.39)
+  ctx.lineTo(size * 0.63, size * 0.5)
+  ctx.lineTo(size * 0.45, size * 0.61)
+  ctx.closePath()
+  ctx.fill()
+}
+
+function drawInstagram(ctx, size) {
+  const boxX = size * 0.17
+  const boxY = size * 0.17
+  const boxW = size * 0.66
+  const boxH = size * 0.66
+
+  ctx.beginPath()
+  ctx.roundRect(boxX, boxY, boxW, boxH, size * 0.16)
+  ctx.lineWidth = size * 0.08
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.arc(size * 0.5, size * 0.5, size * 0.15, 0, Math.PI * 2)
+  ctx.lineWidth = size * 0.08
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.arc(size * 0.67, size * 0.33, size * 0.045, 0, Math.PI * 2)
+  ctx.fill()
+}
+
+function drawHome(ctx, size) {
+  ctx.beginPath()
+  ctx.moveTo(size * 0.2, size * 0.48)
+  ctx.lineTo(size * 0.5, size * 0.2)
+  ctx.lineTo(size * 0.8, size * 0.48)
+  ctx.lineTo(size * 0.72, size * 0.48)
+  ctx.lineTo(size * 0.72, size * 0.78)
+  ctx.lineTo(size * 0.28, size * 0.78)
+  ctx.lineTo(size * 0.28, size * 0.48)
+  ctx.closePath()
+  ctx.fill()
+
+  ctx.globalCompositeOperation = 'destination-out'
+  ctx.beginPath()
+  ctx.roundRect(size * 0.44, size * 0.57, size * 0.12, size * 0.21, size * 0.03)
+  ctx.fill()
+  ctx.globalCompositeOperation = 'source-over'
+}
+
 function drawFallbackText(ctx, size, glyph) {
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
@@ -180,6 +282,26 @@ export function drawIconPath(ctx, symbol, size) {
   }
   if (glyph === '@') {
     drawAt(ctx, size)
+    return
+  }
+  if (normalized === 'wa') {
+    drawWhatsApp(ctx, size)
+    return
+  }
+  if (normalized === 'bs') {
+    drawButterfly(ctx, size)
+    return
+  }
+  if (normalized === 'yt') {
+    drawYouTube(ctx, size)
+    return
+  }
+  if (normalized === 'ig') {
+    drawInstagram(ctx, size)
+    return
+  }
+  if (normalized === 'hm') {
+    drawHome(ctx, size)
     return
   }
 

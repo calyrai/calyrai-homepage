@@ -1466,7 +1466,11 @@ body.nav-open {
   border: none;
   text-align: left;
   cursor: pointer;
-  font: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 .nav-link-button.open,
@@ -1543,8 +1547,8 @@ body.nav-open {
 }
 
 .nav-contact-icon-canvas {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: block;
   touch-action: none;
 }
@@ -2055,6 +2059,8 @@ body.nav-open {
 }
 
 @media (min-width: 1024px) {
+  #movie .section-collapse-label,
+  #platforms .section-collapse-label,
   #architecture .section-collapse-label {
     font-size: clamp(3rem, 4.6vw, 3.9rem);
     line-height: 1.03;
@@ -2076,6 +2082,15 @@ body.nav-open {
   #architecture .section-grid {
     margin-top: clamp(14px, 1.3vw, 26px);
     gap: clamp(18px, 1.7vw, 28px);
+  }
+
+  #architecture .section-grid {
+    grid-auto-rows: 1fr;
+  }
+
+  #architecture .tile {
+    min-height: clamp(240px, 28vw, 320px);
+    height: 100%;
   }
 }
 
@@ -2123,7 +2138,6 @@ body.nav-open {
 /* Dominant emphasis for Architecture: ecosystem + contact */
 #architecture .tile#ecosystem,
 #architecture .tile#contact {
-  min-height: clamp(240px, 28vw, 320px);
   border-width: 2px;
   border-color: rgba(255, 255, 255, 0.74);
   border-radius: var(--border-radius-lg);
@@ -2178,11 +2192,6 @@ body.nav-open {
 }
 
 @media (max-width: 980px) {
-  #architecture .tile#ecosystem,
-  #architecture .tile#contact {
-    min-height: clamp(220px, 44vw, 300px);
-  }
-
   #architecture .tile#ecosystem .tile-title,
   #architecture .tile#contact .tile-title {
     font-size: clamp(2.02rem, 7vw, 2.56rem);
