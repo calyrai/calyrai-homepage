@@ -666,7 +666,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p class=\"lead\">{lead}</p>
       <div class=\"pipeline\"><pre>{claim}</pre></div>
       <p class=\"link-meta\">{source_meta}</p>
-              <p><a class=\"source-link\" href=\"{source_link_href}\" target=\"_blank\" rel=\"noreferrer\">Open linked source snapshot</a></p>
+                  <p><a class=\"source-link\" href=\"{source_link_href}\">Back to homepage</a></p>
     </section>
     {''.join(section_blocks)}
     <p class=\"footer-note\">{footer_note}</p>
@@ -769,7 +769,7 @@ def _sync_positioning_page_from_yaml(project_root: Path) -> None:
       <p class=\"lead\">{lead}</p>
       <div class=\"pipeline\"><pre>{claim}</pre></div>
       <p class=\"link-meta\">{source_meta}</p>
-      <p><a class=\"source-link\" href=\"./positioning.source.html\" target=\"_blank\" rel=\"noreferrer\">Open linked source snapshot</a></p>
+          <p><a class=\"source-link\" href=\"/\">Back to homepage</a></p>
     </section>
     {''.join(section_blocks)}
     <p class=\"footer-note\">{footer_note}</p>
@@ -999,8 +999,6 @@ def _read_optional_yaml(path: Path) -> dict[str, Any]:
         payload = yaml.safe_load(f)
 
     if payload is None:
-        return {}
-    if not isinstance(payload, dict):
         raise ValueError(f"Expected mapping in YAML file: {path}")
     return payload
 
