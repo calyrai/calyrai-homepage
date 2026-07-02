@@ -12,7 +12,15 @@ The authoring source is YAML.
 The compiler resolves YAML into normalized artifacts.
 The frontend renders those artifacts and applies authored behavior policies.
 
+Generated HTML may exist for publication, but it is output only and not an authoring surface.
+
 This is the preferred and normative way CALYRAI codes web systems.
+
+Related system-level page contract:
+- `docs/homepage-system-contract.md`
+
+Related graph/design contract:
+- `docs/reactflow-swiss-design-contract.md`
 
 ## Policy Classification
 
@@ -66,6 +74,10 @@ Render:
 - search index
 - docs-ready artifacts
 
+Output boundary rule:
+- Output artifacts are replaceable products of compile.
+- They must not be hand-maintained as semantic source.
+
 ## Explicit Implementation Map
 
 This section binds the policy to concrete files in this repository.
@@ -97,6 +109,9 @@ Interaction and responsive behavior:
 Generated outputs:
 - compiler artifacts: `generated/nexus.ast.json`, `generated/nexus.graph.json`, `generated/nexus.theme.json`, `generated/nexus.index.json`, `generated/nexus.flowchart.json`
 - bundled runtime artifact module: `web/src/data/runtimeArtifacts.js`
+
+Design and projection policy:
+- React Flow Swiss design and projection rules: `docs/reactflow-swiss-design-contract.md`
 
 ## Canonical Authoring Model
 

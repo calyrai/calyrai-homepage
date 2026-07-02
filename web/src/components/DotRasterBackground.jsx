@@ -13,6 +13,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     if (!ctx) return undefined
 
     const spacing = 26
+    const rowStep = spacing * 0.8660254037844386
     const dotRadius = 1.2
     const rippleDuration = 820
     const rippleRadius = spacing * 7
@@ -47,12 +48,21 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
+    const getNearestHexPoint = (clientX, clientY) => {
+      const row = Math.round(clientY / rowStep)
+      const y = row * rowStep
+      const xOffset = (row & 1) ? spacing * 0.5 : 0
+      const col = Math.round((clientX - xOffset) / spacing)
+      const x = col * spacing + xOffset
+
+      return { x, y }
+    }
+
     const addRippleFromClient = (clientX, clientY) => {
-      const x = Math.round(clientX / spacing) * spacing
-      const y = Math.round(clientY / spacing) * spacing
+      const { x, y } = getNearestHexPoint(clientX, clientY)
       const dx = clientX - x
       const dy = clientY - y
-      const threshold = spacing * 0.45
+      const threshold = Math.min(spacing, rowStep) * 0.52
       if (dx * dx + dy * dy > threshold * threshold) {
         return
       }
@@ -125,8 +135,9 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
       // Dot raster base layer.
       ctx.fillStyle = dotColor
       ctx.globalAlpha = 0.28
-      for (let y = 0; y <= h; y += spacing) {
-        for (let x = 0; x <= w; x += spacing) {
+      for (let row = 0, y = 0; y <= h + rowStep; row += 1, y = row * rowStep) {
+        const xOffset = (row & 1) ? spacing * 0.5 : 0
+        for (let x = xOffset - spacing; x <= w + spacing; x += spacing) {
           const dx = x - pointer.x
           const dy = y - pointer.y
           const dist = Math.hypot(dx, dy)

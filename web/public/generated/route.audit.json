@@ -3,7 +3,6 @@
     "/contact",
     "/ecosystem",
     "/legal",
-    "/media/short.mp4",
     "/philosophy",
     "/research/platforms/aflowtex/index.html",
     "/research/platforms/brix/index.html",
@@ -11,6 +10,7 @@
     "/research/platforms/delphi/index.html",
     "/research/platforms/lithos/index.html",
     "/research/platforms/oracle/index.html",
+    "/research/positioning/index.html",
     "https://bsky.app",
     "https://wa.me/4369919200915",
     "https://www.instagram.com",
@@ -19,10 +19,6 @@
     "https://x.com",
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
-  "unresolved_routes": [
-    "/ecosystem",
-    "/legal",
-    "/media/short.mp4"
-  ],
-  "generated_at": "2026-07-01T09:40:08.542923+00:00"
+  "unresolved_routes": [],
+  "generated_at": "2026-07-02T03:41:30.495317+00:00"
 }

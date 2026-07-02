@@ -34,7 +34,7 @@ platform_books:
   section:
     id: platform_books
     title: Platform Books
-    description: Book-rooted explanation pages for each core platform.
+    description: Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Delphi as the Compass interface layer.
   items:
     - id: platform-core
       platform_id: core
@@ -180,7 +180,7 @@ platform_books:
     - id: platform-delphi
       platform_id: delphi
       type: platform-book
-      title: Delphi Interactive Oracle Interface
+      title: Delphi Compass Interface
       year: 2026
       authors:
         - Tscheliessnig, Rupert
@@ -188,9 +188,24 @@ platform_books:
         - interaction
         - exploration
         - insights
-      objective: Explain interactive navigation patterns for discovering insights from oracle-generated knowledge structures.
-      summary: Delphi is the interaction layer for guided exploration, pattern finding, and insight capture.
-      canonical_claim: Human insight quality improves when graph exploration is guided by semantic context and reasoning cues.
+        - compass
+        - interface-layer
+      objective: Define Delphi as the Compass interface and make explicit that the platform tile is the entry link into this interface.
+      summary: The Delphi platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.
+      canonical_claim: Human insight quality improves when graph exploration is guided by semantic context and reasoning cues through a dedicated Compass interface.
+      ctas:
+        - type: platform-page
+          label: Open Delphi Compass interface
+          url: /research/platforms/delphi/index.html
+          online: true
+        - type: philosophy-context
+          label: Open Philosophy context
+          url: /philosophy
+          online: true
+        - type: upstream-oracle
+          label: Open Oracle source layer
+          url: /research/platforms/oracle/index.html
+          online: true
       sections:
         - id: interaction-model
           title: Interaction Model
@@ -239,7 +254,7 @@ platform_pages:
       book_id: platform-delphi
       eyebrow: CALYR.AI Platform
       subtitle: Delphi
-      lead: Interactive interface for graph exploration and insight generation.
+      lead: Compass interface layer entered via the Delphi platform tile for guided graph exploration and insight generation.
       footer_note: Delphi page generated from platform-delphi book entry in content/books.yaml.
 
 atlas_books:

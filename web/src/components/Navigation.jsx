@@ -14,7 +14,7 @@ function DottedContactIcon({ symbol }) {
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
     pointerFieldRef.current = pointerFieldFromEvent(event, rect, {
-      radius: 0.3,
+      radius: 0.34,
       strength,
     })
   }
@@ -97,8 +97,17 @@ function DottedContactIcon({ symbol }) {
             dotStates.set(key, dotState)
           }
 
-          dotState.vx = (dotState.vx + (repulsion.dx - dotState.dx) * 0.44) * 0.82
-          dotState.vy = (dotState.vy + (repulsion.dy - dotState.dy) * 0.44) * 0.82
+          const relX = nx - (pointerFieldRef.current?.x ?? 0.5)
+          const relY = ny - (pointerFieldRef.current?.y ?? 0.5)
+          const relLen = Math.hypot(relX, relY) || 1
+          const swirlX = -relY / relLen
+          const swirlY = relX / relLen
+          const swirlShift = 0.045 * (repulsion.influence || 0)
+          const flowDx = repulsion.dx + swirlX * swirlShift
+          const flowDy = repulsion.dy + swirlY * swirlShift
+
+          dotState.vx = (dotState.vx + (flowDx - dotState.dx) * 0.24) * 0.9
+          dotState.vy = (dotState.vy + (flowDy - dotState.dy) * 0.24) * 0.9
           dotState.dx += dotState.vx
           dotState.dy += dotState.vy
 
@@ -106,10 +115,10 @@ function DottedContactIcon({ symbol }) {
           const seedB = hash2((x + 1) * 21.4, (y + 1) * 7.9)
           const sparkleTick = Math.floor(t * (10 + seedB * 14))
           const sparkleTrigger = hash2((x + 1) * 31.1 + seedA * 17.7, sparkleTick * 0.81 + (y + 1) * 4.1)
-          if (sparkleTrigger > 0.988) {
-            dotState.spark = 1
+          if (sparkleTrigger > 0.992) {
+            dotState.spark = Math.min(1, dotState.spark + 0.52)
           }
-          dotState.spark *= 0.9
+          dotState.spark *= 0.95
 
           const r = cell * (0.18 + 0.24 * w + dotState.spark * 0.12)
           const px = offsetX + x * cell + cell * 0.5 + dotState.dx * size
@@ -146,7 +155,7 @@ function DottedContactIcon({ symbol }) {
       className="nav-contact-icon-canvas"
       aria-hidden="true"
       onPointerDown={(event) => setPointerFromEvent(event, 1.1)}
-      onPointerMove={(event) => setPointerFromEvent(event, 0.95)}
+      onPointerMove={(event) => setPointerFromEvent(event, 0.72)}
       onPointerUp={clearPointer}
       onPointerCancel={clearPointer}
       onPointerLeave={clearPointer}

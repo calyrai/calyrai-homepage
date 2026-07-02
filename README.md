@@ -4,6 +4,10 @@ Structured, data-driven homepage for CALYR.aí.
 
 The site is generated from YAML content through a Python compiler into JSON artifacts, then rendered by a React/Vite frontend.
 
+Design decision:
+- Pages are defined by YAML plus rule application.
+- Classic page HTML is treated as generated output, not as source of truth.
+
 ## System Flow
 
 1. Content layer: YAML in content/
@@ -13,6 +17,13 @@ The site is generated from YAML content through a Python compiler into JSON arti
 5. Deployment layer: deploy/ served by GitHub Pages
 
 Publication rule: only the minimal content in `deploy/` is intended to go online.
+
+Source-of-truth rule: do not maintain page behavior/content in generated HTML files under publication folders; regenerate them from YAML and compiler rules.
+
+CALYRAI/LITHOS ownership rule:
+- CALYRAI page owns orientation and routing semantics.
+- LITHOS page is a deep-dive target reached through authored CALYRAI route intent.
+- Both are governed from YAML + compiler rules, not from hand-maintained publication HTML.
 
 ## Tech Stack
 
@@ -125,6 +136,16 @@ Generated outputs:
 
 - Compiler artifacts: `generated/nexus.ast.json`, `generated/nexus.graph.json`, `generated/nexus.theme.json`, `generated/nexus.index.json`, `generated/nexus.flowchart.json`
 - Bundled runtime artifact module: `web/src/data/runtimeArtifacts.js`
+
+System-level contracts:
+
+- Multi-homepage architecture contract (CALYRAI + LITHOS): `docs/homepage-system-contract.md`
+- React Flow Swiss design contract (YAML-first graph surface): `docs/reactflow-swiss-design-contract.md`
+
+Concrete page mapping:
+
+- CALYRAI runtime entry: `web/src/App.jsx` -> published `web/public/index.html`
+- LITHOS target route authored in YAML, compiled into artifacts, published at `web/public/research/platforms/lithos/index.html`
 
 ### Build frontend
 

@@ -3,6 +3,8 @@
   "spa_routes": [
     "/books",
     "/philosophy",
-    "/contact"
+    "/contact",
+    "/ecosystem",
+    "/legal"
   ]
 }

@@ -227,7 +227,7 @@
     {
       "id": "platform_books",
       "title": "Platform Books",
-      "description": "Book-rooted explanation pages for each core platform.",
+      "description": "Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Delphi as the Compass interface layer.",
       "items": [
         {
           "id": "platform-core",
@@ -355,20 +355,34 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Delphi Interactive Oracle Interface",
+          "title": "Delphi Compass Interface",
           "year": 2026,
           "tags": [
             "interaction",
             "exploration",
-            "insights"
+            "insights",
+            "compass",
+            "interface-layer"
           ],
-          "objective": "Explain interactive navigation patterns for discovering insights from oracle-generated knowledge structures.",
-          "summary": "Delphi is the interaction layer for guided exploration, pattern finding, and insight capture.",
+          "objective": "Define Delphi as the Compass interface and make explicit that the platform tile is the entry link into this interface.",
+          "summary": "The Delphi platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.",
           "ctas": [
             {
               "type": "platform-page",
-              "label": "Open platform page",
+              "label": "Open Delphi Compass interface",
               "url": "/research/platforms/delphi/index.html",
+              "online": true
+            },
+            {
+              "type": "philosophy-context",
+              "label": "Open Philosophy context",
+              "url": "/philosophy",
+              "online": true
+            },
+            {
+              "type": "upstream-oracle",
+              "label": "Open Oracle source layer",
+              "url": "/research/platforms/oracle/index.html",
               "online": true
             }
           ]
@@ -393,7 +407,7 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-07-01T09:40:08.499896+00:00",
+    "generated_at": "2026-07-02T03:41:30.451531+00:00",
     "book_count": 9,
     "books_by_status": {
       "draft": 1,

@@ -23,6 +23,8 @@ route_policy:
     - /books
     - /philosophy
     - /contact
+    - /ecosystem
+    - /legal
 
 # --------------------------------------------------
 
@@ -67,7 +69,7 @@ movie:
   body: >
     Place your short file path in route to load and play it here.
 
-  route: /media/short.mp4
+  route: /research/positioning/index.html
 
 platforms:
 
@@ -264,18 +266,18 @@ delphi:
 
   title: "delphi"
 
-  subtitle: "Interactive oracle interface"
+  subtitle: "Compass interface"
 
   summary: >
-    Explore knowledge through
-    guided interaction.
+    Entry point into Compass for
+    guided knowledge exploration.
 
   body: >
-    Delphi provides an interactive
-    interface for navigating knowledge,
-    discovering patterns, and generating
-    insights from oracle-generated
-    knowledge structures.
+    Delphi is the platform tile that links
+    into the Compass interface for navigating
+    knowledge, discovering patterns, and
+    generating insights from
+    oracle-generated knowledge structures.
 
   icon: compass
 
