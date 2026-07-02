@@ -31,6 +31,11 @@ fi
 
 cp "$source_html" "$DEPLOY_DIR/$DEPLOY_HTML"
 
+for route in contact books; do
+  mkdir -p "$DEPLOY_DIR/$route"
+  cp "$source_html" "$DEPLOY_DIR/$route/$DEPLOY_HTML"
+done
+
 if [[ -f CNAME ]]; then
   cp CNAME "$DEPLOY_DIR/CNAME"
 fi
