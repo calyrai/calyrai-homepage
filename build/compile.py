@@ -647,6 +647,9 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
             source_mtime = datetime.fromtimestamp(source_html_path.stat().st_mtime, tz=timezone.utc).isoformat()
             source_meta = f"linked source: {escape(str(source_html_path))} | updated: {source_mtime}"
 
+        source_link_href = "./platform.source.html" if source_exists else "/"
+        source_link_label = "Open linked source snapshot" if source_exists else "Back to homepage"
+
         html_content = f"""<!doctype html>
 <html lang=\"en\">
 <head>
@@ -663,7 +666,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p class=\"lead\">{lead}</p>
       <div class=\"pipeline\"><pre>{claim}</pre></div>
       <p class=\"link-meta\">{source_meta}</p>
-      <p><a class=\"source-link\" href=\"./platform.source.html\" target=\"_blank\" rel=\"noreferrer\">Open linked source snapshot</a></p>
+              <p><a class=\"source-link\" href=\"{source_link_href}\" target=\"_blank\" rel=\"noreferrer\">Open linked source snapshot</a></p>
     </section>
     {''.join(section_blocks)}
     <p class=\"footer-note\">{footer_note}</p>

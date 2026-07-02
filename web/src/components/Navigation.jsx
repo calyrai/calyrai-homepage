@@ -147,9 +147,13 @@ export default function Navigation({ theme, ast }) {
                   aria-label="Contact links"
                 >
                   {contactLinks.map((item) => (
+                    (() => {
+                      const contactKey = String(item.id || '').toLowerCase().replace(/[^a-z0-9_-]/g, '')
+                      const contactClass = contactKey ? ` nav-contact-link-${contactKey}` : ''
+                      return (
                     <a
                       key={item.id}
-                      className="nav-contact-link"
+                      className={`nav-contact-link${contactClass}`}
                       href={item.href}
                       target={item.href?.startsWith('http') ? '_blank' : undefined}
                       rel={item.href?.startsWith('http') ? 'noreferrer' : undefined}
@@ -159,6 +163,8 @@ export default function Navigation({ theme, ast }) {
                     >
                       <SocialButtonIcon contactId={item.id} symbol={LinkItemService.getContactSymbol(item) || '@'} />
                     </a>
+                      )
+                    })()
                   ))}
                 </div>
               )}

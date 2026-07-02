@@ -1587,6 +1587,7 @@ body.nav-open {
   color: #fff;
   text-decoration: none;
   transition: border-width 160ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease, transform 130ms ease;
+  --contact-glow-rgb: 255, 255, 255;
 }
 
 .nav-contact-link:hover,
@@ -1627,6 +1628,7 @@ body.nav-open {
   transition: transform 180ms ease;
   transform-origin: center;
   will-change: transform;
+  filter: drop-shadow(0 0 8px rgba(var(--contact-glow-rgb), 0.62));
 }
 
 .nav-contact-icon-svg {
@@ -1638,9 +1640,27 @@ body.nav-open {
 }
 
 .nav-contact-icon-fallback {
-  font-size: 0.92rem;
-  letter-spacing: 0.08em;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 700;
+  text-shadow:
+    0 0 8px rgba(var(--contact-glow-rgb), 0.78),
+    0 0 18px rgba(var(--contact-glow-rgb), 0.58);
+}
+
+.nav-contact-link-mail,
+.nav-contact-link-whatsapp,
+.nav-contact-link-impressum,
+.nav-contact-link-home {
+  --contact-glow-rgb: 255, 45, 146;
+}
+
+.nav-contact-link-bluesky {
+  --contact-glow-rgb: 47, 107, 255;
 }
 
 .nav-contact-link:hover,
@@ -1649,16 +1669,19 @@ body.nav-open {
   background-color: #101010 !important;
   background-image: none !important;
   border-width: 2px !important;
-  border-color: rgba(255, 255, 255, 0.68) !important;
+  border-color: rgba(var(--contact-glow-rgb), 0.78) !important;
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.2),
-    0 0 18px rgba(255, 255, 255, 0.08) !important;
+    inset 0 0 0 2px rgba(var(--contact-glow-rgb), 0.28),
+    0 0 18px rgba(var(--contact-glow-rgb), 0.18) !important;
   transform: none !important;
 }
 
 .nav-contact-link:hover .nav-contact-icon,
 .nav-contact-link:focus-visible .nav-contact-icon {
   transform: scale(1.05);
+  filter:
+    drop-shadow(0 0 10px rgba(var(--contact-glow-rgb), 0.86))
+    drop-shadow(0 0 22px rgba(var(--contact-glow-rgb), 0.62));
 }
 
 .nav-contact-link:active {
