@@ -755,18 +755,18 @@ body.books-route .app {
 #lithos.tile { --tile-rgb: 52, 199, 89; }
 #oracle.tile { --tile-rgb: 0, 199, 255; }
 #delphi.tile {
-  --tile-rgb: 47, 107, 255;
-  border-color: rgba(94, 168, 255, 0.95);
+  --tile-rgb: 255, 255, 255;
+  border-color: rgba(255, 255, 255, 0.95);
   box-shadow:
-    0 0 0 1px rgba(94, 168, 255, 0.5),
-    0 0 22px rgba(47, 107, 255, 0.34),
-    0 0 46px rgba(47, 107, 255, 0.2);
+    0 0 0 1px rgba(255, 255, 255, 0.72),
+    0 0 22px rgba(255, 255, 255, 0.42),
+    0 0 46px rgba(255, 255, 255, 0.24);
 }
 
 #delphi.tile .tile-title,
 #delphi.tile .tile-icon,
 #delphi.tile .tile-link-indicator {
-  color: rgba(170, 220, 255, 0.98);
+  color: rgba(255, 255, 255, 0.98);
 }
 #ecosystem.tile { --tile-rgb: 125, 66, 255; }
 #contact.tile { --tile-rgb: 191, 90, 242; }
@@ -1616,20 +1616,25 @@ body.nav-open {
 .nav-contact-spline-path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.4;
+  stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0;
   stroke-dasharray: 280;
   stroke-dashoffset: 280;
   transition: opacity 180ms ease;
-  filter: drop-shadow(0 0 8px currentColor);
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
 .nav-contact-link:hover,
 .nav-contact-link:focus-visible {
-  border-color: rgba(255, 255, 255, 0.62);
+  border-color: rgba(255, 255, 255, 0.9);
   background: #101010;
+}
+
+.nav-contact-link:hover .nav-contact-spline,
+.nav-contact-link:focus-visible .nav-contact-spline {
+  filter: drop-shadow(0 0 16px currentColor) drop-shadow(0 0 28px currentColor);
 }
 
 .nav-contact-link:hover .nav-contact-spline-path,
@@ -1642,11 +1647,11 @@ body.nav-open {
 .nav-contact-link {
   background-color: #000000 !important;
   background-image: none !important;
-  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.34) !important;
+  border: var(--line-width, 1px) solid rgba(255, 255, 255, 0.58) !important;
   border-radius: 8px !important;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 0 0 rgba(255, 255, 255, 0) !important;
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 12px rgba(255, 255, 255, 0.14) !important;
   text-shadow: none !important;
   transition: border-width 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 130ms ease !important;
   transform: none !important;
@@ -1663,19 +1668,19 @@ body.nav-open {
 }
 
 .nav-contact-braille {
-  width: 30px;
-  height: 42px;
+  width: 38px;
+  height: 52px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 4px 5px;
+  gap: 5px 7px;
   align-items: center;
   justify-items: center;
 }
 
 .nav-contact-braille-dot {
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
   border-radius: 999px;
   transition: all 170ms ease;
   will-change: transform, opacity, box-shadow;
@@ -1684,15 +1689,18 @@ body.nav-open {
 .nav-contact-braille-dot.active {
   background: #ffffff;
   box-shadow:
-    0 0 6px rgba(255, 255, 255, 0.78),
-    0 0 14px rgba(var(--contact-glow-rgb), 0.7);
+    0 0 12px rgba(255, 255, 255, 0.98),
+    0 0 24px rgba(255, 255, 255, 0.92),
+    0 0 38px rgba(255, 255, 255, 0.7);
   animation: nav-braille-spark var(--braille-spark-duration, 1.8s) ease-in-out infinite;
   animation-delay: var(--braille-spark-delay, 0s);
 }
 
 .nav-contact-braille-dot.inactive {
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.36);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 8px rgba(255, 255, 255, 0.24);
   animation: nav-braille-spark-dim calc(var(--braille-spark-duration, 1.8s) * 1.25) ease-in-out infinite;
   animation-delay: var(--braille-spark-delay, 0s);
 }
@@ -1702,24 +1710,27 @@ body.nav-open {
     opacity: 0.86;
     transform: translateY(0) scale(1);
     box-shadow:
-      0 0 6px rgba(255, 255, 255, 0.72),
-      0 0 12px rgba(var(--contact-glow-rgb), 0.56);
+      0 0 12px rgba(255, 255, 255, 0.96),
+      0 0 22px rgba(255, 255, 255, 0.82),
+      0 0 34px rgba(255, 255, 255, 0.62);
   }
 
   47% {
     opacity: 1;
     transform: translateY(var(--braille-spark-drift, 0px)) scale(1.08);
     box-shadow:
-      0 0 9px rgba(255, 255, 255, 0.98),
-      0 0 20px rgba(var(--contact-glow-rgb), 0.92);
+      0 0 16px rgba(255, 255, 255, 1),
+      0 0 30px rgba(255, 255, 255, 0.96),
+      0 0 44px rgba(255, 255, 255, 0.78);
   }
 
   100% {
     opacity: 0.88;
     transform: translateY(0) scale(1);
     box-shadow:
-      0 0 6px rgba(255, 255, 255, 0.75),
-      0 0 13px rgba(var(--contact-glow-rgb), 0.62);
+      0 0 12px rgba(255, 255, 255, 0.96),
+      0 0 22px rgba(255, 255, 255, 0.82),
+      0 0 34px rgba(255, 255, 255, 0.66);
   }
 }
 
