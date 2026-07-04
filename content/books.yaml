@@ -226,15 +226,32 @@ platform_books:
           url: /research/platforms/oracle/index.html
           online: true
       sections:
+        - id: scientific-design-engine
+          title: Scientific Design Engine
+          body: CALYR is not a generic AI chat. Delphi Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
+          bullets:
+            - Knowledge graph exploration with semantic context
+            - Surrogate model guidance for faster option-space navigation
+            - HPC and simulation pathways connected to decision points
+            - AI agents and scientific documents integrated in one workspace
+        - id: compass-flow
+          title: Compass Flow
+          bullets:
+            - THINK
+            - MODEL
+            - SIMULATE
+            - VALIDATE
+            - DEPLOY
         - id: interaction-model
           title: Interaction Model
           bullets:
+            - Zoomable brick-based knowledge landscape
+            - Fractal navigation between overview and detail
             - Guided traversal of related entities
-            - Context-sensitive prompts
-            - Insight bookmarking and export
+            - Context-sensitive prompts and insight bookmarking
         - id: value
           title: Value
-          body: Delphi closes the loop between extracted knowledge and actionable human understanding.
+          body: Delphi closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
 
 platform_pages:
   route_prefix: /research/platforms

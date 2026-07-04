@@ -199,20 +199,20 @@
   },
   "delphi": {
     "title": "delphi",
-    "summary": "Entry point into Compass for guided knowledge exploration.\n",
+    "summary": "AI-native scientific navigation for models, simulation, and knowledge.\n",
     "body_preview": "Delphi is the platform tile that links into the Compass interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
     "route": "/research/platforms/delphi/index.html",
     "icon": "compass",
     "keywords": [
-      "compass",
+      "ai-native",
+      "and",
       "delphi",
-      "entry",
-      "exploration.",
       "for",
-      "guided",
-      "into",
-      "knowledge",
-      "point"
+      "knowledge.",
+      "models,",
+      "navigation",
+      "scientific",
+      "simulation,"
     ]
   },
   "ecosystem": {
