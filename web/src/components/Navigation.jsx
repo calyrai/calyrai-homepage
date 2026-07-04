@@ -35,6 +35,86 @@ const BRAILLE_DOTS = {
 
 const BRAILLE_POSITION_LEGEND = '1 oben links, 2 mitte links, 3 unten links, 4 oben rechts, 5 mitte rechts, 6 unten rechts'
 
+const CONTACT_SPLINE_PATHS = {
+  mail: `
+    M 20 25
+    L 80 25
+    L 80 75
+    L 20 75
+    Z
+    M 20 30
+    C 38 44, 45 56, 50 56
+    C 55 56, 62 44, 80 30
+  `,
+  whatsapp: `
+    M 25 62
+    C 18 42, 28 22, 50 22
+    C 75 22, 86 42, 76 61
+    C 67 78, 42 78, 31 71
+    L 18 80
+    C 21 73, 23 67, 25 62
+  `,
+  x: `
+    M 30 25
+    C 42 38, 48 46, 50 50
+    C 56 60, 62 70, 70 75
+    M 70 25
+    C 58 38, 52 46, 50 50
+    C 44 60, 38 70, 30 75
+  `,
+  linkedin: `
+    M 30 50
+    C 42 50, 42 38, 42 30
+    C 42 25, 48 25, 70 25
+    L 70 75
+    C 58 75, 51 70, 43 72
+    C 38 74, 34 75, 30 75
+  `,
+  bluesky: `
+    M 50 55
+    C 32 20, 20 23, 22 45
+    C 24 63, 38 62, 43 55
+    C 29 68, 30 82, 43 78
+    C 52 75, 51 62, 50 55
+
+    M 50 55
+    C 68 20, 80 23, 78 45
+    C 76 63, 62 62, 57 55
+    C 71 68, 70 82, 57 78
+    C 48 75, 49 62, 50 55
+  `,
+  youtube: `
+    M 25 30
+    C 25 20, 40 20, 60 20
+    C 75 20, 80 30, 80 50
+    C 80 70, 75 80, 60 80
+    C 40 80, 25 80, 25 70
+    Z
+    M 42 38
+    L 42 62
+    L 64 50
+    Z
+  `,
+  instagram: `
+    M 30 25
+    C 45 15, 68 18, 76 32
+    C 86 50, 78 75, 55 76
+    C 31 77, 20 62, 22 45
+    C 23 36, 25 29, 30 25
+  `,
+  impressum: `
+    M 30 20
+    L 65 20
+    L 80 35
+    L 80 80
+    L 30 80
+    Z
+    M 65 20
+    L 65 35
+    L 80 35
+  `,
+}
+
 function getBrailleLetter(label, symbol) {
   return String(label || symbol || 'a').trim().charAt(0).toLowerCase() || 'a'
 }
@@ -54,6 +134,11 @@ function getBrailleSparkStyle(letter, dot) {
     '--braille-spark-delay': `${delay.toFixed(2)}s`,
     '--braille-spark-drift': `${drift.toFixed(2)}px`,
   }
+}
+
+function getSplinePath(item) {
+  const key = String(item?.id || item?.label || '').toLowerCase()
+  return CONTACT_SPLINE_PATHS[key] || CONTACT_SPLINE_PATHS.mail
 }
 
 function getDestinationLabel(href) {
@@ -105,6 +190,16 @@ function SocialButtonIcon({ symbol, label }) {
     <span className="nav-contact-icon nav-contact-icon-fallback" aria-hidden="true">
       {String(symbol || '@').slice(0, 2)}
     </span>
+  )
+}
+
+function ContactSpline({ item }) {
+  const path = getSplinePath(item)
+
+  return (
+    <svg className="nav-contact-spline" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <path className="nav-contact-spline-path" d={path} />
+    </svg>
   )
 }
 
@@ -229,6 +324,7 @@ export default function Navigation({ theme, ast }) {
                           title={item.label}
                           onClick={handleNavClick}
                         >
+                          <ContactSpline item={item} />
                           <SocialButtonIcon label={item.label} symbol={symbol} />
                           <span className="nav-contact-tooltip" aria-hidden="true">
                             <span className="nav-contact-tooltip-title">{item.label}</span>
