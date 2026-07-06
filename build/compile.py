@@ -356,6 +356,11 @@ def _sync_books_page_from_yaml(project_root: Path) -> None:
     if not section_cfg or not item_cfg:
         return
 
+    home_route = str(config.get("home_route", "/")).strip() if isinstance(config, dict) else "/"
+    if not home_route:
+        home_route = "/"
+    books_page["home_route"] = home_route
+
     sections = books_page.get("sections", [])
     if not isinstance(sections, list):
         sections = []

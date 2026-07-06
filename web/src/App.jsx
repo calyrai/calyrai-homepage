@@ -105,7 +105,8 @@ function App() {
       <Navigation theme={theme} ast={ast} />
 
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {routeState.isBooksRoute ? <BooksPage page={booksPage} /> : renderNode(ast, theme)}
+        {renderNode(ast, theme)}
+        {routeState.isBooksRoute ? <BooksPage page={booksPage} embedded /> : null}
       </div>
     </SelectionProvider>
   )

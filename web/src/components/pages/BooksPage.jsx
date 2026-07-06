@@ -76,9 +76,9 @@ function BooksSection({ section }) {
   )
 }
 
-export default function BooksPage({ page }) {
+export default function BooksPage({ page, embedded = false }) {
   if (!page) {
-    return <main className="content-page books-page books-page-empty" />
+    return null
   }
 
   const sections = Array.isArray(page.sections) ? page.sections : []
@@ -87,6 +87,7 @@ export default function BooksPage({ page }) {
   const heroSubtitle = page?.hero?.subtitle || ''
   const heroKicker = page?.header?.section_label || ''
   const homeLabel = page?.header?.brand || page?.id || ''
+  const homeRoute = page?.home_route || '/'
   const heroStyle = (page?.style && page.style.hero && typeof page.style.hero === 'object') ? page.style.hero : {}
   const heroTitleVars = {
     ...(heroStyle.title_color ? { '--books-title-color': heroStyle.title_color } : {}),
@@ -98,18 +99,24 @@ export default function BooksPage({ page }) {
   const generatedValue = page?.metadata?.generated_at || ''
   const booksLabel = page?.metadata?.labels?.books || page?.metadata?.book_count_label || ''
   const booksValue = page?.metadata?.book_count
+  const Container = embedded ? 'section' : 'main'
+  const containerClassName = embedded
+    ? 'books-page books-page-embedded'
+    : 'content-page books-page'
 
   return (
-    <main className="content-page books-page" aria-label={page?.id || ''}>
-      <header className="content-page-hero books-page-hero">
-        {heroKicker && <p className="content-page-kicker books-page-kicker">{heroKicker}</p>}
-        <h2>
-          <a className="content-page-home-link books-page-home-link" href="/" aria-label={homeLabel} style={heroTitleVars}>
-            <span>{heroTitle}</span>
-          </a>
-        </h2>
-        {heroSubtitle && <p>{heroSubtitle}</p>}
-      </header>
+    <Container className={containerClassName} aria-label={page?.id || ''}>
+      {!embedded && (
+        <header className="content-page-hero books-page-hero">
+          {heroKicker && <p className="content-page-kicker books-page-kicker">{heroKicker}</p>}
+          <h2>
+            <a className="content-page-home-link books-page-home-link" href={homeRoute} aria-label={homeLabel} style={heroTitleVars}>
+              <span>{heroTitle}</span>
+            </a>
+          </h2>
+          {heroSubtitle && <p>{heroSubtitle}</p>}
+        </header>
+      )}
 
       <div className="content-page-meta books-page-meta">
         {(generatedLabel || generatedValue) && (
@@ -123,6 +130,6 @@ export default function BooksPage({ page }) {
       {sections.map((section) => (
         <BooksSection key={section.id} section={section} />
       ))}
-    </main>
+    </Container>
   )
 }

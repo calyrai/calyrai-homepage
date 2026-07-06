@@ -407,7 +407,7 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-07-02T22:19:33.478546+00:00",
+    "generated_at": "2026-07-06T11:56:40.086425+00:00",
     "book_count": 9,
     "books_by_status": {
       "draft": 1,
@@ -421,5 +421,6 @@
       "title_hover_color": "#ff2a7a",
       "title_dot_glow": "rgba(255, 42, 122, 0.9)"
     }
-  }
+  },
+  "home_route": "/"
 }

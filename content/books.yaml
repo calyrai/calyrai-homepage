@@ -10,6 +10,8 @@ books_page_style:
     title_hover_color: "#ff2a7a"
     title_dot_glow: "rgba(255, 42, 122, 0.9)"
 
+home_route: /
+
 rainbow_palette:
   core: "#ff3b30"
   brix: "#ff8c1a"

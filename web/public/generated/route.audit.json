@@ -1,9 +1,9 @@
 {
   "checked_routes": [
+    "/books",
     "/contact",
     "/ecosystem",
     "/legal",
-    "/philosophy",
     "/research/platforms/aflowtex/index.html",
     "/research/platforms/brix/index.html",
     "/research/platforms/core/index.html",
@@ -20,5 +20,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-02T22:19:33.524086+00:00"
+  "generated_at": "2026-07-06T11:56:40.188673+00:00"
 }
