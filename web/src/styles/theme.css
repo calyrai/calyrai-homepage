@@ -25,11 +25,35 @@
   --font-family-mono: 'Courier New', Courier, monospace;
 
   /* Font sizes */
-  --font-size-h1: 3rem;
-  --font-size-h2: 2.2rem;
-  --font-size-h3: 1.55rem;
+  --font-size-h1: var(--header-size-1);
+  --font-size-h2: var(--header-size-2);
+  --font-size-h3: var(--header-size-3);
   --font-size-body: 1rem;
   --font-size-small: 0.875rem;
+
+  /* Header size hierarchy */
+  --header-size-1: clamp(2.8rem, 6.4vw, 5.6rem);
+  --header-size-2: clamp(2rem, 4.2vw, 3.2rem);
+  --header-size-3: clamp(1.35rem, 2.3vw, 1.95rem);
+  --header-size-4: clamp(1.08rem, 1.7vw, 1.35rem);
+
+  /* Semantic type scale */
+  --type-size-display-mobile: clamp(2.6rem, 10.4vw, 4.2rem);
+  --type-size-tagline: clamp(1.2rem, 2.15vw, 1.75rem);
+  --type-size-tagline-mobile: clamp(1rem, 4.4vw, 1.35rem);
+  --type-size-nav: clamp(1.1rem, 2.6vw, 1.55rem);
+  --type-size-body-lg: clamp(0.95rem, 1.35vw, 1.18rem);
+  --type-size-body-sm: 0.95rem;
+  --type-size-caption: 0.875rem;
+  --type-size-label: 0.82rem;
+  --type-size-micro: 0.72rem;
+  --type-size-micro-compact: 0.52rem;
+
+  /* Icon scale */
+  --icon-size-lg: 1.25rem;
+  --icon-size-xl: 1.5rem;
+  --icon-size-2xl: 2rem;
+  --icon-size-3xl: 2.5rem;
 
   /* Font weights */
   --font-weight-light: 300;
@@ -99,24 +123,35 @@ body {
 }
 
 h1 {
-  font-size: var(--font-size-h1);
+  font-size: var(--header-size-1);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   margin: 0 0 var(--space-lg) 0;
+  text-align: right;
 }
 
 h2 {
-  font-size: var(--font-size-h2);
+  font-size: var(--header-size-2);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   margin: 0 0 var(--space-md) 0;
+  text-align: right;
 }
 
 h3 {
-  font-size: var(--font-size-h3);
+  font-size: var(--header-size-3);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
   margin: 0 0 var(--space-sm) 0;
+  text-align: right;
+}
+
+h4,
+h5,
+h6 {
+  font-size: var(--header-size-4);
+  line-height: var(--line-height-tight);
+  text-align: right;
 }
 
 p {

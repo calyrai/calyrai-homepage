@@ -150,6 +150,31 @@ CSS variables from nexus.theme.json:
 - Spacing grid (--space-xs through --space-xl)
 - Shadows and transitions
 
+### Typography Structure (Token System)
+To avoid one-off size values and keep hierarchy stable, typography is now managed through a layered token model:
+
+1. Hierarchy tokens (headings):
+- --header-size-1 (largest display level)
+- --header-size-2 (section-level headings)
+- --header-size-3 (subsection-level headings)
+- --header-size-4 (card/title-level headings)
+
+2. Semantic text tokens (role-based):
+- --type-size-display-mobile
+- --type-size-tagline, --type-size-tagline-mobile
+- --type-size-nav
+- --type-size-body-lg, --type-size-body-sm
+- --type-size-caption, --type-size-label
+- --type-size-micro, --type-size-micro-compact
+
+3. Icon scale tokens:
+- --icon-size-lg, --icon-size-xl, --icon-size-2xl, --icon-size-3xl
+
+Usage rule:
+- Do not introduce raw font-size values in component styles.
+- Use hierarchy tokens for headings and role tokens for text/UI labels.
+- If a new visual role appears, add one named token first, then consume it.
+
 ### components.css (789 LOC)
 Component-level styles:
 - Hero styling (icon, title, text layout)

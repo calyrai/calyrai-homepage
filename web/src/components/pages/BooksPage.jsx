@@ -13,21 +13,21 @@ function BookCard({ item }) {
   })
 
   return (
-    <article className="books-page-card">
-      <div className="books-page-card-head">
+    <article className="content-page-card books-page-card">
+      <div className="content-page-card-head books-page-card-head">
         <h4>{applyTitleDefaults(item.title || item.id)}</h4>
-        {item.year && <span className="books-page-card-year">{item.year}</span>}
+        {item.year && <span className="content-page-card-year books-page-card-year">{item.year}</span>}
       </div>
 
       {Array.isArray(item.authors) && item.authors.length > 0 && (
-        <p className="books-page-authors">{item.authors.join(', ')}</p>
+        <p className="content-page-authors books-page-authors">{item.authors.join(', ')}</p>
       )}
 
-      {item.objective && <p className="books-page-objective">{item.objective}</p>}
-      {item.summary && <p className="books-page-summary">{item.summary}</p>}
+      {item.objective && <p className="content-page-objective books-page-objective">{item.objective}</p>}
+      {item.summary && <p className="content-page-summary books-page-summary">{item.summary}</p>}
 
       {tags.length > 0 && (
-        <ul className="books-page-tags">
+        <ul className="content-page-tags books-page-tags">
           {tags.map((tag) => (
             <li key={tag}>{tag}</li>
           ))}
@@ -35,17 +35,17 @@ function BookCard({ item }) {
       )}
 
       {visibleCtas.length > 0 && (
-        <div className="books-page-ctas">
+        <div className="content-page-ctas books-page-ctas">
           {visibleCtas.map((cta) => (
             <a
               key={`${item.id}-${cta.type}`}
               href={cta.url}
-              className="books-page-cta"
+              className="content-page-cta books-page-cta"
               target="_blank"
               rel="noreferrer"
             >
               <span>{cta.label}</span>
-              <span aria-hidden="true" className="books-page-cta-arrow">→</span>
+              <span aria-hidden="true" className="content-page-cta-arrow books-page-cta-arrow">→</span>
             </a>
           ))}
         </div>
@@ -62,12 +62,12 @@ function BooksSection({ section }) {
   }
 
   return (
-    <section className="books-page-section" id={`books-${section.id}`}>
-      <header className="books-page-section-head">
+    <section className="content-page-section books-page-section" id={`books-${section.id}`}>
+      <header className="content-page-section-head books-page-section-head">
         <h3>{applyTitleDefaults(section.title || section.id)}</h3>
         {section.description && <p>{section.description}</p>}
       </header>
-      <div className="books-page-grid">
+      <div className="content-page-grid books-page-grid">
         {items.map((item) => (
           <BookCard key={item.id} item={item} />
         ))}
@@ -78,7 +78,7 @@ function BooksSection({ section }) {
 
 export default function BooksPage({ page }) {
   if (!page) {
-    return <main className="books-page books-page-empty" />
+    return <main className="content-page books-page books-page-empty" />
   }
 
   const sections = Array.isArray(page.sections) ? page.sections : []
@@ -100,18 +100,18 @@ export default function BooksPage({ page }) {
   const booksValue = page?.metadata?.book_count
 
   return (
-    <main className="books-page" aria-label={page?.id || ''}>
-      <header className="books-page-hero">
-        {heroKicker && <p className="books-page-kicker">{heroKicker}</p>}
+    <main className="content-page books-page" aria-label={page?.id || ''}>
+      <header className="content-page-hero books-page-hero">
+        {heroKicker && <p className="content-page-kicker books-page-kicker">{heroKicker}</p>}
         <h2>
-          <a className="books-page-home-link" href="/" aria-label={homeLabel} style={heroTitleVars}>
+          <a className="content-page-home-link books-page-home-link" href="/" aria-label={homeLabel} style={heroTitleVars}>
             <span>{heroTitle}</span>
           </a>
         </h2>
         {heroSubtitle && <p>{heroSubtitle}</p>}
       </header>
 
-      <div className="books-page-meta">
+      <div className="content-page-meta books-page-meta">
         {(generatedLabel || generatedValue) && (
           <span>{[generatedLabel, generatedValue].filter(Boolean).join(' ')}</span>
         )}

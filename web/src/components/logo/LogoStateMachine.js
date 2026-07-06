@@ -3,10 +3,12 @@ export default class LogoStateMachine {
     this.config = config
     this.onTransition = onTransition
     const initialState = config?.interaction?.initialState
-    const allowedInitialStates = new Set(['idle', 'active', 'qr_build', 'qr_show'])
+    const allowedInitialStates = new Set(['idle', 'active', 'braille', 'micro', 'qr_build', 'qr_show'])
     this.state = allowedInitialStates.has(initialState) ? initialState : 'idle'
     this.hasUserInteraction = false
     this.allowAutoCycleWithoutMouse = config?.interaction?.autoCycleWithoutMouse === true
+    this.clickSequence = config?.interaction?.clickSequence || ['braille', 'micro', 'qr_build']
+    this.clickCount = 0
     this.timers = new Set()
     this.destroyed = false
     this.#emit(this.state)
@@ -39,7 +41,12 @@ export default class LogoStateMachine {
   }
 
   handleClick() {
-    this.triggerQrBuild()
+    this.#markUserInteraction()
+    
+    // Cycle through click sequence: braille → micro → qr_build → (repeat)
+    const nextState = this.clickSequence[this.clickCount % this.clickSequence.length]
+    this.clickCount++
+    this.transitionTo(nextState)
   }
 
   handlePointerReturn() {
@@ -55,6 +62,10 @@ export default class LogoStateMachine {
     this.state = nextState
     this.#emit(nextState)
     this.#scheduleByState(nextState)
+  }
+
+  resetClickSequence() {
+    this.clickCount = 0
   }
 
   destroy() {
@@ -90,7 +101,7 @@ export default class LogoStateMachine {
     this.hasUserInteraction = true
   }
 
-  // Maps each state to its auto-transition: [nextState, configDurationKey, fallbackMs]
+  // Maps each state to its auto-transition: [currentState, nextState, configDurationKey, fallbackMs]
   static #SCHEDULE = [
     ['qr_build',   'qr_show',    'qr_build',   2600],
     // Keep QR readable with sparkle for a while, then return to idle.

@@ -48,6 +48,8 @@ export default class LogoCanvasEngine {
     this.canvasOffsetX = 0
     this.canvasOffsetY = 0
     this.qrMatrixSource = config?.qrMatrix || null
+    this.qrMatrices = config?.qrMatrices || {}
+    this.currentRenderMode = 'qr'
     this.interactionField = createInactivePointerField()
     this.qrDotStates = new Map()
 
@@ -73,6 +75,11 @@ export default class LogoCanvasEngine {
     this.#buildConstellations()
     this.#initParticles()
 
+    // Initialize render mode based on the actual initial state from config
+    // Default to 'ring' (idle) so no QR overlay appears until explicitly triggered
+    this.currentRenderMode = 'ring'
+    this.#updateRenderModeForState(this.state)
+
     window.addEventListener('resize', this.resize)
     this.#resizeListenerAttached = true
     this.resize()
@@ -86,6 +93,33 @@ export default class LogoCanvasEngine {
       this.transitionStartTs = performance.now()
     }
     this.state = nextState
+    this.#updateRenderModeForState(nextState)
+  }
+
+  #updateRenderModeForState(state) {
+    const stateConfig = this.config?.states?.[state]
+    const renderMode = stateConfig?.renderMode || null
+
+    let newSource = this.qrMatrixSource
+
+    if (renderMode === 'braille' && this.qrMatrices?.braille) {
+      this.currentRenderMode = 'braille'
+      newSource = this.qrMatrices.braille
+    } else if (renderMode === 'micro' && this.qrMatrices?.micro) {
+      this.currentRenderMode = 'micro'
+      newSource = this.qrMatrices.micro
+    } else if (renderMode === 'qr') {
+      newSource = this.qrMatrices?.full || this.qrMatrixSource
+      this.currentRenderMode = 'qr'
+    } else {
+      // No renderMode (idle, active, etc.) → ring animation
+      this.currentRenderMode = 'ring'
+    }
+
+    if (newSource !== this.qrMatrixSource) {
+      this.qrMatrixSource = newSource
+      this.#buildQrTargets(this.qrMatrixSource)
+    }
   }
 
   setInteractionField(pointerField) {
@@ -904,6 +938,7 @@ export default class LogoCanvasEngine {
   #drawFrame(t) {
     const ctx = this.ctx
     if (!ctx) return
+    const navOpen = typeof document !== 'undefined' && document.body?.classList.contains('nav-open')
 
     ctx.clearRect(0, 0, this.width, this.height)
     ctx.fillStyle = '#000000'
@@ -911,11 +946,27 @@ export default class LogoCanvasEngine {
 
     this.#drawBackgroundRaster(ctx, t)
 
-    this.#updateParticles(t)
-    this.#drawParticles(ctx, t)
-    this.#drawLockedQrOverlay(ctx, t)
+    if (navOpen && this.currentRenderMode === 'ring') {
+      return
+    }
 
-    this.#drawConstellations(ctx, t)
+    this.#updateParticles(t)
+
+    // Three fully exclusive states — no overlapping renders
+    if (this.currentRenderMode === 'braille') {
+      // Braille: only particles in dot-invitation pattern
+      this.#drawParticles(ctx, t)
+    } else if (this.currentRenderMode === 'micro') {
+      // Micro-QR: solid black plate + micro QR overlay only, no particles
+      this.#drawLockedQrOverlay(ctx, t)
+    } else if (this.currentRenderMode === 'qr') {
+      // Full QR: solid black plate + full QR overlay only, no particles
+      this.#drawLockedQrOverlay(ctx, t)
+    } else {
+      // Idle / active: animated ring with constellations
+      this.#drawParticles(ctx, t)
+      this.#drawConstellations(ctx, t)
+    }
   }
 
   #drawRingBaseline(ctx, alpha = 0.22) {
@@ -974,8 +1025,8 @@ export default class LogoCanvasEngine {
   }
 
   #drawLockedQrOverlay(ctx, t) {
-    if (this.state !== 'qr_show') return
-    if (this.qrRenderKind !== 'qr') return
+    // Only show QR code in micro and qr renderModes (not braille)
+    if (!['micro', 'qr'].includes(this.currentRenderMode)) return
     if (!this.qrLayout || !Array.isArray(this.qrLayout.modules)) return
 
     const { modules, size, quietModules, left, top, moduleSizeX, moduleSizeY } = this.qrLayout
@@ -987,13 +1038,18 @@ export default class LogoCanvasEngine {
     const plateW = fullSize * moduleSizeX * this.width
     const plateH = fullSize * moduleSizeY * this.height
 
+    // Adjust opacity based on renderMode
+    const bgOpacity = this.currentRenderMode === 'qr' ? 0.94 : this.currentRenderMode === 'micro' ? 0.72 : 0.44
+    const dotOpacity = this.currentRenderMode === 'qr' ? 0.98 : this.currentRenderMode === 'micro' ? 0.82 : 0.58
+    const isStableQrShow = this.currentRenderMode === 'qr' && this.state === 'qr_show'
+
     ctx.save()
 
     // Keep the QR quiet-zone clean so scanning remains robust on animated backgrounds.
-    ctx.fillStyle = 'rgba(0,0,0,0.94)'
+    ctx.fillStyle = `rgba(0,0,0,${bgOpacity})`
     ctx.fillRect(plateX, plateY, plateW, plateH)
 
-    ctx.fillStyle = 'rgba(255,255,255,0.98)'
+    ctx.fillStyle = `rgba(255,255,255,${dotOpacity})`
 
     for (let y = 0; y < size; y += 1) {
       const row = modules[y]
@@ -1006,10 +1062,12 @@ export default class LogoCanvasEngine {
           (x >= size - 7 && y <= 6) ||
           (x <= 6 && y >= size - 7)
         const repulsion = inFinderPattern
-          ? { dx: 0, dy: 0 }
-          : computeDotRepulsion(nx, ny, this.interactionField, {
-            maxShift: moduleSizeX * 0.56,
-          })
+          ? { dx: 0, dy: 0, influence: 0 }
+          : (isStableQrShow
+            ? { dx: 0, dy: 0, influence: 0 }
+            : computeDotRepulsion(nx, ny, this.interactionField, {
+              maxShift: moduleSizeX * 0.56,
+            }))
         const key = `${x}:${y}`
         let dotState = this.qrDotStates.get(key)
         if (!dotState) {
@@ -1027,21 +1085,29 @@ export default class LogoCanvasEngine {
         const flowTargetDx = targetDx + swirlX * swirlShift
         const flowTargetDy = targetDy + swirlY * swirlShift
 
-        dotState.vx = (dotState.vx + (flowTargetDx - dotState.dx) * 0.34) * 0.86
-        dotState.vy = (dotState.vy + (flowTargetDy - dotState.dy) * 0.34) * 0.86
-        dotState.dx += dotState.vx
-        dotState.dy += dotState.vy
-        const maxElasticShift = moduleSizeX * 0.68
-        dotState.dx = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dx))
-        dotState.dy = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dy))
+        if (isStableQrShow) {
+          dotState.vx = 0
+          dotState.vy = 0
+          dotState.dx = 0
+          dotState.dy = 0
+          dotState.spark = 0
+        } else {
+          dotState.vx = (dotState.vx + (flowTargetDx - dotState.dx) * 0.34) * 0.86
+          dotState.vy = (dotState.vy + (flowTargetDy - dotState.dy) * 0.34) * 0.86
+          dotState.dx += dotState.vx
+          dotState.dy += dotState.vy
+          const maxElasticShift = moduleSizeX * 0.68
+          dotState.dx = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dx))
+          dotState.dy = Math.max(-maxElasticShift, Math.min(maxElasticShift, dotState.dy))
+        }
 
-        const drawX = (nx + dotState.dx) * this.width
-        const drawY = (ny + dotState.dy) * this.height
+        const drawX = (nx + (isStableQrShow ? 0 : dotState.dx)) * this.width
+        const drawY = (ny + (isStableQrShow ? 0 : dotState.dy)) * this.height
         const baseSeedA = this.#hash2((x + 1) * 7.1, (y + 1) * 11.3)
         const baseSeedB = this.#hash2((x + 1) * 5.7 + 0.3, (y + 1) * 3.9 + 0.7)
 
         // Keep finder modules stable, but give interior modules obvious size variance.
-        const sizeVary = inFinderPattern ? 1 : 0.62 + baseSeedA * 0.74
+        const sizeVary = isStableQrShow ? 1 : (inFinderPattern ? 1 : 0.62 + baseSeedA * 0.74)
         const baseRadius = inFinderPattern
           ? Math.max(modulePx * 0.34, Math.min(modulePx * 0.4, radius * 1.08))
           : Math.max(modulePx * 0.18, Math.min(modulePx * 0.46, radius * sizeVary))
@@ -1050,36 +1116,84 @@ export default class LogoCanvasEngine {
         ctx.fill()
 
         // Stochastic sparkle bursts per module with independent clocks (no wave motion).
-        const sparkleTick = Math.floor(t * (12 + baseSeedB * 15))
-        const trigger = this.#hash2((x + 1) * 29.1 + baseSeedA * 17.3, sparkleTick * 0.73 + (y + 1) * 5.2)
-        if (trigger > 0.984) {
-          dotState.spark = Math.min(1, dotState.spark + 0.56)
-        }
-        dotState.spark *= 0.96
-
-        if (dotState.spark > 0.02) {
-          const sparkleAlpha = 0.24 + dotState.spark * 0.72
-          const sparkleRadius = Math.max(modulePx * 0.12, baseRadius * (0.32 + baseSeedB * 0.3 + dotState.spark * 0.62))
-
-          ctx.fillStyle = `rgba(255,255,255,${Math.min(1, sparkleAlpha).toFixed(3)})`
-          ctx.beginPath()
-          ctx.arc(drawX, drawY, sparkleRadius, 0, Math.PI * 2)
-          ctx.fill()
-
-          const haloTrigger = this.#hash2((x + 1) * 23.3 + baseSeedB * 17.1, sparkleTick * 1.7 + (y + 1) * 3.1)
-          if (haloTrigger > 0.54) {
-            ctx.fillStyle = `rgba(255,255,255,${(0.08 + dotState.spark * 0.22).toFixed(3)})`
-            ctx.beginPath()
-            ctx.arc(drawX, drawY, Math.min(modulePx * 0.54, baseRadius * (0.92 + dotState.spark * 0.34)), 0, Math.PI * 2)
-            ctx.fill()
+        if (!isStableQrShow) {
+          const sparkleTick = Math.floor(t * (12 + baseSeedB * 15))
+          const trigger = this.#hash2((x + 1) * 29.1 + baseSeedA * 17.3, sparkleTick * 0.73 + (y + 1) * 5.2)
+          if (trigger > 0.984) {
+            dotState.spark = Math.min(1, dotState.spark + 0.56)
           }
+          dotState.spark *= 0.96
 
-          ctx.fillStyle = 'rgba(255,255,255,0.98)'
+          if (dotState.spark > 0.02) {
+            const sparkleAlpha = 0.24 + dotState.spark * 0.72
+            const sparkleRadius = Math.max(modulePx * 0.12, baseRadius * (0.32 + baseSeedB * 0.3 + dotState.spark * 0.62))
+
+            ctx.fillStyle = `rgba(255,255,255,${Math.min(1, sparkleAlpha).toFixed(3)})`
+            ctx.beginPath()
+            ctx.arc(drawX, drawY, sparkleRadius, 0, Math.PI * 2)
+            ctx.fill()
+
+            const haloTrigger = this.#hash2((x + 1) * 23.3 + baseSeedB * 17.1, sparkleTick * 1.7 + (y + 1) * 3.1)
+            if (haloTrigger > 0.54) {
+              ctx.fillStyle = `rgba(255,255,255,${(0.08 + dotState.spark * 0.22).toFixed(3)})`
+              ctx.beginPath()
+              ctx.arc(drawX, drawY, Math.min(modulePx * 0.54, baseRadius * (0.92 + dotState.spark * 0.34)), 0, Math.PI * 2)
+              ctx.fill()
+            }
+
+            ctx.fillStyle = 'rgba(255,255,255,0.98)'
+          }
         }
       }
     }
 
+    if (this.currentRenderMode === 'micro') {
+      this.#drawMicroIlluminationOverlay(ctx)
+    }
+
     ctx.restore()
+  }
+
+  #drawMicroIlluminationOverlay(ctx) {
+    const mask = this.qrLayout?.microIlluminationMask
+    if (!Array.isArray(mask) || !mask.length) return
+
+    const { size, quietModules, left, top, moduleSizeX, moduleSizeY } = this.qrLayout
+    const modulePx = moduleSizeX * this.width
+    if (modulePx < 2.5) return
+
+    const fillAlpha = Number(this.config?.microQr?.overlayAlpha)
+    const safeAlpha = Number.isFinite(fillAlpha) ? Math.max(0.08, Math.min(0.32, fillAlpha)) : 0.16
+    const glowAlpha = Math.min(0.42, safeAlpha * 1.6)
+    const accentScale = Math.max(0.26, Math.min(0.66, 0.42 + Math.min(0.16, modulePx * 0.01)))
+
+    for (let y = 0; y < size; y += 1) {
+      const row = mask[y]
+      for (let x = 0; x < size; x += 1) {
+        if (!row?.[x]) continue
+
+        const inFinderPattern =
+          (x <= 6 && y <= 6) ||
+          (x >= size - 7 && y <= 6) ||
+          (x <= 6 && y >= size - 7)
+        if (inFinderPattern) continue
+
+        const nx = left + (x + quietModules + 0.5) * moduleSizeX
+        const ny = top + (y + quietModules + 0.5) * moduleSizeY
+        const cx = nx * this.width
+        const cy = ny * this.height
+
+        ctx.fillStyle = `rgba(255,255,255,${safeAlpha.toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(cx, cy, Math.max(0.8, modulePx * accentScale), 0, Math.PI * 2)
+        ctx.fill()
+
+        ctx.fillStyle = `rgba(255,255,255,${glowAlpha.toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(cx, cy, Math.max(0.45, modulePx * 0.12), 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
   }
 
   #drawBackgroundRaster(ctx, t) {
@@ -1098,7 +1212,21 @@ export default class LogoCanvasEngine {
     const qrBuildInfluence = this.#modeInfluence('qr_build')
     const qrShowInfluence = this.#modeInfluence('qr_show')
     const dissolveInfluence = this.#modeInfluence('dissolve')
-    const ringInfluence = Math.max(0, 1 - Math.max(qrBuildInfluence, qrShowInfluence))
+    
+    // Add braille and micro influences
+    const brailleInfluence = this.#modeInfluence('braille')
+    const microInfluence = this.#modeInfluence('micro')
+    
+    // Particles move to QR in any of these states
+    const qrModeInfluence = Math.max(
+      qrBuildInfluence,
+      qrShowInfluence,
+      brailleInfluence,
+      microInfluence,
+      dissolveInfluence
+    )
+    
+    const ringInfluence = Math.max(0, 1 - qrModeInfluence)
     if (!ring.length) return
 
     for (let i = 0; i < this.particles.length; i += 1) {
@@ -1122,7 +1250,7 @@ export default class LogoCanvasEngine {
 
       const ringWanderX = ringTarget.x + nx * radialOffset + tx * tangentialOffset
       const ringWanderY = ringTarget.y + ny * radialOffset + ty * tangentialOffset
-      const isQrMode = qrBuildInfluence > 0.001 || qrShowInfluence > 0.001
+      const isQrMode = qrModeInfluence > 0.001
       const isQrParticle = hasQr && p.qrTargetIndex >= 0 && p.qrTargetIndex < this.qrTargets.length
 
       let targetX = ringWanderX
@@ -1133,12 +1261,14 @@ export default class LogoCanvasEngine {
       if (isQrParticle) {
         const buildBlend = this.#particleQrProgress(qrBuildProgress, p.qrLag || 0) * qrBuildInfluence
         const showBlend = 1 * qrShowInfluence
+        const brailleBlend = 1 * brailleInfluence
+        const microBlend = 1 * microInfluence
         const dissolveBlend = (1 - this.#easeInOutCubic(dissolveProgress)) * dissolveInfluence
-        desiredQrBlend = Math.max(0, Math.min(1, buildBlend + showBlend + dissolveBlend))
+        desiredQrBlend = Math.max(0, Math.min(1, buildBlend + showBlend + brailleBlend + microBlend + dissolveBlend))
       }
 
       // Slower blend rates avoid abrupt shape snapping between QR and ring phases.
-      const qrBlendRate = mode === 'qr_show' ? 0.032 : mode === 'dissolve' ? 0.03 : 0.04
+      const qrBlendRate = this.state === 'qr_show' ? 0.032 : this.state === 'dissolve' ? 0.03 : this.state === 'braille' || this.state === 'micro' ? 0.08 : 0.04
       p.qrBlend = this.#advanceBlend(p.qrBlend || 0, desiredQrBlend, qrBlendRate)
 
       if (isQrParticle) {
@@ -1150,10 +1280,10 @@ export default class LogoCanvasEngine {
       // Story motion:
       // idle/entropy => asymmetric two-arm galaxy,
       // hover(active)/reassemble => align toward ring,
-      // qr_build/qr_show => strongest alignment while transitioning into QR.
+      // braille/micro/qr_build/qr_show => strongest alignment while transitioning into QR.
       const ringModeAlignment = mode === 'active' ? 0.78 : mode === 'reassemble' ? 0.84 : mode === 'entropy' ? 0.08 : 0.2
       const qrModeAlignment = 0.93 + qrShowInfluence * 0.07
-      const desiredAlignment = ringModeAlignment * ringInfluence + qrModeAlignment * (1 - ringInfluence)
+      const desiredAlignment = ringModeAlignment * ringInfluence + qrModeAlignment * qrModeInfluence
       p.modeAlignment = this.#advanceBlend(
         Number.isFinite(p.modeAlignment) ? p.modeAlignment : desiredAlignment,
         desiredAlignment,
@@ -1179,7 +1309,7 @@ export default class LogoCanvasEngine {
       // Smooth pull without spring oscillation.
       const ringModeFollow = mode === 'active' ? 0.16 : mode === 'reassemble' ? 0.19 : mode === 'entropy' ? 0.06 : 0.085
       const qrModeFollow = 0.165 - qrShowInfluence * 0.012
-      const desiredFollow = ringModeFollow * ringInfluence + qrModeFollow * (1 - ringInfluence)
+      const desiredFollow = ringModeFollow * ringInfluence + qrModeFollow * qrModeInfluence
       p.followRate = this.#advanceBlend(
         Number.isFinite(p.followRate) ? p.followRate : desiredFollow,
         desiredFollow,
@@ -1197,8 +1327,8 @@ export default class LogoCanvasEngine {
   }
 
   #drawParticles(ctx, t) {
-    const energized = this.state === 'active' || this.state === 'qr_build'
-    const qrMode = this.state === 'qr_build' || this.state === 'qr_show'
+    const energized = this.state === 'active' || this.state === 'qr_build' || this.state === 'braille' || this.state === 'micro'
+    const qrMode = this.state === 'qr_build' || this.state === 'qr_show' || this.state === 'braille' || this.state === 'micro'
     const qrBuildProgress = this.#stateProgress('qr_build', 2600)
     const qrPx = this.qrModuleSizeNorm > 0 ? this.qrModuleSizeNorm * this.width : 2
 
@@ -1213,7 +1343,7 @@ export default class LogoCanvasEngine {
       let size = this.state === 'qr_show' && isQrParticle ? 1.14 : p.size
 
       if (qrMode && !isQrParticle) {
-        alpha *= this.state === 'qr_build' ? 0.32 : 0.12
+        alpha *= this.state === 'qr_build' ? 0.32 : this.state === 'braille' || this.state === 'micro' ? 0.15 : 0.12
       }
 
       if (isQrParticle) {

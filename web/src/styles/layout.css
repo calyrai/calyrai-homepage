@@ -31,13 +31,13 @@ body,
 .container {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-lg);
   width: 100%;
 }
 
 .container-fluid {
   width: 100%;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-lg);
 }
 
 /* Flexbox utilities */
@@ -471,7 +471,7 @@ body,
   }
 
   .section-grid {
-    gap: var(--space-xs);
+    gap: var(--space-lg);
   }
 }
 

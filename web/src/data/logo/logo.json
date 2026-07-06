@@ -10,31 +10,49 @@
       "description": "Hover state, pulse and magnetic response",
       "durationMs": null
     },
+    "braille": {
+      "description": "Braille TOUCH ME pattern - invitation to interact",
+      "durationMs": null,
+      "renderMode": "braille"
+    },
+    "micro": {
+      "description": "Micro-QR highlighted in master raster - TOUCH AGAIN prompt",
+      "durationMs": 3500,
+      "renderMode": "micro"
+    },
     "qr_build": {
       "description": "Particles migrate into QR matrix",
-      "durationMs": 2600
+      "durationMs": 2600,
+      "renderMode": "qr"
     },
     "qr_show": {
-      "description": "QR remains readable",
-      "durationMs": 10000
+      "description": "Full QR remains readable",
+      "durationMs": 18000,
+      "renderMode": "qr"
     }
   },
   "interaction": {
-    "initialState": "qr_show",
+    "initialState": "idle",
     "autoCycleWithoutMouse": false,
     "stateTransitionMs": 1200,
     "hoverEnter": "active",
     "hoverLeave": "idle",
-    "click": "qr_build",
+    "click": "braille",
     "holdQrOnStart": false,
     "idleCycleToQrMs": null,
     "idleTimeoutToEntropyMs": null,
-    "upperActivationZoneFraction": 0.36
+    "upperActivationZoneFraction": 0.36,
+    "clickSequence": ["micro", "qr_build"]
   },
   "qr": {
     "mode": "vcard",
     "text": "BEGIN:VCARD\nVERSION:3.0\nFN:Rupert Tscheliessnig\nTITLE:Founder\nORG:CALYR.ai\nURL:https://calyr.ai\nTEL:+4369919200915\nEND:VCARD",
     "targetSizePx": 214
+  },
+  "microQr": {
+    "mode": "url",
+    "text": "https://calyr.ai",
+    "description": "Short URL for Micro-QR, mapped to center of master QR raster"
   },
   "particle": {
     "countExact": 1800,

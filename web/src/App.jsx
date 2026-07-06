@@ -6,6 +6,7 @@ import BooksPage from './components/pages/BooksPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
+import { resolveContactQrAlias } from './services/ContactQrService'
 import { ThemeVariableApplier } from './services/ThemeVariableApplier'
 import { RouteStateService } from './services/RouteStateService'
 import './styles/theme.css'
@@ -52,11 +53,39 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const redirectTarget = resolveContactQrAlias(window.location.hash)
+    if (!redirectTarget) {
+      return undefined
+    }
+
+    window.location.replace(redirectTarget)
+    return undefined
+  }, [currentPath])
+
+  useEffect(() => {
     document.body.classList.toggle('books-route', routeState.isBooksRoute)
     return () => {
       document.body.classList.remove('books-route')
     }
   }, [routeState.isBooksRoute])
+
+  useEffect(() => {
+    if (!routeState.isHomeAliasRoute || !routeState.homeAnchor) {
+      return undefined
+    }
+
+    const scrollToAnchor = () => {
+      const anchorEl = document.getElementById(routeState.homeAnchor)
+      if (!anchorEl) {
+        return
+      }
+
+      anchorEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    const rafId = window.requestAnimationFrame(scrollToAnchor)
+    return () => window.cancelAnimationFrame(rafId)
+  }, [routeState.isHomeAliasRoute, routeState.homeAnchor, currentPath])
 
   if (loading) {
     return <div>Loading...</div>
