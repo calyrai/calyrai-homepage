@@ -13,7 +13,7 @@ NODE_TYPE_RULES = {
     "aflowtex": "tile",
     "lithos": "tile",
     "oracle": "tile",
-    "delphi": "tile",
+    "pythia": "tile",
     "ecosystem": "tile",
     "philosophy": "tile",
     "contact": "tile",

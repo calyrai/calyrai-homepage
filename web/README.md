@@ -136,7 +136,7 @@ ReactFlow-based interactive visualization of knowledge relationships.
 **Current Status:** Implemented, disabled in App.jsx during testing (can be re-enabled)
 
 **Graph Structure:**
-- 5 nodes: calyrai core, brix, aflowtex, lithos, oracle, delphi (6 total)
+- 5 nodes: calyrai core, brix, aflowtex, lithos, oracle, pythia (6 total)
 - 5 edges showing module relationships
 - Interactive zoom, pan, drag controls
 - Node click syncs selection with Tile components via SelectionContext
@@ -251,7 +251,7 @@ Tile positions persist across page reloads:
       "children": [
         { "type": "tile", "id": "core", "title": "Calyrai core", ... },
         { "type": "tile", "id": "brix", "title": "brix", ... },
-        // ... 4 more tiles (aflowtex, lithos, oracle, delphi)
+        // ... 4 more tiles (aflowtex, lithos, oracle, pythia)
       ]
     },
     { "type": "section", "id": "architecture", "children": [...] },

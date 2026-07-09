@@ -96,7 +96,7 @@ Graph representation for visualization and navigation:
 Used by:
 - ReactFlow visualization
 - Oracle (knowledge engine)
-- Delphi (decision support)
+- Pythia (decision support)
 - Knowledge Atlas
 
 #### `nexus.theme.json` — Design System

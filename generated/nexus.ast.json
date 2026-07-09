@@ -218,18 +218,18 @@
       "children": [
         {
           "type": "tile",
-          "id": "delphi",
-          "title": "delphi",
+          "id": "pythia",
+          "title": "pythia",
           "tile_lead": "compass",
           "tile_accent": "cyan",
           "tile_title": "compass",
-          "tile_summary": "scientific design engine",
-          "subtitle": "Compass interface",
+          "tile_summary": "universal inference framework",
+          "subtitle": "Universal Framework for Complex Systems",
           "landing_message": "",
-          "summary": "AI-native scientific navigation for models, simulation, and knowledge.\n",
-          "body": "Delphi is the platform tile that links into the Compass interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
+          "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
+          "body": "PYTHIA addresses a single fundamental question: how can the hidden organization of a complex system be inferred from incomplete observations? It provides a unified language for describing assembled systems across all disciplines\u2014physical, biological, symbolic, social, and computational\u2014 and a general inference engine for reconstructing, validating, predicting, and optimizing them.\n",
           "icon": "compass",
-          "route": "/research/platforms/delphi/index.html",
+          "route": "/research/platforms/pythia/index.html",
           "links": [],
           "institutions": [],
           "contacts": [],
@@ -245,7 +245,7 @@
           },
           "meta": {
             "source": {
-              "contentNodeId": "delphi",
+              "contentNodeId": "pythia",
               "structureNodeId": null
             },
             "nodeType": "tile",
@@ -259,10 +259,10 @@
           "type": "tile",
           "id": "core",
           "title": "Calyrai core",
-          "tile_lead": "",
-          "tile_accent": "",
-          "tile_title": "",
-          "tile_summary": "",
+          "tile_lead": "brain",
+          "tile_accent": "blue",
+          "tile_title": "brain",
+          "tile_summary": "central reasoning engine",
           "subtitle": "Central reasoning engine",
           "landing_message": "",
           "summary": "Connects observations, knowledge, models, and decisions.\n",
@@ -322,10 +322,10 @@
           "type": "tile",
           "id": "brix",
           "title": "brix",
-          "tile_lead": "",
-          "tile_accent": "",
-          "tile_title": "",
-          "tile_summary": "",
+          "tile_lead": "bridge",
+          "tile_accent": "orange",
+          "tile_title": "bridge",
+          "tile_summary": "engineering intelligence",
           "subtitle": "Engineering intelligence",
           "landing_message": "",
           "summary": "Surrogate-assisted engineering design and analysis.\n",
@@ -361,10 +361,10 @@
           "type": "tile",
           "id": "aflowtex",
           "title": "aflowtex",
-          "tile_lead": "",
-          "tile_accent": "",
-          "tile_title": "",
-          "tile_summary": "",
+          "tile_lead": "aorta",
+          "tile_accent": "red",
+          "tile_title": "aorta",
+          "tile_summary": "medical flow intelligence",
           "subtitle": "Medical flow intelligence",
           "landing_message": "",
           "summary": "Patient-specific flow modelling and clinical decision support.\n",
@@ -400,10 +400,10 @@
           "type": "tile",
           "id": "lithos",
           "title": "lithos",
-          "tile_lead": "",
-          "tile_accent": "",
-          "tile_title": "",
-          "tile_summary": "",
+          "tile_lead": "mountain",
+          "tile_accent": "green",
+          "tile_title": "mountain",
+          "tile_summary": "consequence intelligence",
           "subtitle": "Consequence intelligence",
           "landing_message": "",
           "summary": "Understanding consequences, trade-offs, and impact.\n",
@@ -438,17 +438,17 @@
         {
           "type": "tile",
           "id": "oracle",
-          "title": "oracle",
-          "tile_lead": "",
-          "tile_accent": "",
-          "tile_title": "",
-          "tile_summary": "",
-          "subtitle": "Knowledge extraction engine",
+          "title": "pythia",
+          "tile_lead": "crystal-ball",
+          "tile_accent": "magenta",
+          "tile_title": "crystal-ball",
+          "tile_summary": "applications",
+          "subtitle": "Applied Inference",
           "landing_message": "",
           "summary": "Extracting knowledge from complex information spaces.\n",
           "body": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
           "icon": "crystal-ball",
-          "route": "/research/platforms/oracle/index.html",
+          "route": "/research/platforms/pythia/index.html",
           "links": [],
           "institutions": [],
           "contacts": [],
@@ -461,20 +461,89 @@
               "core"
             ],
             "outgoing": [
-              "delphi"
+              "pythia"
             ]
           },
           "meta": {
             "source": {
               "contentNodeId": "oracle",
-              "structureNodeId": null
+              "structureNodeId": "oracle"
             },
             "nodeType": "tile",
             "transformations": [
               "ApplyNodeTypeInference",
-              "AttachResolvedContent"
+              "AttachResolvedContent",
+              "BuildChildNodes"
             ]
-          }
+          },
+          "children": [
+            {
+              "type": "element",
+              "id": "pythia_saxs",
+              "title": "saxs pythia",
+              "tile_lead": "scatter",
+              "tile_accent": "cyan",
+              "tile_title": "scatter",
+              "tile_summary": "scattering inference",
+              "subtitle": "Small-Angle Scattering Pythia",
+              "landing_message": "",
+              "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
+              "body": "The SAXS Oracle applies PYTHIA structural inference to solution scattering data. It infers the hidden three-dimensional organization of macromolecular assemblies from one-dimensional scattering curves, combining physics-based constraints with probabilistic multi-scale reasoning.",
+              "icon": "scatter",
+              "route": "/research/pythia/saxs/index.html",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "pythia_saxs",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "pythia_metabolic",
+              "title": "metabolic pythia",
+              "tile_lead": "network",
+              "tile_accent": "green",
+              "tile_title": "network",
+              "tile_summary": "metabolic network inference",
+              "subtitle": "Metabolic Network Pythia",
+              "landing_message": "",
+              "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
+              "body": "The Metabolic Oracle applies PYTHIA to biochemical network reconstruction. It integrates stoichiometric constraints, thermodynamic feasibility, and experimental observations to infer the most plausible flux organization of a living cell under given conditions.",
+              "icon": "network",
+              "route": "/research/pythia/metabolic/index.html",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "pythia_metabolic",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -551,7 +620,7 @@
           "subtitle": "Interactive architecture",
           "landing_message": "",
           "summary": "Explore relationships across the calyrai ecosystem.\n",
-          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
+          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],

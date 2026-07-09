@@ -16,12 +16,18 @@ movie:
 platforms:
 
   children:
-    - delphi
+    - pythia
     - core
     - brix
     - aflowtex
     - lithos
     - oracle
+
+oracle:
+
+  children:
+    - pythia_saxs
+    - pythia_metabolic
 
 architecture:
 

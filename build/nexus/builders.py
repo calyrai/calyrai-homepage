@@ -3,7 +3,7 @@ Builders Layer — Nexus Artifact Construction
 
 Constructs the Nexus JSON artifacts:
     • nexus.ast.json   → Abstract syntax tree (fully resolved homepage)
-    • nexus.graph.json → Knowledge graph (for ReactFlow, Oracle, Delphi)
+    • nexus.graph.json → Knowledge graph (for ReactFlow, Oracle, Pythia)
     • nexus.theme.json → Design system (colors, typography, spacing)
     • nexus.index.json → Search index (for discovery, autocomplete)
     • nexus.flowchart.json → Authored page flow definitions with Mermaid output
@@ -280,7 +280,7 @@ class GraphBuilder:
 
     def build(self) -> dict[str, Any]:
         """
-        Build knowledge graph for ReactFlow, Oracle, Delphi.
+        Build knowledge graph for ReactFlow, Oracle, Pythia.
         
         Format:
             {

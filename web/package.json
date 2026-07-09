@@ -9,9 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "sync:books": "cp ../../calyrai-ecosystem/build/books.page.json ./public/generated/books.page.json && echo '✅ books artifact synced'",
-    "compile": "python3 ../build/compile.py oracle",
-    "compile:watch": "nodemon --watch ../content --watch ../skins --ext yaml --exec 'python3 ../build/compile.py oracle'",
-    "skin:oracle": "python3 ../build/compile.py oracle && echo '✅ Oracle theme locked - refresh browser'"
+    "compile": "python3 ../build/compile.py pythia",
+    "compile:watch": "nodemon --watch ../content --watch ../skins --ext yaml --exec 'python3 ../build/compile.py pythia'",
+    "skin:pythia": "python3 ../build/compile.py pythia && echo '✅ Pythia theme locked - refresh browser'"
   },
   "dependencies": {
     "qrcode": "^1.5.4",

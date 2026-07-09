@@ -119,20 +119,74 @@
     },
     {
       "id": "oracle",
-      "label": "oracle",
+      "label": "pythia",
       "data": {
-        "title": "oracle",
+        "title": "pythia",
         "summary": "Extracting knowledge from complex information spaces.\n",
         "icon": "crystal-ball"
       }
     },
     {
-      "id": "delphi",
-      "label": "delphi",
+      "id": "pythia",
+      "label": "pythia",
       "data": {
-        "title": "delphi",
-        "summary": "AI-native scientific navigation for models, simulation, and knowledge.\n",
+        "title": "pythia",
+        "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
         "icon": "compass"
+      }
+    },
+    {
+      "id": "pythia_apps",
+      "label": "pythia applications",
+      "data": {
+        "title": "pythia applications",
+        "summary": "Structural inference applied across scientific and engineering domains.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "pythia_saxs",
+      "label": "saxs pythia",
+      "data": {
+        "title": "saxs pythia",
+        "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
+        "icon": "scatter"
+      }
+    },
+    {
+      "id": "pythia_metabolic",
+      "label": "metabolic pythia",
+      "data": {
+        "title": "metabolic pythia",
+        "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
+        "icon": "network"
+      }
+    },
+    {
+      "id": "pythia_materials",
+      "label": "materials pythia",
+      "data": {
+        "title": "materials pythia",
+        "summary": "Inferring the hidden assembly structure of materials from experimental signatures.",
+        "icon": "atom"
+      }
+    },
+    {
+      "id": "pythia_proteomics",
+      "label": "proteomics pythia",
+      "data": {
+        "title": "proteomics pythia",
+        "summary": "Reconstructing protein structure and assembly from incomplete experimental data.",
+        "icon": "helix"
+      }
+    },
+    {
+      "id": "pythia_engineering",
+      "label": "engineering pythia",
+      "data": {
+        "title": "engineering pythia",
+        "summary": "Inferring the load state and hidden damage organization of engineered structures.",
+        "icon": "bridge"
       }
     },
     {
@@ -204,8 +258,8 @@
     },
     {
       "source": "oracle",
-      "target": "delphi",
-      "id": "oracle\u2192delphi"
+      "target": "pythia",
+      "id": "oracle\u2192pythia"
     }
   ]
 }

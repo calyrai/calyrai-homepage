@@ -227,7 +227,7 @@
     {
       "id": "platform_books",
       "title": "Platform Books",
-      "description": "Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Delphi as the Compass interface layer.",
+      "description": "Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Pythia as the Compass interface layer.",
       "items": [
         {
           "id": "platform-core",
@@ -386,6 +386,44 @@
               "online": true
             }
           ]
+        },
+        {
+          "id": "platform-pythia",
+          "type": "platform-book",
+          "authors": [
+            "Tscheliessnig, Rupert"
+          ],
+          "title": "Pythia Compass Interface",
+          "year": 2026,
+          "tags": [
+            "interaction",
+            "exploration",
+            "insights",
+            "compass",
+            "interface-layer"
+          ],
+          "objective": "Define Pythia as the Compass interface and make explicit that the platform tile is the entry link into this interface.",
+          "summary": "The Pythia platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.",
+          "ctas": [
+            {
+              "type": "platform-page",
+              "label": "Open Pythia Compass interface",
+              "url": "/research/platforms/pythia/index.html",
+              "online": true
+            },
+            {
+              "type": "philosophy-context",
+              "label": "Open Philosophy context",
+              "url": "/philosophy",
+              "online": true
+            },
+            {
+              "type": "upstream-oracle",
+              "label": "Open Oracle source layer",
+              "url": "/research/platforms/oracle/index.html",
+              "online": true
+            }
+          ]
         }
       ]
     }
@@ -407,8 +445,8 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-07-06T11:56:40.086425+00:00",
-    "book_count": 9,
+    "generated_at": "2026-07-09T09:07:04.787646+00:00",
+    "book_count": 10,
     "books_by_status": {
       "draft": 1,
       "concept": 1

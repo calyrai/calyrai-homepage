@@ -18,7 +18,7 @@ rainbow_palette:
   aflowtex: "#ffd60a"
   lithos: "#34c759"
   oracle: "#00c7ff"
-  delphi: "#2f6bff"
+  pythia: "#2f6bff"
   ecosystem: "#7d42ff"
   contact: "#bf5af2"
   philosophy: "#ff2d92"
@@ -55,7 +55,7 @@ platform_books:
   section:
     id: platform_books
     title: Platform Books
-    description: Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Delphi as the Compass interface layer.
+    description: Book-rooted explanation pages for each core platform. Platform tiles act as entry links into these pages, with Pythia as the Compass interface layer.
   items:
     - id: platform-core
       platform_id: core
@@ -198,10 +198,10 @@ platform_books:
               - Graph assembly
               - Query surfaces
               - Downstream module handoff
-    - id: platform-delphi
-      platform_id: delphi
+    - id: platform-pythia
+      platform_id: pythia
       type: platform-book
-      title: Delphi Compass Interface
+      title: Pythia Compass Interface
       year: 2026
       authors:
         - Tscheliessnig, Rupert
@@ -211,13 +211,13 @@ platform_books:
         - insights
         - compass
         - interface-layer
-      objective: Define Delphi as the Compass interface and make explicit that the platform tile is the entry link into this interface.
-      summary: The Delphi platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.
+      objective: Define Pythia as the Compass interface and make explicit that the platform tile is the entry link into this interface.
+      summary: The Pythia platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.
       canonical_claim: Human insight quality improves when graph exploration is guided by semantic context and reasoning cues through a dedicated Compass interface.
       ctas:
         - type: platform-page
-          label: Open Delphi Compass interface
-          url: /research/platforms/delphi/index.html
+          label: Open Pythia Compass interface
+          url: /research/platforms/pythia/index.html
           online: true
         - type: philosophy-context
           label: Open Philosophy context
@@ -230,7 +230,7 @@ platform_books:
       sections:
         - id: scientific-design-engine
           title: Scientific Design Engine
-          body: CALYR is not a generic AI chat. Delphi Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
+          body: CALYR is not a generic AI chat. Pythia Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
           bullets:
             - Knowledge graph exploration with semantic context
             - Surrogate model guidance for faster option-space navigation
@@ -253,7 +253,7 @@ platform_books:
             - Context-sensitive prompts and insight bookmarking
         - id: value
           title: Value
-          body: Delphi closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
+          body: Pythia closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
 
 platform_pages:
   route_prefix: /research/platforms
@@ -288,12 +288,12 @@ platform_pages:
       subtitle: Oracle
       lead: Knowledge extraction engine converting complex source material into structured graphs.
       footer_note: Oracle page generated from platform-oracle book entry in content/books.yaml.
-    - platform_id: delphi
-      book_id: platform-delphi
+    - platform_id: pythia
+      book_id: platform-pythia
       eyebrow: CALYR.AI Platform
-      subtitle: Delphi
-      lead: Compass interface layer entered via the Delphi platform tile for guided graph exploration and insight generation.
-      footer_note: Delphi page generated from platform-delphi book entry in content/books.yaml.
+      subtitle: Pythia
+      lead: Compass interface layer entered via the Pythia platform tile for guided graph exploration and insight generation.
+      footer_note: Pythia page generated from platform-pythia book entry in content/books.yaml.
 
 atlas_books:
   section:

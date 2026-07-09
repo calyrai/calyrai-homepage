@@ -65,7 +65,7 @@ CONFIG = {
         "index": "nexus.index.json",
         "flowchart": "nexus.flowchart.json",
     },
-    "default_skin": "oracle",
+    "default_skin": "pythia",
 }
 
 

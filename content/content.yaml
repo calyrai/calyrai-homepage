@@ -1,587 +1,500 @@
 brand:
+  display_name: "Calyr.a\xED"
+  domain: calyr.ai
+  tagline: 'Surrogate modelling for complex systems
 
-  display_name: "Calyr.aí"
-
-  domain: "calyr.ai"
-
-  tagline: >
-    Surrogate modelling for complex systems
-
+    '
 logo:
-
-  title: "Calyr.aí"
-
+  title: "Calyr.a\xED"
   title_ref: brand.display_name
-
-  route: ""
-
+  route: ''
 route_policy:
-
   fallback_mailto: mailto:rupert.tscheliessnig@calyr.ai
-
   spa_routes:
-    - /books
-    - /philosophy
-    - /contact
-    - /ecosystem
-    - /legal
-
-# --------------------------------------------------
-
+  - /books
+  - /philosophy
+  - /contact
+  - /ecosystem
+  - /legal
 hero:
-
   title_ref: brand.display_name
-
   subtitle_ref: brand.tagline
-
   intent:
     purpose: brand-positioning
     audience: first-visit
-
   render:
     variant: hero-banner
-
   explain:
     why: Introduce the brand promise before module exploration.
+  summary: 'create what is not here yet.
 
-  summary: >
-    create what is not here yet.
-
+    '
 movie:
-
-  title: "Teaser"
-
-  subtitle: "Short"
-
+  title: Teaser
+  subtitle: Short
   render:
     variant: media-feature
-
   behavior:
     collapsible: true
     default_expanded: false
-
   explain:
-    why: Keep the teaser present but initially compressed so it does not dominate the opening scan path.
+    why: Keep the teaser present but initially compressed so it does not dominate
+      the opening scan path.
+  summary: 'Visual short section.
 
-  summary: >
-    Visual short section.
+    '
+  body: 'Place your short file path in route to load and play it here.
 
-  body: >
-    Place your short file path in route to load and play it here.
-
+    '
   route: /research/positioning/index.html
-
 platforms:
-
-  title: "Platforms"
-
-  subtitle: "Applied intelligence modules"
-
+  title: Platforms
+  subtitle: Applied intelligence modules
   intent:
     purpose: capability-overview
     audience: first-visit
-
   render:
     variant: tile-grid
     source: homepage.grid.first-band
-
   behavior:
     collapsible: true
     default_expanded: true
     persistence: none
-
   explain:
     why: Present the primary product modules before the broader ecosystem context.
+  summary: 'Core platform modules for engineering, medicine, reasoning, and decision
+    support.
 
-  summary: >
-    Core platform modules for engineering,
-    medicine, reasoning, and decision support.
-
+    '
 architecture:
-
-  title: "Architecture"
-
-  subtitle: "System relationships"
-
+  title: Architecture
+  subtitle: System relationships
   intent:
     purpose: ecosystem-context
     audience: returning-visitor
-
   render:
     variant: tile-grid-secondary
     source: homepage.grid.second-band
-
   behavior:
     collapsible: true
     default_expanded: true
-
   explain:
-    why: Show how ecosystem navigation, contact, and philosophy follow the core module overview.
+    why: Show how ecosystem navigation, contact, and philosophy follow the core module
+      overview.
+  summary: 'Structural overview of module connections, data flow, and reasoning pathways.
 
-  summary: >
-    Structural overview of module connections,
-    data flow, and reasoning pathways.
-
+    '
 contact_main:
-
-  title: "Impressum"
-
-  subtitle: "Impressum"
-
+  title: Impressum
+  subtitle: Impressum
   intent:
     purpose: legal-contact
     audience: returning-visitor
-
   render:
     variant: tile-grid-secondary
     source: homepage.grid.legal-band
-
   behavior:
     collapsible: true
     default_expanded: false
-
   explain:
-    why: Provide a dedicated main-page contact section where Contact means Impressum/legal details.
+    why: Provide a dedicated main-page contact section where Contact means Impressum/legal
+      details.
+  summary: 'Legal contact details and publisher information.
 
-  summary: >
-    Legal contact details and
-    publisher information.
-
+    '
 footer:
-
-  title: ""
-
-  subtitle: ""
-
-  summary: ""
-
+  title: ''
+  subtitle: ''
+  summary: ''
   contacts: []
-
-# --------------------------------------------------
-
 core:
+  title: Calyrai core
+  tile_lead: brain
+  tile_accent: blue
+  tile_title: brain
+  tile_summary: central reasoning engine
+  subtitle: Central reasoning engine
+  summary: 'Connects observations, knowledge, models, and decisions.
 
-  title: "Calyrai core"
+    '
+  body: 'Calyrai core is the central reasoning engine of the ecosystem. It links observations,
+    knowledge representation, learning workflows, surrogate models, and decision support
+    into a unified framework.
 
-  subtitle: "Central reasoning engine"
-
-  summary: >
-    Connects observations,
-    knowledge,
-    models,
-    and decisions.
-
-  body: >
-    Calyrai core is the central reasoning engine
-    of the ecosystem. It links observations,
-    knowledge representation, learning workflows,
-    surrogate models, and decision support into
-    a unified framework.
-
+    '
   icon: brain
-
   route: /research/platforms/core/index.html
-
   intent:
     purpose: architecture-positioning
     audience: first-visit
-
   render:
     variant: linked-positioning
     source: content/positioning.yaml
-
   explain:
-    why: Route the brain tile to the architecture positioning page generated from YAML and linked source content.
-
-# --------------------------------------------------
-
+    why: Route the brain tile to the architecture positioning page generated from
+      YAML and linked source content.
 brix:
+  title: brix
+  tile_lead: bridge
+  tile_accent: orange
+  tile_title: bridge
+  tile_summary: engineering intelligence
+  subtitle: Engineering intelligence
+  summary: 'Surrogate-assisted engineering design and analysis.
 
-  title: "brix"
+    '
+  body: 'Engineering intelligence platform for structural analysis, design exploration,
+    and decision support. Brix combines simulations, measurements, and surrogate models
+    to enable rapid variant evaluation and uncertainty-aware engineering decisions.
 
-  subtitle: "Engineering intelligence"
-
-  summary: >
-    Surrogate-assisted engineering
-    design and analysis.
-
-  body: >
-    Engineering intelligence platform for
-    structural analysis, design exploration,
-    and decision support. Brix combines
-    simulations, measurements, and surrogate
-    models to enable rapid variant evaluation
-    and uncertainty-aware engineering decisions.
-
+    '
   icon: bridge
-
   route: /research/platforms/brix/index.html
-
-# --------------------------------------------------
-
 aflowtex:
+  title: aflowtex
+  tile_lead: aorta
+  tile_accent: red
+  tile_title: aorta
+  tile_summary: medical flow intelligence
+  subtitle: Medical flow intelligence
+  summary: 'Patient-specific flow modelling and clinical decision support.
 
-  title: "aflowtex"
+    '
+  body: 'Aflowtex combines clinical data, vascular modelling, flow simulation, and
+    surrogate reasoning to support patient-specific analysis and uncertainty-aware
+    medical decisions.
 
-  subtitle: "Medical flow intelligence"
-
-  summary: >
-    Patient-specific flow modelling
-    and clinical decision support.
-
-  body: >
-    Aflowtex combines clinical data,
-    vascular modelling, flow simulation,
-    and surrogate reasoning to support
-    patient-specific analysis and
-    uncertainty-aware medical decisions.
-
+    '
   icon: aorta
-
   route: /research/platforms/aflowtex/index.html
-
-# --------------------------------------------------
-
 lithos:
+  title: lithos
+  tile_lead: mountain
+  tile_accent: green
+  tile_title: mountain
+  tile_summary: consequence intelligence
+  subtitle: Consequence intelligence
+  summary: 'Understanding consequences, trade-offs, and impact.
 
-  title: "lithos"
+    '
+  body: 'Lithos translates model outputs into actionable decisions by evaluating consequences,
+    risks, trade-offs, and long-term system effects.
 
-  subtitle: "Consequence intelligence"
-
-  summary: >
-    Understanding consequences,
-    trade-offs, and impact.
-
-  body: >
-    Lithos translates model outputs into
-    actionable decisions by evaluating
-    consequences, risks, trade-offs,
-    and long-term system effects.
-
+    '
   icon: mountain
-
   route: /research/platforms/lithos/index.html
-
-# --------------------------------------------------
-
 oracle:
+  title: pythia
+  tile_lead: crystal-ball
+  tile_accent: magenta
+  tile_title: crystal-ball
+  tile_summary: applications
+  subtitle: Applied Inference
+  summary: 'Extracting knowledge from complex information spaces.
 
-  title: "oracle"
+    '
+  body: 'Oracle transforms biological, technical, scientific, and cultural datasets
+    into structured knowledge graphs, reasoning paths, and machine-readable representations.
 
-  subtitle: "Knowledge extraction engine"
-
-  summary: >
-    Extracting knowledge from
-    complex information spaces.
-
-  body: >
-    Oracle transforms biological,
-    technical, scientific, and cultural
-    datasets into structured knowledge
-    graphs, reasoning paths, and
-    machine-readable representations.
-
+    '
   icon: crystal-ball
+  route: /research/platforms/pythia/index.html
+pythia:
+  title: pythia
+  tile_lead: compass
+  tile_accent: cyan
+  tile_title: compass
+  tile_summary: universal inference framework
+  subtitle: Universal Framework for Complex Systems
+  summary: 'A universal computational framework for representing, reasoning about,
+    and discovering the hidden organization of complex systems.
 
-  route: /research/platforms/oracle/index.html
-
-# --------------------------------------------------
-
-delphi:
-
-  title: "delphi"
-
-  tile_lead: "compass"
-
-  tile_accent: "cyan"
-
-  tile_title: "compass"
-
-  tile_summary: "scientific design engine"
-
-  subtitle: "Compass interface"
-
-  summary: >
-    AI-native scientific navigation for
-    models, simulation, and knowledge.
-
-  body: >
-    Delphi is the platform tile that links
-    into the Compass interface for navigating
-    knowledge, discovering patterns, and
-    generating insights from
-    oracle-generated knowledge structures.
-
+    '
+  body: "PYTHIA addresses a single fundamental question: how can the hidden organization\
+    \ of a complex system be inferred from incomplete observations? It provides a\
+    \ unified language for describing assembled systems across all disciplines\u2014\
+    physical, biological, symbolic, social, and computational\u2014 and a general\
+    \ inference engine for reconstructing, validating, predicting, and optimizing\
+    \ them.\n"
   icon: compass
-
-  route: /research/platforms/delphi/index.html
-
-# --------------------------------------------------
-
-ecosystem:
-
-  title: "ecosystem"
-
-  tile_lead: "network"
-
-  tile_accent: "cyan"
-
-  tile_title: "ecosystem"
-
-  subtitle: "Interactive architecture"
-
-  summary: >
-    Explore relationships across
-    the calyrai ecosystem.
-
-  body: >
-    Interactive graph showing how
-    calyrai core, brix, aflowtex,
-    lithos, oracle, and delphi
-    connect and exchange knowledge.
-    Atlas Copilot extends this with
-    specialized scientific agents and
-    pipeline orchestration.
-
+  route: /research/platforms/pythia/index.html
+pythia_apps:
+  title: pythia applications
+  subtitle: Applied Inference
+  intent:
+    purpose: domain-showcase
+    audience: domain-expert
+  render:
+    variant: tile-grid-secondary
+    source: homepage.grid.pythia-band
+  behavior:
+    collapsible: true
+    default_expanded: true
+  explain:
+    why: Showcase published pythia applications as entry points into domain-specific
+      inference powered by PYTHIA.
+  summary: Structural inference applied across scientific and engineering domains.
+  body: Each pythia application is a domain-specific deployment of the PYTHIA inference
+    framework. It reconstructs hidden organization from incomplete observations using
+    the same universal S-Layer and General Assembly.
+pythia_saxs:
+  title: saxs pythia
+  tile_lead: scatter
+  tile_accent: cyan
+  tile_title: scatter
+  tile_summary: scattering inference
+  subtitle: Small-Angle Scattering Pythia
+  summary: Reconstructing molecular assembly structure from small-angle X-ray scattering
+    profiles.
+  body: The SAXS Oracle applies PYTHIA structural inference to solution scattering
+    data. It infers the hidden three-dimensional organization of macromolecular assemblies
+    from one-dimensional scattering curves, combining physics-based constraints with
+    probabilistic multi-scale reasoning.
+  icon: scatter
+  route: /research/pythia/saxs/index.html
+pythia_metabolic:
+  title: metabolic pythia
+  tile_lead: network
+  tile_accent: green
+  tile_title: network
+  tile_summary: metabolic network inference
+  subtitle: Metabolic Network Pythia
+  summary: Inferring metabolic flux states and network topology from experimental
+    constraints.
+  body: The Metabolic Oracle applies PYTHIA to biochemical network reconstruction.
+    It integrates stoichiometric constraints, thermodynamic feasibility, and experimental
+    observations to infer the most plausible flux organization of a living cell under
+    given conditions.
   icon: network
+  route: /research/pythia/metabolic/index.html
+pythia_materials:
+  title: materials pythia
+  tile_lead: atom
+  tile_accent: orange
+  tile_title: atom
+  tile_summary: materials assembly inference
+  subtitle: Materials Assembly Pythia
+  summary: Inferring the hidden assembly structure of materials from experimental
+    signatures.
+  body: The Materials Oracle reconstructs the multi-scale organization of crystalline,
+    amorphous, and composite materials from diffraction, scattering, and spectroscopic
+    observations.
+  icon: atom
+  route: /research/pythia/materials/index.html
+pythia_proteomics:
+  title: proteomics pythia
+  tile_lead: helix
+  tile_accent: magenta
+  tile_title: helix
+  tile_summary: protein structure inference
+  subtitle: Proteomics Pythia
+  summary: Reconstructing protein structure and assembly from incomplete experimental
+    data.
+  body: The Proteomics Oracle applies PYTHIA to structural biology. It infers protein
+    fold, binding geometry, and complex stoichiometry from heterogeneous experimental
+    sources including SAXS, cryo-EM, NMR, and mass spectrometry.
+  icon: helix
+  route: /research/pythia/proteomics/index.html
+pythia_engineering:
+  title: engineering pythia
+  tile_lead: bridge
+  tile_accent: yellow
+  tile_title: bridge
+  tile_summary: structural systems inference
+  subtitle: Structural Engineering Pythia
+  summary: Inferring the load state and hidden damage organization of engineered structures.
+  body: The Engineering Oracle applies PYTHIA to structural and civil engineering.
+    It reconstructs internal force distributions, damage states, and failure precursors
+    from sensor data, inspection records, and simulation outputs.
+  icon: bridge
+  route: /research/pythia/engineering/index.html
+ecosystem:
+  title: ecosystem
+  tile_lead: network
+  tile_accent: cyan
+  tile_title: ecosystem
+  subtitle: Interactive architecture
+  summary: 'Explore relationships across the calyrai ecosystem.
 
+    '
+  body: 'Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle,
+    and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized
+    scientific agents and pipeline orchestration.
+
+    '
+  icon: network
   route: /ecosystem
-
-# --------------------------------------------------
-
 philosophy:
+  title: philosophy
+  tile_lead: book
+  tile_accent: magenta
+  tile_title: philosophy
+  subtitle: Principles and foundations
+  summary: 'Scientific rigor, openness, and reproducibility.
 
-  title: "philosophy"
-
-  tile_lead: "book"
-
-  tile_accent: "magenta"
-
-  tile_title: "philosophy"
-
-  subtitle: "Principles and foundations"
-
-  summary: >
-    Scientific rigor,
-    openness,
-    and reproducibility.
-
-  body: >
-    Calyr.aí is founded on scientific
-    transparency, reproducibility,
-    interpretable modelling,
-    and human-centered decision support.
-
+    '
+  body: "Calyr.a\xED is founded on scientific transparency, reproducibility, interpretable\
+    \ modelling, and human-centered decision support.\n"
   icon: book
-
   route: /books
-
-# --------------------------------------------------
-
 contact:
+  title: contact
+  tile_lead: contacts
+  tile_accent: yellow
+  tile_title: swarm
+  tile_summary: intelligence
+  subtitle: swarm
+  landing_message: intelligence
+  summary: 'Research, engineering, and collaboration channels.
 
-  title: "contact"
+    '
+  body: 'Contact us regarding collaborations, research partnerships, demonstrator
+    projects, funding opportunities, and technology development. For scientific, industrial,
+    and infrastructure inquiries, use email.
 
-  tile_lead: "contacts"
-
-  tile_accent: "yellow"
-
-  tile_title: "swarm"
-
-  tile_summary: "intelligence"
-
-  subtitle: "swarm"
-
-  landing_message: "intelligence"
-
-  summary: >
-    Research, engineering,
-    and collaboration channels.
-
-  body: >
-    Contact us regarding collaborations,
-    research partnerships, demonstrator
-    projects, funding opportunities,
-    and technology development.
-    For scientific, industrial, and
-    infrastructure inquiries, use email.
-
+    '
   icon: mail
-
   route: /contact
-
   contacts:
-    - id: mail
-      label: Mail
-      symbol: "@"
-      route: mailto:rupert.tscheliessnig@calyr.ai
-    - id: whatsapp
-      label: WhatsApp
-      symbol: "~"
-      route: https://wa.me/4369919200915
-    - id: x
-      label: X
-      symbol: "X"
-      route: https://x.com
-    - id: linkedin
-      label: LinkedIn
-      symbol: "in"
-      route: https://www.linkedin.com
-    - id: bluesky
-      label: Bluesky
-      symbol: "🦋"
-      route: https://bsky.app
-    - id: youtube
-      label: YouTube
-      symbol: ">"
-      route: https://www.youtube.com
-    - id: instagram
-      label: Instagram
-      symbol: "o"
-      route: https://www.instagram.com
-    - id: impressum
-      label: Impressum
-      symbol: "i"
-      route: /legal
-
+  - id: mail
+    label: Mail
+    symbol: '@'
+    route: mailto:rupert.tscheliessnig@calyr.ai
+  - id: whatsapp
+    label: WhatsApp
+    symbol: '~'
+    route: https://wa.me/4369919200915
+  - id: x
+    label: X
+    symbol: X
+    route: https://x.com
+  - id: linkedin
+    label: LinkedIn
+    symbol: in
+    route: https://www.linkedin.com
+  - id: bluesky
+    label: Bluesky
+    symbol: "\U0001F98B"
+    route: https://bsky.app
+  - id: youtube
+    label: YouTube
+    symbol: '>'
+    route: https://www.youtube.com
+  - id: instagram
+    label: Instagram
+    symbol: o
+    route: https://www.instagram.com
+  - id: impressum
+    label: Impressum
+    symbol: i
+    route: /legal
   intent:
     purpose: conversion
     audience: partner-or-collaborator
-
   behavior:
     quick_contact: enabled
     mobile_panel: toggle-rail
-
   explain:
     why: Provide a direct contact path after users understand the platform and ecosystem.
-
-# --------------------------------------------------
-
 impressum:
+  title: impressum
+  tile_lead: legal
+  tile_title: impressum
+  tile_summary: details
+  subtitle: Legal details
+  landing_message: details
+  summary: 'Name, function, and address.
 
-  title: "impressum"
+    '
+  body: 'Name: Rupert Tscheliessnig
 
-  tile_lead: "legal"
-
-  tile_title: "impressum"
-
-  tile_summary: "details"
-
-  subtitle: "Legal details"
-
-  landing_message: "details"
-
-  summary: >
-    Name, function,
-    and address.
-
-  body: |
-    Name: Rupert Tscheliessnig
     Function: Founder
+
     Address: Ogugasse 3/3/13, 1220 Vienna, Austria
 
-  icon: ""
-
+    '
+  icon: ''
   route: /legal
-
-# --------------------------------------------------
-
 legal:
+  title: Impressum
+  subtitle: ''
+  summary: ''
+  body: 'Rupert Tscheliessnig
 
-  title: "Impressum"
-
-  subtitle: ""
-
-  summary: ""
-
-  body: |
-    Rupert Tscheliessnig
     Ogugasse 3/3/13
+
     1220 Vienna, Austria
 
-  icon: ""
-
+    '
+  icon: ''
   route: /legal
-
-# --------------------------------------------------
-
 __graph:
-
   nodes:
-    - core
-    - brix
-    - aflowtex
-    - lithos
-    - oracle
-    - delphi
-
+  - core
+  - brix
+  - aflowtex
+  - lithos
+  - oracle
+  - pythia
   edges:
-    - [core, brix]
-    - [core, aflowtex]
-    - [core, lithos]
-    - [core, oracle]
-    - [oracle, delphi]
-
-# --------------------------------------------------
-
+  - - core
+    - brix
+  - - core
+    - aflowtex
+  - - core
+    - lithos
+  - - core
+    - oracle
+  - - oracle
+    - pythia
 __interaction:
-
   click:
     tile:
       action: openNode
-
   hover:
     tile:
       action: highlight
-
   graph:
     node:
       action: focusNode
-
-# --------------------------------------------------
-
 __flowchart:
-
   homepage:
-
-    title: "Homepage Narrative Flow"
-
+    title: Homepage Narrative Flow
     direction: TD
-
     nodes:
-      - id: landing
-        label: "Visitor lands"
-        kind: start
-        explain:
-          why: Entry point for a new or returning visitor.
-
-      - id: hero_stage
-        ref: hero
-        label: "Brand promise"
-        intent:
-          purpose: orient-visitor
-
-      - id: platforms_stage
-        ref: platforms
-        label: "Platform overview"
-        intent:
-          purpose: explain-capabilities
-
-      - id: architecture_stage
-        ref: architecture
-        label: "Ecosystem context"
-        intent:
-          purpose: explain-relationships
-
-      - id: contact_stage
-        ref: contact
-        label: "Contact / conversion"
-        kind: terminal
-        intent:
-          purpose: trigger-outreach
-
+    - id: landing
+      label: Visitor lands
+      kind: start
+      explain:
+        why: Entry point for a new or returning visitor.
+    - id: hero_stage
+      ref: hero
+      label: Brand promise
+      intent:
+        purpose: orient-visitor
+    - id: platforms_stage
+      ref: platforms
+      label: Platform overview
+      intent:
+        purpose: explain-capabilities
+    - id: architecture_stage
+      ref: architecture
+      label: Ecosystem context
+      intent:
+        purpose: explain-relationships
+    - id: contact_stage
+      ref: contact
+      label: Contact / conversion
+      kind: terminal
+      intent:
+        purpose: trigger-outreach
     edges:
-      - [landing, hero_stage]
-      - [hero_stage, platforms_stage]
-      - [platforms_stage, architecture_stage]
-      - [architecture_stage, contact_stage, "reach out"]
+    - - landing
+      - hero_stage
+    - - hero_stage
+      - platforms_stage
+    - - platforms_stage
+      - architecture_stage
+    - - architecture_stage
+      - contact_stage
+      - reach out
