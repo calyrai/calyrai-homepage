@@ -1,10 +1,11 @@
 const ACCENT = '#fff';
 const INK = '#f2f2f2';
 const MAGENTA = '#e500b5';
+const CYAN = '#44dbff';
 
 class DeckConfigLoader {
   static async load(path) {
-    const response = await fetch(path);
+    const response = await fetch(path, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Deck config fetch failed (${response.status})`);
     }
@@ -371,6 +372,10 @@ function buildBestStentGuidePoints() {
   return BEST_STENT_GUIDE_POINTS.map((point) => ({ ...point }));
 }
 
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
 function drawProgressiveGraph(svg, progress, interactiveNodes = false) {
   const p = Math.max(0, Math.min(1, progress));
   const edgeBudget = Math.max(2, Math.round(2 + p * 2));
@@ -617,24 +622,29 @@ function addValidationFlowSpline(svg, statusEl) {
   const flowPaths = [];
   const flowCount = 22;
   for (let i = 0; i < flowCount; i += 1) {
-    const p = svgEl('path', { class: 'flow-line-magenta', d: '' });
+    const p = svgEl('path', { class: 'flow-line-cyan', d: '' });
     svg.appendChild(p);
     flowPaths.push(p);
   }
 
-  const handle = svgEl('circle', {
-    class: 'flow-handle-magenta',
-    cx: '0',
-    cy: '0',
-    r: '7.5',
-    fill: MAGENTA,
-    stroke: '#fff',
-    'stroke-width': '1.2',
+  const controlIndices = [1, 2, 3];
+  const controlOffsets = controlIndices.map(() => ({ x: 0, y: 0 }));
+  const handles = controlIndices.map((_, handleIdx) => {
+    const handle = svgEl('circle', {
+      class: 'flow-handle-magenta',
+      cx: '0',
+      cy: '0',
+      r: '7.5',
+      fill: MAGENTA,
+      stroke: '#fff',
+      'stroke-width': '1.2',
+      'data-handle-idx': String(handleIdx),
+    });
+    svg.appendChild(handle);
+    return handle;
   });
-  svg.appendChild(handle);
 
-  let dragging = false;
-  let offsetY = 0;
+  let activeHandleIndex = -1;
 
   const point = svg.createSVGPoint();
   const toLocal = (e) => {
@@ -643,23 +653,38 @@ function addValidationFlowSpline(svg, statusEl) {
     return point.matrixTransform(svg.getScreenCTM().inverse());
   };
 
-  const buildPoints = () => {
+  const getBaseGuidePoints = () => {
     const spine = buildMagentaSpinePoints();
     const guide = buildBestStentGuidePoints();
-    const guided = interpolatePoints(spine, guide, 0.74 + Math.abs(offsetY) / 180);
+    return interpolatePoints(spine, guide, 0.82);
+  };
+
+  const buildPoints = () => {
+    const guided = getBaseGuidePoints();
     return guided.map((p, idx) => {
-      const influence = Math.exp(-((idx - 2) ** 2) / 2.4);
+      let offsetX = 0;
+      let offsetY = 0;
+      controlIndices.forEach((controlIdx, localIdx) => {
+        const influence = Math.exp(-((idx - controlIdx) ** 2) / 0.8);
+        offsetX += controlOffsets[localIdx].x * influence;
+        offsetY += controlOffsets[localIdx].y * influence;
+      });
       return {
-        x: p.x,
-        y: p.y + offsetY * influence,
+        x: p.x + offsetX,
+        y: p.y + offsetY,
       };
     });
+  };
+
+  const measureGuideFit = () => {
+    const offsetEnergy = controlOffsets.reduce((sum, offset) => sum + Math.hypot(offset.x, offset.y), 0);
+    return Math.round(clamp(100 - offsetEnergy * 0.45, 72, 100));
   };
 
   const update = () => {
     const points = buildPoints();
     mainSpline.setAttribute('d', pathFrom(points));
-    mainSpline.classList.toggle('evolved', Math.abs(offsetY) > 22);
+    mainSpline.classList.toggle('evolved', measureGuideFit() >= 90);
 
     flowPaths.forEach((pathEl, i) => {
       const t = i / (flowPaths.length - 1);
@@ -667,32 +692,41 @@ function addValidationFlowSpline(svg, statusEl) {
       const tgt = points[pi];
       const y = 110 + i * 5.4;
       pathEl.setAttribute('d', `M 26 ${y} C 95 ${y - 16}, 168 ${tgt.y - 7}, ${tgt.x} ${tgt.y}`);
+      pathEl.setAttribute('stroke', CYAN);
     });
 
-    const anchor = points[Math.floor(points.length / 2)];
-    handle.setAttribute('cx', String(anchor.x));
-    handle.setAttribute('cy', String(anchor.y));
+    controlIndices.forEach((controlIdx, handleIdx) => {
+      const anchor = points[controlIdx];
+      handles[handleIdx].setAttribute('cx', String(anchor.x));
+      handles[handleIdx].setAttribute('cy', String(anchor.y));
+      handles[handleIdx].classList.toggle('is-active', handleIdx === activeHandleIndex);
+    });
 
     if (statusEl) {
-      statusEl.textContent = `Stent guide fit ${Math.round(74 + Math.min(26, Math.abs(offsetY) / 60 * 26))}%`;
+      statusEl.textContent = `Stent guide fit ${measureGuideFit()}% · ${controlIndices.length} control points`;
     }
   };
 
   const onDown = (e) => {
-    if (!e.target?.closest('.flow-handle-magenta')) return;
-    dragging = true;
+    const handle = e.target?.closest('.flow-handle-magenta');
+    if (!handle) return;
+    activeHandleIndex = Number(handle.getAttribute('data-handle-idx'));
+    update();
   };
 
   const onMove = (e) => {
-    if (!dragging) return;
+    if (activeHandleIndex < 0) return;
     const p = toLocal(e);
-    const base = buildMagentaSpinePoints()[Math.floor(CLUSTER_CENTERS.length / 2)].y;
-    offsetY = Math.max(-60, Math.min(60, p.y - base));
+    const baseGuide = getBaseGuidePoints();
+    const anchor = baseGuide[controlIndices[activeHandleIndex]];
+    controlOffsets[activeHandleIndex].x = clamp(p.x - anchor.x, -26, 26);
+    controlOffsets[activeHandleIndex].y = clamp(p.y - anchor.y, -46, 46);
     update();
   };
 
   const onUp = () => {
-    dragging = false;
+    activeHandleIndex = -1;
+    update();
   };
 
   svg.addEventListener('pointerdown', onDown);
@@ -718,7 +752,7 @@ function addCoupledBowDynamics(svg, statusEl) {
 
   const flowPaths = [];
   for (let i = 0; i < 16; i += 1) {
-    const p = svgEl('path', { class: 'flow-line-magenta', d: '' });
+    const p = svgEl('path', { class: 'flow-line-cyan', d: '' });
     svg.appendChild(p);
     flowPaths.push(p);
   }
@@ -754,19 +788,24 @@ function addCoupledBowDynamics(svg, statusEl) {
   svg.appendChild(bowCore);
   svg.appendChild(bowHighlight);
 
-  const handle = svgEl('circle', {
-    class: 'flow-handle-magenta',
-    cx: '0',
-    cy: '0',
-    r: '7.5',
-    fill: MAGENTA,
-    stroke: '#fff',
-    'stroke-width': '1.2',
+  const controlIndices = [1, 2, 3];
+  const controlOffsets = controlIndices.map(() => ({ x: 0, y: 0 }));
+  const handles = controlIndices.map((_, handleIdx) => {
+    const handle = svgEl('circle', {
+      class: 'flow-handle-magenta',
+      cx: '0',
+      cy: '0',
+      r: '7.5',
+      fill: MAGENTA,
+      stroke: '#fff',
+      'stroke-width': '1.2',
+      'data-handle-idx': String(handleIdx),
+    });
+    svg.appendChild(handle);
+    return handle;
   });
-  svg.appendChild(handle);
 
-  let dragging = false;
-  let offsetY = 0;
+  let activeHandleIndex = -1;
 
   const point = svg.createSVGPoint();
   const toLocal = (e) => {
@@ -775,15 +814,27 @@ function addCoupledBowDynamics(svg, statusEl) {
     return point.matrixTransform(svg.getScreenCTM().inverse());
   };
 
-  const buildMagentaPoints = () => {
+  const getBaseGuidePoints = () => {
     const spine = buildMagentaSpinePoints();
     const guide = buildBestStentGuidePoints();
-    const guided = interpolatePoints(spine, guide, 0.9 + Math.abs(offsetY) / 300);
+    return interpolatePoints(spine, guide, 0.94);
+  };
+
+  const buildMagentaPoints = () => {
+    const guided = getBaseGuidePoints();
     return guided.map((p, idx) => {
-      const influence = Math.exp(-((idx - 2) ** 2) / 2.5);
-      return { x: p.x, y: p.y + offsetY * influence };
+      let offsetX = 0;
+      let offsetY = 0;
+      controlIndices.forEach((controlIdx, localIdx) => {
+        const influence = Math.exp(-((idx - controlIdx) ** 2) / 0.85);
+        offsetX += controlOffsets[localIdx].x * influence;
+        offsetY += controlOffsets[localIdx].y * influence;
+      });
+      return { x: p.x + offsetX, y: p.y + offsetY };
     });
   };
+
+  const meanYOffset = () => controlOffsets.reduce((sum, offset) => sum + offset.y, 0) / controlOffsets.length;
 
   const update = () => {
     const magentaPoints = buildMagentaPoints();
@@ -798,13 +849,17 @@ function addCoupledBowDynamics(svg, statusEl) {
       const tgt = magentaPoints[pi];
       const y = 122 + i * 4.4;
       pathEl.setAttribute('d', `M 26 ${y} C 94 ${y - 13}, 170 ${tgt.y - 8}, ${tgt.x} ${tgt.y}`);
+      pathEl.setAttribute('stroke', CYAN);
     });
 
-    const center = magentaPoints[Math.floor(magentaPoints.length / 2)];
-    handle.setAttribute('cx', String(center.x));
-    handle.setAttribute('cy', String(center.y));
+    controlIndices.forEach((controlIdx, handleIdx) => {
+      const anchor = magentaPoints[controlIdx];
+      handles[handleIdx].setAttribute('cx', String(anchor.x));
+      handles[handleIdx].setAttribute('cy', String(anchor.y));
+      handles[handleIdx].classList.toggle('is-active', handleIdx === activeHandleIndex);
+    });
 
-    const react = Math.max(-1, Math.min(1, offsetY / 52));
+    const react = clamp(meanYOffset() / 52, -1, 1);
     const bowPath = reactiveAortaPath(react);
     bowShadow.setAttribute('d', bowPath);
     bowCore.setAttribute('d', bowPath);
@@ -819,27 +874,33 @@ function addCoupledBowDynamics(svg, statusEl) {
 
     bowShadow.setAttribute('opacity', String(0.22 + Math.abs(react) * 0.18));
     bowHighlight.setAttribute('opacity', String(0.45 + Math.abs(react) * 0.28));
+    magentaMain.classList.toggle('evolved', Math.abs(react) > 0.22);
 
     if (statusEl) {
-      statusEl.textContent = `Best stent position locked · bow coupling ${Math.round(Math.abs(react) * 100)}%`;
+      statusEl.textContent = `Best stent position locked · ${controlIndices.length} control points · bow coupling ${Math.round(Math.abs(react) * 100)}%`;
     }
   };
 
   const onDown = (e) => {
-    if (!e.target?.closest('.flow-handle-magenta')) return;
-    dragging = true;
+    const handle = e.target?.closest('.flow-handle-magenta');
+    if (!handle) return;
+    activeHandleIndex = Number(handle.getAttribute('data-handle-idx'));
+    update();
   };
 
   const onMove = (e) => {
-    if (!dragging) return;
+    if (activeHandleIndex < 0) return;
     const p = toLocal(e);
-    const base = buildMagentaSpinePoints()[Math.floor(CLUSTER_CENTERS.length / 2)].y;
-    offsetY = Math.max(-60, Math.min(60, p.y - base));
+    const baseGuide = getBaseGuidePoints();
+    const anchor = baseGuide[controlIndices[activeHandleIndex]];
+    controlOffsets[activeHandleIndex].x = clamp(p.x - anchor.x, -22, 22);
+    controlOffsets[activeHandleIndex].y = clamp(p.y - anchor.y, -42, 42);
     update();
   };
 
   const onUp = () => {
-    dragging = false;
+    activeHandleIndex = -1;
+    update();
   };
 
   svg.addEventListener('pointerdown', onDown);

@@ -200,21 +200,30 @@ main {
 }
 
 .validation-main-spline.evolved {
-  stroke: #f2f2f2;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.42));
+  stroke: #ff4fd6;
+  filter: drop-shadow(0 0 7px rgba(229, 0, 181, 0.82));
 }
 
-.flow-line-magenta {
+.flow-line-cyan {
   fill: none;
-  stroke: #e500b5;
+  stroke: #44dbff;
   stroke-width: 0.95;
   opacity: 0.48;
   stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(68, 219, 255, 0.32));
 }
 
 .flow-handle-magenta {
   cursor: grab;
   filter: drop-shadow(0 0 8px rgba(229, 0, 181, 0.85));
+}
+
+.flow-handle-magenta:hover {
+  filter: drop-shadow(0 0 10px rgba(229, 0, 181, 1));
+}
+
+.flow-handle-magenta.is-active {
+  filter: drop-shadow(0 0 12px rgba(229, 0, 181, 1));
 }
 
 .flow-handle-magenta:active {
