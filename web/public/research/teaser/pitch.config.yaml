@@ -1,0 +1,72 @@
+meta:
+  title: "CALYR.AI Pitch Engine"
+  subtitle: "Scientific Intelligence Infrastructure for scalable research and technology ventures"
+  mode: "interactive-flow"
+
+copy:
+  mission: "CALYR.AI connects wet lab, HPC, knowledge graphs, and surrogates into one scalable Scientific Intelligence Infrastructure."
+  ready: "Ready"
+  complete: "Story chain complete"
+  hpc_explicit: "HPC means High-Performance Computing on VSC-5 supercomputing infrastructure."
+
+nodes:
+  - id: problem
+    label: "Problem"
+    x: 0.14
+    y: 0.50
+    sentence: "Scientific work is fragmented across wet lab, simulation, and decision support."
+  - id: platform
+    label: "CALYR.AI Platform"
+    x: 0.34
+    y: 0.50
+    sentence: "CALYR.AI turns scientific workflows into one product infrastructure."
+  - id: innovation
+    label: "Innovation"
+    x: 0.57
+    y: 0.36
+    sentence: "The novelty is connecting wet lab, HPC, knowledge graphs, and surrogates in one explainable layer."
+  - id: users
+    label: "Users"
+    x: 0.57
+    y: 0.64
+    sentence: "Research labs, MedTech teams, engineering groups, and industrial R&D need this infrastructure."
+  - id: business
+    label: "Business"
+    x: 0.82
+    y: 0.50
+    sentence: "The company model combines services, deployments, and scalable platform licensing."
+
+edges:
+  - from: problem
+    to: platform
+    slide: "Fragmentation to Infrastructure"
+    thought: "If scientific workflows stay fragmented, scaling decisions remains slow and expensive."
+    explanation: "CALYR.AI unifies data, simulation, and reasoning into one operational platform layer."
+  - from: platform
+    to: innovation
+    slide: "Infrastructure to Innovation"
+    thought: "Innovation comes from linking methods, not adding another isolated model."
+    explanation: "The platform connects wet-lab inputs, HPC runs, knowledge graphs, and surrogates in one explainable loop."
+  - from: platform
+    to: users
+    slide: "Infrastructure to Adoption"
+    thought: "A platform matters only if domain teams can use it directly."
+    explanation: "CALYR.AI targets research, MedTech, engineering, and industrial R&D with reusable workflows."
+  - from: innovation
+    to: business
+    slide: "Innovation to Business"
+    thought: "Technical novelty must convert into repeatable value."
+    explanation: "The business model scales through deployments, partnerships, and platform licensing."
+  - from: users
+    to: business
+    slide: "Adoption to Business"
+    thought: "Sustainable growth requires recurring demand across domains."
+    explanation: "Cross-domain users create a scalable revenue base and international expansion path."
+
+story_rules:
+  self_avoiding: true
+  max_steps: 5
+  scoring:
+    valid_connection: 3
+    invalid_connection: -1
+    repeat_penalty: -2
