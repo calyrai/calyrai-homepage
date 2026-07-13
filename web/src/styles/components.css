@@ -135,24 +135,6 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
-.section-movie-open {
-  margin: 12px 4px 6px;
-  text-align: right;
-}
-
-.section-movie-open-link {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
-}
-
-.section-movie-open-link:hover,
-.section-movie-open-link:focus-visible {
-  color: #ff6aa9;
-}
-
 .section-collapsible {
   padding-top: var(--space-lg);
   padding-bottom: var(--space-lg);

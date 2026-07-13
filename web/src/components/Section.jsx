@@ -22,8 +22,7 @@ const SECTION_ANCHOR_ALIASES = {
 export default function Section({ node, theme, context = {} }) {
   const { id, title, summary, route, children = [] } = node
   const rawBody = typeof node.body === 'string' ? node.body : ''
-  const normalizedBody = rawBody.replace(/\s+/g, ' ').trim()
-  const teaserCaption = normalizedBody.includes('Place your short file path in route to load and play it here.')
+  const teaserCaption = rawBody.includes('Place your short file path in route to load and play it here.')
     ? 'Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.'
     : rawBody
   const layout = SectionLayoutService.create(node)
@@ -55,18 +54,13 @@ export default function Section({ node, theme, context = {} }) {
   const renderMovie = () => (
     <div className="section-movie-shell">
       {route && route.endsWith('.html') ? (
-        <>
-          <iframe
-            className="section-movie-embed"
-            src={route}
-            title={title || id || 'Teaser'}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-          />
-          <p className="section-movie-open">
-            <a className="section-movie-open-link" href={route}>Open teaser page</a>
-          </p>
-        </>
+        <iframe
+          className="section-movie-embed"
+          src={route}
+          title={title || id || 'Teaser'}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
       ) : (
         <video
           className="section-movie-video"
@@ -81,11 +75,19 @@ export default function Section({ node, theme, context = {} }) {
   )
 
   const handleTogglePointerDown = () => {
+    if (layout.isMovieSection && route && route.endsWith('.html')) {
+      window.location.assign(route)
+      return
+    }
     lastPointerToggleTsRef.current = Date.now()
     setIsExpanded((prev) => !prev)
   }
 
   const handleToggleClick = () => {
+    if (layout.isMovieSection && route && route.endsWith('.html')) {
+      window.location.assign(route)
+      return
+    }
     if (Date.now() - lastPointerToggleTsRef.current < 350) {
       return
     }
