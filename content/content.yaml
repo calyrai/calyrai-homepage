@@ -46,7 +46,7 @@ movie:
   body: 'Place your short file path in route to load and play it here.
 
     '
-  route: /research/positioning/index.html
+  route: /research/teaser/index.html
 platforms:
   title: Platforms
   subtitle: Applied intelligence modules
