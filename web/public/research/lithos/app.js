@@ -138,6 +138,13 @@ const STAR_FIELD = (() => {
 const BRIDGE_NODE_INDICES = [3, 9, 14, 19, 24, 30, 36, 42, 49, 56, 64, 72];
 let CLUSTER_CENTERS = DEFAULT_DECK_CONFIG.cluster_centers.slice();
 let CLUSTER_FIELD = [];
+const BEST_STENT_GUIDE_POINTS = [
+  { x: 188, y: 242 },
+  { x: 184, y: 176 },
+  { x: 222, y: 134 },
+  { x: 286, y: 142 },
+  { x: 320, y: 196 },
+];
 
 const stage = document.querySelector('#stage');
 const slideCounter = document.querySelector('#slideCounter');
@@ -347,6 +354,21 @@ function buildMagentaSpinePoints() {
     x: c.x,
     y: c.y - 24 - Math.sin(i * 0.8) * 8,
   }));
+}
+
+function interpolatePoints(fromPoints, toPoints, t) {
+  const amount = Math.max(0, Math.min(1, t));
+  return fromPoints.map((point, index) => {
+    const target = toPoints[Math.min(index, toPoints.length - 1)] || point;
+    return {
+      x: point.x + (target.x - point.x) * amount,
+      y: point.y + (target.y - point.y) * amount,
+    };
+  });
+}
+
+function buildBestStentGuidePoints() {
+  return BEST_STENT_GUIDE_POINTS.map((point) => ({ ...point }));
 }
 
 function drawProgressiveGraph(svg, progress, interactiveNodes = false) {
@@ -623,7 +645,9 @@ function addValidationFlowSpline(svg, statusEl) {
 
   const buildPoints = () => {
     const spine = buildMagentaSpinePoints();
-    return spine.map((p, idx) => {
+    const guide = buildBestStentGuidePoints();
+    const guided = interpolatePoints(spine, guide, 0.74 + Math.abs(offsetY) / 180);
+    return guided.map((p, idx) => {
       const influence = Math.exp(-((idx - 2) ** 2) / 2.4);
       return {
         x: p.x,
@@ -650,7 +674,7 @@ function addValidationFlowSpline(svg, statusEl) {
     handle.setAttribute('cy', String(anchor.y));
 
     if (statusEl) {
-      statusEl.textContent = `Validation spline offset ${Math.round(offsetY)}`;
+      statusEl.textContent = `Stent guide fit ${Math.round(74 + Math.min(26, Math.abs(offsetY) / 60 * 26))}%`;
     }
   };
 
@@ -753,7 +777,9 @@ function addCoupledBowDynamics(svg, statusEl) {
 
   const buildMagentaPoints = () => {
     const spine = buildMagentaSpinePoints();
-    return spine.map((p, idx) => {
+    const guide = buildBestStentGuidePoints();
+    const guided = interpolatePoints(spine, guide, 0.9 + Math.abs(offsetY) / 300);
+    return guided.map((p, idx) => {
       const influence = Math.exp(-((idx - 2) ** 2) / 2.5);
       return { x: p.x, y: p.y + offsetY * influence };
     });
@@ -795,7 +821,7 @@ function addCoupledBowDynamics(svg, statusEl) {
     bowHighlight.setAttribute('opacity', String(0.45 + Math.abs(react) * 0.28));
 
     if (statusEl) {
-      statusEl.textContent = `Magenta-to-bow coupling ${Math.round(react * 100)}% · shape morph active`;
+      statusEl.textContent = `Best stent position locked · bow coupling ${Math.round(Math.abs(react) * 100)}%`;
     }
   };
 
