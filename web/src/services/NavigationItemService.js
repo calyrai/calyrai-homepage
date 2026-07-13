@@ -6,6 +6,11 @@ export class NavigationItemService {
     contact_main: 'contact',
   }
 
+  static QUICK_LINKS = [
+    { anchor: 'teaser-page', label: 'Teaser', href: '/research/teaser/index.html' },
+    { anchor: 'interactive-deck', label: 'Interactive Deck', href: '/research/lithos/index.html' },
+  ]
+
   static SECTION_LABEL_BY_ID = {
     contact_main: 'Contact',
   }
@@ -27,6 +32,16 @@ export class NavigationItemService {
         href: node.route || `/#${NavigationItemService.SECTION_ANCHOR_BY_ID[node.id] || node.id}`,
       }))
 
-    return [...homeItem, ...sectionItems]
+    const items = [...homeItem, ...sectionItems]
+    const knownHrefs = new Set(items.map((item) => item.href).filter(Boolean))
+
+    NavigationItemService.QUICK_LINKS.forEach((item) => {
+      if (!knownHrefs.has(item.href)) {
+        items.push(item)
+        knownHrefs.add(item.href)
+      }
+    })
+
+    return items
   }
 }

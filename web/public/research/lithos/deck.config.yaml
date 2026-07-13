@@ -1,0 +1,66 @@
+seed: 5318008
+
+ui:
+  pitch_link_label: "Pitch Deck"
+  footer_primary: "FROM DATA TO FORM."
+  footer_secondary: "FROM COMPLEXITY TO INTELLIGENCE."
+  default_hint: "Use left/right arrows or top buttons. One slide at a time, no scrolling."
+
+formation_steps:
+  - 0.22
+  - 0.36
+  - 0.52
+  - 0.68
+  - 0.82
+  - 0.92
+  - 1.00
+
+cluster_centers:
+  - x: 92
+    y: 228
+  - x: 182
+    y: 186
+  - x: 286
+    y: 166
+  - x: 398
+    y: 176
+  - x: 502
+    y: 220
+
+cluster_amounts:
+  - 14
+  - 14
+  - 18
+  - 14
+  - 14
+
+slides:
+  - title: "Clustered Network."
+    subtitle: "Points connect into a live topology."
+    story: "The system starts as one moving clustered network of points and local links."
+    type: "line"
+    hint: "Nodes move continuously. Drag any point to perturb the local cluster."
+
+  - title: "Magenta Linkage."
+    subtitle: "Core route emerges from the network."
+    story: "A single magenta route starts linking the connected clusters into one candidate direction."
+    type: "magenta"
+    hint: "Observe how the magenta route stabilizes the cluster network."
+
+  - title: "Flow Conditioning."
+    subtitle: "Physical flow pushes the route."
+    story: "The magenta route is exposed to flow conditions and deforms under physical forcing."
+    type: "flow"
+    hint: "Drag the magenta handle to vary the flow pressure and deformation."
+
+  - title: "Convergence."
+    subtitle: "Network and flow settle into one direction."
+    story: "Topology and flow converge toward one robust shape candidate."
+    type: "flow-finalize"
+    hint: "Continue shaping the route; the final bow appears in the next step."
+
+  - title: "Final Aortic Bow."
+    subtitle: "Best bow form appears at the end."
+    story: "Only at the end, the stabilized result is shown as the final aortic bow."
+    type: "final-bow"
+    hint: "Use left/right arrows or top buttons. One slide at a time, no scrolling."

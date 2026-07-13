@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CALYR.AI | Interactive Deck</title>
+  <link rel="stylesheet" href="/research/lithos/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" id="overviewBtn" aria-label="Restart from first slide">
+      <span>CALY</span><span class="brand-o">R</span><span>AI</span>
+    </button>
+    <div class="topbar-right">
+      <a class="home-link" href="/research/teaser/index.html">Pitch Deck</a>
+      <span id="slideCounter">01 / 12</span>
+      <button class="icon-btn" id="prevBtn" aria-label="Previous slide">←</button>
+      <button class="icon-btn" id="nextBtn" aria-label="Next slide">→</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="stage" class="stage" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <span>FROM DATA TO FORM.</span>
+    <span>FROM COMPLEXITY TO INTELLIGENCE.</span>
+  </footer>
+
+  <script src="/research/lithos/app.js"></script>
+</body>
+</html>

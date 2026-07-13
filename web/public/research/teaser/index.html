@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CALYR.AI Pitch</title>
+    <link rel="stylesheet" href="/research/teaser/pitch.css" />
+  </head>
+  <body>
+    <main class="stage" aria-label="CALYR pitch stage">
+      <header class="header">
+        <div>
+          <div class="kicker">Lakeside screening pitch</div>
+          <h1 class="title">CALYR.AI is a scalable Scientific Intelligence Infrastructure.</h1>
+          <p class="subtitle">It turns wet-lab data, HPC simulation, knowledge graphs, and explainable surrogates into one product platform.</p>
+        </div>
+        <div class="header-links" aria-label="Route links">
+          <a class="header-link" href="/research/lithos/index.html">Open Interactive Deck</a>
+        </div>
+      </header>
+
+      <section class="meta-grid" aria-label="Pipeline context">
+        <article class="meta-card">
+          <h2>Problem</h2>
+          <p>Today’s simulation and AI tools are fragmented. They do not yet connect wet lab, HPC, and decision support in one system.</p>
+          <p class="meta-inline">Gap: one scientific workflow layer.</p>
+        </article>
+        <article class="meta-card">
+          <h2>What it is</h2>
+          <p>Not a single app. Not only a model. CALYR.AI is a platform for Scientific AI workflows, surrogates, and orchestration.</p>
+          <p class="meta-inline">Platform · framework · product infrastructure.</p>
+        </article>
+        <article class="meta-card">
+          <h2>Why it is new</h2>
+          <p>We combine wet-lab data, HPC, knowledge graphs, and interactive surrogates into one explainable pipeline.</p>
+          <p class="meta-inline">Scientific innovation: connected, interactive, domain-agnostic AI.</p>
+        </article>
+      </section>
+
+      <section class="scene" aria-label="Pitch graph scene">
+        <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
+        <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="CALYR scientific pitch graph"></svg>
+        <div class="scene-status" id="scene-status">Game ready</div>
+        <div class="game-hud" aria-label="Flow game controls">
+          <span id="game-progress" class="game-progress">Slides 0</span>
+          <span id="game-score" class="game-score">Score 0</span>
+          <button id="game-reset" class="game-button" type="button">Reset</button>
+          <button id="game-demo" class="game-button" type="button">Auto Demo</button>
+        </div>
+      </section>
+
+      <section class="insight-grid" aria-label="Active insight">
+        <article class="panel">
+          <h2 id="insight-title">Who needs it</h2>
+          <p id="insight-copy">Research labs, MedTech teams, engineering groups, and industrial R&amp;D units that need explainable scientific decisions.</p>
+          <ul id="insight-points" class="insight-points"></ul>
+        </article>
+
+        <article class="panel panel-right">
+          <h2>Business case</h2>
+          <ul class="insight-points">
+            <li>Sell platform access, project delivery, and domain-specific deployments.</li>
+            <li>Start with demonstrators, then scale into recurring enterprise and research partnerships.</li>
+            <li>Internationally relevant because the infrastructure is reusable across domains.</li>
+          </ul>
+          <p class="meta-inline">Revenue path: services first, platform licensing and long-term partnerships next.</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="/research/teaser/pitch.js"></script>
+  </body>
+</html>
