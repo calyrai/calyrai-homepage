@@ -114,9 +114,43 @@
   display: block;
 }
 
+.section-movie-embed {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 440px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: #000;
+  display: block;
+}
+
+@media (max-width: 820px) {
+  .section-movie-embed {
+    min-height: 320px;
+  }
+}
+
 .section-movie-caption {
   margin: 10px 4px 4px;
   color: rgba(255, 255, 255, 0.82);
+}
+
+.section-movie-open {
+  margin: 12px 4px 6px;
+  text-align: right;
+}
+
+.section-movie-open-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.section-movie-open-link:hover,
+.section-movie-open-link:focus-visible {
+  color: #ff6aa9;
 }
 
 .section-collapsible {
