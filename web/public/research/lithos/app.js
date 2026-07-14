@@ -336,6 +336,48 @@ function drawClusteredNetwork(svg, interactiveNodes = true) {
   addNodes(svg, CLUSTER_FIELD, 2.25, interactiveNodes);
 }
 
+function drawConnectedPointClouds(svg, interactiveNodes = true) {
+  CLUSTER_FIELD.forEach((a, i) => {
+    const nearest = CLUSTER_FIELD
+      .map((b, j) => ({ j, d: (a.x - b.x) ** 2 + (a.y - b.y) ** 2 }))
+      .filter((o) => o.j !== i)
+      .sort((u, v) => u.d - v.d)
+      .slice(0, 5);
+
+    nearest.forEach(({ j, d }) => {
+      if (j <= i || d > 132 * 132) return;
+      svg.appendChild(svgEl('line', {
+        x1: a.x,
+        y1: a.y,
+        x2: CLUSTER_FIELD[j].x,
+        y2: CLUSTER_FIELD[j].y,
+        stroke: MAGENTA,
+        'stroke-width': '0.85',
+        opacity: '0.42',
+        'stroke-linecap': 'round',
+      }));
+    });
+  });
+
+  // Add explicit bridges between consecutive cluster centers to keep the story clear.
+  CLUSTER_CENTERS.forEach((center, idx) => {
+    if (idx >= CLUSTER_CENTERS.length - 1) return;
+    const next = CLUSTER_CENTERS[idx + 1];
+    svg.appendChild(svgEl('line', {
+      x1: center.x,
+      y1: center.y - 18,
+      x2: next.x,
+      y2: next.y - 18,
+      stroke: MAGENTA,
+      'stroke-width': '1.6',
+      opacity: '0.88',
+      'stroke-linecap': 'round',
+    }));
+  });
+
+  addNodes(svg, CLUSTER_FIELD, 2.3, interactiveNodes);
+}
+
 function drawMagentaSpine(svg) {
   const spinePoints = buildMagentaSpinePoints();
 
@@ -348,6 +390,61 @@ function drawMagentaSpine(svg) {
     'stroke-linecap': 'round',
     'stroke-linejoin': 'round',
   }));
+}
+
+function drawMainCurveWithAdditives(svg) {
+  const mainPoints = interpolatePoints(buildMagentaSpinePoints(), buildBestStentGuidePoints(), 0.9);
+
+  svg.appendChild(svgEl('path', {
+    d: pathFrom(mainPoints),
+    fill: 'none',
+    stroke: MAGENTA,
+    'stroke-width': 4.8,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    opacity: 0.28,
+  }));
+
+  svg.appendChild(svgEl('path', {
+    d: pathFrom(mainPoints),
+    class: 'cluster-magenta-spine',
+    fill: 'none',
+    stroke: MAGENTA,
+    'stroke-width': 2.9,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+  }));
+
+  const additiveShapes = [
+    { anchorIdx: 1, dx1: -26, dy1: -18, dx2: -54, dy2: -44, dx3: -78, dy3: -66 },
+    { anchorIdx: 2, dx1: 8, dy1: -20, dx2: 18, dy2: -44, dx3: 26, dy3: -70 },
+    { anchorIdx: 3, dx1: 30, dy1: -12, dx2: 58, dy2: -30, dx3: 82, dy3: -48 },
+  ];
+
+  additiveShapes.forEach((shape) => {
+    const anchor = mainPoints[shape.anchorIdx];
+    if (!anchor) return;
+    const endX = anchor.x + shape.dx3;
+    const endY = anchor.y + shape.dy3;
+    const branchPath = `M ${anchor.x} ${anchor.y} C ${anchor.x + shape.dx1} ${anchor.y + shape.dy1}, ${anchor.x + shape.dx2} ${anchor.y + shape.dy2}, ${endX} ${endY}`;
+    svg.appendChild(svgEl('path', {
+      d: branchPath,
+      fill: 'none',
+      stroke: MAGENTA,
+      'stroke-width': 1.6,
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      opacity: 0.85,
+    }));
+
+    svg.appendChild(svgEl('circle', {
+      cx: String(endX),
+      cy: String(endY),
+      r: '2.8',
+      fill: MAGENTA,
+      opacity: 0.92,
+    }));
+  });
 }
 
 function buildMagentaSpinePoints() {
@@ -1016,8 +1113,8 @@ function renderVisual(svg, slide, index, interactive = true) {
   } else if (type === 'line') {
     drawClusteredNetwork(svg, true);
   } else if (type === 'magenta') {
-    drawClusteredNetwork(svg, true);
-    drawMagentaSpine(svg);
+    drawConnectedPointClouds(svg, true);
+    drawMainCurveWithAdditives(svg);
   } else if (type === 'flow' || type === 'flow-finalize') {
     drawProgressiveGraph(svg, formationProgress, true);
     svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
