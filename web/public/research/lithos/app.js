@@ -139,6 +139,7 @@ const STAR_FIELD = (() => {
 const BRIDGE_NODE_INDICES = [3, 9, 14, 19, 24, 30, 36, 42, 49, 56, 64, 72];
 let CLUSTER_CENTERS = DEFAULT_DECK_CONFIG.cluster_centers.slice();
 let CLUSTER_FIELD = [];
+let activeCrownScene = null;
 const BEST_STENT_GUIDE_POINTS = [
   { x: 188, y: 242 },
   { x: 184, y: 176 },
@@ -377,17 +378,18 @@ function drawMagentaSpine(svg) {
 }
 
 function drawMainCurveWithAdditives(svg) {
-  const mainPoints = interpolatePoints(buildMagentaSpinePoints(), buildBestStentGuidePoints(), 0.9);
+  const baseMainPoints = interpolatePoints(buildMagentaSpinePoints(), buildBestStentGuidePoints(), 0.9);
 
-  svg.appendChild(svgEl('path', {
-    d: pathFrom(mainPoints),
+  const mainPath = svgEl('path', {
+    d: pathFrom(baseMainPoints),
     fill: 'none',
     stroke: MAGENTA,
     'stroke-width': 2.1,
     'stroke-linecap': 'round',
     'stroke-linejoin': 'round',
     opacity: 0.94,
-  }));
+  });
+  svg.appendChild(mainPath);
 
   const additiveShapes = [
     { anchorIdx: 1, dx1: -26, dy1: -18, dx2: -54, dy2: -44, dx3: -78, dy3: -66 },
@@ -395,30 +397,123 @@ function drawMainCurveWithAdditives(svg) {
     { anchorIdx: 3, dx1: 30, dy1: -12, dx2: 58, dy2: -30, dx3: 82, dy3: -48 },
   ];
 
-  additiveShapes.forEach((shape) => {
-    const anchor = mainPoints[shape.anchorIdx];
-    if (!anchor) return;
-    const endX = anchor.x + shape.dx3;
-    const endY = anchor.y + shape.dy3;
-    const branchPath = `M ${anchor.x} ${anchor.y} C ${anchor.x + shape.dx1} ${anchor.y + shape.dy1}, ${anchor.x + shape.dx2} ${anchor.y + shape.dy2}, ${endX} ${endY}`;
-    svg.appendChild(svgEl('path', {
-      d: branchPath,
+  const crownOffsets = additiveShapes.map(() => ({ x: 0, y: 0 }));
+  const branchPaths = additiveShapes.map(() => {
+    const el = svgEl('path', {
       fill: 'none',
       stroke: MAGENTA,
       'stroke-width': 1.3,
       'stroke-linecap': 'round',
       'stroke-linejoin': 'round',
       opacity: 0.85,
-    }));
-
-    svg.appendChild(svgEl('circle', {
-      cx: String(endX),
-      cy: String(endY),
-      r: '2.8',
-      fill: MAGENTA,
-      opacity: 0.92,
-    }));
+    });
+    svg.appendChild(el);
+    return el;
   });
+
+  const crownHandles = additiveShapes.map((_, idx) => {
+    const el = svgEl('circle', {
+      r: '4.3',
+      fill: MAGENTA,
+      opacity: 0.96,
+      class: 'flow-handle-magenta crown-handle',
+      'data-crown-idx': String(idx),
+    });
+    svg.appendChild(el);
+    return el;
+  });
+
+  const update = () => {
+    const mainPoints = baseMainPoints.map((p, idx) => {
+      let dx = 0;
+      let dy = 0;
+      additiveShapes.forEach((shape, crownIdx) => {
+        const influence = Math.exp(-((idx - shape.anchorIdx) ** 2) / 0.95);
+        dx += crownOffsets[crownIdx].x * influence * 0.22;
+        dy += crownOffsets[crownIdx].y * influence * 0.24;
+      });
+      return { x: p.x + dx, y: p.y + dy };
+    });
+
+    mainPath.setAttribute('d', pathFrom(mainPoints));
+
+    additiveShapes.forEach((shape, idx) => {
+      const anchor = mainPoints[shape.anchorIdx];
+      if (!anchor) return;
+      const offset = crownOffsets[idx];
+      const c1x = anchor.x + shape.dx1 + offset.x * 0.45;
+      const c1y = anchor.y + shape.dy1 + offset.y * 0.45;
+      const c2x = anchor.x + shape.dx2 + offset.x * 0.75;
+      const c2y = anchor.y + shape.dy2 + offset.y * 0.75;
+      const endX = anchor.x + shape.dx3 + offset.x;
+      const endY = anchor.y + shape.dy3 + offset.y;
+      branchPaths[idx].setAttribute('d', `M ${anchor.x} ${anchor.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`);
+      crownHandles[idx].setAttribute('cx', String(endX));
+      crownHandles[idx].setAttribute('cy', String(endY));
+    });
+  };
+
+  update();
+  activeCrownScene = {
+    svg,
+    baseMainPoints,
+    additiveShapes,
+    crownOffsets,
+    crownHandles,
+    update,
+  };
+}
+
+function addCrownHandleControls(svg, statusEl) {
+  const scene = activeCrownScene;
+  if (!scene || scene.svg !== svg) return () => {};
+
+  let activeCrown = -1;
+  const pt = svg.createSVGPoint();
+  const toLocal = (e) => {
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  };
+
+  const onDown = (e) => {
+    const handle = e.target?.closest('.crown-handle');
+    if (!handle) return;
+    activeCrown = Number(handle.getAttribute('data-crown-idx'));
+    scene.crownHandles.forEach((h, idx) => h.classList.toggle('is-active', idx === activeCrown));
+    if (statusEl) statusEl.textContent = `Crown point ${activeCrown + 1} active`;
+  };
+
+  const onMove = (e) => {
+    if (activeCrown < 0) return;
+    const p = toLocal(e);
+    const shape = scene.additiveShapes[activeCrown];
+    const anchor = scene.baseMainPoints[shape.anchorIdx];
+    const baseEndX = anchor.x + shape.dx3;
+    const baseEndY = anchor.y + shape.dy3;
+    scene.crownOffsets[activeCrown].x = clamp(p.x - baseEndX, -48, 48);
+    scene.crownOffsets[activeCrown].y = clamp(p.y - baseEndY, -56, 56);
+    scene.update();
+    if (statusEl) statusEl.textContent = `Crown point ${activeCrown + 1} moved`;
+  };
+
+  const onUp = () => {
+    activeCrown = -1;
+    scene.crownHandles.forEach((h) => h.classList.remove('is-active'));
+    if (statusEl) statusEl.textContent = 'Move the 3 crown points';
+  };
+
+  svg.addEventListener('pointerdown', onDown);
+  svg.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+
+  if (statusEl) statusEl.textContent = 'Move the 3 crown points';
+
+  return () => {
+    svg.removeEventListener('pointerdown', onDown);
+    svg.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+  };
 }
 
 function buildMagentaSpinePoints() {
@@ -1077,6 +1172,7 @@ function addAorta(svg, detailed = true) {
 function renderVisual(svg, slide, index, interactive = true) {
   svg.setAttribute('viewBox', '28 36 544 332');
   svg.innerHTML = '';
+  activeCrownScene = null;
   let interactionMode = 'drag';
   const type = slide.type;
   const formationProgress = FORMATION_STEPS[Math.max(0, Math.min(index, FORMATION_STEPS.length - 1))] || 0.2;
@@ -1089,9 +1185,11 @@ function renderVisual(svg, slide, index, interactive = true) {
   } else if (type === 'magenta') {
     drawConnectedPointClouds(svg, true);
     drawMainCurveWithAdditives(svg);
+    interactionMode = 'crown-controls';
   } else if (type === 'flow') {
     drawConnectedPointClouds(svg, true);
-    interactionMode = 'flow-spline';
+    drawMainCurveWithAdditives(svg);
+    interactionMode = 'crown-controls';
   } else if (type === 'flow-finalize') {
     drawProgressiveGraph(svg, formationProgress, true);
     svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
@@ -1218,6 +1316,14 @@ function openSlide(i) {
   if (interaction.mode === 'path') {
     interactionStatus.hidden = false;
     interactionCleanup = addMainPathBuilder(svg, interactionStatus);
+  } else if (interaction.mode === 'crown-controls') {
+    interactionStatus.hidden = false;
+    const crownCleanup = addCrownHandleControls(svg, interactionStatus);
+    const dragCleanup = enableDragging(svg);
+    interactionCleanup = () => {
+      crownCleanup?.();
+      dragCleanup?.();
+    };
   } else if (interaction.mode === 'flow-spline') {
     interactionStatus.hidden = false;
     const flowCleanup = addValidationFlowSpline(svg, interactionStatus);
