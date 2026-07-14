@@ -1243,6 +1243,73 @@ function addNodeMotion(svg) {
   };
 }
 
+function addNodeFlowThroughClouds(svg, statusEl) {
+  const flowPaths = [];
+  const flowCount = 12;
+  for (let i = 0; i < flowCount; i += 1) {
+    const flow = svgEl('path', { class: 'flow-line-cyan', d: '' });
+    svg.appendChild(flow);
+    flowPaths.push(flow);
+  }
+
+  const chooseAnchors = (nodes, targetY) => {
+    const sorted = [...nodes].sort((a, b) => a.x - b.x);
+    const anchors = [];
+    const samples = 4;
+    for (let s = 0; s < samples; s += 1) {
+      const from = Math.floor((s / samples) * sorted.length);
+      const to = Math.max(from + 1, Math.floor(((s + 1) / samples) * sorted.length));
+      const slice = sorted.slice(from, to);
+      if (!slice.length) continue;
+      let best = slice[0];
+      let bestDist = Math.abs(best.y - targetY);
+      for (let j = 1; j < slice.length; j += 1) {
+        const cand = slice[j];
+        const dist = Math.abs(cand.y - targetY);
+        if (dist < bestDist) {
+          best = cand;
+          bestDist = dist;
+        }
+      }
+      anchors.push({ x: best.x, y: best.y });
+    }
+    return anchors;
+  };
+
+  let rafId = null;
+  let running = true;
+
+  const tick = () => {
+    if (!running) return;
+    const nodes = Array.from(svg.querySelectorAll('.node[data-node-idx]')).map((node) => ({
+      x: parseFloat(node.getAttribute('cx')),
+      y: parseFloat(node.getAttribute('cy')),
+    }));
+
+    if (nodes.length >= 8) {
+      flowPaths.forEach((flow, i) => {
+        const y = 90 + i * 20;
+        const anchors = chooseAnchors(nodes, y);
+        const points = [{ x: 24, y }, ...anchors, { x: 564, y: y + ((i % 3) - 1) * 4 }];
+        flow.setAttribute('d', pathFrom(points));
+        flow.setAttribute('opacity', String(0.32 + (i / flowPaths.length) * 0.22));
+      });
+      if (statusEl) {
+        statusEl.textContent = 'Connected clouds + flow through nodes';
+      }
+    }
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+
+  return () => {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+  };
+}
+
 function aortaPath() {
   return 'M 215 265 C 160 245 150 175 190 138 C 228 103 285 112 314 147 C 339 178 329 213 314 239 C 300 265 291 307 304 350 M 314 147 C 330 110 345 84 359 50 M 288 128 C 293 93 290 64 284 39 M 256 124 C 249 89 235 64 219 47 M 226 132 C 210 105 190 84 168 68';
 }
@@ -1315,9 +1382,9 @@ function renderVisual(svg, slide, index, interactive = true) {
     drawMainCurveWithAdditives(svg);
     interactionMode = 'crown-controls';
   } else if (type === 'flow-finalize') {
-    drawProgressiveGraph(svg, formationProgress, true);
-    svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
-    interactionMode = 'flow-spline';
+    drawConnectedPointClouds(svg, true);
+    drawMainCurveWithAdditives(svg);
+    interactionMode = 'crown-flow';
   } else if (type === 'final-bow') {
     drawProgressiveGraph(svg, 1, true);
     svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
@@ -1446,6 +1513,16 @@ function openSlide(i) {
     const dragCleanup = enableDragging(svg);
     interactionCleanup = () => {
       crownCleanup?.();
+      dragCleanup?.();
+    };
+  } else if (interaction.mode === 'crown-flow') {
+    interactionStatus.hidden = false;
+    const crownCleanup = addCrownHandleControls(svg, interactionStatus);
+    const flowCleanup = addNodeFlowThroughClouds(svg, interactionStatus);
+    const dragCleanup = enableDragging(svg);
+    interactionCleanup = () => {
+      crownCleanup?.();
+      flowCleanup?.();
       dragCleanup?.();
     };
   } else if (interaction.mode === 'flow-spline') {
