@@ -338,6 +338,21 @@ function drawClusteredNetwork(svg, interactiveNodes = true) {
 }
 
 function drawConnectedPointClouds(svg, interactiveNodes = true) {
+  const clusterGroups = CLUSTER_CENTERS.map(() => []);
+
+  CLUSTER_FIELD.forEach((node, nodeIdx) => {
+    let nearestCluster = 0;
+    let nearestDist = Infinity;
+    CLUSTER_CENTERS.forEach((center, centerIdx) => {
+      const dist = (node.x - center.x) ** 2 + (node.y - center.y) ** 2;
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearestCluster = centerIdx;
+      }
+    });
+    clusterGroups[nearestCluster].push(nodeIdx);
+  });
+
   CLUSTER_FIELD.forEach((a, i) => {
     const nearest = CLUSTER_FIELD
       .map((b, j) => ({ j, d: (a.x - b.x) ** 2 + (a.y - b.y) ** 2 }))
@@ -359,6 +374,41 @@ function drawConnectedPointClouds(svg, interactiveNodes = true) {
       }));
     });
   });
+
+  // Explicitly bridge neighboring cloud groups so all groups are connected by edges.
+  for (let groupIdx = 0; groupIdx < clusterGroups.length - 1; groupIdx += 1) {
+    const fromGroup = clusterGroups[groupIdx];
+    const toGroup = clusterGroups[groupIdx + 1];
+    if (!fromGroup.length || !toGroup.length) continue;
+
+    let bestPair = null;
+    let bestDist = Infinity;
+
+    fromGroup.forEach((fromIdx) => {
+      const a = CLUSTER_FIELD[fromIdx];
+      toGroup.forEach((toIdx) => {
+        const b = CLUSTER_FIELD[toIdx];
+        const dist = (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestPair = { a, b };
+        }
+      });
+    });
+
+    if (bestPair) {
+      svg.appendChild(svgEl('line', {
+        x1: bestPair.a.x,
+        y1: bestPair.a.y,
+        x2: bestPair.b.x,
+        y2: bestPair.b.y,
+        stroke: MAGENTA,
+        'stroke-width': '1.05',
+        opacity: '0.78',
+        'stroke-linecap': 'round',
+      }));
+    }
+  }
 
   addNodes(svg, CLUSTER_FIELD, 2.3, interactiveNodes);
 }
