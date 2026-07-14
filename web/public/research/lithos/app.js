@@ -359,22 +359,6 @@ function drawConnectedPointClouds(svg, interactiveNodes = true) {
     });
   });
 
-  // Add explicit bridges between consecutive cluster centers to keep the story clear.
-  CLUSTER_CENTERS.forEach((center, idx) => {
-    if (idx >= CLUSTER_CENTERS.length - 1) return;
-    const next = CLUSTER_CENTERS[idx + 1];
-    svg.appendChild(svgEl('line', {
-      x1: center.x,
-      y1: center.y - 18,
-      x2: next.x,
-      y2: next.y - 18,
-      stroke: MAGENTA,
-      'stroke-width': '1.6',
-      opacity: '0.88',
-      'stroke-linecap': 'round',
-    }));
-  });
-
   addNodes(svg, CLUSTER_FIELD, 2.3, interactiveNodes);
 }
 
@@ -399,20 +383,10 @@ function drawMainCurveWithAdditives(svg) {
     d: pathFrom(mainPoints),
     fill: 'none',
     stroke: MAGENTA,
-    'stroke-width': 4.8,
+    'stroke-width': 2.1,
     'stroke-linecap': 'round',
     'stroke-linejoin': 'round',
-    opacity: 0.28,
-  }));
-
-  svg.appendChild(svgEl('path', {
-    d: pathFrom(mainPoints),
-    class: 'cluster-magenta-spine',
-    fill: 'none',
-    stroke: MAGENTA,
-    'stroke-width': 2.9,
-    'stroke-linecap': 'round',
-    'stroke-linejoin': 'round',
+    opacity: 0.94,
   }));
 
   const additiveShapes = [
@@ -431,7 +405,7 @@ function drawMainCurveWithAdditives(svg) {
       d: branchPath,
       fill: 'none',
       stroke: MAGENTA,
-      'stroke-width': 1.6,
+      'stroke-width': 1.3,
       'stroke-linecap': 'round',
       'stroke-linejoin': 'round',
       opacity: 0.85,
@@ -1115,7 +1089,10 @@ function renderVisual(svg, slide, index, interactive = true) {
   } else if (type === 'magenta') {
     drawConnectedPointClouds(svg, true);
     drawMainCurveWithAdditives(svg);
-  } else if (type === 'flow' || type === 'flow-finalize') {
+  } else if (type === 'flow') {
+    drawConnectedPointClouds(svg, true);
+    interactionMode = 'flow-spline';
+  } else if (type === 'flow-finalize') {
     drawProgressiveGraph(svg, formationProgress, true);
     svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
     interactionMode = 'flow-spline';
