@@ -1307,7 +1307,7 @@ function renderVisual(svg, slide, index, interactive = true) {
   } else if (type === 'line') {
     drawClusteredNetwork(svg, true);
   } else if (type === 'magenta') {
-    drawConnectedPointClouds(svg, true);
+    drawClusteredPoints(svg, true);
     drawMainCurveWithAdditives(svg);
     interactionMode = 'crown-controls';
   } else if (type === 'flow') {
