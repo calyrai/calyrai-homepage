@@ -371,6 +371,8 @@ function drawConnectedPointClouds(svg, interactiveNodes = true) {
         'stroke-width': '0.85',
         opacity: '0.42',
         'stroke-linecap': 'round',
+        'data-edge-from': String(i),
+        'data-edge-to': String(j),
       }));
     });
   });
@@ -397,6 +399,8 @@ function drawConnectedPointClouds(svg, interactiveNodes = true) {
     });
 
     if (bestPair) {
+      const fromIdx = CLUSTER_FIELD.indexOf(bestPair.a);
+      const toIdx = CLUSTER_FIELD.indexOf(bestPair.b);
       svg.appendChild(svgEl('line', {
         x1: bestPair.a.x,
         y1: bestPair.a.y,
@@ -406,11 +410,23 @@ function drawConnectedPointClouds(svg, interactiveNodes = true) {
         'stroke-width': '1.05',
         opacity: '0.78',
         'stroke-linecap': 'round',
+        'data-edge-from': String(fromIdx),
+        'data-edge-to': String(toIdx),
       }));
     }
   }
 
+  const nodeCountBefore = svg.querySelectorAll('.node').length;
   addNodes(svg, CLUSTER_FIELD, 2.3, interactiveNodes);
+  const nodeEls = Array.from(svg.querySelectorAll('.node')).slice(nodeCountBefore);
+  clusterGroups.forEach((group, clusterId) => {
+    group.forEach((nodeIdx) => {
+      const nodeEl = nodeEls[nodeIdx];
+      if (nodeEl) {
+        nodeEl.setAttribute('data-cluster-id', String(clusterId));
+      }
+    });
+  });
 }
 
 function drawMagentaSpine(svg) {
@@ -1136,13 +1152,47 @@ function addNodeMotion(svg) {
   const nodes = Array.from(svg.querySelectorAll('.node'));
   if (!nodes.length) return () => {};
 
-  const base = nodes.map((node, idx) => ({
-    node,
-    x: parseFloat(node.getAttribute('cx')),
-    y: parseFloat(node.getAttribute('cy')),
-    amp: 0.55 + (idx % 6) * 0.18,
-    speed: 0.00034 + (idx % 7) * 0.00008,
-    phase: idx * 0.7,
+  const clusterProfiles = new Map();
+  const ensureClusterProfile = (clusterId) => {
+    if (!clusterProfiles.has(clusterId)) {
+      const cid = Number(clusterId) || 0;
+      clusterProfiles.set(clusterId, {
+        amp: 0.7 + (cid % 3) * 0.18,
+        speed: 0.00042 + cid * 0.00004,
+        phase: cid * 0.9,
+      });
+    }
+    return clusterProfiles.get(clusterId);
+  };
+
+  const base = nodes.map((node, idx) => {
+    const clusterId = node.getAttribute('data-cluster-id');
+    if (clusterId !== null) {
+      const profile = ensureClusterProfile(clusterId);
+      return {
+        node,
+        x: parseFloat(node.getAttribute('cx')),
+        y: parseFloat(node.getAttribute('cy')),
+        amp: profile.amp + (idx % 3) * 0.05,
+        speed: profile.speed,
+        phase: profile.phase + (idx % 4) * 0.22,
+      };
+    }
+
+    return {
+      node,
+      x: parseFloat(node.getAttribute('cx')),
+      y: parseFloat(node.getAttribute('cy')),
+      amp: 0.55 + (idx % 6) * 0.18,
+      speed: 0.00034 + (idx % 7) * 0.00008,
+      phase: idx * 0.7,
+    };
+  });
+
+  const edgeLinks = Array.from(svg.querySelectorAll('line[data-edge-from][data-edge-to]')).map((lineEl) => ({
+    lineEl,
+    from: lineEl.getAttribute('data-edge-from'),
+    to: lineEl.getAttribute('data-edge-to'),
   }));
 
   let rafId = null;
@@ -1158,6 +1208,30 @@ function addNodeMotion(svg) {
       item.node.setAttribute('cx', String(item.x + dx));
       item.node.setAttribute('cy', String(item.y + dy));
     });
+
+    if (edgeLinks.length) {
+      const nodeMap = new Map();
+      base.forEach((item) => {
+        const idx = item.node.getAttribute('data-node-idx');
+        if (idx !== null) {
+          nodeMap.set(idx, {
+            x: item.node.getAttribute('cx'),
+            y: item.node.getAttribute('cy'),
+          });
+        }
+      });
+
+      edgeLinks.forEach((edge) => {
+        const a = nodeMap.get(edge.from);
+        const b = nodeMap.get(edge.to);
+        if (!a || !b) return;
+        edge.lineEl.setAttribute('x1', a.x);
+        edge.lineEl.setAttribute('y1', a.y);
+        edge.lineEl.setAttribute('x2', b.x);
+        edge.lineEl.setAttribute('y2', b.y);
+      });
+    }
+
     rafId = requestAnimationFrame(tick);
   };
 
