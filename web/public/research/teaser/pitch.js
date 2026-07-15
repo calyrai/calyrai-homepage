@@ -123,16 +123,27 @@ class GraphEngine {
   point(node, t) {
     if (this.mobileLayout.matches) {
       const index = Math.max(0, this.config.nodes.findIndex((item) => item.id === node.id));
-      const xOffsets = [-58, 54, -46, 62];
+      const xOffsets = [-34, 38, -30, 34];
       return {
-        x: WIDTH * 0.5 + (xOffsets[index] || 0),
-        y: 64 + index * 108,
+        x: 240 + (xOffsets[index] || 0),
+        y: 72 + index * 128,
       };
     }
+    const index = Math.max(0, this.config.nodes.findIndex((item) => item.id === node.id));
+    const verticalOffsets = [-52, 48, -34, 52];
     return {
       x: node.x * WIDTH,
-      y: node.y * HEIGHT,
+      y: node.y * HEIGHT + (verticalOffsets[index] || 0),
     };
+  }
+
+  dimensions() {
+    return this.mobileLayout.matches ? { width: 480, height: 500 } : { width: WIDTH, height: HEIGHT };
+  }
+
+  configureViewport() {
+    const { width, height } = this.dimensions();
+    this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   }
 
   estimateNodeRadius(node) {
@@ -188,10 +199,12 @@ class GraphEngine {
   }
 
   init() {
+    this.configureViewport();
     this.renderEdges();
     this.renderNodes();
     this.renderDragPreview();
     this.registerMouseParallax();
+    this.mobileLayout.addEventListener('change', () => this.configureViewport());
   }
 
   renderEdges() {
@@ -314,8 +327,9 @@ class GraphEngine {
 
   nearestNode(clientX, clientY, t) {
     const rect = this.svg.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * WIDTH;
-    const y = ((clientY - rect.top) / rect.height) * HEIGHT;
+    const { width, height } = this.dimensions();
+    const x = ((clientX - rect.left) / rect.width) * width;
+    const y = ((clientY - rect.top) / rect.height) * height;
 
     let best = null;
     let bestDist = Infinity;
@@ -336,9 +350,10 @@ class GraphEngine {
     if (!this.dragPreview) return;
     const fromCenter = this.point(fromNode, t);
     const rect = this.svg.getBoundingClientRect();
+    const { width, height } = this.dimensions();
     const to = {
-      x: ((pointerX - rect.left) / rect.width) * WIDTH,
-      y: ((pointerY - rect.top) / rect.height) * HEIGHT,
+      x: ((pointerX - rect.left) / rect.width) * width,
+      y: ((pointerY - rect.top) / rect.height) * height,
     };
 
     const dx = to.x - fromCenter.x;

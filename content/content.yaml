@@ -71,7 +71,9 @@ logo:
   title_ref: brand.display_name
   route: ''
 route_policy:
-  fallback_mailto: mailto:rupert.tscheliessnig@calyr.ai
+  home_route: /
+  unresolved_internal_fallback: /
+  allow_404: false
   spa_routes:
   - /books
   - /philosophy

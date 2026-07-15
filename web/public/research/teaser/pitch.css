@@ -257,7 +257,7 @@ svg {
   stroke: var(--line);
   stroke-width: 2;
   fill: none;
-  opacity: 0.25;
+  opacity: 0.48;
   stroke-linecap: round;
   transition: stroke 200ms ease, opacity 200ms ease, stroke-width 200ms ease, filter 200ms ease;
 }
@@ -330,8 +330,8 @@ svg {
 }
 
 .node-shell {
-  fill: rgba(255, 255, 255, 0.025);
-  stroke: rgba(255, 255, 255, 0.2);
+  fill: rgba(255, 255, 255, 0.035);
+  stroke: rgba(255, 255, 255, 0.34);
   stroke-width: 1.2;
   transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease;
 }
@@ -479,20 +479,25 @@ svg {
   }
 
   svg {
-    height: 540px;
+    height: 620px;
   }
 
   .scene {
-    min-height: 565px;
+    min-height: 645px;
     padding: 8px;
   }
 
   .node-label {
-    font-size: 22px;
+    font-size: 28px;
+    font-weight: 700;
   }
 
   .edge {
-    opacity: 0.5;
-    stroke-width: 2.5;
+    opacity: 0.72;
+    stroke-width: 3;
+  }
+
+  .node-shell {
+    stroke-width: 1.8;
   }
 }

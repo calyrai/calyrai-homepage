@@ -31,10 +31,15 @@ import { applyTitleDefaults } from '../utils/titleDefaults'
 const STORAGE_KEY_PREFIX = 'tile_position_'
 const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
 const DEFAULT_TILE_POSITION = { x: 0, y: 0 }
-const MAIL_FALLBACK_ROUTE =
-  (ROUTE_POLICY_DATA && typeof ROUTE_POLICY_DATA.fallback_mailto === 'string' && ROUTE_POLICY_DATA.fallback_mailto.trim())
-    ? ROUTE_POLICY_DATA.fallback_mailto.trim()
-    : 'mailto:rupert.tscheliessnig@calyr.ai'
+const HOME_ROUTE =
+  (ROUTE_POLICY_DATA && typeof ROUTE_POLICY_DATA.home_route === 'string' && ROUTE_POLICY_DATA.home_route.trim())
+    ? ROUTE_POLICY_DATA.home_route.trim()
+    : '/'
+
+const UNRESOLVED_INTERNAL_FALLBACK_ROUTE =
+  (ROUTE_POLICY_DATA && typeof ROUTE_POLICY_DATA.unresolved_internal_fallback === 'string' && ROUTE_POLICY_DATA.unresolved_internal_fallback.trim())
+    ? ROUTE_POLICY_DATA.unresolved_internal_fallback.trim()
+    : HOME_ROUTE
 
 const SPA_SAFE_ROUTES = new Set(
   Array.isArray(ROUTE_POLICY_DATA?.spa_routes) && ROUTE_POLICY_DATA.spa_routes.length > 0
@@ -68,14 +73,14 @@ function normalizeTileRoute(route) {
   }
 
   if (normalized.startsWith('/') && UNRESOLVED_INTERNAL_ROUTES.has(normalized)) {
-    return MAIL_FALLBACK_ROUTE
+    return UNRESOLVED_INTERNAL_FALLBACK_ROUTE
   }
 
   if (SPA_SAFE_ROUTES.has(normalized) || normalized.startsWith('/')) {
     return normalized
   }
 
-  return MAIL_FALLBACK_ROUTE
+  return HOME_ROUTE
 }
 
 function getTileLeadDotClass(accent) {
@@ -389,7 +394,7 @@ export default function Tile({ node, theme, context = {} }) {
     }
 
     // Don't drag if clicking on a link
-    if (route && e.target.closest('.tile-link-indicator')) {
+    if (normalizedTileRoute && e.target.closest('.tile-link-indicator')) {
       return
     }
 
@@ -423,7 +428,7 @@ export default function Tile({ node, theme, context = {} }) {
     }
 
     // Don't drag if clicking on a link
-    if (route && e.target.closest('.tile-link-indicator')) {
+    if (normalizedTileRoute && e.target.closest('.tile-link-indicator')) {
       return
     }
     
@@ -629,15 +634,12 @@ export default function Tile({ node, theme, context = {} }) {
     setSelectedTile(id)
 
     if (!e.target.closest('.tile-link-indicator')) {
-      const preferredRoute = route || (visibleInstitutions.length > 0 && id ? `/${id}` : route)
-      const normalizedRoute = normalizeTileRoute(preferredRoute)
-
-      if (normalizedRoute) {
-        if (SPA_SAFE_ROUTES.has(normalizedRoute)) {
-          window.history.pushState({}, '', normalizedRoute)
+      if (normalizedTileRoute) {
+        if (SPA_SAFE_ROUTES.has(normalizedTileRoute)) {
+          window.history.pushState({}, '', normalizedTileRoute)
           window.dispatchEvent(new PopStateEvent('popstate'))
         } else {
-          window.location.href = normalizedRoute
+          window.location.href = normalizedTileRoute
         }
       }
     }
@@ -648,6 +650,8 @@ export default function Tile({ node, theme, context = {} }) {
     event.preventDefault()
     handleClick(event)
   }
+
+  const normalizedTileRoute = normalizeTileRoute(route)
 
   const isSelected = selectedTile === id
 
@@ -763,7 +767,7 @@ export default function Tile({ node, theme, context = {} }) {
       </div>
 
       {/* Link indicator */}
-      {route && <div className="tile-link-indicator">→</div>}
+      {normalizedTileRoute && <div className="tile-link-indicator">→</div>}
       
       {/* Drag handle indicator */}
       {isDragging && <div className="tile-drag-handle">✋ Moving...</div>}

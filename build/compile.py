@@ -1154,9 +1154,15 @@ def _sync_route_policy_and_audit(project_root: Path) -> None:
     contact_cfg = content_cfg.get("contact", {}) if isinstance(content_cfg.get("contact"), dict) else {}
     contact_route = str(contact_cfg.get("route", "")).strip()
 
-    fallback_mailto = str(route_policy_cfg.get("fallback_mailto", "")).strip() if isinstance(route_policy_cfg, dict) else ""
-    if not fallback_mailto:
-        fallback_mailto = contact_route if contact_route.startswith("mailto:") else "mailto:rupert.tscheliessnig@calyr.ai"
+    home_route = str(route_policy_cfg.get("home_route", "/")).strip() if isinstance(route_policy_cfg, dict) else "/"
+    if not home_route:
+        home_route = "/"
+
+    unresolved_internal_fallback = str(route_policy_cfg.get("unresolved_internal_fallback", home_route)).strip() if isinstance(route_policy_cfg, dict) else home_route
+    if not unresolved_internal_fallback:
+        unresolved_internal_fallback = home_route
+
+    allow_404 = bool(route_policy_cfg.get("allow_404", False)) if isinstance(route_policy_cfg, dict) else False
 
     spa_routes_cfg = route_policy_cfg.get("spa_routes", []) if isinstance(route_policy_cfg, dict) else []
     if not isinstance(spa_routes_cfg, list):
@@ -1195,13 +1201,16 @@ def _sync_route_policy_and_audit(project_root: Path) -> None:
         index_file = public_root / normalized / "index.html"
         if direct_file.exists() or index_file.exists():
             continue
-        unresolved.append(route)
+        if not allow_404:
+            unresolved.append(route)
 
     generated_dir = public_root / "generated"
     generated_dir.mkdir(parents=True, exist_ok=True)
 
     policy_payload = {
-        "fallback_mailto": fallback_mailto,
+        "home_route": home_route,
+        "unresolved_internal_fallback": unresolved_internal_fallback,
+        "allow_404": allow_404,
         "spa_routes": spa_routes,
     }
     audit_payload = {
