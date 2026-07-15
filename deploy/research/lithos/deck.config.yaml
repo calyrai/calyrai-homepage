@@ -70,8 +70,8 @@ slides:
     type: "flow-finalize"
     hint: "Adjust the magenta controls to modify boundary conditions and observe the surrogate model response."
 
-  - title: "Aortic Bridge."
-    subtitle: "Biological curvature becomes civic structure."
-    story: "The stabilized aortic bow is translated into a sculptural bridge: a paired deck, rhythmic ribs, leaning pylons, and fan cables all remain coupled to the original curve."
+  - title: "Aortic Bow: Example."
+    subtitle: "Abstract control yields concrete geometry."
+    story: "The aortic arch emerges as a concrete example. Abstract data space control via the surrogate and magenta steering converges to a stabilized, editable 3D shape."
     type: "final-bow"
-    hint: "Drag to rotate the bridge in 3D; use the control points to reshape the structural curve."
+    hint: "Drag on the model to rotate in 3D and inspect the organic aortic bow with stent lattice."

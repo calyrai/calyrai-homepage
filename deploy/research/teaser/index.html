@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>calyr.aí Pitch</title>
+    <link rel="stylesheet" href="/research/teaser/pitch.css" />
+  </head>
+  <body>
+    <main class="stage" aria-label="CALYR pitch stage">
+      <header class="header">
+        <div>
+          <div class="kicker">How we work</div>
+          <h1 class="title">From complex challenge to scalable product.</h1>
+          <p class="subtitle">
+            We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.
+          </p>
+          <a class="teaser-deck-link" href="/research/lithos/index.html">
+            <span>Explore the interactive pitch deck</span>
+            <span class="teaser-deck-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </header>
+
+      <section class="meta-grid" aria-label="Business model">
+        <article class="meta-card">
+          <h2>Start focused</h2>
+          <p>We select one valuable scientific or engineering challenge.</p>
+          <p class="meta-inline">A clear use case · a clear outcome.</p>
+        </article>
+        <article class="meta-card">
+          <h2>Prove value</h2>
+          <p>We build an interactive demonstrator with the customer’s data and domain knowledge.</p>
+          <p class="meta-inline">Fast validation before full deployment.</p>
+        </article>
+        <article class="meta-card">
+          <h2>Scale together</h2>
+          <p>The demonstrator grows into a deployment, platform access and a long-term partnership.</p>
+          <p class="meta-inline">Projects first · recurring platform value next.</p>
+        </article>
+      </section>
+
+      <section class="scene" aria-label="Pitch graph scene">
+        <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
+        <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="CALYR scientific pitch graph"></svg>
+        <div class="scene-status" id="scene-status">Game ready</div>
+        <div class="game-hud" aria-label="Flow game controls">
+          <span id="game-progress" class="game-progress">Slides 0</span>
+          <span id="game-score" class="game-score">Score 0</span>
+          <button id="game-reset" class="game-button" type="button">Reset</button>
+          <button id="game-demo" class="game-button" type="button">Play the flow →</button>
+        </div>
+      </section>
+
+      <section class="insight-grid" aria-label="Active insight">
+        <article class="panel">
+          <h2 id="insight-title">Who needs it</h2>
+          <p id="insight-copy">Research labs, MedTech teams, engineering groups, and industrial R&amp;D units that need explainable scientific decisions.</p>
+          <ul id="insight-points" class="insight-points"></ul>
+        </article>
+
+      </section>
+    </main>
+
+    <script type="module" src="/research/teaser/pitch.js"></script>
+  </body>
+</html>

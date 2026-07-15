@@ -44,7 +44,7 @@
     "title": "Teaser",
     "summary": "Visual short section.\n",
     "body_preview": "Place your short file path in route to load and play it here.\n",
-    "route": "/research/positioning/index.html",
+    "route": "/research/teaser/index.html",
     "icon": "",
     "keywords": [
       "section.",
@@ -118,14 +118,14 @@
     "keywords": []
   },
   "core": {
-    "title": "Calyrai core",
+    "title": "calyr.aí core",
     "summary": "Connects observations, knowledge, models, and decisions.\n",
-    "body_preview": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+    "body_preview": "calyr.aí core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
     "route": "/research/platforms/core/index.html",
     "icon": "brain",
     "keywords": [
       "and",
-      "calyrai",
+      "calyr.aí",
       "connects",
       "core",
       "decisions.",
@@ -182,10 +182,10 @@
     ]
   },
   "oracle": {
-    "title": "oracle",
+    "title": "pythia",
     "summary": "Extracting knowledge from complex information spaces.\n",
     "body_preview": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
-    "route": "/research/platforms/oracle/index.html",
+    "route": "/research/platforms/pythia/index.html",
     "icon": "crystal-ball",
     "keywords": [
       "complex",
@@ -193,37 +193,166 @@
       "from",
       "information",
       "knowledge",
-      "oracle",
+      "pythia",
       "spaces."
     ]
   },
-  "delphi": {
-    "title": "delphi",
-    "summary": "AI-native scientific navigation for models, simulation, and knowledge.\n",
-    "body_preview": "Delphi is the platform tile that links into the Compass interface for navigating knowledge, discovering patterns, and generating insights from oracle-generated knowledge structures.\n",
-    "route": "/research/platforms/delphi/index.html",
+  "pythia": {
+    "title": "pythia",
+    "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
+    "body_preview": "PYTHIA addresses a single fundamental question: how can the hidden organization of a complex system be inferred from incomplete observations? It provides a unified language for describing assembled sy",
+    "route": "/research/platforms/pythia/index.html",
     "icon": "compass",
     "keywords": [
-      "ai-native",
+      "a",
+      "about,",
       "and",
-      "delphi",
+      "complex",
+      "computational",
+      "discovering",
       "for",
-      "knowledge.",
-      "models,",
-      "navigation",
+      "framework",
+      "hidden",
+      "of",
+      "organization",
+      "pythia",
+      "reasoning",
+      "representing,",
+      "systems.",
+      "the",
+      "universal"
+    ]
+  },
+  "pythia_apps": {
+    "title": "pythia applications",
+    "summary": "Structural inference applied across scientific and engineering domains.",
+    "body_preview": "Each pythia application is a domain-specific deployment of the PYTHIA inference framework. It reconstructs hidden organization from incomplete observations using the same universal S-Layer and General",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "across",
+      "and",
+      "applications",
+      "applied",
+      "domains.",
+      "engineering",
+      "inference",
+      "pythia",
       "scientific",
-      "simulation,"
+      "structural"
+    ]
+  },
+  "pythia_saxs": {
+    "title": "saxs pythia",
+    "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
+    "body_preview": "The SAXS Oracle applies PYTHIA structural inference to solution scattering data. It infers the hidden three-dimensional organization of macromolecular assemblies from one-dimensional scattering curves",
+    "route": "/research/pythia/saxs/index.html",
+    "icon": "scatter",
+    "keywords": [
+      "assembly",
+      "from",
+      "molecular",
+      "profiles.",
+      "pythia",
+      "reconstructing",
+      "saxs",
+      "scattering",
+      "small-angle",
+      "structure",
+      "x-ray"
+    ]
+  },
+  "pythia_metabolic": {
+    "title": "metabolic pythia",
+    "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
+    "body_preview": "The Metabolic Oracle applies PYTHIA to biochemical network reconstruction. It integrates stoichiometric constraints, thermodynamic feasibility, and experimental observations to infer the most plausibl",
+    "route": "/research/pythia/metabolic/index.html",
+    "icon": "network",
+    "keywords": [
+      "and",
+      "constraints.",
+      "experimental",
+      "flux",
+      "from",
+      "inferring",
+      "metabolic",
+      "network",
+      "pythia",
+      "states",
+      "topology"
+    ]
+  },
+  "pythia_materials": {
+    "title": "materials pythia",
+    "summary": "Inferring the hidden assembly structure of materials from experimental signatures.",
+    "body_preview": "The Materials Oracle reconstructs the multi-scale organization of crystalline, amorphous, and composite materials from diffraction, scattering, and spectroscopic observations.",
+    "route": "/research/pythia/materials/index.html",
+    "icon": "atom",
+    "keywords": [
+      "assembly",
+      "experimental",
+      "from",
+      "hidden",
+      "inferring",
+      "materials",
+      "of",
+      "pythia",
+      "signatures.",
+      "structure",
+      "the"
+    ]
+  },
+  "pythia_proteomics": {
+    "title": "proteomics pythia",
+    "summary": "Reconstructing protein structure and assembly from incomplete experimental data.",
+    "body_preview": "The Proteomics Oracle applies PYTHIA to structural biology. It infers protein fold, binding geometry, and complex stoichiometry from heterogeneous experimental sources including SAXS, cryo-EM, NMR, an",
+    "route": "/research/pythia/proteomics/index.html",
+    "icon": "helix",
+    "keywords": [
+      "and",
+      "assembly",
+      "data.",
+      "experimental",
+      "from",
+      "incomplete",
+      "protein",
+      "proteomics",
+      "pythia",
+      "reconstructing",
+      "structure"
+    ]
+  },
+  "pythia_engineering": {
+    "title": "engineering pythia",
+    "summary": "Inferring the load state and hidden damage organization of engineered structures.",
+    "body_preview": "The Engineering Oracle applies PYTHIA to structural and civil engineering. It reconstructs internal force distributions, damage states, and failure precursors from sensor data, inspection records, and",
+    "route": "/research/pythia/engineering/index.html",
+    "icon": "bridge",
+    "keywords": [
+      "and",
+      "damage",
+      "engineered",
+      "engineering",
+      "hidden",
+      "inferring",
+      "load",
+      "of",
+      "organization",
+      "pythia",
+      "state",
+      "structures.",
+      "the"
     ]
   },
   "ecosystem": {
     "title": "ecosystem",
-    "summary": "Explore relationships across the calyrai ecosystem.\n",
-    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and delphi connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
+    "summary": "Explore relationships across the calyr.aí ecosystem.\n",
+    "body_preview": "Interactive graph showing how calyr.aí core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [
       "across",
-      "calyrai",
+      "calyr.aí",
       "ecosystem",
       "ecosystem.",
       "explore",
@@ -235,7 +364,7 @@
     "title": "philosophy",
     "summary": "Scientific rigor, openness, and reproducibility.\n",
     "body_preview": "Calyr.a\u00ed is founded on scientific transparency, reproducibility, interpretable modelling, and human-centered decision support.\n",
-    "route": "/philosophy",
+    "route": "/books",
     "icon": "book",
     "keywords": [
       "and",

@@ -1908,10 +1908,10 @@ function addAdvancedAorticArch(svg, transitionState = null) {
   const help = document.createElement('p');
   help.id = helpId;
   help.className = 'visually-hidden';
-  help.textContent = 'Use arrow keys to rotate the bridge. Use plus and minus to zoom. Use left and right brackets to select a control point, then W, A, S, and D to reshape the bridge. Press Escape to clear the selected control point.';
+  help.textContent = 'Use arrow keys to rotate. Use plus and minus to zoom. Use left and right brackets to select a control point, then W, A, S, and D to deform the arch. Press Escape to clear the selected control point.';
   canvas.setAttribute('role', 'application');
   canvas.setAttribute('tabindex', '0');
-  canvas.setAttribute('aria-label', 'Interactive three-dimensional bridge derived from an aortic arch');
+  canvas.setAttribute('aria-label', 'Interactive three-dimensional aortic arch');
   canvas.setAttribute('aria-describedby', helpId);
   container.append(canvas, help);
   svg.parentElement.appendChild(container);
