@@ -2532,7 +2532,46 @@ body.nav-open {
 
 @media (max-width: 767px) {
   .page-main .tile {
+    display: flex;
+    flex-direction: column;
     min-height: 180px;
+    height: auto;
+    padding: 18px 18px 20px;
     border-radius: 18px;
+  }
+
+  .page-main .tile-icon {
+    flex: 0 0 auto;
+    margin: 0 2.25rem 1.25rem 0;
+    font-size: clamp(1.15rem, 6vw, 1.65rem);
+    line-height: 1.08;
+  }
+
+  .page-main .tile-content {
+    flex: 0 0 auto;
+    min-height: 0;
+    width: 100%;
+    margin-top: auto;
+    gap: 0.42rem;
+  }
+
+  .page-main .tile-title {
+    max-width: 100%;
+    font-size: clamp(1.3rem, 7vw, 1.85rem);
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+
+  .page-main .tile-summary {
+    max-width: calc(100% - 1.75rem);
+    font-size: 0.88rem;
+    line-height: 1.34;
+    overflow-wrap: anywhere;
+  }
+
+  .page-main .tile-link-indicator {
+    top: 14px;
+    right: 16px;
+    bottom: auto;
   }
 }
