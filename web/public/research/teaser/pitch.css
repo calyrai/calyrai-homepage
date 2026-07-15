@@ -69,33 +69,35 @@ body {
   line-height: 1.45;
 }
 
+.teaser-deck-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: 14px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 650;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.48);
+  padding-bottom: 3px;
+  transition: border-color 160ms ease, gap 160ms ease;
+}
+
+.teaser-deck-link:hover,
+.teaser-deck-link:focus-visible {
+  border-color: var(--fg);
+  gap: 0.95em;
+  outline: none;
+}
+
+.teaser-deck-arrow {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
 .tagline {
   font-size: 14px;
   color: var(--muted);
-}
-
-.header-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.header-link {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg);
-  text-decoration: none;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.header-link:hover {
-  background: rgba(255, 255, 255, 0.14);
 }
 
 .meta-grid {
@@ -140,7 +142,8 @@ body {
   border-radius: 14px;
   background: #050505;
   overflow: hidden;
-  padding: 12px;
+  padding: 8px 18px;
+  min-height: 520px;
 }
 
 .point-field {
@@ -150,12 +153,12 @@ body {
   height: 100%;
   display: block;
   z-index: 0;
-  opacity: 0.95;
+  opacity: 0.42;
 }
 
 svg {
   width: 100%;
-  height: 460px;
+  height: 500px;
   display: block;
   position: relative;
   z-index: 1;
@@ -165,12 +168,11 @@ svg {
   position: absolute;
   top: 10px;
   right: 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 11px;
+  border: 0;
+  padding: 4px 6px;
+  font-size: 12px;
   color: var(--muted);
-  background: rgba(0, 0, 0, 0.65);
+  background: transparent;
   z-index: 3;
 }
 
@@ -195,22 +197,30 @@ svg {
   background: rgba(0, 0, 0, 0.7);
 }
 
+.game-progress,
+.game-score,
+#game-reset {
+  display: none;
+}
+
 .game-score {
   color: var(--ok);
 }
 
 .game-button {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
   color: var(--fg);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 11px;
+  border-radius: 0;
+  padding: 4px 2px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .game-button:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: transparent;
+  border-color: var(--fg);
 }
 
 .edge {
@@ -290,13 +300,13 @@ svg {
 }
 
 .node-label {
-  font-size: 26px;
-  font-weight: 650;
+  font-size: 34px;
+  font-weight: 700;
   letter-spacing: 0.005em;
   fill: var(--fg);
   text-anchor: middle;
   pointer-events: none;
-  opacity: 0.72;
+  opacity: 0.9;
   transition: opacity 180ms ease, filter 180ms ease, fill 180ms ease;
 }
 
@@ -342,7 +352,7 @@ svg {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   margin-top: 12px;
 }
@@ -395,7 +405,7 @@ svg {
 }
 
 .panel-right {
-  background: rgba(255, 255, 255, 0.02);
+  display: none;
 }
 
 @media (max-width: 820px) {
@@ -414,6 +424,10 @@ svg {
   }
 
   svg {
-    height: 360px;
+    height: 400px;
+  }
+
+  .scene {
+    min-height: 420px;
   }
 }

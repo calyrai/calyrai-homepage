@@ -513,7 +513,7 @@ class PointField {
     sync();
     window.addEventListener('resize', sync);
 
-    const count = this.reducedMotion ? 240 : 720;
+    const count = this.reducedMotion ? 60 : 140;
     this.points = Array.from({ length: count }, () => ({
       x: Math.random() * this.width,
       y: Math.random() * this.height,
@@ -530,7 +530,7 @@ class PointField {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    const linkDistance = 30;
+    const linkDistance = 24;
     const forceX = this.width * 0.5 + this.graph.motion.x * 16;
     const forceY = this.height * 0.5 + this.graph.motion.y * 12;
     const edgeField = this.buildMagneticEdgeField(now, state);
@@ -596,7 +596,7 @@ class PointField {
       if (p.y > this.height + 5) p.y = -5;
 
       ctx.beginPath();
-      ctx.fillStyle = `rgba(255,255,255,${0.12 + pulse * 0.24})`;
+      ctx.fillStyle = `rgba(255,255,255,${0.08 + pulse * 0.16})`;
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
 
@@ -791,40 +791,33 @@ class TeaserUI {
     if (this.autoTimer) {
       window.clearInterval(this.autoTimer);
       this.autoTimer = null;
-      this.demoBtn.textContent = 'Auto Demo';
+      this.demoBtn.textContent = 'Play the flow →';
       this.setStatus(this.config.copy?.ready || 'Ready');
       return;
     }
 
     story.reset();
     this.render(story, null);
-    this.demoBtn.textContent = 'Stop Demo';
-    this.setStatus('Auto story');
+    this.demoBtn.textContent = 'Stop flow';
+    this.setStatus('Flow in progress');
 
-    const ids = this.config.nodes.map((n) => n.id);
+    const sequence = this.config.edges.slice();
+    let edgeIndex = 0;
     this.autoTimer = window.setInterval(() => {
-      if (story.path.length >= (this.config.story_rules?.max_steps || 5)) {
+      if (edgeIndex >= sequence.length) {
         window.clearInterval(this.autoTimer);
         this.autoTimer = null;
-        this.demoBtn.textContent = 'Auto Demo';
+        this.demoBtn.textContent = 'Replay flow';
         this.setStatus(this.config.copy?.complete || 'Complete');
         return;
       }
 
-      const from = story.path.length ? story.path[story.path.length - 1] : ids[Math.floor(Math.random() * ids.length)];
-      const candidates = ids.filter((id) => id !== from && !story.path.includes(id));
-      if (!candidates.length) {
-        window.clearInterval(this.autoTimer);
-        this.autoTimer = null;
-        this.demoBtn.textContent = 'Auto Demo';
-        this.setStatus(this.config.copy?.complete || 'Complete');
-        return;
-      }
-      const to = candidates[Math.floor(Math.random() * candidates.length)];
+      const { from, to } = sequence[edgeIndex];
+      edgeIndex += 1;
       const result = story.connect(from, to);
       if (result.ok) {
         this.render(story, to);
-        this.setStatus(`Auto: ${from} -> ${to}`);
+        this.setStatus(`${from} → ${to}`);
       }
 
       graph.tick(getTime(), {
@@ -835,7 +828,7 @@ class TeaserUI {
         }).filter(Boolean)),
         dragSource: null,
       });
-    }, 2400);
+    }, 1500);
   }
 }
 

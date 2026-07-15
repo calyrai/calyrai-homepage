@@ -113,7 +113,7 @@ const DEFAULT_DECK_CONFIG = {
     swipe_max_vertical_ratio: .72,
   },
   ui: {
-    pitch_link_label: 'Pitch Deck',
+    pitch_link_label: 'Back to calyr.ai',
     footer_primary: 'FROM DATA TO FORM.',
     footer_secondary: 'FROM COMPLEXITY TO INTELLIGENCE.',
     default_hint: 'Use left/right arrows, the top buttons, or swipe horizontally on a phone.',
