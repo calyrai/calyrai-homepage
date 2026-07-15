@@ -9,10 +9,7 @@
     "/research/platforms/core/index.html",
     "/research/platforms/lithos/index.html",
     "/research/platforms/pythia/index.html",
-    "/research/pythia/engineering/index.html",
-    "/research/pythia/materials/index.html",
     "/research/pythia/metabolic/index.html",
-    "/research/pythia/proteomics/index.html",
     "/research/pythia/saxs/index.html",
     "/research/teaser/index.html",
     "https://bsky.app",
@@ -23,10 +20,6 @@
     "https://x.com",
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
-  "unresolved_routes": [
-    "/research/pythia/engineering/index.html",
-    "/research/pythia/materials/index.html",
-    "/research/pythia/proteomics/index.html"
-  ],
-  "generated_at": "2026-07-15T09:21:16.011383+00:00"
+  "unresolved_routes": [],
+  "generated_at": "2026-07-15T09:33:32.436862+00:00"
 }

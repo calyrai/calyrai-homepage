@@ -90,7 +90,7 @@ class StoryEngine {
 
 function hydratePage(config) {
   const page = config.page;
-  const required = ['kicker', 'title', 'subtitle', 'deck_link_label', 'deck_link_url', 'insight_title', 'insight_copy'];
+  const required = ['kicker', 'title', 'subtitle', 'deck_link_label', 'deck_link_url', 'insight_title', 'insight_copy', 'hpc_title', 'hpc_copy'];
   required.forEach((key) => {
     if (typeof page[key] !== 'string' || !page[key].trim()) throw new Error(`page.${key} is required`);
   });
@@ -102,6 +102,8 @@ function hydratePage(config) {
   document.getElementById('page-deck-link-label').textContent = page.deck_link_label;
   document.getElementById('insight-title').textContent = page.insight_title;
   document.getElementById('insight-copy').textContent = page.insight_copy;
+  document.getElementById('hpc-title').textContent = page.hpc_title;
+  document.getElementById('hpc-copy').textContent = page.hpc_copy;
 }
 
 class GraphEngine {

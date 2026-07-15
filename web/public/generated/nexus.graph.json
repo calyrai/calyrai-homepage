@@ -32,7 +32,7 @@
       "label": "",
       "data": {
         "title": "",
-        "summary": "create what is not here yet.\n",
+        "summary": "Create what is not here yet.",
         "icon": ""
       }
     },
@@ -41,7 +41,7 @@
       "label": "Teaser",
       "data": {
         "title": "Teaser",
-        "summary": "Visual short section.\n",
+        "summary": "See the platform in motion.",
         "icon": ""
       }
     },
@@ -50,7 +50,7 @@
       "label": "Platforms",
       "data": {
         "title": "Platforms",
-        "summary": "Core platform modules for engineering, medicine, reasoning, and decision support.\n",
+        "summary": "One inference architecture, applied across science, medicine, and engineering.",
         "icon": ""
       }
     },
@@ -59,16 +59,16 @@
       "label": "Architecture",
       "data": {
         "title": "Architecture",
-        "summary": "Structural overview of module connections, data flow, and reasoning pathways.\n",
+        "summary": "Explore the principles, relationships, and people behind the platform.",
         "icon": ""
       }
     },
     {
       "id": "contact_main",
-      "label": "Impressum",
+      "label": "Company",
       "data": {
-        "title": "Impressum",
-        "summary": "Legal contact details and publisher information.\n",
+        "title": "Company",
+        "summary": "Publisher and legal information.",
         "icon": ""
       }
     },
@@ -83,9 +83,9 @@
     },
     {
       "id": "core",
-      "label": "Calyrai core",
+      "label": "Calyr.a\u00ed Core",
       "data": {
-        "title": "Calyrai core",
+        "title": "Calyr.a\u00ed Core",
         "summary": "Connects observations, knowledge, models, and decisions.\n",
         "icon": "brain"
       }
@@ -119,9 +119,9 @@
     },
     {
       "id": "oracle",
-      "label": "pythia",
+      "label": "Pythia Applications",
       "data": {
-        "title": "pythia",
+        "title": "Pythia Applications",
         "summary": "Extracting knowledge from complex information spaces.\n",
         "icon": "crystal-ball"
       }
@@ -133,15 +133,6 @@
         "title": "pythia",
         "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
         "icon": "compass"
-      }
-    },
-    {
-      "id": "pythia_apps",
-      "label": "pythia applications",
-      "data": {
-        "title": "pythia applications",
-        "summary": "Structural inference applied across scientific and engineering domains.",
-        "icon": ""
       }
     },
     {
@@ -160,33 +151,6 @@
         "title": "metabolic pythia",
         "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
         "icon": "network"
-      }
-    },
-    {
-      "id": "pythia_materials",
-      "label": "materials pythia",
-      "data": {
-        "title": "materials pythia",
-        "summary": "Inferring the hidden assembly structure of materials from experimental signatures.",
-        "icon": "atom"
-      }
-    },
-    {
-      "id": "pythia_proteomics",
-      "label": "proteomics pythia",
-      "data": {
-        "title": "proteomics pythia",
-        "summary": "Reconstructing protein structure and assembly from incomplete experimental data.",
-        "icon": "helix"
-      }
-    },
-    {
-      "id": "pythia_engineering",
-      "label": "engineering pythia",
-      "data": {
-        "title": "engineering pythia",
-        "summary": "Inferring the load state and hidden damage organization of engineered structures.",
-        "icon": "bridge"
       }
     },
     {

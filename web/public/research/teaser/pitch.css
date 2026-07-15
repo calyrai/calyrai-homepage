@@ -95,6 +95,36 @@ body {
   line-height: 1;
 }
 
+.hpc-note {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.22fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.hpc-note-label {
+  color: var(--fg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hpc-note p {
+  margin: 0;
+  max-width: 92ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .tagline {
   font-size: 14px;
   color: var(--muted);
@@ -417,6 +447,10 @@ svg {
   .header-links {
     margin-top: 8px;
     justify-content: flex-start;
+  }
+  .hpc-note {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
   .meta-grid,
   .insight-grid {

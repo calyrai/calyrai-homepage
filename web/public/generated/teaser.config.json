@@ -11,13 +11,14 @@
     "deck_link_label": "Explore the interactive pitch deck",
     "deck_link_url": "/research/lithos/index.html",
     "insight_title": "Who needs it",
-    "insight_copy": "Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions."
+    "insight_copy": "Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions.",
+    "hpc_title": "What powers it",
+    "hpc_copy": "Calyr.aí uses High-Performance Computing (HPC), including the VSC-5 supercomputer, to run complex simulations and turn their results into fast, explainable surrogate models."
   },
   "copy": {
     "mission": "We begin with one valuable challenge and build toward a lasting platform partnership.",
     "ready": "Ready",
     "complete": "Story chain complete",
-    "hpc_explicit": "HPC means High-Performance Computing on VSC-5 supercomputing infrastructure.",
     "empty_story_title": "Story Engine",
     "empty_story_item": "Build the path to generate linked slides."
   },

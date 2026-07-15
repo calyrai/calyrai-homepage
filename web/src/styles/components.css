@@ -2205,6 +2205,16 @@ body.nav-open {
   max-width: 1080px;
 }
 
+.hero-subtitle {
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: clamp(1.35rem, 2.7vw, 2.45rem);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
 .hero-manifesto {
   margin: 0;
   margin-bottom: 0.9rem;

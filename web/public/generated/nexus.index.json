@@ -27,7 +27,7 @@
   },
   "hero": {
     "title": "",
-    "summary": "create what is not here yet.\n",
+    "summary": "Create what is not here yet.",
     "body_preview": "",
     "route": "",
     "icon": "",
@@ -42,68 +42,65 @@
   },
   "movie": {
     "title": "Teaser",
-    "summary": "Visual short section.\n",
-    "body_preview": "Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.\n",
+    "summary": "See the platform in motion.",
+    "body_preview": "Follow the path from experimental evidence and HPC to surrogate intelligence and scientific decisions.",
     "route": "/research/teaser/index.html",
     "icon": "",
     "keywords": [
-      "section.",
-      "short",
+      "in",
+      "motion.",
+      "platform",
+      "see",
       "teaser",
-      "visual"
+      "the"
     ]
   },
   "platforms": {
     "title": "Platforms",
-    "summary": "Core platform modules for engineering, medicine, reasoning, and decision support.\n",
+    "summary": "One inference architecture, applied across science, medicine, and engineering.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
+      "across",
       "and",
-      "core",
-      "decision",
-      "engineering,",
-      "for",
+      "applied",
+      "architecture,",
+      "engineering.",
+      "inference",
       "medicine,",
-      "modules",
-      "platform",
+      "one",
       "platforms",
-      "reasoning,",
-      "support."
+      "science,"
     ]
   },
   "architecture": {
     "title": "Architecture",
-    "summary": "Structural overview of module connections, data flow, and reasoning pathways.\n",
+    "summary": "Explore the principles, relationships, and people behind the platform.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
       "and",
       "architecture",
-      "connections,",
-      "data",
-      "flow,",
-      "module",
-      "of",
-      "overview",
-      "pathways.",
-      "reasoning",
-      "structural"
+      "behind",
+      "explore",
+      "people",
+      "platform.",
+      "principles,",
+      "relationships,",
+      "the"
     ]
   },
   "contact_main": {
-    "title": "Impressum",
-    "summary": "Legal contact details and publisher information.\n",
+    "title": "Company",
+    "summary": "Publisher and legal information.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
       "and",
-      "contact",
-      "details",
-      "impressum",
+      "company",
       "information.",
       "legal",
       "publisher"
@@ -118,14 +115,14 @@
     "keywords": []
   },
   "core": {
-    "title": "Calyrai core",
+    "title": "Calyr.a\u00ed Core",
     "summary": "Connects observations, knowledge, models, and decisions.\n",
     "body_preview": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
     "route": "/research/platforms/core/index.html",
     "icon": "brain",
     "keywords": [
       "and",
-      "calyrai",
+      "calyr.a\u00ed",
       "connects",
       "core",
       "decisions.",
@@ -182,12 +179,13 @@
     ]
   },
   "oracle": {
-    "title": "pythia",
+    "title": "Pythia Applications",
     "summary": "Extracting knowledge from complex information spaces.\n",
     "body_preview": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
     "route": "/research/platforms/pythia/index.html",
     "icon": "crystal-ball",
     "keywords": [
+      "applications",
       "complex",
       "extracting",
       "from",
@@ -221,25 +219,6 @@
       "systems.",
       "the",
       "universal"
-    ]
-  },
-  "pythia_apps": {
-    "title": "pythia applications",
-    "summary": "Structural inference applied across scientific and engineering domains.",
-    "body_preview": "Each pythia application is a domain-specific deployment of the PYTHIA inference framework. It reconstructs hidden organization from incomplete observations using the same universal S-Layer and General",
-    "route": "",
-    "icon": "",
-    "keywords": [
-      "across",
-      "and",
-      "applications",
-      "applied",
-      "domains.",
-      "engineering",
-      "inference",
-      "pythia",
-      "scientific",
-      "structural"
     ]
   },
   "pythia_saxs": {
@@ -280,68 +259,6 @@
       "pythia",
       "states",
       "topology"
-    ]
-  },
-  "pythia_materials": {
-    "title": "materials pythia",
-    "summary": "Inferring the hidden assembly structure of materials from experimental signatures.",
-    "body_preview": "The Materials Oracle reconstructs the multi-scale organization of crystalline, amorphous, and composite materials from diffraction, scattering, and spectroscopic observations.",
-    "route": "/research/pythia/materials/index.html",
-    "icon": "atom",
-    "keywords": [
-      "assembly",
-      "experimental",
-      "from",
-      "hidden",
-      "inferring",
-      "materials",
-      "of",
-      "pythia",
-      "signatures.",
-      "structure",
-      "the"
-    ]
-  },
-  "pythia_proteomics": {
-    "title": "proteomics pythia",
-    "summary": "Reconstructing protein structure and assembly from incomplete experimental data.",
-    "body_preview": "The Proteomics Oracle applies PYTHIA to structural biology. It infers protein fold, binding geometry, and complex stoichiometry from heterogeneous experimental sources including SAXS, cryo-EM, NMR, an",
-    "route": "/research/pythia/proteomics/index.html",
-    "icon": "helix",
-    "keywords": [
-      "and",
-      "assembly",
-      "data.",
-      "experimental",
-      "from",
-      "incomplete",
-      "protein",
-      "proteomics",
-      "pythia",
-      "reconstructing",
-      "structure"
-    ]
-  },
-  "pythia_engineering": {
-    "title": "engineering pythia",
-    "summary": "Inferring the load state and hidden damage organization of engineered structures.",
-    "body_preview": "The Engineering Oracle applies PYTHIA to structural and civil engineering. It reconstructs internal force distributions, damage states, and failure precursors from sensor data, inspection records, and",
-    "route": "/research/pythia/engineering/index.html",
-    "icon": "bridge",
-    "keywords": [
-      "and",
-      "damage",
-      "engineered",
-      "engineering",
-      "hidden",
-      "inferring",
-      "load",
-      "of",
-      "organization",
-      "pythia",
-      "state",
-      "structures.",
-      "the"
     ]
   },
   "ecosystem": {

@@ -1,9 +1,7 @@
 brand:
   display_name: "Calyr.a\xED"
   domain: calyr.ai
-  tagline: 'Surrogate modelling for complex systems
-
-    '
+  tagline: Calyr.aí turns incomplete data from complex systems into explainable models for prediction, design, and better decisions.
 __site_runtime:
   teaser:
     meta:
@@ -18,11 +16,12 @@ __site_runtime:
       deck_link_url: /research/lithos/index.html
       insight_title: Who needs it
       insight_copy: Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions.
+      hpc_title: What powers it
+      hpc_copy: Calyr.aí uses High-Performance Computing (HPC), including the VSC-5 supercomputer, to run complex simulations and turn their results into fast, explainable surrogate models.
     copy:
       mission: We begin with one valuable challenge and build toward a lasting platform partnership.
       ready: Ready
       complete: Story chain complete
-      hpc_explicit: HPC means High-Performance Computing on VSC-5 supercomputing infrastructure.
       empty_story_title: Story Engine
       empty_story_item: Build the path to generate linked slides.
     nodes:
@@ -89,9 +88,7 @@ hero:
     variant: hero-banner
   explain:
     why: Introduce the brand promise before module exploration.
-  summary: 'create what is not here yet.
-
-    '
+  summary: Create what is not here yet.
 movie:
   title: Teaser
   subtitle: Short
@@ -105,17 +102,12 @@ movie:
   explain:
     why: Keep the teaser present but initially compressed so it does not dominate
       the opening scan path.
-  summary: 'Visual short section.
-
-    '
-  body: 'Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle,
-    surrogate models, and scientific AI.
-
-    '
+  summary: See the platform in motion.
+  body: Follow the path from experimental evidence and HPC to surrogate intelligence and scientific decisions.
   route: /research/teaser/index.html
 platforms:
   title: Platforms
-  subtitle: Applied intelligence modules
+  subtitle: Intelligence for complex systems
   intent:
     purpose: capability-overview
     audience: first-visit
@@ -130,13 +122,10 @@ platforms:
     - platform
   explain:
     why: Present the primary product modules before the broader ecosystem context.
-  summary: 'Core platform modules for engineering, medicine, reasoning, and decision
-    support.
-
-    '
+  summary: One inference architecture, applied across science, medicine, and engineering.
 architecture:
   title: Architecture
-  subtitle: System relationships
+  subtitle: How the system connects
   intent:
     purpose: ecosystem-context
     audience: returning-visitor
@@ -149,12 +138,10 @@ architecture:
   explain:
     why: Show how ecosystem navigation, contact, and philosophy follow the core module
       overview.
-  summary: 'Structural overview of module connections, data flow, and reasoning pathways.
-
-    '
+  summary: Explore the principles, relationships, and people behind the platform.
 contact_main:
-  title: Impressum
-  subtitle: Impressum
+  title: Company
+  subtitle: Legal information
   intent:
     purpose: legal-contact
     audience: returning-visitor
@@ -169,20 +156,18 @@ contact_main:
   explain:
     why: Provide a dedicated main-page contact section where Contact means Impressum/legal
       details.
-  summary: 'Legal contact details and publisher information.
-
-    '
+  summary: Publisher and legal information.
 footer:
   title: ''
   subtitle: ''
   summary: ''
   contacts: []
 core:
-  title: Calyrai core
-  tile_lead: brain
+  title: Calyr.aí Core
+  tile_lead: reasoning
   tile_accent: blue
-  tile_title: brain
-  tile_summary: central reasoning engine
+  tile_title: core
+  tile_summary: connects evidence, models, and decisions
   subtitle: Central reasoning engine
   summary: 'Connects observations, knowledge, models, and decisions.
 
@@ -205,10 +190,10 @@ core:
       YAML and linked source content.
 brix:
   title: brix
-  tile_lead: bridge
+  tile_lead: engineering
   tile_accent: orange
-  tile_title: bridge
-  tile_summary: engineering intelligence
+  tile_title: brix
+  tile_summary: surrogate-assisted design and analysis
   subtitle: Engineering intelligence
   summary: 'Surrogate-assisted engineering design and analysis.
 
@@ -222,10 +207,10 @@ brix:
   route: /research/platforms/brix/index.html
 aflowtex:
   title: aflowtex
-  tile_lead: aorta
+  tile_lead: medicine
   tile_accent: red
-  tile_title: aorta
-  tile_summary: medical flow intelligence
+  tile_title: aflowtex
+  tile_summary: patient-specific flow intelligence
   subtitle: Medical flow intelligence
   summary: 'Patient-specific flow modelling and clinical decision support.
 
@@ -239,10 +224,10 @@ aflowtex:
   route: /research/platforms/aflowtex/index.html
 lithos:
   title: lithos
-  tile_lead: mountain
+  tile_lead: consequences
   tile_accent: green
-  tile_title: mountain
-  tile_summary: consequence intelligence
+  tile_title: lithos
+  tile_summary: makes risks and trade-offs actionable
   subtitle: Consequence intelligence
   summary: 'Understanding consequences, trade-offs, and impact.
 
@@ -254,11 +239,11 @@ lithos:
   icon: mountain
   route: /research/platforms/lithos/index.html
 oracle:
-  title: pythia
-  tile_lead: crystal-ball
+  title: Pythia Applications
+  tile_lead: applied inference
   tile_accent: magenta
-  tile_title: crystal-ball
-  tile_summary: applications
+  tile_title: applications
+  tile_summary: domain-specific deployments of pythia
   subtitle: Applied Inference
   summary: 'Extracting knowledge from complex information spaces.
 
@@ -271,10 +256,10 @@ oracle:
   route: /research/platforms/pythia/index.html
 pythia:
   title: pythia
-  tile_lead: compass
+  tile_lead: universal inference
   tile_accent: cyan
-  tile_title: compass
-  tile_summary: universal inference framework
+  tile_title: pythia
+  tile_summary: reveals hidden structure from incomplete evidence
   subtitle: Universal Framework for Complex Systems
   summary: 'A universal computational framework for representing, reasoning about,
     and discovering the hidden organization of complex systems.
@@ -288,31 +273,12 @@ pythia:
     \ them.\n"
   icon: compass
   route: /research/platforms/pythia/index.html
-pythia_apps:
-  title: pythia applications
-  subtitle: Applied Inference
-  intent:
-    purpose: domain-showcase
-    audience: domain-expert
-  render:
-    variant: tile-grid-secondary
-    source: homepage.grid.pythia-band
-  behavior:
-    collapsible: true
-    default_expanded: true
-  explain:
-    why: Showcase published pythia applications as entry points into domain-specific
-      inference powered by PYTHIA.
-  summary: Structural inference applied across scientific and engineering domains.
-  body: Each pythia application is a domain-specific deployment of the PYTHIA inference
-    framework. It reconstructs hidden organization from incomplete observations using
-    the same universal S-Layer and General Assembly.
 pythia_saxs:
   title: saxs pythia
-  tile_lead: scatter
+  tile_lead: molecular assembly
   tile_accent: cyan
-  tile_title: scatter
-  tile_summary: scattering inference
+  tile_title: saxs
+  tile_summary: structure from scattering profiles
   subtitle: Small-Angle Scattering Pythia
   summary: Reconstructing molecular assembly structure from small-angle X-ray scattering
     profiles.
@@ -324,10 +290,10 @@ pythia_saxs:
   route: /research/pythia/saxs/index.html
 pythia_metabolic:
   title: metabolic pythia
-  tile_lead: network
+  tile_lead: biological systems
   tile_accent: green
-  tile_title: network
-  tile_summary: metabolic network inference
+  tile_title: metabolic
+  tile_summary: flux states and network topology
   subtitle: Metabolic Network Pythia
   summary: Inferring metabolic flux states and network topology from experimental
     constraints.
@@ -337,52 +303,12 @@ pythia_metabolic:
     given conditions.
   icon: network
   route: /research/pythia/metabolic/index.html
-pythia_materials:
-  title: materials pythia
-  tile_lead: atom
-  tile_accent: orange
-  tile_title: atom
-  tile_summary: materials assembly inference
-  subtitle: Materials Assembly Pythia
-  summary: Inferring the hidden assembly structure of materials from experimental
-    signatures.
-  body: The Materials Oracle reconstructs the multi-scale organization of crystalline,
-    amorphous, and composite materials from diffraction, scattering, and spectroscopic
-    observations.
-  icon: atom
-  route: /research/pythia/materials/index.html
-pythia_proteomics:
-  title: proteomics pythia
-  tile_lead: helix
-  tile_accent: magenta
-  tile_title: helix
-  tile_summary: protein structure inference
-  subtitle: Proteomics Pythia
-  summary: Reconstructing protein structure and assembly from incomplete experimental
-    data.
-  body: The Proteomics Oracle applies PYTHIA to structural biology. It infers protein
-    fold, binding geometry, and complex stoichiometry from heterogeneous experimental
-    sources including SAXS, cryo-EM, NMR, and mass spectrometry.
-  icon: helix
-  route: /research/pythia/proteomics/index.html
-pythia_engineering:
-  title: engineering pythia
-  tile_lead: bridge
-  tile_accent: yellow
-  tile_title: bridge
-  tile_summary: structural systems inference
-  subtitle: Structural Engineering Pythia
-  summary: Inferring the load state and hidden damage organization of engineered structures.
-  body: The Engineering Oracle applies PYTHIA to structural and civil engineering.
-    It reconstructs internal force distributions, damage states, and failure precursors
-    from sensor data, inspection records, and simulation outputs.
-  icon: bridge
-  route: /research/pythia/engineering/index.html
 ecosystem:
   title: ecosystem
-  tile_lead: network
+  tile_lead: system map
   tile_accent: cyan
   tile_title: ecosystem
+  tile_summary: see how every module connects
   subtitle: Interactive architecture
   summary: 'Explore relationships across the calyrai ecosystem.
 
@@ -396,9 +322,10 @@ ecosystem:
   route: /ecosystem
 philosophy:
   title: philosophy
-  tile_lead: book
+  tile_lead: principles
   tile_accent: magenta
   tile_title: philosophy
+  tile_summary: rigor, openness, and reproducibility
   subtitle: Principles and foundations
   summary: 'Scientific rigor, openness, and reproducibility.
 
@@ -409,12 +336,12 @@ philosophy:
   route: /books
 contact:
   title: contact
-  tile_lead: contacts
+  tile_lead: collaborate
   tile_accent: yellow
-  tile_title: swarm
-  tile_summary: intelligence
-  subtitle: swarm
-  landing_message: intelligence
+  tile_title: contact
+  tile_summary: start with one valuable challenge
+  subtitle: Research and partnerships
+  landing_message: Start with one valuable challenge
   summary: 'Research, engineering, and collaboration channels.
 
     '
@@ -468,9 +395,9 @@ contact:
     why: Provide a direct contact path after users understand the platform and ecosystem.
 impressum:
   title: impressum
-  tile_lead: legal
+  tile_lead: company
   tile_title: impressum
-  tile_summary: details
+  tile_summary: legal and publisher details
   subtitle: Legal details
   landing_message: details
   summary: 'Name, function, and address.
