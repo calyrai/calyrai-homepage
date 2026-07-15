@@ -1,10 +1,22 @@
 seed: 5318008
 
+page:
+  language: "en"
+  title: "calyr.aí | Interactive Deck"
+  description: "An interactive calyr.aí visual story showing how scientific data converges into an editable three-dimensional aortic arch."
+  canonical: "https://calyr.ai/research/lithos/index.html"
+  theme_color: "#000000"
+
+interaction:
+  swipe_enabled: true
+  swipe_threshold: 64
+  swipe_max_vertical_ratio: 0.72
+
 ui:
   pitch_link_label: "Pitch Deck"
   footer_primary: "FROM DATA TO FORM."
   footer_secondary: "FROM COMPLEXITY TO INTELLIGENCE."
-  default_hint: "Use left/right arrows or top buttons. One slide at a time, no scrolling."
+  default_hint: "Use left/right arrows, the top buttons, or swipe horizontally on a phone."
 
 formation_steps:
   - 0.22
@@ -35,32 +47,32 @@ cluster_amounts:
   - 14
 
 slides:
-  - title: "Clustered Network."
-    subtitle: "Points connect into a live topology."
-    story: "The system starts as one moving clustered network of points and local links."
+  - title: "Phase-Space Seeds."
+    subtitle: "Data points are only weakly connected."
+    story: "At first, points move in phase space with minimal coupling, and each one is individually optimized before global structure emerges."
     type: "line"
-    hint: "Nodes move continuously. Drag any point to perturb the local cluster."
+    hint: "Sparse links only: observe phase-space motion, then drag points to test individual optimization behavior."
 
   - title: "Magenta Linkage."
-    subtitle: "Core route emerges from the network."
-    story: "A single magenta route starts linking the connected clusters into one candidate direction."
+    subtitle: "A surrogate model links data domains."
+    story: "A surrogate model is introduced to connect experimental data points with theoretical data points into one coherent latent structure."
     type: "magenta"
-    hint: "Observe how the magenta route stabilizes the cluster network."
+    hint: "Observe how the surrogate linkage aligns experimental and theoretical datapoints."
 
   - title: "Flow Conditioning."
-    subtitle: "Physical flow pushes the route."
-    story: "The magenta route is exposed to flow conditions and deforms under physical forcing."
+    subtitle: "Surrogate model and datapoint modes are connected."
+    story: "The surrogate model is now coupled to experimental and theoretical datapoint modes, so changes in one mode propagate through the connected structure."
     type: "flow"
-    hint: "Drag the magenta control points to tune the stent guide while cyan flow lines react around it."
+    hint: "Move the control points to see connected surrogate and datapoint modes co-adapt in real time."
 
   - title: "Convergence."
-    subtitle: "Network and flow settle into one direction."
-    story: "Topology and flow converge toward one robust shape candidate."
+    subtitle: "Magenta boundary conditions are introduced."
+    story: "Magenta boundary conditions are introduced and implemented directly in the surrogate model, constraining how connected datapoint modes evolve."
     type: "flow-finalize"
-    hint: "Continue shaping the magenta guide with the control points; the final bow appears in the next step."
+    hint: "Adjust the magenta controls to modify boundary conditions and observe the surrogate model response."
 
   - title: "Final Aortic Bow."
     subtitle: "Best bow form appears at the end."
     story: "Only at the end, the stabilized result is shown as the final aortic bow."
     type: "final-bow"
-    hint: "Refine the locked magenta guide with its control points and observe the bow coupling."
+    hint: "Drag on the model to rotate in 3D and inspect the organic aortic bow with stent lattice."

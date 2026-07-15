@@ -83,9 +83,9 @@
     },
     {
       "id": "core",
-      "label": "Calyrai core",
+      "label": "calyr.aí core",
       "data": {
-        "title": "Calyrai core",
+        "title": "calyr.aí core",
         "summary": "Connects observations, knowledge, models, and decisions.\n",
         "icon": "brain"
       }
@@ -194,7 +194,7 @@
       "label": "ecosystem",
       "data": {
         "title": "ecosystem",
-        "summary": "Explore relationships across the calyrai ecosystem.\n",
+        "summary": "Explore relationships across the calyr.aí ecosystem.\n",
         "icon": "network"
       }
     },

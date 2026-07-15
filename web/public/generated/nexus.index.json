@@ -118,14 +118,14 @@
     "keywords": []
   },
   "core": {
-    "title": "Calyrai core",
+    "title": "calyr.aí core",
     "summary": "Connects observations, knowledge, models, and decisions.\n",
-    "body_preview": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+    "body_preview": "calyr.aí core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
     "route": "/research/platforms/core/index.html",
     "icon": "brain",
     "keywords": [
       "and",
-      "calyrai",
+      "calyr.aí",
       "connects",
       "core",
       "decisions.",
@@ -346,13 +346,13 @@
   },
   "ecosystem": {
     "title": "ecosystem",
-    "summary": "Explore relationships across the calyrai ecosystem.\n",
-    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
+    "summary": "Explore relationships across the calyr.aí ecosystem.\n",
+    "body_preview": "Interactive graph showing how calyr.aí core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [
       "across",
-      "calyrai",
+      "calyr.aí",
       "ecosystem",
       "ecosystem.",
       "explore",

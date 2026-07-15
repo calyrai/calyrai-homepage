@@ -1,10 +1,10 @@
 meta:
-  title: "CALYR.AI Pitch Engine"
+  title: "calyr.aí Pitch Engine"
   subtitle: "Scientific Intelligence Infrastructure for scalable research and technology ventures"
   mode: "interactive-flow"
 
 copy:
-  mission: "CALYR.AI connects wet lab, HPC, knowledge graphs, and surrogates into one scalable Scientific Intelligence Infrastructure."
+  mission: "calyr.aí connects wet lab, HPC, knowledge graphs, and surrogates into one scalable Scientific Intelligence Infrastructure."
   ready: "Ready"
   complete: "Story chain complete"
   hpc_explicit: "HPC means High-Performance Computing on VSC-5 supercomputing infrastructure."
@@ -16,10 +16,10 @@ nodes:
     y: 0.50
     sentence: "Scientific work is fragmented across wet lab, simulation, and decision support."
   - id: platform
-    label: "CALYR.AI Platform"
+    label: "calyr.aí Platform"
     x: 0.34
     y: 0.50
-    sentence: "CALYR.AI turns scientific workflows into one product infrastructure."
+    sentence: "calyr.aí turns scientific workflows into one product infrastructure."
   - id: innovation
     label: "Innovation"
     x: 0.57
@@ -41,7 +41,7 @@ edges:
     to: platform
     slide: "Fragmentation to Infrastructure"
     thought: "If scientific workflows stay fragmented, scaling decisions remains slow and expensive."
-    explanation: "CALYR.AI unifies data, simulation, and reasoning into one operational platform layer."
+    explanation: "calyr.aí unifies data, simulation, and reasoning into one operational platform layer."
   - from: platform
     to: innovation
     slide: "Infrastructure to Innovation"
@@ -51,7 +51,7 @@ edges:
     to: users
     slide: "Infrastructure to Adoption"
     thought: "A platform matters only if domain teams can use it directly."
-    explanation: "CALYR.AI targets research, MedTech, engineering, and industrial R&D with reusable workflows."
+    explanation: "calyr.aí targets research, MedTech, engineering, and industrial R&D with reusable workflows."
   - from: innovation
     to: business
     slide: "Innovation to Business"

@@ -5,12 +5,16 @@ const CYAN = '#44dbff';
 
 class DeckConfigLoader {
   static async load(path) {
-    const response = await fetch(path, { cache: 'no-store' });
+    const response = await fetch(path, { cache: 'no-cache' });
     if (!response.ok) {
       throw new Error(`Deck config fetch failed (${response.status})`);
     }
     const text = await response.text();
-    return this.parseYaml(text);
+    const config = this.parseYaml(text);
+    if (!Array.isArray(config.slides) || config.slides.length === 0) {
+      throw new Error('Deck config must contain at least one slide');
+    }
+    return config;
   }
 
   static parseYaml(text) {
@@ -96,11 +100,23 @@ function createSeededRandom(seed) {
 
 const DEFAULT_DECK_CONFIG = {
   seed: 5318008,
+  page: {
+    language: 'en',
+    title: 'calyr.aí | Interactive Deck',
+    description: 'An interactive calyr.aí visual story showing how scientific data converges into an editable three-dimensional aortic arch.',
+    canonical: 'https://calyr.ai/research/lithos/index.html',
+    theme_color: '#000000',
+  },
+  interaction: {
+    swipe_enabled: true,
+    swipe_threshold: 64,
+    swipe_max_vertical_ratio: .72,
+  },
   ui: {
     pitch_link_label: 'Pitch Deck',
     footer_primary: 'FROM DATA TO FORM.',
     footer_secondary: 'FROM COMPLEXITY TO INTELLIGENCE.',
-    default_hint: 'Use left/right arrows or top buttons. One slide at a time, no scrolling.',
+    default_hint: 'Use left/right arrows, the top buttons, or swipe horizontally on a phone.',
   },
   formation_steps: [0.22, 0.36, 0.52, 0.68, 0.82, 0.92, 1.0],
   cluster_amounts: [14, 14, 18, 14, 14],
@@ -112,11 +128,11 @@ const DEFAULT_DECK_CONFIG = {
     { x: 502, y: 220 },
   ],
   slides: [
-  { title: 'Clustered Network.', subtitle: 'Points connect into a live topology.', story: 'The system starts as one moving clustered network of points and local links.', type: 'line', hint: 'Nodes move continuously. Drag any point to perturb the local cluster.' },
-  { title: 'Magenta Linkage.', subtitle: 'Core route emerges from the network.', story: 'A single magenta route starts linking the connected clusters into one candidate direction.', type: 'magenta', hint: 'Observe how the magenta route stabilizes the cluster network.' },
-  { title: 'Flow Conditioning.', subtitle: 'Physical flow pushes the route.', story: 'The magenta route is exposed to flow conditions and deforms under physical forcing.', type: 'flow', hint: 'Drag the magenta handle to vary the flow pressure and deformation.' },
-  { title: 'Convergence.', subtitle: 'Network and flow settle into one direction.', story: 'Topology and flow converge toward one robust shape candidate.', type: 'flow-finalize', hint: 'Continue shaping the route; the final bow appears in the next step.' },
-  { title: 'Final Aortic Bow.', subtitle: 'Best bow form appears at the end.', story: 'Only at the end, the stabilized result is shown as the final aortic bow.', type: 'final-bow', hint: 'Use left/right arrows or top buttons. One slide at a time, no scrolling.' }
+  { title: 'Phase-Space Seeds.', subtitle: 'Data points are only weakly connected.', story: 'At first, points move in phase space with minimal coupling, and each one is individually optimized before global structure emerges.', type: 'line', hint: 'Sparse links only: observe phase-space motion, then drag points to test individual optimization behavior.' },
+  { title: 'Magenta Linkage.', subtitle: 'A surrogate model links data domains.', story: 'A surrogate model is introduced to connect experimental data points with theoretical data points into one coherent latent structure.', type: 'magenta', hint: 'Observe how the surrogate linkage aligns experimental and theoretical datapoints.' },
+  { title: 'Flow Conditioning.', subtitle: 'Surrogate model and datapoint modes are connected.', story: 'The surrogate model is now coupled to experimental and theoretical datapoint modes, so changes in one mode propagate through the connected structure.', type: 'flow', hint: 'Move the control points to see connected surrogate and datapoint modes co-adapt in real time.' },
+  { title: 'Convergence.', subtitle: 'Magenta boundary conditions are introduced.', story: 'Magenta boundary conditions are introduced and implemented directly in the surrogate model, constraining how connected datapoint modes evolve.', type: 'flow-finalize', hint: 'Adjust the magenta controls to modify boundary conditions and observe the surrogate model response.' },
+  { title: 'Final Aortic Bow.', subtitle: 'Best bow form appears at the end.', story: 'Only at the end, the stabilized result is shown as the final aortic bow.', type: 'final-bow', hint: 'Drag on the model to rotate in 3D and inspect the organic aortic bow with stent lattice.' }
   ],
 };
 
@@ -140,6 +156,7 @@ const BRIDGE_NODE_INDICES = [3, 9, 14, 19, 24, 30, 36, 42, 49, 56, 64, 72];
 let CLUSTER_CENTERS = DEFAULT_DECK_CONFIG.cluster_centers.slice();
 let CLUSTER_FIELD = [];
 let activeCrownScene = null;
+let previousConvergenceState = null;
 const BEST_STENT_GUIDE_POINTS = [
   { x: 188, y: 242 },
   { x: 184, y: 176 },
@@ -155,6 +172,7 @@ const footerSpans = Array.from(document.querySelectorAll('.footer span'));
 let active = -1;
 let activeCleanup = null;
 let deckUi = { ...DEFAULT_DECK_CONFIG.ui };
+let deckInteraction = { ...DEFAULT_DECK_CONFIG.interaction };
 
 let FORMATION_STEPS = DEFAULT_DECK_CONFIG.formation_steps.slice();
 
@@ -176,6 +194,23 @@ function buildClusterField(centers, amounts, seed) {
 
 function applyDeckConfig(raw) {
   const config = raw && typeof raw === 'object' ? raw : {};
+  const page = config.page && typeof config.page === 'object' ? config.page : {};
+  const pageConfig = { ...DEFAULT_DECK_CONFIG.page, ...page };
+  document.documentElement.lang = String(pageConfig.language || 'en');
+  document.title = String(pageConfig.title);
+  document.querySelector('meta[name="description"]')?.setAttribute('content', String(pageConfig.description));
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', String(pageConfig.theme_color));
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', String(pageConfig.title));
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', String(pageConfig.description));
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', String(pageConfig.canonical));
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', String(pageConfig.canonical));
+
+  const interaction = config.interaction && typeof config.interaction === 'object' ? config.interaction : {};
+  deckInteraction = {
+    swipe_enabled: interaction.swipe_enabled !== false,
+    swipe_threshold: Math.max(40, Number(interaction.swipe_threshold) || DEFAULT_DECK_CONFIG.interaction.swipe_threshold),
+    swipe_max_vertical_ratio: Math.max(.35, Math.min(1, Number(interaction.swipe_max_vertical_ratio) || DEFAULT_DECK_CONFIG.interaction.swipe_max_vertical_ratio)),
+  };
   const ui = config.ui && typeof config.ui === 'object' ? config.ui : {};
   deckUi = {
     pitch_link_label: String(ui.pitch_link_label || DEFAULT_DECK_CONFIG.ui.pitch_link_label),
@@ -446,6 +481,21 @@ function drawMagentaSpine(svg) {
 function drawMainCurveWithAdditives(svg) {
   const baseMainPoints = interpolatePoints(buildMagentaSpinePoints(), buildBestStentGuidePoints(), 0.9);
 
+  const getOrientationState = (offsets) => {
+    const samples = offsets || crownOffsets;
+    if (!samples.length) {
+      return { tilt: 0, yaw: 0, divergence: 0 };
+    }
+    const meanX = samples.reduce((sum, p) => sum + p.x, 0) / samples.length;
+    const meanY = samples.reduce((sum, p) => sum + p.y, 0) / samples.length;
+    const divergenceRaw = samples[samples.length - 1].x - samples[0].x;
+    return {
+      tilt: clamp(meanY / 56, -1, 1),
+      yaw: clamp(meanX / 48, -1, 1),
+      divergence: clamp(divergenceRaw / 96, -1, 1),
+    };
+  };
+
   const mainPath = svgEl('path', {
     d: pathFrom(baseMainPoints),
     fill: 'none',
@@ -463,7 +513,6 @@ function drawMainCurveWithAdditives(svg) {
     { anchorIdx: 3, dx1: 30, dy1: -12, dx2: 58, dy2: -30, dx3: 82, dy3: -48 },
   ];
 
-  const crownOffsets = additiveShapes.map(() => ({ x: 0, y: 0 }));
   const branchPaths = additiveShapes.map(() => {
     const el = svgEl('path', {
       fill: 'none',
@@ -488,6 +537,19 @@ function drawMainCurveWithAdditives(svg) {
     svg.appendChild(el);
     return el;
   });
+
+  const crownOffsets = additiveShapes.map(() => ({ x: 0, y: 0 }));
+  const scene = {
+    svg,
+    baseMainPoints,
+    additiveShapes,
+    crownOffsets,
+    crownHandles,
+    currentMainPoints: baseMainPoints.map((point) => ({ ...point })),
+    getOrientationState: () => getOrientationState(crownOffsets),
+    onCrownChange: null,
+    update: null,
+  };
 
   const update = () => {
     const mainPoints = baseMainPoints.map((p, idx) => {
@@ -517,17 +579,16 @@ function drawMainCurveWithAdditives(svg) {
       crownHandles[idx].setAttribute('cx', String(endX));
       crownHandles[idx].setAttribute('cy', String(endY));
     });
+
+    const orientation = scene.getOrientationState();
+    if (scene.onCrownChange) {
+      scene.onCrownChange(orientation);
+    }
   };
 
   update();
-  activeCrownScene = {
-    svg,
-    baseMainPoints,
-    additiveShapes,
-    crownOffsets,
-    crownHandles,
-    update,
-  };
+  scene.update = update;
+  activeCrownScene = scene;
 }
 
 function addCrownHandleControls(svg, statusEl) {
@@ -807,6 +868,7 @@ function addMainPathBuilder(svg, statusEl) {
     drawing = true;
     selected.splice(0, selected.length);
     allNodes.forEach((n) => n.classList.remove('selected-node'));
+    scene.currentMainPoints = mainPoints.map((point) => ({ ...point }));
     handleOffset = { x: 0, y: 0 };
     magentaHandle.classList.remove('unlocked');
     if (statusEl) statusEl.textContent = 'Main path 0 / 8';
@@ -1149,6 +1211,7 @@ function addCoupledBowDynamics(svg, statusEl) {
 }
 
 function addNodeMotion(svg) {
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return () => {};
   const nodes = Array.from(svg.querySelectorAll('.node'));
   if (!nodes.length) return () => {};
 
@@ -1201,6 +1264,10 @@ function addNodeMotion(svg) {
 
   const tick = (ts) => {
     if (!running) return;
+    if (document.hidden) {
+      rafId = requestAnimationFrame(tick);
+      return;
+    }
     const t = ts - startTs;
     base.forEach((item) => {
       const dx = Math.sin(t * item.speed + item.phase) * item.amp;
@@ -1281,6 +1348,11 @@ function addNodeFlowThroughClouds(svg, statusEl) {
 
   const tick = () => {
     if (!running) return;
+    if (document.hidden) {
+      rafId = requestAnimationFrame(tick);
+      return;
+    }
+    const orientation = activeCrownScene?.getOrientationState?.() || { tilt: 0, yaw: 0, divergence: 0 };
     const nodes = Array.from(svg.querySelectorAll('.node[data-node-idx]')).map((node) => ({
       x: parseFloat(node.getAttribute('cx')),
       y: parseFloat(node.getAttribute('cy')),
@@ -1288,14 +1360,15 @@ function addNodeFlowThroughClouds(svg, statusEl) {
 
     if (nodes.length >= 8) {
       flowPaths.forEach((flow, i) => {
-        const y = 90 + i * 20;
-        const anchors = chooseAnchors(nodes, y);
-        const points = [{ x: 24, y }, ...anchors, { x: 564, y: y + ((i % 3) - 1) * 4 }];
+        const centerOffset = (i - (flowPaths.length - 1) / 2);
+        const y = 90 + i * 20 + orientation.tilt * 12 + centerOffset * orientation.divergence * 1.8;
+        const anchors = chooseAnchors(nodes, y + orientation.yaw * 6);
+        const points = [{ x: 24, y }, ...anchors, { x: 564, y: y + ((i % 3) - 1) * 4 + orientation.tilt * 8 }];
         flow.setAttribute('d', pathFrom(points));
-        flow.setAttribute('opacity', String(0.32 + (i / flowPaths.length) * 0.22));
+        flow.setAttribute('opacity', String(0.3 + (i / flowPaths.length) * 0.24 + Math.abs(orientation.tilt) * 0.08));
       });
       if (statusEl) {
-        statusEl.textContent = 'Connected clouds + flow through nodes';
+        statusEl.textContent = `Connected clouds + node flow · tilt ${Math.round(orientation.tilt * 100)}%`;
       }
     }
 
@@ -1307,6 +1380,591 @@ function addNodeFlowThroughClouds(svg, statusEl) {
   return () => {
     running = false;
     if (rafId) cancelAnimationFrame(rafId);
+  };
+}
+
+function addDataPlateAlignment(svg) {
+  const plates = CLUSTER_CENTERS.map((center, idx) => {
+    const top = svgEl('line', {
+      stroke: MAGENTA,
+      'stroke-width': '1.05',
+      opacity: '0.44',
+      'stroke-linecap': 'round',
+      class: 'data-plate-line',
+      'data-plate-idx': String(idx),
+    });
+    const bottom = svgEl('line', {
+      stroke: MAGENTA,
+      'stroke-width': '1.05',
+      opacity: '0.44',
+      'stroke-linecap': 'round',
+      class: 'data-plate-line',
+      'data-plate-idx': String(idx),
+    });
+    svg.appendChild(top);
+    svg.appendChild(bottom);
+    return { center, idx, top, bottom };
+  });
+
+  const updateFromOrientation = (orientation) => {
+    const state = orientation || { tilt: 0, yaw: 0, divergence: 0 };
+    plates.forEach((plate) => {
+      const angle = (-0.24 + plate.idx * 0.14) + state.tilt * 0.5 + state.yaw * 0.28 * (plate.idx - 2);
+      const halfLength = 15 + (plate.idx % 2) * 3 + Math.abs(state.divergence) * 3;
+      const separation = 7 + Math.abs(state.tilt) * 4;
+      const dx = Math.cos(angle) * halfLength;
+      const dy = Math.sin(angle) * halfLength;
+      const nx = -Math.sin(angle) * (separation / 2);
+      const ny = Math.cos(angle) * (separation / 2);
+
+      plate.top.setAttribute('x1', String(plate.center.x - dx + nx));
+      plate.top.setAttribute('y1', String(plate.center.y - dy + ny));
+      plate.top.setAttribute('x2', String(plate.center.x + dx + nx));
+      plate.top.setAttribute('y2', String(plate.center.y + dy + ny));
+
+      plate.bottom.setAttribute('x1', String(plate.center.x - dx - nx));
+      plate.bottom.setAttribute('y1', String(plate.center.y - dy - ny));
+      plate.bottom.setAttribute('x2', String(plate.center.x + dx - nx));
+      plate.bottom.setAttribute('y2', String(plate.center.y + dy - ny));
+    });
+  };
+
+  updateFromOrientation({ tilt: 0, yaw: 0, divergence: 0 });
+
+  const scene = activeCrownScene;
+  if (scene && scene.svg === svg) {
+    scene.onCrownChange = updateFromOrientation;
+    updateFromOrientation(scene.getOrientationState());
+  }
+
+  return () => {
+    plates.forEach((plate) => {
+      plate.top.remove();
+      plate.bottom.remove();
+    });
+    if (scene && scene.onCrownChange === updateFromOrientation) {
+      scene.onCrownChange = null;
+    }
+  };
+}
+
+function addFinalBowOverlay(svg) {
+  const bowShadow = svgEl('path', {
+    d: reactiveAortaPath(0),
+    class: 'aortic-depth-shadow',
+    fill: 'none',
+    stroke: '#6e6e6e',
+    'stroke-width': 3.4,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    opacity: '0.34',
+  });
+  const bowCore = svgEl('path', {
+    d: reactiveAortaPath(0),
+    class: 'final-bow-emphasis coupled-core',
+    fill: 'none',
+    stroke: INK,
+    'stroke-width': 2.6,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    opacity: '0.92',
+  });
+  const bowHighlight = svgEl('path', {
+    d: reactiveAortaPath(0),
+    class: 'aortic-depth-highlight',
+    fill: 'none',
+    stroke: '#fff',
+    'stroke-width': 1.1,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    opacity: '0.62',
+  });
+
+  svg.appendChild(bowShadow);
+  svg.appendChild(bowCore);
+  svg.appendChild(bowHighlight);
+
+  let rafId = null;
+  let running = true;
+
+  const tick = () => {
+    if (!running) return;
+    if (document.hidden) {
+      rafId = requestAnimationFrame(tick);
+      return;
+    }
+    const orientation = activeCrownScene?.getOrientationState?.() || { tilt: 0, yaw: 0, divergence: 0 };
+    const coupling = clamp(orientation.tilt * 0.55 + orientation.yaw * 0.35 + orientation.divergence * 0.22, -1, 1);
+    const path = reactiveAortaPath(coupling);
+
+    bowShadow.setAttribute('d', path);
+    bowCore.setAttribute('d', path);
+    bowHighlight.setAttribute('d', path);
+
+    const tx = coupling * 2.8;
+    const ty = coupling * 3.9;
+    const rot = orientation.yaw * 8.5;
+    const transform = `translate(${tx} ${ty}) rotate(${rot} 286 178)`;
+    bowShadow.setAttribute('transform', transform);
+    bowCore.setAttribute('transform', transform);
+    bowHighlight.setAttribute('transform', transform);
+
+    bowShadow.setAttribute('opacity', String(0.24 + Math.abs(coupling) * 0.22));
+    bowHighlight.setAttribute('opacity', String(0.45 + Math.abs(coupling) * 0.3));
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+
+  return () => {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    bowShadow.remove();
+    bowCore.remove();
+    bowHighlight.remove();
+  };
+}
+
+function addAortaPointCloudBridge(svg) {
+  const edgeLayer = svgEl('g', { class: 'aorta-cloud-edges' });
+  const nodeLayer = svgEl('g', { class: 'aorta-cloud-nodes' });
+  const stentLayer = svgEl('g', { class: 'aorta-stent-lattice' });
+  const linkLayer = svgEl('g', { class: 'aorta-bow-links' });
+  svg.appendChild(edgeLayer);
+  svg.appendChild(nodeLayer);
+  svg.appendChild(stentLayer);
+  svg.appendChild(linkLayer);
+
+  const rand = createSeededRandom(20260714);
+
+  const add3 = (a, b) => ({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z });
+  const sub3 = (a, b) => ({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z });
+  const mul3 = (a, s) => ({ x: a.x * s, y: a.y * s, z: a.z * s });
+  const dot3 = (a, b) => a.x * b.x + a.y * b.y + a.z * b.z;
+  const cross3 = (a, b) => ({
+    x: a.y * b.z - a.z * b.y,
+    y: a.z * b.x - a.x * b.z,
+    z: a.x * b.y - a.y * b.x,
+  });
+  const norm3 = (v) => {
+    const len = Math.hypot(v.x, v.y, v.z) || 1;
+    return { x: v.x / len, y: v.y / len, z: v.z / len };
+  };
+
+  const rotate3 = (p, rx, ry, rz) => {
+    const cx = Math.cos(rx);
+    const sx = Math.sin(rx);
+    const cy = Math.cos(ry);
+    const sy = Math.sin(ry);
+    const cz = Math.cos(rz);
+    const sz = Math.sin(rz);
+
+    let x = p.x;
+    let y = p.y * cx - p.z * sx;
+    let z = p.y * sx + p.z * cx;
+
+    const x2 = x * cy + z * sy;
+    const y2 = y;
+    const z2 = -x * sy + z * cy;
+
+    x = x2 * cz - y2 * sz;
+    y = x2 * sz + y2 * cz;
+    z = z2;
+    return { x, y, z };
+  };
+
+  const project = (p) => {
+    const camera = 560;
+    const focal = 430;
+    const s = focal / Math.max(140, camera - p.z);
+    return {
+      x: 292 + p.x * s,
+      y: 214 + p.y * s,
+      scale: s,
+      depth: p.z,
+    };
+  };
+
+  const resample3D = (points, samples) => {
+    if (!points.length) return [];
+    const lengths = [0];
+    for (let i = 1; i < points.length; i += 1) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      lengths.push(lengths[i - 1] + Math.hypot(curr.x - prev.x, curr.y - prev.y, curr.z - prev.z));
+    }
+    const total = lengths[lengths.length - 1] || 1;
+    return Array.from({ length: samples }, (_, idx) => {
+      const target = (idx / (samples - 1)) * total;
+      let seg = 1;
+      while (seg < lengths.length && lengths[seg] < target) seg += 1;
+      const i = Math.min(seg, lengths.length - 1);
+      const l0 = lengths[i - 1];
+      const l1 = lengths[i] || l0 + 1;
+      const t = (target - l0) / Math.max(1e-6, l1 - l0);
+      const a = points[i - 1];
+      const b = points[i];
+      return {
+        x: a.x + (b.x - a.x) * t,
+        y: a.y + (b.y - a.y) * t,
+        z: a.z + (b.z - a.z) * t,
+      };
+    });
+  };
+
+  const tubeNodes = [];
+  const tubeEdges = [];
+  const stentEdges = [];
+  const branchAnchorIds = [];
+  const bowConnectorNodeIds = [];
+
+  const mainControl = [
+    { x: -130, y: 132, z: -18 },
+    { x: -124, y: 76, z: -18 },
+    { x: -98, y: 20, z: -26 },
+    { x: -54, y: -36, z: -34 },
+    { x: 2, y: -92, z: -24 },
+    { x: 84, y: -100, z: 8 },
+    { x: 144, y: -52, z: 44 },
+    { x: 176, y: 18, z: 56 },
+    { x: 186, y: 104, z: 38 },
+    { x: 176, y: 168, z: 22 },
+  ];
+
+  const mainCenterline = resample3D(mainControl, 44);
+  const mainFrames = [];
+  const ringCount = 13;
+
+  const addTube = (centerline, baseRadius, taper = 0.2, opts = {}) => {
+    const ringStart = tubeNodes.length;
+    const frameRows = [];
+    centerline.forEach((c, idx) => {
+      const prev = centerline[Math.max(0, idx - 1)];
+      const next = centerline[Math.min(centerline.length - 1, idx + 1)];
+      const tangent = norm3(sub3(next, prev));
+      const upRef = Math.abs(tangent.y) > 0.88 ? { x: 1, y: 0, z: 0 } : { x: 0, y: 1, z: 0 };
+      const normal = norm3(cross3(upRef, tangent));
+      const binormal = norm3(cross3(tangent, normal));
+      frameRows.push({ center: c, tangent, normal, binormal });
+
+      const t = idx / Math.max(1, centerline.length - 1);
+      const organic = 1 + Math.sin(t * Math.PI) * 0.2 + Math.cos(t * 4.2) * 0.06;
+      const radius = baseRadius * (1 - t * taper) * organic;
+
+      for (let lane = 0; lane < ringCount; lane += 1) {
+        const angleBase = (lane / ringCount) * Math.PI * 2;
+        const angle = angleBase + t * 0.58 + (rand() - 0.5) * 0.08;
+        const rx = radius * (1 + 0.16 * Math.cos(angle * 2 + t));
+        const ry = radius * 0.76 * (1 + 0.1 * Math.sin(angle * 3 - t));
+        const offset = add3(mul3(normal, Math.cos(angle) * rx), mul3(binormal, Math.sin(angle) * ry));
+        const node = add3(c, offset);
+        tubeNodes.push(node);
+      }
+    });
+
+    for (let s = 0; s < centerline.length - 1; s += 1) {
+      for (let lane = 0; lane < ringCount; lane += 1) {
+        const i0 = ringStart + s * ringCount + lane;
+        const i1 = ringStart + (s + 1) * ringCount + lane;
+        tubeEdges.push({ a: i0, b: i1, kind: 'cloud' });
+        const j = ringStart + s * ringCount + ((lane + 1) % ringCount);
+        tubeEdges.push({ a: i0, b: j, kind: 'cloud' });
+        if (opts.diagonals !== false) {
+          const d1 = ringStart + (s + 1) * ringCount + ((lane + 1) % ringCount);
+          const d2 = ringStart + (s + 1) * ringCount + ((lane - 1 + ringCount) % ringCount);
+          tubeEdges.push({ a: i0, b: d1, kind: 'cloud' });
+          if (lane % 2 === 0) tubeEdges.push({ a: i0, b: d2, kind: 'cloud' });
+        }
+      }
+    }
+
+    return { ringStart, frameRows };
+  };
+
+  const mainTube = addTube(mainCenterline, 27, 0.24, { diagonals: true });
+  mainFrames.push(...mainTube.frameRows);
+
+  const branchDefs = [
+    { section: 13, dir: { x: -66, y: -120, z: -26 }, radius: 10 },
+    { section: 17, dir: { x: -16, y: -132, z: -12 }, radius: 11 },
+    { section: 20, dir: { x: 42, y: -126, z: 22 }, radius: 10 },
+  ];
+
+  branchDefs.forEach((def, idx) => {
+    const base = mainCenterline[def.section];
+    const branchCtrl = [
+      base,
+      add3(base, mul3(def.dir, 0.34)),
+      add3(base, mul3(def.dir, 0.68)),
+      add3(base, def.dir),
+    ];
+    const centerline = resample3D(branchCtrl, 11);
+    const branchTube = addTube(centerline, def.radius, 0.42, { diagonals: idx !== 1 });
+
+    const branchRootRing = branchTube.ringStart;
+    for (let lane = 0; lane < ringCount; lane += 3) {
+      const mainIdx = mainTube.ringStart + def.section * ringCount + ((lane + 3) % ringCount);
+      const branchIdx = branchRootRing + lane;
+      tubeEdges.push({ a: mainIdx, b: branchIdx, kind: 'cloud' });
+    }
+
+    branchAnchorIds.push(branchRootRing + Math.floor(ringCount / 2));
+  });
+
+  const stentStart = 24;
+  const stentEnd = 42;
+  const stentStrands = 8;
+  for (let strand = 0; strand < stentStrands; strand += 1) {
+    let prevA = -1;
+    let prevB = -1;
+    for (let section = stentStart; section <= stentEnd; section += 1) {
+      const frame = mainFrames[section];
+      if (!frame) continue;
+      const t = (section - stentStart) / Math.max(1, stentEnd - stentStart);
+      const phase = strand * (Math.PI * 2 / stentStrands);
+      const angleA = phase + t * Math.PI * 4.2;
+      const angleB = phase - t * Math.PI * 4.2;
+      const radius = 17.5;
+
+      const pA = add3(frame.center, add3(mul3(frame.normal, Math.cos(angleA) * radius), mul3(frame.binormal, Math.sin(angleA) * radius * 0.82)));
+      const pB = add3(frame.center, add3(mul3(frame.normal, Math.cos(angleB) * radius), mul3(frame.binormal, Math.sin(angleB) * radius * 0.82)));
+      const iA = tubeNodes.push(pA) - 1;
+      const iB = tubeNodes.push(pB) - 1;
+
+      if (prevA >= 0) stentEdges.push({ a: prevA, b: iA, kind: 'stent' });
+      if (prevB >= 0) stentEdges.push({ a: prevB, b: iB, kind: 'stent' });
+      stentEdges.push({ a: iA, b: iB, kind: 'stent' });
+
+      prevA = iA;
+      prevB = iB;
+    }
+  }
+
+  bowConnectorNodeIds.push(
+    mainTube.ringStart + 14 * ringCount + 5,
+    mainTube.ringStart + 18 * ringCount + 5,
+    mainTube.ringStart + 22 * ringCount + 5,
+  );
+
+  const edgeEls = tubeEdges.map(() => {
+    const el = svgEl('line', { class: 'aorta-cloud-edge' });
+    edgeLayer.appendChild(el);
+    return el;
+  });
+
+  const stentEls = stentEdges.map(() => {
+    const el = svgEl('line', { class: 'stent-wire' });
+    stentLayer.appendChild(el);
+    return el;
+  });
+
+  const nodeEls = tubeNodes.map(() => {
+    const el = svgEl('circle', { r: '1.35', class: 'aorta-cloud-node' });
+    nodeLayer.appendChild(el);
+    return el;
+  });
+
+  const fallbackBowAnchors = [
+    BEST_STENT_GUIDE_POINTS[1],
+    BEST_STENT_GUIDE_POINTS[2],
+    BEST_STENT_GUIDE_POINTS[3],
+  ];
+  const connectorLines = bowConnectorNodeIds.map(() => {
+    const line = svgEl('line', { class: 'aorta-bow-link' });
+    linkLayer.appendChild(line);
+    return line;
+  });
+
+  let drag = null;
+  let userRotX = 0.28;
+  let userRotY = -0.72;
+  let rafId = null;
+  let running = true;
+
+  const onDown = (e) => {
+    if (e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY };
+    svg.classList.add('is-rotating-3d');
+  };
+
+  const onMove = (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    drag = { x: e.clientX, y: e.clientY };
+    userRotY += dx * 0.006;
+    userRotX = clamp(userRotX + dy * 0.006, -1.25, 1.25);
+  };
+
+  const onUp = () => {
+    drag = null;
+    svg.classList.remove('is-rotating-3d');
+  };
+
+  svg.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+
+  const projected = new Array(tubeNodes.length);
+
+  const tick = () => {
+    if (!running) return;
+    if (document.hidden) {
+      rafId = requestAnimationFrame(tick);
+      return;
+    }
+
+    const orientation = activeCrownScene?.getOrientationState?.() || { tilt: 0, yaw: 0, divergence: 0 };
+    const autoRotX = orientation.tilt * 0.36;
+    const autoRotY = orientation.yaw * 0.44;
+    const autoRotZ = orientation.divergence * 0.2;
+
+    for (let i = 0; i < tubeNodes.length; i += 1) {
+      const p = tubeNodes[i];
+      const r = rotate3(p, userRotX + autoRotX, userRotY + autoRotY, autoRotZ);
+      projected[i] = project(r);
+
+      const nodeEl = nodeEls[i];
+      const py = projected[i].y;
+      const depthN = clamp((projected[i].depth + 160) / 330, 0, 1);
+      const hue = 208 - clamp((py - 70) / 260, 0, 1) * 155;
+      const sat = 82 - depthN * 10;
+      const lum = 48 + depthN * 24;
+      nodeEl.setAttribute('cx', String(projected[i].x));
+      nodeEl.setAttribute('cy', String(projected[i].y));
+      nodeEl.setAttribute('r', String(0.85 + projected[i].scale * 0.78));
+      nodeEl.setAttribute('fill', `hsl(${Math.round(hue)} ${Math.round(sat)}% ${Math.round(lum)}%)`);
+      nodeEl.setAttribute('opacity', String(0.48 + depthN * 0.5));
+    }
+
+    tubeEdges.forEach((edge, idx) => {
+      const a = projected[edge.a];
+      const b = projected[edge.b];
+      if (!a || !b) return;
+      const midDepth = (a.depth + b.depth) * 0.5;
+      const alpha = 0.2 + clamp((midDepth + 180) / 420, 0, 1) * 0.54;
+      const w = 0.45 + ((a.scale + b.scale) * 0.5) * 0.7;
+      const el = edgeEls[idx];
+      el.setAttribute('x1', String(a.x));
+      el.setAttribute('y1', String(a.y));
+      el.setAttribute('x2', String(b.x));
+      el.setAttribute('y2', String(b.y));
+      el.setAttribute('stroke-width', String(w));
+      el.setAttribute('stroke', `rgba(255, 224, 88, ${alpha.toFixed(3)})`);
+    });
+
+    stentEdges.forEach((edge, idx) => {
+      const a = projected[edge.a];
+      const b = projected[edge.b];
+      if (!a || !b) return;
+      const midDepth = (a.depth + b.depth) * 0.5;
+      const alpha = 0.28 + clamp((midDepth + 170) / 420, 0, 1) * 0.62;
+      const w = 0.55 + ((a.scale + b.scale) * 0.5) * 0.86;
+      const el = stentEls[idx];
+      el.setAttribute('x1', String(a.x));
+      el.setAttribute('y1', String(a.y));
+      el.setAttribute('x2', String(b.x));
+      el.setAttribute('y2', String(b.y));
+      el.setAttribute('stroke-width', String(w));
+      el.setAttribute('stroke', `rgba(238, 238, 238, ${alpha.toFixed(3)})`);
+    });
+
+    const activeMain = activeCrownScene?.currentMainPoints;
+    const targetBowAnchors = Array.isArray(activeMain) && activeMain.length >= 4
+      ? [activeMain[1], activeMain[2], activeMain[3]]
+      : fallbackBowAnchors;
+
+    connectorLines.forEach((line, idx) => {
+      const sourceIdx = bowConnectorNodeIds[idx] || bowConnectorNodeIds[bowConnectorNodeIds.length - 1];
+      const source = projected[sourceIdx];
+      const target = targetBowAnchors[idx] || targetBowAnchors[targetBowAnchors.length - 1];
+      if (!source || !target) return;
+      line.setAttribute('x1', String(source.x));
+      line.setAttribute('y1', String(source.y));
+      line.setAttribute('x2', String(target.x));
+      line.setAttribute('y2', String(target.y));
+    });
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+
+  return () => {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    svg.removeEventListener('pointerdown', onDown);
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+    svg.classList.remove('is-rotating-3d');
+    edgeLayer.remove();
+    nodeLayer.remove();
+    stentLayer.remove();
+    linkLayer.remove();
+  };
+}
+
+function addAdvancedAorticArch(svg, transitionState = null) {
+  const container = document.createElement('div');
+  container.className = 'aortic-arch-stage';
+  const canvas = document.createElement('canvas');
+  canvas.className = 'aortic-arch-canvas';
+  const helpId = 'aortic-arch-keyboard-help';
+  const help = document.createElement('p');
+  help.id = helpId;
+  help.className = 'visually-hidden';
+  help.textContent = 'Use arrow keys to rotate. Use plus and minus to zoom. Use left and right brackets to select a control point, then W, A, S, and D to deform the arch. Press Escape to clear the selected control point.';
+  canvas.setAttribute('role', 'application');
+  canvas.setAttribute('tabindex', '0');
+  canvas.setAttribute('aria-label', 'Interactive three-dimensional aortic arch');
+  canvas.setAttribute('aria-describedby', helpId);
+  container.append(canvas, help);
+  svg.parentElement.appendChild(container);
+
+  if (typeof window.AorticArchScene !== 'function') {
+    container.remove();
+    return () => {};
+  }
+
+  const legacyLayer = svgEl('g', { class: 'linked-legacy-ghost', 'aria-hidden': 'true' });
+  const legacyMain = svgEl('path', { class: 'linked-legacy-main' });
+  const legacyBranches = svgEl('g', { class: 'linked-legacy-branches' });
+  const legacyNodes = svgEl('g', { class: 'linked-legacy-nodes' });
+  legacyLayer.append(legacyMain, legacyBranches, legacyNodes);
+  svg.appendChild(legacyLayer);
+
+  const toSvgPoint = (point) => ({ x: 305 + point.x * 86, y: 215 - point.y * 70 });
+  const smoothPath = (points) => {
+    if (!points.length) return '';
+    const projected = points.map(toSvgPoint);
+    return projected.slice(1).reduce((path, point, index) => {
+      const previous = projected[index];
+      const midX = (previous.x + point.x) / 2;
+      const midY = (previous.y + point.y) / 2;
+      return `${path} Q ${previous.x} ${previous.y} ${midX} ${midY}`;
+    }, `M ${projected[0].x} ${projected[0].y}`) + ` T ${projected.at(-1).x} ${projected.at(-1).y}`;
+  };
+  const updateLegacy = ({ mainPoints, outlets, rotation }) => {
+    legacyMain.setAttribute('d', smoothPath(mainPoints));
+    legacyLayer.style.setProperty('--legacy-rotate', `${rotation.y * 8}deg`);
+    legacyBranches.replaceChildren();
+    legacyNodes.replaceChildren();
+    outlets.forEach((outlet) => {
+      const sourceIndex = Math.max(0, Math.min(mainPoints.length - 1, Math.round(outlet.at * (mainPoints.length - 1))));
+      legacyBranches.appendChild(svgEl('path', { d: smoothPath([mainPoints[sourceIndex], ...outlet.controls]) }));
+    });
+    [...mainPoints, ...outlets.flatMap((outlet) => outlet.controls)].forEach((point, index) => {
+      const p = toSvgPoint(point);
+      legacyNodes.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: index < mainPoints.length ? 2.2 : 2.8 }));
+    });
+  };
+
+  const scene = new window.AorticArchScene(canvas, { transitionState, onModelChange: updateLegacy });
+  return () => {
+    scene.destroy();
+    legacyLayer.remove();
+    container.remove();
   };
 }
 
@@ -1386,9 +2044,8 @@ function renderVisual(svg, slide, index, interactive = true) {
     drawMainCurveWithAdditives(svg);
     interactionMode = 'crown-flow';
   } else if (type === 'final-bow') {
-    drawProgressiveGraph(svg, 1, true);
-    svg.querySelectorAll('.bridge-guide-line, .aorta-glow, .aorta-core').forEach((el) => el.remove());
-    interactionMode = 'coupled-bow';
+    svg.classList.add('slide-final-bow');
+    interactionMode = 'crown-flow-bow';
   } else {
     drawProgressiveGraph(svg, formationProgress, interactive);
   }
@@ -1410,7 +2067,7 @@ function renderVisual(svg, slide, index, interactive = true) {
 
   if (type === 'logo') {
     const text = svgEl('text', { x: 300, y: 190, 'text-anchor': 'middle', 'font-size': 62, 'letter-spacing': 16, fill: INK });
-    text.textContent = 'CALYRAI';
+    text.textContent = 'calyr.aí';
     svg.appendChild(text);
     svg.appendChild(svgEl('circle', { cx: 361, cy: 170, r: 5, fill: ACCENT }));
     svg.appendChild(svgEl('line', { x1: 270, y1: 235, x2: 330, y2: 235, stroke: ACCENT, 'stroke-width': 2 }));
@@ -1472,6 +2129,15 @@ function enableDragging(svg) {
 }
 
 function openSlide(i) {
+  const departingSlide = slides[active];
+  if (departingSlide?.type === 'flow-finalize' && activeCrownScene) {
+    previousConvergenceState = {
+      mainPoints: Array.isArray(activeCrownScene.currentMainPoints)
+        ? activeCrownScene.currentMainPoints.map((point) => ({ ...point }))
+        : null,
+      orientation: activeCrownScene.getOrientationState?.() || { tilt: 0, yaw: 0, divergence: 0 },
+    };
+  }
   active = i;
   if (activeCleanup) activeCleanup();
 
@@ -1479,7 +2145,7 @@ function openSlide(i) {
 
   const s = slides[i];
   const shell = document.createElement('div');
-  shell.className = 'slide-shell';
+  shell.className = `slide-shell slide-${s.type}`;
 
   const wrap = document.createElement('div');
   wrap.className = 'slide-canvas-wrap';
@@ -1518,12 +2184,19 @@ function openSlide(i) {
   } else if (interaction.mode === 'crown-flow') {
     interactionStatus.hidden = false;
     const crownCleanup = addCrownHandleControls(svg, interactionStatus);
+    const plateCleanup = addDataPlateAlignment(svg);
     const flowCleanup = addNodeFlowThroughClouds(svg, interactionStatus);
     const dragCleanup = enableDragging(svg);
     interactionCleanup = () => {
       crownCleanup?.();
+      plateCleanup?.();
       flowCleanup?.();
       dragCleanup?.();
+    };
+  } else if (interaction.mode === 'crown-flow-bow') {
+    const schematicCleanup = addAdvancedAorticArch(svg, previousConvergenceState);
+    interactionCleanup = () => {
+      schematicCleanup?.();
     };
   } else if (interaction.mode === 'flow-spline') {
     interactionStatus.hidden = false;
@@ -1545,7 +2218,7 @@ function openSlide(i) {
     interactionCleanup = enableDragging(svg);
   }
 
-  const motionCleanup = addNodeMotion(svg);
+  const motionCleanup = s.type === 'final-bow' ? () => {} : addNodeMotion(svg);
   activeCleanup = () => {
     interactionCleanup?.();
     motionCleanup?.();
@@ -1578,22 +2251,53 @@ document.querySelector('#overviewBtn').addEventListener('click', restartDeck);
 document.querySelector('#nextBtn').addEventListener('click', next);
 document.querySelector('#prevBtn').addEventListener('click', prev);
 
+function enableMobileSwipe(target) {
+  let gesture = null;
+  const onPointerDown = (event) => {
+    if (!deckInteraction.swipe_enabled || event.pointerType !== 'touch' || !event.isPrimary) return;
+    if (event.target.closest?.('button, a')) return;
+    gesture = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, startedAt: performance.now() };
+  };
+  const finish = (event) => {
+    if (!gesture || event.pointerId !== gesture.pointerId) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    const duration = performance.now() - gesture.startedAt;
+    gesture = null;
+    const horizontal = Math.abs(dx) >= deckInteraction.swipe_threshold;
+    const directional = Math.abs(dy) <= Math.abs(dx) * deckInteraction.swipe_max_vertical_ratio;
+    const deliberate = duration <= 900;
+    if (!horizontal || !directional || !deliberate) return;
+    if (dx < 0) next();
+    else prev();
+  };
+  const cancel = () => { gesture = null; };
+  target.addEventListener('pointerdown', onPointerDown, { capture: true });
+  target.addEventListener('pointerup', finish, { capture: true });
+  target.addEventListener('pointercancel', cancel, { capture: true });
+}
+
+enableMobileSwipe(stage);
+
 window.addEventListener('keydown', (e) => {
+  if (e.defaultPrevented || e.target.closest?.('.aortic-arch-canvas')) return;
   if (e.key === 'ArrowRight') next();
   if (e.key === 'ArrowLeft') prev();
   if (e.key === 'Escape') restartDeck();
 });
 
 async function boot() {
-  applyDeckConfig(DEFAULT_DECK_CONFIG);
   try {
     const yamlConfig = await DeckConfigLoader.load('/research/lithos/deck.config.yaml');
     applyDeckConfig(yamlConfig);
+    document.documentElement.dataset.configSource = 'yaml';
   } catch (err) {
-    // Keep defaults when YAML is unavailable or malformed.
+    applyDeckConfig(DEFAULT_DECK_CONFIG);
+    document.documentElement.dataset.configSource = 'fallback';
     console.warn('Deck config fallback to defaults:', err?.message || err);
   }
   openSlide(0);
+  stage.setAttribute('aria-busy', 'false');
 }
 
 boot();
