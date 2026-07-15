@@ -486,12 +486,6 @@ class PointField {
       }
     }
 
-    // Close the field loop so particles can circulate like magnetic field lines.
-    const closeCurve = this.edgeCurveByIds('business', 'problem', now);
-    if (closeCurve) {
-      field.push(...this.sampleEdgeCurve(closeCurve, 16));
-    }
-
     return field;
   }
 

@@ -4,49 +4,49 @@ meta:
   mode: "interactive-flow"
 
 copy:
-  mission: "One clear path from scientific input to a better decision."
+  mission: "We begin with one valuable challenge and build toward a lasting platform partnership."
   ready: "Ready"
   complete: "Story chain complete"
   hpc_explicit: "HPC means High-Performance Computing on VSC-5 supercomputing infrastructure."
 
 nodes:
-  - id: input
-    label: "Data"
+  - id: challenge
+    label: "Challenge"
     x: 0.12
     y: 0.50
-    sentence: "Experiments and simulations create complex scientific data."
-  - id: platform
-    label: "calyr.aí"
+    sentence: "We identify one valuable scientific or engineering challenge."
+  - id: demonstrator
+    label: "Demonstrator"
     x: 0.37
     y: 0.50
-    sentence: "calyr.aí connects data, models and scientific knowledge."
-  - id: insight
-    label: "Insight"
+    sentence: "We quickly prove the idea with real data and an interactive demonstrator."
+  - id: deployment
+    label: "Deployment"
     x: 0.63
     y: 0.50
-    sentence: "Explainable AI turns complexity into an insight people can understand."
-  - id: decision
-    label: "Decision"
+    sentence: "A validated demonstrator becomes a reliable domain deployment."
+  - id: partnership
+    label: "Partnership"
     x: 0.88
     y: 0.50
-    sentence: "Teams reach confident decisions faster."
+    sentence: "Deployment grows into recurring platform access and a long-term partnership."
 
 edges:
-  - from: input
-    to: platform
-    slide: "Connect"
-    thought: "Bring experiments and simulations together."
-    explanation: "calyr.aí creates one connected scientific workflow."
-  - from: platform
-    to: insight
-    slide: "Understand"
-    thought: "Make the model explainable and interactive."
-    explanation: "Complex results become a clear, usable insight."
-  - from: insight
-    to: decision
-    slide: "Decide"
-    thought: "Turn insight into confident action."
-    explanation: "Scientific teams make better decisions, faster."
+  - from: challenge
+    to: demonstrator
+    slide: "Start focused"
+    thought: "Solve one meaningful problem first."
+    explanation: "A focused demonstrator makes value visible quickly."
+  - from: demonstrator
+    to: deployment
+    slide: "Prove value"
+    thought: "Validate the workflow with real users and data."
+    explanation: "Evidence turns the demonstrator into a reliable deployment."
+  - from: deployment
+    to: partnership
+    slide: "Scale together"
+    thought: "Extend a proven solution instead of restarting from zero."
+    explanation: "Deployments create recurring platform value and lasting partnerships."
 
 story_rules:
   self_avoiding: true
