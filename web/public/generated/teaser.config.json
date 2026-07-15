@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "calyr.aí Pitch Engine",
+    "subtitle": "Scientific Intelligence Infrastructure for scalable research and technology ventures",
+    "mode": "interactive-flow"
+  },
+  "page": {
+    "kicker": "How we work",
+    "title": "From complex challenge to scalable product.",
+    "subtitle": "We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.",
+    "deck_link_label": "Explore the interactive pitch deck",
+    "deck_link_url": "/research/lithos/index.html",
+    "insight_title": "Who needs it",
+    "insight_copy": "Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions."
+  },
+  "copy": {
+    "mission": "We begin with one valuable challenge and build toward a lasting platform partnership.",
+    "ready": "Ready",
+    "complete": "Story chain complete",
+    "hpc_explicit": "HPC means High-Performance Computing on VSC-5 supercomputing infrastructure.",
+    "empty_story_title": "Story Engine",
+    "empty_story_item": "Build the path to generate linked slides."
+  },
+  "nodes": [
+    {
+      "id": "challenge",
+      "label": "Challenge",
+      "x": 0.12,
+      "y": 0.5,
+      "sentence": "We identify one valuable scientific or engineering challenge."
+    },
+    {
+      "id": "demonstrator",
+      "label": "Demonstrator",
+      "x": 0.37,
+      "y": 0.5,
+      "sentence": "We quickly prove the idea with real data and an interactive demonstrator."
+    },
+    {
+      "id": "deployment",
+      "label": "Deployment",
+      "x": 0.63,
+      "y": 0.5,
+      "sentence": "A validated demonstrator becomes a reliable domain deployment."
+    },
+    {
+      "id": "partnership",
+      "label": "Partnership",
+      "x": 0.88,
+      "y": 0.5,
+      "sentence": "Deployment grows into recurring platform access and a long-term partnership."
+    }
+  ],
+  "edges": [
+    {
+      "from": "challenge",
+      "to": "demonstrator",
+      "slide": "Start focused",
+      "thought": "Solve one meaningful problem first.",
+      "explanation": "A focused demonstrator makes value visible quickly."
+    },
+    {
+      "from": "demonstrator",
+      "to": "deployment",
+      "slide": "Prove value",
+      "thought": "Validate the workflow with real users and data.",
+      "explanation": "Evidence turns the demonstrator into a reliable deployment."
+    },
+    {
+      "from": "deployment",
+      "to": "partnership",
+      "slide": "Scale together",
+      "thought": "Extend a proven solution instead of restarting from zero.",
+      "explanation": "Deployments create recurring platform value and lasting partnerships."
+    }
+  ],
+  "story_rules": {
+    "self_avoiding": true,
+    "max_steps": 3,
+    "scoring": {
+      "valid_connection": 3,
+      "invalid_connection": -1,
+      "repeat_penalty": -2
+    }
+  }
+}

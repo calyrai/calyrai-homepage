@@ -2421,3 +2421,108 @@ body.nav-open {
   line-height: 1.33;
 }
 
+/* Landing-page visual system: authoritative tile treatment. */
+.page-main .section-grid {
+  gap: clamp(18px, 2vw, 30px);
+}
+
+.page-main .tile {
+  min-height: clamp(210px, 23vw, 280px);
+  padding: clamp(22px, 2.4vw, 34px);
+  border: 1px solid rgba(var(--tile-rgb), 0.26);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(var(--tile-rgb), 0.065), transparent 44%),
+    rgba(4, 7, 9, 0.82) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 52px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+  transition: transform 260ms cubic-bezier(.2, .8, .2, 1), border-color 260ms ease, box-shadow 260ms ease;
+}
+
+.page-main .tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(circle at 82% 14%, rgba(var(--tile-rgb), 0.16), transparent 34%);
+  opacity: 0.42;
+  transition: opacity 260ms ease;
+}
+
+.page-main .tile:hover,
+.page-main .tile-hovered,
+.page-main .tile:focus-visible {
+  transform: translateY(-7px);
+  border-color: rgba(var(--tile-rgb), 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 24px 70px rgba(0, 0, 0, 0.46),
+    0 0 30px rgba(var(--tile-rgb), 0.13);
+  outline: none;
+}
+
+.page-main .tile:hover::after,
+.page-main .tile-hovered::after,
+.page-main .tile:focus-visible::after {
+  opacity: 0.8;
+}
+
+.page-main .tile-content {
+  position: relative;
+  z-index: 2;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 100%;
+  gap: 0.65rem;
+  text-align: left;
+}
+
+.page-main .tile-title {
+  max-width: 15ch;
+  font-size: clamp(1.45rem, 2.3vw, 2.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-align: left;
+}
+
+.page-main .tile-summary {
+  max-width: 34ch;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: clamp(0.9rem, 1.15vw, 1.02rem);
+  line-height: 1.45;
+  text-align: left;
+}
+
+.page-main .tile-icon {
+  margin: 0 0 auto;
+  color: rgba(var(--tile-rgb), 0.95);
+  filter: drop-shadow(0 0 14px rgba(var(--tile-rgb), 0.22));
+}
+
+.page-main .tile-mesh-canvas {
+  opacity: 0.22 !important;
+  mask-image: linear-gradient(to bottom right, rgba(0, 0, 0, .72), transparent 76%);
+}
+
+.page-main .tile:hover .tile-mesh-canvas,
+.page-main .tile-hovered .tile-mesh-canvas,
+.page-main .tile-selected .tile-mesh-canvas {
+  opacity: 0.4 !important;
+}
+
+.page-main .tile-link-indicator {
+  right: 24px;
+  bottom: 22px;
+  color: rgba(var(--tile-rgb), 0.85);
+}
+
+@media (max-width: 767px) {
+  .page-main .tile {
+    min-height: 180px;
+    border-radius: 18px;
+  }
+}

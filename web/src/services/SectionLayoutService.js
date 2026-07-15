@@ -1,5 +1,3 @@
-const COLLAPSIBLE_SECTION_IDS = new Set(['movie', 'platforms', 'architecture'])
-
 export class SectionLayoutService {
   static create(sectionNode) {
     const id = sectionNode?.id
@@ -7,10 +5,8 @@ export class SectionLayoutService {
     const behavior = sectionNode?.behavior || {}
     const render = sectionNode?.render || {}
 
-    const isMovieSection = id === 'movie'
-    const isCollapsible = typeof behavior.collapsible === 'boolean'
-      ? behavior.collapsible
-      : COLLAPSIBLE_SECTION_IDS.has(id)
+    const isMovieSection = render.variant === 'media-feature'
+    const isCollapsible = behavior.collapsible === true
     const titleHref = isMovieSection
       ? (id ? `#${id}` : null)
       : (route || (id ? `#${id}` : null))

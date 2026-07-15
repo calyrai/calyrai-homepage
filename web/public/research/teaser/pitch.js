@@ -4,81 +4,15 @@ const HEIGHT = 460;
 
 class ConfigLoader {
   static async load(path) {
-    const text = await fetch(path).then((r) => r.text());
-    return this.parseYaml(text);
-  }
-
-  static parseYaml(text) {
-    const lines = text.replace(/\t/g, '  ').split('\n');
-    const root = {};
-    let i = 0;
-
-    const parseScalar = (v) => {
-      const value = v.trim();
-      if (value === 'true') return true;
-      if (value === 'false') return false;
-      if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
-      return value.replace(/^"|"$/g, '');
-    };
-
-    const indentOf = (line) => line.match(/^\s*/)[0].length;
-
-    function parseBlock(baseIndent) {
-      const obj = {};
-      const arr = [];
-      let mode = null;
-
-      while (i < lines.length) {
-        const raw = lines[i];
-        if (!raw.trim() || raw.trim().startsWith('#')) {
-          i += 1;
-          continue;
-        }
-        const indent = indentOf(raw);
-        if (indent < baseIndent) break;
-        const line = raw.trim();
-
-        if (line.startsWith('- ')) {
-          mode = 'array';
-          const itemText = line.slice(2);
-          if (itemText.includes(':')) {
-            const [k, ...rest] = itemText.split(':');
-            const val = rest.join(':').trim();
-            const item = { [k.trim()]: val ? parseScalar(val) : null };
-            i += 1;
-            const nested = parseBlock(indent + 2);
-            if (nested && typeof nested === 'object' && !Array.isArray(nested) && Object.keys(nested).length > 0) {
-              Object.assign(item, nested);
-            }
-            arr.push(item);
-          } else {
-            arr.push(parseScalar(itemText));
-            i += 1;
-          }
-          continue;
-        }
-
-        mode = mode || 'object';
-        const [key, ...rest] = line.split(':');
-        const k = key.trim();
-        const v = rest.join(':').trim();
-        i += 1;
-
-        if (v) {
-          obj[k] = parseScalar(v);
-        } else {
-          const nested = parseBlock(indent + 2);
-          obj[k] = nested;
-        }
-      }
-
-      return mode === 'array' ? arr : obj;
+    const response = await fetch(path, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`Pitch config fetch failed (${response.status})`);
+    const config = await response.json();
+    for (const key of ['meta', 'page', 'copy', 'nodes', 'edges', 'story_rules']) {
+      if (!config[key] || (Array.isArray(config[key]) && config[key].length === 0)) throw new Error(`Pitch config requires ${key}`);
     }
-
-    i = 0;
-    Object.assign(root, parseBlock(0));
-    return root;
+    return config;
   }
+
 }
 
 class StoryEngine {
@@ -152,6 +86,22 @@ class StoryEngine {
       edgeKey: slide.edgeKey,
     }));
   }
+}
+
+function hydratePage(config) {
+  const page = config.page;
+  const required = ['kicker', 'title', 'subtitle', 'deck_link_label', 'deck_link_url', 'insight_title', 'insight_copy'];
+  required.forEach((key) => {
+    if (typeof page[key] !== 'string' || !page[key].trim()) throw new Error(`page.${key} is required`);
+  });
+  document.title = config.meta.title;
+  document.getElementById('page-kicker').textContent = page.kicker;
+  document.getElementById('page-title').textContent = page.title;
+  document.getElementById('page-subtitle').textContent = page.subtitle;
+  document.getElementById('page-deck-link').href = page.deck_link_url;
+  document.getElementById('page-deck-link-label').textContent = page.deck_link_label;
+  document.getElementById('insight-title').textContent = page.insight_title;
+  document.getElementById('insight-copy').textContent = page.insight_copy;
 }
 
 class GraphEngine {
@@ -911,7 +861,8 @@ class TeaserApp {
 }
 
 async function boot() {
-  const config = await ConfigLoader.load('/research/teaser/pitch.config.yaml');
+  const config = await ConfigLoader.load('/generated/teaser.config.json');
+  hydratePage(config);
   const app = new TeaserApp(config);
   app.start();
 }

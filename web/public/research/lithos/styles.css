@@ -107,7 +107,8 @@ main {
   justify-content: space-between;
 }
 .slide-num { color: #b8b8b8; font-size: 12px; letter-spacing: .14em; }
-.slide-title { margin-top: 40px; font-size: clamp(30px, 3.6vw, 64px); line-height: 1.02; text-transform: uppercase; letter-spacing: -.03em; }
+.slide-phase { margin-top: 28px; color: #7ce8ff; font-size: 11px; font-weight: 700; letter-spacing: .22em; }
+.slide-title { margin-top: 12px; font-size: clamp(30px, 3.25vw, 58px); line-height: 1.02; text-transform: uppercase; letter-spacing: -.03em; }
 .slide-subtitle { font-size: 17px; line-height: 1.6; color: #e3e3e3; max-width: 27ch; }
 .slide-story {
   margin-top: 14px;
@@ -117,6 +118,23 @@ main {
   max-width: 38ch;
 }
 .slide-hint { color: #b3b3b3; font-size: 12px; line-height: 1.55; }
+.slide-journey {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0 0 18px;
+}
+.journey-step {
+  border-top: 1px solid #30363a;
+  padding-top: 7px;
+  color: #626b70;
+  font-size: 8px;
+  letter-spacing: .08em;
+  overflow: hidden;
+  text-align: center;
+}
+.journey-step.complete { border-color: #76858c; color: #929fa5; }
+.journey-step.active { border-color: #7ce8ff; color: #fff; text-shadow: 0 0 10px rgba(124, 232, 255, .55); }
 
 .interaction-status {
   position: absolute;

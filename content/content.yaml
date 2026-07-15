@@ -4,6 +4,69 @@ brand:
   tagline: 'Surrogate modelling for complex systems
 
     '
+__site_runtime:
+  teaser:
+    meta:
+      title: calyr.aí Pitch Engine
+      subtitle: Scientific Intelligence Infrastructure for scalable research and technology ventures
+      mode: interactive-flow
+    page:
+      kicker: How we work
+      title: From complex challenge to scalable product.
+      subtitle: We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.
+      deck_link_label: Explore the interactive pitch deck
+      deck_link_url: /research/lithos/index.html
+      insight_title: Who needs it
+      insight_copy: Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions.
+    copy:
+      mission: We begin with one valuable challenge and build toward a lasting platform partnership.
+      ready: Ready
+      complete: Story chain complete
+      hpc_explicit: HPC means High-Performance Computing on VSC-5 supercomputing infrastructure.
+      empty_story_title: Story Engine
+      empty_story_item: Build the path to generate linked slides.
+    nodes:
+    - {id: challenge, label: Challenge, x: 0.12, y: 0.50, sentence: We identify one valuable scientific or engineering challenge.}
+    - {id: demonstrator, label: Demonstrator, x: 0.37, y: 0.50, sentence: We quickly prove the idea with real data and an interactive demonstrator.}
+    - {id: deployment, label: Deployment, x: 0.63, y: 0.50, sentence: A validated demonstrator becomes a reliable domain deployment.}
+    - {id: partnership, label: Partnership, x: 0.88, y: 0.50, sentence: Deployment grows into recurring platform access and a long-term partnership.}
+    edges:
+    - {from: challenge, to: demonstrator, slide: Start focused, thought: Solve one meaningful problem first., explanation: A focused demonstrator makes value visible quickly.}
+    - {from: demonstrator, to: deployment, slide: Prove value, thought: Validate the workflow with real users and data., explanation: Evidence turns the demonstrator into a reliable deployment.}
+    - {from: deployment, to: partnership, slide: Scale together, thought: Extend a proven solution instead of restarting from zero., explanation: Deployments create recurring platform value and lasting partnerships.}
+    story_rules:
+      self_avoiding: true
+      max_steps: 3
+      scoring: {valid_connection: 3, invalid_connection: -1, repeat_penalty: -2}
+  lithos_deck:
+    seed: 5318008
+    page:
+      language: en
+      title: calyr.aí | Interactive Deck
+      description: An interactive calyr.aí story showing how surrogate models connect observations steer solutions and transfer across medical and architectural domains.
+      canonical: https://calyr.ai/research/lithos/index.html
+      theme_color: '#000000'
+    interaction: {swipe_enabled: true, swipe_threshold: 64, swipe_max_vertical_ratio: 0.72}
+    ui:
+      footer_primary: FROM DATA TO FORM.
+      footer_secondary: FROM COMPLEXITY TO INTELLIGENCE.
+      default_hint: Use left/right arrows, the top buttons, or swipe horizontally on a phone.
+      journey: [OBSERVE, MODEL, COUPLE, STEER, APPLY, TRANSFER]
+    formation_steps: [0.22, 0.36, 0.52, 0.68, 0.82, 0.92, 1.00]
+    cluster_centers:
+    - {x: 92, y: 228}
+    - {x: 182, y: 186}
+    - {x: 286, y: 166}
+    - {x: 398, y: 176}
+    - {x: 502, y: 220}
+    cluster_amounts: [14, 14, 18, 14, 14]
+    slides:
+    - {phase: OBSERVE, title: Complex Systems Hide Their Structure., subtitle: Observations simulations and constraints remain disconnected., story: Incomplete evidence reveals fragments of a system but not the organization that connects them., type: line, hint: Explore the isolated data spaces before a shared model exists.}
+    - {phase: MODEL, title: A Surrogate Creates a Shared Model., subtitle: Experimental and theoretical spaces become one representation., story: The surrogate learns a navigable model that connects observations simulation and domain knowledge., type: magenta, hint: Observe how the magenta surrogate aligns previously separate data spaces.}
+    - {phase: COUPLE, title: Coupling Enables Prediction., subtitle: A change in one domain propagates through the model., story: Connected variables respond together so the system can predict consequences rather than evaluate isolated points., type: flow, hint: Move a control point and watch the coupled representation adapt.}
+    - {phase: STEER, title: Steering Enables Design., subtitle: Constraints become controls for valid solution spaces., story: Interactive boundary conditions guide exploration toward feasible high-value outcomes., type: flow-finalize, hint: Adjust the magenta controls and steer the constrained solution space.}
+    - {phase: APPLY, title: 'Application: Aortic Arch.', subtitle: One surrogate produces patient-specific medical geometry., story: The controlled representation converges into an editable aortic arch while preserving evidence constraints and uncertainty., type: final-bow, hint: Rotate the aortic arch and inspect the resulting medical geometry.}
+    - {phase: TRANSFER, title: One Model Language. Many Domains., subtitle: The same controlled curve becomes an architectural bridge., story: Different domain. Same inference architecture. The shared centerline remains while medical form transforms into deck ribs cables and pylon., type: final-bridge, hint: Rotate the bridge and trace the original aortic centerline through the new structure.}
 logo:
   title: "Calyr.a\xED"
   title_ref: brand.display_name
@@ -37,13 +100,16 @@ movie:
   behavior:
     collapsible: true
     default_expanded: false
+    anchor_aliases:
+    - teaser
   explain:
     why: Keep the teaser present but initially compressed so it does not dominate
       the opening scan path.
   summary: 'Visual short section.
 
     '
-  body: 'Place your short file path in route to load and play it here.
+  body: 'Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle,
+    surrogate models, and scientific AI.
 
     '
   route: /research/teaser/index.html
@@ -60,6 +126,8 @@ platforms:
     collapsible: true
     default_expanded: true
     persistence: none
+    anchor_aliases:
+    - platform
   explain:
     why: Present the primary product modules before the broader ecosystem context.
   summary: 'Core platform modules for engineering, medicine, reasoning, and decision
@@ -96,6 +164,8 @@ contact_main:
   behavior:
     collapsible: true
     default_expanded: false
+    anchor_aliases:
+    - contact
   explain:
     why: Provide a dedicated main-page contact section where Contact means Impressum/legal
       details.

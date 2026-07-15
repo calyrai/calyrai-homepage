@@ -111,7 +111,7 @@
       "subtitle": "Short",
       "landing_message": "",
       "summary": "Visual short section.\n",
-      "body": "Place your short file path in route to load and play it here.\n",
+      "body": "Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.\n",
       "icon": "",
       "route": "/research/teaser/index.html",
       "links": [],
@@ -123,7 +123,10 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false
+        "default_expanded": false,
+        "anchor_aliases": [
+          "teaser"
+        ]
       },
       "explain": {
         "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
@@ -144,7 +147,10 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false
+            "default_expanded": false,
+            "anchor_aliases": [
+              "teaser"
+            ]
           },
           "explain": {
             "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
@@ -180,7 +186,10 @@
       "behavior": {
         "collapsible": true,
         "default_expanded": true,
-        "persistence": "none"
+        "persistence": "none",
+        "anchor_aliases": [
+          "platform"
+        ]
       },
       "explain": {
         "why": "Present the primary product modules before the broader ecosystem context."
@@ -208,7 +217,10 @@
           "behavior": {
             "collapsible": true,
             "default_expanded": true,
-            "persistence": "none"
+            "persistence": "none",
+            "anchor_aliases": [
+              "platform"
+            ]
           },
           "explain": {
             "why": "Present the primary product modules before the broader ecosystem context."
@@ -807,7 +819,10 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false
+        "default_expanded": false,
+        "anchor_aliases": [
+          "contact"
+        ]
       },
       "explain": {
         "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."
@@ -834,7 +849,10 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false
+            "default_expanded": false,
+            "anchor_aliases": [
+              "contact"
+            ]
           },
           "explain": {
             "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."

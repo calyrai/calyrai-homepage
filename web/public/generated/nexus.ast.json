@@ -111,7 +111,7 @@
       "subtitle": "Short",
       "landing_message": "",
       "summary": "Visual short section.\n",
-      "body": "Place your short file path in route to load and play it here.\n",
+      "body": "Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.\n",
       "icon": "",
       "route": "/research/teaser/index.html",
       "links": [],
@@ -123,7 +123,10 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false
+        "default_expanded": false,
+        "anchor_aliases": [
+          "teaser"
+        ]
       },
       "explain": {
         "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
@@ -144,7 +147,10 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false
+            "default_expanded": false,
+            "anchor_aliases": [
+              "teaser"
+            ]
           },
           "explain": {
             "why": "Keep the teaser present but initially compressed so it does not dominate the opening scan path."
@@ -180,7 +186,10 @@
       "behavior": {
         "collapsible": true,
         "default_expanded": true,
-        "persistence": "none"
+        "persistence": "none",
+        "anchor_aliases": [
+          "platform"
+        ]
       },
       "explain": {
         "why": "Present the primary product modules before the broader ecosystem context."
@@ -208,7 +217,10 @@
           "behavior": {
             "collapsible": true,
             "default_expanded": true,
-            "persistence": "none"
+            "persistence": "none",
+            "anchor_aliases": [
+              "platform"
+            ]
           },
           "explain": {
             "why": "Present the primary product modules before the broader ecosystem context."
@@ -258,7 +270,7 @@
         {
           "type": "tile",
           "id": "core",
-          "title": "calyr.aí core",
+          "title": "Calyrai core",
           "tile_lead": "brain",
           "tile_accent": "blue",
           "tile_title": "brain",
@@ -266,7 +278,7 @@
           "subtitle": "Central reasoning engine",
           "landing_message": "",
           "summary": "Connects observations, knowledge, models, and decisions.\n",
-          "body": "calyr.aí core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+          "body": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
           "icon": "brain",
           "route": "/research/platforms/core/index.html",
           "links": [],
@@ -619,8 +631,8 @@
           "tile_summary": "",
           "subtitle": "Interactive architecture",
           "landing_message": "",
-          "summary": "Explore relationships across the calyr.aí ecosystem.\n",
-          "body": "Interactive graph showing how calyr.aí core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
+          "summary": "Explore relationships across the calyrai ecosystem.\n",
+          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
@@ -807,7 +819,10 @@
       },
       "behavior": {
         "collapsible": true,
-        "default_expanded": false
+        "default_expanded": false,
+        "anchor_aliases": [
+          "contact"
+        ]
       },
       "explain": {
         "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."
@@ -834,7 +849,10 @@
           },
           "behavior": {
             "collapsible": true,
-            "default_expanded": false
+            "default_expanded": false,
+            "anchor_aliases": [
+              "contact"
+            ]
           },
           "explain": {
             "why": "Provide a dedicated main-page contact section where Contact means Impressum/legal details."

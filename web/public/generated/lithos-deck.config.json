@@ -1,0 +1,116 @@
+{
+  "seed": 5318008,
+  "page": {
+    "language": "en",
+    "title": "calyr.aí | Interactive Deck",
+    "description": "An interactive calyr.aí story showing how surrogate models connect observations steer solutions and transfer across medical and architectural domains.",
+    "canonical": "https://calyr.ai/research/lithos/index.html",
+    "theme_color": "#000000"
+  },
+  "interaction": {
+    "swipe_enabled": true,
+    "swipe_threshold": 64,
+    "swipe_max_vertical_ratio": 0.72
+  },
+  "ui": {
+    "footer_primary": "FROM DATA TO FORM.",
+    "footer_secondary": "FROM COMPLEXITY TO INTELLIGENCE.",
+    "default_hint": "Use left/right arrows, the top buttons, or swipe horizontally on a phone.",
+    "journey": [
+      "OBSERVE",
+      "MODEL",
+      "COUPLE",
+      "STEER",
+      "APPLY",
+      "TRANSFER"
+    ]
+  },
+  "formation_steps": [
+    0.22,
+    0.36,
+    0.52,
+    0.68,
+    0.82,
+    0.92,
+    1.0
+  ],
+  "cluster_centers": [
+    {
+      "x": 92,
+      "y": 228
+    },
+    {
+      "x": 182,
+      "y": 186
+    },
+    {
+      "x": 286,
+      "y": 166
+    },
+    {
+      "x": 398,
+      "y": 176
+    },
+    {
+      "x": 502,
+      "y": 220
+    }
+  ],
+  "cluster_amounts": [
+    14,
+    14,
+    18,
+    14,
+    14
+  ],
+  "slides": [
+    {
+      "phase": "OBSERVE",
+      "title": "Complex Systems Hide Their Structure.",
+      "subtitle": "Observations simulations and constraints remain disconnected.",
+      "story": "Incomplete evidence reveals fragments of a system but not the organization that connects them.",
+      "type": "line",
+      "hint": "Explore the isolated data spaces before a shared model exists."
+    },
+    {
+      "phase": "MODEL",
+      "title": "A Surrogate Creates a Shared Model.",
+      "subtitle": "Experimental and theoretical spaces become one representation.",
+      "story": "The surrogate learns a navigable model that connects observations simulation and domain knowledge.",
+      "type": "magenta",
+      "hint": "Observe how the magenta surrogate aligns previously separate data spaces."
+    },
+    {
+      "phase": "COUPLE",
+      "title": "Coupling Enables Prediction.",
+      "subtitle": "A change in one domain propagates through the model.",
+      "story": "Connected variables respond together so the system can predict consequences rather than evaluate isolated points.",
+      "type": "flow",
+      "hint": "Move a control point and watch the coupled representation adapt."
+    },
+    {
+      "phase": "STEER",
+      "title": "Steering Enables Design.",
+      "subtitle": "Constraints become controls for valid solution spaces.",
+      "story": "Interactive boundary conditions guide exploration toward feasible high-value outcomes.",
+      "type": "flow-finalize",
+      "hint": "Adjust the magenta controls and steer the constrained solution space."
+    },
+    {
+      "phase": "APPLY",
+      "title": "Application: Aortic Arch.",
+      "subtitle": "One surrogate produces patient-specific medical geometry.",
+      "story": "The controlled representation converges into an editable aortic arch while preserving evidence constraints and uncertainty.",
+      "type": "final-bow",
+      "hint": "Rotate the aortic arch and inspect the resulting medical geometry."
+    },
+    {
+      "phase": "TRANSFER",
+      "title": "One Model Language. Many Domains.",
+      "subtitle": "The same controlled curve becomes an architectural bridge.",
+      "story": "Different domain. Same inference architecture. The shared centerline remains while medical form transforms into deck ribs cables and pylon.",
+      "type": "final-bridge",
+      "hint": "Rotate the bridge and trace the original aortic centerline through the new structure."
+    }
+  ]
+}

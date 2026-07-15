@@ -43,7 +43,7 @@
   "movie": {
     "title": "Teaser",
     "summary": "Visual short section.\n",
-    "body_preview": "Place your short file path in route to load and play it here.\n",
+    "body_preview": "Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.\n",
     "route": "/research/teaser/index.html",
     "icon": "",
     "keywords": [

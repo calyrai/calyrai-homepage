@@ -13,18 +13,11 @@ import { ScrollCenterProvider } from '../hooks/useScrollCenter'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { applyTitleDefaults } from '../utils/titleDefaults'
 
-const SECTION_ANCHOR_ALIASES = {
-  movie: ['teaser'],
-  platforms: ['platform'],
-  contact_main: ['contact'],
-}
-
 export default function Section({ node, theme, context = {} }) {
   const { id, title, summary, route, children = [] } = node
   const rawBody = typeof node.body === 'string' ? node.body : ''
-  const teaserCaption = rawBody.includes('Place your short file path in route to load and play it here.')
-    ? 'Interactive CALYR teaser: scientific flow from experiments and HPC to Oracle, surrogate models, and scientific AI.'
-    : rawBody
+  const teaserCaption = rawBody
+  const anchorAliases = Array.isArray(node.behavior?.anchor_aliases) ? node.behavior.anchor_aliases : []
   const layout = SectionLayoutService.create(node)
   const isMobileViewport = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(layout.defaultExpanded)
@@ -95,8 +88,7 @@ export default function Section({ node, theme, context = {} }) {
   }
 
   React.useEffect(() => {
-    const aliases = Array.isArray(SECTION_ANCHOR_ALIASES[id]) ? SECTION_ANCHOR_ALIASES[id] : []
-    const targets = new Set([id, ...aliases])
+    const targets = new Set([id, ...anchorAliases])
 
     const syncFromHash = () => {
       const hashValue = String(window.location.hash || '').replace(/^#/, '')
@@ -109,7 +101,7 @@ export default function Section({ node, theme, context = {} }) {
     syncFromHash()
     window.addEventListener('hashchange', syncFromHash)
     return () => window.removeEventListener('hashchange', syncFromHash)
-  }, [id, layout.isCollapsible])
+  }, [id, layout.isCollapsible, anchorAliases.join('|')])
 
   if (layout.isMovieSection && !layout.isCollapsible) {
     return (
@@ -138,7 +130,7 @@ export default function Section({ node, theme, context = {} }) {
       data-intent={layout.intentPurpose || undefined}
       style={sectionStyle}
     >
-      {Array.isArray(SECTION_ANCHOR_ALIASES[id]) && SECTION_ANCHOR_ALIASES[id].map((anchorId) => (
+      {anchorAliases.map((anchorId) => (
         <span key={anchorId} id={anchorId} className="section-anchor-alias" aria-hidden="true" />
       ))}
 

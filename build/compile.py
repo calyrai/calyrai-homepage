@@ -36,6 +36,8 @@ Nexus Artifacts (generated/):
 import json
 import shutil
 import sys
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
@@ -67,6 +69,141 @@ CONFIG = {
     },
     "default_skin": "pythia",
 }
+
+
+@dataclass(frozen=True)
+class BuildPaths:
+    """Immutable filesystem boundary for one compiler execution."""
+
+    project_root: Path
+    content_dir: Path
+    output_dir: Path
+
+    @classmethod
+    def from_script(cls, script_path: Path) -> "BuildPaths":
+        build_dir = script_path.resolve().parent
+        project_root = build_dir.parent
+        return cls(
+            project_root=project_root,
+            content_dir=project_root / "content",
+            output_dir=project_root / "generated",
+        )
+
+
+class PublicationStep(ABC):
+    """One replaceable post-compilation publication responsibility."""
+
+    @abstractmethod
+    def publish(self, context: "PublicationContext") -> None:
+        raise NotImplementedError
+
+
+@dataclass(frozen=True)
+class PublicationContext:
+    paths: BuildPaths
+    source: dict[str, Any]
+
+
+class RuntimeConfigPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_site_runtime_configs(context.paths.project_root, context.source)
+
+
+class BooksPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_books_page_from_yaml(context.paths.project_root)
+
+
+class PositioningPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_positioning_page_from_yaml(context.paths.project_root)
+
+
+class PlatformPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_platform_pages_from_yaml(context.paths.project_root)
+
+
+class RoutePublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_route_policy_and_audit(context.paths.project_root)
+
+
+class NexusArtifactPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_artifacts_to_web_public(context.paths.project_root, context.paths.output_dir)
+
+
+class RuntimeModulePublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_runtime_artifacts_module(context.paths.project_root, context.paths.output_dir)
+
+
+class PublicationPipeline:
+    """Executes ordered, independently testable publication steps."""
+
+    def __init__(self, steps: list[PublicationStep]) -> None:
+        self._steps = tuple(steps)
+
+    @classmethod
+    def default(cls) -> "PublicationPipeline":
+        return cls([
+            RuntimeConfigPublisher(),
+            BooksPublisher(),
+            PositioningPublisher(),
+            PlatformPublisher(),
+            RoutePublisher(),
+            NexusArtifactPublisher(),
+            RuntimeModulePublisher(),
+        ])
+
+    def publish(self, context: PublicationContext) -> None:
+        for step in self._steps:
+            step.publish(context)
+
+
+class CompilerApplication:
+    """Application service coordinating compile and publication phases."""
+
+    def __init__(
+        self,
+        paths: BuildPaths,
+        skin: str,
+        publication_pipeline: PublicationPipeline,
+    ) -> None:
+        self.paths = paths
+        self.skin = skin
+        self.publication_pipeline = publication_pipeline
+
+    @classmethod
+    def default(cls) -> "CompilerApplication":
+        return cls(
+            paths=BuildPaths.from_script(Path(__file__)),
+            skin=CONFIG["default_skin"],
+            publication_pipeline=PublicationPipeline.default(),
+        )
+
+    def run(self, arguments: list[str]) -> int:
+        self._report_ignored_arguments(arguments)
+        print("🧭 Compile mode: strict")
+        compiler = NexusCompiler(
+            self.paths.content_dir,
+            self.paths.output_dir,
+            skin=self.skin,
+        )
+        if not compiler.compile():
+            return 1
+
+        context = PublicationContext(paths=self.paths, source=compiler.source)
+        self.publication_pipeline.publish(context)
+        return 0
+
+    def _report_ignored_arguments(self, arguments: list[str]) -> None:
+        for argument in arguments:
+            if argument.startswith("-"):
+                print(f"⚠️  Ignoring unknown flag '{argument}'")
+            elif argument != self.skin:
+                print(f"⚠️  Ignoring requested skin '{argument}' (locked to '{self.skin}')")
 
 
 class NexusCompiler:
@@ -149,6 +286,9 @@ class NexusCompiler:
         """Load graph, interaction, and flowchart from inline blocks with file fallback."""
         blob = self.source.get("content", {})
         if isinstance(blob, dict):
+            site_runtime = blob.pop("__site_runtime", None)
+            if isinstance(site_runtime, dict):
+                self.source["site_runtime"] = site_runtime
             for key in ("graph", "interaction", "flowchart"):
                 inline = blob.pop(f"__{key}", None)
                 if isinstance(inline, dict):
@@ -261,39 +401,9 @@ class NexusCompiler:
 
 
 def main() -> int:
-    """Main entry point."""
+    """Thin process boundary delegating to the compiler application service."""
     try:
-        # Lock to default skin to prevent accidental runtime theme switching.
-        skin = CONFIG["default_skin"]
-
-        for arg in sys.argv[1:]:
-            if arg.startswith("-"):
-                print(f"⚠️  Ignoring unknown flag '{arg}'")
-                continue
-
-            if arg != skin:
-                print(f"⚠️  Ignoring requested skin '{arg}' (locked to '{skin}')")
-        
-        # Resolve paths relative to this file
-        build_dir = Path(__file__).parent.resolve()
-        content_dir = build_dir.parent / "content"
-        output_dir = build_dir.parent / "generated"
-
-        # Create and run compiler
-        print("🧭 Compile mode: strict")
-        compiler = NexusCompiler(content_dir, output_dir, skin=skin)
-        success = compiler.compile()
-
-        if success:
-            _sync_books_page_from_yaml(build_dir.parent)
-            _sync_positioning_page_from_yaml(build_dir.parent)
-            _sync_platform_pages_from_yaml(build_dir.parent)
-            _sync_route_policy_and_audit(build_dir.parent)
-            # Auto-copy artifacts to web/public/generated for dev server
-            _sync_artifacts_to_web_public(build_dir.parent, output_dir)
-            _sync_runtime_artifacts_module(build_dir.parent, output_dir)
-
-        return 0 if success else 1
+        return CompilerApplication.default().run(sys.argv[1:])
     except KeyboardInterrupt:
         print("\n⚠️  Compilation interrupted by user")
         return 130
@@ -311,6 +421,32 @@ def _sync_artifacts_to_web_public(project_root: Path, output_dir: Path) -> None:
     for artifact in output_dir.glob("nexus.*.json"):
         shutil.copy2(artifact, web_public_gen / artifact.name)
     print("📦 Synced to web/public/generated/")
+
+
+def _sync_site_runtime_configs(project_root: Path, source: dict[str, Any]) -> None:
+    """Validate and emit browser runtime configs from the single content YAML source."""
+    runtime = source.get("site_runtime")
+    if not isinstance(runtime, dict):
+        raise ValueError("content/content.yaml must define __site_runtime")
+
+    required = {
+        "teaser": ("meta", "page", "copy", "nodes", "edges", "story_rules"),
+        "lithos_deck": ("seed", "page", "interaction", "ui", "formation_steps", "cluster_centers", "cluster_amounts", "slides"),
+    }
+    output_dir = project_root / "web" / "public" / "generated"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_names = {"teaser": "teaser.config.json", "lithos_deck": "lithos-deck.config.json"}
+
+    for config_name, fields in required.items():
+        config = runtime.get(config_name)
+        if not isinstance(config, dict):
+            raise ValueError(f"__site_runtime.{config_name} must be a mapping")
+        missing = [field for field in fields if field not in config]
+        if missing:
+            raise ValueError(f"__site_runtime.{config_name} missing: {', '.join(missing)}")
+        target = output_dir / output_names[config_name]
+        target.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"🧭 Synced runtime config to {target.relative_to(project_root)}")
 
 
 def _sync_runtime_artifacts_module(project_root: Path, output_dir: Path) -> None:

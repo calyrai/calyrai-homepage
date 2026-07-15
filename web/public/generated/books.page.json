@@ -203,7 +203,7 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "calyr.aí Positioning",
+          "title": "CALYR.AI Positioning",
           "year": 2026,
           "tags": [
             "architecture",
@@ -211,7 +211,7 @@
             "compiler",
             "ssot"
           ],
-          "objective": "Establish a clear, compiler-driven positioning narrative for calyr.aí as a knowledge-first publishing architecture.",
+          "objective": "Establish a clear, compiler-driven positioning narrative for CALYR.AI as a knowledge-first publishing architecture.",
           "summary": "Structured positioning note connected to the brain tile and generated in homepage workflow.",
           "ctas": [
             {
@@ -235,7 +235,7 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "calyr.aí Core Foundations",
+          "title": "Calyrai Core Foundations",
           "year": 2026,
           "tags": [
             "reasoning",
@@ -445,7 +445,7 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-07-13T11:18:16.069795+00:00",
+    "generated_at": "2026-07-15T09:21:15.950399+00:00",
     "book_count": 10,
     "books_by_status": {
       "draft": 1,

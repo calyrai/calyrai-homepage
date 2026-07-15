@@ -643,6 +643,12 @@ export default function Tile({ node, theme, context = {} }) {
     }
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    handleClick(event)
+  }
+
   const isSelected = selectedTile === id
 
   const handleMouseEnter = () => {
@@ -695,6 +701,8 @@ export default function Tile({ node, theme, context = {} }) {
       id={id}
       data-type="tile"
       data-draggable="true"
+      role="link"
+      tabIndex={0}
       aria-label={title || id}
       title={title || id}
       style={tileStyle}
@@ -707,6 +715,7 @@ export default function Tile({ node, theme, context = {} }) {
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
     >
       {showTileMesh && (
         <canvas 

@@ -12,7 +12,7 @@
   <title>calyr.aí | Interactive Deck</title>
   <link rel="canonical" href="https://calyr.ai/research/lithos/index.html" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ccircle cx='32' cy='32' r='13' fill='none' stroke='%23ff00cc' stroke-width='5'/%3E%3C/svg%3E" />
-  <link rel="preload" href="/research/lithos/deck.config.yaml" as="fetch" crossorigin />
+  <link rel="preload" href="/generated/lithos-deck.config.json" as="fetch" crossorigin />
   <link rel="stylesheet" href="/research/lithos/styles.css?v=20260715d" />
 </head>
 <body>
@@ -21,7 +21,7 @@
       <span>calyr.aí</span>
     </a>
     <div class="topbar-right">
-      <span id="slideCounter">01 / 05</span>
+      <span id="slideCounter" aria-live="polite"></span>
       <button class="icon-btn" id="prevBtn" aria-label="Previous slide">←</button>
       <button class="icon-btn" id="nextBtn" aria-label="Next slide">→</button>
     </div>
@@ -32,8 +32,8 @@
   </main>
 
   <footer class="footer">
-    <span>FROM DATA TO FORM.</span>
-    <span>FROM COMPLEXITY TO INTELLIGENCE.</span>
+    <span></span>
+    <span></span>
   </footer>
 
   <script src="/research/lithos/aortic-arch-scene.js?v=20260715d"></script>
