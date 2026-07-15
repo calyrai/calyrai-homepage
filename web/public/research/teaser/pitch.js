@@ -116,10 +116,19 @@ class GraphEngine {
     this.anchorById = new Map(config.nodes.map((n) => [n.id, { x: n.x, y: n.y }]));
     this.motion = { targetX: 0, targetY: 0, x: 0, y: 0 };
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mobileLayout = window.matchMedia('(max-width: 820px)');
     this.dragPreview = null;
   }
 
   point(node, t) {
+    if (this.mobileLayout.matches) {
+      const index = Math.max(0, this.config.nodes.findIndex((item) => item.id === node.id));
+      const xOffsets = [-58, 54, -46, 62];
+      return {
+        x: WIDTH * 0.5 + (xOffsets[index] || 0),
+        y: 64 + index * 108,
+      };
+    }
     return {
       x: node.x * WIDTH,
       y: node.y * HEIGHT,
@@ -130,6 +139,12 @@ class GraphEngine {
     const textLen = (node?.label || '').length;
     const halfWidth = Math.max(52, textLen * 7.2);
     return Math.min(132, halfWidth + 14);
+  }
+
+  nodePadding(node, ux, uy) {
+    const rx = this.estimateNodeRadius(node);
+    const ry = this.mobileLayout.matches ? 30 : 24;
+    return 1 / Math.sqrt((ux * ux) / (rx * rx) + (uy * uy) / (ry * ry));
   }
 
   cubic(edge, t) {
@@ -144,8 +159,8 @@ class GraphEngine {
     const ux = dx / len;
     const uy = dy / len;
 
-    const fromPad = this.estimateNodeRadius(from);
-    const toPad = this.estimateNodeRadius(to);
+    const fromPad = this.nodePadding(from, ux, uy);
+    const toPad = this.nodePadding(to, ux, uy);
 
     const p0 = { x: fromCenter.x + ux * fromPad, y: fromCenter.y + uy * fromPad };
     const p3 = { x: toCenter.x - ux * toPad, y: toCenter.y - uy * toPad };
@@ -243,12 +258,22 @@ class GraphEngine {
 
       const hit = document.createElementNS(NS, 'rect');
       hit.setAttribute('class', 'node-hitbox');
-      hit.setAttribute('x', '-58');
-      hit.setAttribute('y', '-15');
-      hit.setAttribute('width', '116');
-      hit.setAttribute('height', '30');
-      hit.setAttribute('rx', '6');
-      hit.setAttribute('ry', '6');
+      const nodeWidth = Math.min(280, Math.max(150, node.label.length * 18));
+      hit.setAttribute('x', `${-nodeWidth / 2}`);
+      hit.setAttribute('y', '-28');
+      hit.setAttribute('width', `${nodeWidth}`);
+      hit.setAttribute('height', '56');
+      hit.setAttribute('rx', '16');
+      hit.setAttribute('ry', '16');
+
+      const shell = document.createElementNS(NS, 'rect');
+      shell.setAttribute('class', 'node-shell');
+      shell.setAttribute('x', `${-nodeWidth / 2}`);
+      shell.setAttribute('y', '-28');
+      shell.setAttribute('width', `${nodeWidth}`);
+      shell.setAttribute('height', '56');
+      shell.setAttribute('rx', '16');
+      shell.setAttribute('ry', '16');
 
       const label = document.createElementNS(NS, 'text');
       label.setAttribute('class', 'node-label');
@@ -257,6 +282,7 @@ class GraphEngine {
       label.setAttribute('dominant-baseline', 'middle');
       label.textContent = node.label;
 
+      g.appendChild(shell);
       g.appendChild(hit);
       g.appendChild(label);
       this.svg.appendChild(g);

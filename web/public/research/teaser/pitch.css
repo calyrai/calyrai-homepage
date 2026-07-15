@@ -329,6 +329,27 @@ svg {
   stroke: transparent;
 }
 
+.node-shell {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1.2;
+  transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease;
+}
+
+.node:hover .node-shell,
+.node:focus-visible .node-shell,
+.node.focus .node-shell {
+  fill: rgba(255, 255, 255, 0.07);
+  stroke: rgba(255, 255, 255, 0.72);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.18));
+}
+
+.node.path-active .node-shell,
+.node.unlocked .node-shell {
+  stroke: rgba(255, 255, 255, 0.86);
+  fill: rgba(255, 255, 255, 0.08);
+}
+
 .node-label {
   font-size: 34px;
   font-weight: 700;
@@ -458,10 +479,20 @@ svg {
   }
 
   svg {
-    height: 400px;
+    height: 540px;
   }
 
   .scene {
-    min-height: 420px;
+    min-height: 565px;
+    padding: 8px;
+  }
+
+  .node-label {
+    font-size: 22px;
+  }
+
+  .edge {
+    opacity: 0.5;
+    stroke-width: 2.5;
   }
 }
