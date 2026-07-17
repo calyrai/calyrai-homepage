@@ -203,9 +203,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     clearTimeout(qrTimerRef.current)
     qrTimerRef.current = null
 
-    // Switch directly between the orbital mark and the final sparkling QR.
-    // The separate QR build phase is intentionally skipped.
-    const nextState = state === 'qr_show' ? 'idle' : 'qr_show'
+    // Toggle between idle (orbital particles) and QR display (via build animation)
+    const nextState = state === 'idle' ? 'qr_build' : 'idle'
     setState(nextState)
     engineRef.current?.setState(nextState)
   }
