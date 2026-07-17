@@ -185,8 +185,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (state === 'qr_build') {
       const qrBuildMs = Number(logoSpec?.states?.qr_build?.durationMs) || 2600
       qrTimerRef.current = window.setTimeout(() => {
-        setState('qr_show')
-        engineRef.current?.setState('qr_show')
+        setState('idle')
+        engineRef.current?.setState('idle')
       }, qrBuildMs)
     } else {
       return undefined
