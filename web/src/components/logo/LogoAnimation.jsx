@@ -198,21 +198,6 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     }
   }, [state])
 
-  const activateQrFromPress = () => {
-    setActiveTargetIndex(0)
-
-    // Keep the interaction minimal: orbital O -> QR -> orbital O.
-    clearTimeout(qrTimerRef.current)
-    qrTimerRef.current = null
-    const nextState = state === 'qr_show'
-      ? 'idle'
-      : state === 'qr_build'
-        ? 'qr_show'
-        : 'qr_build'
-    setState(nextState)
-    engineRef.current?.setState(nextState)
-  }
-
   const renderLabel = (value) => {
     if (!value) return null
     const normalized = String(value)
@@ -247,8 +232,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         <div
           className={`calyr-logo-interactive ${className}`.trim()}
           data-logo-state={state}
-          aria-label="CALYR interactive logo"
-          onClick={activateQrFromPress}
+          aria-label="CALYR animated logo"
         >
           <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
         </div>
