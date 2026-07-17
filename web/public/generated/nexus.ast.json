@@ -25,14 +25,17 @@
       "tile_summary": "",
       "subtitle": "",
       "landing_message": "",
-      "summary": "",
+      "summary": "Create what does not exist yet.",
       "body": "",
       "icon": "",
       "route": "",
       "links": [],
       "institutions": [],
       "contacts": [],
-      "intent": {},
+      "intent": {
+        "purpose": "brand-hero",
+        "audience": "first-visit"
+      },
       "render": {},
       "behavior": {},
       "explain": {},
@@ -45,57 +48,11 @@
         "transformations": [
           "ApplyNodeTypeInference",
           "AttachResolvedContent"
-        ]
-      }
-    },
-    {
-      "type": "hero",
-      "id": "hero",
-      "title": "",
-      "tile_lead": "",
-      "tile_accent": "",
-      "tile_title": "",
-      "tile_summary": "",
-      "subtitle": "",
-      "landing_message": "",
-      "summary": "Create what is not here yet.",
-      "body": "",
-      "icon": "",
-      "route": "",
-      "links": [],
-      "institutions": [],
-      "contacts": [],
-      "intent": {
-        "purpose": "brand-positioning",
-        "audience": "first-visit"
-      },
-      "render": {
-        "variant": "hero-banner"
-      },
-      "behavior": {},
-      "explain": {
-        "why": "Introduce the brand promise before module exploration."
-      },
-      "meta": {
-        "source": {
-          "contentNodeId": "hero",
-          "structureNodeId": null
-        },
-        "nodeType": "hero",
-        "transformations": [
-          "ApplyNodeTypeInference",
-          "AttachResolvedContent"
         ],
         "authored": {
           "intent": {
-            "purpose": "brand-positioning",
+            "purpose": "brand-hero",
             "audience": "first-visit"
-          },
-          "render": {
-            "variant": "hero-banner"
-          },
-          "explain": {
-            "why": "Introduce the brand promise before module exploration."
           }
         }
       }
@@ -246,7 +203,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 8
+          },
           "behavior": {},
           "explain": {},
           "relations": {
@@ -264,7 +223,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 8
+              }
+            }
           }
         },
         {
@@ -290,7 +254,8 @@
           },
           "render": {
             "variant": "linked-positioning",
-            "source": "content/positioning.yaml"
+            "source": "content/positioning.yaml",
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {
@@ -322,7 +287,8 @@
               },
               "render": {
                 "variant": "linked-positioning",
-                "source": "content/positioning.yaml"
+                "source": "content/positioning.yaml",
+                "grid_span": 4
               },
               "explain": {
                 "why": "Route the brain tile to the architecture positioning page generated from YAML and linked source content."
@@ -348,7 +314,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 4
+          },
           "behavior": {},
           "explain": {},
           "relations": {
@@ -366,7 +334,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
           }
         },
         {
@@ -387,7 +360,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 8
+          },
           "behavior": {},
           "explain": {},
           "relations": {
@@ -405,7 +380,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 8
+              }
+            }
           }
         },
         {
@@ -426,7 +406,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 8
+          },
           "behavior": {},
           "explain": {},
           "relations": {
@@ -444,7 +426,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 8
+              }
+            }
           }
         },
         {
@@ -465,7 +452,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 4
+          },
           "behavior": {},
           "explain": {},
           "relations": {
@@ -486,7 +475,12 @@
               "ApplyNodeTypeInference",
               "AttachResolvedContent",
               "BuildChildNodes"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
           },
           "children": [
             {
@@ -639,7 +633,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 8
+          },
           "behavior": {},
           "explain": {},
           "meta": {
@@ -651,7 +647,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 8
+              }
+            }
           }
         },
         {
@@ -724,7 +725,9 @@
             "purpose": "conversion",
             "audience": "partner-or-collaborator"
           },
-          "render": {},
+          "render": {
+            "grid_span": 4
+          },
           "behavior": {
             "quick_contact": "enabled",
             "mobile_panel": "toggle-rail"
@@ -746,6 +749,9 @@
               "intent": {
                 "purpose": "conversion",
                 "audience": "partner-or-collaborator"
+              },
+              "render": {
+                "grid_span": 4
               },
               "behavior": {
                 "quick_contact": "enabled",
@@ -775,7 +781,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 4
+          },
           "behavior": {},
           "explain": {},
           "meta": {
@@ -787,7 +795,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
           }
         }
       ]
@@ -878,7 +891,9 @@
           "institutions": [],
           "contacts": [],
           "intent": {},
-          "render": {},
+          "render": {
+            "grid_span": 12
+          },
           "behavior": {},
           "explain": {},
           "meta": {
@@ -890,7 +905,12 @@
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
-            ]
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 12
+              }
+            }
           }
         }
       ]

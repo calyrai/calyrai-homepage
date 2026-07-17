@@ -4,6 +4,33 @@ Structured, data-driven homepage for CALYR.aí.
 
 The site is generated from YAML content through a Python compiler into JSON artifacts, then rendered by a React/Vite frontend.
 
+## Repository identity
+
+- **Local source of truth:** `/Users/rtscheliessnig/Workspace/calyrai-homepage`
+- **Git remote:** `https://github.com/calyrai/calyrai-homepage.git`
+- **Primary branch:** `main`
+- **Deployment source:** generated contents of `deploy/`
+
+This repository is the only active source for the Calyr.ai homepage. The former
+location `/Users/rtscheliessnig/Workspace/workspace-active/calyrai-homepage` is
+no longer used. Older homepage working copies are retained for history under:
+
+`/Users/rtscheliessnig/Workspace/workspace-archive/homepage-duplicates-2026-07-17`
+
+Do not develop or deploy the homepage from archived copies, ecosystem
+placeholders, research exports, or the former `calyr-web` checkout.
+
+## Lithos relationship
+
+The related Lithos homepage has its own source of truth at:
+
+`/Users/rtscheliessnig/Workspace/lithos-homepage`
+
+The two sites share Helvetica-based typography, magenta `#ff38d1`, related
+spacing and radii, and restrained motion timing. Their visual identities remain
+deliberately distinct: Calyr.ai is right-oriented, semantic, and graph-led;
+Lithos is left-oriented, orbital, and black/cream.
+
 Design decision:
 - Pages are defined by YAML plus rule application.
 - Classic page HTML is treated as generated output, not as source of truth.

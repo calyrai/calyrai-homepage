@@ -66,10 +66,6 @@ __site_runtime:
     - {phase: STEER, title: Steering Enables Design., subtitle: Constraints become controls for valid solution spaces., story: Interactive boundary conditions guide exploration toward feasible high-value outcomes., type: flow-finalize, hint: Adjust the magenta controls and steer the constrained solution space.}
     - {phase: APPLY, title: 'Application: Aortic Arch.', subtitle: One surrogate produces patient-specific medical geometry., story: The controlled representation converges into an editable aortic arch while preserving evidence constraints and uncertainty., type: final-bow, hint: Rotate the aortic arch and inspect the resulting medical geometry.}
     - {phase: TRANSFER, title: One Model Language. Many Domains., subtitle: The same controlled curve becomes an architectural bridge., story: Different domain. Same inference architecture. The shared centerline remains while medical form transforms into deck ribs cables and pylon., type: final-bridge, hint: Rotate the bridge and trace the original aortic centerline through the new structure.}
-logo:
-  title: "Calyr.a\xED"
-  title_ref: brand.display_name
-  route: ''
 route_policy:
   home_route: /
   unresolved_internal_fallback: /
@@ -80,7 +76,20 @@ route_policy:
   - /contact
   - /ecosystem
   - /legal
+
+logo:
+  title: "Calyr.aí"
+  title_ref: brand.display_name
+  summary: Create what does not exist yet.
+  layout: inline
+  showCanvas: true
+  contacts: []
+  intent:
+    purpose: brand-hero
+    audience: first-visit
+
 hero:
+  title: "Calyr.aí"
   title_ref: brand.display_name
   subtitle_ref: brand.tagline
   intent:
@@ -90,7 +99,7 @@ hero:
     variant: hero-banner
   explain:
     why: Introduce the brand promise before module exploration.
-  summary: Create what is not here yet.
+  summary: Create what does not exist yet.
 movie:
   title: Teaser
   subtitle: Short
@@ -187,6 +196,7 @@ core:
   render:
     variant: linked-positioning
     source: content/positioning.yaml
+    grid_span: 4
   explain:
     why: Route the brain tile to the architecture positioning page generated from
       YAML and linked source content.
@@ -207,6 +217,8 @@ brix:
     '
   icon: bridge
   route: /research/platforms/brix/index.html
+  render:
+    grid_span: 4
 aflowtex:
   title: aflowtex
   tile_lead: medicine
@@ -224,6 +236,8 @@ aflowtex:
     '
   icon: aorta
   route: /research/platforms/aflowtex/index.html
+  render:
+    grid_span: 8
 lithos:
   title: lithos
   tile_lead: consequences
@@ -240,6 +254,8 @@ lithos:
     '
   icon: mountain
   route: /research/platforms/lithos/index.html
+  render:
+    grid_span: 8
 oracle:
   title: Pythia Applications
   tile_lead: applied inference
@@ -256,6 +272,8 @@ oracle:
     '
   icon: crystal-ball
   route: /research/platforms/pythia/index.html
+  render:
+    grid_span: 4
 pythia:
   title: pythia
   tile_lead: universal inference
@@ -275,6 +293,8 @@ pythia:
     \ them.\n"
   icon: compass
   route: /research/platforms/pythia/index.html
+  render:
+    grid_span: 8
 pythia_saxs:
   title: saxs pythia
   tile_lead: molecular assembly
@@ -322,6 +342,8 @@ ecosystem:
     '
   icon: network
   route: /ecosystem
+  render:
+    grid_span: 8
 philosophy:
   title: philosophy
   tile_lead: principles
@@ -336,6 +358,8 @@ philosophy:
     \ modelling, and human-centered decision support.\n"
   icon: book
   route: /books
+  render:
+    grid_span: 4
 contact:
   title: contact
   tile_lead: collaborate
@@ -354,6 +378,8 @@ contact:
     '
   icon: mail
   route: /contact
+  render:
+    grid_span: 4
   contacts:
   - id: mail
     label: Mail
@@ -414,6 +440,8 @@ impressum:
     '
   icon: ''
   route: /legal
+  render:
+    grid_span: 12
 legal:
   title: Impressum
   subtitle: ''

@@ -52,7 +52,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   const activeTarget = swipeTargets[Math.max(0, Math.min(activeTargetIndex, swipeTargets.length - 1))] || swipeTargets[0]
 
   const buildQrMatrix = (text) => {
-    const qr = QRCode.create(text, { errorCorrectionLevel: 'M' })
+    const qr = QRCode.create(text, { errorCorrectionLevel: 'H' })
     const { size, data } = qr.modules
     const modules = []
     for (let y = 0; y < size; y += 1) {
@@ -182,15 +182,15 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     clearTimeout(qrTimerRef.current)
     qrTimerRef.current = null
 
-    if (state !== 'qr_build') {
+    if (state === 'qr_build') {
+      const qrBuildMs = Number(logoSpec?.states?.qr_build?.durationMs) || 2600
+      qrTimerRef.current = window.setTimeout(() => {
+        setState('qr_show')
+        engineRef.current?.setState('qr_show')
+      }, qrBuildMs)
+    } else {
       return undefined
     }
-
-    const qrBuildMs = Number(logoSpec?.states?.qr_build?.durationMs) || 2600
-    qrTimerRef.current = window.setTimeout(() => {
-      setState('qr_show')
-      engineRef.current?.setState('qr_show')
-    }, qrBuildMs)
 
     return () => {
       clearTimeout(qrTimerRef.current)
@@ -201,12 +201,14 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
   const activateQrFromPress = () => {
     setActiveTargetIndex(0)
 
-    // Simple structure: first click -> micro, second click -> qr_build.
-    // Any click while QR is visible returns to micro (cycle continues).
+    // Keep the interaction minimal: orbital O -> QR -> orbital O.
     clearTimeout(qrTimerRef.current)
     qrTimerRef.current = null
-    const current = state
-    const nextState = current === 'micro' ? 'qr_build' : 'micro'
+    const nextState = state === 'qr_show'
+      ? 'idle'
+      : state === 'qr_build'
+        ? 'qr_show'
+        : 'qr_build'
     setState(nextState)
     engineRef.current?.setState(nextState)
   }

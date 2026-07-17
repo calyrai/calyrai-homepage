@@ -27,7 +27,7 @@
     },
     "qr_show": {
       "description": "Full QR remains readable",
-      "durationMs": 18000,
+      "durationMs": null,
       "renderMode": "qr"
     }
   },
@@ -42,7 +42,7 @@
     "idleCycleToQrMs": null,
     "idleTimeoutToEntropyMs": null,
     "upperActivationZoneFraction": 0.36,
-    "clickSequence": ["micro", "qr_build"]
+    "clickSequence": ["qr_build", "idle"]
   },
   "qr": {
     "mode": "vcard",

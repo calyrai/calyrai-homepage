@@ -19,9 +19,9 @@ export default function Element({ node, theme, context = {} }) {
       <LogoAnimation
         className="logo-element"
         label={title}
-        tagline={tagline}
+        tagline={summary}
         layout="inline"
-        showCanvas
+        showCanvas={true}
       />
     )
   }

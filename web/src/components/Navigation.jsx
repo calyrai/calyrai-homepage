@@ -162,19 +162,17 @@ export default function Navigation({ theme, ast }) {
 
   return (
     <>
-      {!isOpen && (
-        <button
-          className="hamburger"
-          onClick={() => setIsOpen(true)}
-          aria-label="Toggle navigation menu"
-          aria-expanded={isOpen}
-          aria-controls="site-navigation-drawer"
-        >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-        </button>
-      )}
+      <button
+        className={`hamburger ${isOpen ? 'active' : ''}`.trim()}
+        onClick={() => setIsOpen((open) => !open)}
+        aria-label={isOpen ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={isOpen}
+        aria-controls="site-navigation-drawer"
+      >
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+      </button>
 
       {isOpen && (
         <>
@@ -253,14 +251,6 @@ export default function Navigation({ theme, ast }) {
                 </div>
               )}
             </div>
-
-            <button
-              className="nav-close"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close navigation"
-            >
-              ✕
-            </button>
           </nav>
         </>
       )}

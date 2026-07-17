@@ -1,8 +1,6 @@
 homepage:
-
   children:
     - logo
-    - hero
     - movie
     - platforms
     - architecture

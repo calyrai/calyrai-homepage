@@ -7,16 +7,6 @@
     "icon": "",
     "keywords": []
   },
-  "logo": {
-    "title": "Calyr.a\u00ed",
-    "summary": "",
-    "body_preview": "",
-    "route": "",
-    "icon": "",
-    "keywords": [
-      "calyr.a\u00ed"
-    ]
-  },
   "route_policy": {
     "title": "",
     "summary": "",
@@ -25,16 +15,33 @@
     "icon": "",
     "keywords": []
   },
-  "hero": {
-    "title": "",
-    "summary": "Create what is not here yet.",
+  "logo": {
+    "title": "Calyr.a\u00ed",
+    "summary": "Create what does not exist yet.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
+      "calyr.a\u00ed",
       "create",
-      "here",
-      "is",
+      "does",
+      "exist",
+      "not",
+      "what",
+      "yet."
+    ]
+  },
+  "hero": {
+    "title": "Calyr.a\u00ed",
+    "summary": "Create what does not exist yet.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "calyr.a\u00ed",
+      "create",
+      "does",
+      "exist",
       "not",
       "what",
       "yet."

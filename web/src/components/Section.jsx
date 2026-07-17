@@ -68,19 +68,11 @@ export default function Section({ node, theme, context = {} }) {
   )
 
   const handleTogglePointerDown = () => {
-    if (layout.isMovieSection && route && route.endsWith('.html')) {
-      window.location.assign(route)
-      return
-    }
     lastPointerToggleTsRef.current = Date.now()
     setIsExpanded((prev) => !prev)
   }
 
   const handleToggleClick = () => {
-    if (layout.isMovieSection && route && route.endsWith('.html')) {
-      window.location.assign(route)
-      return
-    }
     if (Date.now() - lastPointerToggleTsRef.current < 350) {
       return
     }
@@ -102,6 +94,29 @@ export default function Section({ node, theme, context = {} }) {
     window.addEventListener('hashchange', syncFromHash)
     return () => window.removeEventListener('hashchange', syncFromHash)
   }, [id, layout.isCollapsible, anchorAliases.join('|')])
+
+  if (layout.isMovieSection && layout.isCollapsible) {
+    return (
+      <section
+        className="section section-teaser-link"
+        id={id}
+        data-type="section"
+        data-variant={layout.renderVariant || undefined}
+        style={sectionStyle}
+      >
+        {anchorAliases.map((anchorId) => (
+          <span key={anchorId} id={anchorId} className="section-anchor-alias" aria-hidden="true" />
+        ))}
+        <a className="teaser-link-card" href={route || `#${id}`}>
+          <span className="teaser-link-copy">
+            <span className="teaser-link-title">{formattedTitle}</span>
+            {summary && <span className="teaser-link-summary">{summary}</span>}
+            {rawBody && <span className="teaser-link-body">{rawBody}</span>}
+          </span>
+        </a>
+      </section>
+    )
+  }
 
   if (layout.isMovieSection && !layout.isCollapsible) {
     return (

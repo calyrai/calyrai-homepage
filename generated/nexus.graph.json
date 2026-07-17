@@ -10,15 +10,6 @@
       }
     },
     {
-      "id": "logo",
-      "label": "Calyr.a\u00ed",
-      "data": {
-        "title": "Calyr.a\u00ed",
-        "summary": "",
-        "icon": ""
-      }
-    },
-    {
       "id": "route_policy",
       "label": "",
       "data": {
@@ -28,11 +19,20 @@
       }
     },
     {
-      "id": "hero",
-      "label": "",
+      "id": "logo",
+      "label": "Calyr.a\u00ed",
       "data": {
-        "title": "",
-        "summary": "Create what is not here yet.",
+        "title": "Calyr.a\u00ed",
+        "summary": "Create what does not exist yet.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "hero",
+      "label": "Calyr.a\u00ed",
+      "data": {
+        "title": "Calyr.a\u00ed",
+        "summary": "Create what does not exist yet.",
         "icon": ""
       }
     },

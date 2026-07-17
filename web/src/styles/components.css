@@ -135,6 +135,73 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
+.section-teaser-link {
+  padding-top: clamp(28px, 4vw, 56px);
+  padding-bottom: clamp(28px, 4vw, 56px);
+}
+
+.teaser-link-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(24px, 3vw, 42px) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.teaser-link-index,
+.teaser-link-action {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teaser-link-copy {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.teaser-link-title {
+  font-size: clamp(1.8rem, 3.2vw, 3.5rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.teaser-link-summary {
+  margin-top: 8px;
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  line-height: 1.35;
+}
+
+.teaser-link-body {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.teaser-link-action {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.teaser-link-card:hover,
+.teaser-link-card:focus-visible {
+  color: var(--brand-magenta, #ff38d1);
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  .teaser-link-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .section-collapsible {
   padding-top: var(--space-lg);
   padding-bottom: var(--space-lg);
@@ -1370,7 +1437,7 @@ a.footer-contact-value:hover {
 
 .hero {
   background-size: 200% 200%;
-  animation: gradientShift 8s ease-in-out infinite;
+  animation: gradientShift 12s ease-in-out infinite;
   will-change: background-position;
 }
 
@@ -1380,8 +1447,8 @@ a.footer-contact-value:hover {
 }
 
 .tile:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 20px rgba(0, 212, 255, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
 }
 
 /* Selection glow pulse */
@@ -1484,7 +1551,7 @@ body.nav-open {
   position: fixed;
   top: max(1rem, calc(env(safe-area-inset-top) + 1rem));
   left: max(1rem, calc(env(safe-area-inset-left) + 1rem));
-  z-index: 1001;
+  z-index: 1002;
   background: none;
   border: none;
   cursor: pointer;
@@ -1500,7 +1567,7 @@ body.nav-open {
 }
 
 .hamburger.active .hamburger-line:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 
 .hamburger.active .hamburger-line:nth-child(2) {
@@ -1508,7 +1575,7 @@ body.nav-open {
 }
 
 .hamburger.active .hamburger-line:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 .nav-overlay {
@@ -1875,7 +1942,7 @@ body.nav-open {
    ============================================ */
 
 .calyr-logo-interactive {
-  --logo-ring-size: clamp(154px, 17vw, 228px);
+  --logo-ring-size: clamp(200px, 22vw, 320px);
   position: relative;
   width: var(--logo-ring-size);
   aspect-ratio: 1 / 1;
@@ -1906,7 +1973,7 @@ body.nav-open {
 }
 
 .calyr-logo-wrap--inline {
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -1932,7 +1999,7 @@ body.nav-open {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
   align-self: center;
   gap: 12px;
   margin-top: 0;
@@ -1940,12 +2007,12 @@ body.nav-open {
 
 .calyr-logo-label {
   margin-top: 0;
-  font-size: clamp(4.2rem, 8vw, 6.7rem);
+  font-size: clamp(5.4rem, 10vw, 8.5rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.018em;
   color: #f5f5f5;
-  text-align: right;
+  text-align: left;
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.16);
   text-rendering: geometricPrecision;
 }
@@ -1953,7 +2020,7 @@ body.nav-open {
 .calyr-logo-tagline {
   margin: 0;
   max-width: 24ch;
-  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
   font-weight: 560;
   line-height: 1.2;
   color: rgba(245, 245, 245, 0.94);
@@ -1962,7 +2029,12 @@ body.nav-open {
 
 .calyr-logo-label-accent {
   color: #ff33cc;
-  text-shadow: 0 0 11px rgba(255, 51, 204, 0.98), 0 0 26px rgba(255, 51, 204, 0.72);
+  text-shadow:
+    0 0 2px #ff9be7,
+    0 0 8px rgba(255, 51, 204, 1),
+    0 0 20px rgba(255, 51, 204, 0.9),
+    0 0 42px rgba(255, 0, 184, 0.62);
+  filter: saturate(1.18) brightness(1.08);
 }
 
 .calyr-logo-label-point {
@@ -2431,47 +2503,34 @@ body.nav-open {
   line-height: 1.33;
 }
 
-/* Landing-page visual system: authoritative tile treatment. */
+/* Landing-page visual system: Swiss grid with restrained Bento hierarchy. */
 .page-main .section-grid {
-  gap: clamp(18px, 2vw, 30px);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .page-main .tile {
   min-height: clamp(210px, 23vw, 280px);
   padding: clamp(22px, 2.4vw, 34px);
-  border: 1px solid rgba(var(--tile-rgb), 0.26);
-  border-radius: 22px;
-  background:
-    linear-gradient(145deg, rgba(var(--tile-rgb), 0.065), transparent 44%),
-    rgba(4, 7, 9, 0.82) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.055),
-    0 18px 52px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(10px);
-  transition: transform 260ms cubic-bezier(.2, .8, .2, 1), border-color 260ms ease, box-shadow 260ms ease;
+  border: 0;
+  border-radius: 0;
+  background: #050505 !important;
+  box-shadow: none;
+  backdrop-filter: none;
+  transition: color 160ms ease, background-color 160ms ease;
 }
 
 .page-main .tile::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(circle at 82% 14%, rgba(var(--tile-rgb), 0.16), transparent 34%);
-  opacity: 0.42;
-  transition: opacity 260ms ease;
+  display: none;
 }
 
 .page-main .tile:hover,
 .page-main .tile-hovered,
 .page-main .tile:focus-visible {
-  transform: translateY(-7px);
-  border-color: rgba(var(--tile-rgb), 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 24px 70px rgba(0, 0, 0, 0.46),
-    0 0 30px rgba(var(--tile-rgb), 0.13);
+  transform: none;
+  background: #0b0b0b !important;
+  box-shadow: inset 4px 0 0 rgba(var(--tile-rgb), 0.9);
   outline: none;
 }
 
@@ -2512,7 +2571,7 @@ body.nav-open {
 .page-main .tile-icon {
   margin: 0 0 auto;
   color: rgba(var(--tile-rgb), 0.95);
-  filter: drop-shadow(0 0 14px rgba(var(--tile-rgb), 0.22));
+  filter: none;
 }
 
 .page-main .tile-mesh-canvas {
@@ -2575,5 +2634,372 @@ body.nav-open {
     top: 14px;
     right: 16px;
     bottom: auto;
+  }
+}
+
+/* Desktop tile rhythm: preserve Calyr.ai's system while clarifying its grid. */
+@media (min-width: 1024px) {
+  .page-main .section {
+    width: min(100%, 1280px);
+    padding-left: clamp(24px, 3vw, 44px);
+    padding-right: clamp(24px, 3vw, 44px);
+  }
+
+  .page-main .section-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 1px;
+    align-items: stretch;
+  }
+
+  .page-main .tile {
+    grid-column: span var(--tile-grid-span, 6);
+    min-height: clamp(220px, 22vw, 276px);
+    height: 100%;
+  }
+
+  .page-main .tile-content {
+    min-height: 100%;
+  }
+}
+
+/* Mondrian composition: structured asymmetry, not a dashboard table. */
+.page-main #platforms .section-grid,
+.page-main #architecture .section-grid,
+.page-main #contact_main .section-grid {
+  gap: clamp(10px, 1vw, 16px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.page-main #platforms .tile,
+.page-main #architecture .tile,
+.page-main #contact_main .tile {
+  transform: none !important;
+  cursor: pointer !important;
+  min-height: clamp(220px, 22vw, 310px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: clamp(14px, 1.4vw, 20px);
+  background: #000 !important;
+  overflow: hidden;
+}
+
+.page-main #platforms .tile-mesh-canvas,
+.page-main #platforms .tile-foil-overlay,
+.page-main #architecture .tile-mesh-canvas,
+.page-main #architecture .tile-foil-overlay,
+.page-main #contact_main .tile-mesh-canvas,
+.page-main #contact_main .tile-foil-overlay {
+  display: none !important;
+}
+
+.page-main #platforms .tile-title,
+.page-main #architecture .tile-title,
+.page-main #contact_main .tile-title {
+  color: #f4f2ed;
+}
+
+.page-main #platforms .tile-summary,
+.page-main #architecture .tile-summary,
+.page-main #contact_main .tile-summary {
+  color: rgba(244, 242, 237, 0.76);
+}
+
+.page-main #platforms .tile::before,
+.page-main #architecture .tile::before,
+.page-main #contact_main .tile::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  background: rgba(var(--tile-rgb), 0.92);
+  opacity: 0.28;
+  transition: opacity 180ms ease, box-shadow 180ms ease;
+  pointer-events: none;
+}
+
+.page-main #pythia,
+.page-main #ecosystem {
+  min-height: clamp(260px, 28vw, 370px);
+}
+
+.page-main #pythia::before,
+.page-main #ecosystem::before {
+  width: 7px;
+  opacity: 0.28;
+}
+
+.page-main #platforms .tile:hover,
+.page-main #platforms .tile:focus-visible,
+.page-main #architecture .tile:hover,
+.page-main #architecture .tile:focus-visible,
+.page-main #contact_main .tile:hover,
+.page-main #contact_main .tile:focus-visible {
+  transform: none !important;
+  border-color: #fff;
+  box-shadow:
+    inset 0 0 42px rgba(var(--tile-rgb), 0.08),
+    0 0 24px rgba(var(--tile-rgb), 0.12);
+  background: #000 !important;
+}
+
+.page-main #platforms .tile:hover::before,
+.page-main #platforms .tile:focus-visible::before,
+.page-main #platforms .tile-selected::before,
+.page-main #architecture .tile:hover::before,
+.page-main #architecture .tile:focus-visible::before,
+.page-main #architecture .tile-selected::before,
+.page-main #contact_main .tile:hover::before,
+.page-main #contact_main .tile:focus-visible::before,
+.page-main #contact_main .tile-selected::before {
+  opacity: 1;
+  box-shadow: 0 0 22px rgba(var(--tile-rgb), 0.72);
+}
+
+.page-main #platforms .tile-selected,
+.page-main #architecture .tile-selected,
+.page-main #contact_main .tile-selected {
+  border-color: #fff;
+  box-shadow:
+    inset 0 0 54px rgba(var(--tile-rgb), 0.1),
+    0 0 30px rgba(var(--tile-rgb), 0.16);
+}
+
+@media (max-width: 1023px) {
+  .page-main #platforms .section-grid,
+  .page-main #architecture .section-grid,
+  .page-main #contact_main .section-grid {
+    gap: 12px;
+    border: 0;
+    background: transparent;
+  }
+
+  .page-main #platforms .tile,
+  .page-main #architecture .tile,
+  .page-main #contact_main .tile {
+    min-height: 190px;
+  }
+}
+
+/* Opening composition: one shared 12-column system for brand and teaser. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(12px, 1.4vw, 22px);
+    width: min(1280px, calc(100% - 2 * clamp(24px, 3vw, 44px)));
+    min-height: clamp(300px, 32vw, 430px);
+    margin: 0 auto;
+    padding: clamp(42px, 6vw, 82px) 0 clamp(26px, 4vw, 54px);
+    align-items: center;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+    width: 100%;
+    align-items: flex-start;
+    justify-self: stretch;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 10 / span 3;
+    grid-row: 1;
+    width: min(100%, 320px);
+    justify-self: end;
+  }
+
+  .page-main .calyr-logo-label,
+  .page-main .calyr-logo-tagline {
+    text-align: left;
+  }
+
+  .page-main .calyr-logo-tagline {
+    max-width: 28ch;
+  }
+
+  .page-main > .logo-element + .hero {
+    display: none;
+  }
+}
+
+.page-main .section-teaser-link {
+  padding-top: clamp(12px, 2vw, 26px);
+  padding-bottom: clamp(36px, 5vw, 70px);
+}
+
+.page-main .teaser-link-card {
+  grid-template-columns: minmax(0, 1fr);
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: clamp(14px, 1.4vw, 20px);
+  background: #000;
+}
+
+.page-main .teaser-link-card:hover,
+.page-main .teaser-link-card:focus-visible {
+  border-color: #fff;
+  box-shadow: inset 0 0 42px rgba(255, 56, 209, 0.06), 0 0 24px rgba(255, 56, 209, 0.1);
+}
+
+@media (max-width: 768px) {
+  .page-main .teaser-link-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+}
+
+/* Shared alignment for the opening, section headers and Mondrian grids. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: min(100%, 1280px);
+    box-sizing: border-box;
+    padding-left: clamp(24px, 3vw, 44px);
+    padding-right: clamp(24px, 3vw, 44px);
+  }
+}
+
+.page-main .calyr-logo-interactive {
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: clamp(14px, 1.4vw, 20px);
+  background: #000;
+  box-shadow: none;
+}
+
+.page-main .calyr-logo-interactive::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 4;
+  width: 7px;
+  background: #fff;
+  pointer-events: none;
+}
+
+.page-main .calyr-logo-interactive:hover,
+.page-main .calyr-logo-interactive:focus-visible,
+.page-main .calyr-logo-interactive[data-logo-state='qr_build'],
+.page-main .calyr-logo-interactive[data-logo-state='qr_show'] {
+  border-color: #fff;
+  box-shadow: inset 0 0 42px rgba(255, 51, 204, 0.06), 0 0 24px rgba(255, 51, 204, 0.1);
+}
+
+.page-main .teaser-link-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-main .teaser-link-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  background: #fff;
+}
+
+.page-main #platforms .section-collapse-toggle,
+.page-main #architecture .section-collapse-toggle,
+.page-main #contact_main .section-collapse-toggle {
+  align-items: flex-start;
+}
+
+.page-main #platforms .section-collapse-label,
+.page-main #architecture .section-collapse-label,
+.page-main #contact_main .section-collapse-label {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+}
+
+.page-main #platforms .section-collapse-line,
+.page-main #architecture .section-collapse-line,
+.page-main #contact_main .section-collapse-line {
+  width: 100%;
+  margin: 0;
+}
+
+/* Hero lockup: one calm composition instead of three floating elements. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    grid-template-columns: minmax(0, 1fr) clamp(190px, 18vw, 232px);
+    column-gap: clamp(22px, 3vw, 42px);
+    width: min(100%, 1040px);
+    min-height: clamp(340px, 36vw, 480px);
+    padding: clamp(52px, 6vw, 82px) clamp(24px, 3vw, 44px);
+    align-items: center;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(18px, 2vw, 28px);
+    max-width: 700px;
+  }
+
+  .page-main .calyr-logo-label {
+    order: 1;
+    font-size: clamp(5rem, 7.6vw, 7rem);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+  }
+
+  .page-main .calyr-logo-tagline {
+    order: 2;
+    max-width: 22ch;
+    font-size: clamp(1.45rem, 2.2vw, 2.15rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 2;
+    width: 100%;
+    align-self: center;
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: calc(100% - 32px);
+    margin: 0 auto;
+    padding: 72px 0 42px;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    order: 1;
+    width: 100%;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .page-main .calyr-logo-label {
+    order: 1;
+    font-size: clamp(3.55rem, 17vw, 5.2rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .page-main .calyr-logo-tagline {
+    order: 2;
+    max-width: 18ch;
+    font-size: clamp(1.25rem, 6vw, 1.7rem);
+    line-height: 1.15;
+    text-align: left;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    order: 2;
+    width: min(58vw, 220px);
+    align-self: flex-end;
   }
 }

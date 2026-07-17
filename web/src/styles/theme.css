@@ -6,6 +6,12 @@
  */
 
 :root {
+  /* Shared Calyr.ai / Lithos family tokens */
+  --brand-magenta: #ff38d1;
+  --brand-surface: #080808;
+  --brand-text: #f2f0ea;
+  --brand-muted: rgba(242, 240, 234, 0.68);
+
   /* Colors: Now provided dynamically by theme.json via JavaScript inline styles */
   /* These are fallbacks only - actual colors come from theme.skin.components */
   --color-primary: inherit;
@@ -20,8 +26,8 @@
   --color-white: #ffffff;
 
   /* Typography */
-  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
+  --font-family-sans: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
   --font-family-mono: 'Courier New', Courier, monospace;
 
   /* Font sizes */
@@ -84,14 +90,14 @@
   /* Borders */
   --border-radius-sm: 0.25rem;
   --border-radius-md: 0.5rem;
-  --border-radius-lg: 1rem;
+  --border-radius-lg: 1.25rem;
   --border-color: #e0e0e0;
   --border-width: 1px;
 
   /* Transitions */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 300ms ease-in-out;
-  --transition-slow: 500ms ease-in-out;
+  --transition-fast: 180ms ease;
+  --transition-normal: 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-slow: 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* Z-index scale */
   --z-base: 0;

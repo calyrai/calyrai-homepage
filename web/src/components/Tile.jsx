@@ -255,6 +255,10 @@ export default function Tile({ node, theme, context = {} }) {
     route,
     relations = {},
   } = node
+  const authoredGridSpan = Number(node.render?.grid_span)
+  const gridSpan = Number.isFinite(authoredGridSpan)
+    ? Math.min(12, Math.max(3, Math.round(authoredGridSpan)))
+    : 6
   const showTileMesh = true
   const isPlatformTile = PLATFORM_TILE_IDS.has(id)
   const leadDotClass = getTileLeadDotClass(tileAccent)
@@ -680,6 +684,7 @@ export default function Tile({ node, theme, context = {} }) {
   const activePosition = isMobileViewport ? DEFAULT_TILE_POSITION : position
 
   const tileStyle = {
+    '--tile-grid-span': gridSpan,
     transform: `translate(${activePosition.x}px, ${activePosition.y}px)`,
     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
     cursor: isMobileViewport ? 'pointer' : isDragging ? 'grabbing' : 'grab',

@@ -1111,6 +1111,12 @@ export default class LogoCanvasEngine {
         const baseRadius = inFinderPattern
           ? Math.max(modulePx * 0.34, Math.min(modulePx * 0.4, radius * 1.08))
           : Math.max(modulePx * 0.18, Math.min(modulePx * 0.46, radius * sizeVary))
+        if (isStableQrShow) {
+          const flicker = inFinderPattern
+            ? dotOpacity
+            : 0.76 + 0.22 * (0.5 + 0.5 * Math.sin(t * (2.4 + baseSeedB * 3.2) + baseSeedA * 18))
+          ctx.fillStyle = `rgba(255,255,255,${flicker.toFixed(3)})`
+        }
         ctx.beginPath()
         ctx.arc(drawX, drawY, baseRadius, 0, Math.PI * 2)
         ctx.fill()
