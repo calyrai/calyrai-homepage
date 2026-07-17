@@ -198,6 +198,18 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     }
   }, [state])
 
+  const toggleSparklingQr = () => {
+    setActiveTargetIndex(0)
+    clearTimeout(qrTimerRef.current)
+    qrTimerRef.current = null
+
+    // Switch directly between the orbital mark and the final sparkling QR.
+    // The separate QR build phase is intentionally skipped.
+    const nextState = state === 'qr_show' ? 'idle' : 'qr_show'
+    setState(nextState)
+    engineRef.current?.setState(nextState)
+  }
+
   const renderLabel = (value) => {
     if (!value) return null
     const normalized = String(value)
@@ -232,7 +244,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         <div
           className={`calyr-logo-interactive ${className}`.trim()}
           data-logo-state={state}
-          aria-label="CALYR animated logo"
+          aria-label="Toggle CALYR sparkling QR"
+          onClick={toggleSparklingQr}
         >
           <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
         </div>
