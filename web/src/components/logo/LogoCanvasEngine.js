@@ -108,9 +108,15 @@ export default class LogoCanvasEngine {
     } else if (renderMode === 'micro' && this.qrMatrices?.micro) {
       this.currentRenderMode = 'micro'
       newSource = this.qrMatrices.micro
-    } else if (renderMode === 'qr') {
+    } else if (renderMode === 'qr' && state !== 'qr_build') {
+      // Only lock to static QR overlay for qr_show (not qr_build)
+      // During qr_build, keep particles animating toward QR targets
       newSource = this.qrMatrices?.full || this.qrMatrixSource
       this.currentRenderMode = 'qr'
+    } else if (state === 'qr_build') {
+      // During qr_build animation, show animated particles migrating toward QR
+      newSource = this.qrMatrices?.full || this.qrMatrixSource
+      this.currentRenderMode = 'ring_to_qr'
     } else {
       // No renderMode (idle, active, etc.) → ring animation
       this.currentRenderMode = 'ring'
@@ -952,7 +958,7 @@ export default class LogoCanvasEngine {
 
     this.#updateParticles(t)
 
-    // Three fully exclusive states — no overlapping renders
+    // Render modes — handle animated migration separately
     if (this.currentRenderMode === 'braille') {
       // Braille: only particles in dot-invitation pattern
       this.#drawParticles(ctx, t)
@@ -962,6 +968,10 @@ export default class LogoCanvasEngine {
     } else if (this.currentRenderMode === 'qr') {
       // Full QR: solid black plate + full QR overlay only, no particles
       this.#drawLockedQrOverlay(ctx, t)
+    } else if (this.currentRenderMode === 'ring_to_qr') {
+      // During qr_build: animated particles migrating toward QR pattern
+      this.#drawParticles(ctx, t)
+      this.#drawQrMotionField(ctx, t)
     } else {
       // Idle / active: animated ring with constellations
       this.#drawParticles(ctx, t)
