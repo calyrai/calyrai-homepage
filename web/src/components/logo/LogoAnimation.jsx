@@ -185,8 +185,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     if (state === 'qr_build') {
       const qrBuildMs = Number(logoSpec?.states?.qr_build?.durationMs) || 2600
       qrTimerRef.current = window.setTimeout(() => {
-        setState('idle')
-        engineRef.current?.setState('idle')
+        setState('qr_show')
+        engineRef.current?.setState('qr_show')
       }, qrBuildMs)
     } else {
       return undefined
@@ -203,7 +203,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     clearTimeout(qrTimerRef.current)
     qrTimerRef.current = null
 
-    // Toggle between idle (orbital particles) and QR display (via build animation)
+    // idle → start animation; any QR state → dismiss back to idle
     const nextState = state === 'idle' ? 'qr_build' : 'idle'
     setState(nextState)
     engineRef.current?.setState(nextState)
