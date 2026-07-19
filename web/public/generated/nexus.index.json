@@ -17,7 +17,7 @@
   },
   "logo": {
     "title": "Calyr.a\u00ed",
-    "summary": "Create what does not exist yet.",
+    "summary": "Create what does not yet exist.",
     "body_preview": "",
     "route": "",
     "icon": "",
@@ -25,15 +25,15 @@
       "calyr.a\u00ed",
       "create",
       "does",
-      "exist",
+      "exist.",
       "not",
       "what",
-      "yet."
+      "yet"
     ]
   },
   "hero": {
     "title": "Calyr.a\u00ed",
-    "summary": "Create what does not exist yet.",
+    "summary": "Create what does not yet exist.",
     "body_preview": "",
     "route": "",
     "icon": "",
@@ -41,62 +41,112 @@
       "calyr.a\u00ed",
       "create",
       "does",
-      "exist",
+      "exist.",
       "not",
       "what",
-      "yet."
+      "yet"
     ]
   },
   "movie": {
     "title": "Teaser",
-    "summary": "See the platform in motion.",
-    "body_preview": "Follow the path from experimental evidence and HPC to surrogate intelligence and scientific decisions.",
+    "summary": "Pythia turns data into prediction. Oracles turn prediction into action.",
+    "body_preview": "Data becomes surrogate. Surrogate becomes prediction. Prediction becomes oracle.",
     "route": "/research/teaser/index.html",
     "icon": "",
     "keywords": [
-      "in",
-      "motion.",
-      "platform",
-      "see",
+      "action.",
+      "data",
+      "into",
+      "oracles",
+      "prediction",
+      "prediction.",
+      "pythia",
       "teaser",
-      "the"
+      "turn",
+      "turns"
     ]
   },
   "platforms": {
-    "title": "Platforms",
-    "summary": "One inference architecture, applied across science, medicine, and engineering.",
-    "body_preview": "",
-    "route": "",
-    "icon": "",
-    "keywords": [
-      "across",
-      "and",
-      "applied",
-      "architecture,",
-      "engineering.",
-      "inference",
-      "medicine,",
-      "one",
-      "platforms",
-      "science,"
-    ]
-  },
-  "architecture": {
     "title": "Architecture",
-    "summary": "Explore the principles, relationships, and people behind the platform.",
+    "summary": "NEXUS, BRIX, and LITHOS are CALYR.a\u00ed.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
       "and",
       "architecture",
-      "behind",
-      "explore",
-      "people",
-      "platform.",
-      "principles,",
-      "relationships,",
-      "the"
+      "are",
+      "brix,",
+      "calyr.a\u00ed.",
+      "lithos",
+      "nexus,"
+    ]
+  },
+  "applications": {
+    "title": "Pythia",
+    "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "builds",
+      "fast",
+      "for",
+      "interpretable",
+      "models",
+      "physics-informed,",
+      "prediction.",
+      "pythia",
+      "surrogate",
+      "trustworthy"
+    ]
+  },
+  "applied": {
+    "title": "Applications",
+    "summary": "Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "adaptive",
+      "and",
+      "application",
+      "applications",
+      "combines",
+      "each",
+      "interaction",
+      "interpretation,",
+      "into",
+      "measurements,",
+      "models,",
+      "one",
+      "operational",
+      "product.",
+      "simulations,",
+      "surrogate"
+    ]
+  },
+  "architecture": {
+    "title": "Ecosystem",
+    "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "applications,",
+      "as",
+      "brix,",
+      "ecosystem",
+      "engineering",
+      "lithos,",
+      "nexus,",
+      "one",
+      "operate",
+      "oracles",
+      "pythia,",
+      "system."
     ]
   },
   "contact_main": {
@@ -122,114 +172,145 @@
     "keywords": []
   },
   "core": {
-    "title": "Calyr.a\u00ed Core",
-    "summary": "Connects observations, knowledge, models, and decisions.\n",
-    "body_preview": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+    "title": "NEXUS",
+    "summary": "NEXUS connects data, models, workflows, and platforms.\n",
+    "body_preview": "NEXUS is the connective architecture of CALYR.a\u00ed. It links data, knowledge, models, workflows, platforms, and decisions while Pythia supplies surrogate modelling and prediction.\n",
     "route": "/research/platforms/core/index.html",
     "icon": "brain",
     "keywords": [
       "and",
-      "calyr.a\u00ed",
       "connects",
-      "core",
-      "decisions.",
-      "knowledge,",
+      "data,",
       "models,",
-      "observations,"
+      "nexus",
+      "platforms.",
+      "workflows,"
     ]
   },
   "brix": {
     "title": "brix",
-    "summary": "Surrogate-assisted engineering design and analysis.\n",
-    "body_preview": "Engineering intelligence platform for structural analysis, design exploration, and decision support. Brix combines simulations, measurements, and surrogate models to enable rapid variant evaluation an",
+    "summary": "Faster structural design, evaluation, and optimization.\n",
+    "body_preview": "Brix combines simulations, measurements, surrogate models, and an adaptive AI-based user experience to explore structural variants, understand trade-offs, and develop optimized manufacturable parts wi",
     "route": "/research/platforms/brix/index.html",
     "icon": "bridge",
     "keywords": [
-      "analysis.",
       "and",
       "brix",
-      "design",
-      "engineering",
-      "surrogate-assisted"
+      "design,",
+      "evaluation,",
+      "faster",
+      "optimization.",
+      "structural"
     ]
   },
   "aflowtex": {
-    "title": "aflowtex",
-    "summary": "Patient-specific flow modelling and clinical decision support.\n",
-    "body_preview": "Aflowtex combines clinical data, vascular modelling, flow simulation, and surrogate reasoning to support patient-specific analysis and uncertainty-aware medical decisions.\n",
+    "title": "vascular application",
+    "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
+    "body_preview": "AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models, uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together ",
     "route": "/research/platforms/aflowtex/index.html",
     "icon": "aorta",
     "keywords": [
-      "aflowtex",
-      "and",
-      "clinical",
-      "decision",
-      "flow",
-      "modelling",
+      "a",
+      "application",
+      "combines",
+      "different",
+      "high-level",
+      "into",
+      "models",
+      "one",
       "patient-specific",
-      "support."
+      "product.",
+      "that",
+      "vascular"
+    ]
+  },
+  "biophysical_applications": {
+    "title": "biophysical applications",
+    "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+    "body_preview": "SPR, SAXS, and metabolic inference are concrete systems in this application field.",
+    "route": "/research/pythia/saxs/index.html",
+    "icon": "scatter",
+    "keywords": [
+      "and",
+      "applications",
+      "behavior",
+      "biological",
+      "biophysical",
+      "from",
+      "indirect",
+      "interpretable",
+      "latent",
+      "measurements.",
+      "models",
+      "molecular",
+      "reconstruct",
+      "surrogate"
     ]
   },
   "lithos": {
     "title": "lithos",
-    "summary": "Understanding consequences, trade-offs, and impact.\n",
-    "body_preview": "Lithos translates model outputs into actionable decisions by evaluating consequences, risks, trade-offs, and long-term system effects.\n",
+    "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
+    "body_preview": "LITHOS is the adaptive interaction layer of CALYR.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of ",
     "route": "/research/platforms/lithos/index.html",
     "icon": "mountain",
     "keywords": [
+      "a",
       "and",
-      "consequences,",
-      "impact.",
+      "dynamic",
+      "engineered",
+      "for",
+      "graphical",
+      "interacting",
+      "interface",
       "lithos",
-      "trade-offs,",
-      "understanding"
+      "models,",
+      "predictions,",
+      "systems.",
+      "with"
     ]
   },
   "oracle": {
-    "title": "Pythia Applications",
-    "summary": "Extracting knowledge from complex information spaces.\n",
-    "body_preview": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
+    "title": "Oracles",
+    "summary": "Oracles turn Pythia predictions into decisions, designs, and engineered results.\n",
+    "body_preview": "An Oracle is the usable consequence of Pythia: surrogate prediction, uncertainty, domain constraints, adaptive AI-based interaction, and action combined for one defined class of problems.\n",
     "route": "/research/platforms/pythia/index.html",
     "icon": "crystal-ball",
     "keywords": [
-      "applications",
-      "complex",
-      "extracting",
-      "from",
-      "information",
-      "knowledge",
+      "and",
+      "decisions,",
+      "designs,",
+      "engineered",
+      "into",
+      "oracles",
+      "predictions",
       "pythia",
-      "spaces."
+      "results.",
+      "turn"
     ]
   },
   "pythia": {
     "title": "pythia",
-    "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
-    "body_preview": "PYTHIA addresses a single fundamental question: how can the hidden organization of a complex system be inferred from incomplete observations? It provides a unified language for describing assembled sy",
+    "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
+    "body_preview": "Pythia is the shared CALYR.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the p",
     "route": "/research/platforms/pythia/index.html",
     "icon": "compass",
     "keywords": [
-      "a",
-      "about,",
       "and",
       "complex",
-      "computational",
-      "discovering",
-      "for",
-      "framework",
-      "hidden",
-      "of",
-      "organization",
+      "data,",
+      "interpretable,",
+      "into",
+      "measurements",
+      "prediction.",
       "pythia",
-      "reasoning",
-      "representing,",
-      "systems.",
-      "the",
-      "universal"
+      "simulations,",
+      "surrogate",
+      "turns",
+      "validated"
     ]
   },
   "pythia_saxs": {
-    "title": "saxs pythia",
+    "title": "SAXS System",
     "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
     "body_preview": "The SAXS Oracle applies PYTHIA structural inference to solution scattering data. It infers the hidden three-dimensional organization of macromolecular assemblies from one-dimensional scattering curves",
     "route": "/research/pythia/saxs/index.html",
@@ -239,17 +320,37 @@
       "from",
       "molecular",
       "profiles.",
-      "pythia",
       "reconstructing",
       "saxs",
       "scattering",
       "small-angle",
       "structure",
+      "system",
       "x-ray"
     ]
   },
+  "pythia_spr": {
+    "title": "SPR System",
+    "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
+    "body_preview": "The SPR application uses Pythia to transform experimental sensor responses into fast, validated estimates of interaction kinetics and affinity.",
+    "route": "/research/platforms/pythia/index.html",
+    "icon": "wave",
+    "keywords": [
+      "affinity,",
+      "and",
+      "binding",
+      "from",
+      "inferring",
+      "kinetics,",
+      "molecular",
+      "sensorgrams.",
+      "spr",
+      "system",
+      "uncertainty"
+    ]
+  },
   "pythia_metabolic": {
-    "title": "metabolic pythia",
+    "title": "Metabolic System",
     "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
     "body_preview": "The Metabolic Oracle applies PYTHIA to biochemical network reconstruction. It integrates stoichiometric constraints, thermodynamic feasibility, and experimental observations to infer the most plausibl",
     "route": "/research/pythia/metabolic/index.html",
@@ -263,40 +364,297 @@
       "inferring",
       "metabolic",
       "network",
-      "pythia",
       "states",
+      "system",
       "topology"
+    ]
+  },
+  "vascular_oracle": {
+    "title": "Vascular Oracle",
+    "summary": "Prediction becomes clinical and engineering decision support.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "becomes",
+      "clinical",
+      "decision",
+      "engineering",
+      "oracle",
+      "prediction",
+      "support.",
+      "vascular"
+    ]
+  },
+  "vascular_measurement": {
+    "title": "vascular measurement models",
+    "summary": "Clinical imaging, observed anatomy, flow measurements, and patient evidence.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "anatomy,",
+      "and",
+      "clinical",
+      "evidence.",
+      "flow",
+      "imaging,",
+      "measurement",
+      "measurements,",
+      "models",
+      "observed",
+      "patient",
+      "vascular"
+    ]
+  },
+  "vascular_simulation": {
+    "title": "vascular simulation models",
+    "summary": "Geometry, fluid dynamics, boundary conditions, and virtual intervention states.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "boundary",
+      "conditions,",
+      "dynamics,",
+      "fluid",
+      "geometry,",
+      "intervention",
+      "models",
+      "simulation",
+      "states.",
+      "vascular",
+      "virtual"
+    ]
+  },
+  "vascular_interpretation": {
+    "title": "vascular interpretation models",
+    "summary": "Surrogate prediction, uncertainty, comparison, and patient-specific meaning.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "comparison,",
+      "interpretation",
+      "meaning.",
+      "models",
+      "patient-specific",
+      "prediction,",
+      "surrogate",
+      "uncertainty,",
+      "vascular"
+    ]
+  },
+  "spr_data": {
+    "title": "SPR Data",
+    "summary": "Sensorgrams, concentrations, assay conditions, and experimental controls.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "assay",
+      "concentrations,",
+      "conditions,",
+      "controls.",
+      "data",
+      "experimental",
+      "sensorgrams,",
+      "spr"
+    ]
+  },
+  "spr_surrogate": {
+    "title": "SPR Surrogate",
+    "summary": "Fast models of molecular association, dissociation, affinity, and uncertainty.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "affinity,",
+      "and",
+      "association,",
+      "dissociation,",
+      "fast",
+      "models",
+      "molecular",
+      "of",
+      "spr",
+      "surrogate",
+      "uncertainty."
+    ]
+  },
+  "spr_oracle": {
+    "title": "SPR Oracle",
+    "summary": "Prediction becomes interpretable binding and assay decisions.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "assay",
+      "becomes",
+      "binding",
+      "decisions.",
+      "interpretable",
+      "oracle",
+      "prediction",
+      "spr"
+    ]
+  },
+  "saxs_data": {
+    "title": "SAXS Data",
+    "summary": "Scattering profiles, experimental conditions, priors, and structural constraints.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "conditions,",
+      "constraints.",
+      "data",
+      "experimental",
+      "priors,",
+      "profiles,",
+      "saxs",
+      "scattering",
+      "structural"
+    ]
+  },
+  "saxs_surrogate": {
+    "title": "SAXS Surrogate",
+    "summary": "Fast inference of molecular assembly and plausible structural states.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "assembly",
+      "fast",
+      "inference",
+      "molecular",
+      "of",
+      "plausible",
+      "saxs",
+      "states.",
+      "structural",
+      "surrogate"
+    ]
+  },
+  "saxs_oracle": {
+    "title": "SAXS Oracle",
+    "summary": "Prediction becomes structural interpretation and experiment guidance.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "becomes",
+      "experiment",
+      "guidance.",
+      "interpretation",
+      "oracle",
+      "prediction",
+      "saxs",
+      "structural"
+    ]
+  },
+  "metabolic_data": {
+    "title": "Metabolic Data",
+    "summary": "Experimental observations, stoichiometry, and thermodynamic constraints.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "constraints.",
+      "data",
+      "experimental",
+      "metabolic",
+      "observations,",
+      "stoichiometry,",
+      "thermodynamic"
+    ]
+  },
+  "metabolic_surrogate": {
+    "title": "Metabolic Surrogate",
+    "summary": "Fast models of flux states, network behavior, and uncertainty.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "behavior,",
+      "fast",
+      "flux",
+      "metabolic",
+      "models",
+      "network",
+      "of",
+      "states,",
+      "surrogate",
+      "uncertainty."
+    ]
+  },
+  "metabolic_oracle": {
+    "title": "Metabolic Oracle",
+    "summary": "Prediction becomes biological interpretation and intervention guidance.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "becomes",
+      "biological",
+      "guidance.",
+      "interpretation",
+      "intervention",
+      "metabolic",
+      "oracle",
+      "prediction"
     ]
   },
   "ecosystem": {
     "title": "ecosystem",
-    "summary": "Explore relationships across the calyrai ecosystem.\n",
-    "body_preview": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orches",
+    "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+    "body_preview": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, ",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [
-      "across",
-      "calyrai",
+      "and",
+      "applications,",
+      "architecture,",
+      "calyr.a\u00ed",
+      "connects",
+      "decisions.",
+      "domain",
       "ecosystem",
-      "ecosystem.",
-      "explore",
-      "relationships",
-      "the"
+      "engineering",
+      "interpretable",
+      "models,",
+      "operational",
+      "surrogate"
     ]
   },
   "philosophy": {
     "title": "philosophy",
-    "summary": "Scientific rigor, openness, and reproducibility.\n",
-    "body_preview": "Calyr.a\u00ed is founded on scientific transparency, reproducibility, interpretable modelling, and human-centered decision support.\n",
-    "route": "/books",
+    "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
+    "body_preview": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncert",
+    "route": "/philosophy",
     "icon": "book",
     "keywords": [
       "and",
-      "openness,",
+      "behavior,",
+      "calyr.a\u00ed",
+      "evidence,",
+      "makes",
+      "model",
       "philosophy",
-      "reproducibility.",
-      "rigor,",
-      "scientific"
+      "responsibility",
+      "uncertainty,",
+      "visible."
     ]
   },
   "contact": {

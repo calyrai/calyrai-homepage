@@ -25,7 +25,7 @@
       "tile_summary": "",
       "subtitle": "",
       "landing_message": "",
-      "summary": "Create what does not exist yet.",
+      "summary": "Create what does not yet exist.",
       "body": "",
       "icon": "",
       "route": "",
@@ -67,8 +67,8 @@
       "tile_summary": "",
       "subtitle": "Short",
       "landing_message": "",
-      "summary": "See the platform in motion.",
-      "body": "Follow the path from experimental evidence and HPC to surrogate intelligence and scientific decisions.",
+      "summary": "Pythia turns data into prediction. Oracles turn prediction into action.",
+      "body": "Data becomes surrogate. Surrogate becomes prediction. Prediction becomes oracle.",
       "icon": "",
       "route": "/research/teaser/index.html",
       "links": [],
@@ -118,14 +118,14 @@
     {
       "type": "section",
       "id": "platforms",
-      "title": "Platforms",
+      "title": "Architecture",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Intelligence for complex systems",
+      "subtitle": "CALYR.a\u00ed is NEXUS, BRIX, and LITHOS",
       "landing_message": "",
-      "summary": "One inference architecture, applied across science, medicine, and engineering.",
+      "summary": "NEXUS, BRIX, and LITHOS are CALYR.a\u00ed.",
       "body": "",
       "icon": "",
       "route": "",
@@ -133,12 +133,12 @@
       "institutions": [],
       "contacts": [],
       "intent": {
-        "purpose": "capability-overview",
+        "purpose": "architecture-platform-overview",
         "audience": "first-visit"
       },
       "render": {
         "variant": "tile-grid",
-        "source": "homepage.grid.first-band"
+        "source": "homepage.grid.system-band"
       },
       "behavior": {
         "collapsible": true,
@@ -164,12 +164,12 @@
         ],
         "authored": {
           "intent": {
-            "purpose": "capability-overview",
+            "purpose": "architecture-platform-overview",
             "audience": "first-visit"
           },
           "render": {
             "variant": "tile-grid",
-            "source": "homepage.grid.first-band"
+            "source": "homepage.grid.system-band"
           },
           "behavior": {
             "collapsible": true,
@@ -187,62 +187,16 @@
       "children": [
         {
           "type": "tile",
-          "id": "pythia",
-          "title": "pythia",
-          "tile_lead": "universal inference",
-          "tile_accent": "cyan",
-          "tile_title": "pythia",
-          "tile_summary": "reveals hidden structure from incomplete evidence",
-          "subtitle": "Universal Framework for Complex Systems",
-          "landing_message": "",
-          "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
-          "body": "PYTHIA addresses a single fundamental question: how can the hidden organization of a complex system be inferred from incomplete observations? It provides a unified language for describing assembled systems across all disciplines\u2014physical, biological, symbolic, social, and computational\u2014 and a general inference engine for reconstructing, validating, predicting, and optimizing them.\n",
-          "icon": "compass",
-          "route": "/research/platforms/pythia/index.html",
-          "links": [],
-          "institutions": [],
-          "contacts": [],
-          "intent": {},
-          "render": {
-            "grid_span": 8
-          },
-          "behavior": {},
-          "explain": {},
-          "relations": {
-            "incoming": [
-              "oracle"
-            ],
-            "outgoing": []
-          },
-          "meta": {
-            "source": {
-              "contentNodeId": "pythia",
-              "structureNodeId": null
-            },
-            "nodeType": "tile",
-            "transformations": [
-              "ApplyNodeTypeInference",
-              "AttachResolvedContent"
-            ],
-            "authored": {
-              "render": {
-                "grid_span": 8
-              }
-            }
-          }
-        },
-        {
-          "type": "tile",
           "id": "core",
-          "title": "Calyr.a\u00ed Core",
-          "tile_lead": "reasoning",
+          "title": "NEXUS",
+          "tile_lead": "integration",
           "tile_accent": "blue",
-          "tile_title": "core",
-          "tile_summary": "connects evidence, models, and decisions",
-          "subtitle": "Central reasoning engine",
+          "tile_title": "nexus",
+          "tile_summary": "NEXUS connects the CALYR.a\u00ed architecture",
+          "subtitle": "System integration",
           "landing_message": "",
-          "summary": "Connects observations, knowledge, models, and decisions.\n",
-          "body": "Calyrai core is the central reasoning engine of the ecosystem. It links observations, knowledge representation, learning workflows, surrogate models, and decision support into a unified framework.\n",
+          "summary": "NEXUS connects data, models, workflows, and platforms.\n",
+          "body": "NEXUS is the connective architecture of CALYR.a\u00ed. It links data, knowledge, models, workflows, platforms, and decisions while Pythia supplies surrogate modelling and prediction.\n",
           "icon": "brain",
           "route": "/research/platforms/core/index.html",
           "links": [],
@@ -265,9 +219,8 @@
             "incoming": [],
             "outgoing": [
               "brix",
-              "aflowtex",
               "lithos",
-              "oracle"
+              "pythia"
             ]
           },
           "meta": {
@@ -300,14 +253,14 @@
           "type": "tile",
           "id": "brix",
           "title": "brix",
-          "tile_lead": "engineering",
+          "tile_lead": "structural systems",
           "tile_accent": "orange",
           "tile_title": "brix",
-          "tile_summary": "surrogate-assisted design and analysis",
-          "subtitle": "Engineering intelligence",
+          "tile_summary": "optimized structural parts from simulation and measurement",
+          "subtitle": "Structural intelligence",
           "landing_message": "",
-          "summary": "Surrogate-assisted engineering design and analysis.\n",
-          "body": "Engineering intelligence platform for structural analysis, design exploration, and decision support. Brix combines simulations, measurements, and surrogate models to enable rapid variant evaluation and uncertainty-aware engineering decisions.\n",
+          "summary": "Faster structural design, evaluation, and optimization.\n",
+          "body": "Brix combines simulations, measurements, surrogate models, and an adaptive AI-based user experience to explore structural variants, understand trade-offs, and develop optimized manufacturable parts with uncertainty-aware validation.\n",
           "icon": "bridge",
           "route": "/research/platforms/brix/index.html",
           "links": [],
@@ -344,62 +297,16 @@
         },
         {
           "type": "tile",
-          "id": "aflowtex",
-          "title": "aflowtex",
-          "tile_lead": "medicine",
-          "tile_accent": "red",
-          "tile_title": "aflowtex",
-          "tile_summary": "patient-specific flow intelligence",
-          "subtitle": "Medical flow intelligence",
-          "landing_message": "",
-          "summary": "Patient-specific flow modelling and clinical decision support.\n",
-          "body": "Aflowtex combines clinical data, vascular modelling, flow simulation, and surrogate reasoning to support patient-specific analysis and uncertainty-aware medical decisions.\n",
-          "icon": "aorta",
-          "route": "/research/platforms/aflowtex/index.html",
-          "links": [],
-          "institutions": [],
-          "contacts": [],
-          "intent": {},
-          "render": {
-            "grid_span": 8
-          },
-          "behavior": {},
-          "explain": {},
-          "relations": {
-            "incoming": [
-              "core"
-            ],
-            "outgoing": []
-          },
-          "meta": {
-            "source": {
-              "contentNodeId": "aflowtex",
-              "structureNodeId": null
-            },
-            "nodeType": "tile",
-            "transformations": [
-              "ApplyNodeTypeInference",
-              "AttachResolvedContent"
-            ],
-            "authored": {
-              "render": {
-                "grid_span": 8
-              }
-            }
-          }
-        },
-        {
-          "type": "tile",
           "id": "lithos",
           "title": "lithos",
-          "tile_lead": "consequences",
+          "tile_lead": "adaptive interaction",
           "tile_accent": "green",
           "tile_title": "lithos",
-          "tile_summary": "makes risks and trade-offs actionable",
-          "subtitle": "Consequence intelligence",
+          "tile_summary": "an AI-native graphical interface that adapts to model, task, and context",
+          "subtitle": "Adaptive graphical intelligence",
           "landing_message": "",
-          "summary": "Understanding consequences, trade-offs, and impact.\n",
-          "body": "Lithos translates model outputs into actionable decisions by evaluating consequences, risks, trade-offs, and long-term system effects.\n",
+          "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
+          "body": "LITHOS is the adaptive interaction layer of CALYR.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of imposing one static interface.\n",
           "icon": "mountain",
           "route": "/research/platforms/lithos/index.html",
           "links": [],
@@ -407,7 +314,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 8
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {},
@@ -429,31 +336,103 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 8
+                "grid_span": 4
               }
             }
           }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "applications",
+      "title": "Pythia",
+      "tile_lead": "",
+      "tile_accent": "",
+      "tile_title": "",
+      "tile_summary": "",
+      "subtitle": "Interpretable surrogate models for engineering",
+      "landing_message": "",
+      "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+      "body": "",
+      "icon": "",
+      "route": "",
+      "links": [],
+      "institutions": [],
+      "contacts": [],
+      "intent": {
+        "purpose": "pythia-system-overview",
+        "audience": "first-visit"
+      },
+      "render": {
+        "variant": "tile-grid",
+        "source": "homepage.grid.application-band"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": true,
+        "persistence": "none",
+        "anchor_aliases": [
+          "applications"
+        ]
+      },
+      "explain": {
+        "why": "Present Pythia as the shared data-to-surrogate-to-prediction system."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "applications",
+          "structureNodeId": "applications"
         },
+        "nodeType": "section",
+        "transformations": [
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "pythia-system-overview",
+            "audience": "first-visit"
+          },
+          "render": {
+            "variant": "tile-grid",
+            "source": "homepage.grid.application-band"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": true,
+            "persistence": "none",
+            "anchor_aliases": [
+              "applications"
+            ]
+          },
+          "explain": {
+            "why": "Present Pythia as the shared data-to-surrogate-to-prediction system."
+          }
+        }
+      },
+      "children": [
         {
           "type": "tile",
-          "id": "oracle",
-          "title": "Pythia Applications",
-          "tile_lead": "applied inference",
-          "tile_accent": "magenta",
-          "tile_title": "applications",
-          "tile_summary": "domain-specific deployments of pythia",
-          "subtitle": "Applied Inference",
+          "id": "pythia",
+          "title": "pythia",
+          "tile_lead": "scientific machine learning",
+          "tile_accent": "cyan",
+          "tile_title": "interpretable surrogate models",
+          "tile_summary": "physics-informed, validated, and uncertainty-aware prediction",
+          "subtitle": "The shared scientific AI system",
           "landing_message": "",
-          "summary": "Extracting knowledge from complex information spaces.\n",
-          "body": "Oracle transforms biological, technical, scientific, and cultural datasets into structured knowledge graphs, reasoning paths, and machine-readable representations.\n",
-          "icon": "crystal-ball",
+          "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
+          "body": "Pythia is the shared CALYR.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the predictive core of every application. ",
+          "icon": "compass",
           "route": "/research/platforms/pythia/index.html",
           "links": [],
           "institutions": [],
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 4
+            "grid_span": 12
           },
           "behavior": {},
           "explain": {},
@@ -462,13 +441,134 @@
               "core"
             ],
             "outgoing": [
-              "pythia"
+              "aflowtex",
+              "pythia_spr",
+              "pythia_saxs",
+              "pythia_metabolic"
             ]
           },
           "meta": {
             "source": {
-              "contentNodeId": "oracle",
-              "structureNodeId": "oracle"
+              "contentNodeId": "pythia",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 12
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "applied",
+      "title": "Applications",
+      "tile_lead": "",
+      "tile_accent": "",
+      "tile_title": "",
+      "tile_summary": "",
+      "subtitle": "Multiple models become one product",
+      "landing_message": "",
+      "summary": "Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.",
+      "body": "",
+      "icon": "",
+      "route": "",
+      "links": [],
+      "institutions": [],
+      "contacts": [],
+      "intent": {
+        "purpose": "applied-system-overview",
+        "audience": "first-visit"
+      },
+      "render": {
+        "variant": "tile-grid",
+        "source": "homepage.grid.applied-band"
+      },
+      "behavior": {
+        "collapsible": true,
+        "default_expanded": true,
+        "persistence": "none",
+        "anchor_aliases": [
+          "applied"
+        ]
+      },
+      "explain": {
+        "why": "Present application fields first and place concrete systems one level below."
+      },
+      "meta": {
+        "source": {
+          "contentNodeId": "applied",
+          "structureNodeId": "applied"
+        },
+        "nodeType": "section",
+        "transformations": [
+          "ApplyNodeTypeInference",
+          "AttachResolvedContent",
+          "BuildChildNodes"
+        ],
+        "authored": {
+          "intent": {
+            "purpose": "applied-system-overview",
+            "audience": "first-visit"
+          },
+          "render": {
+            "variant": "tile-grid",
+            "source": "homepage.grid.applied-band"
+          },
+          "behavior": {
+            "collapsible": true,
+            "default_expanded": true,
+            "persistence": "none",
+            "anchor_aliases": [
+              "applied"
+            ]
+          },
+          "explain": {
+            "why": "Present application fields first and place concrete systems one level below."
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "tile",
+          "id": "aflowtex",
+          "title": "vascular application",
+          "tile_lead": "aflowtex",
+          "tile_accent": "red",
+          "tile_title": "vascular application",
+          "tile_summary": "simulation, measurement, and interpretation become one patient-specific product",
+          "subtitle": "Integrated vascular intelligence",
+          "landing_message": "",
+          "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
+          "body": "AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models, uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together as one application.\n",
+          "icon": "aorta",
+          "route": "/research/platforms/aflowtex/index.html",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 6
+          },
+          "behavior": {},
+          "explain": {},
+          "relations": {
+            "incoming": [
+              "pythia"
+            ],
+            "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "aflowtex",
+              "structureNodeId": "aflowtex"
             },
             "nodeType": "tile",
             "transformations": [
@@ -478,15 +578,338 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 4
+                "grid_span": 6
               }
             }
           },
           "children": [
             {
               "type": "element",
+              "id": "vascular_measurement",
+              "title": "vascular measurement models",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Measurement",
+              "landing_message": "",
+              "summary": "Clinical imaging, observed anatomy, flow measurements, and patient evidence.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "vascular_measurement",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "vascular_simulation",
+              "title": "vascular simulation models",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Simulation",
+              "landing_message": "",
+              "summary": "Geometry, fluid dynamics, boundary conditions, and virtual intervention states.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "vascular_simulation",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "vascular_interpretation",
+              "title": "vascular interpretation models",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Interpretation",
+              "landing_message": "",
+              "summary": "Surrogate prediction, uncertainty, comparison, and patient-specific meaning.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "vascular_interpretation",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "vascular_oracle",
+              "title": "Vascular Oracle",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Oracle",
+              "landing_message": "",
+              "summary": "Prediction becomes clinical and engineering decision support.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "vascular_oracle",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "tile",
+          "id": "biophysical_applications",
+          "title": "biophysical applications",
+          "tile_lead": "experimental systems",
+          "tile_accent": "cyan",
+          "tile_title": "biophysical interpretation and inference",
+          "tile_summary": "hidden structure, interaction, and system state from experimental evidence",
+          "subtitle": "Biophysical intelligence",
+          "landing_message": "",
+          "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+          "body": "SPR, SAXS, and metabolic inference are concrete systems in this application field.",
+          "icon": "scatter",
+          "route": "/research/pythia/saxs/index.html",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 6
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "biophysical_applications",
+              "structureNodeId": "biophysical_applications"
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent",
+              "BuildChildNodes"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 6
+              }
+            }
+          },
+          "children": [
+            {
+              "type": "tile",
+              "id": "pythia_spr",
+              "title": "SPR System",
+              "tile_lead": "molecular interaction",
+              "tile_accent": "magenta",
+              "tile_title": "spr",
+              "tile_summary": "binding kinetics from sensor response",
+              "subtitle": "Surface Plasmon Resonance intelligence",
+              "landing_message": "",
+              "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
+              "body": "The SPR application uses Pythia to transform experimental sensor responses into fast, validated estimates of interaction kinetics and affinity.",
+              "icon": "wave",
+              "route": "/research/platforms/pythia/index.html",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {
+                "grid_span": 6
+              },
+              "behavior": {},
+              "explain": {},
+              "relations": {
+                "incoming": [
+                  "pythia"
+                ],
+                "outgoing": []
+              },
+              "meta": {
+                "source": {
+                  "contentNodeId": "pythia_spr",
+                  "structureNodeId": "pythia_spr"
+                },
+                "nodeType": "tile",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent",
+                  "BuildChildNodes"
+                ],
+                "authored": {
+                  "render": {
+                    "grid_span": 6
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "id": "spr_data",
+                  "title": "SPR Data",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Data",
+                  "landing_message": "",
+                  "summary": "Sensorgrams, concentrations, assay conditions, and experimental controls.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "spr_data",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "spr_surrogate",
+                  "title": "SPR Surrogate",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Surrogate",
+                  "landing_message": "",
+                  "summary": "Fast models of molecular association, dissociation, affinity, and uncertainty.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "spr_surrogate",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "spr_oracle",
+                  "title": "SPR Oracle",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Oracle",
+                  "landing_message": "",
+                  "summary": "Prediction becomes interpretable binding and assay decisions.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "spr_oracle",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "tile",
               "id": "pythia_saxs",
-              "title": "saxs pythia",
+              "title": "SAXS System",
               "tile_lead": "molecular assembly",
               "tile_accent": "cyan",
               "tile_title": "saxs",
@@ -501,25 +924,140 @@
               "institutions": [],
               "contacts": [],
               "intent": {},
-              "render": {},
+              "render": {
+                "grid_span": 6
+              },
               "behavior": {},
               "explain": {},
+              "relations": {
+                "incoming": [
+                  "pythia"
+                ],
+                "outgoing": []
+              },
               "meta": {
                 "source": {
                   "contentNodeId": "pythia_saxs",
-                  "structureNodeId": null
+                  "structureNodeId": "pythia_saxs"
                 },
-                "nodeType": "element",
+                "nodeType": "tile",
                 "transformations": [
                   "ApplyNodeTypeInference",
-                  "AttachResolvedContent"
-                ]
-              }
+                  "AttachResolvedContent",
+                  "BuildChildNodes"
+                ],
+                "authored": {
+                  "render": {
+                    "grid_span": 6
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "id": "saxs_data",
+                  "title": "SAXS Data",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Data",
+                  "landing_message": "",
+                  "summary": "Scattering profiles, experimental conditions, priors, and structural constraints.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "saxs_data",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "saxs_surrogate",
+                  "title": "SAXS Surrogate",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Surrogate",
+                  "landing_message": "",
+                  "summary": "Fast inference of molecular assembly and plausible structural states.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "saxs_surrogate",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "saxs_oracle",
+                  "title": "SAXS Oracle",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Oracle",
+                  "landing_message": "",
+                  "summary": "Prediction becomes structural interpretation and experiment guidance.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "saxs_oracle",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                }
+              ]
             },
             {
-              "type": "element",
+              "type": "tile",
               "id": "pythia_metabolic",
-              "title": "metabolic pythia",
+              "title": "Metabolic System",
               "tile_lead": "biological systems",
               "tile_accent": "green",
               "tile_title": "metabolic",
@@ -534,20 +1072,135 @@
               "institutions": [],
               "contacts": [],
               "intent": {},
-              "render": {},
+              "render": {
+                "grid_span": 6
+              },
               "behavior": {},
               "explain": {},
+              "relations": {
+                "incoming": [
+                  "pythia"
+                ],
+                "outgoing": []
+              },
               "meta": {
                 "source": {
                   "contentNodeId": "pythia_metabolic",
-                  "structureNodeId": null
+                  "structureNodeId": "pythia_metabolic"
                 },
-                "nodeType": "element",
+                "nodeType": "tile",
                 "transformations": [
                   "ApplyNodeTypeInference",
-                  "AttachResolvedContent"
-                ]
-              }
+                  "AttachResolvedContent",
+                  "BuildChildNodes"
+                ],
+                "authored": {
+                  "render": {
+                    "grid_span": 6
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "id": "metabolic_data",
+                  "title": "Metabolic Data",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Data",
+                  "landing_message": "",
+                  "summary": "Experimental observations, stoichiometry, and thermodynamic constraints.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "metabolic_data",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "metabolic_surrogate",
+                  "title": "Metabolic Surrogate",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Surrogate",
+                  "landing_message": "",
+                  "summary": "Fast models of flux states, network behavior, and uncertainty.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "metabolic_surrogate",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                },
+                {
+                  "type": "element",
+                  "id": "metabolic_oracle",
+                  "title": "Metabolic Oracle",
+                  "tile_lead": "",
+                  "tile_accent": "",
+                  "tile_title": "",
+                  "tile_summary": "",
+                  "subtitle": "Oracle",
+                  "landing_message": "",
+                  "summary": "Prediction becomes biological interpretation and intervention guidance.",
+                  "body": "",
+                  "icon": "",
+                  "route": "",
+                  "links": [],
+                  "institutions": [],
+                  "contacts": [],
+                  "intent": {},
+                  "render": {},
+                  "behavior": {},
+                  "explain": {},
+                  "meta": {
+                    "source": {
+                      "contentNodeId": "metabolic_oracle",
+                      "structureNodeId": null
+                    },
+                    "nodeType": "element",
+                    "transformations": [
+                      "ApplyNodeTypeInference",
+                      "AttachResolvedContent"
+                    ]
+                  }
+                }
+              ]
             }
           ]
         }
@@ -556,14 +1209,14 @@
     {
       "type": "section",
       "id": "architecture",
-      "title": "Architecture",
+      "title": "Ecosystem",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "How the system connects",
+      "subtitle": "From architecture to application",
       "landing_message": "",
-      "summary": "Explore the principles, relationships, and people behind the platform.",
+      "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
       "body": "",
       "icon": "",
       "route": "",
@@ -619,14 +1272,14 @@
           "type": "tile",
           "id": "ecosystem",
           "title": "ecosystem",
-          "tile_lead": "system map",
+          "tile_lead": "system architecture",
           "tile_accent": "cyan",
           "tile_title": "ecosystem",
-          "tile_summary": "see how every module connects",
-          "subtitle": "Interactive architecture",
+          "tile_summary": "architecture, prediction, applications, and oracles form one system",
+          "subtitle": "One connected engineering system",
           "landing_message": "",
-          "summary": "Explore relationships across the calyrai ecosystem.\n",
-          "body": "Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle, and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized scientific agents and pipeline orchestration.\n",
+          "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+          "body": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX is the vascular application.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
@@ -634,7 +1287,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 8
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {},
@@ -650,7 +1303,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 8
+                "grid_span": 4
               }
             }
           }
@@ -662,7 +1315,7 @@
           "tile_lead": "collaborate",
           "tile_accent": "yellow",
           "tile_title": "contact",
-          "tile_summary": "start with one valuable challenge",
+          "tile_summary": "one valuable challenge starts the engineering partnership",
           "subtitle": "Research and partnerships",
           "landing_message": "Start with one valuable challenge",
           "summary": "Research, engineering, and collaboration channels.\n",
@@ -767,17 +1420,38 @@
           "type": "tile",
           "id": "philosophy",
           "title": "philosophy",
-          "tile_lead": "principles",
+          "tile_lead": "trustworthy scientific AI",
           "tile_accent": "magenta",
           "tile_title": "philosophy",
-          "tile_summary": "rigor, openness, and reproducibility",
-          "subtitle": "Principles and foundations",
+          "tile_summary": "interpretable models, traceable predictions, human-controlled decisions",
+          "subtitle": "Principles for trustworthy engineering AI",
           "landing_message": "",
-          "summary": "Scientific rigor, openness, and reproducibility.\n",
-          "body": "Calyr.a\u00ed is founded on scientific transparency, reproducibility, interpretable modelling, and human-centered decision support.\n",
+          "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
+          "body": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncertainty \u2014 Predictions expose confidence, sensitivity, and conditions where the model should not decide.\nHuman oversight \u2014 People remain able to understand, challenge, override, and stop the system.\nLifecycle risk management \u2014 Risks are monitored from development through deployment and continued use.",
           "icon": "book",
-          "route": "/books",
-          "links": [],
+          "route": "/philosophy",
+          "links": [
+            {
+              "id": "eu-ai-act",
+              "label": "EU Artificial Intelligence Act",
+              "route": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj"
+            },
+            {
+              "id": "eu-risk-management",
+              "label": "Article 9 \u2014 Risk management",
+              "route": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_9"
+            },
+            {
+              "id": "eu-human-oversight",
+              "label": "Article 14 \u2014 Human oversight",
+              "route": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_14"
+            },
+            {
+              "id": "eu-robustness",
+              "label": "Article 15 \u2014 Accuracy, robustness and cybersecurity",
+              "route": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_15"
+            }
+          ],
           "institutions": [],
           "contacts": [],
           "intent": {},

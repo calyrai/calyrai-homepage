@@ -12,6 +12,7 @@ import { SectionLayoutService } from '../services/SectionLayoutService'
 import { ScrollCenterProvider } from '../hooks/useScrollCenter'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { applyTitleDefaults } from '../utils/titleDefaults'
+import { PythiaMeshCanvas } from './Tile'
 
 export default function Section({ node, theme, context = {} }) {
   const { id, title, summary, route, children = [] } = node
@@ -108,6 +109,7 @@ export default function Section({ node, theme, context = {} }) {
           <span key={anchorId} id={anchorId} className="section-anchor-alias" aria-hidden="true" />
         ))}
         <a className="teaser-link-card" href={route || `#${id}`}>
+          <PythiaMeshCanvas seedKey={`section-${id}`} />
           <span className="teaser-link-copy">
             <span className="teaser-link-title">{formattedTitle}</span>
             {summary && <span className="teaser-link-summary">{summary}</span>}

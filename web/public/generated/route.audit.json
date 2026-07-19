@@ -1,9 +1,9 @@
 {
   "checked_routes": [
-    "/books",
     "/contact",
     "/ecosystem",
     "/legal",
+    "/philosophy",
     "/research/platforms/aflowtex/index.html",
     "/research/platforms/brix/index.html",
     "/research/platforms/core/index.html",
@@ -13,6 +13,10 @@
     "/research/pythia/saxs/index.html",
     "/research/teaser/index.html",
     "https://bsky.app",
+    "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+    "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_14",
+    "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_15",
+    "https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_9",
     "https://wa.me/4369919200915",
     "https://www.instagram.com",
     "https://www.linkedin.com",
@@ -21,5 +25,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-17T11:28:50.596225+00:00"
+  "generated_at": "2026-07-19T07:56:38.539362+00:00"
 }

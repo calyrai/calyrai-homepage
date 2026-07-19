@@ -882,11 +882,6 @@ body.books-route .app {
   color: rgba(255, 255, 255, 0.94);
 }
 
-#core.tile { --tile-rgb: 255, 59, 48; }
-#brix.tile { --tile-rgb: 255, 140, 26; }
-#aflowtex.tile { --tile-rgb: 255, 214, 10; }
-#lithos.tile { --tile-rgb: 52, 199, 89; }
-#oracle.tile { --tile-rgb: 0, 199, 255; }
 #delphi.tile {
   --tile-rgb: 255, 255, 255;
   border-color: rgba(255, 255, 255, 0.95);
@@ -901,10 +896,6 @@ body.books-route .app {
 #delphi.tile .tile-link-indicator {
   color: rgba(255, 255, 255, 0.98);
 }
-#ecosystem.tile { --tile-rgb: 125, 66, 255; }
-#contact.tile { --tile-rgb: 191, 90, 242; }
-#philosophy.tile { --tile-rgb: 255, 45, 146; }
-#impressum.tile { --tile-rgb: 255, 55, 95; }
 
 .tile-foil-overlay {
   position: absolute;
@@ -2368,12 +2359,16 @@ body.nav-open {
 /* Right-flush key section headers */
 #movie .section-collapse-toggle,
 #platforms .section-collapse-toggle,
+#applications .section-collapse-toggle,
+#applied .section-collapse-toggle,
 #architecture .section-collapse-toggle {
   align-items: flex-end;
 }
 
 #movie .section-collapse-label,
 #platforms .section-collapse-label,
+#applications .section-collapse-label,
+#applied .section-collapse-label,
 #architecture .section-collapse-label {
   text-align: right;
   margin-left: auto;
@@ -2381,6 +2376,8 @@ body.nav-open {
 
 #movie .section-collapse-line,
 #platforms .section-collapse-line,
+#applications .section-collapse-line,
+#applied .section-collapse-line,
 #architecture .section-collapse-line {
   width: min(78%, 640px);
   margin-left: auto;
@@ -2389,6 +2386,8 @@ body.nav-open {
 @media (min-width: 1024px) {
   #movie .section-collapse-label,
   #platforms .section-collapse-label,
+  #applications .section-collapse-label,
+  #applied .section-collapse-label,
   #architecture .section-collapse-label {
     font-size: var(--section-heading-size-desktop);
     line-height: var(--section-heading-line-height);
@@ -2396,6 +2395,8 @@ body.nav-open {
   }
 
   #platforms .section-grid,
+  #applications .section-grid,
+  #applied .section-grid,
   #architecture .section-grid,
   #contact_main .section-grid {
     margin-top: clamp(18px, 1.8vw, 32px);
@@ -2403,6 +2404,8 @@ body.nav-open {
   }
 
   #platforms .section-grid,
+  #applications .section-grid,
+  #applied .section-grid,
   #architecture .section-grid,
   #contact_main .section-grid {
     grid-auto-rows: 1fr;
@@ -2637,6 +2640,301 @@ body.nav-open {
   }
 }
 
+/* Canonical CALYR tile: sections supply only content, span and accent color. */
+.page-main .section-grid > .tile {
+  position: relative !important;
+  box-sizing: border-box !important;
+  min-height: var(--card-min-height, 282px) !important;
+  height: 100% !important;
+  padding: var(--card-padding, clamp(22px, 2.4vw, 34px)) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  border-radius: var(--card-radius, 0) !important;
+  background: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.page-main .section-grid > .tile > .tile-mesh-canvas {
+  display: var(--card-mesh-display, block) !important;
+  opacity: var(--card-mesh-opacity, 0.28) !important;
+  filter: none !important;
+}
+
+.page-main .section-grid > .tile:hover > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-hovered > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-selected > .tile-mesh-canvas {
+  opacity: var(--card-mesh-hover-opacity, 0.52) !important;
+}
+
+.page-main .section-grid > .tile .tile-icon,
+.page-main .section-grid > .tile .tile-title,
+.page-main .section-grid > .tile .tile-summary,
+.page-main .section-grid > .tile .tile-content {
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+
+/* Applications share lowercase typography while retaining the rainbow system. */
+.page-main #applied .tile-icon,
+.page-main #applied .tile-title,
+.page-main #applied .tile-summary,
+.page-main #applied .tile-link-indicator {
+  text-transform: lowercase;
+}
+
+.philosophy-principles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 2rem 0;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.philosophy-principle {
+  min-height: 180px;
+  padding: clamp(20px, 3vw, 34px);
+  background: #000;
+}
+
+.philosophy-principle h3,
+.philosophy-sources h3 {
+  margin: 0 0 0.65rem;
+  color: #fff;
+  text-transform: lowercase;
+}
+
+.philosophy-principle p {
+  max-width: 42ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+}
+
+.philosophy-source-list {
+  display: grid;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.philosophy-source-list a {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+}
+
+.philosophy-source-list a:hover {
+  color: #ff2d92;
+}
+
+@media (max-width: 767px) {
+  .philosophy-principles {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Final landing-page geometry: CALYR cards are always square. */
+.page-main .tile,
+.page-main .teaser-link-card,
+.page-main .calyr-logo-interactive,
+.page-main .calyr-logo-canvas {
+  border-radius: var(--card-radius, 0) !important;
+}
+
+/* Mesh is part of the shared card language. */
+.page-main .tile .tile-mesh-canvas,
+.page-main #platforms .tile-mesh-canvas,
+.page-main #applications .tile-mesh-canvas,
+.page-main #applied .tile-mesh-canvas,
+.page-main #architecture .tile-mesh-canvas,
+.page-main #contact_main .tile-mesh-canvas {
+  display: var(--card-mesh-display, block) !important;
+  opacity: var(--card-mesh-opacity, 0.18) !important;
+  mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.82), transparent 82%);
+}
+
+.page-main #platforms .tile:hover .tile-mesh-canvas,
+.page-main #applications .tile:hover .tile-mesh-canvas,
+.page-main #applied .tile:hover .tile-mesh-canvas,
+.page-main #architecture .tile:hover .tile-mesh-canvas,
+.page-main #contact_main .tile:hover .tile-mesh-canvas,
+.page-main #platforms .tile-hovered .tile-mesh-canvas,
+.page-main #applications .tile-hovered .tile-mesh-canvas,
+.page-main #applied .tile-hovered .tile-mesh-canvas,
+.page-main #architecture .tile-hovered .tile-mesh-canvas,
+.page-main #contact_main .tile-hovered .tile-mesh-canvas {
+  opacity: var(--card-mesh-hover-opacity, 0.38) !important;
+}
+
+.page-main .teaser-link-card::after {
+  content: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: var(--card-mesh-display, block);
+  opacity: var(--card-mesh-opacity, 0.18);
+  background-image:
+    linear-gradient(30deg, transparent 48.5%, rgba(255, 0, 220, 0.48) 49.5%, transparent 50.5%),
+    linear-gradient(150deg, transparent 48.5%, rgba(112, 84, 255, 0.34) 49.5%, transparent 50.5%),
+    linear-gradient(90deg, transparent 48.5%, rgba(255, 255, 255, 0.16) 49.5%, transparent 50.5%);
+  background-size: var(--card-mesh-size, 76px 132px);
+  mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.82), transparent 82%);
+  transition: opacity 180ms ease;
+}
+
+.page-main .teaser-link-card:hover::after {
+  opacity: var(--card-mesh-hover-opacity, 0.38);
+}
+
+.page-main .calyr-logo-interactive::after {
+  content: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: var(--card-mesh-display, block);
+  opacity: var(--card-mesh-opacity, 0.18);
+  background-image:
+    linear-gradient(30deg, transparent 48.5%, rgba(255, 0, 220, 0.48) 49.5%, transparent 50.5%),
+    linear-gradient(150deg, transparent 48.5%, rgba(112, 84, 255, 0.34) 49.5%, transparent 50.5%),
+    linear-gradient(90deg, transparent 48.5%, rgba(255, 255, 255, 0.16) 49.5%, transparent 50.5%);
+  background-size: var(--card-mesh-size, 76px 132px);
+  mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.82), transparent 82%);
+  transition: opacity 180ms ease;
+}
+
+.page-main .calyr-logo-interactive:hover::after {
+  opacity: var(--card-mesh-hover-opacity, 0.38);
+}
+
+.page-main .calyr-logo-canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.page-main .teaser-link-card > .pythia-mesh-canvas,
+.page-main .calyr-logo-interactive > .pythia-mesh-canvas {
+  display: var(--card-mesh-display, block) !important;
+  opacity: var(--card-mesh-opacity, 0.18) !important;
+  mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.82), transparent 82%);
+}
+
+.page-main .teaser-link-card:hover > .pythia-mesh-canvas,
+.page-main .calyr-logo-interactive:hover > .pythia-mesh-canvas {
+  opacity: var(--card-mesh-hover-opacity, 0.38) !important;
+}
+
+/* One landing grid: identical left edge, gutters and column math in every section. */
+@media (min-width: 1024px) {
+  .page-main #platforms .section-grid,
+  .page-main #applications .section-grid,
+  .page-main #applied .section-grid,
+  .page-main #architecture .section-grid,
+  .page-main #contact_main .section-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    gap: clamp(10px, 1vw, 16px) !important;
+  }
+}
+
+.page-main .teaser-link-copy {
+  position: relative;
+  z-index: 1;
+}
+
+/* Sharp geometry across the complete homepage card system. */
+.page-main #platforms .tile,
+.page-main #applications .tile,
+.page-main #applied .tile,
+.page-main #architecture .tile,
+.page-main #contact_main .tile,
+.page-main .teaser-link-card {
+  border-radius: var(--card-radius, 0);
+}
+
+@media (max-width: 767px) {
+  .page-main #platforms .tile,
+  .page-main #applications .tile,
+  .page-main #applied .tile,
+  .page-main #architecture .tile,
+  .page-main #contact_main .tile,
+  .page-main .teaser-link-card {
+    border-radius: var(--card-radius, 0);
+  }
+}
+
+/* Final authority: every content tile is one component system. */
+.page-main .section-grid > .tile {
+  min-height: var(--card-min-height, 282px) !important;
+  height: 100% !important;
+  padding: var(--card-padding, clamp(22px, 2.4vw, 34px)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  border-radius: var(--card-radius, 0) !important;
+  background: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.page-main .section-grid > .tile > .tile-mesh-canvas {
+  display: var(--card-mesh-display, block) !important;
+  opacity: var(--card-mesh-opacity, 0.28) !important;
+  filter: none !important;
+}
+
+.page-main .section-grid > .tile:hover > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-hovered > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-selected > .tile-mesh-canvas {
+  opacity: var(--card-mesh-hover-opacity, 0.52) !important;
+}
+
+@media (max-width: 767px) {
+  .page-main .section-grid > .tile {
+    min-height: 180px !important;
+    padding: 18px 18px 20px !important;
+  }
+}
+
+/* Opening tiles use the same 12-column edge as every landing section. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: min(100%, 1280px) !important;
+    box-sizing: border-box;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    column-gap: clamp(10px, 1vw, 16px) !important;
+    justify-content: stretch !important;
+    padding-left: clamp(24px, 3vw, 44px) !important;
+    padding-right: clamp(24px, 3vw, 44px) !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 1 / span 4 !important;
+    width: 100% !important;
+    justify-self: stretch !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 5 / span 8 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    margin-left: 0 !important;
+    justify-self: start !important;
+  }
+}
+
 /* Desktop tile rhythm: preserve Calyr.ai's system while clarifying its grid. */
 @media (min-width: 1024px) {
   .page-main .section {
@@ -2685,11 +2983,8 @@ body.nav-open {
   overflow: hidden;
 }
 
-.page-main #platforms .tile-mesh-canvas,
 .page-main #platforms .tile-foil-overlay,
-.page-main #architecture .tile-mesh-canvas,
 .page-main #architecture .tile-foil-overlay,
-.page-main #contact_main .tile-mesh-canvas,
 .page-main #contact_main .tile-foil-overlay {
   display: none !important;
 }
@@ -2899,12 +3194,16 @@ body.nav-open {
 }
 
 .page-main #platforms .section-collapse-toggle,
+.page-main #applications .section-collapse-toggle,
+.page-main #applied .section-collapse-toggle,
 .page-main #architecture .section-collapse-toggle,
 .page-main #contact_main .section-collapse-toggle {
   align-items: flex-start;
 }
 
 .page-main #platforms .section-collapse-label,
+.page-main #applications .section-collapse-label,
+.page-main #applied .section-collapse-label,
 .page-main #architecture .section-collapse-label,
 .page-main #contact_main .section-collapse-label {
   width: 100%;
@@ -2913,6 +3212,8 @@ body.nav-open {
 }
 
 .page-main #platforms .section-collapse-line,
+.page-main #applications .section-collapse-line,
+.page-main #applied .section-collapse-line,
 .page-main #architecture .section-collapse-line,
 .page-main #contact_main .section-collapse-line {
   width: 100%;
@@ -3003,5 +3304,214 @@ body.nav-open {
     order: 1;
     width: min(58vw, 220px);
     align-self: flex-start;
+  }
+}
+/* Unified homepage card system */
+.page-main #platforms .section-grid,
+.page-main #applications .section-grid,
+.page-main #applied .section-grid,
+.page-main #architecture .section-grid,
+.page-main #contact_main .section-grid {
+  gap: clamp(10px, 1vw, 16px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.page-main #platforms .tile,
+.page-main #applications .tile,
+.page-main #applied .tile,
+.page-main #architecture .tile,
+.page-main #contact_main .tile,
+.page-main .teaser-link-card {
+  position: relative;
+  min-height: clamp(220px, 22vw, 310px);
+  padding: clamp(22px, 2.4vw, 34px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: clamp(14px, 1.4vw, 20px);
+  background: #000 !important;
+  box-shadow: none;
+}
+
+.page-main #platforms .tile-mesh,
+.page-main #applications .tile-mesh,
+.page-main #applied .tile-mesh,
+.page-main #architecture .tile-mesh,
+.page-main #contact_main .tile-mesh,
+.page-main #platforms .tile-foil,
+.page-main #applications .tile-foil,
+.page-main #applied .tile-foil,
+.page-main #architecture .tile-foil,
+.page-main #contact_main .tile-foil {
+  display: none;
+}
+
+.page-main #platforms .tile-title,
+.page-main #applications .tile-title,
+.page-main #applied .tile-title,
+.page-main #architecture .tile-title,
+.page-main #contact_main .tile-title,
+.page-main .teaser-link-title {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(1.45rem, 2.3vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.page-main #platforms .tile-summary,
+.page-main #applications .tile-summary,
+.page-main #applied .tile-summary,
+.page-main #architecture .tile-summary,
+.page-main #contact_main .tile-summary,
+.page-main .teaser-link-summary,
+.page-main .teaser-link-body {
+  max-width: 34ch;
+  font-size: clamp(0.9rem, 1.15vw, 1.02rem);
+  line-height: 1.45;
+}
+
+.page-main #platforms .tile::before,
+.page-main #applications .tile::before,
+.page-main #applied .tile::before,
+.page-main #architecture .tile::before,
+.page-main #contact_main .tile::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  background: rgba(var(--tile-rgb), 0.92);
+  opacity: 0.28;
+  transition: opacity 180ms ease;
+}
+
+.page-main .teaser-link-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  background: rgb(255, 0, 220);
+  opacity: 0.28;
+  transition: opacity 180ms ease;
+}
+
+.page-main .teaser-link-card {
+  --tile-rgb: 255, 45, 146;
+  display: flex;
+  align-items: stretch;
+}
+
+.page-main .calyr-logo-interactive {
+  --tile-rgb: 255, 51, 204;
+}
+
+.page-main .teaser-link-copy {
+  width: 100%;
+  min-height: 100%;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.page-main #platforms .tile:hover,
+.page-main #applications .tile:hover,
+.page-main #applied .tile:hover,
+.page-main #architecture .tile:hover,
+.page-main #contact_main .tile:hover,
+.page-main .teaser-link-card:hover {
+  border-color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 18px 55px rgba(255, 0, 220, 0.1);
+}
+
+.page-main #platforms .tile:hover::before,
+.page-main #applications .tile:hover::before,
+.page-main #applied .tile:hover::before,
+.page-main #architecture .tile:hover::before,
+.page-main #contact_main .tile:hover::before,
+.page-main .teaser-link-card:hover::before {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .page-main #platforms .tile,
+  .page-main #applications .tile,
+  .page-main #applied .tile,
+  .page-main #architecture .tile,
+  .page-main #contact_main .tile,
+  .page-main .teaser-link-card {
+    min-height: 180px;
+    padding: 18px 18px 20px;
+    border-radius: 18px;
+  }
+}
+
+/* Canonical tile override — intentionally last. */
+.page-main .section-grid > .tile {
+  min-height: var(--card-min-height, 282px) !important;
+  height: 100% !important;
+  padding: var(--card-padding, clamp(22px, 2.4vw, 34px)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  border-radius: var(--card-radius, 0) !important;
+  background: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.page-main .section-grid > .tile > .tile-mesh-canvas {
+  display: var(--card-mesh-display, block) !important;
+  opacity: var(--card-mesh-opacity, 0.28) !important;
+  filter: none !important;
+}
+
+.page-main .section-grid > .tile:hover > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-hovered > .tile-mesh-canvas,
+.page-main .section-grid > .tile.tile-selected > .tile-mesh-canvas {
+  opacity: var(--card-mesh-hover-opacity, 0.52) !important;
+}
+
+@media (max-width: 767px) {
+  .page-main .section-grid > .tile {
+    min-height: 180px !important;
+    padding: 18px 18px 20px !important;
+  }
+}
+
+/* Opening alignment override — intentionally last. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: min(100%, 1280px) !important;
+    box-sizing: border-box;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    column-gap: clamp(10px, 1vw, 16px) !important;
+    justify-content: stretch !important;
+    padding-left: clamp(24px, 3vw, 44px) !important;
+    padding-right: clamp(24px, 3vw, 44px) !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 1 / span 4 !important;
+    width: 100% !important;
+    justify-self: stretch !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 5 / span 8 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    margin-left: 0 !important;
+    justify-self: start !important;
   }
 }

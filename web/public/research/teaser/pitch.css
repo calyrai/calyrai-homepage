@@ -501,3 +501,76 @@ svg {
     stroke-width: 1.8;
   }
 }
+/* CALYR presentation frame: shared 16:9 format */
+html,
+body {
+  min-height: 100%;
+  background: #000;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 2.2vw, 32px);
+}
+
+.stage {
+  width: min(1440px, calc(100vw - clamp(24px, 4.4vw, 64px)), calc((100dvh - clamp(24px, 4.4vw, 64px)) * 16 / 9));
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  padding: clamp(18px, 2.2vw, 34px);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 0;
+  box-shadow: inset 6px 0 0 #ff2d92;
+  background: #000;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: clamp(10px, 1vw, 16px);
+}
+
+.header,
+.hpc-note,
+.meta-grid,
+.insight-grid {
+  margin: 0;
+}
+
+.title {
+  font-size: clamp(1.75rem, 3.2vw, 3.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.scene,
+.hpc-note,
+.meta-card,
+.panel {
+  border-radius: 0;
+}
+
+.scene {
+  min-height: 0;
+  height: 100%;
+}
+
+.scene svg {
+  height: 100%;
+  min-height: 280px;
+}
+
+@media (max-width: 800px), (max-height: 620px) {
+  body {
+    display: block;
+    padding: 0;
+  }
+
+  .stage {
+    width: 100%;
+    min-height: 100dvh;
+    height: auto;
+    aspect-ratio: auto;
+    border-left: 0;
+    border-right: 0;
+  }
+}

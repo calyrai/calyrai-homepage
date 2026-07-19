@@ -1,6 +1,33 @@
 # Base Design Tokens - Foundational, Skin-Agnostic
 # Used by all skins. Defines structure, spacing, typography, and layout patterns.
 
+# Single source of truth for tile colors. Updating a value here updates every
+# tile assigned to that system when the Nexus artifacts are recompiled.
+rainbow:
+  accents:
+    red: "#ff3b30"
+    orange: "#ff8c1a"
+    yellow: "#ffd60a"
+    green: "#34c759"
+    cyan: "#00c7ff"
+    blue: "#2f6bff"
+    violet: "#7d42ff"
+    magenta: "#ff2d92"
+  tiles:
+    core: red
+    brix: orange
+    aflowtex: yellow
+    lithos: green
+    pythia: blue
+    pythia_spr: magenta
+    pythia_saxs: cyan
+    pythia_metabolic: green
+    oracle: cyan
+    ecosystem: violet
+    contact: magenta
+    philosophy: magenta
+    impressum: red
+
 base:
   radius:
     none: 0
@@ -65,6 +92,18 @@ base:
 
 # Component Base Patterns - Structural defaults (skins override colors)
 components:
+  # One switchboard for every visual card: content tiles, teaser and logo.
+  card_system:
+    radius: 0px
+    min_height: 282px
+    padding: clamp(22px, 2.4vw, 34px)
+    mesh:
+      enabled: true
+      opacity: 0.36
+      hover_opacity: 0.62
+      cell_width: 76px
+      cell_height: 132px
+
   header:
     height: 80px
     padding_horizontal: 32px

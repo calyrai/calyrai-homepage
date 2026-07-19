@@ -9,5 +9,5 @@ export function applyTitleDefaults(value) {
   }
 
   const accented = normalized.replace(/i/g, 'í').replace(/I/g, 'Í')
-  return accented.endsWith('.') ? accented : `${accented}.`
+  return accented
 }

@@ -1,38 +1,38 @@
 brand:
   display_name: "Calyr.a\xED"
   domain: calyr.ai
-  tagline: Calyr.aí turns incomplete data from complex systems into explainable models for prediction, design, and better decisions.
+  tagline: CALYR.aí is NEXUS, BRIX, and LITHOS.
 __site_runtime:
   teaser:
     meta:
       title: calyr.aí Pitch Engine
-      subtitle: Scientific Intelligence Infrastructure for scalable research and technology ventures
+      subtitle: Data becomes surrogate intelligence and prediction
       mode: interactive-flow
     page:
-      kicker: How we work
-      title: From complex challenge to scalable product.
-      subtitle: We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.
-      deck_link_label: Explore the interactive pitch deck
+      kicker: CALYR.aí works
+      title: Data becomes surrogate. Surrogate becomes prediction.
+      subtitle: Pythia converts data, simulations, and measurements into validated surrogate models and fast predictions. Oracles turn those predictions into domain-specific action.
+      deck_link_label: CALYR.aí engineering in action
       deck_link_url: /research/lithos/index.html
-      insight_title: Who needs it
-      insight_copy: Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions.
-      hpc_title: What powers it
-      hpc_copy: Calyr.aí uses High-Performance Computing (HPC), including the VSC-5 supercomputer, to run complex simulations and turn their results into fast, explainable surrogate models.
+      insight_title: Prediction becomes action
+      insight_copy: Oracles combine Pythia predictions, domain constraints, uncertainty, and adaptive AI-based user experiences in one usable system.
+      hpc_title: Computation creates the surrogate
+      hpc_copy: High-Performance Computing on systems including VSC-5 generates the data that Pythia compresses into fast, explainable prediction.
     copy:
-      mission: We begin with one valuable challenge and build toward a lasting platform partnership.
-      ready: Ready
-      complete: Story chain complete
-      empty_story_title: Story Engine
-      empty_story_item: Build the path to generate linked slides.
+      mission: Pythia turns data into surrogate prediction. Oracles turn prediction into decisions and engineered results.
+      ready: System ready
+      complete: Engineering chain complete
+      empty_story_title: CALYR.aí works
+      empty_story_item: The Pythia chain connects data, surrogate models, prediction, and oracles.
     nodes:
-    - {id: challenge, label: Challenge, x: 0.12, y: 0.50, sentence: We identify one valuable scientific or engineering challenge.}
-    - {id: demonstrator, label: Demonstrator, x: 0.37, y: 0.50, sentence: We quickly prove the idea with real data and an interactive demonstrator.}
-    - {id: deployment, label: Deployment, x: 0.63, y: 0.50, sentence: A validated demonstrator becomes a reliable domain deployment.}
-    - {id: partnership, label: Partnership, x: 0.88, y: 0.50, sentence: Deployment grows into recurring platform access and a long-term partnership.}
+    - {id: challenge, label: Data, x: 0.12, y: 0.50, sentence: Measurements, simulations, geometry, and constraints define the evidence space.}
+    - {id: demonstrator, label: Surrogate, x: 0.37, y: 0.50, sentence: Pythia compresses complex evidence into a fast, validated surrogate model.}
+    - {id: deployment, label: Prediction, x: 0.63, y: 0.50, sentence: The surrogate predicts system behavior, valid variants, and uncertainty in real time.}
+    - {id: partnership, label: Oracle, x: 0.88, y: 0.50, sentence: An Oracle turns prediction into domain-specific decisions, designs, and engineered results.}
     edges:
-    - {from: challenge, to: demonstrator, slide: Start focused, thought: Solve one meaningful problem first., explanation: A focused demonstrator makes value visible quickly.}
-    - {from: demonstrator, to: deployment, slide: Prove value, thought: Validate the workflow with real users and data., explanation: Evidence turns the demonstrator into a reliable deployment.}
-    - {from: deployment, to: partnership, slide: Scale together, thought: Extend a proven solution instead of restarting from zero., explanation: Deployments create recurring platform value and lasting partnerships.}
+    - {from: challenge, to: demonstrator, slide: Data becomes surrogate, thought: Pythia learns the relevant structure of the evidence space., explanation: The surrogate preserves the behavior that matters and removes the computational delay.}
+    - {from: demonstrator, to: deployment, slide: Surrogate becomes prediction, thought: The learned model evaluates new states, variants, and uncertainty in real time., explanation: Prediction makes complex systems immediately explorable.}
+    - {from: deployment, to: partnership, slide: Prediction becomes oracle, thought: Domain knowledge turns prediction into a usable engineering capability., explanation: The Oracle combines prediction, constraints, adaptive interaction, and action.}
     story_rules:
       self_avoiding: true
       max_steps: 3
@@ -80,7 +80,7 @@ route_policy:
 logo:
   title: "Calyr.aí"
   title_ref: brand.display_name
-  summary: Create what does not exist yet.
+  summary: Create what does not yet exist.
   layout: inline
   showCanvas: true
   contacts: []
@@ -99,7 +99,7 @@ hero:
     variant: hero-banner
   explain:
     why: Introduce the brand promise before module exploration.
-  summary: Create what does not exist yet.
+  summary: Create what does not yet exist.
 movie:
   title: Teaser
   subtitle: Short
@@ -113,18 +113,18 @@ movie:
   explain:
     why: Keep the teaser present but initially compressed so it does not dominate
       the opening scan path.
-  summary: See the platform in motion.
-  body: Follow the path from experimental evidence and HPC to surrogate intelligence and scientific decisions.
+  summary: Pythia turns data into prediction. Oracles turn prediction into action.
+  body: Data becomes surrogate. Surrogate becomes prediction. Prediction becomes oracle.
   route: /research/teaser/index.html
 platforms:
-  title: Platforms
-  subtitle: Intelligence for complex systems
+  title: Architecture
+  subtitle: CALYR.aí is NEXUS, BRIX, and LITHOS
   intent:
-    purpose: capability-overview
+    purpose: architecture-platform-overview
     audience: first-visit
   render:
     variant: tile-grid
-    source: homepage.grid.first-band
+    source: homepage.grid.system-band
   behavior:
     collapsible: true
     default_expanded: true
@@ -133,10 +133,46 @@ platforms:
     - platform
   explain:
     why: Present the primary product modules before the broader ecosystem context.
-  summary: One inference architecture, applied across science, medicine, and engineering.
+  summary: NEXUS, BRIX, and LITHOS are CALYR.aí.
+applications:
+  title: Pythia
+  subtitle: Interpretable surrogate models for engineering
+  intent:
+    purpose: pythia-system-overview
+    audience: first-visit
+  render:
+    variant: tile-grid
+    source: homepage.grid.application-band
+  behavior:
+    collapsible: true
+    default_expanded: true
+    persistence: none
+    anchor_aliases:
+    - applications
+  explain:
+    why: Present Pythia as the shared data-to-surrogate-to-prediction system.
+  summary: Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.
+applied:
+  title: Applications
+  subtitle: Multiple models become one product
+  intent:
+    purpose: applied-system-overview
+    audience: first-visit
+  render:
+    variant: tile-grid
+    source: homepage.grid.applied-band
+  behavior:
+    collapsible: true
+    default_expanded: true
+    persistence: none
+    anchor_aliases:
+    - applied
+  explain:
+    why: Present application fields first and place concrete systems one level below.
+  summary: Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.
 architecture:
-  title: Architecture
-  subtitle: How the system connects
+  title: Ecosystem
+  subtitle: From architecture to application
   intent:
     purpose: ecosystem-context
     audience: returning-visitor
@@ -149,7 +185,7 @@ architecture:
   explain:
     why: Show how ecosystem navigation, contact, and philosophy follow the core module
       overview.
-  summary: Explore the principles, relationships, and people behind the platform.
+  summary: NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.
 contact_main:
   title: Company
   subtitle: Legal information
@@ -174,18 +210,18 @@ footer:
   summary: ''
   contacts: []
 core:
-  title: Calyr.aí Core
-  tile_lead: reasoning
+  title: NEXUS
+  tile_lead: integration
   tile_accent: blue
-  tile_title: core
-  tile_summary: connects evidence, models, and decisions
-  subtitle: Central reasoning engine
-  summary: 'Connects observations, knowledge, models, and decisions.
+  tile_title: nexus
+  tile_summary: NEXUS connects the CALYR.aí architecture
+  subtitle: System integration
+  summary: 'NEXUS connects data, models, workflows, and platforms.
 
     '
-  body: 'Calyrai core is the central reasoning engine of the ecosystem. It links observations,
-    knowledge representation, learning workflows, surrogate models, and decision support
-    into a unified framework.
+  body: 'NEXUS is the connective architecture of CALYR.aí. It links data, knowledge,
+    models, workflows, platforms, and decisions while Pythia supplies surrogate
+    modelling and prediction.
 
     '
   icon: brain
@@ -202,17 +238,17 @@ core:
       YAML and linked source content.
 brix:
   title: brix
-  tile_lead: engineering
+  tile_lead: structural systems
   tile_accent: orange
   tile_title: brix
-  tile_summary: surrogate-assisted design and analysis
-  subtitle: Engineering intelligence
-  summary: 'Surrogate-assisted engineering design and analysis.
+  tile_summary: optimized structural parts from simulation and measurement
+  subtitle: Structural intelligence
+  summary: 'Faster structural design, evaluation, and optimization.
 
     '
-  body: 'Engineering intelligence platform for structural analysis, design exploration,
-    and decision support. Brix combines simulations, measurements, and surrogate models
-    to enable rapid variant evaluation and uncertainty-aware engineering decisions.
+  body: 'Brix combines simulations, measurements, surrogate models, and an adaptive
+    AI-based user experience to explore structural variants, understand trade-offs,
+    and develop optimized manufacturable parts with uncertainty-aware validation.
 
     '
   icon: bridge
@@ -220,54 +256,69 @@ brix:
   render:
     grid_span: 4
 aflowtex:
-  title: aflowtex
-  tile_lead: medicine
+  title: vascular application
+  tile_lead: aflowtex
   tile_accent: red
-  tile_title: aflowtex
-  tile_summary: patient-specific flow intelligence
-  subtitle: Medical flow intelligence
-  summary: 'Patient-specific flow modelling and clinical decision support.
+  tile_title: vascular application
+  tile_summary: simulation, measurement, and interpretation become one patient-specific product
+  subtitle: Integrated vascular intelligence
+  summary: 'A high-level application that combines different models into one patient-specific vascular product.
 
     '
-  body: 'Aflowtex combines clinical data, vascular modelling, flow simulation, and
-    surrogate reasoning to support patient-specific analysis and uncertainty-aware
-    medical decisions.
+  body: 'AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation,
+    surrogate models, uncertainty, interpretation, and adaptive interaction. The models
+    remain distinct but operate together as one application.
 
     '
   icon: aorta
   route: /research/platforms/aflowtex/index.html
   render:
-    grid_span: 8
+    grid_span: 6
+biophysical_applications:
+  title: biophysical applications
+  tile_lead: experimental systems
+  tile_accent: cyan
+  tile_title: biophysical interpretation and inference
+  tile_summary: hidden structure, interaction, and system state from experimental evidence
+  subtitle: Biophysical intelligence
+  summary: Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.
+  body: SPR, SAXS, and metabolic inference are concrete systems in this application field.
+  icon: scatter
+  route: /research/pythia/saxs/index.html
+  render:
+    grid_span: 6
 lithos:
   title: lithos
-  tile_lead: consequences
+  tile_lead: adaptive interaction
   tile_accent: green
   tile_title: lithos
-  tile_summary: makes risks and trade-offs actionable
-  subtitle: Consequence intelligence
-  summary: 'Understanding consequences, trade-offs, and impact.
+  tile_summary: an AI-native graphical interface that adapts to model, task, and context
+  subtitle: Adaptive graphical intelligence
+  summary: 'A dynamic graphical interface for interacting with models, predictions, and engineered systems.
 
     '
-  body: 'Lithos translates model outputs into actionable decisions by evaluating consequences,
-    risks, trade-offs, and long-term system effects.
+  body: 'LITHOS is the adaptive interaction layer of CALYR.aí. It generates and evolves
+    graphical interfaces around the active model, available data, engineering task,
+    uncertainty, and user context instead of imposing one static interface.
 
     '
   icon: mountain
   route: /research/platforms/lithos/index.html
   render:
-    grid_span: 8
+    grid_span: 4
 oracle:
-  title: Pythia Applications
-  tile_lead: applied inference
+  title: Oracles
+  tile_lead: domain systems
   tile_accent: magenta
-  tile_title: applications
-  tile_summary: domain-specific deployments of pythia
-  subtitle: Applied Inference
-  summary: 'Extracting knowledge from complex information spaces.
+  tile_title: oracles
+  tile_summary: prediction becomes a domain-specific capability
+  subtitle: Prediction in context
+  summary: 'Oracles turn Pythia predictions into decisions, designs, and engineered results.
 
     '
-  body: 'Oracle transforms biological, technical, scientific, and cultural datasets
-    into structured knowledge graphs, reasoning paths, and machine-readable representations.
+  body: 'An Oracle is the usable consequence of Pythia: surrogate prediction,
+    uncertainty, domain constraints, adaptive AI-based interaction, and action
+    combined for one defined class of problems.
 
     '
   icon: crystal-ball
@@ -276,27 +327,24 @@ oracle:
     grid_span: 4
 pythia:
   title: pythia
-  tile_lead: universal inference
+  tile_lead: scientific machine learning
   tile_accent: cyan
-  tile_title: pythia
-  tile_summary: reveals hidden structure from incomplete evidence
-  subtitle: Universal Framework for Complex Systems
-  summary: 'A universal computational framework for representing, reasoning about,
-    and discovering the hidden organization of complex systems.
+  tile_title: interpretable surrogate models
+  tile_summary: physics-informed, validated, and uncertainty-aware prediction
+  subtitle: The shared scientific AI system
+  summary: 'Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.
 
     '
-  body: "PYTHIA addresses a single fundamental question: how can the hidden organization\
-    \ of a complex system be inferred from incomplete observations? It provides a\
-    \ unified language for describing assembled systems across all disciplines\u2014\
-    physical, biological, symbolic, social, and computational\u2014 and a general\
-    \ inference engine for reconstructing, validating, predicting, and optimizing\
-    \ them.\n"
+  body: 'Pythia is the shared CALYR.aí system for scientific machine learning,
+    surrogate modelling, and prediction. It combines data, physics, constraints,
+    validity ranges, and uncertainty, then supplies the predictive core of every application.
+    '
   icon: compass
   route: /research/platforms/pythia/index.html
   render:
-    grid_span: 8
+    grid_span: 12
 pythia_saxs:
-  title: saxs pythia
+  title: SAXS System
   tile_lead: molecular assembly
   tile_accent: cyan
   tile_title: saxs
@@ -310,8 +358,23 @@ pythia_saxs:
     probabilistic multi-scale reasoning.
   icon: scatter
   route: /research/pythia/saxs/index.html
+  render:
+    grid_span: 6
+pythia_spr:
+  title: SPR System
+  tile_lead: molecular interaction
+  tile_accent: magenta
+  tile_title: spr
+  tile_summary: binding kinetics from sensor response
+  subtitle: Surface Plasmon Resonance intelligence
+  summary: Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.
+  body: The SPR application uses Pythia to transform experimental sensor responses into fast, validated estimates of interaction kinetics and affinity.
+  icon: wave
+  route: /research/platforms/pythia/index.html
+  render:
+    grid_span: 6
 pythia_metabolic:
-  title: metabolic pythia
+  title: Metabolic System
   tile_lead: biological systems
   tile_accent: green
   tile_title: metabolic
@@ -325,39 +388,110 @@ pythia_metabolic:
     given conditions.
   icon: network
   route: /research/pythia/metabolic/index.html
+  render:
+    grid_span: 6
+vascular_oracle:
+  title: Vascular Oracle
+  subtitle: Oracle
+  summary: Prediction becomes clinical and engineering decision support.
+vascular_measurement:
+  title: vascular measurement models
+  subtitle: Measurement
+  summary: Clinical imaging, observed anatomy, flow measurements, and patient evidence.
+vascular_simulation:
+  title: vascular simulation models
+  subtitle: Simulation
+  summary: Geometry, fluid dynamics, boundary conditions, and virtual intervention states.
+vascular_interpretation:
+  title: vascular interpretation models
+  subtitle: Interpretation
+  summary: Surrogate prediction, uncertainty, comparison, and patient-specific meaning.
+spr_data:
+  title: SPR Data
+  subtitle: Data
+  summary: Sensorgrams, concentrations, assay conditions, and experimental controls.
+spr_surrogate:
+  title: SPR Surrogate
+  subtitle: Surrogate
+  summary: Fast models of molecular association, dissociation, affinity, and uncertainty.
+spr_oracle:
+  title: SPR Oracle
+  subtitle: Oracle
+  summary: Prediction becomes interpretable binding and assay decisions.
+saxs_data:
+  title: SAXS Data
+  subtitle: Data
+  summary: Scattering profiles, experimental conditions, priors, and structural constraints.
+saxs_surrogate:
+  title: SAXS Surrogate
+  subtitle: Surrogate
+  summary: Fast inference of molecular assembly and plausible structural states.
+saxs_oracle:
+  title: SAXS Oracle
+  subtitle: Oracle
+  summary: Prediction becomes structural interpretation and experiment guidance.
+metabolic_data:
+  title: Metabolic Data
+  subtitle: Data
+  summary: Experimental observations, stoichiometry, and thermodynamic constraints.
+metabolic_surrogate:
+  title: Metabolic Surrogate
+  subtitle: Surrogate
+  summary: Fast models of flux states, network behavior, and uncertainty.
+metabolic_oracle:
+  title: Metabolic Oracle
+  subtitle: Oracle
+  summary: Prediction becomes biological interpretation and intervention guidance.
 ecosystem:
   title: ecosystem
-  tile_lead: system map
+  tile_lead: system architecture
   tile_accent: cyan
   tile_title: ecosystem
-  tile_summary: see how every module connects
-  subtitle: Interactive architecture
-  summary: 'Explore relationships across the calyrai ecosystem.
+  tile_summary: architecture, prediction, applications, and oracles form one system
+  subtitle: One connected engineering system
+  summary: 'CALYR.aí connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.
 
     '
-  body: 'Interactive graph showing how calyrai core, brix, aflowtex, lithos, oracle,
-    and pythia connect and exchange knowledge. Atlas Copilot extends this with specialized
-    scientific agents and pipeline orchestration.
+  body: 'NEXUS connects the system. BRIX engineers structural form. LITHOS provides
+    adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models.
+    Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX is the vascular application.
 
     '
   icon: network
   route: /ecosystem
   render:
-    grid_span: 8
+    grid_span: 4
 philosophy:
   title: philosophy
-  tile_lead: principles
+  tile_lead: trustworthy scientific AI
   tile_accent: magenta
   tile_title: philosophy
-  tile_summary: rigor, openness, and reproducibility
-  subtitle: Principles and foundations
-  summary: 'Scientific rigor, openness, and reproducibility.
+  tile_summary: interpretable models, traceable predictions, human-controlled decisions
+  subtitle: Principles for trustworthy engineering AI
+  summary: 'CALYR.aí makes model behavior, evidence, uncertainty, and responsibility visible.
 
     '
-  body: "Calyr.a\xED is founded on scientific transparency, reproducibility, interpretable\
-    \ modelling, and human-centered decision support.\n"
+  body: |-
+    Traceability — Every result connects to its data, model version, assumptions, and validity range.
+    Validation — Accuracy and limitations are measured against defined evidence and use conditions.
+    Uncertainty — Predictions expose confidence, sensitivity, and conditions where the model should not decide.
+    Human oversight — People remain able to understand, challenge, override, and stop the system.
+    Lifecycle risk management — Risks are monitored from development through deployment and continued use.
+  links:
+  - id: eu-ai-act
+    label: EU Artificial Intelligence Act
+    route: https://eur-lex.europa.eu/eli/reg/2024/1689/oj
+  - id: eu-risk-management
+    label: Article 9 — Risk management
+    route: https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_9
+  - id: eu-human-oversight
+    label: Article 14 — Human oversight
+    route: https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_14
+  - id: eu-robustness
+    label: Article 15 — Accuracy, robustness and cybersecurity
+    route: https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_15
   icon: book
-  route: /books
+  route: /philosophy
   render:
     grid_span: 4
 contact:
@@ -365,7 +499,7 @@ contact:
   tile_lead: collaborate
   tile_accent: yellow
   tile_title: contact
-  tile_summary: start with one valuable challenge
+  tile_summary: one valuable challenge starts the engineering partnership
   subtitle: Research and partnerships
   landing_message: Start with one valuable challenge
   summary: 'Research, engineering, and collaboration channels.
@@ -459,21 +593,27 @@ __graph:
   nodes:
   - core
   - brix
-  - aflowtex
   - lithos
-  - oracle
   - pythia
+  - aflowtex
+  - pythia_spr
+  - pythia_saxs
+  - pythia_metabolic
   edges:
   - - core
     - brix
   - - core
-    - aflowtex
-  - - core
     - lithos
   - - core
-    - oracle
-  - - oracle
     - pythia
+  - - pythia
+    - aflowtex
+  - - pythia
+    - pythia_spr
+  - - pythia
+    - pythia_saxs
+  - - pythia
+    - pythia_metabolic
 __interaction:
   click:
     tile:

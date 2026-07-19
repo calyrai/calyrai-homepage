@@ -3,6 +3,7 @@ import { renderNode } from './components/Renderer'
 import Navigation from './components/Navigation'
 import DotRasterBackground from './components/DotRasterBackground'
 import BooksPage from './components/pages/BooksPage'
+import PhilosophyPage from './components/pages/PhilosophyPage'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
@@ -17,6 +18,16 @@ function getLocationPath() {
   return `${window.location.pathname}${window.location.hash || ''}`
 }
 
+function findNodeById(node, id) {
+  if (!node || typeof node !== 'object') return null
+  if (node.id === id) return node
+  for (const child of node.children || []) {
+    const match = findNodeById(child, id)
+    if (match) return match
+  }
+  return null
+}
+
 function App() {
   const [ast] = useState(AST_DATA)
   const [theme] = useState(THEME_DATA)
@@ -27,6 +38,7 @@ function App() {
 
   const themeVariableApplier = new ThemeVariableApplier()
   const routeState = RouteStateService.create(currentPath)
+  const philosophyNode = findNodeById(ast, 'philosophy')
 
   useEffect(() => {
     try {
@@ -105,7 +117,9 @@ function App() {
       <Navigation theme={theme} ast={ast} />
 
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
-        {renderNode(ast, theme)}
+        {routeState.isPhilosophyRoute
+          ? <PhilosophyPage node={philosophyNode} />
+          : renderNode(ast, theme)}
         {routeState.isBooksRoute ? <BooksPage page={booksPage} embedded /> : null}
       </div>
     </SelectionProvider>

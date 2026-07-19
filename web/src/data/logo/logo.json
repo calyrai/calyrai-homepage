@@ -64,6 +64,10 @@
   "pointTopology": {
     "deriveAllPointsFromQr": true
   },
+  "constellations": {
+    "labelChance": 1,
+    "labels": ["SPR", "SAXS", "DSC", "MD sim", "CFD", "FEM", "SANS", "µCT"]
+  },
   "ring": {
     "radius": 0.335,
     "thickness": 0.052,

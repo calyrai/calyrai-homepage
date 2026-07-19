@@ -59,7 +59,7 @@ export default class LogoCanvasEngine {
     this.ringThickness = Number.isFinite(config?.ring?.thickness) ? config.ring.thickness : 0.052
 
     this.constellations = []
-    this.constellationCycle = { patternIndex: -1, startT: -999, nextAt: 5 + this.#hash2(7.3, 2.1) * 5, duration: 2.8 }
+    this.constellationCycle = { patternIndex: -1, labelIndex: -1, startT: -999, nextAt: 1.5 + this.#hash2(7.3, 2.1) * 1.5, duration: 3.8 }
 
     this.resize = this.resize.bind(this)
     this.render = this.render.bind(this)
@@ -487,8 +487,16 @@ export default class LogoCanvasEngine {
     if (t >= cycle.nextAt) {
       const roll = this.#hash2(Math.floor(t * 11.3), cycle.patternIndex + 1.7)
       cycle.patternIndex = Math.floor(roll * this.constellations.length) % this.constellations.length
+      const labels = Array.isArray(this.config?.constellations?.labels)
+        ? this.config.constellations.labels.filter(Boolean)
+        : []
+      const labelRoll = this.#hash2(Math.floor(t * 5.9), cycle.patternIndex + 4.1)
+      const labelChance = Number(this.config?.constellations?.labelChance ?? 0.68)
+      cycle.labelIndex = labels.length && labelRoll < labelChance
+        ? Math.floor(this.#hash2(Math.floor(t * 3.7), 8.2) * labels.length) % labels.length
+        : -1
       cycle.startT = t
-      cycle.nextAt = t + 8 + this.#hash2(Math.floor(t * 7.1), 3.3) * 4
+      cycle.nextAt = t + 6 + this.#hash2(Math.floor(t * 7.1), 3.3) * 3
     }
 
     if (cycle.patternIndex < 0) return
@@ -616,6 +624,35 @@ export default class LogoCanvasEngine {
       ctx.beginPath()
       ctx.arc(px, py, 1.9, 0, Math.PI * 2)
       ctx.fill()
+    }
+
+    const labels = Array.isArray(this.config?.constellations?.labels)
+      ? this.config.constellations.labels.filter(Boolean)
+      : []
+    const label = cycle.labelIndex >= 0 ? labels[cycle.labelIndex] : ''
+    if (label && growPhase > 0.72) {
+      const points = pat.indices
+        .map((idx) => ring[idx])
+        .filter(Boolean)
+        .map(mapPoint)
+      const anchor = points.length
+        ? points.reduce((best, point) => point.x > best.x ? point : best, points[0])
+        : null
+      if (anchor) {
+        const reveal = Math.min(1, (growPhase - 0.72) / 0.18)
+        const labelAlpha = alpha * this.#easeInOutCubic(reveal) * 0.82
+        const anchorX = anchor.x * this.width
+        const anchorY = anchor.y * this.height
+        const placeLeft = anchorX > this.width * 0.76
+        const offset = placeLeft ? -9 : 9
+        ctx.save()
+        ctx.font = `500 ${Math.max(6, Math.min(8, this.width * 0.013))}px Avenir, Inter, sans-serif`
+        ctx.textAlign = placeLeft ? 'right' : 'left'
+        ctx.textBaseline = 'middle'
+        ctx.fillStyle = `rgba(255, 255, 255, ${labelAlpha.toFixed(3)})`
+        ctx.fillText(String(label), anchorX + offset, anchorY - 7)
+        ctx.restore()
+      }
     }
   }
 

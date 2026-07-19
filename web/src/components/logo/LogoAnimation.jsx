@@ -5,6 +5,7 @@ import ringPointSet from '../../data/logo/calyr_ring_dots_1000.json'
 import LogoCanvasEngine from './LogoCanvasEngine'
 import { LinkItemService } from '../../services/LinkItemService'
 import { buildGlyphMatrixFromSymbol } from '../../graphics/calyr/GlyphRenderer'
+import { PythiaMeshCanvas } from '../Tile'
 import {
   mapMicroToQrRaster,
   createBrailleTouchMeMatrix,
@@ -246,6 +247,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
           aria-label="Toggle CALYR sparkling QR"
           onClick={toggleSparklingQr}
         >
+          <PythiaMeshCanvas seedKey="calyr-logo" className="calyr-logo-mesh" />
           <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
         </div>
       )}

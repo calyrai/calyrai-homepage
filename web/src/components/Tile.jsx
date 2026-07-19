@@ -29,7 +29,6 @@ import { ROUTE_POLICY_DATA, ROUTE_AUDIT_DATA } from '../data/runtimeArtifacts'
 import { applyTitleDefaults } from '../utils/titleDefaults'
 
 const STORAGE_KEY_PREFIX = 'tile_position_'
-const PLATFORM_TILE_IDS = new Set(['core', 'brix', 'aflowtex', 'lithos', 'oracle', 'delphi'])
 const DEFAULT_TILE_POSITION = { x: 0, y: 0 }
 const HOME_ROUTE =
   (ROUTE_POLICY_DATA && typeof ROUTE_POLICY_DATA.home_route === 'string' && ROUTE_POLICY_DATA.home_route.trim())
@@ -88,6 +87,21 @@ function getTileLeadDotClass(accent) {
   if (accent === 'yellow') return 'tile-inline-dot-yellow'
   if (accent === 'cyan') return 'tile-inline-dot-cyan'
   return null
+}
+
+function hexToRgbChannels(value) {
+  const normalized = String(value || '').trim().replace(/^#/, '')
+  if (!/^[0-9a-f]{6}$/i.test(normalized)) return null
+  return [0, 2, 4]
+    .map((offset) => Number.parseInt(normalized.slice(offset, offset + 2), 16))
+    .join(', ')
+}
+
+function resolveTileRgb(theme, tileId, authoredAccent) {
+  const rainbow = theme?.rainbow || {}
+  const accents = rainbow.accents || {}
+  const assignedAccent = rainbow.tiles?.[tileId] || authoredAccent
+  return hexToRgbChannels(accents[assignedAccent]) || '255, 255, 255'
 }
 
 function hashSeed(input) {
@@ -159,31 +173,34 @@ function buildTriangleMesh(width, height, base, seed, layer = 0) {
   return triangles
 }
 
-function mixedMeshFillColor(tint, alpha, focus = 0, highlight = 0) {
+function readMeshAccent(element) {
+  const channels = getComputedStyle(element)
+    .getPropertyValue('--tile-rgb')
+    .split(',')
+    .map((value) => Number.parseFloat(value.trim()))
+  if (channels.length !== 3 || channels.some((value) => !Number.isFinite(value))) {
+    return { r: 255, g: 45, b: 146 }
+  }
+  return { r: channels[0], g: channels[1], b: channels[2] }
+}
+
+function mixedMeshFillColor(tint, alpha, focus = 0, highlight = 0, accent = { r: 255, g: 45, b: 146 }) {
   const clamp = (v) => Math.max(0, Math.min(1, v))
   const c = clamp(tint)
   const f = clamp(focus)
   const h = clamp(highlight)
 
-  const cyan = { r: 0, g: 224, b: 255 }
-  const magenta = { r: 255, g: 0, b: 214 }
   const white = { r: 255, g: 255, b: 255 }
-
-  // Base blend across cyan ↔ magenta, then push toward white where highlight is strong.
-  const baseR = cyan.r * (1 - c) + magenta.r * c
-  const baseG = cyan.g * (1 - c) + magenta.g * c
-  const baseB = cyan.b * (1 - c) + magenta.b * c
-
-  const whiten = 0.2 + f * 0.28 + h * 0.7
+  const whiten = 0.08 + c * 0.76 + f * 0.2 + h * 0.42
   const blend = clamp(whiten)
 
-  const r = Math.round(baseR * (1 - blend) + white.r * blend)
-  const g = Math.round(baseG * (1 - blend) + white.g * blend)
-  const b = Math.round(baseB * (1 - blend) + white.b * blend)
+  const r = Math.round(accent.r * (1 - blend) + white.r * blend)
+  const g = Math.round(accent.g * (1 - blend) + white.g * blend)
+  const b = Math.round(accent.b * (1 - blend) + white.b * blend)
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`
 }
 
-function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverActive = false) {
+function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverActive = false, accent) {
   const influenceRadius = Math.max(width, height) * 0.42
 
   for (const triangle of triangles) {
@@ -219,8 +236,8 @@ function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverAc
     const reflectiveBand = (Math.sin(angle * 2 + time * 0.7) + 1) * 0.5
     const highlight = pointer.active ? focus * reflectiveBand : 0
 
-    const strokeAlpha = 0.26 + triangle.depth * 0.08 + focus * 0.62
-    const fillAlpha = focus > 0.02 ? 0.08 + focus * 0.28 : 0.04
+    const strokeAlpha = 0.36 + triangle.depth * 0.08 + focus * 0.54
+    const fillAlpha = focus > 0.02 ? 0.1 + focus * 0.3 : 0.055
     const lineWidth = 0.42 + triangle.depth * 0.2 + focus * 0.95
 
     ctx.beginPath()
@@ -229,14 +246,80 @@ function drawMeshTriangles(ctx, triangles, pointer, time, width, height, hoverAc
     ctx.lineTo(deformed[2].x, deformed[2].y)
     ctx.closePath()
 
-    ctx.fillStyle = mixedMeshFillColor(triangle.tint, fillAlpha, focus, highlight)
+    ctx.fillStyle = mixedMeshFillColor(triangle.tint, fillAlpha, focus, highlight, accent)
     ctx.fill()
 
     ctx.lineWidth = lineWidth
-    // Keep edges subtle and mostly neutral so the reflective effect lives in triangle areas.
-    ctx.strokeStyle = `rgba(170, 220, 232, ${strokeAlpha.toFixed(3)})`
+    ctx.strokeStyle = mixedMeshFillColor(triangle.tint, strokeAlpha, focus * 0.7, highlight * 0.55, accent)
     ctx.stroke()
   }
+}
+
+export function PythiaMeshCanvas({ seedKey = 'pythia', className = '' }) {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const host = canvas?.parentElement
+    const context2d = canvas?.getContext('2d')
+    if (!canvas || !host || !context2d) return undefined
+
+    const seed = hashSeed(seedKey)
+    const meshAccent = readMeshAccent(host)
+    const pointer = { x: 0, y: 0, active: false }
+    let layers = []
+    let frame = null
+    const startedAt = performance.now()
+
+    const resize = () => {
+      const rect = host.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr))
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr))
+      canvas.style.width = `${rect.width}px`
+      canvas.style.height = `${rect.height}px`
+      context2d.setTransform(dpr, 0, 0, dpr, 0, 0)
+      layers = [buildTriangleMesh(rect.width, rect.height, 21 + (seed % 7), seed, 0)]
+    }
+
+    const render = () => {
+      const width = canvas.clientWidth
+      const height = canvas.clientHeight
+      if (!width || !height) return
+      context2d.clearRect(0, 0, width, height)
+      const time = (performance.now() - startedAt) * 0.001
+      layers.forEach((layer) => drawMeshTriangles(context2d, layer, pointer, time, width, height, pointer.active, meshAccent))
+    }
+
+    const move = (event) => {
+      const rect = host.getBoundingClientRect()
+      pointer.x = event.clientX - rect.left
+      pointer.y = event.clientY - rect.top
+      pointer.active = true
+    }
+    const leave = () => { pointer.active = false }
+    const tick = () => {
+      render()
+      frame = requestAnimationFrame(tick)
+    }
+
+    resize()
+    render()
+    frame = requestAnimationFrame(tick)
+    const observer = new ResizeObserver(resize)
+    observer.observe(host)
+    host.addEventListener('pointermove', move)
+    host.addEventListener('pointerleave', leave)
+
+    return () => {
+      observer.disconnect()
+      host.removeEventListener('pointermove', move)
+      host.removeEventListener('pointerleave', leave)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [seedKey])
+
+  return <canvas ref={canvasRef} className={`tile-mesh-canvas pythia-mesh-canvas ${className}`.trim()} aria-hidden="true" />
 }
 
 export default function Tile({ node, theme, context = {} }) {
@@ -260,7 +343,6 @@ export default function Tile({ node, theme, context = {} }) {
     ? Math.min(12, Math.max(3, Math.round(authoredGridSpan)))
     : 6
   const showTileMesh = true
-  const isPlatformTile = PLATFORM_TILE_IDS.has(id)
   const leadDotClass = getTileLeadDotClass(tileAccent)
   const institutions = Array.isArray(node.institutions) ? node.institutions : []
   const visibleInstitutions = institutions.filter((institution) => institution?.visibility?.public !== false)
@@ -565,6 +647,7 @@ export default function Tile({ node, theme, context = {} }) {
     if (!context2d) return
 
     const seed = hashSeed(id)
+    const meshAccent = readMeshAccent(tile)
 
     const resizeCanvas = () => {
       const rect = tile.getBoundingClientRect()
@@ -590,7 +673,7 @@ export default function Tile({ node, theme, context = {} }) {
 
       context2d.clearRect(0, 0, width, height)
       for (const layer of meshLayersRef.current) {
-        drawMeshTriangles(context2d, layer, pointer, time, width, height, meshHoverRef.current)
+        drawMeshTriangles(context2d, layer, pointer, time, width, height, meshHoverRef.current, meshAccent)
       }
 
       if (pointer.active) {
@@ -685,6 +768,7 @@ export default function Tile({ node, theme, context = {} }) {
 
   const tileStyle = {
     '--tile-grid-span': gridSpan,
+    '--tile-rgb': resolveTileRgb(theme, id, tileAccent),
     transform: `translate(${activePosition.x}px, ${activePosition.y}px)`,
     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
     cursor: isMobileViewport ? 'pointer' : isDragging ? 'grabbing' : 'grab',
@@ -703,8 +787,6 @@ export default function Tile({ node, theme, context = {} }) {
       className={`tile ${isSelected ? 'tile-selected' : ''} ${
         isHovered ? 'tile-hovered' : ''
       } ${isDragging ? 'tile-dragging' : ''} ${
-        isPlatformTile ? 'tile-platform' : ''
-      } ${isPlatformTile ? 'tile-foil-open' : ''} ${
         isScrollCentered ? 'tile-scroll-centered' : ''
       }`}
       id={id}
@@ -737,12 +819,6 @@ export default function Tile({ node, theme, context = {} }) {
             transition: 'opacity 0.1s linear, filter 0.1s linear',
           }}
         />
-      )}
-
-      {isPlatformTile && (
-        <div className="tile-foil-overlay" aria-hidden="true">
-          <div className="tile-foil-shine" />
-        </div>
       )}
 
       {/* Tile icon */}

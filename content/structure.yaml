@@ -3,6 +3,8 @@ homepage:
     - logo
     - movie
     - platforms
+    - applications
+    - applied
     - architecture
     - contact_main
     - footer
@@ -14,12 +16,51 @@ movie:
 platforms:
 
   children:
-    - pythia
     - core
     - brix
-    - aflowtex
     - lithos
-    - oracle
+
+applications:
+
+  children:
+    - pythia
+
+applied:
+
+  children:
+    - aflowtex
+    - biophysical_applications
+
+biophysical_applications:
+  children:
+    - pythia_spr
+    - pythia_saxs
+    - pythia_metabolic
+
+aflowtex:
+  children:
+    - vascular_measurement
+    - vascular_simulation
+    - vascular_interpretation
+    - vascular_oracle
+
+pythia_spr:
+  children:
+    - spr_data
+    - spr_surrogate
+    - spr_oracle
+
+pythia_saxs:
+  children:
+    - saxs_data
+    - saxs_surrogate
+    - saxs_oracle
+
+pythia_metabolic:
+  children:
+    - metabolic_data
+    - metabolic_surrogate
+    - metabolic_oracle
 
 oracle:
 

@@ -23,7 +23,7 @@
       "label": "Calyr.a\u00ed",
       "data": {
         "title": "Calyr.a\u00ed",
-        "summary": "Create what does not exist yet.",
+        "summary": "Create what does not yet exist.",
         "icon": ""
       }
     },
@@ -32,7 +32,7 @@
       "label": "Calyr.a\u00ed",
       "data": {
         "title": "Calyr.a\u00ed",
-        "summary": "Create what does not exist yet.",
+        "summary": "Create what does not yet exist.",
         "icon": ""
       }
     },
@@ -41,25 +41,43 @@
       "label": "Teaser",
       "data": {
         "title": "Teaser",
-        "summary": "See the platform in motion.",
+        "summary": "Pythia turns data into prediction. Oracles turn prediction into action.",
         "icon": ""
       }
     },
     {
       "id": "platforms",
-      "label": "Platforms",
+      "label": "Architecture",
       "data": {
-        "title": "Platforms",
-        "summary": "One inference architecture, applied across science, medicine, and engineering.",
+        "title": "Architecture",
+        "summary": "NEXUS, BRIX, and LITHOS are CALYR.a\u00ed.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "applications",
+      "label": "Pythia",
+      "data": {
+        "title": "Pythia",
+        "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "applied",
+      "label": "Applications",
+      "data": {
+        "title": "Applications",
+        "summary": "Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.",
         "icon": ""
       }
     },
     {
       "id": "architecture",
-      "label": "Architecture",
+      "label": "Ecosystem",
       "data": {
-        "title": "Architecture",
-        "summary": "Explore the principles, relationships, and people behind the platform.",
+        "title": "Ecosystem",
+        "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
         "icon": ""
       }
     },
@@ -83,10 +101,10 @@
     },
     {
       "id": "core",
-      "label": "Calyr.a\u00ed Core",
+      "label": "NEXUS",
       "data": {
-        "title": "Calyr.a\u00ed Core",
-        "summary": "Connects observations, knowledge, models, and decisions.\n",
+        "title": "NEXUS",
+        "summary": "NEXUS connects data, models, workflows, and platforms.\n",
         "icon": "brain"
       }
     },
@@ -95,17 +113,26 @@
       "label": "brix",
       "data": {
         "title": "brix",
-        "summary": "Surrogate-assisted engineering design and analysis.\n",
+        "summary": "Faster structural design, evaluation, and optimization.\n",
         "icon": "bridge"
       }
     },
     {
       "id": "aflowtex",
-      "label": "aflowtex",
+      "label": "vascular application",
       "data": {
-        "title": "aflowtex",
-        "summary": "Patient-specific flow modelling and clinical decision support.\n",
+        "title": "vascular application",
+        "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
         "icon": "aorta"
+      }
+    },
+    {
+      "id": "biophysical_applications",
+      "label": "biophysical applications",
+      "data": {
+        "title": "biophysical applications",
+        "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+        "icon": "scatter"
       }
     },
     {
@@ -113,16 +140,16 @@
       "label": "lithos",
       "data": {
         "title": "lithos",
-        "summary": "Understanding consequences, trade-offs, and impact.\n",
+        "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
         "icon": "mountain"
       }
     },
     {
       "id": "oracle",
-      "label": "Pythia Applications",
+      "label": "Oracles",
       "data": {
-        "title": "Pythia Applications",
-        "summary": "Extracting knowledge from complex information spaces.\n",
+        "title": "Oracles",
+        "summary": "Oracles turn Pythia predictions into decisions, designs, and engineered results.\n",
         "icon": "crystal-ball"
       }
     },
@@ -131,26 +158,152 @@
       "label": "pythia",
       "data": {
         "title": "pythia",
-        "summary": "A universal computational framework for representing, reasoning about, and discovering the hidden organization of complex systems.\n",
+        "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
         "icon": "compass"
       }
     },
     {
       "id": "pythia_saxs",
-      "label": "saxs pythia",
+      "label": "SAXS System",
       "data": {
-        "title": "saxs pythia",
+        "title": "SAXS System",
         "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
         "icon": "scatter"
       }
     },
     {
-      "id": "pythia_metabolic",
-      "label": "metabolic pythia",
+      "id": "pythia_spr",
+      "label": "SPR System",
       "data": {
-        "title": "metabolic pythia",
+        "title": "SPR System",
+        "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
+        "icon": "wave"
+      }
+    },
+    {
+      "id": "pythia_metabolic",
+      "label": "Metabolic System",
+      "data": {
+        "title": "Metabolic System",
         "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
         "icon": "network"
+      }
+    },
+    {
+      "id": "vascular_oracle",
+      "label": "Vascular Oracle",
+      "data": {
+        "title": "Vascular Oracle",
+        "summary": "Prediction becomes clinical and engineering decision support.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "vascular_measurement",
+      "label": "vascular measurement models",
+      "data": {
+        "title": "vascular measurement models",
+        "summary": "Clinical imaging, observed anatomy, flow measurements, and patient evidence.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "vascular_simulation",
+      "label": "vascular simulation models",
+      "data": {
+        "title": "vascular simulation models",
+        "summary": "Geometry, fluid dynamics, boundary conditions, and virtual intervention states.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "vascular_interpretation",
+      "label": "vascular interpretation models",
+      "data": {
+        "title": "vascular interpretation models",
+        "summary": "Surrogate prediction, uncertainty, comparison, and patient-specific meaning.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "spr_data",
+      "label": "SPR Data",
+      "data": {
+        "title": "SPR Data",
+        "summary": "Sensorgrams, concentrations, assay conditions, and experimental controls.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "spr_surrogate",
+      "label": "SPR Surrogate",
+      "data": {
+        "title": "SPR Surrogate",
+        "summary": "Fast models of molecular association, dissociation, affinity, and uncertainty.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "spr_oracle",
+      "label": "SPR Oracle",
+      "data": {
+        "title": "SPR Oracle",
+        "summary": "Prediction becomes interpretable binding and assay decisions.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "saxs_data",
+      "label": "SAXS Data",
+      "data": {
+        "title": "SAXS Data",
+        "summary": "Scattering profiles, experimental conditions, priors, and structural constraints.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "saxs_surrogate",
+      "label": "SAXS Surrogate",
+      "data": {
+        "title": "SAXS Surrogate",
+        "summary": "Fast inference of molecular assembly and plausible structural states.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "saxs_oracle",
+      "label": "SAXS Oracle",
+      "data": {
+        "title": "SAXS Oracle",
+        "summary": "Prediction becomes structural interpretation and experiment guidance.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "metabolic_data",
+      "label": "Metabolic Data",
+      "data": {
+        "title": "Metabolic Data",
+        "summary": "Experimental observations, stoichiometry, and thermodynamic constraints.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "metabolic_surrogate",
+      "label": "Metabolic Surrogate",
+      "data": {
+        "title": "Metabolic Surrogate",
+        "summary": "Fast models of flux states, network behavior, and uncertainty.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "metabolic_oracle",
+      "label": "Metabolic Oracle",
+      "data": {
+        "title": "Metabolic Oracle",
+        "summary": "Prediction becomes biological interpretation and intervention guidance.",
+        "icon": ""
       }
     },
     {
@@ -158,7 +311,7 @@
       "label": "ecosystem",
       "data": {
         "title": "ecosystem",
-        "summary": "Explore relationships across the calyrai ecosystem.\n",
+        "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
         "icon": "network"
       }
     },
@@ -167,7 +320,7 @@
       "label": "philosophy",
       "data": {
         "title": "philosophy",
-        "summary": "Scientific rigor, openness, and reproducibility.\n",
+        "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
         "icon": "book"
       }
     },
@@ -207,23 +360,33 @@
     },
     {
       "source": "core",
-      "target": "aflowtex",
-      "id": "core\u2192aflowtex"
-    },
-    {
-      "source": "core",
       "target": "lithos",
       "id": "core\u2192lithos"
     },
     {
       "source": "core",
-      "target": "oracle",
-      "id": "core\u2192oracle"
+      "target": "pythia",
+      "id": "core\u2192pythia"
     },
     {
-      "source": "oracle",
-      "target": "pythia",
-      "id": "oracle\u2192pythia"
+      "source": "pythia",
+      "target": "aflowtex",
+      "id": "pythia\u2192aflowtex"
+    },
+    {
+      "source": "pythia",
+      "target": "pythia_spr",
+      "id": "pythia\u2192pythia_spr"
+    },
+    {
+      "source": "pythia",
+      "target": "pythia_saxs",
+      "id": "pythia\u2192pythia_saxs"
+    },
+    {
+      "source": "pythia",
+      "target": "pythia_metabolic",
+      "id": "pythia\u2192pythia_metabolic"
     }
   ]
 }

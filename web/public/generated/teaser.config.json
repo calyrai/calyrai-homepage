@@ -1,78 +1,91 @@
 {
   "meta": {
     "title": "calyr.aí Pitch Engine",
-    "subtitle": "Scientific Intelligence Infrastructure for scalable research and technology ventures",
+    "subtitle": "Data becomes surrogate intelligence and prediction",
     "mode": "interactive-flow"
   },
   "page": {
-    "kicker": "How we work",
-    "title": "From complex challenge to scalable product.",
-    "subtitle": "We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.",
-    "deck_link_label": "Explore the interactive pitch deck",
+    "kicker": "CALYR.aí works",
+    "title": "Data becomes surrogate. Surrogate becomes prediction.",
+    "subtitle": "Pythia converts data, simulations, and measurements into validated surrogate models and fast predictions. Oracles turn those predictions into domain-specific action.",
+    "deck_link_label": "CALYR.aí engineering in action",
     "deck_link_url": "/research/lithos/index.html",
-    "insight_title": "Who needs it",
-    "insight_copy": "Research labs, MedTech teams, engineering groups, and industrial R&D units that need explainable scientific decisions.",
-    "hpc_title": "What powers it",
-    "hpc_copy": "Calyr.aí uses High-Performance Computing (HPC), including the VSC-5 supercomputer, to run complex simulations and turn their results into fast, explainable surrogate models."
+    "insight_title": "Prediction becomes action",
+    "insight_copy": "Oracles combine Pythia predictions, domain constraints, uncertainty, and adaptive AI-based user experiences in one usable system.",
+    "hpc_title": "Computation creates the surrogate",
+    "hpc_copy": "High-Performance Computing on systems including VSC-5 generates the data that Pythia compresses into fast, explainable prediction."
   },
   "copy": {
-    "mission": "We begin with one valuable challenge and build toward a lasting platform partnership.",
-    "ready": "Ready",
-    "complete": "Story chain complete",
-    "empty_story_title": "Story Engine",
-    "empty_story_item": "Build the path to generate linked slides."
+    "mission": "Pythia turns data into surrogate prediction. Oracles turn prediction into decisions and engineered results.",
+    "ready": "System ready",
+    "complete": "Engineering chain complete",
+    "empty_story_title": "CALYR.aí works",
+    "empty_story_item": "The Pythia chain connects data, surrogate models, prediction, and oracles."
   },
   "nodes": [
     {
       "id": "challenge",
-      "label": "Challenge",
+      "label": "Data",
       "x": 0.12,
       "y": 0.5,
-      "sentence": "We identify one valuable scientific or engineering challenge."
+      "sentence": "Measurements",
+      "simulations": null,
+      "geometry": null,
+      "and constraints define the evidence space.": null
     },
     {
       "id": "demonstrator",
-      "label": "Demonstrator",
+      "label": "Surrogate",
       "x": 0.37,
       "y": 0.5,
-      "sentence": "We quickly prove the idea with real data and an interactive demonstrator."
+      "sentence": "Pythia compresses complex evidence into a fast",
+      "validated surrogate model.": null
     },
     {
       "id": "deployment",
-      "label": "Deployment",
+      "label": "Prediction",
       "x": 0.63,
       "y": 0.5,
-      "sentence": "A validated demonstrator becomes a reliable domain deployment."
+      "sentence": "The surrogate predicts system behavior",
+      "valid variants": null,
+      "and uncertainty in real time.": null
     },
     {
       "id": "partnership",
-      "label": "Partnership",
+      "label": "Oracle",
       "x": 0.88,
       "y": 0.5,
-      "sentence": "Deployment grows into recurring platform access and a long-term partnership."
+      "sentence": "An Oracle turns prediction into domain-specific decisions",
+      "designs": null,
+      "and engineered results.": null
     }
   ],
   "edges": [
     {
       "from": "challenge",
       "to": "demonstrator",
-      "slide": "Start focused",
-      "thought": "Solve one meaningful problem first.",
-      "explanation": "A focused demonstrator makes value visible quickly."
+      "slide": "Data becomes surrogate",
+      "thought": "Pythia learns the relevant structure of the evidence space.",
+      "explanation": "The surrogate preserves the behavior that matters and removes the computational delay."
     },
     {
       "from": "demonstrator",
       "to": "deployment",
-      "slide": "Prove value",
-      "thought": "Validate the workflow with real users and data.",
-      "explanation": "Evidence turns the demonstrator into a reliable deployment."
+      "slide": "Surrogate becomes prediction",
+      "thought": "The learned model evaluates new states",
+      "variants": null,
+      "and uncertainty in real time.": null,
+      "explanation": "Prediction makes complex systems immediately explorable."
     },
     {
       "from": "deployment",
       "to": "partnership",
-      "slide": "Scale together",
-      "thought": "Extend a proven solution instead of restarting from zero.",
-      "explanation": "Deployments create recurring platform value and lasting partnerships."
+      "slide": "Prediction becomes oracle",
+      "thought": "Domain knowledge turns prediction into a usable engineering capability.",
+      "explanation": "The Oracle combines prediction",
+      "constraints": null,
+      "adaptive interaction": null,
+      "and action.": null
     }
   ],
   "story_rules": {
