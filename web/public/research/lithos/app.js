@@ -2052,6 +2052,7 @@ function openSlide(i) {
   const s = slides[i];
   const shell = document.createElement('div');
   shell.className = `slide-shell slide-${s.type}`;
+  shell.dataset.accent = i % 2 === 0 ? 'magenta' : 'cyan';
 
   const wrap = document.createElement('div');
   wrap.className = 'slide-canvas-wrap';
@@ -2066,7 +2067,7 @@ function openSlide(i) {
   const info = document.createElement('aside');
   info.className = 'slide-info';
   const journey = deckUi.journey.map((phase, phaseIndex) => `<span class="journey-step${phaseIndex === i ? ' active' : ''}${phaseIndex < i ? ' complete' : ''}">${phase}</span>`).join('');
-  info.innerHTML = `<div><div class="slide-num">${String(i + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}</div><div class="slide-phase">${s.phase}</div><h1 class="slide-title">${s.title}</h1><p class="slide-subtitle">${s.subtitle}</p><p class="slide-story">${s.story}</p></div><div><nav class="slide-journey" aria-label="Deck journey">${journey}</nav><p class="slide-hint">${s.hint}</p></div>`;
+  info.innerHTML = `<div><div class="slide-num"><strong>${String(i + 1).padStart(2, '0')}</strong><span>/ ${String(slides.length).padStart(2, '0')}</span></div><div class="slide-phase">${s.phase}</div><h1 class="slide-title">${s.title}</h1><p class="slide-subtitle">${s.subtitle}</p><p class="slide-story">${s.story}</p></div><div><nav class="slide-journey" aria-label="Deck journey">${journey}</nav><p class="slide-hint">${s.hint}</p></div>`;
 
   shell.append(info, wrap);
   stage.appendChild(shell);
@@ -2156,6 +2157,28 @@ function prev() {
 
 document.querySelector('#nextBtn').addEventListener('click', next);
 document.querySelector('#prevBtn').addEventListener('click', prev);
+const presentationBtn = document.querySelector('#presentationBtn');
+
+async function togglePresentationMode() {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch (error) {
+    document.body.classList.toggle('presentation-mode');
+    presentationBtn.setAttribute('aria-pressed', String(document.body.classList.contains('presentation-mode')));
+  }
+}
+
+presentationBtn.addEventListener('click', togglePresentationMode);
+document.addEventListener('fullscreenchange', () => {
+  const isPresenting = Boolean(document.fullscreenElement);
+  document.body.classList.toggle('presentation-mode', isPresenting);
+  presentationBtn.setAttribute('aria-pressed', String(isPresenting));
+  presentationBtn.textContent = isPresenting ? 'exit presentation' : 'presentation';
+});
 
 function enableMobileSwipe(target) {
   let gesture = null;
@@ -2189,7 +2212,7 @@ window.addEventListener('keydown', (e) => {
   if (e.defaultPrevented || e.target.closest?.('.aortic-arch-canvas')) return;
   if (e.key === 'ArrowRight') next();
   if (e.key === 'ArrowLeft') prev();
-  if (e.key === 'Escape') openSlide(0);
+  if (e.key === 'Home') openSlide(0);
 });
 
 async function boot() {

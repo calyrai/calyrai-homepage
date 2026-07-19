@@ -2,7 +2,7 @@ seed: 5318008
 
 page:
   language: "en"
-  title: "calyr.aí | Interactive Deck"
+  title: "calyr.aí engineering in action"
   description: "An interactive calyr.aí visual story showing how scientific data converges into an editable three-dimensional aortic arch."
   canonical: "https://calyr.ai/research/lithos/index.html"
   theme_color: "#000000"

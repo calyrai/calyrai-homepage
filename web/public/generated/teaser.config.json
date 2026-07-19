@@ -5,10 +5,10 @@
     "mode": "interactive-flow"
   },
   "page": {
-    "kicker": "CALYR.aí works",
+    "kicker": "calyr.aí works",
     "title": "Data becomes surrogate. Surrogate becomes prediction.",
     "subtitle": "Pythia converts data, simulations, and measurements into validated surrogate models and fast predictions. Oracles turn those predictions into domain-specific action.",
-    "deck_link_label": "CALYR.aí engineering in action",
+    "deck_link_label": "calyr.aí engineering in action",
     "deck_link_url": "/research/lithos/index.html",
     "insight_title": "Prediction becomes action",
     "insight_copy": "Oracles combine Pythia predictions, domain constraints, uncertainty, and adaptive AI-based user experiences in one usable system.",
@@ -19,7 +19,7 @@
     "mission": "Pythia turns data into surrogate prediction. Oracles turn prediction into decisions and engineered results.",
     "ready": "System ready",
     "complete": "Engineering chain complete",
-    "empty_story_title": "CALYR.aí works",
+    "empty_story_title": "calyr.aí works",
     "empty_story_item": "The Pythia chain connects data, surrogate models, prediction, and oracles."
   },
   "nodes": [

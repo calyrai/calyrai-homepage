@@ -1,8 +1,8 @@
 page:
-  title: CALYR.AI Positioning
-  eyebrow: CALYR.AI Positioning
+  title: calyr.ai positioning
+  eyebrow: calyr.ai positioning
   subtitle: A knowledge-first compiler for research publishing
-  lead: CALYR.AI applies established compiler and model-driven techniques to research knowledge so one semantic source can compile to synchronized outputs.
+  lead: calyr.ai applies established compiler and model-driven techniques to research knowledge so one semantic source can compile to synchronized outputs.
   claim: knowledge -> compiler -> website | paper | presentation | graph | workflow | code | interactive objects
 
 sections:
@@ -23,7 +23,7 @@ sections:
         - Schema-driven validation
 
   - id: distinctive
-    title: Where CALYR.AI Is Distinctive
+    title: Where calyr.ai is distinctive
     body: The DSL models research semantics and relationships, not only page layout, and keeps outputs synchronized.
     columns:
       -

@@ -20,18 +20,18 @@
     },
     {
       "id": "logo",
-      "label": "Calyr.a\u00ed",
+      "label": "calyr.a\u00ed",
       "data": {
-        "title": "Calyr.a\u00ed",
+        "title": "calyr.a\u00ed",
         "summary": "Create what does not yet exist.",
         "icon": ""
       }
     },
     {
       "id": "hero",
-      "label": "Calyr.a\u00ed",
+      "label": "calyr.a\u00ed",
       "data": {
-        "title": "Calyr.a\u00ed",
+        "title": "calyr.a\u00ed",
         "summary": "Create what does not yet exist.",
         "icon": ""
       }
@@ -50,7 +50,7 @@
       "label": "Architecture",
       "data": {
         "title": "Architecture",
-        "summary": "NEXUS, BRIX, and LITHOS are CALYR.a\u00ed.",
+        "summary": "NEXUS, BRIX, and LITHOS are calyr.a\u00ed.",
         "icon": ""
       }
     },
@@ -356,7 +356,7 @@
       "label": "ecosystem",
       "data": {
         "title": "ecosystem",
-        "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+        "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
         "icon": "network"
       }
     },
@@ -365,7 +365,7 @@
       "label": "philosophy",
       "data": {
         "title": "philosophy",
-        "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
+        "summary": "calyr.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
         "icon": "book"
       }
     },

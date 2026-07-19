@@ -244,7 +244,7 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         <div
           className={`calyr-logo-interactive ${className}`.trim()}
           data-logo-state={state}
-          aria-label="Toggle CALYR sparkling QR"
+          aria-label="Toggle calyr.aí sparkling QR"
           onClick={toggleSparklingQr}
         >
           <PythiaMeshCanvas seedKey="calyr-logo" className="calyr-logo-mesh" />

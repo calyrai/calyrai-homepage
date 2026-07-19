@@ -23,7 +23,7 @@ export default function PhilosophyPage({ node }) {
         <p>{node.summary}</p>
       </header>
 
-      <section className="philosophy-principles" aria-label="CALYR.ai principles">
+      <section className="philosophy-principles" aria-label="calyr.ai principles">
         {principles.map((principle) => {
           const [title, description = ''] = principle.split(' — ')
           return (

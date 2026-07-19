@@ -16,7 +16,7 @@
     "keywords": []
   },
   "logo": {
-    "title": "Calyr.a\u00ed",
+    "title": "calyr.a\u00ed",
     "summary": "Create what does not yet exist.",
     "body_preview": "",
     "route": "",
@@ -32,7 +32,7 @@
     ]
   },
   "hero": {
-    "title": "Calyr.a\u00ed",
+    "title": "calyr.a\u00ed",
     "summary": "Create what does not yet exist.",
     "body_preview": "",
     "route": "",
@@ -68,7 +68,7 @@
   },
   "platforms": {
     "title": "Architecture",
-    "summary": "NEXUS, BRIX, and LITHOS are CALYR.a\u00ed.",
+    "summary": "NEXUS, BRIX, and LITHOS are calyr.a\u00ed.",
     "body_preview": "",
     "route": "",
     "icon": "",
@@ -173,7 +173,7 @@
   "core": {
     "title": "NEXUS",
     "summary": "NEXUS connects data, models, workflows, and platforms.\n",
-    "body_preview": "NEXUS is the connective architecture of CALYR.a\u00ed. It links data, knowledge, models, workflows, platforms, and decisions while Pythia supplies surrogate modelling and prediction.\n",
+    "body_preview": "NEXUS is the connective architecture of calyr.a\u00ed. It links data, knowledge, models, workflows, platforms, and decisions while Pythia supplies surrogate modelling and prediction.\n",
     "route": "/research/platforms/core/index.html",
     "icon": "brain",
     "keywords": [
@@ -267,7 +267,7 @@
   "lithos": {
     "title": "lithos",
     "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
-    "body_preview": "LITHOS is the adaptive interaction layer of CALYR.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of ",
+    "body_preview": "LITHOS is the adaptive interaction layer of calyr.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of ",
     "route": "/research/platforms/lithos/index.html",
     "icon": "mountain",
     "keywords": [
@@ -308,7 +308,7 @@
   "pythia": {
     "title": "pythia",
     "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
-    "body_preview": "Pythia is the shared CALYR.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the p",
+    "body_preview": "Pythia is the shared calyr.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the p",
     "route": "/research/platforms/pythia/index.html",
     "icon": "compass",
     "keywords": [
@@ -723,7 +723,7 @@
   },
   "ecosystem": {
     "title": "ecosystem",
-    "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+    "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
     "body_preview": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, ",
     "route": "/ecosystem",
     "icon": "network",
@@ -745,7 +745,7 @@
   },
   "philosophy": {
     "title": "philosophy",
-    "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
+    "summary": "calyr.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
     "body_preview": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncert",
     "route": "/philosophy",
     "icon": "book",
