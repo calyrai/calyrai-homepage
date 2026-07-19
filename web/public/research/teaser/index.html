@@ -7,43 +7,70 @@
     <link rel="stylesheet" href="/research/teaser/pitch.css" />
   </head>
   <body>
-    <main class="stage" aria-label="CALYR pitch stage">
-      <header class="header">
-        <div>
-          <div class="kicker" id="page-kicker"></div>
+    <main class="stage" aria-label="CALYR teaser">
+      <section class="editorial-grid">
+        <header class="editorial-card statement-card">
+          <div class="card-meta">
+            <span id="page-kicker"></span>
+            <span>01</span>
+          </div>
           <h1 class="title" id="page-title"></h1>
-          <p class="subtitle" id="page-subtitle"></p>
+          <div class="card-footer">
+            <p class="subtitle" id="page-subtitle"></p>
+            <span class="edition">CALYR.AÍ · 2026</span>
+          </div>
+        </header>
+
+        <section class="editorial-card system-card" aria-label="CALYR system">
+          <div class="card-meta">
+            <span>THE SYSTEM</span>
+            <span>02</span>
+          </div>
+          <p class="system-line"><span>Data</span><i>→</i><span>Surrogate</span></p>
+          <p class="system-line"><span>Prediction</span><i>→</i><strong>Oracle</strong></p>
           <a class="teaser-deck-link" id="page-deck-link" href="">
             <span id="page-deck-link-label"></span>
             <span class="teaser-deck-arrow" aria-hidden="true">→</span>
           </a>
-        </div>
-      </header>
+        </section>
 
-      <aside class="hpc-note" aria-labelledby="hpc-title">
-        <span class="hpc-note-label" id="hpc-title"></span>
-        <p id="hpc-copy"></p>
-      </aside>
+        <section class="editorial-card flow-card" aria-label="Interactive scientific flow">
+          <div class="card-meta flow-meta">
+            <span>INTERACTIVE MODEL</span>
+            <span>03</span>
+          </div>
+          <div class="scene" aria-label="Pitch graph scene">
+            <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
+            <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="CALYR scientific pitch graph"></svg>
+            <div class="scene-status" id="scene-status">System ready</div>
+            <div class="game-hud" aria-label="Flow controls">
+              <span id="game-progress" class="game-progress">Slides 0</span>
+              <span id="game-score" class="game-score">Score 0</span>
+              <button id="game-reset" class="game-button" type="button">Reset</button>
+              <button id="game-demo" class="game-button" type="button">Run the chain →</button>
+            </div>
+          </div>
+        </section>
 
-      <section class="scene" aria-label="Pitch graph scene">
-        <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
-        <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="CALYR scientific pitch graph"></svg>
-        <div class="scene-status" id="scene-status">Game ready</div>
-        <div class="game-hud" aria-label="Flow game controls">
-          <span id="game-progress" class="game-progress">Slides 0</span>
-          <span id="game-score" class="game-score">Score 0</span>
-          <button id="game-reset" class="game-button" type="button">Reset</button>
-          <button id="game-demo" class="game-button" type="button">Play the flow →</button>
-        </div>
-      </section>
-
-      <section class="insight-grid" aria-label="Active insight">
-        <article class="panel">
-          <h2 id="insight-title"></h2>
-          <p id="insight-copy"></p>
-          <ul id="insight-points" class="insight-points"></ul>
-        </article>
-
+        <section class="editorial-card consequence-card" aria-label="Scientific consequence">
+          <div class="card-meta">
+            <span>THE CONSEQUENCE</span>
+            <span>04</span>
+          </div>
+          <div class="consequence-copy">
+            <p>Prediction becomes <strong>decision.</strong></p>
+            <p>Decision becomes <strong>an engineered result.</strong></p>
+          </div>
+          <aside class="hpc-note" aria-labelledby="hpc-title">
+            <span class="hpc-note-label" id="hpc-title"></span>
+            <p id="hpc-copy"></p>
+          </aside>
+          <article class="panel">
+            <h2 id="insight-title"></h2>
+            <p id="insight-copy"></p>
+            <ul id="insight-points" class="insight-points"></ul>
+          </article>
+        </section>
       </section>
     </main>
 

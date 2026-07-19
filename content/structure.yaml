@@ -29,6 +29,7 @@ applied:
 
   children:
     - aflowtex
+    - bio_nanoparticles
     - biophysical_applications
 
 biophysical_applications:
@@ -43,6 +44,13 @@ aflowtex:
     - vascular_simulation
     - vascular_interpretation
     - vascular_oracle
+
+bio_nanoparticles:
+  children:
+    - nanoparticle_design
+    - nanoparticle_characterization
+    - nanoparticle_purification
+    - nanoparticle_oracle
 
 pythia_spr:
   children:

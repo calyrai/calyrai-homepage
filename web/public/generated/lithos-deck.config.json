@@ -3,7 +3,7 @@
   "page": {
     "language": "en",
     "title": "calyr.aí | Interactive Deck",
-    "description": "An interactive calyr.aí story showing how surrogate models connect observations steer solutions and transfer across medical and architectural domains.",
+    "description": "An interactive calyr.aí story showing how observations become surrogate models, controllable predictions, and an engineered vascular result.",
     "canonical": "https://calyr.ai/research/lithos/index.html",
     "theme_color": "#000000"
   },
@@ -14,15 +14,14 @@
   },
   "ui": {
     "footer_primary": "FROM DATA TO FORM.",
-    "footer_secondary": "FROM COMPLEXITY TO INTELLIGENCE.",
+    "footer_secondary": "FROM MODEL TO ENGINEERED RESULT.",
     "default_hint": "Use left/right arrows, the top buttons, or swipe horizontally on a phone.",
     "journey": [
       "OBSERVE",
       "MODEL",
       "COUPLE",
       "STEER",
-      "APPLY",
-      "TRANSFER"
+      "APPLY"
     ]
   },
   "formation_steps": [
@@ -98,19 +97,11 @@
     },
     {
       "phase": "APPLY",
-      "title": "Application: Aortic Arch.",
-      "subtitle": "One surrogate produces patient-specific medical geometry.",
-      "story": "The controlled representation converges into an editable aortic arch while preserving evidence constraints and uncertainty.",
+      "title": "Application: Patient-specific vascular design.",
+      "subtitle": "One surrogate produces an editable engineered result.",
+      "story": "The controlled representation converges into patient-specific vascular geometry while preserving evidence constraints and uncertainty.",
       "type": "final-bow",
       "hint": "Rotate the aortic arch and inspect the resulting medical geometry."
-    },
-    {
-      "phase": "TRANSFER",
-      "title": "One Model Language. Many Domains.",
-      "subtitle": "The same controlled curve becomes an architectural bridge.",
-      "story": "Different domain. Same inference architecture. The shared centerline remains while medical form transforms into deck ribs cables and pylon.",
-      "type": "final-bridge",
-      "hint": "Rotate the bridge and trace the original aortic centerline through the new structure."
     }
   ]
 }

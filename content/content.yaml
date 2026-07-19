@@ -42,15 +42,15 @@ __site_runtime:
     page:
       language: en
       title: calyr.aí | Interactive Deck
-      description: An interactive calyr.aí story showing how surrogate models connect observations steer solutions and transfer across medical and architectural domains.
+      description: An interactive calyr.aí story showing how observations become surrogate models, controllable predictions, and an engineered vascular result.
       canonical: https://calyr.ai/research/lithos/index.html
       theme_color: '#000000'
     interaction: {swipe_enabled: true, swipe_threshold: 64, swipe_max_vertical_ratio: 0.72}
     ui:
       footer_primary: FROM DATA TO FORM.
-      footer_secondary: FROM COMPLEXITY TO INTELLIGENCE.
+      footer_secondary: FROM MODEL TO ENGINEERED RESULT.
       default_hint: Use left/right arrows, the top buttons, or swipe horizontally on a phone.
-      journey: [OBSERVE, MODEL, COUPLE, STEER, APPLY, TRANSFER]
+      journey: [OBSERVE, MODEL, COUPLE, STEER, APPLY]
     formation_steps: [0.22, 0.36, 0.52, 0.68, 0.82, 0.92, 1.00]
     cluster_centers:
     - {x: 92, y: 228}
@@ -64,8 +64,7 @@ __site_runtime:
     - {phase: MODEL, title: A Surrogate Creates a Shared Model., subtitle: Experimental and theoretical spaces become one representation., story: The surrogate learns a navigable model that connects observations simulation and domain knowledge., type: magenta, hint: Observe how the magenta surrogate aligns previously separate data spaces.}
     - {phase: COUPLE, title: Coupling Enables Prediction., subtitle: A change in one domain propagates through the model., story: Connected variables respond together so the system can predict consequences rather than evaluate isolated points., type: flow, hint: Move a control point and watch the coupled representation adapt.}
     - {phase: STEER, title: Steering Enables Design., subtitle: Constraints become controls for valid solution spaces., story: Interactive boundary conditions guide exploration toward feasible high-value outcomes., type: flow-finalize, hint: Adjust the magenta controls and steer the constrained solution space.}
-    - {phase: APPLY, title: 'Application: Aortic Arch.', subtitle: One surrogate produces patient-specific medical geometry., story: The controlled representation converges into an editable aortic arch while preserving evidence constraints and uncertainty., type: final-bow, hint: Rotate the aortic arch and inspect the resulting medical geometry.}
-    - {phase: TRANSFER, title: One Model Language. Many Domains., subtitle: The same controlled curve becomes an architectural bridge., story: Different domain. Same inference architecture. The shared centerline remains while medical form transforms into deck ribs cables and pylon., type: final-bridge, hint: Rotate the bridge and trace the original aortic centerline through the new structure.}
+    - {phase: APPLY, title: 'Application: Patient-specific vascular design.', subtitle: One surrogate produces an editable engineered result., story: The controlled representation converges into patient-specific vascular geometry while preserving evidence constraints and uncertainty., type: final-bow, hint: Rotate the aortic arch and inspect the resulting medical geometry.}
 route_policy:
   home_route: /
   unresolved_internal_fallback: /
@@ -151,7 +150,7 @@ applications:
     - applications
   explain:
     why: Present Pythia as the shared data-to-surrogate-to-prediction system.
-  summary: Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.
+  summary: Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.
 applied:
   title: Applications
   subtitle: Multiple models become one product
@@ -273,7 +272,23 @@ aflowtex:
   icon: aorta
   route: /research/platforms/aflowtex/index.html
   render:
-    grid_span: 6
+    grid_span: 4
+bio_nanoparticles:
+  title: bio nanoparticles
+  tile_lead: molecular systems
+  tile_accent: magenta
+  tile_title: bio nanoparticles
+  tile_summary: structure, interaction, and production as one interpretable system
+  subtitle: Interpretable particle engineering
+  summary: 'Biological nanoparticles engineered across structure, interaction, and production.
+
+    '
+  body: 'Local surface design, experimental characterization, purification behavior, and function become one traceable model.
+
+    '
+  icon: particle
+  render:
+    grid_span: 4
 biophysical_applications:
   title: biophysical applications
   tile_lead: experimental systems
@@ -286,7 +301,7 @@ biophysical_applications:
   icon: scatter
   route: /research/pythia/saxs/index.html
   render:
-    grid_span: 6
+    grid_span: 4
 lithos:
   title: lithos
   tile_lead: adaptive interaction
@@ -406,6 +421,22 @@ vascular_interpretation:
   title: vascular interpretation models
   subtitle: Interpretation
   summary: Surrogate prediction, uncertainty, comparison, and patient-specific meaning.
+nanoparticle_design:
+  title: local nanoparticle surface design
+  subtitle: Design
+  summary: Defined surface regions are modified against explicit functional and production constraints.
+nanoparticle_characterization:
+  title: nanoparticle characterization
+  subtitle: Evidence
+  summary: SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.
+nanoparticle_purification:
+  title: nanoparticle purification behavior
+  subtitle: Manufacturing
+  summary: Chromatographic structure and manufacturability become explicit design traits.
+nanoparticle_oracle:
+  title: bio-nanoparticle oracle
+  subtitle: Oracle
+  summary: White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.
 spr_data:
   title: SPR Data
   subtitle: Data
@@ -454,7 +485,7 @@ ecosystem:
     '
   body: 'NEXUS connects the system. BRIX engineers structural form. LITHOS provides
     adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models.
-    Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX is the vascular application.
+    Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX engineers patient-specific vascular systems. Bio nanoparticles connect structure, interaction, and production.
 
     '
   icon: network
@@ -463,11 +494,11 @@ ecosystem:
     grid_span: 4
 philosophy:
   title: philosophy
-  tile_lead: trustworthy scientific AI
+  tile_lead: scientific AI
   tile_accent: magenta
   tile_title: philosophy
   tile_summary: interpretable models, traceable predictions, human-controlled decisions
-  subtitle: Principles for trustworthy engineering AI
+  subtitle: Principles for scientific AI
   summary: 'CALYR.aí makes model behavior, evidence, uncertainty, and responsibility visible.
 
     '
@@ -478,6 +509,9 @@ philosophy:
     Human oversight — People remain able to understand, challenge, override, and stop the system.
     Lifecycle risk management — Risks are monitored from development through deployment and continued use.
   links:
+  - id: closed-loop-biophysics
+    label: Closed-loop biophysical interrogation
+    route: /research/philosophy/closed-loop-biophysics/index.html
   - id: eu-ai-act
     label: EU Artificial Intelligence Act
     route: https://eur-lex.europa.eu/eli/reg/2024/1689/oj
@@ -596,6 +630,7 @@ __graph:
   - lithos
   - pythia
   - aflowtex
+  - bio_nanoparticles
   - pythia_spr
   - pythia_saxs
   - pythia_metabolic
@@ -608,6 +643,8 @@ __graph:
     - pythia
   - - pythia
     - aflowtex
+  - - pythia
+    - bio_nanoparticles
   - - pythia
     - pythia_spr
   - - pythia

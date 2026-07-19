@@ -84,12 +84,11 @@
   },
   "applications": {
     "title": "Pythia",
-    "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+    "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
-      "and",
       "builds",
       "fast",
       "for",
@@ -98,8 +97,8 @@
       "physics-informed,",
       "prediction.",
       "pythia",
-      "surrogate",
-      "trustworthy"
+      "scientific",
+      "surrogate"
     ]
   },
   "applied": {
@@ -222,6 +221,24 @@
       "product.",
       "that",
       "vascular"
+    ]
+  },
+  "bio_nanoparticles": {
+    "title": "bio nanoparticles",
+    "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
+    "body_preview": "Local surface design, experimental characterization, purification behavior, and function become one traceable model.\n",
+    "route": "",
+    "icon": "particle",
+    "keywords": [
+      "across",
+      "and",
+      "bio",
+      "biological",
+      "engineered",
+      "interaction,",
+      "nanoparticles",
+      "production.",
+      "structure,"
     ]
   },
   "biophysical_applications": {
@@ -446,6 +463,94 @@
       "surrogate",
       "uncertainty,",
       "vascular"
+    ]
+  },
+  "nanoparticle_design": {
+    "title": "local nanoparticle surface design",
+    "summary": "Defined surface regions are modified against explicit functional and production constraints.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "against",
+      "and",
+      "are",
+      "constraints.",
+      "defined",
+      "design",
+      "explicit",
+      "functional",
+      "local",
+      "modified",
+      "nanoparticle",
+      "production",
+      "regions",
+      "surface"
+    ]
+  },
+  "nanoparticle_characterization": {
+    "title": "nanoparticle characterization",
+    "summary": "SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "assays",
+      "behavior.",
+      "characterization",
+      "connect",
+      "design",
+      "envelopes,",
+      "functional",
+      "measured",
+      "nanoparticle",
+      "saxs,",
+      "spr,",
+      "structural",
+      "to"
+    ]
+  },
+  "nanoparticle_purification": {
+    "title": "nanoparticle purification behavior",
+    "summary": "Chromatographic structure and manufacturability become explicit design traits.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "and",
+      "become",
+      "behavior",
+      "chromatographic",
+      "design",
+      "explicit",
+      "manufacturability",
+      "nanoparticle",
+      "purification",
+      "structure",
+      "traits."
+    ]
+  },
+  "nanoparticle_oracle": {
+    "title": "bio-nanoparticle oracle",
+    "summary": "White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.",
+    "body_preview": "",
+    "route": "",
+    "icon": "",
+    "keywords": [
+      "across",
+      "and",
+      "bio-nanoparticle",
+      "design",
+      "every",
+      "evidence,",
+      "expose",
+      "oracle",
+      "predictions",
+      "trade-offs",
+      "trait.",
+      "uncertainty,",
+      "white-box"
     ]
   },
   "spr_data": {

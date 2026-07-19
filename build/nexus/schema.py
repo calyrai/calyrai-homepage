@@ -13,6 +13,7 @@ NODE_TYPE_RULES = {
     "core": "tile",
     "brix": "tile",
     "aflowtex": "tile",
+    "bio_nanoparticles": "tile",
     "vascular_applications": "tile",
     "biophysical_applications": "tile",
     "pythia_spr": "tile",

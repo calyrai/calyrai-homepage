@@ -59,7 +59,7 @@
       "label": "Pythia",
       "data": {
         "title": "Pythia",
-        "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+        "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
         "icon": ""
       }
     },
@@ -124,6 +124,15 @@
         "title": "vascular application",
         "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
         "icon": "aorta"
+      }
+    },
+    {
+      "id": "bio_nanoparticles",
+      "label": "bio nanoparticles",
+      "data": {
+        "title": "bio nanoparticles",
+        "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
+        "icon": "particle"
       }
     },
     {
@@ -222,6 +231,42 @@
       "data": {
         "title": "vascular interpretation models",
         "summary": "Surrogate prediction, uncertainty, comparison, and patient-specific meaning.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "nanoparticle_design",
+      "label": "local nanoparticle surface design",
+      "data": {
+        "title": "local nanoparticle surface design",
+        "summary": "Defined surface regions are modified against explicit functional and production constraints.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "nanoparticle_characterization",
+      "label": "nanoparticle characterization",
+      "data": {
+        "title": "nanoparticle characterization",
+        "summary": "SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "nanoparticle_purification",
+      "label": "nanoparticle purification behavior",
+      "data": {
+        "title": "nanoparticle purification behavior",
+        "summary": "Chromatographic structure and manufacturability become explicit design traits.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "nanoparticle_oracle",
+      "label": "bio-nanoparticle oracle",
+      "data": {
+        "title": "bio-nanoparticle oracle",
+        "summary": "White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.",
         "icon": ""
       }
     },
@@ -372,6 +417,11 @@
       "source": "pythia",
       "target": "aflowtex",
       "id": "pythia\u2192aflowtex"
+    },
+    {
+      "source": "pythia",
+      "target": "bio_nanoparticles",
+      "id": "pythia\u2192bio_nanoparticles"
     },
     {
       "source": "pythia",

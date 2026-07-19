@@ -2717,6 +2717,38 @@ body.nav-open {
   background: rgba(255, 255, 255, 0.22);
 }
 
+.philosophy-feature {
+  margin-top: clamp(2rem, 5vw, 5rem);
+  border-top: 1px solid rgba(0, 224, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 56, 209, 0.5);
+  padding: clamp(1.2rem, 2.5vw, 2rem) 0;
+}
+
+.philosophy-feature-kicker {
+  margin: 0 0 0.8rem;
+  color: #00e0ff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.philosophy-feature a {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  text-decoration: none;
+}
+
+.philosophy-feature a span:last-child {
+  color: #ff38d1;
+}
+
 .philosophy-source-list a {
   display: flex;
   justify-content: space-between;

@@ -353,7 +353,7 @@
       "tile_summary": "",
       "subtitle": "Interpretable surrogate models for engineering",
       "landing_message": "",
-      "summary": "Pythia builds physics-informed, interpretable surrogate models for fast and trustworthy prediction.",
+      "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
       "body": "",
       "icon": "",
       "route": "",
@@ -442,6 +442,7 @@
             ],
             "outgoing": [
               "aflowtex",
+              "bio_nanoparticles",
               "pythia_spr",
               "pythia_saxs",
               "pythia_metabolic"
@@ -555,7 +556,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 6
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {},
@@ -578,7 +579,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 6
+                "grid_span": 4
               }
             }
           },
@@ -719,6 +720,187 @@
         },
         {
           "type": "tile",
+          "id": "bio_nanoparticles",
+          "title": "bio nanoparticles",
+          "tile_lead": "molecular systems",
+          "tile_accent": "magenta",
+          "tile_title": "bio nanoparticles",
+          "tile_summary": "structure, interaction, and production as one interpretable system",
+          "subtitle": "Interpretable particle engineering",
+          "landing_message": "",
+          "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
+          "body": "Local surface design, experimental characterization, purification behavior, and function become one traceable model.\n",
+          "icon": "particle",
+          "route": "",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 4
+          },
+          "behavior": {},
+          "explain": {},
+          "relations": {
+            "incoming": [
+              "pythia"
+            ],
+            "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "bio_nanoparticles",
+              "structureNodeId": "bio_nanoparticles"
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent",
+              "BuildChildNodes"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
+          },
+          "children": [
+            {
+              "type": "element",
+              "id": "nanoparticle_design",
+              "title": "local nanoparticle surface design",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Design",
+              "landing_message": "",
+              "summary": "Defined surface regions are modified against explicit functional and production constraints.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "nanoparticle_design",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "nanoparticle_characterization",
+              "title": "nanoparticle characterization",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Evidence",
+              "landing_message": "",
+              "summary": "SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "nanoparticle_characterization",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "nanoparticle_purification",
+              "title": "nanoparticle purification behavior",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Manufacturing",
+              "landing_message": "",
+              "summary": "Chromatographic structure and manufacturability become explicit design traits.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "nanoparticle_purification",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            },
+            {
+              "type": "element",
+              "id": "nanoparticle_oracle",
+              "title": "bio-nanoparticle oracle",
+              "tile_lead": "",
+              "tile_accent": "",
+              "tile_title": "",
+              "tile_summary": "",
+              "subtitle": "Oracle",
+              "landing_message": "",
+              "summary": "White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.",
+              "body": "",
+              "icon": "",
+              "route": "",
+              "links": [],
+              "institutions": [],
+              "contacts": [],
+              "intent": {},
+              "render": {},
+              "behavior": {},
+              "explain": {},
+              "meta": {
+                "source": {
+                  "contentNodeId": "nanoparticle_oracle",
+                  "structureNodeId": null
+                },
+                "nodeType": "element",
+                "transformations": [
+                  "ApplyNodeTypeInference",
+                  "AttachResolvedContent"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "tile",
           "id": "biophysical_applications",
           "title": "biophysical applications",
           "tile_lead": "experimental systems",
@@ -736,7 +918,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 6
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {},
@@ -753,7 +935,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 6
+                "grid_span": 4
               }
             }
           },
@@ -1279,7 +1461,7 @@
           "subtitle": "One connected engineering system",
           "landing_message": "",
           "summary": "CALYR.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
-          "body": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX is the vascular application.\n",
+          "body": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX engineers patient-specific vascular systems. Bio nanoparticles connect structure, interaction, and production.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
@@ -1420,17 +1602,22 @@
           "type": "tile",
           "id": "philosophy",
           "title": "philosophy",
-          "tile_lead": "trustworthy scientific AI",
+          "tile_lead": "scientific AI",
           "tile_accent": "magenta",
           "tile_title": "philosophy",
           "tile_summary": "interpretable models, traceable predictions, human-controlled decisions",
-          "subtitle": "Principles for trustworthy engineering AI",
+          "subtitle": "Principles for scientific AI",
           "landing_message": "",
           "summary": "CALYR.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
           "body": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncertainty \u2014 Predictions expose confidence, sensitivity, and conditions where the model should not decide.\nHuman oversight \u2014 People remain able to understand, challenge, override, and stop the system.\nLifecycle risk management \u2014 Risks are monitored from development through deployment and continued use.",
           "icon": "book",
           "route": "/philosophy",
           "links": [
+            {
+              "id": "closed-loop-biophysics",
+              "label": "Closed-loop biophysical interrogation",
+              "route": "/research/philosophy/closed-loop-biophysics/index.html"
+            },
             {
               "id": "eu-ai-act",
               "label": "EU Artificial Intelligence Act",
