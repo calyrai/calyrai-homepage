@@ -172,6 +172,15 @@
       }
     },
     {
+      "id": "method_catalog",
+      "label": "method catalog",
+      "data": {
+        "title": "method catalog",
+        "summary": "Methods connect scientific principles to traceable implementation contracts.",
+        "icon": "book"
+      }
+    },
+    {
       "id": "pythia_saxs",
       "label": "SAXS System",
       "data": {

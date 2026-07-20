@@ -337,6 +337,25 @@
       "with"
     ]
   },
+  "method_catalog": {
+    "title": "method catalog",
+    "summary": "Methods connect scientific principles to traceable implementation contracts.",
+    "body_preview": "The calyr.a\u00ed method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.",
+    "route": "/research/methods/",
+    "icon": "book",
+    "keywords": [
+      "catalog",
+      "connect",
+      "contracts.",
+      "implementation",
+      "method",
+      "methods",
+      "principles",
+      "scientific",
+      "to",
+      "traceable"
+    ]
+  },
   "pythia_saxs": {
     "title": "SAXS System",
     "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",

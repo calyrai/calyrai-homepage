@@ -359,7 +359,20 @@ pythia:
   icon: compass
   route: /research/platforms/pythia/index.html
   render:
-    grid_span: 12
+    grid_span: 8
+method_catalog:
+  title: method catalog
+  tile_lead: scientific practice
+  tile_accent: cyan
+  tile_title: method catalog
+  tile_summary: reusable numerical, inference, validation, and domain-method contracts
+  subtitle: The growing calyr.aí method system
+  summary: Methods connect scientific principles to traceable implementation contracts.
+  body: The calyr.aí method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.
+  icon: book
+  route: /research/methods/
+  render:
+    grid_span: 4
 pythia_saxs:
   title: SAXS System
   tile_lead: molecular assembly

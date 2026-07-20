@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-CALYR.aí Nexus Compiler
+calyr.aí Nexus Compiler
 
-The main orchestrator for semantic compilation of the CALYR.aí knowledge nexus.
+The main orchestrator for semantic compilation of the calyr.aí knowledge nexus.
 
 Architecture:
     Source Layer (YAML)
@@ -209,7 +209,7 @@ class CompilerApplication:
 
 class NexusCompiler:
     """
-    Semantic compiler for CALYR.aí knowledge nexus.
+    Semantic compiler for calyr.aí knowledge nexus.
     
     Orchestrates the full pipeline:
         Parse YAML → Validate → Resolve → Build Nexus artifacts
@@ -244,7 +244,7 @@ class NexusCompiler:
     def compile(self) -> bool:
         """Execute full compilation pipeline."""
         self._reset_state()
-        print("🏗️  CALYR.aí Nexus Compiler\n")
+        print("🏗️  calyr.aí Nexus Compiler\n")
         for stage in (self._stage_parse, self._stage_validate, self._stage_resolve, self._stage_build):
             if not stage():
                 return self._exit_failure()
@@ -528,7 +528,7 @@ def _sync_books_page_from_yaml(project_root: Path) -> None:
         "id": item_id,
         "type": item_cfg.get("type", "architecture-note"),
         "authors": item_cfg.get("authors", []),
-        "title": item_cfg.get("title", "CALYR.AI Positioning"),
+        "title": item_cfg.get("title", "calyr.aí positioning"),
         "year": item_cfg.get("year"),
         "tags": item_cfg.get("tags", []),
         "objective": item_cfg.get("objective", ""),
@@ -740,7 +740,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
             shutil.copy2(source_html_path, source_copy_path)
 
         title = escape(str(page_item.get("title", book.get("title", platform_id))))
-        eyebrow = escape(str(page_item.get("eyebrow", "CALYR.AI Platform")))
+        eyebrow = escape(str(page_item.get("eyebrow", "calyr.aí platform")))
         subtitle = escape(str(page_item.get("subtitle", book.get("title", platform_id))))
         lead = escape(str(page_item.get("lead", book.get("summary", ""))))
         claim = escape(str(page_item.get("claim", book.get("canonical_claim", book.get("objective", "")))))
@@ -788,13 +788,13 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
         if page_item.get("show_method_reference") and method_reference:
             method_title = escape(str(method_reference.get("title", "Scientific AI and Numerical Methods")))
-            method_summary = escape(str(method_reference.get("summary", "Read the numerical, probabilistic, and validation contract used by CALYR scientific prediction.")))
+            method_summary = escape(str(method_reference.get("summary", "Read the numerical, probabilistic, and validation contract used by calyr.aí scientific prediction.")))
             method_label = escape(str(method_reference.get("label", "Open method reference")))
             method_route = escape(str(method_reference.get("route", "/research/methods/scientific-ai-numerics/")), quote=True)
             section_blocks.append(
                 f"""
     <section class=\"card method-reference\">
-      <div class=\"eyebrow\">CALYR Method Contract</div>
+      <div class=\"eyebrow\">calyr.aí method contract</div>
       <h2>{method_title}</h2>
       <p>{method_summary}</p>
       <p><a class=\"source-link\" href=\"{method_route}\">{method_label} →</a></p>
@@ -980,13 +980,13 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 <head>
   <meta charset=\"UTF-8\" />
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
-  <meta name=\"description\" content=\"CALYR scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM.\" />
-  <title>{title} · CALYR.AI</title>
+  <meta name=\"description\" content=\"calyr.aí scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM.\" />
+  <title>{title} · calyr.aí</title>
   <link rel=\"stylesheet\" href=\"./method.css\" />
 </head>
 <body>
   <header class=\"site-header\">
-    <a class=\"brand\" href=\"/\">CALYR<span>.AI</span></a>
+    <a class=\"brand\" href=\"/\">calyr.aí</a>
     <div class=\"header-context\"><a href=\"/research/methods/\">Method Catalog</a><a href=\"/research/platforms/pythia/\">Pythia</a></div>
   </header>
   <div class=\"page-shell\">
@@ -1028,7 +1028,7 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
         <div class=\"chips\">{chips}</div>
         <a class=\"open-method\" href=\"{item_route}\">Open method contract →</a>
       </article>""")
-    catalog_title = escape(str(catalog.get("title", "CALYR Method Catalog")))
+    catalog_title = escape(str(catalog.get("title", "calyr.aí method catalog")))
     catalog_summary = escape(str(catalog.get("summary", "A growing collection of reusable scientific methods.")))
     catalog_html = f"""<!doctype html>
 <html lang=\"en\">
@@ -1036,11 +1036,11 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
   <meta charset=\"UTF-8\" />
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
   <meta name=\"description\" content=\"{catalog_summary}\" />
-  <title>{catalog_title} · CALYR.AI</title>
+  <title>{catalog_title} · calyr.aí</title>
   <link rel=\"stylesheet\" href=\"./catalog.css\" />
 </head>
 <body>
-  <header><a class=\"brand\" href=\"/\">CALYR<span>.AI</span></a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
+  <header><a class=\"brand\" href=\"/\">calyr.aí</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
   <main>
     <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{len(cards):02d}</strong><span>published method contract</span></div></section>
     <section class=\"catalog-index\"><div class=\"index-heading\"><p>Catalog index</p><span>Designed to grow by method family and domain</span></div>{''.join(cards)}</section>
@@ -1098,7 +1098,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 article { display: block; counter-reset: method-section; }
 .method-hero, .method-section { background: var(--card); border-bottom: 1px solid var(--line); padding: clamp(30px, 5vw, 72px); }
 .method-hero { position: relative; overflow: hidden; min-height: 520px; padding-top: clamp(48px, 8vw, 100px); }
-.method-hero::before { content: "CALYR METHOD CONTRACT · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+.method-hero::before { content: "calyr.aí method contract · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
 .method-hero::after { display: none; }
 .method-section { counter-increment: method-section; position: relative; padding-left: clamp(72px, 9vw, 130px); }
 .method-section::before { content: counter(method-section, decimal-leading-zero); position: absolute; left: 28px; top: clamp(34px, 5vw, 72px); color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .1em; }
@@ -1148,8 +1148,8 @@ def _sync_positioning_page_from_yaml(project_root: Path) -> None:
 
     page = page_cfg.get("page", {}) if isinstance(page_cfg, dict) else {}
     sections = page_cfg.get("sections", []) if isinstance(page_cfg.get("sections"), list) else []
-    title = escape(str(page.get("title", "CALYR.AI Positioning")))
-    eyebrow = escape(str(page.get("eyebrow", "CALYR.AI Positioning")))
+    title = escape(str(page.get("title", "calyr.aí positioning")))
+    eyebrow = escape(str(page.get("eyebrow", "calyr.aí positioning")))
     subtitle = escape(str(page.get("subtitle", "")))
     lead = escape(str(page.get("lead", "")))
     claim = escape(str(page.get("claim", "")))
