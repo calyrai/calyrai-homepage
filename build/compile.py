@@ -962,7 +962,16 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 
     output_dir = project_root / "web" / "public" / route.strip("/")
     output_dir.mkdir(parents=True, exist_ok=True)
-    body = _markdown_document_html(source_path.read_text(encoding="utf-8"))
+    markdown = source_path.read_text(encoding="utf-8")
+    rendered_body = _markdown_document_html(markdown)
+    body_parts = re.split(r"(?=<h2\s)", rendered_body)
+    intro = body_parts[0]
+    sections = "".join(f'<section class="method-section">{part}</section>' for part in body_parts[1:])
+    body = f'<section class="method-hero">{intro}</section>{sections}'
+    toc_items = []
+    for heading in re.findall(r"^##\s+(.+)$", markdown, flags=re.MULTILINE):
+        toc_items.append(f'<li><a href="#{_heading_anchor(heading)}">{_inline_markdown(heading)}</a></li>')
+    toc = "".join(toc_items)
     title = escape(str(reference.get("title", "Scientific AI and Numerical Methods Reference")))
     html = f"""<!doctype html>
 <html lang=\"en\">
@@ -974,8 +983,17 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
   <link rel=\"stylesheet\" href=\"./method.css\" />
 </head>
 <body>
-  <header class=\"site-header\"><a href=\"/\">CALYR.AI</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
-  <main class=\"method-layout\"><article>{body}</article></main>
+  <header class=\"site-header\">
+    <a class=\"brand\" href=\"/\">CALYR<span>.AI</span></a>
+    <div class=\"header-context\"><span>Research</span><a href=\"/research/platforms/pythia/\">Pythia</a></div>
+  </header>
+  <div class=\"page-shell\">
+    <aside class=\"contents\">
+      <p class=\"contents-label\">On this page</p>
+      <nav aria-label=\"Method reference sections\"><ol>{toc}</ol></nav>
+    </aside>
+    <main class=\"method-layout\"><article>{body}</article></main>
+  </div>
 </body>
 </html>
 """
@@ -987,30 +1005,49 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 
 def _method_reference_css() -> str:
     return """
-:root { color-scheme: dark; --ink: #eef6ff; --soft: #b7c4d6; --paper: #05070b; --card: #0b111b; --line: #263244; --accent: #79d6ff; }
+:root { color-scheme: dark; --ink: #f3f7fb; --soft: #acb9c9; --paper: #05070b; --card: #0b111b; --card-raised: #0e1723; --line: #263244; --line-soft: rgba(121,214,255,.13); --accent: #79d6ff; --accent-strong: #27bfff; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: radial-gradient(circle at 85% 5%, #11283a 0, transparent 30rem), var(--paper); color: var(--ink); font: 17px/1.7 Avenir, Inter, system-ui, sans-serif; }
-.site-header { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; padding: 16px max(5vw, calc((100vw - 860px)/2)); background: rgba(5,7,11,.88); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
+body { margin: 0; background: radial-gradient(circle at 78% -5%, #102b40 0, transparent 36rem), linear-gradient(180deg, #070a10 0, var(--paper) 38rem); color: var(--ink); font: 16px/1.68 Avenir, Inter, system-ui, sans-serif; }
+.site-header { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 0 max(4vw, calc((100vw - 1240px)/2)); background: rgba(5,7,11,.9); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); }
 a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .site-header a { font-weight: 700; text-decoration: none; }
-.method-layout { width: min(860px, 91vw); margin: 56px auto 96px; }
-article { background: rgba(11,17,27,.9); border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 5vw, 64px); box-shadow: 0 24px 80px rgba(0,0,0,.4); }
-h1, h2, h3 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 80px; }
-h1 { font-size: clamp(2.2rem, 6vw, 4rem); margin: 0 0 1.5rem; }
-h2 { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-h3 { margin-top: 2.25rem; }
+.brand { color: var(--ink); letter-spacing: .04em; }
+.brand span { color: var(--accent-strong); }
+.header-context { display: flex; align-items: center; gap: 18px; font-size: .88rem; }
+.header-context span { color: #718197; }
+.page-shell { width: min(1240px, 94vw); margin: 0 auto; display: grid; grid-template-columns: 240px minmax(0, 900px); gap: 42px; align-items: start; }
+.contents { position: sticky; top: 94px; max-height: calc(100vh - 120px); overflow-y: auto; padding: 26px 18px 30px 0; }
+.contents-label { margin: 0 0 12px; color: var(--ink); font-size: .75rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.contents ol { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--line); }
+.contents li { margin: 0; }
+.contents a { display: block; padding: 6px 0 6px 16px; color: #8e9db0; font-size: .83rem; line-height: 1.35; text-decoration: none; border-left: 2px solid transparent; transform: translateX(-1px); }
+.contents a:hover, .contents a:focus { color: var(--accent); border-left-color: var(--accent); }
+.method-layout { min-width: 0; margin: 48px 0 100px; }
+article { display: grid; gap: 18px; }
+.method-hero, .method-section { background: rgba(11,17,27,.9); border: 1px solid var(--line); border-radius: 18px; padding: clamp(24px, 4vw, 50px); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.method-hero { position: relative; overflow: hidden; padding-top: clamp(34px, 6vw, 68px); }
+.method-hero::before { content: "CALYR METHOD CONTRACT · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+.method-hero::after { content: ""; position: absolute; width: 240px; height: 240px; right: -90px; top: -110px; border: 1px solid rgba(121,214,255,.22); border-radius: 50%; box-shadow: 0 0 70px rgba(39,191,255,.1); }
+h1, h2, h3 { line-height: 1.18; letter-spacing: -.025em; scroll-margin-top: 88px; }
+h1 { max-width: 14ch; font-size: clamp(2.4rem, 6vw, 4.4rem); margin: 0 0 1.7rem; }
+h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2.15rem); }
+h3 { margin: 2.25rem 0 .6rem; color: #d9eaff; font-size: 1.08rem; letter-spacing: .01em; }
 p, li { color: var(--soft); }
+p { max-width: 76ch; }
 strong { color: var(--ink); }
 code { color: #d6f1ff; background: #111c29; border: 1px solid #24364a; border-radius: 5px; padding: .1em .3em; }
-pre { overflow-x: auto; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #070b11; }
+pre { overflow-x: auto; padding: 22px; border: 1px solid #2d4055; border-radius: 12px; background: #060a10; box-shadow: inset 3px 0 0 var(--accent-strong); }
 pre code { border: 0; padding: 0; background: transparent; }
 .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
 table { width: 100%; border-collapse: collapse; min-width: 620px; }
 th, td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
 th { color: var(--ink); background: #111b28; }
 td { color: var(--soft); }
-@media (max-width: 620px) { body { font-size: 16px; } .method-layout { margin-top: 24px; } article { border-radius: 14px; } }
+.method-section ul, .method-section ol { display: grid; gap: 7px; padding-left: 1.3rem; }
+.method-section li::marker { color: var(--accent-strong); }
+@media (max-width: 980px) { .page-shell { display: block; width: min(900px, 92vw); } .contents { position: static; max-height: none; padding: 28px 0 0; } .contents ol { columns: 2; column-gap: 28px; } .method-layout { margin-top: 26px; } }
+@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context span { display: none; } .contents ol { columns: 1; } .method-hero, .method-section { padding: 24px 20px; border-radius: 14px; } h1 { font-size: 2.35rem; } }
 """.strip() + "\n"
 
 
