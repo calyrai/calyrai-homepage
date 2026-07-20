@@ -432,7 +432,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 8
+            "grid_span": 6
           },
           "behavior": {},
           "explain": {},
@@ -460,7 +460,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 8
+                "grid_span": 6
               }
             }
           }
@@ -484,7 +484,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 4
+            "grid_span": 3
           },
           "behavior": {},
           "explain": {},
@@ -500,7 +500,47 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 4
+                "grid_span": 3
+              }
+            }
+          }
+        },
+        {
+          "type": "element",
+          "id": "interface_catalog",
+          "title": "interface catalog",
+          "tile_lead": "graphical intelligence",
+          "tile_accent": "cyan",
+          "tile_title": "interface catalog",
+          "tile_summary": "reusable graphical interfaces for evidence, models, uncertainty, and decisions",
+          "subtitle": "The growing calyr.a\u00ed graphical interface system",
+          "landing_message": "",
+          "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
+          "body": "The calyr.a\u00ed interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.",
+          "icon": "panels-top-left",
+          "route": "/research/interfaces/",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 3
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "interface_catalog",
+              "structureNodeId": null
+            },
+            "nodeType": "element",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 3
               }
             }
           }

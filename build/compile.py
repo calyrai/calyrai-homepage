@@ -691,6 +691,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
         return
 
     method_reference = _sync_method_reference_page(project_root, config)
+    _sync_interface_catalog_page(project_root, config)
 
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
     book_items = platform_books_cfg.get("items", []) if isinstance(platform_books_cfg, dict) else []
@@ -1114,6 +1115,105 @@ main { width:min(1200px,92vw); margin:0 auto 100px; }
 .open-method { font-weight:700; text-decoration:none; }
 .open-method--planned { max-width:18ch; color:#747c85; font-size:.78rem; font-weight:600; line-height:1.35; text-align:right; }
 @media(max-width:760px){.catalog-hero{display:block;min-height:0;padding:48px 0}.catalog-stats{margin-top:40px}.index-heading{display:block}.catalog-card{display:block;min-height:380px}.catalog-card .open-method{display:block;margin-top:36px}h1{margin-top:18px;font-size:3.6rem}}
+""".strip() + "\n"
+
+
+def _sync_interface_catalog_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
+    """Publish the YAML-defined graphical interface catalog."""
+    catalog = config.get("interface_catalog", {}) if isinstance(config, dict) else {}
+    items = catalog.get("items", []) if isinstance(catalog, dict) else []
+    if not isinstance(catalog, dict) or not isinstance(items, list) or not items:
+        return {}
+
+    route = str(catalog.get("route", "/research/interfaces/")).strip()
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    cards: list[str] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        item_id = escape(str(item.get("id", "")))
+        number = escape(str(item.get("number", "")))
+        title = escape(str(item.get("title", "Untitled interface")))
+        family = escape(str(item.get("family", "Interface")))
+        status = escape(str(item.get("status", "Structure defined")))
+        purpose = escape(str(item.get("purpose", "")))
+        inputs = escape(str(item.get("inputs", "")))
+        interactions = escape(str(item.get("interactions", "")))
+        must_show = escape(str(item.get("must_show", "")))
+        validation = escape(str(item.get("validation", "")))
+        related_route = escape(str(item.get("related_route", "")), quote=True)
+        related_label = escape(str(item.get("related_label", "Open related contract")))
+        related = f'<a class="related" href="{related_route}">{related_label} →</a>' if related_route else ""
+        cards.append(f"""
+      <article class="interface-card" id="{item_id.lower()}">
+        <div class="card-index"><span>{number}</span><span>{family}</span><span>{status}</span></div>
+        <div class="card-main"><p class="contract-id">{item_id}</p><h2>{title}</h2><p class="purpose">{purpose}</p>{related}</div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>{inputs}</dd></div>
+          <div><dt>Core interactions</dt><dd>{interactions}</dd></div>
+          <div><dt>Must show</dt><dd>{must_show}</dd></div>
+          <div><dt>Validation gate</dt><dd>{validation}</dd></div>
+        </dl>
+      </article>""")
+
+    principles = catalog.get("principles", []) if isinstance(catalog.get("principles"), list) else []
+    principles_html = "".join(f"<li>{escape(str(rule))}</li>" for rule in principles)
+    references = catalog.get("references", []) if isinstance(catalog.get("references"), list) else []
+    reference_html = "".join(
+        f'<li><a href="{escape(str(ref.get("url", "")), quote=True)}">{escape(str(ref.get("title", "")))}</a>'
+        f'<span>{escape(str(ref.get("author", "")))} · {escape(str(ref.get("year", "")))}</span>'
+        f'<p>{escape(str(ref.get("use", "")))}</p></li>'
+        for ref in references if isinstance(ref, dict)
+    )
+    title = escape(str(catalog.get("title", "calyr.aí graphical interface catalog")))
+    summary = escape(str(catalog.get("summary", "A growing collection of graphical interface contracts.")))
+    eyebrow = escape(str(catalog.get("eyebrow", "graphical intelligence")))
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{summary}" />
+  <title>{title} · calyr.aí</title>
+  <link rel="stylesheet" href="./interfaces.css" />
+</head>
+<body>
+  <header><a class="brand" href="/">calyr.aí</a><nav><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/lithos/">LITHOS</a></nav></header>
+  <main>
+    <section class="hero"><p class="eyebrow">{eyebrow}</p><h1>{title}</h1><p class="lead">{summary}</p><div class="hero-count"><strong>{len(cards):02d}</strong><span>interface contracts</span></div></section>
+    <section class="principles"><p>Shared rules</p><ol>{principles_html}</ol></section>
+    <section class="catalog"><div class="catalog-heading"><span>Catalog index</span><span>Each entry is a testable interface contract, not a visual style.</span></div>{''.join(cards)}</section>
+    <section class="reading"><div><p class="eyebrow">Foundations</p><h2>Read to design and validate</h2></div><ol>{reference_html}</ol></section>
+  </main>
+</body>
+</html>"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "interfaces.css").write_text(_interface_catalog_css(), encoding="utf-8")
+    print(f"🖥️  Synced interface catalog to {(output_dir / 'index.html').relative_to(project_root)}")
+    return {**catalog, "route": route}
+
+
+def _interface_catalog_css() -> str:
+    return """
+:root { color-scheme:dark; --ink:#f5f5f2; --soft:#a7abb0; --paper:#050505; --card:#090909; --line:#343434; --accent:#39bfff; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 Helvetica Neue,Helvetica,Arial,sans-serif; }
+a { color:var(--accent); text-underline-offset:3px; }
+header { position:sticky; top:0; z-index:3; min-height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 max(4vw,calc((100vw - 1240px)/2)); border-bottom:1px solid var(--line); background:rgba(5,5,5,.96); }
+header a { font-weight:700; text-decoration:none; } .brand { color:var(--ink); letter-spacing:.04em; } nav { display:flex; gap:20px; font-size:.88rem; }
+main { width:min(1240px,94vw); margin:0 auto 100px; border-left:1px solid var(--line); border-right:1px solid var(--line); }
+.hero { display:grid; grid-template-columns:repeat(12,1fr); gap:20px; min-height:610px; padding:76px 28px 54px; border-bottom:1px solid var(--line); }
+.eyebrow,.contract-id { color:var(--accent); font-size:.7rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }.hero>.eyebrow { grid-column:1/4; }
+h1 { grid-column:4/12; max-width:10ch; margin:0; font-size:clamp(3.4rem,8vw,7rem); line-height:.88; letter-spacing:-.065em; }.lead { grid-column:4/10; max-width:62ch; color:var(--soft); font-size:1.08rem; }.hero-count { grid-column:10/13; align-self:end; display:flex; align-items:baseline; gap:10px; color:var(--soft); }.hero-count strong { color:var(--ink); font-size:3rem; font-weight:500; }
+.principles { display:grid; grid-template-columns:3fr 9fr; padding:24px 28px 40px; border-bottom:1px solid var(--line); }.principles>p { margin:0; font-weight:700; }.principles ol { display:grid; grid-template-columns:repeat(2,1fr); gap:0; margin:0; padding:0; list-style:none; counter-reset:rules; }.principles li { counter-increment:rules; padding:14px; border:1px solid var(--line); margin:-1px 0 0 -1px; color:var(--soft); }.principles li::before { content:"0" counter(rules); display:block; margin-bottom:12px; color:var(--accent); font-size:.68rem; }
+.catalog-heading { display:grid; grid-template-columns:3fr 9fr; padding:18px 28px; border-bottom:1px solid var(--line); color:var(--soft); }.catalog-heading span:first-child { color:var(--ink); font-weight:700; }
+.interface-card { display:grid; grid-template-columns:3fr 5fr 4fr; min-height:520px; border-bottom:1px solid var(--line); background:var(--card); }.card-index,.card-main,.contract-grid { padding:28px; }.card-index { display:flex; flex-direction:column; justify-content:space-between; border-right:1px solid var(--line); color:#7f8993; font-size:.76rem; }.card-index span:first-child { color:var(--accent); font-size:2.3rem; }.card-main { border-right:1px solid var(--line); }.card-main h2,.reading h2 { margin:.5rem 0 1.2rem; font-size:clamp(2rem,4vw,4rem); line-height:.95; letter-spacing:-.045em; }.purpose { max-width:48ch; color:var(--soft); font-size:1.02rem; }.related { display:inline-block; margin-top:32px; font-weight:700; text-decoration:none; }
+.contract-grid { display:grid; align-content:start; gap:0; margin:0; }.contract-grid div { padding:16px 0; border-bottom:1px solid var(--line); }.contract-grid dt { margin-bottom:6px; color:var(--accent); font-size:.68rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }.contract-grid dd { margin:0; color:var(--soft); font-size:.88rem; }
+.reading { display:grid; grid-template-columns:5fr 7fr; gap:30px; padding:72px 28px; }.reading ol { margin:0; padding:0; list-style:none; }.reading li { padding:18px 0; border-top:1px solid var(--line); }.reading li>a { display:block; color:var(--ink); font-weight:700; }.reading li>span { color:#718197; font-size:.78rem; }.reading li>p { margin:.4rem 0 0; color:var(--soft); }
+@media(max-width:780px){nav a:first-child{display:none}.hero{display:block;min-height:0;padding:48px 20px}.hero h1{margin:24px 0}.hero-count{margin-top:40px}.principles,.catalog-heading,.interface-card,.reading{display:block}.principles{padding:22px 20px}.principles ol{display:block;margin-top:18px}.interface-card{min-height:0}.card-index{min-height:120px;border-right:0;border-bottom:1px solid var(--line);flex-direction:row}.card-main{border-right:0;border-bottom:1px solid var(--line)}.card-main,.contract-grid{padding:24px 20px}.reading{padding:54px 20px}.reading ol{margin-top:32px}}
 """.strip() + "\n"
 
 

@@ -335,6 +335,125 @@ method_catalog:
       informed_by: Parvotec and calyr.aí background/project-result boundary
       boundary: This contract defines the boundary; it does not transfer project assets.
 
+interface_catalog:
+  route: /research/interfaces/
+  title: calyr.aí graphical interface catalog
+  summary: A growing system of graphical interface contracts for scientific models, evidence, uncertainty, exploration, and decisions.
+  eyebrow: graphical intelligence
+  principles:
+    - question before chart
+    - evidence before decoration
+    - uncertainty stays visible
+    - overview and detail remain connected
+    - every interaction has a reversible state
+    - adaptation must preserve user control
+  items:
+    - id: CALYR-UI-OVERVIEW-001
+      number: "01"
+      title: Overview and Orientation
+      family: Orientation
+      status: Contract seed
+      purpose: Establish what exists, what changed, what requires attention, and where the user can go next.
+      inputs: system state, entities, alerts, provenance, time
+      interactions: filter, focus, drill down, restore overview
+      must_show: scope, freshness, missingness, active filters, provenance
+      validation: A user can explain the current state and reach one relevant detail without losing context.
+    - id: CALYR-UI-COMPARE-001
+      number: "02"
+      title: Comparison and Trade-offs
+      family: Analytical comparison
+      status: Contract seed
+      purpose: Compare candidates, scenarios, models, or observations without hiding incompatible quantities or trade-offs.
+      inputs: aligned entities, traits, units, uncertainty, reference state
+      interactions: align, sort, normalize visibly, brush, pin, compare
+      must_show: units, baseline, uncertainty, missing values, normalization
+      validation: The same conclusion remains explainable when order, scale, and reference point change.
+    - id: CALYR-UI-UNCERTAINTY-001
+      number: "03"
+      title: Uncertainty and Applicability
+      family: Trust and limits
+      status: Contract seed
+      purpose: Show what a model predicts, how uncertain it is, and whether the request lies within supported evidence.
+      inputs: distributions, intervals, calibration, applicability status, model version
+      interactions: inspect interval, change confidence level, compare models, reveal support
+      must_show: point estimate, interval, calibration context, in-domain status, limitations
+      validation: Users distinguish prediction, uncertainty, applicability, and observed evidence without instruction.
+    - id: CALYR-UI-GRAPH-001
+      number: "04"
+      title: Knowledge Graph and Provenance
+      family: Relational exploration
+      status: Contract seed
+      purpose: Navigate entities, claims, evidence, and dependencies while preserving why each relationship exists.
+      inputs: typed nodes, typed edges, source records, confidence, time
+      interactions: expand, collapse, traverse, filter relation, inspect source, return to path
+      must_show: relation type, direction, provenance, confidence, current path
+      validation: A user can reconstruct a claim's evidence path and return to the original context.
+    - id: CALYR-UI-SPATIAL-001
+      number: "05"
+      title: Spatial and Structural Viewer
+      family: Geometry and structure
+      status: Contract seed
+      purpose: Connect measurements, simulation fields, annotations, and model outputs to physical or molecular structure.
+      inputs: geometry, coordinates, fields, layers, annotations, scale
+      interactions: rotate, slice, zoom, select, register, compare layers
+      must_show: orientation, scale, coordinate frame, layer source, resolution
+      validation: View manipulation cannot silently change the scientific meaning of the displayed quantity.
+    - id: CALYR-UI-WORKFLOW-001
+      number: "06"
+      title: Experiment and Workflow
+      family: Process control
+      status: Contract seed
+      purpose: Make the path from design through execution, evidence, validation, and update visible and controllable.
+      inputs: steps, dependencies, artifacts, owners, gates, runtime state
+      interactions: inspect step, compare runs, approve gate, retry, branch, annotate
+      must_show: state, inputs, outputs, owner, version, failure, next gate
+      validation: Every result can be traced to a reproducible run and every intervention is attributable.
+    - id: CALYR-UI-ORACLE-001
+      number: "07"
+      title: Decision and Oracle
+      family: Decision support
+      status: Working contract
+      purpose: Turn evidence, constraints, uncertainty, and trade-offs into traceable proposals without automating away judgment.
+      inputs: traits, constraints, evidence levels, Pareto set, rationale, next action
+      interactions: inspect reason, vary preference, compare frontier, defer, approve, request evidence
+      must_show: hard failures, unknowns, trade-offs, sensitivity, evidence level, abstention
+      validation: A reviewer can reproduce why a proposal is usable, blocked, or requires review.
+      related_route: /research/methods/oracling/
+      related_label: Open Oracling contract
+    - id: CALYR-UI-ADAPTIVE-001
+      number: "08"
+      title: Adaptive Interface and LITHOS
+      family: Adaptive composition
+      status: Architecture seed
+      purpose: Compose the interface around the active question, data, model, risk, and user role while preserving a stable interaction grammar.
+      inputs: task contract, model schema, available evidence, user role, risk state
+      interactions: reveal, recommend view, rearrange, explain adaptation, lock layout, reset
+      must_show: why the interface changed, persistent state, available alternatives, reset path
+      validation: Adaptation reduces task effort without hiding evidence, moving critical controls unexpectedly, or removing user agency.
+      related_route: /research/platforms/lithos/
+      related_label: Open LITHOS
+  references:
+    - title: The Eyes Have It — task by data type taxonomy
+      author: Ben Shneiderman
+      year: 1996
+      url: https://ieeexplore.ieee.org/document/545307
+      use: Overview first, zoom and filter, then details on demand.
+    - title: A Nested Model for Visualization Design and Validation
+      author: Tamara Munzner
+      year: 2009
+      url: https://doi.org/10.1109/TVCG.2009.111
+      use: Validate domain problem, abstraction, encoding and interaction, and algorithm separately.
+    - title: Design Study Methodology
+      author: Sedlmair, Meyer, and Munzner
+      year: 2012
+      url: https://doi.org/10.1109/TVCG.2012.213
+      use: Ground interface work in real tasks, evidence, and reflective validation.
+    - title: D3 — Data-Driven Documents
+      author: Bostock, Ogievetsky, and Heer
+      year: 2011
+      url: https://doi.org/10.1109/TVCG.2011.185
+      use: Bind visible graphical state to data and explicit transformations.
+
 platform_pages:
   route_prefix: /research/platforms
   items:
