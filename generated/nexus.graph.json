@@ -59,7 +59,7 @@
       "label": "Pythia",
       "data": {
         "title": "Pythia",
-        "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
+        "summary": "Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.",
         "icon": ""
       }
     },
@@ -167,7 +167,7 @@
       "label": "pythia",
       "data": {
         "title": "pythia",
-        "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
+        "summary": "Pythia turns complex data, simulations, and measurements into fast, interpretable surrogate predictions with calibrated uncertainty and applicability-domain checks.\n",
         "icon": "compass"
       }
     },

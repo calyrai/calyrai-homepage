@@ -135,7 +135,7 @@ platforms:
   summary: NEXUS, BRIX, and LITHOS are calyr.aí.
 applications:
   title: Pythia
-  subtitle: Interpretable surrogate models for engineering
+  subtitle: Interpretable surrogate prediction for engineering
   intent:
     purpose: pythia-system-overview
     audience: first-visit
@@ -150,7 +150,7 @@ applications:
     - applications
   explain:
     why: Present Pythia as the shared data-to-surrogate-to-prediction system.
-  summary: Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.
+  summary: Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.
 applied:
   title: Applications
   subtitle: Multiple models become one product
@@ -344,15 +344,17 @@ pythia:
   title: pythia
   tile_lead: scientific machine learning
   tile_accent: cyan
-  tile_title: interpretable surrogate models
-  tile_summary: physics-informed, validated, and uncertainty-aware prediction
+  tile_title: interpretable surrogate prediction
+  tile_summary: predicted response, calibrated uncertainty, validity limits, and traceable evidence
   subtitle: The shared scientific AI system
-  summary: 'Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.
+  summary: 'Pythia turns complex data, simulations, and measurements into fast, interpretable surrogate predictions with calibrated uncertainty and applicability-domain checks.
 
     '
   body: 'Pythia is the shared calyr.aí system for scientific machine learning,
-    surrogate modelling, and prediction. It combines data, physics, constraints,
-    validity ranges, and uncertainty, then supplies the predictive core of every application.
+    surrogate modelling, and prediction. Every prediction combines a predicted response,
+    calibrated uncertainty, applicability-domain status, model provenance, and traceable
+    evidence. Pythia marks unsupported requests for review instead of presenting them as
+    ordinary results, then supplies the controlled predictive core of every application.
     '
   icon: compass
   route: /research/platforms/pythia/index.html

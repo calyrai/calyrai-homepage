@@ -84,21 +84,27 @@
   },
   "applications": {
     "title": "Pythia",
-    "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
+    "summary": "Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
-      "builds",
-      "fast",
-      "for",
+      "and",
+      "explicit",
+      "fast,",
       "interpretable",
+      "into",
+      "limits.",
       "models",
-      "physics-informed,",
-      "prediction.",
+      "physics-informed",
+      "predictions",
       "pythia",
       "scientific",
-      "surrogate"
+      "surrogate",
+      "turns",
+      "uncertainty",
+      "validity",
+      "with"
     ]
   },
   "applied": {
@@ -307,23 +313,28 @@
   },
   "pythia": {
     "title": "pythia",
-    "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
-    "body_preview": "Pythia is the shared calyr.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the p",
+    "summary": "Pythia turns complex data, simulations, and measurements into fast, interpretable surrogate predictions with calibrated uncertainty and applicability-domain checks.\n",
+    "body_preview": "Pythia is the shared calyr.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. Every prediction combines a predicted response, calibrated uncertainty, applicability-domain ",
     "route": "/research/platforms/pythia/index.html",
     "icon": "compass",
     "keywords": [
       "and",
+      "applicability-domain",
+      "calibrated",
+      "checks.",
       "complex",
       "data,",
-      "interpretable,",
+      "fast,",
+      "interpretable",
       "into",
       "measurements",
-      "prediction.",
+      "predictions",
       "pythia",
       "simulations,",
       "surrogate",
       "turns",
-      "validated"
+      "uncertainty",
+      "with"
     ]
   },
   "pythia_saxs": {
