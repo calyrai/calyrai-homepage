@@ -262,6 +262,14 @@ method_catalog:
   label: Open the method catalog
   design_contract: docs/reactflow-swiss-design-contract.md
   design_rules: [strict grid, typographic hierarchy, restrained palette, clarity before ornament]
+  resources:
+    - id: CALYR-ROOM-ORACLE-001
+      source: docs/oracling-reading-room.md
+      route: /research/methods/oracling/reading-room/
+      title: Oracling Reading Room
+      summary: A curated reading path from calibrated prediction to constrained, multi-objective decisions and the next informative action.
+      status: Living reading room
+      eyebrow: calyr.aí reading room · 001
   items:
     - id: CALYR-METHOD-NR-AI-001
       source: docs/scientific-ai-numerics-reference.md

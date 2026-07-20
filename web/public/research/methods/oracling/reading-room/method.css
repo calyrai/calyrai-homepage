@@ -20,7 +20,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 article { display: block; counter-reset: method-section; }
 .method-hero, .method-section { background: var(--card); border-bottom: 1px solid var(--line); padding: clamp(30px, 5vw, 72px); }
 .method-hero { position: relative; overflow: hidden; min-height: 520px; padding-top: clamp(48px, 8vw, 100px); }
-.method-hero::before { content: "calyr.aí method contract · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+.method-hero::before { content: "calyr.aí reading room · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
 .method-hero::after { display: none; }
 .method-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:42px 0 0; border-top:1px solid var(--line); border-left:1px solid var(--line); }
 .method-meta div { min-width:0; padding:14px 16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }

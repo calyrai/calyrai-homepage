@@ -166,6 +166,7 @@ The Oracle must return `review_required` or `blocked` when:
 
 ## Sources and further reading
 
+- [Enter the Oracling Reading Room](/research/methods/oracling/reading-room/) — a curated route through the papers behind calibration, constraints, Pareto decisions, active learning, and abstention.
 - [Scientific AI and Numerical Methods](/research/methods/scientific-ai-numerics/)
 - Pareto, Vilfredo. *Manual of Political Economy*.
 - Deb, Kalyanmoy. *Multi-Objective Optimization Using Evolutionary Algorithms*. Wiley, 2001.
