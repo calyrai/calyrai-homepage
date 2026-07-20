@@ -1020,18 +1020,32 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
     catalog_dir = project_root / "web" / "public" / catalog_route.strip("/")
     catalog_dir.mkdir(parents=True, exist_ok=True)
     cards: list[str] = []
+    published_count = 0
     for item in references:
         if not isinstance(item, dict):
             continue
         item_title = escape(str(item.get("title", "Untitled method")))
         item_id = escape(str(item.get("id", "")))
         item_summary = escape(str(item.get("summary", "")))
-        item_route = escape(str(item.get("route", "#")), quote=True)
+        raw_route = str(item.get("route", "")).strip()
+        item_route = escape(raw_route, quote=True)
         family = escape(str(item.get("family", "Method")))
         status = escape(str(item.get("status", "Draft")))
         tags = item.get("tags", []) if isinstance(item.get("tags"), list) else []
         domains = item.get("domains", []) if isinstance(item.get("domains"), list) else []
         chips = "".join(f"<span>{escape(str(tag))}</span>" for tag in [*domains, *tags])
+        informed_by = escape(str(item.get("informed_by", "")))
+        boundary = escape(str(item.get("boundary", "")))
+        lineage_html = ""
+        if informed_by or boundary:
+            origin_html = f"<p><strong>Informed by</strong>{informed_by}</p>" if informed_by else ""
+            boundary_html = f"<p><strong>Boundary</strong>{boundary}</p>" if boundary else ""
+            lineage_html = f'<div class="method-lineage">{origin_html}{boundary_html}</div>'
+        if raw_route:
+            published_count += 1
+            action_html = f'<a class="open-method" href="{item_route}">Open method contract →</a>'
+        else:
+            action_html = '<span class="open-method open-method--planned">Contract structure in development</span>'
         cards.append(f"""
       <article class=\"catalog-card\">
         <div class=\"card-meta\"><span>{family}</span><span>{status}</span></div>
@@ -1039,7 +1053,8 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
         <h2>{item_title}</h2>
         <p>{item_summary}</p>
         <div class=\"chips\">{chips}</div>
-        <a class=\"open-method\" href=\"{item_route}\">Open method contract →</a>
+{lineage_html}
+        {action_html}
       </article>""")
     catalog_title = escape(str(catalog.get("title", "calyr.aí method catalog")))
     catalog_summary = escape(str(catalog.get("summary", "A growing collection of reusable scientific methods.")))
@@ -1055,7 +1070,7 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 <body>
   <header><a class=\"brand\" href=\"/\">calyr.aí</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
   <main>
-    <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{len(cards):02d}</strong><span>published method contract</span></div></section>
+    <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{published_count:02d}</strong><span>published</span><strong>{len(cards) - published_count:02d}</strong><span>structures defined</span></div></section>
     <section class=\"catalog-index\"><div class=\"index-heading\"><p>Catalog index</p><span>Designed to grow by method family and domain</span></div>{''.join(cards)}</section>
   </main>
 </body>
@@ -1080,9 +1095,11 @@ main { width:min(1200px,92vw); margin:0 auto 100px; }
 .catalog-index { display:grid; grid-template-columns:repeat(12,1fr); gap:0; border-left:1px solid var(--line); } .index-heading { grid-column:1/-1; display:grid; grid-template-columns:3fr 9fr; padding:18px 20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--soft); } .index-heading p { margin:0; color:var(--ink); font-weight:700; }
 .catalog-card { grid-column:1/-1; display:grid; grid-template-columns:3fr 6fr 3fr; min-height:330px; padding:28px 20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--card); }
 .card-meta { display:flex; justify-content:space-between; color:#718197; font-size:.78rem; } .catalog-card h2 { margin:.4rem 0 1rem; font-size:clamp(1.6rem,3vw,2.25rem); line-height:1.12; } .catalog-card>p:not(.method-id) { color:var(--soft); }
-.catalog-card .method-id { grid-column:1; grid-row:2/5; margin-top:.65rem; }.catalog-card h2,.catalog-card>p:not(.method-id),.catalog-card .chips { grid-column:2; }.catalog-card .card-meta { grid-column:1/-1; border-bottom:1px solid var(--line); padding-bottom:14px; }.catalog-card h2 { font-size:clamp(2rem,4vw,3.6rem); letter-spacing:-.04em; }.catalog-card .open-method { grid-column:3; grid-row:2/5; align-self:end; justify-self:end; }
+.catalog-card .method-id { grid-column:1; grid-row:2/6; margin-top:.65rem; }.catalog-card h2,.catalog-card>p:not(.method-id),.catalog-card .chips,.catalog-card .method-lineage { grid-column:2; }.catalog-card .card-meta { grid-column:1/-1; border-bottom:1px solid var(--line); padding-bottom:14px; }.catalog-card h2 { font-size:clamp(2rem,4vw,3.6rem); letter-spacing:-.04em; }.catalog-card .open-method { grid-column:3; grid-row:2/6; align-self:end; justify-self:end; }
 .chips { display:flex; flex-wrap:wrap; gap:0; margin:20px 0 28px; } .chips span { padding:5px 9px; border:1px solid var(--line); color:#9eb0c4; font-size:.72rem; margin:-1px 0 0 -1px; }
+.method-lineage { display:grid; gap:8px; margin:0 0 24px; padding-top:16px; border-top:1px solid var(--line); }.method-lineage p { margin:0; color:#7f8993; font-size:.75rem; }.method-lineage strong { display:block; margin-bottom:2px; color:var(--soft); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; }
 .open-method { font-weight:700; text-decoration:none; }
+.open-method--planned { max-width:18ch; color:#747c85; font-size:.78rem; font-weight:600; line-height:1.35; text-align:right; }
 @media(max-width:760px){.catalog-hero{display:block;min-height:0;padding:48px 0}.catalog-stats{margin-top:40px}.index-heading{display:block}.catalog-card{display:block;min-height:380px}.catalog-card .open-method{display:block;margin-top:36px}h1{margin-top:18px;font-size:3.6rem}}
 """.strip() + "\n"
 
