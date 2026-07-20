@@ -260,6 +260,8 @@ method_catalog:
   title: CALYR Method Catalog
   summary: A growing collection of reusable scientific-AI, numerical, inference, validation, and domain-method contracts.
   label: Open the method catalog
+  design_contract: docs/reactflow-swiss-design-contract.md
+  design_rules: [strict grid, typographic hierarchy, restrained palette, clarity before ornament]
   items:
     - id: CALYR-METHOD-NR-AI-001
       source: docs/scientific-ai-numerics-reference.md
