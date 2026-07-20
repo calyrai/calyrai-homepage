@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="calyr.aí scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM." />
+  <title>Scientific AI and Numerical Methods · calyr.aí</title>
+  <link rel="stylesheet" href="./method.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">calyr.aí</a>
+    <div class="header-context"><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/pythia/">Pythia</a></div>
+  </header>
+  <div class="page-shell">
+    <aside class="contents">
+      <p class="contents-label">On this page</p>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#source-references">Source references</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li></ol></nav>
+    </aside>
+    <main class="method-layout"><article><section class="method-hero"><h1 id="scientific-ai-and-numerical-methods-reference">Scientific AI and Numerical Methods Reference</h1>
+<dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-NR-AI-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Pythia surrogate prediction, SAXS, SPR, cryo-EM, and related scientific-AI implementations</dd></div></dl>
+</section><section class="method-section"><h2 id="purpose">Purpose</h2>
+<p>This document is the canonical repository reference for combining:</p>
+<ul>
+<li>numerical methods from <em>Numerical Recipes</em>;</li>
+<li>neural representation and architecture from Bishop and Bishop;</li>
+<li>probabilistic inference and decision theory from Murphy;</li>
+<li>domain-specific forward models and experimental evidence.</li>
+</ul>
+<p>The governing pattern is:</p>
+<p><code>numerics + neural representation + probabilistic inference = trustworthy scientific prediction</code></p>
+<p>Code should reference this document when an implementation choice depends on these methodological principles.</p>
+</section><section class="method-section"><h2 id="how-code-should-reference-this-contract">How code should reference this contract</h2>
+<p>Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:</p>
+<pre><code>Method: CALYR-METHOD-NR-AI-001
+See: docs/scientific-ai-numerics-reference.md#prediction-contract</code></pre>
+<p>Use a more specific anchor where possible:</p>
+<ul>
+<li><code>#numerical-baseline-before-learned-model</code></li>
+<li><code>#prediction-contract</code></li>
+<li><code>#applicability-domain</code></li>
+<li><code>#saxs-method-map</code></li>
+<li><code>#spr-method-map</code></li>
+<li><code>#cryo-em-method-map</code></li>
+<li><code>#numerical-recipes-code-policy</code></li>
+<li><code>#validation-contract</code></li>
+</ul>
+<p>Do not paste long explanations into source files. Keep the reasoning here and make code comments point to the stable section.</p>
+</section><section class="method-section"><h2 id="source-references">Source references</h2>
+<h3 id="numerical-methods">Numerical methods</h3>
+<ul>
+<li><a href="https://numerical.recipes/" rel="noreferrer">Numerical Recipes official website</a></li>
+<li><a href="https://numerical.recipes/book.html" rel="noreferrer">Third Edition online book</a></li>
+<li><a href="https://numerical.recipes/routines/" rel="noreferrer">Third Edition routine index</a></li>
+<li><a href="https://numerical.recipes/routines/instc.html" rel="noreferrer">Official legacy C routines</a></li>
+<li><a href="https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf" rel="noreferrer">Cambridge front matter and license information</a></li>
+</ul>
+<p>Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. <em>Numerical Recipes: The Art of Scientific Computing</em>. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</p>
+<h3 id="neural-representation">Neural representation</h3>
+<ul>
+<li><a href="https://www.bishopbook.com/" rel="noreferrer">Bishop and Bishop official book website</a></li>
+<li><a href="https://link.springer.com/book/10.1007/978-3-031-45468-4" rel="noreferrer">Springer table of contents</a></li>
+</ul>
+<p>Bishop, Christopher M.; Bishop, Hugh. <em>Deep Learning: Foundations and Concepts</em>. Springer, 2024. DOI <a href="https://doi.org/10.1007/978-3-031-45468-4" rel="noreferrer">10.1007/978-3-031-45468-4</a>.</p>
+<h3 id="probabilistic-inference">Probabilistic inference</h3>
+<ul>
+<li><a href="https://probml.github.io/book2" rel="noreferrer">Murphy official open-access book page</a></li>
+<li><a href="https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/" rel="noreferrer">MIT Press book page</a></li>
+</ul>
+<p>Murphy, Kevin P. <em>Probabilistic Machine Learning: Advanced Topics</em>. MIT Press, 2023. ISBN 978-0-262-04843-9.</p>
+</section><section class="method-section"><h2 id="division-of-responsibility">Division of responsibility</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Primary reference</th><th>Responsibility</th></tr></thead><tbody><tr><td>Numerical operators</td><td>Numerical Recipes and maintained libraries</td><td>stable transforms, solvers, optimization, integration, inverse methods</td></tr><tr><td>Neural representation</td><td>Bishop and Bishop</td><td>CNNs, transformers, GNNs, autoencoders, latent representations</td></tr><tr><td>Probabilistic inference</td><td>Murphy</td><td>posterior inference, uncertainty, generative models, distribution shift, decisions</td></tr><tr><td>Scientific meaning</td><td>domain model and experimental protocol</td><td>physical constraints, observables, admissible conclusions, next experiment</td></tr></tbody></table></div>
+<p>No one layer may silently replace another. A neural network does not replace the physical definition of an observable. A numerical fit does not by itself establish identifiability. A posterior does not become a decision without an explicit loss, constraint, or utility rule.</p>
+</section><section class="method-section"><h2 id="numerical-baseline-before-learned-model">Numerical baseline before learned model</h2>
+<p>Every learned scientific model should be compared with the simplest defensible numerical baseline.</p>
+<p>The baseline should define:</p>
+<ol>
+<li>inputs, outputs, units, and admissible ranges;</li>
+<li>forward model or observation operator;</li>
+<li>objective or likelihood;</li>
+<li>optimization or inference method;</li>
+<li>numerical tolerances;</li>
+<li>uncertainty estimate;</li>
+<li>known non-identifiability;</li>
+<li>failure behavior outside the calibrated domain.</li>
+</ol>
+<p>Typical reference operations include SVD, nonlinear least squares, FFT, convolution, correlation, ODE integration, regularization, Gaussian-process regression, and MCMC.</p>
+</section><section class="method-section"><h2 id="prediction-contract">Prediction contract</h2>
+<p>Scientific prediction is a structured result, not a bare value. Every public prediction interface should expose, directly or through linked metadata:</p>
+<pre><code>prediction:
+  target: string
+  value: scalar | array | field | distribution
+  unit: string
+  interval:
+    lower: number
+    upper: number
+    level: number
+applicability:
+  status: in_domain | boundary | out_of_domain
+  score: number
+  reasons: [string]
+model:
+  id: string
+  version: string
+  data_snapshot: string
+evidence:
+  references: [string]
+  assumptions: [string]
+  limitations: [string]
+decision:
+  status: usable | review_required | blocked
+  next_action: string</code></pre>
+<p>The exact serialization may vary, but the semantics must remain available and testable.</p>
+</section><section class="method-section"><h2 id="applicability-domain">Applicability domain</h2>
+<p>A model must distinguish interpolation within validated conditions from unsupported extrapolation.</p>
+<p>Applicability checks should consider:</p>
+<ul>
+<li>distance from training and validation observations;</li>
+<li>physical parameter limits;</li>
+<li>experimental protocol and instrument conditions;</li>
+<li>structural or mechanistic class;</li>
+<li>preprocessing compatibility;</li>
+<li>uncertainty and ensemble disagreement;</li>
+<li>missing inputs and violated constraints.</li>
+</ul>
+<p>Out-of-domain results must not be rendered as ordinary predictions. They should be marked <code>review_required</code> or <code>blocked</code> and should propose a simulation, measurement, or expert review.</p>
+</section><section class="method-section"><h2 id="saxs-method-map">SAXS method map</h2>
+<h3 id="numerical-layer">Numerical layer</h3>
+<ul>
+<li>quadrature and multidimensional integration;</li>
+<li>Bessel functions and spherical harmonics;</li>
+<li>Fourier transforms;</li>
+<li>convolution for resolution smearing;</li>
+<li>SVD and regularization for inverse problems;</li>
+<li>nonlinear fitting and MCMC.</li>
+</ul>
+<h3 id="neural-layer">Neural layer</h3>
+<ul>
+<li>curve encoders or transformers for <code>I(q)</code>;</li>
+<li>continuous latent variables for structural ensembles;</li>
+<li>graph or geometric representations for molecular structure;</li>
+<li>forward surrogates for <code>structure -&gt; I(q)</code>.</li>
+</ul>
+<h3 id="probabilistic-layer">Probabilistic layer</h3>
+<ul>
+<li>posterior inference over competing structures or ensembles;</li>
+<li>calibrated predictive distributions;</li>
+<li>model comparison and posterior predictive checks;</li>
+<li>active selection of q-range, contrast, concentration, or next simulation.</li>
+</ul>
+<p>The implementation must not claim unique structural recovery where the SAXS evidence is non-identifying.</p>
+</section><section class="method-section"><h2 id="spr-method-map">SPR method map</h2>
+<h3 id="numerical-layer">Numerical layer</h3>
+<ul>
+<li>nonlinear least squares;</li>
+<li>robust estimation;</li>
+<li>ODE integration for kinetic and transport models;</li>
+<li>conservative filtering with distortion tests;</li>
+<li>sensitivity and identifiability analysis.</li>
+</ul>
+<h3 id="neural-layer">Neural layer</h3>
+<ul>
+<li>sensorgram sequence encoders or transformers;</li>
+<li>structured prediction of <code>ka</code>, <code>kd</code>, <code>KD</code>, <code>Rmax</code>, and full response curves;</li>
+<li>neural surrogates for repeated kinetic simulation.</li>
+</ul>
+<h3 id="probabilistic-layer">Probabilistic layer</h3>
+<ul>
+<li>posterior inference over parameters and model class;</li>
+<li>latent-state or state-space models;</li>
+<li>sequential updating across cycles and concentrations;</li>
+<li>next-assay selection by expected information or decision value.</li>
+</ul>
+<p>The implementation must keep kinetic, mass-transport, rebinding, heterogeneity, drift, and nuisance explanations distinguishable.</p>
+</section><section class="method-section"><h2 id="cryo-em-method-map">Cryo-EM method map</h2>
+<h3 id="numerical-layer">Numerical layer</h3>
+<ul>
+<li>multidimensional FFT;</li>
+<li>convolution and correlation;</li>
+<li>orientation and rotation geometry;</li>
+<li>SVD/eigensystems for low-rank structure;</li>
+<li>regularized inverse reconstruction.</li>
+</ul>
+<h3 id="neural-layer">Neural layer</h3>
+<ul>
+<li>CNNs and transformers for particles and maps;</li>
+<li>autoencoders for continuous heterogeneity;</li>
+<li>GNNs for molecular structure;</li>
+<li>conditional generative models for reconstruction or refinement.</li>
+</ul>
+<h3 id="probabilistic-layer">Probabilistic layer</h3>
+<ul>
+<li>latent orientation and conformation inference;</li>
+<li>posterior predictive image or map checks;</li>
+<li>uncertainty over structure, resolution, and heterogeneity;</li>
+<li>distribution-shift detection across acquisition and preprocessing conditions.</li>
+</ul>
+<p>The implementation must separate resolution, noise, heterogeneity, orientation uncertainty, preprocessing effects, and model bias.</p>
+</section><section class="method-section"><h2 id="numerical-recipes-code-policy">Numerical Recipes code policy</h2>
+<p>The current Third Edition code has separate licensing conditions. Do not copy it into a CALYR repository without an explicit license review.</p>
+<p>The official legacy routines are useful as algorithmic references but are obsolete and may use deprecated conventions. Do not treat them as production-ready dependencies.</p>
+<p>Preferred production targets include maintained implementations in:</p>
+<ul>
+<li>NumPy and SciPy;</li>
+<li>scikit-learn;</li>
+<li>PyTorch;</li>
+<li>JAX;</li>
+<li>PyMC, NumPyro, BlackJAX, or Stan;</li>
+<li>domain-specific validated libraries.</li>
+</ul>
+<p>Useful routine mappings from the <a href="https://numerical.recipes/routines/" rel="noreferrer">official routine index</a> include:</p>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>Numerical Recipes reference</th><th>Maintained target</th></tr></thead><tbody><tr><td>SVD</td><td><code>svd.h</code></td><td><code>numpy.linalg.svd</code>, <code>scipy.linalg.svd</code></td></tr><tr><td>Stable linear fit</td><td><code>fitsvd.h</code></td><td><code>numpy.linalg.lstsq</code></td></tr><tr><td>Nonlinear fit</td><td><code>fitmrq.h</code></td><td><code>scipy.optimize.least_squares</code></td></tr><tr><td>MCMC</td><td><code>mcmc.h</code></td><td>NumPyro, PyMC, BlackJAX, Stan</td></tr><tr><td>FFT</td><td><code>fourier.h</code>, <code>fourier_ndim.h</code></td><td><code>numpy.fft</code>, <code>scipy.fft</code>, <code>torch.fft</code></td></tr><tr><td>Convolution</td><td><code>convlv.h</code></td><td><code>scipy.signal</code>, PyTorch/JAX operators</td></tr><tr><td>Correlation</td><td><code>correl.h</code></td><td><code>scipy.signal.correlate</code></td></tr><tr><td>Robust fit</td><td><code>fitmed.h</code></td><td>SciPy/scikit-learn robust methods</td></tr><tr><td>Gaussian mixtures</td><td><code>gaumixmod.h</code></td><td><code>sklearn.mixture.GaussianMixture</code></td></tr><tr><td>k-means</td><td><code>kmeans.h</code></td><td><code>sklearn.cluster.KMeans</code></td></tr><tr><td>Hidden Markov model</td><td><code>hmm.h</code></td><td>Dynamax, Pyro, hmmlearn</td></tr></tbody></table></div>
+<p>When an implementation is inspired by a Numerical Recipes algorithm, record the edition, section, routine name, source URL, license status, maintained replacement, and verification tests.</p>
+</section><section class="method-section"><h2 id="validation-contract">Validation contract</h2>
+<p>Every surrogate or probabilistic prediction model should be evaluated on:</p>
+<ul>
+<li>held-out and prospective prediction;</li>
+<li>comparison with a transparent baseline;</li>
+<li>calibration and interval coverage;</li>
+<li>applicability-domain detection;</li>
+<li>sensitivity to preprocessing and nuisance variables;</li>
+<li>physical constraint violations;</li>
+<li>reproducibility across data splits and random seeds;</li>
+<li>posterior predictive checks;</li>
+<li>failure modes under distribution shift;</li>
+<li>value of the proposed next experiment or simulation.</li>
+</ul>
+<p>Training fit alone is not validation.</p>
+</section><section class="method-section"><h2 id="recommended-repository-pattern">Recommended repository pattern</h2>
+<pre><code>docs/
+  scientific-ai-numerics-reference.md
+references/
+  numerical-recipes/
+    README.md               # citation, routine mapping, license notes
+tests/
+  reference_cases/          # independently authored numerical cases
+src/
+  numerics/                 # maintained numerical implementations
+  surrogates/               # neural representations
+  inference/                # probabilistic inference
+  validation/               # calibration and applicability gates</code></pre>
+<p>This contract is implementation-language independent and may be referenced from Python, C++, JavaScript, YAML, notebooks, tests, and design documents.</p></section></article></main>
+  </div>
+</body>
+</html>

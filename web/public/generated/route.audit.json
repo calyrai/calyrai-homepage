@@ -4,6 +4,7 @@
     "/ecosystem",
     "/legal",
     "/philosophy",
+    "/research/methods/",
     "/research/philosophy/closed-loop-biophysics/index.html",
     "/research/platforms/aflowtex/index.html",
     "/research/platforms/brix/index.html",
@@ -26,5 +27,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-19T13:13:42.112768+00:00"
+  "generated_at": "2026-07-20T18:36:47.571834+00:00"
 }

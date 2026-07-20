@@ -351,9 +351,9 @@
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Interpretable surrogate models for engineering",
+      "subtitle": "Interpretable surrogate prediction for engineering",
       "landing_message": "",
-      "summary": "Pythia builds physics-informed, interpretable surrogate models for fast scientific prediction.",
+      "summary": "Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.",
       "body": "",
       "icon": "",
       "route": "",
@@ -419,12 +419,12 @@
           "title": "pythia",
           "tile_lead": "scientific machine learning",
           "tile_accent": "cyan",
-          "tile_title": "interpretable surrogate models",
-          "tile_summary": "physics-informed, validated, and uncertainty-aware prediction",
+          "tile_title": "interpretable surrogate prediction",
+          "tile_summary": "predicted response, calibrated uncertainty, validity limits, and traceable evidence",
           "subtitle": "The shared scientific AI system",
           "landing_message": "",
-          "summary": "Pythia turns complex data, simulations, and measurements into interpretable, validated surrogate prediction.\n",
-          "body": "Pythia is the shared calyr.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. It combines data, physics, constraints, validity ranges, and uncertainty, then supplies the predictive core of every application. ",
+          "summary": "Pythia turns complex data, simulations, and measurements into fast, interpretable surrogate predictions with calibrated uncertainty and applicability-domain checks.\n",
+          "body": "Pythia is the shared calyr.a\u00ed system for scientific machine learning, surrogate modelling, and prediction. Every prediction combines a predicted response, calibrated uncertainty, applicability-domain status, model provenance, and traceable evidence. Pythia marks unsupported requests for review instead of presenting them as ordinary results, then supplies the controlled predictive core of every application. ",
           "icon": "compass",
           "route": "/research/platforms/pythia/index.html",
           "links": [],
@@ -432,7 +432,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 12
+            "grid_span": 8
           },
           "behavior": {},
           "explain": {},
@@ -460,7 +460,47 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 12
+                "grid_span": 8
+              }
+            }
+          }
+        },
+        {
+          "type": "element",
+          "id": "method_catalog",
+          "title": "method catalog",
+          "tile_lead": "scientific practice",
+          "tile_accent": "cyan",
+          "tile_title": "method catalog",
+          "tile_summary": "reusable numerical, inference, validation, and domain-method contracts",
+          "subtitle": "The growing calyr.a\u00ed method system",
+          "landing_message": "",
+          "summary": "Methods connect scientific principles to traceable implementation contracts.",
+          "body": "The calyr.a\u00ed method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.",
+          "icon": "book",
+          "route": "/research/methods/",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 4
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "method_catalog",
+              "structureNodeId": null
+            },
+            "nodeType": "element",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
               }
             }
           }

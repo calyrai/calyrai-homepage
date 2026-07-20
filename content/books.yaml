@@ -35,7 +35,7 @@ architecture_books:
   item:
     id: calyr-positioning
     type: architecture-note
-    title: calyr.ai positioning
+    title: calyr.aí positioning
     year: 2026
     authors:
       - Tscheliessnig, Rupert
@@ -44,7 +44,7 @@ architecture_books:
       - positioning
       - compiler
       - ssot
-    objective: Establish a clear, compiler-driven positioning narrative for calyr.ai as a knowledge-first publishing architecture.
+    objective: Establish a clear, compiler-driven positioning narrative for calyr.aí as a knowledge-first publishing architecture.
     summary: Structured positioning note connected to the brain tile and generated in homepage workflow.
     cta:
       type: positioning
@@ -60,7 +60,7 @@ platform_books:
     - id: platform-core
       platform_id: core
       type: platform-book
-      title: calyr.ai core foundations
+      title: calyr.aí core foundations
       year: 2026
       authors:
         - Tscheliessnig, Rupert
@@ -230,7 +230,7 @@ platform_books:
       sections:
         - id: scientific-design-engine
           title: Scientific Design Engine
-          body: calyr.ai is not a generic AI chat. Pythia Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
+          body: calyr.aí is not a generic AI chat. Pythia Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
           bullets:
             - Knowledge graph exploration with semantic context
             - Surrogate model guidance for faster option-space navigation
@@ -254,6 +254,24 @@ platform_books:
         - id: value
           title: Value
           body: Pythia closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
+
+method_catalog:
+  route: /research/methods/
+  title: calyr.aí method catalog
+  summary: A growing collection of reusable scientific-AI, numerical, inference, validation, and domain-method contracts.
+  label: Open the method catalog
+  design_contract: docs/reactflow-swiss-design-contract.md
+  design_rules: [strict grid, typographic hierarchy, restrained palette, clarity before ornament]
+  items:
+    - id: CALYR-METHOD-NR-AI-001
+      source: docs/scientific-ai-numerics-reference.md
+      route: /research/methods/scientific-ai-numerics/
+      title: Scientific AI and Numerical Methods
+      summary: Trustworthy surrogate prediction through numerical baselines, uncertainty, applicability limits, and validation.
+      status: Working contract
+      family: Scientific AI
+      domains: [SAXS, SPR, cryo-EM]
+      tags: [numerics, surrogate prediction, probabilistic inference, validation]
 
 platform_pages:
   route_prefix: /research/platforms
@@ -293,6 +311,7 @@ platform_pages:
       eyebrow: calyr.ai platform
       subtitle: Pythia
       lead: Compass interface layer entered via the Pythia platform tile for guided graph exploration and insight generation.
+      show_method_reference: true
       footer_note: Pythia page generated from platform-pythia book entry in content/books.yaml.
 
 atlas_books:
@@ -303,7 +322,7 @@ atlas_books:
   items:
     - id: atlas-reasoning-workspace
       type: atlas-book
-      title: calyr.ai atlas copilot - reasoning workspace
+      title: calyr.aí atlas copilot - reasoning workspace
       year: 2026
       authors:
         - Tscheliessnig, Rupert
@@ -335,7 +354,7 @@ atlas_books:
 
     - id: atlas-agent-layer
       type: atlas-book
-      title: calyr.ai scientific agent layer
+      title: calyr.aí scientific agent layer
       year: 2026
       authors:
         - Tscheliessnig, Rupert
@@ -350,7 +369,7 @@ atlas_books:
 
     - id: atlas-pipelines-and-models
       type: atlas-book
-      title: calyr.ai pipelines and model stack
+      title: calyr.aí pipelines and model stack
       year: 2026
       authors:
         - Tscheliessnig, Rupert

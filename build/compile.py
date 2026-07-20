@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-CALYR.aí Nexus Compiler
+calyr.aí Nexus Compiler
 
-The main orchestrator for semantic compilation of the CALYR.aí knowledge nexus.
+The main orchestrator for semantic compilation of the calyr.aí knowledge nexus.
 
 Architecture:
     Source Layer (YAML)
@@ -34,6 +34,7 @@ Nexus Artifacts (generated/):
 """
 
 import json
+import re
 import shutil
 import sys
 from abc import ABC, abstractmethod
@@ -208,7 +209,7 @@ class CompilerApplication:
 
 class NexusCompiler:
     """
-    Semantic compiler for CALYR.aí knowledge nexus.
+    Semantic compiler for calyr.aí knowledge nexus.
     
     Orchestrates the full pipeline:
         Parse YAML → Validate → Resolve → Build Nexus artifacts
@@ -243,7 +244,7 @@ class NexusCompiler:
     def compile(self) -> bool:
         """Execute full compilation pipeline."""
         self._reset_state()
-        print("🏗️  CALYR.aí Nexus Compiler\n")
+        print("🏗️  calyr.aí Nexus Compiler\n")
         for stage in (self._stage_parse, self._stage_validate, self._stage_resolve, self._stage_build):
             if not stage():
                 return self._exit_failure()
@@ -527,7 +528,7 @@ def _sync_books_page_from_yaml(project_root: Path) -> None:
         "id": item_id,
         "type": item_cfg.get("type", "architecture-note"),
         "authors": item_cfg.get("authors", []),
-        "title": item_cfg.get("title", "CALYR.AI Positioning"),
+        "title": item_cfg.get("title", "calyr.aí positioning"),
         "year": item_cfg.get("year"),
         "tags": item_cfg.get("tags", []),
         "objective": item_cfg.get("objective", ""),
@@ -689,6 +690,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     if not isinstance(page_items, list) or not page_items:
         return
 
+    method_reference = _sync_method_reference_page(project_root, config)
+
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
     book_items = platform_books_cfg.get("items", []) if isinstance(platform_books_cfg, dict) else []
     rainbow_palette = config.get("rainbow_palette", {}) if isinstance(config, dict) else {}
@@ -737,7 +740,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
             shutil.copy2(source_html_path, source_copy_path)
 
         title = escape(str(page_item.get("title", book.get("title", platform_id))))
-        eyebrow = escape(str(page_item.get("eyebrow", "CALYR.AI Platform")))
+        eyebrow = escape(str(page_item.get("eyebrow", "calyr.aí platform")))
         subtitle = escape(str(page_item.get("subtitle", book.get("title", platform_id))))
         lead = escape(str(page_item.get("lead", book.get("summary", ""))))
         claim = escape(str(page_item.get("claim", book.get("canonical_claim", book.get("objective", "")))))
@@ -783,6 +786,22 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                 """.rstrip()
             )
 
+        if page_item.get("show_method_reference") and method_reference:
+            method_title = escape(str(method_reference.get("title", "Scientific AI and Numerical Methods")))
+            method_summary = escape(str(method_reference.get("summary", "Read the numerical, probabilistic, and validation contract used by calyr.aí scientific prediction.")))
+            method_label = escape(str(method_reference.get("label", "Open method reference")))
+            method_route = escape(str(method_reference.get("route", "/research/methods/scientific-ai-numerics/")), quote=True)
+            section_blocks.append(
+                f"""
+    <section class=\"card method-reference\">
+      <div class=\"eyebrow\">calyr.aí method contract</div>
+      <h2>{method_title}</h2>
+      <p>{method_summary}</p>
+      <p><a class=\"source-link\" href=\"{method_route}\">{method_label} →</a></p>
+    </section>
+                """.rstrip()
+            )
+
         source_meta = "source file not found"
         if source_exists and source_html_path is not None:
             source_mtime = datetime.fromtimestamp(source_html_path.stat().st_mtime, tz=timezone.utc).isoformat()
@@ -822,6 +841,303 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
         print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
 
 
+def _inline_markdown(value: str) -> str:
+    """Render the small inline Markdown subset used by repository references."""
+    rendered = escape(value)
+    rendered = re.sub(r"`([^`]+)`", r"<code>\1</code>", rendered)
+    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
+    rendered = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", rendered)
+    rendered = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", rendered)
+    return rendered
+
+
+def _heading_anchor(value: str) -> str:
+    anchor = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return anchor or "section"
+
+
+def _markdown_document_html(markdown: str) -> str:
+    """Render the repository's method-reference Markdown without runtime dependencies."""
+    lines = markdown.splitlines()
+    nodes: list[str] = []
+    paragraph: list[str] = []
+    list_kind: str | None = None
+    in_code = False
+    code_lines: list[str] = []
+    index = 0
+
+    def flush_paragraph() -> None:
+        if paragraph:
+            metadata_lines = [re.match(r"^\*\*([^*]+):\*\*\s*(.+?)\s{0,2}$", line) for line in paragraph]
+            if all(metadata_lines):
+                metadata_items = "".join(
+                    f"<div><dt>{_inline_markdown(match.group(1))}</dt><dd>{_inline_markdown(match.group(2).rstrip())}</dd></div>"
+                    for match in metadata_lines
+                    if match
+                )
+                nodes.append(f'<dl class="method-meta">{metadata_items}</dl>')
+            else:
+                nodes.append(f"<p>{_inline_markdown(' '.join(paragraph))}</p>")
+            paragraph.clear()
+
+    def close_list() -> None:
+        nonlocal list_kind
+        if list_kind:
+            nodes.append(f"</{list_kind}>")
+            list_kind = None
+
+    while index < len(lines):
+        line = lines[index]
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            flush_paragraph()
+            close_list()
+            if in_code:
+                nodes.append(f"<pre><code>{escape(chr(10).join(code_lines))}</code></pre>")
+                code_lines.clear()
+            in_code = not in_code
+            index += 1
+            continue
+        if in_code:
+            code_lines.append(line)
+            index += 1
+            continue
+        if not stripped:
+            flush_paragraph()
+            close_list()
+            index += 1
+            continue
+
+        heading = re.match(r"^(#{1,6})\s+(.+)$", stripped)
+        if heading:
+            flush_paragraph()
+            close_list()
+            level = len(heading.group(1))
+            text = heading.group(2)
+            nodes.append(f'<h{level} id="{_heading_anchor(text)}">{_inline_markdown(text)}</h{level}>')
+            index += 1
+            continue
+
+        if stripped.startswith("|") and index + 1 < len(lines) and re.match(r"^\|?[\s:|-]+\|?$", lines[index + 1].strip()):
+            flush_paragraph()
+            close_list()
+            headers = [cell.strip() for cell in stripped.strip("|").split("|")]
+            index += 2
+            rows: list[list[str]] = []
+            while index < len(lines) and lines[index].strip().startswith("|"):
+                rows.append([cell.strip() for cell in lines[index].strip().strip("|").split("|")])
+                index += 1
+            head_html = "".join(f"<th>{_inline_markdown(cell)}</th>" for cell in headers)
+            row_html = "".join("<tr>" + "".join(f"<td>{_inline_markdown(cell)}</td>" for cell in row) + "</tr>" for row in rows)
+            nodes.append(f"<div class=\"table-wrap\"><table><thead><tr>{head_html}</tr></thead><tbody>{row_html}</tbody></table></div>")
+            continue
+
+        list_match = re.match(r"^(?:[-*]|\d+\.)\s+(.+)$", stripped)
+        if list_match:
+            flush_paragraph()
+            wanted = "ol" if re.match(r"^\d+\.", stripped) else "ul"
+            if list_kind != wanted:
+                close_list()
+                list_kind = wanted
+                nodes.append(f"<{wanted}>")
+            nodes.append(f"<li>{_inline_markdown(list_match.group(1))}</li>")
+            index += 1
+            continue
+
+        paragraph.append(stripped)
+        index += 1
+
+    flush_paragraph()
+    close_list()
+    if code_lines:
+        nodes.append(f"<pre><code>{escape(chr(10).join(code_lines))}</code></pre>")
+    return "\n".join(nodes)
+
+
+def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
+    """Publish the YAML-defined method catalog and its Markdown method pages."""
+    catalog = config.get("method_catalog", {}) if isinstance(config, dict) else {}
+    references = catalog.get("items", []) if isinstance(catalog, dict) else []
+    if not isinstance(catalog, dict) or not isinstance(references, list) or not references:
+        return {}
+
+    reference = references[0] if isinstance(references[0], dict) else {}
+    source_rel = str(reference.get("source", "")).strip()
+    route = str(reference.get("route", "")).strip()
+    if not source_rel or not route:
+        return {}
+    source_path = (project_root / source_rel).resolve()
+    if not source_path.exists():
+        print(f"⚠️  Missing method reference source: {source_rel}")
+        return {}
+
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    markdown = source_path.read_text(encoding="utf-8")
+    rendered_body = _markdown_document_html(markdown)
+    body_parts = re.split(r"(?=<h2\s)", rendered_body)
+    intro = body_parts[0]
+    sections = "".join(f'<section class="method-section">{part}</section>' for part in body_parts[1:])
+    body = f'<section class="method-hero">{intro}</section>{sections}'
+    toc_items = []
+    for heading in re.findall(r"^##\s+(.+)$", markdown, flags=re.MULTILINE):
+        toc_items.append(f'<li><a href="#{_heading_anchor(heading)}">{_inline_markdown(heading)}</a></li>')
+    toc = "".join(toc_items)
+    title = escape(str(reference.get("title", "Scientific AI and Numerical Methods Reference")))
+    html = f"""<!doctype html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+  <meta name=\"description\" content=\"calyr.aí scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM.\" />
+  <title>{title} · calyr.aí</title>
+  <link rel=\"stylesheet\" href=\"./method.css\" />
+</head>
+<body>
+  <header class=\"site-header\">
+    <a class=\"brand\" href=\"/\">calyr.aí</a>
+    <div class=\"header-context\"><a href=\"/research/methods/\">Method Catalog</a><a href=\"/research/platforms/pythia/\">Pythia</a></div>
+  </header>
+  <div class=\"page-shell\">
+    <aside class=\"contents\">
+      <p class=\"contents-label\">On this page</p>
+      <nav aria-label=\"Method reference sections\"><ol>{toc}</ol></nav>
+    </aside>
+    <main class=\"method-layout\"><article>{body}</article></main>
+  </div>
+</body>
+</html>
+"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "method.css").write_text(_method_reference_css(), encoding="utf-8")
+    print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
+
+    catalog_route = str(catalog.get("route", "/research/methods/")).strip()
+    catalog_dir = project_root / "web" / "public" / catalog_route.strip("/")
+    catalog_dir.mkdir(parents=True, exist_ok=True)
+    cards: list[str] = []
+    for item in references:
+        if not isinstance(item, dict):
+            continue
+        item_title = escape(str(item.get("title", "Untitled method")))
+        item_id = escape(str(item.get("id", "")))
+        item_summary = escape(str(item.get("summary", "")))
+        item_route = escape(str(item.get("route", "#")), quote=True)
+        family = escape(str(item.get("family", "Method")))
+        status = escape(str(item.get("status", "Draft")))
+        tags = item.get("tags", []) if isinstance(item.get("tags"), list) else []
+        domains = item.get("domains", []) if isinstance(item.get("domains"), list) else []
+        chips = "".join(f"<span>{escape(str(tag))}</span>" for tag in [*domains, *tags])
+        cards.append(f"""
+      <article class=\"catalog-card\">
+        <div class=\"card-meta\"><span>{family}</span><span>{status}</span></div>
+        <p class=\"method-id\">{item_id}</p>
+        <h2>{item_title}</h2>
+        <p>{item_summary}</p>
+        <div class=\"chips\">{chips}</div>
+        <a class=\"open-method\" href=\"{item_route}\">Open method contract →</a>
+      </article>""")
+    catalog_title = escape(str(catalog.get("title", "calyr.aí method catalog")))
+    catalog_summary = escape(str(catalog.get("summary", "A growing collection of reusable scientific methods.")))
+    catalog_html = f"""<!doctype html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+  <meta name=\"description\" content=\"{catalog_summary}\" />
+  <title>{catalog_title} · calyr.aí</title>
+  <link rel=\"stylesheet\" href=\"./catalog.css\" />
+</head>
+<body>
+  <header><a class=\"brand\" href=\"/\">calyr.aí</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
+  <main>
+    <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{len(cards):02d}</strong><span>published method contract</span></div></section>
+    <section class=\"catalog-index\"><div class=\"index-heading\"><p>Catalog index</p><span>Designed to grow by method family and domain</span></div>{''.join(cards)}</section>
+  </main>
+</body>
+</html>"""
+    (catalog_dir / "index.html").write_text(catalog_html, encoding="utf-8")
+    (catalog_dir / "catalog.css").write_text(_method_catalog_css(), encoding="utf-8")
+    print(f"🗂️  Synced method catalog to {(catalog_dir / 'index.html').relative_to(project_root)}")
+    return {**catalog, "route": catalog_route}
+
+
+def _method_catalog_css() -> str:
+    return """
+:root { color-scheme: dark; --ink:#f5f5f2; --soft:#a7abb0; --paper:#050505; --card:#090909; --line:#343434; --accent:#39bfff; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 Helvetica Neue,Helvetica,Arial,sans-serif; }
+header { min-height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 max(5vw,calc((100vw - 1200px)/2)); border-bottom:1px solid var(--line); background:var(--paper); }
+a { color:var(--accent); } header a { font-weight:700; text-decoration:none; } .brand { color:var(--ink); letter-spacing:.04em; } .brand span { color:var(--accent); }
+main { width:min(1200px,92vw); margin:0 auto 100px; }
+.catalog-hero { display:grid; grid-template-columns:repeat(12,1fr); column-gap:20px; min-height:460px; padding:72px 0 58px; border-bottom:1px solid var(--line); } .eyebrow,.method-id { color:var(--accent); font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+.catalog-hero .eyebrow { grid-column:1/4; } h1 { grid-column:4/12; max-width:11ch; margin:0 0 1.2rem; font-size:clamp(3.4rem,8vw,7rem); line-height:.88; letter-spacing:-.065em; } .catalog-hero>p:not(.eyebrow) { grid-column:4/10; max-width:65ch; color:var(--soft); font-size:1.08rem; }
+.catalog-stats { grid-column:10/13; display:flex; align-items:baseline; gap:10px; color:var(--soft); align-self:end; } .catalog-stats strong { color:var(--ink); font-size:2.2rem; font-weight:500; }
+.catalog-index { display:grid; grid-template-columns:repeat(12,1fr); gap:0; border-left:1px solid var(--line); } .index-heading { grid-column:1/-1; display:grid; grid-template-columns:3fr 9fr; padding:18px 20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--soft); } .index-heading p { margin:0; color:var(--ink); font-weight:700; }
+.catalog-card { grid-column:1/-1; display:grid; grid-template-columns:3fr 6fr 3fr; min-height:330px; padding:28px 20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--card); }
+.card-meta { display:flex; justify-content:space-between; color:#718197; font-size:.78rem; } .catalog-card h2 { margin:.4rem 0 1rem; font-size:clamp(1.6rem,3vw,2.25rem); line-height:1.12; } .catalog-card>p:not(.method-id) { color:var(--soft); }
+.catalog-card .method-id { grid-column:1; grid-row:2/5; margin-top:.65rem; }.catalog-card h2,.catalog-card>p:not(.method-id),.catalog-card .chips { grid-column:2; }.catalog-card .card-meta { grid-column:1/-1; border-bottom:1px solid var(--line); padding-bottom:14px; }.catalog-card h2 { font-size:clamp(2rem,4vw,3.6rem); letter-spacing:-.04em; }.catalog-card .open-method { grid-column:3; grid-row:2/5; align-self:end; justify-self:end; }
+.chips { display:flex; flex-wrap:wrap; gap:0; margin:20px 0 28px; } .chips span { padding:5px 9px; border:1px solid var(--line); color:#9eb0c4; font-size:.72rem; margin:-1px 0 0 -1px; }
+.open-method { font-weight:700; text-decoration:none; }
+@media(max-width:760px){.catalog-hero{display:block;min-height:0;padding:48px 0}.catalog-stats{margin-top:40px}.index-heading{display:block}.catalog-card{display:block;min-height:380px}.catalog-card .open-method{display:block;margin-top:36px}h1{margin-top:18px;font-size:3.6rem}}
+""".strip() + "\n"
+
+
+def _method_reference_css() -> str:
+    return """
+:root { color-scheme: dark; --ink: #f5f5f2; --soft: #a7abb0; --paper: #050505; --card: #090909; --line: #343434; --accent: #39bfff; --accent-strong: #39bfff; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.62 Helvetica Neue, Helvetica, Arial, sans-serif; }
+.site-header { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 0 max(4vw, calc((100vw - 1240px)/2)); background: rgba(5,5,5,.96); border-bottom: 1px solid var(--line); }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.site-header a { font-weight: 700; text-decoration: none; }
+.brand { color: var(--ink); letter-spacing: .04em; }
+.brand span { color: var(--accent-strong); }
+.header-context { display: flex; align-items: center; gap: 18px; font-size: .88rem; }
+.header-context span { color: #718197; }
+.page-shell { width: min(1240px, 94vw); margin: 0 auto; display: grid; grid-template-columns: 3fr 9fr; gap: 0; align-items: start; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+.contents { position: sticky; top: 64px; max-height: calc(100vh - 64px); overflow-y: auto; padding: 28px 22px; border-right: 1px solid var(--line); }
+.contents-label { margin: 0 0 12px; color: var(--ink); font-size: .75rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.contents ol { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--line); }
+.contents li { margin: 0; }
+.contents a { display: block; padding: 6px 0 6px 16px; color: #8e9db0; font-size: .83rem; line-height: 1.35; text-decoration: none; border-left: 2px solid transparent; transform: translateX(-1px); }
+.contents a:hover, .contents a:focus { color: var(--accent); border-left-color: var(--accent); }
+.method-layout { min-width: 0; margin: 0; }
+article { display: block; counter-reset: method-section; }
+.method-hero, .method-section { background: var(--card); border-bottom: 1px solid var(--line); padding: clamp(30px, 5vw, 72px); }
+.method-hero { position: relative; overflow: hidden; min-height: 520px; padding-top: clamp(48px, 8vw, 100px); }
+.method-hero::before { content: "calyr.aí method contract · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+.method-hero::after { display: none; }
+.method-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:42px 0 0; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.method-meta div { min-width:0; padding:14px 16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+.method-meta dt { margin-bottom:5px; color:#747c85; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.method-meta dd { margin:0; color:var(--ink); font-size:.82rem; line-height:1.4; overflow-wrap:anywhere; }
+.method-meta code { font-size:.75rem; }
+.method-section { counter-increment: method-section; position: relative; padding-left: clamp(72px, 9vw, 130px); }
+.method-section::before { content: counter(method-section, decimal-leading-zero); position: absolute; left: 28px; top: clamp(34px, 5vw, 72px); color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .1em; }
+h1, h2, h3 { line-height: 1.18; letter-spacing: -.025em; scroll-margin-top: 88px; }
+h1 { max-width: 14ch; font-size: clamp(2.4rem, 6vw, 4.4rem); margin: 0 0 1.7rem; }
+h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2.15rem); }
+h3 { margin: 2.25rem 0 .6rem; color: #d9eaff; font-size: 1.08rem; letter-spacing: .01em; }
+p, li { color: var(--soft); }
+p { max-width: 76ch; }
+strong { color: var(--ink); }
+code { color: #d6f1ff; background: #111c29; border: 1px solid #24364a; border-radius: 5px; padding: .1em .3em; }
+pre { overflow-x: auto; padding: 22px; border: 1px solid #2d4055; border-radius: 12px; background: #060a10; box-shadow: inset 3px 0 0 var(--accent-strong); }
+pre code { border: 0; padding: 0; background: transparent; }
+.table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+th, td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { color: var(--ink); background: #111b28; }
+td { color: var(--soft); }
+.method-section ul, .method-section ol { display: grid; gap: 7px; padding-left: 1.3rem; }
+.method-section li::marker { color: var(--accent-strong); }
+@media (max-width: 980px) { .page-shell { display: block; width: min(900px, 94vw); } .contents { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); } .contents ol { columns: 2; column-gap: 28px; } }
+@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context a:first-child { display: none; } .contents ol { columns: 1; } .method-hero, .method-section { min-height:0; padding: 34px 20px; } .method-section { padding-left: 54px; } .method-section::before { left: 18px; top: 38px; } .method-meta { grid-template-columns:1fr; } h1 { font-size: 2.5rem; } }
+""".strip() + "\n"
+
+
 def _sync_positioning_page_from_yaml(project_root: Path) -> None:
     """Render linked positioning page from YAML and sync source HTML copy."""
     books_cfg = _read_optional_yaml(project_root / "content" / "books.yaml")
@@ -846,8 +1162,8 @@ def _sync_positioning_page_from_yaml(project_root: Path) -> None:
 
     page = page_cfg.get("page", {}) if isinstance(page_cfg, dict) else {}
     sections = page_cfg.get("sections", []) if isinstance(page_cfg.get("sections"), list) else []
-    title = escape(str(page.get("title", "CALYR.AI Positioning")))
-    eyebrow = escape(str(page.get("eyebrow", "CALYR.AI Positioning")))
+    title = escape(str(page.get("title", "calyr.aí positioning")))
+    eyebrow = escape(str(page.get("eyebrow", "calyr.aí positioning")))
     subtitle = escape(str(page.get("subtitle", "")))
     lead = escape(str(page.get("lead", "")))
     claim = escape(str(page.get("claim", "")))
