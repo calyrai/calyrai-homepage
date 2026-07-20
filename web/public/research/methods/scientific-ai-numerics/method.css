@@ -29,6 +29,7 @@ article { display: block; counter-reset: method-section; }
 .method-meta code { font-size:.75rem; }
 .method-section { counter-increment: method-section; position: relative; padding-left: clamp(72px, 9vw, 130px); }
 .method-section::before { content: counter(method-section, decimal-leading-zero); position: absolute; left: 28px; top: clamp(34px, 5vw, 72px); color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .1em; }
+.method-section--references { margin-top: 48px; border-top: 4px solid var(--accent); }
 h1, h2, h3 { line-height: 1.18; letter-spacing: -.025em; scroll-margin-top: 88px; }
 h1 { max-width: 14ch; font-size: clamp(2.4rem, 6vw, 4.4rem); margin: 0 0 1.7rem; }
 h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2.15rem); }
