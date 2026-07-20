@@ -1,0 +1,24 @@
+:root { color-scheme: dark; --ink: #eef6ff; --soft: #b7c4d6; --paper: #05070b; --card: #0b111b; --line: #263244; --accent: #79d6ff; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: radial-gradient(circle at 85% 5%, #11283a 0, transparent 30rem), var(--paper); color: var(--ink); font: 17px/1.7 Avenir, Inter, system-ui, sans-serif; }
+.site-header { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; padding: 16px max(5vw, calc((100vw - 860px)/2)); background: rgba(5,7,11,.88); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.site-header a { font-weight: 700; text-decoration: none; }
+.method-layout { width: min(860px, 91vw); margin: 56px auto 96px; }
+article { background: rgba(11,17,27,.9); border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 5vw, 64px); box-shadow: 0 24px 80px rgba(0,0,0,.4); }
+h1, h2, h3 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 80px; }
+h1 { font-size: clamp(2.2rem, 6vw, 4rem); margin: 0 0 1.5rem; }
+h2 { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+h3 { margin-top: 2.25rem; }
+p, li { color: var(--soft); }
+strong { color: var(--ink); }
+code { color: #d6f1ff; background: #111c29; border: 1px solid #24364a; border-radius: 5px; padding: .1em .3em; }
+pre { overflow-x: auto; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #070b11; }
+pre code { border: 0; padding: 0; background: transparent; }
+.table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+th, td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { color: var(--ink); background: #111b28; }
+td { color: var(--soft); }
+@media (max-width: 620px) { body { font-size: 16px; } .method-layout { margin-top: 24px; } article { border-radius: 14px; } }

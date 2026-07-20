@@ -255,6 +255,13 @@ platform_books:
           title: Value
           body: Pythia closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
 
+method_reference:
+  source: docs/scientific-ai-numerics-reference.md
+  route: /research/methods/scientific-ai-numerics/
+  title: Scientific AI and Numerical Methods
+  summary: The canonical CALYR method contract for trustworthy surrogate prediction, numerical baselines, uncertainty, validation, SAXS, SPR, and cryo-EM.
+  label: Read the full method contract
+
 platform_pages:
   route_prefix: /research/platforms
   items:
@@ -293,6 +300,7 @@ platform_pages:
       eyebrow: calyr.ai platform
       subtitle: Pythia
       lead: Compass interface layer entered via the Pythia platform tile for guided graph exploration and insight generation.
+      show_method_reference: true
       footer_note: Pythia page generated from platform-pythia book entry in content/books.yaml.
 
 atlas_books:

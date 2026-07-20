@@ -34,6 +34,7 @@ Nexus Artifacts (generated/):
 """
 
 import json
+import re
 import shutil
 import sys
 from abc import ABC, abstractmethod
@@ -689,6 +690,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     if not isinstance(page_items, list) or not page_items:
         return
 
+    method_reference = _sync_method_reference_page(project_root, config)
+
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
     book_items = platform_books_cfg.get("items", []) if isinstance(platform_books_cfg, dict) else []
     rainbow_palette = config.get("rainbow_palette", {}) if isinstance(config, dict) else {}
@@ -783,6 +786,22 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                 """.rstrip()
             )
 
+        if page_item.get("show_method_reference") and method_reference:
+            method_title = escape(str(method_reference.get("title", "Scientific AI and Numerical Methods")))
+            method_summary = escape(str(method_reference.get("summary", "Read the numerical, probabilistic, and validation contract used by CALYR scientific prediction.")))
+            method_label = escape(str(method_reference.get("label", "Open method reference")))
+            method_route = escape(str(method_reference.get("route", "/research/methods/scientific-ai-numerics/")), quote=True)
+            section_blocks.append(
+                f"""
+    <section class=\"card method-reference\">
+      <div class=\"eyebrow\">CALYR Method Contract</div>
+      <h2>{method_title}</h2>
+      <p>{method_summary}</p>
+      <p><a class=\"source-link\" href=\"{method_route}\">{method_label} →</a></p>
+    </section>
+                """.rstrip()
+            )
+
         source_meta = "source file not found"
         if source_exists and source_html_path is not None:
             source_mtime = datetime.fromtimestamp(source_html_path.stat().st_mtime, tz=timezone.utc).isoformat()
@@ -820,6 +839,179 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
         output_html_path.write_text(html_content, encoding="utf-8")
         rel_path = output_html_path.relative_to(project_root)
         print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
+
+
+def _inline_markdown(value: str) -> str:
+    """Render the small inline Markdown subset used by repository references."""
+    rendered = escape(value)
+    rendered = re.sub(r"`([^`]+)`", r"<code>\1</code>", rendered)
+    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
+    rendered = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", rendered)
+    rendered = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", rendered)
+    return rendered
+
+
+def _heading_anchor(value: str) -> str:
+    anchor = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return anchor or "section"
+
+
+def _markdown_document_html(markdown: str) -> str:
+    """Render the repository's method-reference Markdown without runtime dependencies."""
+    lines = markdown.splitlines()
+    nodes: list[str] = []
+    paragraph: list[str] = []
+    list_kind: str | None = None
+    in_code = False
+    code_lines: list[str] = []
+    index = 0
+
+    def flush_paragraph() -> None:
+        if paragraph:
+            nodes.append(f"<p>{_inline_markdown(' '.join(paragraph))}</p>")
+            paragraph.clear()
+
+    def close_list() -> None:
+        nonlocal list_kind
+        if list_kind:
+            nodes.append(f"</{list_kind}>")
+            list_kind = None
+
+    while index < len(lines):
+        line = lines[index]
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            flush_paragraph()
+            close_list()
+            if in_code:
+                nodes.append(f"<pre><code>{escape(chr(10).join(code_lines))}</code></pre>")
+                code_lines.clear()
+            in_code = not in_code
+            index += 1
+            continue
+        if in_code:
+            code_lines.append(line)
+            index += 1
+            continue
+        if not stripped:
+            flush_paragraph()
+            close_list()
+            index += 1
+            continue
+
+        heading = re.match(r"^(#{1,6})\s+(.+)$", stripped)
+        if heading:
+            flush_paragraph()
+            close_list()
+            level = len(heading.group(1))
+            text = heading.group(2)
+            nodes.append(f'<h{level} id="{_heading_anchor(text)}">{_inline_markdown(text)}</h{level}>')
+            index += 1
+            continue
+
+        if stripped.startswith("|") and index + 1 < len(lines) and re.match(r"^\|?[\s:|-]+\|?$", lines[index + 1].strip()):
+            flush_paragraph()
+            close_list()
+            headers = [cell.strip() for cell in stripped.strip("|").split("|")]
+            index += 2
+            rows: list[list[str]] = []
+            while index < len(lines) and lines[index].strip().startswith("|"):
+                rows.append([cell.strip() for cell in lines[index].strip().strip("|").split("|")])
+                index += 1
+            head_html = "".join(f"<th>{_inline_markdown(cell)}</th>" for cell in headers)
+            row_html = "".join("<tr>" + "".join(f"<td>{_inline_markdown(cell)}</td>" for cell in row) + "</tr>" for row in rows)
+            nodes.append(f"<div class=\"table-wrap\"><table><thead><tr>{head_html}</tr></thead><tbody>{row_html}</tbody></table></div>")
+            continue
+
+        list_match = re.match(r"^(?:[-*]|\d+\.)\s+(.+)$", stripped)
+        if list_match:
+            flush_paragraph()
+            wanted = "ol" if re.match(r"^\d+\.", stripped) else "ul"
+            if list_kind != wanted:
+                close_list()
+                list_kind = wanted
+                nodes.append(f"<{wanted}>")
+            nodes.append(f"<li>{_inline_markdown(list_match.group(1))}</li>")
+            index += 1
+            continue
+
+        paragraph.append(stripped)
+        index += 1
+
+    flush_paragraph()
+    close_list()
+    if code_lines:
+        nodes.append(f"<pre><code>{escape(chr(10).join(code_lines))}</code></pre>")
+    return "\n".join(nodes)
+
+
+def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
+    """Publish the canonical Markdown method contract as a readable website page."""
+    reference = config.get("method_reference", {}) if isinstance(config, dict) else {}
+    if not isinstance(reference, dict) or not reference:
+        return {}
+
+    source_rel = str(reference.get("source", "")).strip()
+    route = str(reference.get("route", "/research/methods/scientific-ai-numerics/")).strip()
+    if not source_rel or not route:
+        return {}
+    source_path = (project_root / source_rel).resolve()
+    if not source_path.exists():
+        print(f"⚠️  Missing method reference source: {source_rel}")
+        return {}
+
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    body = _markdown_document_html(source_path.read_text(encoding="utf-8"))
+    title = escape(str(reference.get("title", "Scientific AI and Numerical Methods Reference")))
+    html = f"""<!doctype html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+  <meta name=\"description\" content=\"CALYR scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM.\" />
+  <title>{title} · CALYR.AI</title>
+  <link rel=\"stylesheet\" href=\"./method.css\" />
+</head>
+<body>
+  <header class=\"site-header\"><a href=\"/\">CALYR.AI</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
+  <main class=\"method-layout\"><article>{body}</article></main>
+</body>
+</html>
+"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "method.css").write_text(_method_reference_css(), encoding="utf-8")
+    print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
+    return {**reference, "route": route}
+
+
+def _method_reference_css() -> str:
+    return """
+:root { color-scheme: dark; --ink: #eef6ff; --soft: #b7c4d6; --paper: #05070b; --card: #0b111b; --line: #263244; --accent: #79d6ff; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: radial-gradient(circle at 85% 5%, #11283a 0, transparent 30rem), var(--paper); color: var(--ink); font: 17px/1.7 Avenir, Inter, system-ui, sans-serif; }
+.site-header { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; padding: 16px max(5vw, calc((100vw - 860px)/2)); background: rgba(5,7,11,.88); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.site-header a { font-weight: 700; text-decoration: none; }
+.method-layout { width: min(860px, 91vw); margin: 56px auto 96px; }
+article { background: rgba(11,17,27,.9); border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 5vw, 64px); box-shadow: 0 24px 80px rgba(0,0,0,.4); }
+h1, h2, h3 { line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 80px; }
+h1 { font-size: clamp(2.2rem, 6vw, 4rem); margin: 0 0 1.5rem; }
+h2 { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+h3 { margin-top: 2.25rem; }
+p, li { color: var(--soft); }
+strong { color: var(--ink); }
+code { color: #d6f1ff; background: #111c29; border: 1px solid #24364a; border-radius: 5px; padding: .1em .3em; }
+pre { overflow-x: auto; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #070b11; }
+pre code { border: 0; padding: 0; background: transparent; }
+.table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+th, td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { color: var(--ink); background: #111b28; }
+td { color: var(--soft); }
+@media (max-width: 620px) { body { font-size: 16px; } .method-layout { margin-top: 24px; } article { border-radius: 14px; } }
+""".strip() + "\n"
 
 
 def _sync_positioning_page_from_yaml(project_root: Path) -> None:
