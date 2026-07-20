@@ -273,7 +273,41 @@ body {
   }
 
   .system-line {
-    font-size: clamp(2.5rem, 11vw, 4.5rem);
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 24px 16px 28px;
+    font-size: clamp(2.25rem, 12vw, 4rem);
+    letter-spacing: -0.075em;
+    white-space: normal;
+  }
+
+  .system-line span,
+  .system-line strong {
+    min-width: 0;
+  }
+
+  .system-line span:last-child,
+  .system-line strong {
+    text-align: left;
+  }
+
+  .system-line i {
+    height: 28px;
+    font-size: 0;
+    line-height: 1;
+  }
+
+  .system-line i::after {
+    content: "↓";
+    font-size: 28px;
+  }
+
+  .system-card .teaser-deck-link {
+    gap: 18px;
+    margin: 22px 16px 16px;
+    font-size: clamp(1rem, 5vw, 1.35rem);
+    line-height: 1.2;
   }
 
   .flow-card .scene,
