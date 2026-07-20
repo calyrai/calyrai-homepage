@@ -255,12 +255,21 @@ platform_books:
           title: Value
           body: Pythia closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
 
-method_reference:
-  source: docs/scientific-ai-numerics-reference.md
-  route: /research/methods/scientific-ai-numerics/
-  title: Scientific AI and Numerical Methods
-  summary: The canonical CALYR method contract for trustworthy surrogate prediction, numerical baselines, uncertainty, validation, SAXS, SPR, and cryo-EM.
-  label: Read the full method contract
+method_catalog:
+  route: /research/methods/
+  title: CALYR Method Catalog
+  summary: A growing collection of reusable scientific-AI, numerical, inference, validation, and domain-method contracts.
+  label: Open the method catalog
+  items:
+    - id: CALYR-METHOD-NR-AI-001
+      source: docs/scientific-ai-numerics-reference.md
+      route: /research/methods/scientific-ai-numerics/
+      title: Scientific AI and Numerical Methods
+      summary: Trustworthy surrogate prediction through numerical baselines, uncertainty, applicability limits, and validation.
+      status: Working contract
+      family: Scientific AI
+      domains: [SAXS, SPR, cryo-EM]
+      tags: [numerics, surrogate prediction, probabilistic inference, validation]
 
 platform_pages:
   route_prefix: /research/platforms

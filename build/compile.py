@@ -946,13 +946,15 @@ def _markdown_document_html(markdown: str) -> str:
 
 
 def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
-    """Publish the canonical Markdown method contract as a readable website page."""
-    reference = config.get("method_reference", {}) if isinstance(config, dict) else {}
-    if not isinstance(reference, dict) or not reference:
+    """Publish the YAML-defined method catalog and its Markdown method pages."""
+    catalog = config.get("method_catalog", {}) if isinstance(config, dict) else {}
+    references = catalog.get("items", []) if isinstance(catalog, dict) else []
+    if not isinstance(catalog, dict) or not isinstance(references, list) or not references:
         return {}
 
+    reference = references[0] if isinstance(references[0], dict) else {}
     source_rel = str(reference.get("source", "")).strip()
-    route = str(reference.get("route", "/research/methods/scientific-ai-numerics/")).strip()
+    route = str(reference.get("route", "")).strip()
     if not source_rel or not route:
         return {}
     source_path = (project_root / source_rel).resolve()
@@ -985,7 +987,7 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 <body>
   <header class=\"site-header\">
     <a class=\"brand\" href=\"/\">CALYR<span>.AI</span></a>
-    <div class=\"header-context\"><span>Research</span><a href=\"/research/platforms/pythia/\">Pythia</a></div>
+    <div class=\"header-context\"><a href=\"/research/methods/\">Method Catalog</a><a href=\"/research/platforms/pythia/\">Pythia</a></div>
   </header>
   <div class=\"page-shell\">
     <aside class=\"contents\">
@@ -1000,7 +1002,75 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
     (output_dir / "index.html").write_text(html, encoding="utf-8")
     (output_dir / "method.css").write_text(_method_reference_css(), encoding="utf-8")
     print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
-    return {**reference, "route": route}
+
+    catalog_route = str(catalog.get("route", "/research/methods/")).strip()
+    catalog_dir = project_root / "web" / "public" / catalog_route.strip("/")
+    catalog_dir.mkdir(parents=True, exist_ok=True)
+    cards: list[str] = []
+    for item in references:
+        if not isinstance(item, dict):
+            continue
+        item_title = escape(str(item.get("title", "Untitled method")))
+        item_id = escape(str(item.get("id", "")))
+        item_summary = escape(str(item.get("summary", "")))
+        item_route = escape(str(item.get("route", "#")), quote=True)
+        family = escape(str(item.get("family", "Method")))
+        status = escape(str(item.get("status", "Draft")))
+        tags = item.get("tags", []) if isinstance(item.get("tags"), list) else []
+        domains = item.get("domains", []) if isinstance(item.get("domains"), list) else []
+        chips = "".join(f"<span>{escape(str(tag))}</span>" for tag in [*domains, *tags])
+        cards.append(f"""
+      <article class=\"catalog-card\">
+        <div class=\"card-meta\"><span>{family}</span><span>{status}</span></div>
+        <p class=\"method-id\">{item_id}</p>
+        <h2>{item_title}</h2>
+        <p>{item_summary}</p>
+        <div class=\"chips\">{chips}</div>
+        <a class=\"open-method\" href=\"{item_route}\">Open method contract →</a>
+      </article>""")
+    catalog_title = escape(str(catalog.get("title", "CALYR Method Catalog")))
+    catalog_summary = escape(str(catalog.get("summary", "A growing collection of reusable scientific methods.")))
+    catalog_html = f"""<!doctype html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+  <meta name=\"description\" content=\"{catalog_summary}\" />
+  <title>{catalog_title} · CALYR.AI</title>
+  <link rel=\"stylesheet\" href=\"./catalog.css\" />
+</head>
+<body>
+  <header><a class=\"brand\" href=\"/\">CALYR<span>.AI</span></a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
+  <main>
+    <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{len(cards):02d}</strong><span>published method contract</span></div></section>
+    <section class=\"catalog-index\"><div class=\"index-heading\"><p>Catalog index</p><span>Designed to grow by method family and domain</span></div>{''.join(cards)}</section>
+  </main>
+</body>
+</html>"""
+    (catalog_dir / "index.html").write_text(catalog_html, encoding="utf-8")
+    (catalog_dir / "catalog.css").write_text(_method_catalog_css(), encoding="utf-8")
+    print(f"🗂️  Synced method catalog to {(catalog_dir / 'index.html').relative_to(project_root)}")
+    return {**catalog, "route": catalog_route}
+
+
+def _method_catalog_css() -> str:
+    return """
+:root { color-scheme: dark; --ink:#f3f7fb; --soft:#aab8c8; --paper:#05070b; --card:#0b111b; --line:#263244; --accent:#79d6ff; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:radial-gradient(circle at 78% -5%,#102b40 0,transparent 36rem),var(--paper); font:16px/1.65 Avenir,Inter,system-ui,sans-serif; }
+header { min-height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 max(5vw,calc((100vw - 1120px)/2)); border-bottom:1px solid var(--line); background:rgba(5,7,11,.9); }
+a { color:var(--accent); } header a { font-weight:700; text-decoration:none; } .brand { color:var(--ink); letter-spacing:.04em; } .brand span { color:var(--accent); }
+main { width:min(1120px,92vw); margin:64px auto 100px; }
+.catalog-hero { max-width:850px; margin-bottom:70px; } .eyebrow,.method-id { color:var(--accent); font-size:.75rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+h1 { max-width:11ch; margin:.2rem 0 1.2rem; font-size:clamp(3rem,8vw,6rem); line-height:.95; letter-spacing:-.055em; } .catalog-hero>p:not(.eyebrow) { max-width:65ch; color:var(--soft); font-size:1.12rem; }
+.catalog-stats { display:flex; align-items:baseline; gap:12px; margin-top:28px; color:var(--soft); } .catalog-stats strong { color:var(--ink); font-size:2rem; }
+.catalog-index { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } .index-heading { grid-column:1/-1; display:flex; justify-content:space-between; border-bottom:1px solid var(--line); color:var(--soft); } .index-heading p { color:var(--ink); font-weight:700; }
+.catalog-card { display:flex; flex-direction:column; min-height:390px; padding:32px; border:1px solid var(--line); border-radius:18px; background:rgba(11,17,27,.92); box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.card-meta { display:flex; justify-content:space-between; color:#718197; font-size:.78rem; } .catalog-card h2 { margin:.4rem 0 1rem; font-size:clamp(1.6rem,3vw,2.25rem); line-height:1.12; } .catalog-card>p:not(.method-id) { color:var(--soft); }
+.chips { display:flex; flex-wrap:wrap; gap:7px; margin:20px 0 28px; } .chips span { padding:5px 9px; border:1px solid var(--line); border-radius:999px; color:#9eb0c4; font-size:.75rem; }
+.open-method { margin-top:auto; font-weight:800; text-decoration:none; }
+@media(max-width:760px){main{margin-top:38px}.catalog-index{grid-template-columns:1fr}.index-heading{display:block}.catalog-card{min-height:340px;padding:24px}h1{font-size:3.4rem}}
+""".strip() + "\n"
 
 
 def _method_reference_css() -> str:
