@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Combine compatible trait predictions, calibrated uncertainty, constraints, diversity, and Pareto ranking while preserving conflicts instead of hiding them in one opaque score." />
+  <title>Multi-Objective Oracle Fusion · calyr.aí</title>
+  <link rel="stylesheet" href="./method.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">calyr.aí</a>
+    <div class="header-context"><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/pythia/">Pythia</a></div>
+  </header>
+  <div class="page-shell">
+    <aside class="contents">
+      <p class="contents-label">On this page</p>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-construct-an-oracle">Quick start: construct an Oracle</a></li><li><a href="#oracle-layers">Oracle layers</a></li><li><a href="#trait-contract">Trait contract</a></li><li><a href="#constraint-contract">Constraint contract</a></li><li><a href="#multi-objective-fusion">Multi-objective fusion</a></li><li><a href="#diversity-aware-selection">Diversity-aware selection</a></li><li><a href="#evidence-progression">Evidence progression</a></li><li><a href="#decision-proposal-contract">Decision proposal contract</a></li><li><a href="#closed-loop-update">Closed-loop update</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#failure-behavior">Failure behavior</a></li><li><a href="#reusable-method-boundary">Reusable-method boundary</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
+    </aside>
+    <main class="method-layout"><article><section class="method-hero"><h1 id="multi-objective-oracle-fusion">Multi-Objective Oracle Fusion</h1>
+<dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-ORACLE-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Scientific decision systems combining multiple trait-specific predictions, constraints, uncertainty, evidence, and experimental feedback</dd></div></dl>
+</section><section class="method-section"><h2 id="purpose">Purpose</h2>
+<p>An Oracle turns model outputs into a traceable decision proposal. It does not hide scientific disagreement inside one score and does not turn a surrogate prediction into evidence that has not been measured.</p>
+<p>The governing pattern is:</p>
+<p><code>trait models + uncertainty + constraints + evidence + diversity = ranked decision proposals</code></p>
+</section><section class="method-section"><h2 id="quick-start-construct-an-oracle">Quick start: construct an Oracle</h2>
+<ol>
+<li>define the decision, candidate space, hard constraints, controls, and experimental budget;</li>
+<li>define every trait separately, including units, direction, validity range, and evidence level;</li>
+<li>evaluate each trait with an independently testable model or observation contract;</li>
+<li>reject candidates that violate hard constraints or fall outside required applicability domains;</li>
+<li>preserve uncertainty and conflicts between traits;</li>
+<li>rank remaining candidates through explicit multi-objective logic;</li>
+<li>select a diverse batch rather than near-duplicate numerical winners;</li>
+<li>attach reasons, assumptions, limitations, provenance, and the next validation action;</li>
+<li>update the Oracle only after new observations pass their evidence and data-quality gates.</li>
+</ol>
+</section><section class="method-section"><h2 id="oracle-layers">Oracle layers</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Responsibility</th><th>Required output</th></tr></thead><tbody><tr><td>Design space</td><td>define allowed candidates and interventions</td><td>candidate schema, bounds, exclusions</td></tr><tr><td>Observations</td><td>register experimental and computational evidence</td><td>values, units, protocol, provenance</td></tr><tr><td>Trait models</td><td>predict one interpretable property at a time</td><td>distribution, interval, applicability status</td></tr><tr><td>Constraints</td><td>encode safety, physics, manufacturing, and project limits</td><td>pass, fail, or review-required decision</td></tr><tr><td>Fusion</td><td>compare compatible objectives without erasing conflicts</td><td>Pareto set and trade-off explanation</td></tr><tr><td>Diversity</td><td>prevent redundant selections</td><td>similarity measure and batch coverage</td></tr><tr><td>Evidence</td><td>state what is hypothesis, reproduced, retrospective, or prospective</td><td>evidence level and supporting artifacts</td></tr><tr><td>Action</td><td>propose the next candidate, experiment, or review</td><td>ranked proposal with rationale</td></tr></tbody></table></div>
+</section><section class="method-section"><h2 id="trait-contract">Trait contract</h2>
+<p>Every trait entering an Oracle should expose:</p>
+<pre><code>trait:
+  id: string
+  meaning: string
+  value: scalar | vector | distribution
+  unit: string
+  direction: maximize | minimize | target | constrain
+  interval: {lower: number, upper: number, level: number}
+  applicability: {status: in_domain | boundary | out_of_domain, reasons: [string]}
+  evidence_level: E0 | E1 | E2 | E3 | E4
+  model: {id: string, version: string, data_snapshot: string}
+  limitations: [string]</code></pre>
+<p>Traits with incompatible meaning, protocol, scale, or evidence must not be silently fused.</p>
+</section><section class="method-section"><h2 id="constraint-contract">Constraint contract</h2>
+<p>Constraints are evaluated before preference ranking.</p>
+<ul>
+<li><strong>Hard constraints</strong> block a candidate.</li>
+<li><strong>Review constraints</strong> require expert assessment or another measurement.</li>
+<li><strong>Soft preferences</strong> influence ranking but cannot override a hard failure.</li>
+<li><strong>Unknown constraints</strong> remain visible and reduce decision readiness.</li>
+</ul>
+<p>An out-of-domain prediction cannot pass a hard gate merely because its point estimate is favorable.</p>
+</section><section class="method-section"><h2 id="multi-objective-fusion">Multi-objective fusion</h2>
+<p>The default output is a Pareto set, not a single opaque optimum.</p>
+<p>Fusion should:</p>
+<ul>
+<li>retain trait-specific values and uncertainty;</li>
+<li>distinguish observed from predicted traits;</li>
+<li>avoid adding quantities with incompatible units or semantics;</li>
+<li>expose dominance relationships and trade-offs;</li>
+<li>test sensitivity to weights, thresholds, and uncertainty;</li>
+<li>report when rankings are unstable;</li>
+<li>allow explicit human preference without rewriting scientific evidence.</li>
+</ul>
+<p>A scalar score is permitted only when its utility function, scaling, weights, uncertainty treatment, and decision context are documented and reviewable.</p>
+</section><section class="method-section"><h2 id="diversity-aware-selection">Diversity-aware selection</h2>
+<p>Candidate selection should balance predicted value with information gain and coverage of the feasible space.</p>
+<p>The selected batch should report:</p>
+<ol>
+<li>exploitation candidates with strong supported performance;</li>
+<li>exploration candidates expected to reduce important uncertainty;</li>
+<li>controls and reference candidates;</li>
+<li>diversity across relevant structural, mechanistic, or design classes;</li>
+<li>the acquisition policy and its sensitivity.</li>
+</ol>
+</section><section class="method-section"><h2 id="evidence-progression">Evidence progression</h2>
+<ul>
+<li><code>E0</code> — concept or hypothesis;</li>
+<li><code>E1</code> — reproduced external baseline;</li>
+<li><code>E2</code> — internally validated retrospective result;</li>
+<li><code>E3</code> — prospective validation against predefined controls;</li>
+<li><code>E4</code> — repeated closed-loop validation across batches or contexts.</li>
+</ul>
+<p>The Oracle must display the evidence level of each trait and of the overall decision proposal. The overall level cannot exceed its critical unsupported component.</p>
+</section><section class="method-section"><h2 id="decision-proposal-contract">Decision proposal contract</h2>
+<pre><code>oracle_decision:
+  candidate_id: string
+  status: usable | review_required | blocked
+  pareto_status: non_dominated | dominated | unresolved
+  trait_results: [trait]
+  hard_constraints: [{id: string, status: pass | fail | unknown}]
+  tradeoffs: [string]
+  diversity_role: exploitation | exploration | control
+  evidence_level: E0 | E1 | E2 | E3 | E4
+  reasons: [string]
+  limitations: [string]
+  next_action: string</code></pre>
+</section><section class="method-section"><h2 id="closed-loop-update">Closed-loop update</h2>
+<p>The generic update loop is:</p>
+<p><code>constraints -&gt; candidate design -&gt; experiment -&gt; observations -&gt; trait models -&gt; Oracle fusion -&gt; validation -&gt; learning update</code></p>
+<p>Before updating models or rankings:</p>
+<ul>
+<li>preserve immutable raw observations;</li>
+<li>record protocol, source, license, checksum, and quality status;</li>
+<li>verify candidate and sample identifiers;</li>
+<li>compare the new result with the previous prediction;</li>
+<li>record success, failure, and unexplained delta;</li>
+<li>version the data, models, configuration, and acquisition policy.</li>
+</ul>
+</section><section class="method-section"><h2 id="validation-contract">Validation contract</h2>
+<p>Validate an Oracle on more than prediction accuracy:</p>
+<ul>
+<li>calibration and interval coverage per trait;</li>
+<li>constraint-violation rate;</li>
+<li>stability of the Pareto set;</li>
+<li>sensitivity to preference weights and thresholds;</li>
+<li>diversity and information value of selected batches;</li>
+<li>prospective hit rate against predefined controls;</li>
+<li>failure detection outside the applicability domain;</li>
+<li>reproducibility of rankings from frozen inputs;</li>
+<li>value of the proposed next experiment.</li>
+</ul>
+</section><section class="method-section"><h2 id="failure-behavior">Failure behavior</h2>
+<p>The Oracle must return <code>review_required</code> or <code>blocked</code> when:</p>
+<ul>
+<li>a critical trait is out of domain;</li>
+<li>a hard constraint fails or is unknown;</li>
+<li>uncertainty is too high for the decision;</li>
+<li>evidence sources conflict materially;</li>
+<li>ranking changes strongly under reasonable parameter choices;</li>
+<li>provenance, protocol, model version, or dataset version is missing;</li>
+<li>the requested conclusion exceeds the available evidence level.</li>
+</ul>
+</section><section class="method-section"><h2 id="reusable-method-boundary">Reusable-method boundary</h2>
+<p>This contract is informed by generalizable ideas from the Parvotec multi-oracle and closed-loop architecture. It does not include or transfer Parvotec data, model implementations, weights, features, candidates, rankings, validation results, contractual information, or other project-specific results.</p>
+</section><section class="method-section method-section--references"><h2 id="sources-and-further-reading">Sources and further reading</h2>
+<ul>
+<li><a href="/research/methods/scientific-ai-numerics/" rel="noreferrer">Scientific AI and Numerical Methods</a></li>
+<li>Pareto, Vilfredo. <em>Manual of Political Economy</em>.</li>
+<li>Deb, Kalyanmoy. <em>Multi-Objective Optimization Using Evolutionary Algorithms</em>. Wiley, 2001.</li>
+<li><a href="https://doi.org/10.1007/978-3-540-31880-4_13" rel="noreferrer">Expected hypervolume improvement</a></li>
+<li><a href="https://burrsettles.com/pub/settles.activelearning.pdf" rel="noreferrer">Active learning literature overview</a></li>
+</ul></section></article></main>
+  </div>
+</body>
+</html>

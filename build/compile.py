@@ -845,7 +845,7 @@ def _inline_markdown(value: str) -> str:
     """Render the small inline Markdown subset used by repository references."""
     rendered = escape(value)
     rendered = re.sub(r"`([^`]+)`", r"<code>\1</code>", rendered)
-    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+|#[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
+    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+|#[^)]+|/[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
     rendered = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", rendered)
     rendered = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", rendered)
     return rendered
@@ -954,22 +954,16 @@ def _markdown_document_html(markdown: str) -> str:
     return "\n".join(nodes)
 
 
-def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
-    """Publish the YAML-defined method catalog and its Markdown method pages."""
-    catalog = config.get("method_catalog", {}) if isinstance(config, dict) else {}
-    references = catalog.get("items", []) if isinstance(catalog, dict) else []
-    if not isinstance(catalog, dict) or not isinstance(references, list) or not references:
-        return {}
-
-    reference = references[0] if isinstance(references[0], dict) else {}
+def _render_method_reference_page(project_root: Path, reference: dict[str, Any]) -> bool:
+    """Render one Markdown-backed method contract to its configured route."""
     source_rel = str(reference.get("source", "")).strip()
     route = str(reference.get("route", "")).strip()
     if not source_rel or not route:
-        return {}
+        return False
     source_path = (project_root / source_rel).resolve()
     if not source_path.exists():
         print(f"⚠️  Missing method reference source: {source_rel}")
-        return {}
+        return False
 
     output_dir = project_root / "web" / "public" / route.strip("/")
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -993,7 +987,7 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
 <head>
   <meta charset=\"UTF-8\" />
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
-  <meta name=\"description\" content=\"calyr.aí scientific prediction method contract for numerics, AI, SAXS, SPR, and cryo-EM.\" />
+  <meta name=\"description\" content=\"{escape(str(reference.get('summary', 'calyr.aí scientific method contract.')), quote=True)}\" />
   <title>{title} · calyr.aí</title>
   <link rel=\"stylesheet\" href=\"./method.css\" />
 </head>
@@ -1015,6 +1009,19 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
     (output_dir / "index.html").write_text(html, encoding="utf-8")
     (output_dir / "method.css").write_text(_method_reference_css(), encoding="utf-8")
     print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
+    return True
+
+
+def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
+    """Publish the YAML-defined method catalog and its Markdown method pages."""
+    catalog = config.get("method_catalog", {}) if isinstance(config, dict) else {}
+    references = catalog.get("items", []) if isinstance(catalog, dict) else []
+    if not isinstance(catalog, dict) or not isinstance(references, list) or not references:
+        return {}
+
+    for reference in references:
+        if isinstance(reference, dict) and reference.get("source") and reference.get("route"):
+            _render_method_reference_page(project_root, reference)
 
     catalog_route = str(catalog.get("route", "/research/methods/")).strip()
     catalog_dir = project_root / "web" / "public" / catalog_route.strip("/")
