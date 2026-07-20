@@ -356,6 +356,27 @@
       "traceable"
     ]
   },
+  "interface_catalog": {
+    "title": "interface catalog",
+    "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
+    "body_preview": "The calyr.a\u00ed interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.",
+    "route": "/research/interfaces/",
+    "icon": "panels-top-left",
+    "keywords": [
+      "action.",
+      "and",
+      "catalog",
+      "connect",
+      "controlled",
+      "evidence",
+      "interface",
+      "interfaces",
+      "questions",
+      "scientific",
+      "to",
+      "visible"
+    ]
+  },
   "pythia_saxs": {
     "title": "SAXS System",
     "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",

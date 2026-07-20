@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A growing system of graphical interface contracts for scientific models, evidence, uncertainty, exploration, and decisions." />
+  <title>calyr.aí graphical interface catalog · calyr.aí</title>
+  <link rel="stylesheet" href="./interfaces.css" />
+</head>
+<body>
+  <header><a class="brand" href="/">calyr.aí</a><nav><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/lithos/">LITHOS</a></nav></header>
+  <main>
+    <section class="hero"><p class="eyebrow">graphical intelligence</p><h1>calyr.aí graphical interface catalog</h1><p class="lead">A growing system of graphical interface contracts for scientific models, evidence, uncertainty, exploration, and decisions.</p><div class="hero-count"><strong>08</strong><span>interface contracts</span></div></section>
+    <section class="principles"><p>Shared rules</p><ol><li>question before chart</li><li>evidence before decoration</li><li>uncertainty stays visible</li><li>overview and detail remain connected</li><li>every interaction has a reversible state</li><li>adaptation must preserve user control</li></ol></section>
+    <section class="catalog"><div class="catalog-heading"><span>Catalog index</span><span>Each entry is a testable interface contract, not a visual style.</span></div>
+      <article class="interface-card" id="calyr-ui-overview-001">
+        <div class="card-index"><span>01</span><span>Orientation</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-OVERVIEW-001</p><h2>Overview and Orientation</h2><p class="purpose">Establish what exists, what changed, what requires attention, and where the user can go next.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>system state, entities, alerts, provenance, time</dd></div>
+          <div><dt>Core interactions</dt><dd>filter, focus, drill down, restore overview</dd></div>
+          <div><dt>Must show</dt><dd>scope, freshness, missingness, active filters, provenance</dd></div>
+          <div><dt>Validation gate</dt><dd>A user can explain the current state and reach one relevant detail without losing context.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-compare-001">
+        <div class="card-index"><span>02</span><span>Analytical comparison</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-COMPARE-001</p><h2>Comparison and Trade-offs</h2><p class="purpose">Compare candidates, scenarios, models, or observations without hiding incompatible quantities or trade-offs.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>aligned entities, traits, units, uncertainty, reference state</dd></div>
+          <div><dt>Core interactions</dt><dd>align, sort, normalize visibly, brush, pin, compare</dd></div>
+          <div><dt>Must show</dt><dd>units, baseline, uncertainty, missing values, normalization</dd></div>
+          <div><dt>Validation gate</dt><dd>The same conclusion remains explainable when order, scale, and reference point change.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-uncertainty-001">
+        <div class="card-index"><span>03</span><span>Trust and limits</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-UNCERTAINTY-001</p><h2>Uncertainty and Applicability</h2><p class="purpose">Show what a model predicts, how uncertain it is, and whether the request lies within supported evidence.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>distributions, intervals, calibration, applicability status, model version</dd></div>
+          <div><dt>Core interactions</dt><dd>inspect interval, change confidence level, compare models, reveal support</dd></div>
+          <div><dt>Must show</dt><dd>point estimate, interval, calibration context, in-domain status, limitations</dd></div>
+          <div><dt>Validation gate</dt><dd>Users distinguish prediction, uncertainty, applicability, and observed evidence without instruction.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-graph-001">
+        <div class="card-index"><span>04</span><span>Relational exploration</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-GRAPH-001</p><h2>Knowledge Graph and Provenance</h2><p class="purpose">Navigate entities, claims, evidence, and dependencies while preserving why each relationship exists.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>typed nodes, typed edges, source records, confidence, time</dd></div>
+          <div><dt>Core interactions</dt><dd>expand, collapse, traverse, filter relation, inspect source, return to path</dd></div>
+          <div><dt>Must show</dt><dd>relation type, direction, provenance, confidence, current path</dd></div>
+          <div><dt>Validation gate</dt><dd>A user can reconstruct a claim&#x27;s evidence path and return to the original context.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-spatial-001">
+        <div class="card-index"><span>05</span><span>Geometry and structure</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-SPATIAL-001</p><h2>Spatial and Structural Viewer</h2><p class="purpose">Connect measurements, simulation fields, annotations, and model outputs to physical or molecular structure.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>geometry, coordinates, fields, layers, annotations, scale</dd></div>
+          <div><dt>Core interactions</dt><dd>rotate, slice, zoom, select, register, compare layers</dd></div>
+          <div><dt>Must show</dt><dd>orientation, scale, coordinate frame, layer source, resolution</dd></div>
+          <div><dt>Validation gate</dt><dd>View manipulation cannot silently change the scientific meaning of the displayed quantity.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-workflow-001">
+        <div class="card-index"><span>06</span><span>Process control</span><span>Contract seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-WORKFLOW-001</p><h2>Experiment and Workflow</h2><p class="purpose">Make the path from design through execution, evidence, validation, and update visible and controllable.</p></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>steps, dependencies, artifacts, owners, gates, runtime state</dd></div>
+          <div><dt>Core interactions</dt><dd>inspect step, compare runs, approve gate, retry, branch, annotate</dd></div>
+          <div><dt>Must show</dt><dd>state, inputs, outputs, owner, version, failure, next gate</dd></div>
+          <div><dt>Validation gate</dt><dd>Every result can be traced to a reproducible run and every intervention is attributable.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-oracle-001">
+        <div class="card-index"><span>07</span><span>Decision support</span><span>Working contract</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-ORACLE-001</p><h2>Decision and Oracle</h2><p class="purpose">Turn evidence, constraints, uncertainty, and trade-offs into traceable proposals without automating away judgment.</p><a class="related" href="/research/methods/oracling/">Open Oracling contract →</a></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>traits, constraints, evidence levels, Pareto set, rationale, next action</dd></div>
+          <div><dt>Core interactions</dt><dd>inspect reason, vary preference, compare frontier, defer, approve, request evidence</dd></div>
+          <div><dt>Must show</dt><dd>hard failures, unknowns, trade-offs, sensitivity, evidence level, abstention</dd></div>
+          <div><dt>Validation gate</dt><dd>A reviewer can reproduce why a proposal is usable, blocked, or requires review.</dd></div>
+        </dl>
+      </article>
+      <article class="interface-card" id="calyr-ui-adaptive-001">
+        <div class="card-index"><span>08</span><span>Adaptive composition</span><span>Architecture seed</span></div>
+        <div class="card-main"><p class="contract-id">CALYR-UI-ADAPTIVE-001</p><h2>Adaptive Interface and LITHOS</h2><p class="purpose">Compose the interface around the active question, data, model, risk, and user role while preserving a stable interaction grammar.</p><a class="related" href="/research/platforms/lithos/">Open LITHOS →</a></div>
+        <dl class="contract-grid">
+          <div><dt>Inputs</dt><dd>task contract, model schema, available evidence, user role, risk state</dd></div>
+          <div><dt>Core interactions</dt><dd>reveal, recommend view, rearrange, explain adaptation, lock layout, reset</dd></div>
+          <div><dt>Must show</dt><dd>why the interface changed, persistent state, available alternatives, reset path</dd></div>
+          <div><dt>Validation gate</dt><dd>Adaptation reduces task effort without hiding evidence, moving critical controls unexpectedly, or removing user agency.</dd></div>
+        </dl>
+      </article></section>
+    <section class="reading"><div><p class="eyebrow">Foundations</p><h2>Read to design and validate</h2></div><ol><li><a href="https://ieeexplore.ieee.org/document/545307">The Eyes Have It — task by data type taxonomy</a><span>Ben Shneiderman · 1996</span><p>Overview first, zoom and filter, then details on demand.</p></li><li><a href="https://doi.org/10.1109/TVCG.2009.111">A Nested Model for Visualization Design and Validation</a><span>Tamara Munzner · 2009</span><p>Validate domain problem, abstraction, encoding and interaction, and algorithm separately.</p></li><li><a href="https://doi.org/10.1109/TVCG.2012.213">Design Study Methodology</a><span>Sedlmair, Meyer, and Munzner · 2012</span><p>Ground interface work in real tasks, evidence, and reflective validation.</p></li><li><a href="https://doi.org/10.1109/TVCG.2011.185">D3 — Data-Driven Documents</a><span>Bostock, Ogievetsky, and Heer · 2011</span><p>Bind visible graphical state to data and explicit transformations.</p></li></ol></section>
+  </main>
+</body>
+</html>

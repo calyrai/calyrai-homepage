@@ -359,7 +359,7 @@ pythia:
   icon: compass
   route: /research/platforms/pythia/index.html
   render:
-    grid_span: 8
+    grid_span: 6
 method_catalog:
   title: method catalog
   tile_lead: scientific practice
@@ -372,7 +372,20 @@ method_catalog:
   icon: book
   route: /research/methods/
   render:
-    grid_span: 4
+    grid_span: 3
+interface_catalog:
+  title: interface catalog
+  tile_lead: graphical intelligence
+  tile_accent: cyan
+  tile_title: interface catalog
+  tile_summary: reusable graphical interfaces for evidence, models, uncertainty, and decisions
+  subtitle: The growing calyr.aí graphical interface system
+  summary: Interfaces connect scientific questions to visible evidence and controlled action.
+  body: The calyr.aí interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.
+  icon: panels-top-left
+  route: /research/interfaces/
+  render:
+    grid_span: 3
 pythia_saxs:
   title: SAXS System
   tile_lead: molecular assembly

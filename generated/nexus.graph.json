@@ -181,6 +181,15 @@
       }
     },
     {
+      "id": "interface_catalog",
+      "label": "interface catalog",
+      "data": {
+        "title": "interface catalog",
+        "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
+        "icon": "panels-top-left"
+      }
+    },
+    {
       "id": "pythia_saxs",
       "label": "SAXS System",
       "data": {

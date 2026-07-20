@@ -25,6 +25,7 @@ applications:
   children:
     - pythia
     - method_catalog
+    - interface_catalog
 
 applied:
 

@@ -172,6 +172,7 @@ System-level contracts:
 - Parvotec-informed catalog architecture and reusable-method boundary: `docs/parvotec-informed-method-catalog-structure.md`
 - Oracling method contract: `docs/oracling.md` (`CALYR-METHOD-ORACLE-001`)
 - Oracling Reading Room: `docs/oracling-reading-room.md` (`CALYR-ROOM-ORACLE-001`)
+- Graphical Interface Catalog: `content/books.yaml` (`interface_catalog`) → `/research/interfaces/`
 
 Concrete page mapping:
 
