@@ -1007,7 +1007,8 @@ def _render_method_reference_page(project_root: Path, reference: dict[str, Any])
 </html>
 """
     (output_dir / "index.html").write_text(html, encoding="utf-8")
-    (output_dir / "method.css").write_text(_method_reference_css(), encoding="utf-8")
+    eyebrow = str(reference.get("eyebrow", "calyr.aí method contract · 001"))
+    (output_dir / "method.css").write_text(_method_reference_css(eyebrow), encoding="utf-8")
     print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
     return True
 
@@ -1022,6 +1023,11 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
     for reference in references:
         if isinstance(reference, dict) and reference.get("source") and reference.get("route"):
             _render_method_reference_page(project_root, reference)
+
+    resources = catalog.get("resources", []) if isinstance(catalog.get("resources"), list) else []
+    for resource in resources:
+        if isinstance(resource, dict) and resource.get("source") and resource.get("route"):
+            _render_method_reference_page(project_root, resource)
 
     catalog_route = str(catalog.get("route", "/research/methods/")).strip()
     catalog_dir = project_root / "web" / "public" / catalog_route.strip("/")
@@ -1111,8 +1117,8 @@ main { width:min(1200px,92vw); margin:0 auto 100px; }
 """.strip() + "\n"
 
 
-def _method_reference_css() -> str:
-    return """
+def _method_reference_css(eyebrow: str = "calyr.aí method contract · 001") -> str:
+    stylesheet = """
 :root { color-scheme: dark; --ink: #f5f5f2; --soft: #a7abb0; --paper: #050505; --card: #090909; --line: #343434; --accent: #39bfff; --accent-strong: #39bfff; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -1135,7 +1141,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 article { display: block; counter-reset: method-section; }
 .method-hero, .method-section { background: var(--card); border-bottom: 1px solid var(--line); padding: clamp(30px, 5vw, 72px); }
 .method-hero { position: relative; overflow: hidden; min-height: 520px; padding-top: clamp(48px, 8vw, 100px); }
-.method-hero::before { content: "calyr.aí method contract · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+.method-hero::before { content: "__METHOD_EYEBROW__"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
 .method-hero::after { display: none; }
 .method-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:42px 0 0; border-top:1px solid var(--line); border-left:1px solid var(--line); }
 .method-meta div { min-width:0; padding:14px 16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
@@ -1163,8 +1169,9 @@ td { color: var(--soft); }
 .method-section ul, .method-section ol { display: grid; gap: 7px; padding-left: 1.3rem; }
 .method-section li::marker { color: var(--accent-strong); }
 @media (max-width: 980px) { .page-shell { display: block; width: min(900px, 94vw); } .contents { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); } .contents ol { columns: 2; column-gap: 28px; } }
-@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context a:first-child { display: none; } .contents ol { columns: 1; } .method-hero, .method-section { min-height:0; padding: 34px 20px; } .method-section { padding-left: 54px; } .method-section::before { left: 18px; top: 38px; } .method-meta { grid-template-columns:1fr; } h1 { font-size: 2.5rem; } }
+@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context a:first-child { display: none; } .contents { max-height: 245px; overflow-y: auto; padding: 20px; } .contents ol { columns: 1; } .contents a { padding-block: 4px; } .method-hero, .method-section { min-height:0; padding: 34px 20px; } .method-section { padding-left: 54px; } .method-section::before { left: 18px; top: 38px; } .method-meta { grid-template-columns:1fr; } h1 { font-size: 2.5rem; } }
 """.strip() + "\n"
+    return stylesheet.replace("__METHOD_EYEBROW__", eyebrow.replace('"', '\\"'))
 
 
 def _sync_positioning_page_from_yaml(project_root: Path) -> None:

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A curated reading path from calibrated prediction to constrained, multi-objective decisions and the next informative action." />
+  <title>Oracling Reading Room · calyr.aí</title>
+  <link rel="stylesheet" href="./method.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">calyr.aí</a>
+    <div class="header-context"><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/pythia/">Pythia</a></div>
+  </header>
+  <div class="page-shell">
+    <aside class="contents">
+      <p class="contents-label">On this page</p>
+      <nav aria-label="Method reference sections"><ol><li><a href="#read-this-room-to-do-something">Read this room to do something</a></li><li><a href="#core-route-90-minutes">Core route: 90 minutes</a></li><li><a href="#shelf-01-calibrated-uncertainty">Shelf 01 — calibrated uncertainty</a></li><li><a href="#shelf-02-constraints-and-feasibility">Shelf 02 — constraints and feasibility</a></li><li><a href="#shelf-03-pareto-decisions-not-hidden-scores">Shelf 03 — Pareto decisions, not hidden scores</a></li><li><a href="#shelf-04-next-experiment-and-model-criticism">Shelf 04 — next experiment and model criticism</a></li><li><a href="#shelf-05-abstention-and-human-review">Shelf 05 — abstention and human review</a></li><li><a href="#reading-to-implementation-map">Reading-to-implementation map</a></li><li><a href="#reading-discipline">Reading discipline</a></li><li><a href="#boundaries-that-must-stay-visible">Boundaries that must stay visible</a></li><li><a href="#return-to-the-method">Return to the method</a></li></ol></nav>
+    </aside>
+    <main class="method-layout"><article><section class="method-hero"><h1 id="oracling-reading-room">Oracling Reading Room</h1>
+<dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-ROOM-ORACLE-001</code></dd></div><div><dt>Status</dt><dd>Living reading room</dd></div><div><dt>Scope</dt><dd>Oracling only — turning evidence and uncertain predictions into constrained, explainable decisions and the next informative action</dd></div></dl>
+</section><section class="method-section"><h2 id="read-this-room-to-do-something">Read this room to do something</h2>
+<p>This is not a bibliography. It is a working route through the ideas required to build an Oracle that knows what it predicts, what it does not know, which candidates are admissible, which trade-offs remain, and what should happen next.</p>
+<p>Start with the <strong>core route</strong>. Open the deeper shelves only when the current Oracle exposes a concrete failure: poor calibration, unknown feasibility, unstable trade-offs, redundant experiments, or a decision that should be deferred.</p>
+</section><section class="method-section"><h2 id="core-route-90-minutes">Core route: 90 minutes</h2>
+<div class="table-wrap"><table><thead><tr><th>Order</th><th>Paper</th><th>Read for</th><th>Oracling output</th></tr></thead><tbody><tr><td>01</td><td><a href="https://proceedings.mlr.press/v70/guo17a.html" rel="noreferrer">On Calibration of Modern Neural Networks</a> — Guo et al., 2017</td><td>why confidence is not automatically probability</td><td>a calibration check per trait</td></tr><tr><td>02</td><td><a href="https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html" rel="noreferrer">Deep Ensembles</a> — Lakshminarayanan et al., 2017</td><td>a practical uncertainty baseline</td><td>predictive distributions, not isolated point estimates</td></tr><tr><td>03</td><td><a href="https://proceedings.mlr.press/v37/hernandez-lobatob15.html" rel="noreferrer">Predictive Entropy Search with Unknown Constraints</a> — Hernández-Lobato et al., 2015</td><td>learning the optimum and feasibility together</td><td>an explicit unknown-constraint state</td></tr><tr><td>04</td><td><a href="https://proceedings.neurips.cc/paper/2020/hash/6fec24eac8f18ed793f5eaad3dd7977c-Abstract.html" rel="noreferrer">Differentiable Expected Hypervolume Improvement</a> — Daulton et al., 2020</td><td>choosing batches without collapsing objectives into one score</td><td>a Pareto-aware acquisition policy</td></tr><tr><td>05</td><td><a href="https://papers.nips.cc/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html" rel="noreferrer">Selective Classification for Deep Neural Networks</a> — Geifman and El-Yaniv, 2017</td><td>trading coverage for controlled risk</td><td>a principled <code>review_required</code> or abstain path</td></tr></tbody></table></div>
+<p>After this route, write one page that names the traits, hard constraints, uncertainty representation, Pareto logic, and abstention rule of the Oracle. If any of those five fields is missing, the system is not decision-ready.</p>
+</section><section class="method-section"><h2 id="shelf-01-calibrated-uncertainty">Shelf 01 — calibrated uncertainty</h2>
+<h3 id="on-calibration-of-modern-neural-networks">On Calibration of Modern Neural Networks</h3>
+<p><a href="https://proceedings.mlr.press/v70/guo17a.html" rel="noreferrer">Paper and code references</a> · Guo, Pleiss, Sun, and Weinberger · ICML 2017</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>modern neural networks can be accurate and still misstate confidence. Temperature scaling provides a strong, simple post-hoc baseline.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>report calibration and interval coverage separately for every trait and evidence regime. Never interpret an uncalibrated model score as decision probability.</dd></div></dl>
+<h3 id="simple-and-scalable-predictive-uncertainty-estimation-using-deep-ensembles">Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles</h3>
+<p><a href="https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html" rel="noreferrer">Paper</a> · Lakshminarayanan, Pritzel, and Blundell · NeurIPS 2017</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>it is a practical, competitive uncertainty baseline that is straightforward to reproduce.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>compare the Oracle&#x27;s uncertainty mechanism against an ensemble baseline before adopting a more elaborate method.</dd></div></dl>
+<h3 id="conformalized-quantile-regression">Conformalized Quantile Regression</h3>
+<p><a href="https://papers.nips.cc/paper_files/paper/2019/hash/5103c3584b063c431bd1268e9b5e76fb-Abstract.html" rel="noreferrer">Paper</a> · Romano, Patterson, and Candès · NeurIPS 2019</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>conformalization adds finite-sample marginal coverage while allowing interval width to adapt to heteroscedasticity.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>construct auditable prediction intervals when coverage matters more than a fully specified probabilistic model. State the exchangeability assumptions and test them against domain shift.</dd></div></dl>
+<h3 id="simple-and-principled-uncertainty-estimation-with-deterministic-deep-learning-via-distance-awareness">Simple and Principled Uncertainty Estimation with Deterministic Deep Learning via Distance Awareness</h3>
+<p><a href="https://papers.nips.cc/paper_files/paper/2020/hash/543e83748234f7cbab21aa0ade66565f-Abstract.html" rel="noreferrer">Paper</a> · Liu et al. · NeurIPS 2020</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>spectral-normalized neural Gaussian processes connect uncertainty to distance awareness without requiring a full ensemble.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>examine whether uncertainty rises away from training support. Treat this as an applicability signal, not automatic proof of out-of-domain detection.</dd></div></dl>
+</section><section class="method-section"><h2 id="shelf-02-constraints-and-feasibility">Shelf 02 — constraints and feasibility</h2>
+<h3 id="predictive-entropy-search-for-bayesian-optimization-with-unknown-constraints">Predictive Entropy Search for Bayesian Optimization with Unknown Constraints</h3>
+<p><a href="https://proceedings.mlr.press/v37/hernandez-lobatob15.html" rel="noreferrer">Paper</a> · Hernández-Lobato et al. · ICML 2015</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>the acquisition function seeks information about the constrained optimum while feasibility itself is uncertain.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>keep <code>fail</code>, <code>pass</code>, and <code>unknown</code> distinct. Select experiments that resolve consequential unknown constraints instead of treating missing evidence as a soft penalty.</dd></div></dl>
+<h3 id="scalable-constrained-bayesian-optimization">Scalable Constrained Bayesian Optimization</h3>
+<p><a href="https://proceedings.mlr.press/v130/eriksson21a.html" rel="noreferrer">Paper</a> · Eriksson and Poloczek · AISTATS 2021</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>SCBO handles many constraints and high-dimensional search through local trust regions.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>use trust regions when global surrogate confidence is implausible. Record the region in which each recommendation is valid.</dd></div></dl>
+</section><section class="method-section"><h2 id="shelf-03-pareto-decisions-not-hidden-scores">Shelf 03 — Pareto decisions, not hidden scores</h2>
+<h3 id="differentiable-expected-hypervolume-improvement-for-parallel-multi-objective-bayesian-optimization">Differentiable Expected Hypervolume Improvement for Parallel Multi-Objective Bayesian Optimization</h3>
+<p><a href="https://proceedings.neurips.cc/paper/2020/hash/6fec24eac8f18ed793f5eaad3dd7977c-Abstract.html" rel="noreferrer">Paper</a> · Daulton, Balandat, and Bakshy · NeurIPS 2020</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>qEHVI provides a differentiable, batch-aware route to expected hypervolume improvement.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>propose a batch that expands the supported Pareto frontier. Keep the reference point, objective directions, and normalization visible because all three shape the recommendation.</dd></div></dl>
+<h3 id="practical-bayesian-optimization-of-machine-learning-algorithms">Practical Bayesian Optimization of Machine Learning Algorithms</h3>
+<p><a href="https://papers.nips.cc/paper_files/paper/2012/hash/05311655a15b75fab86956663e1819cd-Abstract.html" rel="noreferrer">Paper</a> · Snoek, Larochelle, and Adams · NeurIPS 2012</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>a canonical operational account of Bayesian optimization, including variable evaluation cost and parallel experiments.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>make experimental cost and batch execution part of acquisition rather than post-hoc logistics.</dd></div></dl>
+</section><section class="method-section"><h2 id="shelf-04-next-experiment-and-model-criticism">Shelf 04 — next experiment and model criticism</h2>
+<h3 id="on-the-role-of-model-uncertainties-in-bayesian-optimisation">On the role of model uncertainties in Bayesian optimisation</h3>
+<p><a href="https://proceedings.mlr.press/v216/foldager23a.html" rel="noreferrer">Paper</a> · Foldager et al. · UAI 2023</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>it distinguishes uncertainty quality from downstream optimization behavior and tests whether uncertainty estimates actually help acquisition.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>evaluate the proposed next experiment by decision value, not by uncertainty aesthetics. Compare against simple acquisition baselines.</dd></div></dl>
+<h3 id="active-learning-literature-survey">Active Learning Literature Survey</h3>
+<p><a href="https://burrsettles.com/pub/settles.activelearning.pdf" rel="noreferrer">Survey</a> · Burr Settles · 2009</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>it gives the vocabulary for pool-based selection, query synthesis, uncertainty sampling, expected model change, and density weighting.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>name the acquisition rationale for each exploration candidate and test whether it reduces the uncertainty that can change a decision.</dd></div></dl>
+</section><section class="method-section"><h2 id="shelf-05-abstention-and-human-review">Shelf 05 — abstention and human review</h2>
+<h3 id="selective-classification-for-deep-neural-networks">Selective Classification for Deep Neural Networks</h3>
+<p><a href="https://papers.nips.cc/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html" rel="noreferrer">Paper</a> · Geifman and El-Yaniv · NeurIPS 2017</p>
+<dl class="method-meta"><div><dt>Why read</dt><dd>selective prediction formalizes the risk–coverage trade-off by allowing a model to reject cases.</dd></div></dl>
+<dl class="method-meta"><div><dt>Use in Oracling</dt><dd>define when the Oracle returns <code>usable</code>, <code>review_required</code>, or <code>blocked</code>. Measure risk against coverage rather than rewarding a system for answering every case.</dd></div></dl>
+</section><section class="method-section"><h2 id="reading-to-implementation-map">Reading-to-implementation map</h2>
+<div class="table-wrap"><table><thead><tr><th>If the Oracle fails here</th><th>Read first</th><th>Implement or test next</th></tr></thead><tbody><tr><td>confidence is unreliable</td><td>Guo et al.; Romano et al.</td><td>reliability diagram, expected calibration error, interval coverage by subgroup</td></tr><tr><td>uncertainty stays low out of domain</td><td>Deep Ensembles; Liu et al.</td><td>ensemble disagreement, distance-aware baseline, applicability stress test</td></tr><tr><td>feasibility is partly unknown</td><td>Hernández-Lobato et al.; Eriksson and Poloczek</td><td>explicit constraint models, unknown state, constrained acquisition</td></tr><tr><td>one score hides trade-offs</td><td>Daulton et al.</td><td>Pareto set, reference-point sensitivity, hypervolume contribution</td></tr><tr><td>proposed experiments are redundant</td><td>Settles; Foldager et al.</td><td>acquisition ablation, diversity constraint, information-value audit</td></tr><tr><td>the system should sometimes refuse</td><td>Geifman and El-Yaniv</td><td>abstention threshold, risk–coverage curve, review queue</td></tr></tbody></table></div>
+</section><section class="method-section"><h2 id="reading-discipline">Reading discipline</h2>
+<p>For every paper adopted into the method catalog, record:</p>
+<ol>
+<li>the Oracle failure it is meant to address;</li>
+<li>its assumptions and the conditions under which they fail;</li>
+<li>the smallest reproducible baseline;</li>
+<li>the metric that would falsify its usefulness;</li>
+<li>the evidence level achieved by the local implementation;</li>
+<li>the exact decision contract field it changes.</li>
+</ol>
+<p>Do not import a method because it is sophisticated. Import it only when it improves a traceable decision, detects a failure, or selects a more informative next action.</p>
+</section><section class="method-section"><h2 id="boundaries-that-must-stay-visible">Boundaries that must stay visible</h2>
+<ul>
+<li>prediction is not decision;</li>
+<li>confidence is not calibrated probability;</li>
+<li>uncertainty is not evidence;</li>
+<li>preference is not constraint;</li>
+<li>a Pareto set is not a single optimum;</li>
+<li>novelty is not information value;</li>
+<li>a proposed experiment is not a validated result;</li>
+<li>abstention is a valid output, not a system failure.</li>
+</ul>
+</section><section class="method-section"><h2 id="return-to-the-method">Return to the method</h2>
+<p>Apply these readings through the <a href="/research/methods/oracling/" rel="noreferrer">Oracling Method Contract</a>. The contract defines what the Oracle must expose; this room explains why those fields and failure states exist.</p></section></article></main>
+  </div>
+</body>
+</html>
