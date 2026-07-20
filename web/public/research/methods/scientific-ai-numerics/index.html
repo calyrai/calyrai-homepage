@@ -15,7 +15,7 @@
   <div class="page-shell">
     <aside class="contents">
       <p class="contents-label">On this page</p>
-      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#source-references">Source references</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li></ol></nav>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-apply-the-method">Quick start: apply the method</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
     </aside>
     <main class="method-layout"><article><section class="method-hero"><h1 id="scientific-ai-and-numerical-methods-reference">Scientific AI and Numerical Methods Reference</h1>
 <dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-NR-AI-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Pythia surrogate prediction, SAXS, SPR, cryo-EM, and related scientific-AI implementations</dd></div></dl>
@@ -30,6 +30,18 @@
 <p>The governing pattern is:</p>
 <p><code>numerics + neural representation + probabilistic inference = trustworthy scientific prediction</code></p>
 <p>Code should reference this document when an implementation choice depends on these methodological principles.</p>
+</section><section class="method-section"><h2 id="quick-start-apply-the-method">Quick start: apply the method</h2>
+<p>For a new scientific prediction task, work through these steps in order:</p>
+<ol>
+<li>define the observable, units, admissible inputs, and decision that the prediction must support;</li>
+<li>implement the simplest defensible numerical or physical baseline;</li>
+<li>add the learned representation only where it provides measurable value over that baseline;</li>
+<li>expose uncertainty, applicability-domain status, provenance, assumptions, and limitations with every prediction;</li>
+<li>validate on held-out or prospective evidence and block unsupported extrapolation;</li>
+<li>record the relevant method anchor in code and tests;</li>
+<li>propose the next measurement or simulation when the evidence is insufficient.</li>
+</ol>
+<p>Start with the <a href="#prediction-contract" rel="noreferrer">prediction contract</a>. Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the <a href="#validation-contract" rel="noreferrer">validation contract</a>.</p>
 </section><section class="method-section"><h2 id="how-code-should-reference-this-contract">How code should reference this contract</h2>
 <p>Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:</p>
 <pre><code>Method: CALYR-METHOD-NR-AI-001
@@ -46,28 +58,6 @@ See: docs/scientific-ai-numerics-reference.md#prediction-contract</code></pre>
 <li><code>#validation-contract</code></li>
 </ul>
 <p>Do not paste long explanations into source files. Keep the reasoning here and make code comments point to the stable section.</p>
-</section><section class="method-section"><h2 id="source-references">Source references</h2>
-<h3 id="numerical-methods">Numerical methods</h3>
-<ul>
-<li><a href="https://numerical.recipes/" rel="noreferrer">Numerical Recipes official website</a></li>
-<li><a href="https://numerical.recipes/book.html" rel="noreferrer">Third Edition online book</a></li>
-<li><a href="https://numerical.recipes/routines/" rel="noreferrer">Third Edition routine index</a></li>
-<li><a href="https://numerical.recipes/routines/instc.html" rel="noreferrer">Official legacy C routines</a></li>
-<li><a href="https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf" rel="noreferrer">Cambridge front matter and license information</a></li>
-</ul>
-<p>Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. <em>Numerical Recipes: The Art of Scientific Computing</em>. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</p>
-<h3 id="neural-representation">Neural representation</h3>
-<ul>
-<li><a href="https://www.bishopbook.com/" rel="noreferrer">Bishop and Bishop official book website</a></li>
-<li><a href="https://link.springer.com/book/10.1007/978-3-031-45468-4" rel="noreferrer">Springer table of contents</a></li>
-</ul>
-<p>Bishop, Christopher M.; Bishop, Hugh. <em>Deep Learning: Foundations and Concepts</em>. Springer, 2024. DOI <a href="https://doi.org/10.1007/978-3-031-45468-4" rel="noreferrer">10.1007/978-3-031-45468-4</a>.</p>
-<h3 id="probabilistic-inference">Probabilistic inference</h3>
-<ul>
-<li><a href="https://probml.github.io/book2" rel="noreferrer">Murphy official open-access book page</a></li>
-<li><a href="https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/" rel="noreferrer">MIT Press book page</a></li>
-</ul>
-<p>Murphy, Kevin P. <em>Probabilistic Machine Learning: Advanced Topics</em>. MIT Press, 2023. ISBN 978-0-262-04843-9.</p>
 </section><section class="method-section"><h2 id="division-of-responsibility">Division of responsibility</h2>
 <div class="table-wrap"><table><thead><tr><th>Layer</th><th>Primary reference</th><th>Responsibility</th></tr></thead><tbody><tr><td>Numerical operators</td><td>Numerical Recipes and maintained libraries</td><td>stable transforms, solvers, optimization, integration, inverse methods</td></tr><tr><td>Neural representation</td><td>Bishop and Bishop</td><td>CNNs, transformers, GNNs, autoencoders, latent representations</td></tr><tr><td>Probabilistic inference</td><td>Murphy</td><td>posterior inference, uncertainty, generative models, distribution shift, decisions</td></tr><tr><td>Scientific meaning</td><td>domain model and experimental protocol</td><td>physical constraints, observables, admissible conclusions, next experiment</td></tr></tbody></table></div>
 <p>No one layer may silently replace another. A neural network does not replace the physical definition of an observable. A numerical fit does not by itself establish identifiability. A posterior does not become a decision without an explicit loss, constraint, or utility rule.</p>
@@ -239,7 +229,30 @@ src/
   surrogates/               # neural representations
   inference/                # probabilistic inference
   validation/               # calibration and applicability gates</code></pre>
-<p>This contract is implementation-language independent and may be referenced from Python, C++, JavaScript, YAML, notebooks, tests, and design documents.</p></section></article></main>
+<p>This contract is implementation-language independent and may be referenced from Python, C++, JavaScript, YAML, notebooks, tests, and design documents.</p>
+</section><section class="method-section method-section--references"><h2 id="sources-and-further-reading">Sources and further reading</h2>
+<p>The method above is the operational part. The following links provide the underlying literature, algorithm references, and licensing context.</p>
+<h3 id="numerical-methods">Numerical methods</h3>
+<ul>
+<li><a href="https://numerical.recipes/" rel="noreferrer">Numerical Recipes official website</a></li>
+<li><a href="https://numerical.recipes/book.html" rel="noreferrer">Third Edition online book</a></li>
+<li><a href="https://numerical.recipes/routines/" rel="noreferrer">Third Edition routine index</a></li>
+<li><a href="https://numerical.recipes/routines/instc.html" rel="noreferrer">Official legacy C routines</a></li>
+<li><a href="https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf" rel="noreferrer">Cambridge front matter and license information</a></li>
+</ul>
+<p>Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. <em>Numerical Recipes: The Art of Scientific Computing</em>. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</p>
+<h3 id="neural-representation">Neural representation</h3>
+<ul>
+<li><a href="https://www.bishopbook.com/" rel="noreferrer">Bishop and Bishop official book website</a></li>
+<li><a href="https://link.springer.com/book/10.1007/978-3-031-45468-4" rel="noreferrer">Springer table of contents</a></li>
+</ul>
+<p>Bishop, Christopher M.; Bishop, Hugh. <em>Deep Learning: Foundations and Concepts</em>. Springer, 2024. DOI <a href="https://doi.org/10.1007/978-3-031-45468-4" rel="noreferrer">10.1007/978-3-031-45468-4</a>.</p>
+<h3 id="probabilistic-inference">Probabilistic inference</h3>
+<ul>
+<li><a href="https://probml.github.io/book2" rel="noreferrer">Murphy official open-access book page</a></li>
+<li><a href="https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/" rel="noreferrer">MIT Press book page</a></li>
+</ul>
+<p>Murphy, Kevin P. <em>Probabilistic Machine Learning: Advanced Topics</em>. MIT Press, 2023. ISBN 978-0-262-04843-9.</p></section></article></main>
   </div>
 </body>
 </html>

@@ -19,6 +19,20 @@ The governing pattern is:
 
 Code should reference this document when an implementation choice depends on these methodological principles.
 
+## Quick start: apply the method
+
+For a new scientific prediction task, work through these steps in order:
+
+1. define the observable, units, admissible inputs, and decision that the prediction must support;
+2. implement the simplest defensible numerical or physical baseline;
+3. add the learned representation only where it provides measurable value over that baseline;
+4. expose uncertainty, applicability-domain status, provenance, assumptions, and limitations with every prediction;
+5. validate on held-out or prospective evidence and block unsupported extrapolation;
+6. record the relevant method anchor in code and tests;
+7. propose the next measurement or simulation when the evidence is insufficient.
+
+Start with the [prediction contract](#prediction-contract). Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the [validation contract](#validation-contract).
+
 ## How code should reference this contract
 
 Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:
@@ -40,32 +54,6 @@ Use a more specific anchor where possible:
 - `#validation-contract`
 
 Do not paste long explanations into source files. Keep the reasoning here and make code comments point to the stable section.
-
-## Source references
-
-### Numerical methods
-
-- [Numerical Recipes official website](https://numerical.recipes/)
-- [Third Edition online book](https://numerical.recipes/book.html)
-- [Third Edition routine index](https://numerical.recipes/routines/)
-- [Official legacy C routines](https://numerical.recipes/routines/instc.html)
-- [Cambridge front matter and license information](https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf)
-
-Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. *Numerical Recipes: The Art of Scientific Computing*. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.
-
-### Neural representation
-
-- [Bishop and Bishop official book website](https://www.bishopbook.com/)
-- [Springer table of contents](https://link.springer.com/book/10.1007/978-3-031-45468-4)
-
-Bishop, Christopher M.; Bishop, Hugh. *Deep Learning: Foundations and Concepts*. Springer, 2024. DOI [10.1007/978-3-031-45468-4](https://doi.org/10.1007/978-3-031-45468-4).
-
-### Probabilistic inference
-
-- [Murphy official open-access book page](https://probml.github.io/book2)
-- [MIT Press book page](https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/)
-
-Murphy, Kevin P. *Probabilistic Machine Learning: Advanced Topics*. MIT Press, 2023. ISBN 978-0-262-04843-9.
 
 ## Division of responsibility
 
@@ -289,3 +277,31 @@ src/
 ```
 
 This contract is implementation-language independent and may be referenced from Python, C++, JavaScript, YAML, notebooks, tests, and design documents.
+
+## Sources and further reading
+
+The method above is the operational part. The following links provide the underlying literature, algorithm references, and licensing context.
+
+### Numerical methods
+
+- [Numerical Recipes official website](https://numerical.recipes/)
+- [Third Edition online book](https://numerical.recipes/book.html)
+- [Third Edition routine index](https://numerical.recipes/routines/)
+- [Official legacy C routines](https://numerical.recipes/routines/instc.html)
+- [Cambridge front matter and license information](https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf)
+
+Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. *Numerical Recipes: The Art of Scientific Computing*. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.
+
+### Neural representation
+
+- [Bishop and Bishop official book website](https://www.bishopbook.com/)
+- [Springer table of contents](https://link.springer.com/book/10.1007/978-3-031-45468-4)
+
+Bishop, Christopher M.; Bishop, Hugh. *Deep Learning: Foundations and Concepts*. Springer, 2024. DOI [10.1007/978-3-031-45468-4](https://doi.org/10.1007/978-3-031-45468-4).
+
+### Probabilistic inference
+
+- [Murphy official open-access book page](https://probml.github.io/book2)
+- [MIT Press book page](https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/)
+
+Murphy, Kevin P. *Probabilistic Machine Learning: Advanced Topics*. MIT Press, 2023. ISBN 978-0-262-04843-9.

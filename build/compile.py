@@ -845,7 +845,7 @@ def _inline_markdown(value: str) -> str:
     """Render the small inline Markdown subset used by repository references."""
     rendered = escape(value)
     rendered = re.sub(r"`([^`]+)`", r"<code>\1</code>", rendered)
-    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
+    rendered = re.sub(r"\[([^\]]+)\]\((https?://[^)]+|#[^)]+)\)", r'<a href="\2" rel="noreferrer">\1</a>', rendered)
     rendered = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", rendered)
     rendered = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", rendered)
     return rendered
@@ -977,7 +977,11 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
     rendered_body = _markdown_document_html(markdown)
     body_parts = re.split(r"(?=<h2\s)", rendered_body)
     intro = body_parts[0]
-    sections = "".join(f'<section class="method-section">{part}</section>' for part in body_parts[1:])
+    section_nodes = []
+    for part in body_parts[1:]:
+        section_class = "method-section method-section--references" if 'id="sources-and-further-reading"' in part else "method-section"
+        section_nodes.append(f'<section class="{section_class}">{part}</section>')
+    sections = "".join(section_nodes)
     body = f'<section class="method-hero">{intro}</section>{sections}'
     toc_items = []
     for heading in re.findall(r"^##\s+(.+)$", markdown, flags=re.MULTILINE):
@@ -1116,6 +1120,7 @@ article { display: block; counter-reset: method-section; }
 .method-meta code { font-size:.75rem; }
 .method-section { counter-increment: method-section; position: relative; padding-left: clamp(72px, 9vw, 130px); }
 .method-section::before { content: counter(method-section, decimal-leading-zero); position: absolute; left: 28px; top: clamp(34px, 5vw, 72px); color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .1em; }
+.method-section--references { margin-top: 48px; border-top: 4px solid var(--accent); }
 h1, h2, h3 { line-height: 1.18; letter-spacing: -.025em; scroll-margin-top: 88px; }
 h1 { max-width: 14ch; font-size: clamp(2.4rem, 6vw, 4.4rem); margin: 0 0 1.7rem; }
 h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2.15rem); }
