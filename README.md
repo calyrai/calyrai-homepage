@@ -168,6 +168,7 @@ System-level contracts:
 
 - Multi-homepage architecture contract (CALYRAI + LITHOS): `docs/homepage-system-contract.md`
 - React Flow Swiss design contract (YAML-first graph surface): `docs/reactflow-swiss-design-contract.md`
+- Scientific AI, Numerical Recipes, prediction, and validation contract: `docs/scientific-ai-numerics-reference.md` (`CALYR-METHOD-NR-AI-001`)
 
 Concrete page mapping:
 
