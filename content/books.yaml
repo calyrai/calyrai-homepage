@@ -309,16 +309,14 @@ method_catalog:
       informed_by: Parvotec design-to-experiment-to-learning loop
       boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-ORACLE-001
-      source: docs/multi-objective-oracle-fusion.md
-      route: /research/methods/multi-objective-oracle-fusion/
-      title: Multi-Objective Oracle Fusion
-      summary: Combine compatible trait predictions, calibrated uncertainty, constraints, diversity, and Pareto ranking while preserving conflicts instead of hiding them in one opaque score.
+      source: docs/oracling.md
+      route: /research/methods/oracling/
+      title: Oracling
+      summary: Turn evidence, predictions, uncertainty, constraints, and trade-offs into traceable decision proposals and explicit next actions.
       status: Working contract
       family: Decision systems
       domains: [multi-objective design, oracle systems]
       tags: [trait models, constraints, diversity, Pareto ranking]
-      informed_by: Parvotec multi-oracle target architecture
-      boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-GOV-001
       title: Reusable Method and Project-Result Boundary
       summary: Classify reusable platform methods, project-specific results, mixed artifacts, licenses, and approval requirements before knowledge moves between repositories or products.

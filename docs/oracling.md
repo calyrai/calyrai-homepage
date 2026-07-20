@@ -1,4 +1,4 @@
-# Multi-Objective Oracle Fusion
+# Oracling
 
 **Reference ID:** `CALYR-METHOD-ORACLE-001`  
 **Status:** Working method contract  
@@ -163,10 +163,6 @@ The Oracle must return `review_required` or `blocked` when:
 - ranking changes strongly under reasonable parameter choices;
 - provenance, protocol, model version, or dataset version is missing;
 - the requested conclusion exceeds the available evidence level.
-
-## Reusable-method boundary
-
-This contract is informed by generalizable ideas from the Parvotec multi-oracle and closed-loop architecture. It does not include or transfer Parvotec data, model implementations, weights, features, candidates, rankings, validation results, contractual information, or other project-specific results.
 
 ## Sources and further reading
 

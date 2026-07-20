@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Combine compatible trait predictions, calibrated uncertainty, constraints, diversity, and Pareto ranking while preserving conflicts instead of hiding them in one opaque score." />
-  <title>Multi-Objective Oracle Fusion · calyr.aí</title>
+  <meta name="description" content="Turn evidence, predictions, uncertainty, constraints, and trade-offs into traceable decision proposals and explicit next actions." />
+  <title>Oracling · calyr.aí</title>
   <link rel="stylesheet" href="./method.css" />
 </head>
 <body>
@@ -15,9 +15,9 @@
   <div class="page-shell">
     <aside class="contents">
       <p class="contents-label">On this page</p>
-      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-construct-an-oracle">Quick start: construct an Oracle</a></li><li><a href="#oracle-layers">Oracle layers</a></li><li><a href="#trait-contract">Trait contract</a></li><li><a href="#constraint-contract">Constraint contract</a></li><li><a href="#multi-objective-fusion">Multi-objective fusion</a></li><li><a href="#diversity-aware-selection">Diversity-aware selection</a></li><li><a href="#evidence-progression">Evidence progression</a></li><li><a href="#decision-proposal-contract">Decision proposal contract</a></li><li><a href="#closed-loop-update">Closed-loop update</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#failure-behavior">Failure behavior</a></li><li><a href="#reusable-method-boundary">Reusable-method boundary</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-construct-an-oracle">Quick start: construct an Oracle</a></li><li><a href="#oracle-layers">Oracle layers</a></li><li><a href="#trait-contract">Trait contract</a></li><li><a href="#constraint-contract">Constraint contract</a></li><li><a href="#multi-objective-fusion">Multi-objective fusion</a></li><li><a href="#diversity-aware-selection">Diversity-aware selection</a></li><li><a href="#evidence-progression">Evidence progression</a></li><li><a href="#decision-proposal-contract">Decision proposal contract</a></li><li><a href="#closed-loop-update">Closed-loop update</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#failure-behavior">Failure behavior</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
     </aside>
-    <main class="method-layout"><article><section class="method-hero"><h1 id="multi-objective-oracle-fusion">Multi-Objective Oracle Fusion</h1>
+    <main class="method-layout"><article><section class="method-hero"><h1 id="oracling">Oracling</h1>
 <dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-ORACLE-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Scientific decision systems combining multiple trait-specific predictions, constraints, uncertainty, evidence, and experimental feedback</dd></div></dl>
 </section><section class="method-section"><h2 id="purpose">Purpose</h2>
 <p>An Oracle turns model outputs into a traceable decision proposal. It does not hide scientific disagreement inside one score and does not turn a surrogate prediction into evidence that has not been measured.</p>
@@ -141,8 +141,6 @@
 <li>provenance, protocol, model version, or dataset version is missing;</li>
 <li>the requested conclusion exceeds the available evidence level.</li>
 </ul>
-</section><section class="method-section"><h2 id="reusable-method-boundary">Reusable-method boundary</h2>
-<p>This contract is informed by generalizable ideas from the Parvotec multi-oracle and closed-loop architecture. It does not include or transfer Parvotec data, model implementations, weights, features, candidates, rankings, validation results, contractual information, or other project-specific results.</p>
 </section><section class="method-section method-section--references"><h2 id="sources-and-further-reading">Sources and further reading</h2>
 <ul>
 <li><a href="/research/methods/scientific-ai-numerics/" rel="noreferrer">Scientific AI and Numerical Methods</a></li>
