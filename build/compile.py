@@ -868,7 +868,16 @@ def _markdown_document_html(markdown: str) -> str:
 
     def flush_paragraph() -> None:
         if paragraph:
-            nodes.append(f"<p>{_inline_markdown(' '.join(paragraph))}</p>")
+            metadata_lines = [re.match(r"^\*\*([^*]+):\*\*\s*(.+?)\s{0,2}$", line) for line in paragraph]
+            if all(metadata_lines):
+                metadata_items = "".join(
+                    f"<div><dt>{_inline_markdown(match.group(1))}</dt><dd>{_inline_markdown(match.group(2).rstrip())}</dd></div>"
+                    for match in metadata_lines
+                    if match
+                )
+                nodes.append(f'<dl class="method-meta">{metadata_items}</dl>')
+            else:
+                nodes.append(f"<p>{_inline_markdown(' '.join(paragraph))}</p>")
             paragraph.clear()
 
     def close_list() -> None:
@@ -1100,6 +1109,11 @@ article { display: block; counter-reset: method-section; }
 .method-hero { position: relative; overflow: hidden; min-height: 520px; padding-top: clamp(48px, 8vw, 100px); }
 .method-hero::before { content: "calyr.aí method contract · 001"; display: inline-block; margin-bottom: 20px; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
 .method-hero::after { display: none; }
+.method-meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:42px 0 0; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.method-meta div { min-width:0; padding:14px 16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+.method-meta dt { margin-bottom:5px; color:#747c85; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.method-meta dd { margin:0; color:var(--ink); font-size:.82rem; line-height:1.4; overflow-wrap:anywhere; }
+.method-meta code { font-size:.75rem; }
 .method-section { counter-increment: method-section; position: relative; padding-left: clamp(72px, 9vw, 130px); }
 .method-section::before { content: counter(method-section, decimal-leading-zero); position: absolute; left: 28px; top: clamp(34px, 5vw, 72px); color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .1em; }
 h1, h2, h3 { line-height: 1.18; letter-spacing: -.025em; scroll-margin-top: 88px; }
@@ -1120,7 +1134,7 @@ td { color: var(--soft); }
 .method-section ul, .method-section ol { display: grid; gap: 7px; padding-left: 1.3rem; }
 .method-section li::marker { color: var(--accent-strong); }
 @media (max-width: 980px) { .page-shell { display: block; width: min(900px, 94vw); } .contents { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); } .contents ol { columns: 2; column-gap: 28px; } }
-@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context a:first-child { display: none; } .contents ol { columns: 1; } .method-hero, .method-section { min-height:0; padding: 34px 20px; } .method-section { padding-left: 54px; } .method-section::before { left: 18px; top: 38px; } h1 { font-size: 2.5rem; } }
+@media (max-width: 620px) { body { font-size: 15.5px; } .site-header { padding-inline: 5vw; } .header-context a:first-child { display: none; } .contents ol { columns: 1; } .method-hero, .method-section { min-height:0; padding: 34px 20px; } .method-section { padding-left: 54px; } .method-section::before { left: 18px; top: 38px; } .method-meta { grid-template-columns:1fr; } h1 { font-size: 2.5rem; } }
 """.strip() + "\n"
 
 
