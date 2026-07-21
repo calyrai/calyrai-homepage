@@ -546,7 +546,7 @@
           }
         },
         {
-          "type": "element",
+          "type": "tile",
           "id": "swiss_code",
           "title": "swiss code",
           "tile_lead": "evidence and citation architecture",
@@ -573,7 +573,7 @@
               "contentNodeId": "swiss_code",
               "structureNodeId": null
             },
-            "nodeType": "element",
+            "nodeType": "tile",
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"

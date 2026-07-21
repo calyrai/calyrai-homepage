@@ -24,6 +24,7 @@ NODE_TYPE_RULES = {
     "pythia": "tile",
     "method_catalog": "tile",
     "interface_catalog": "tile",
+    "swiss_code": "tile",
     "ecosystem": "tile",
     "philosophy": "tile",
     "contact": "tile",
