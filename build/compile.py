@@ -690,6 +690,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     if not isinstance(page_items, list) or not page_items:
         return
 
+    _sync_research_system(project_root)
     method_reference = _sync_method_reference_page(project_root, config)
     _sync_interface_catalog_page(project_root, config)
 
@@ -955,6 +956,116 @@ def _markdown_document_html(markdown: str) -> str:
     return "\n".join(nodes)
 
 
+def _sync_research_system(project_root: Path) -> dict[str, Any]:
+    """Publish shared YAML-defined research navigation, tokens, and Swiss Code."""
+    system = _research_system_config(project_root)
+    if not system:
+        return {}
+    research_root = project_root / "web" / "public" / "research"
+    research_root.mkdir(parents=True, exist_ok=True)
+    (research_root / "research-system.css").write_text(_research_system_css(system), encoding="utf-8")
+    swiss = system.get("swiss_code", {}) if isinstance(system.get("swiss_code"), dict) else {}
+    route = str(swiss.get("route", "/research/swiss-code/"))
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    design = system.get("design", {}) if isinstance(system.get("design"), dict) else {}
+    anatomy = system.get("chapter_anatomy", []) if isinstance(system.get("chapter_anatomy"), list) else []
+    principles = system.get("principles", []) if isinstance(system.get("principles"), list) else []
+    contract = system.get("content_contract", {}) if isinstance(system.get("content_contract"), dict) else {}
+    gates = system.get("validation_gates", []) if isinstance(system.get("validation_gates"), list) else []
+    anatomy_html = "".join(
+        f'<article><span>{escape(str(x.get("order", "")))}</span><h3>{escape(str(x.get("name", "")))}</h3><p>{escape(str(x.get("rule", "")))}</p></article>'
+        for x in anatomy if isinstance(x, dict)
+    )
+    principles_html = "".join(
+        f'<article><span>{escape(str(x.get("id", "")))}</span><h3>{escape(str(x.get("title", "")))}</h3><p>{escape(str(x.get("rule", "")))}</p></article>'
+        for x in principles if isinstance(x, dict)
+    )
+    token_html: list[str] = []
+    for group_name, group in design.items():
+        if isinstance(group, dict):
+            values = "".join(f'<div><dt>{escape(str(k))}</dt><dd>{escape(str(v))}</dd></div>' for k, v in group.items())
+            token_html.append(f'<article><h3>{escape(str(group_name))}</h3><dl>{values}</dl></article>')
+    canonical = contract.get("canonical_files", []) if isinstance(contract.get("canonical_files"), list) else []
+    outputs = contract.get("generated_outputs", []) if isinstance(contract.get("generated_outputs"), list) else []
+    canonical_html = "".join(f'<li><code>{escape(str(x))}</code></li>' for x in canonical)
+    outputs_html = "".join(f'<li><code>{escape(str(x))}</code></li>' for x in outputs)
+    gates_html = "".join(f'<li>{escape(str(x))}</li>' for x in gates)
+    title = escape(str(swiss.get("title", "Swiss Code")))
+    summary = escape(str(swiss.get("purpose", "Shared research design contract.")))
+    html = f"""<!doctype html>
+<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="{summary}" /><title>{title} · calyr.aí</title><link rel="stylesheet" href="/research/research-system.css" /></head>
+<body class="research-system-page"><header class="research-system-header"><a class="research-brand" href="/">calyr.aí</a>{_research_chapter_nav(project_root, "swiss-code")}</header>{_research_source_bar("content/research-system.yaml", "research_system")}
+<main class="swiss-code-page"><section class="research-unified-hero"><p class="research-eyebrow">04 · design system</p><h1>{title}</h1><p>{summary}</p><div><strong>{len(principles):02d}</strong><span>shared principles</span></div></section>
+<section class="swiss-section"><header><span>01</span><div><p>One structure</p><h2>Chapter anatomy</h2></div></header><div class="swiss-card-grid">{anatomy_html}</div></section>
+<section class="swiss-section"><header><span>02</span><div><p>One layout</p><h2>Design tokens</h2></div></header><div class="swiss-token-grid">{"".join(token_html)}</div></section>
+<section class="swiss-section"><header><span>03</span><div><p>Design principles</p><h2>Rules before components</h2></div></header><div class="swiss-card-grid swiss-card-grid--principles">{principles_html}</div></section>
+<section class="swiss-section"><header><span>04</span><div><p>YAML first</p><h2>Content provenance</h2></div></header><div class="swiss-provenance"><div><h3>Canonical files</h3><ul>{canonical_html}</ul></div><div><h3>Generated outputs</h3><ul>{outputs_html}</ul></div><p>{escape(str(contract.get("rule", "")))}</p></div></section>
+<section class="swiss-section"><header><span>05</span><div><p>Release contract</p><h2>Validation gates</h2></div></header><ol class="swiss-gates">{gates_html}</ol></section></main></body></html>"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    print(f"🇨🇭 Synced Swiss Code to {(output_dir / 'index.html').relative_to(project_root)}")
+    return system
+
+
+def _research_system_css(system: dict[str, Any]) -> str:
+    design = system.get("design", {}) if isinstance(system.get("design"), dict) else {}
+    palette = design.get("palette", {}) if isinstance(design.get("palette"), dict) else {}
+    grid = design.get("grid", {}) if isinstance(design.get("grid"), dict) else {}
+    typography = design.get("typography", {}) if isinstance(design.get("typography"), dict) else {}
+    return f"""
+:root {{ --research-paper:{palette.get('paper', '#050505')}; --research-card:{palette.get('card', '#090909')}; --research-ink:{palette.get('ink', '#f5f5f2')}; --research-soft:{palette.get('soft', '#a7abb0')}; --research-line:{palette.get('line', '#343434')}; --research-accent:{palette.get('accent', '#39bfff')}; --research-max:{grid.get('max_width_px', 1240)}px; --research-gutter:{grid.get('gutter_px', 20)}px; --research-font:{typography.get('family', 'Helvetica Neue, Helvetica, Arial, sans-serif')}; }}
+.research-system-header,.research-system-header *,.research-source-bar,.research-source-bar *,.swiss-code-page,.swiss-code-page * {{ box-sizing:border-box; }}
+.research-system-header {{ position:sticky!important; top:0; z-index:10; min-height:72px!important; display:grid!important; grid-template-columns:3fr 9fr; align-items:center; width:100%; padding:0 max(3vw,calc((100vw - var(--research-max))/2))!important; border-bottom:1px solid var(--research-line); background:rgba(5,5,5,.97)!important; font-family:var(--research-font); }}
+.research-brand {{ color:var(--research-ink)!important; font-weight:800; letter-spacing:.04em; text-decoration:none!important; }} .research-chapter-nav {{ display:grid; grid-template-columns:repeat(4,1fr); align-self:stretch; }}
+.research-chapter-nav a {{ display:flex; align-items:center; gap:8px; padding:0 14px; border-left:1px solid var(--research-line); color:var(--research-soft)!important; font-size:.76rem; font-weight:700; text-decoration:none!important; }} .research-chapter-nav a span {{ color:#718197; font-size:.66rem; }} .research-chapter-nav a[aria-current="page"] {{ color:var(--research-ink)!important; box-shadow:inset 0 -3px 0 var(--research-accent); }} .research-chapter-nav a[aria-current="page"] span {{ color:var(--research-accent); }}
+.research-source-bar {{ display:flex; flex-wrap:wrap; gap:18px; width:min(var(--research-max),94vw); margin:0 auto; padding:10px 18px; border:1px solid var(--research-line); border-top:0; color:#7f8993; background:var(--research-card); font:700 .65rem/1.4 var(--research-font); letter-spacing:.08em; text-transform:uppercase; }} .research-source-bar code {{ color:#9eb0c4!important; background:transparent!important; border:0!important; padding:0!important; text-transform:none; }}
+.research-system-page {{ margin:0; color:var(--research-ink); background:var(--research-paper); font:16px/1.55 var(--research-font); }} .swiss-code-page {{ width:min(var(--research-max),94vw); margin:0 auto 100px; border-inline:1px solid var(--research-line); }}
+.research-unified-hero {{ display:grid; grid-template-columns:repeat(12,1fr); gap:var(--research-gutter); min-height:560px; padding:76px 28px 54px; border-bottom:1px solid var(--research-line); }} .research-eyebrow {{ grid-column:1/4; color:var(--research-accent); font-size:.7rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }} .research-unified-hero h1 {{ grid-column:4/12; max-width:10ch; margin:0; font-size:clamp(3.6rem,8vw,7rem); line-height:.88; letter-spacing:-.065em; }} .research-unified-hero>p:not(.research-eyebrow) {{ grid-column:4/10; color:var(--research-soft); }} .research-unified-hero>div {{ grid-column:10/13; align-self:end; display:flex; align-items:baseline; gap:10px; color:var(--research-soft); }} .research-unified-hero strong {{ color:var(--research-ink); font-size:3rem; font-weight:500; }}
+.swiss-section {{ border-bottom:1px solid var(--research-line); }} .swiss-section>header {{ display:grid; grid-template-columns:3fr 9fr; padding:36px 28px; border-bottom:1px solid var(--research-line); }} .swiss-section>header>span {{ color:var(--research-accent); }} .swiss-section header p {{ margin:0; color:#718197; font-size:.7rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }} .swiss-section h2 {{ margin:.35rem 0 0; font-size:clamp(2rem,4vw,4rem); line-height:.95; letter-spacing:-.045em; }}
+.swiss-card-grid {{ display:grid; grid-template-columns:repeat(5,1fr); }} .swiss-card-grid article {{ min-height:260px; padding:24px; border-right:1px solid var(--research-line); }} .swiss-card-grid span {{ color:var(--research-accent); font-size:.7rem; }} .swiss-card-grid h3,.swiss-token-grid h3,.swiss-provenance h3 {{ margin:28px 0 10px; font-size:1rem; }} .swiss-card-grid p,.swiss-provenance p {{ color:var(--research-soft); font-size:.88rem; }} .swiss-card-grid--principles {{ grid-template-columns:repeat(4,1fr); }} .swiss-card-grid--principles article {{ border-bottom:1px solid var(--research-line); }}
+.swiss-token-grid {{ display:grid; grid-template-columns:repeat(3,1fr); }} .swiss-token-grid article {{ padding:24px; border-right:1px solid var(--research-line); border-bottom:1px solid var(--research-line); }} .swiss-token-grid dl {{ margin:0; }} .swiss-token-grid dl div {{ padding:10px 0; border-top:1px solid var(--research-line); }} .swiss-token-grid dt {{ color:#718197; font-size:.68rem; text-transform:uppercase; }} .swiss-token-grid dd {{ margin:3px 0 0; color:var(--research-soft); overflow-wrap:anywhere; }}
+.swiss-provenance {{ display:grid; grid-template-columns:1fr 1fr; gap:28px; padding:28px; }} .swiss-provenance>p {{ grid-column:1/-1; padding-top:20px; border-top:1px solid var(--research-line); }} .swiss-provenance ul {{ margin:0; padding:0; list-style:none; }} .swiss-provenance li {{ padding:8px 0; border-top:1px solid var(--research-line); }} .swiss-provenance code {{ color:#d6f1ff; overflow-wrap:anywhere; word-break:break-word; }} .swiss-gates {{ display:grid; grid-template-columns:repeat(3,1fr); margin:0; padding:0; list-style:none; counter-reset:gates; }} .swiss-gates li {{ counter-increment:gates; min-height:150px; padding:24px; border-right:1px solid var(--research-line); color:var(--research-soft); }} .swiss-gates li::before {{ content:"0" counter(gates); display:block; margin-bottom:22px; color:var(--research-accent); font-size:.7rem; }}
+@media(max-width:780px){{.research-system-header{{position:static!important;display:block!important;padding:14px 5vw!important}}.research-chapter-nav{{width:100%;min-width:0;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px;border-top:1px solid var(--research-line)}}.research-chapter-nav a{{min-width:0;min-height:46px;border-bottom:1px solid var(--research-line)}}.research-source-bar{{display:grid;gap:5px}}.research-unified-hero,.swiss-section>header,.swiss-provenance{{display:block}}.research-unified-hero{{min-height:0;padding:48px 20px}}.research-unified-hero h1{{margin:24px 0}}.research-unified-hero>div{{margin-top:38px}}.swiss-card-grid,.swiss-card-grid--principles,.swiss-token-grid,.swiss-gates{{grid-template-columns:1fr}}.swiss-card-grid article,.swiss-gates li{{min-height:0;border-right:0;border-bottom:1px solid var(--research-line)}}.swiss-section>header{{padding:28px 20px}}}}
+""".strip() + "\n"
+
+
+def _research_system_config(project_root: Path) -> dict[str, Any]:
+    config = _read_optional_yaml(project_root / "content" / "research-system.yaml")
+    system = config.get("research_system", {}) if isinstance(config, dict) else {}
+    return system if isinstance(system, dict) else {}
+
+
+def _research_chapter_nav(project_root: Path, active: str) -> str:
+    system = _research_system_config(project_root)
+    chapters = system.get("chapters", []) if isinstance(system.get("chapters"), list) else []
+    items: list[str] = []
+    for chapter in chapters:
+        if not isinstance(chapter, dict):
+            continue
+        chapter_id = str(chapter.get("id", ""))
+        active_attr = ' aria-current="page"' if chapter_id == active else ""
+        items.append(
+            f'<a href="{escape(str(chapter.get("route", "/research/")), quote=True)}"{active_attr}>'
+            f'<span>{escape(str(chapter.get("number", "")))}</span>{escape(str(chapter.get("title", chapter_id)))}</a>'
+        )
+    swiss = system.get("swiss_code", {}) if isinstance(system.get("swiss_code"), dict) else {}
+    if swiss:
+        active_attr = ' aria-current="page"' if active == "swiss-code" else ""
+        items.append(
+            f'<a href="{escape(str(swiss.get("route", "/research/swiss-code/")), quote=True)}"{active_attr}>'
+            f'<span>{escape(str(swiss.get("number", "04")))}</span>{escape(str(swiss.get("title", "Swiss Code")))}</a>'
+        )
+    return f'<nav class="research-chapter-nav" aria-label="Research chapters">{"".join(items)}</nav>'
+
+
+def _research_source_bar(yaml_path: str, binding: str, linked_source: str = "") -> str:
+    linked = f'<span>Linked source <code>{escape(linked_source)}</code></span>' if linked_source else ""
+    return (
+        f'<div class="research-source-bar"><span>YAML source of truth <code>{escape(yaml_path)}</code></span>'
+        f'<span>Binding <code>{escape(binding)}</code></span>{linked}</div>'
+    )
+
+
 def _render_method_reference_page(project_root: Path, reference: dict[str, Any]) -> bool:
     """Render one Markdown-backed method contract to its configured route."""
     source_rel = str(reference.get("source", "")).strip()
@@ -991,12 +1102,11 @@ def _render_method_reference_page(project_root: Path, reference: dict[str, Any])
   <meta name=\"description\" content=\"{escape(str(reference.get('summary', 'calyr.aí scientific method contract.')), quote=True)}\" />
   <title>{title} · calyr.aí</title>
   <link rel=\"stylesheet\" href=\"./method.css\" />
+  <link rel=\"stylesheet\" href=\"/research/research-system.css\" />
 </head>
 <body>
-  <header class=\"site-header\">
-    <a class=\"brand\" href=\"/\">calyr.aí</a>
-    <div class=\"header-context\"><a href=\"/research/methods/\">Method Catalog</a><a href=\"/research/platforms/pythia/\">Pythia</a></div>
-  </header>
+  <header class=\"site-header research-system-header\"><a class=\"brand research-brand\" href=\"/\">calyr.aí</a>{_research_chapter_nav(project_root, str(reference.get('chapter', 'methods')))}</header>
+  {_research_source_bar('content/books.yaml', f"method_catalog.{reference.get('id', 'reference')}", source_rel)}
   <div class=\"page-shell\">
     <aside class=\"contents\">
       <p class=\"contents-label\">On this page</p>
@@ -1080,9 +1190,11 @@ def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> d
   <meta name=\"description\" content=\"{catalog_summary}\" />
   <title>{catalog_title} · calyr.aí</title>
   <link rel=\"stylesheet\" href=\"./catalog.css\" />
+  <link rel=\"stylesheet\" href=\"/research/research-system.css\" />
 </head>
 <body>
-  <header><a class=\"brand\" href=\"/\">calyr.aí</a><a href=\"/research/platforms/pythia/\">Pythia</a></header>
+  <header class=\"research-system-header\"><a class=\"brand research-brand\" href=\"/\">calyr.aí</a>{_research_chapter_nav(project_root, 'methods')}</header>
+  {_research_source_bar('content/books.yaml', 'method_catalog')}
   <main>
     <section class=\"catalog-hero\"><p class=\"eyebrow\">Research system</p><h1>{catalog_title}</h1><p>{catalog_summary}</p><div class=\"catalog-stats\"><strong>{published_count:02d}</strong><span>published</span><strong>{len(cards) - published_count:02d}</strong><span>structures defined</span></div></section>
     <section class=\"catalog-index\"><div class=\"index-heading\"><p>Catalog index</p><span>Designed to grow by method family and domain</span></div>{''.join(cards)}</section>
@@ -1178,9 +1290,11 @@ def _sync_interface_catalog_page(project_root: Path, config: dict[str, Any]) -> 
   <meta name="description" content="{summary}" />
   <title>{title} · calyr.aí</title>
   <link rel="stylesheet" href="./interfaces.css" />
+  <link rel="stylesheet" href="/research/research-system.css" />
 </head>
 <body>
-  <header><a class="brand" href="/">calyr.aí</a><nav><a href="/research/methods/">Method Catalog</a><a href="/research/platforms/lithos/">LITHOS</a></nav></header>
+  <header class="research-system-header"><a class="brand research-brand" href="/">calyr.aí</a>{_research_chapter_nav(project_root, 'interfaces')}</header>
+  {_research_source_bar('content/books.yaml', 'interface_catalog')}
   <main>
     <section class="hero"><p class="eyebrow">{eyebrow}</p><h1>{title}</h1><p class="lead">{summary}</p><div class="hero-count"><strong>{len(cards):02d}</strong><span>interface contracts</span></div></section>
     <section class="principles"><p>Shared rules</p><ol>{principles_html}</ol></section>

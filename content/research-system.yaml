@@ -1,0 +1,116 @@
+research_system:
+  id: CALYR-RESEARCH-SYSTEM-001
+  title: calyr.aí research system
+  source_of_truth: content/research-system.yaml
+  content_source: content/books.yaml
+  chapters:
+    - id: methods
+      number: "01"
+      title: Methods
+      route: /research/methods/
+      purpose: Define reusable scientific and computational contracts.
+    - id: oracling
+      number: "02"
+      title: Oracling
+      route: /research/methods/oracling/
+      purpose: Turn evidence and uncertainty into traceable proposals and next actions.
+    - id: interfaces
+      number: "03"
+      title: Interfaces
+      route: /research/interfaces/
+      purpose: Define graphical interaction contracts for scientific understanding and control.
+  swiss_code:
+    id: CALYR-SWISS-CODE-001
+    number: "04"
+    title: Swiss Code
+    route: /research/swiss-code/
+    purpose: Make the shared visual, structural, interaction, and provenance rules explicit.
+    status: Working design contract
+  design:
+    grid:
+      columns: 12
+      max_width_px: 1240
+      gutter_px: 20
+      content_split: [3, 9]
+      card_split: [3, 5, 4]
+    spacing:
+      base_unit_px: 8
+      section_min_px: 48
+      section_max_px: 96
+    typography:
+      family: Helvetica Neue, Helvetica, Arial, sans-serif
+      headline_style: large, compact, left-aligned, negative tracking
+      label_style: uppercase, compact, letter-spaced
+      body_measure_ch: 76
+    palette:
+      paper: "#050505"
+      card: "#090909"
+      ink: "#f5f5f2"
+      soft: "#a7abb0"
+      line: "#343434"
+      accent: "#39bfff"
+    breakpoints:
+      stacked_px: 780
+      compact_px: 620
+  chapter_anatomy:
+    - order: "01"
+      name: Orientation
+      rule: State chapter, scope, status, and source before detail.
+    - order: "02"
+      name: Contract
+      rule: Name inputs, transformations or interactions, outputs, and limitations.
+    - order: "03"
+      name: Evidence
+      rule: Keep provenance, uncertainty, applicability, and missingness visible.
+    - order: "04"
+      name: Action
+      rule: End with a test, decision, implementation step, or next reading.
+    - order: "05"
+      name: Validation
+      rule: Define how the method, decision, or interface can fail.
+  principles:
+    - id: SC-01
+      title: Clarity before ornament
+      rule: Every graphical element must carry structure, state, evidence, or action.
+    - id: SC-02
+      title: One grid, many depths
+      rule: Overview, catalog, contract, and reading detail use the same twelve-column logic.
+    - id: SC-03
+      title: Visible provenance
+      rule: Every generated chapter states the YAML contract and any linked long-form source.
+    - id: SC-04
+      title: Stable navigation
+      rule: The three chapters and Swiss Code stay in the same order and position.
+    - id: SC-05
+      title: Explicit state
+      rule: Active chapter, filters, uncertainty, applicability, and status cannot depend on color alone.
+    - id: SC-06
+      title: Reversible interaction
+      rule: Drill-down, adaptation, and comparison preserve a path back to the prior state.
+    - id: SC-07
+      title: Responsive hierarchy
+      rule: Mobile layouts stack the same semantic order rather than inventing a separate page.
+    - id: SC-08
+      title: YAML first
+      rule: Routes, chapter order, tokens, structure, labels, and content bindings are edited in YAML and compiled.
+  content_contract:
+    canonical_files:
+      - content/research-system.yaml
+      - content/books.yaml
+      - content/content.yaml
+      - content/structure.yaml
+    generated_outputs:
+      - web/public/research/research-system.css
+      - web/public/research/swiss-code/index.html
+      - web/public/research/methods/index.html
+      - web/public/research/methods/oracling/index.html
+      - web/public/research/methods/oracling/reading-room/index.html
+      - web/public/research/interfaces/index.html
+    rule: Generated HTML and CSS are publication artifacts. Edit their YAML or linked source and recompile; do not author the generated files directly.
+  validation_gates:
+    - YAML parses and cross-references resolve.
+    - All three chapter routes and Swiss Code are present in the shared navigation.
+    - Each page exposes its canonical YAML source.
+    - Desktop and compact layouts retain the same semantic order.
+    - Internal routes resolve without fallback.
+    - Production build completes before publication.
