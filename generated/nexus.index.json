@@ -377,6 +377,32 @@
       "visible"
     ]
   },
+  "swiss_code": {
+    "title": "swiss code",
+    "summary": "Swiss Code defines the shared visual, structural, interaction, and provenance rules that unify all research documentation and exploration.",
+    "body_preview": "Make the shared visual, structural, interaction, and provenance rules explicit. Swiss Code organizes design tokens, chapter anatomy, principles, and interface patterns that enable readers to navigate ",
+    "route": "/research/swiss-code/",
+    "icon": "layers",
+    "keywords": [
+      "all",
+      "and",
+      "code",
+      "defines",
+      "documentation",
+      "exploration.",
+      "interaction,",
+      "provenance",
+      "research",
+      "rules",
+      "shared",
+      "structural,",
+      "swiss",
+      "that",
+      "the",
+      "unify",
+      "visual,"
+    ]
+  },
   "pythia_saxs": {
     "title": "SAXS System",
     "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",

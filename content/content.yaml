@@ -386,6 +386,19 @@ interface_catalog:
   route: /research/interfaces/
   render:
     grid_span: 3
+swiss_code:
+  title: swiss code
+  tile_lead: evidence and citation architecture
+  tile_accent: cyan
+  tile_title: swiss code
+  tile_summary: unified design system for evidence, provenance, and research methodology
+  subtitle: The calyr.aí shared design contract
+  summary: Swiss Code defines the shared visual, structural, interaction, and provenance rules that unify all research documentation and exploration.
+  body: Make the shared visual, structural, interaction, and provenance rules explicit. Swiss Code organizes design tokens, chapter anatomy, principles, and interface patterns that enable readers to navigate evidence, understand citations, and access Explorer-Karten across the research system.
+  icon: layers
+  route: /research/swiss-code/
+  render:
+    grid_span: 3
 pythia_saxs:
   title: SAXS System
   tile_lead: molecular assembly

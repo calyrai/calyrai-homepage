@@ -14,6 +14,7 @@
     "/research/platforms/pythia/index.html",
     "/research/pythia/metabolic/index.html",
     "/research/pythia/saxs/index.html",
+    "/research/swiss-code/",
     "/research/teaser/index.html",
     "https://bsky.app",
     "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
@@ -28,5 +29,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-21T08:24:39.936048+00:00"
+  "generated_at": "2026-07-21T08:43:31.469887+00:00"
 }

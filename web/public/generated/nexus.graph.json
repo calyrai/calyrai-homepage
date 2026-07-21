@@ -190,6 +190,15 @@
       }
     },
     {
+      "id": "swiss_code",
+      "label": "swiss code",
+      "data": {
+        "title": "swiss code",
+        "summary": "Swiss Code defines the shared visual, structural, interaction, and provenance rules that unify all research documentation and exploration.",
+        "icon": "layers"
+      }
+    },
+    {
       "id": "pythia_saxs",
       "label": "SAXS System",
       "data": {
