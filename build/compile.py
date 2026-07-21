@@ -692,6 +692,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
     _sync_research_system(project_root)
     method_reference = _sync_method_reference_page(project_root, config)
+    _sync_literature_database(project_root)
     _sync_interface_catalog_page(project_root, config)
 
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
@@ -1122,6 +1123,149 @@ def _render_method_reference_page(project_root: Path, reference: dict[str, Any])
     (output_dir / "method.css").write_text(_method_reference_css(eyebrow), encoding="utf-8")
     print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
     return True
+
+
+def _sync_literature_database(project_root: Path) -> dict[str, Any]:
+    """Validate and publish the YAML-first literature, dataset, and idea graph."""
+    source_path = project_root / "content" / "literature.yaml"
+    payload = _read_optional_yaml(source_path)
+    database = payload.get("literature_database", {}) if isinstance(payload, dict) else {}
+    if not isinstance(database, dict) or not database:
+        return {}
+
+    papers = payload.get("papers", [])
+    datasets = payload.get("datasets", [])
+    source_citations = payload.get("dataset_source_citations", [])
+    ideas = payload.get("ideas", [])
+    relations = payload.get("relations", [])
+    collections = {
+        "papers": papers,
+        "datasets": datasets,
+        "dataset_source_citations": source_citations,
+        "ideas": ideas,
+        "relations": relations,
+    }
+    for name, values in collections.items():
+        if not isinstance(values, list):
+            raise ValueError(f"content/literature.yaml: {name} must be a list")
+
+    entity_ids: set[str] = set()
+    for name in ("papers", "datasets", "dataset_source_citations", "ideas"):
+        for item in collections[name]:
+            if not isinstance(item, dict) or not str(item.get("id", "")).strip():
+                raise ValueError(f"content/literature.yaml: every {name} entry needs an id")
+            item_id = str(item["id"])
+            if item_id in entity_ids:
+                raise ValueError(f"content/literature.yaml: duplicate id {item_id}")
+            entity_ids.add(item_id)
+
+    allowed_external = {"uncited-dataset-origin"}
+    for dataset in datasets:
+        for field in ("source_paper", "cited_by"):
+            target = str(dataset.get(field, ""))
+            if target and target not in entity_ids and target not in allowed_external:
+                raise ValueError(f"content/literature.yaml: unresolved {field} {target}")
+    for idea in ideas:
+        source = str(idea.get("source", ""))
+        if source not in entity_ids:
+            raise ValueError(f"content/literature.yaml: unresolved idea source {source}")
+    for relation in relations:
+        if not isinstance(relation, dict):
+            raise ValueError("content/literature.yaml: relations must be mappings")
+        for field in ("from", "to"):
+            target = str(relation.get(field, ""))
+            if target not in entity_ids:
+                raise ValueError(f"content/literature.yaml: unresolved relation target {target}")
+
+    index_payload = {
+        "meta": {
+            key: value for key, value in database.items()
+            if key not in {"papers", "datasets", "dataset_source_citations", "ideas", "relations"}
+        },
+        "counts": {name: len(values) for name, values in collections.items()},
+        **collections,
+    }
+    generated_dir = project_root / "web" / "public" / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+    index_path = generated_dir / "literature.index.json"
+    index_path.write_text(json.dumps(index_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    route = str(database.get("route", "/research/methods/scientific-ai-numerics/literature/"))
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    title = escape(str(database.get("title", "Literature and data graph")))
+    scope = escape(str(database.get("scope", "A machine-readable evidence index.")))
+    status = escape(str(database.get("status", "Living index")))
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{scope}" />
+  <title>{title} · calyr.aí</title>
+  <link rel="stylesheet" href="./literature.css" />
+  <link rel="stylesheet" href="/research/research-system.css" />
+</head>
+<body>
+  <header class="research-system-header"><a class="brand research-brand" href="/">calyr.aí</a>{_research_chapter_nav(project_root, 'methods')}</header>
+  {_research_source_bar('content/literature.yaml', 'literature_database')}
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Evidence graph · {status}</p>
+      <h1>{title}</h1>
+      <p class="scope">{scope}</p>
+      <div class="counts" aria-label="Database counts"><span><strong>{len(papers) + len(source_citations):02d}</strong> citations</span><span><strong>{len(datasets):02d}</strong> datasets</span><span><strong>{len(ideas):02d}</strong> ideas</span><span><strong>{len(relations):02d}</strong> relations</span></div>
+    </section>
+    <section class="scanner" aria-labelledby="scanner-title">
+      <div class="scanner-head"><div><p class="eyebrow">Scan the graph</p><h2 id="scanner-title">Find evidence, data, and reusable ideas</h2></div><p id="result-count" aria-live="polite"></p></div>
+      <div class="controls"><label><span>Search</span><input id="search" type="search" placeholder="temperature, CIFAR, uncertainty…" autocomplete="off" /></label><label><span>Entity</span><select id="kind"><option value="all">All</option><option value="idea">Ideas</option><option value="paper">Papers</option><option value="dataset">Datasets</option></select></label></div>
+      <div id="results" class="results"></div>
+    </section>
+    <section class="contract"><p class="eyebrow">Extraction contract</p><ol>{''.join(f'<li>{escape(str(rule))}</li>' for rule in database.get('extraction_contract', []))}</ol><p><a href="/generated/literature.index.json">Open machine-readable JSON →</a></p></section>
+  </main>
+  <script src="./literature.js" defer></script>
+</body>
+</html>
+"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "literature.css").write_text(_literature_database_css(), encoding="utf-8")
+    (output_dir / "literature.js").write_text(_literature_database_js(), encoding="utf-8")
+    print(f"🔎 Synced literature database to {index_path.relative_to(project_root)} and {(output_dir / 'index.html').relative_to(project_root)}")
+    return index_payload
+
+
+def _literature_database_css() -> str:
+    return """
+:root{color-scheme:dark;--ink:#f5f5f2;--soft:#a7abb0;--paper:#050505;--card:#090909;--line:#343434;--accent:#39bfff}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.55 Helvetica Neue,Helvetica,Arial,sans-serif}a{color:var(--accent)}main{width:min(1240px,92vw);margin:0 auto 96px}.eyebrow{margin:0;color:var(--accent);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;min-height:500px;padding:76px 0 58px;border-bottom:1px solid var(--line)}.hero>.eyebrow{grid-column:1/4}.hero h1{grid-column:4/12;max-width:10ch;margin:0;font-size:clamp(3.4rem,7.6vw,7rem);line-height:.88;letter-spacing:-.065em}.scope{grid-column:4/10;max-width:70ch;color:var(--soft);font-size:1.05rem}.counts{grid-column:4/13;display:flex;flex-wrap:wrap;gap:24px;margin-top:auto;padding-top:32px;border-top:1px solid var(--line);color:var(--soft)}.counts strong{margin-right:7px;color:var(--ink);font-size:2rem;font-weight:500}.scanner{padding:64px 0}.scanner-head{display:grid;grid-template-columns:9fr 3fr;gap:20px;align-items:end}.scanner h2{max-width:16ch;margin:10px 0 0;font-size:clamp(2.2rem,5vw,4.4rem);line-height:.95;letter-spacing:-.05em}.scanner-head>p{text-align:right;color:var(--soft)}.controls{display:grid;grid-template-columns:9fr 3fr;gap:20px;margin:36px 0 22px}.controls label{display:grid;gap:7px;color:var(--soft);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}.controls input,.controls select{width:100%;min-height:52px;padding:0 14px;border:1px solid var(--line);border-radius:0;color:var(--ink);background:#080808;font:inherit}.results{border-top:1px solid var(--line)}.record{display:grid;grid-template-columns:2fr 7fr 3fr;gap:20px;padding:26px 0;border-bottom:1px solid var(--line)}.record-kind{color:var(--accent);font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.record h3{margin:0 0 7px;font-size:1.35rem;line-height:1.16}.record p{margin:0;color:var(--soft)}.record .meta{font-size:.8rem}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:13px}.tags span{padding:3px 7px;border:1px solid var(--line);color:#9eb0c4;font-size:.68rem}.record-link{align-self:end;justify-self:end;font-size:.8rem;font-weight:700;text-decoration:none}.contract{display:grid;grid-template-columns:3fr 9fr;gap:20px;padding:48px 0;border-top:1px solid var(--line)}.contract ol{margin:0;padding-left:1.2rem;color:var(--soft)}.contract>p:last-child{grid-column:2}.empty{padding:42px 0;color:var(--soft)}
+@media(max-width:760px){.hero{display:block;min-height:0;padding:48px 0}.hero h1{margin:18px 0 24px;font-size:3.55rem}.counts{margin-top:36px}.scanner-head,.controls,.record,.contract{display:block}.scanner-head>p{text-align:left}.controls label{margin-top:14px}.record>*{margin-bottom:12px}.record-link{display:inline-block}.contract ol{margin-top:20px}.contract>p:last-child{margin-top:28px}}
+""".strip() + "\n"
+
+
+def _literature_database_js() -> str:
+    return r"""
+const state = { data: null, query: '', kind: 'all' };
+const esc = (value = '') => String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const list = value => Array.isArray(value) ? value : value == null ? [] : [value];
+const searchText = record => JSON.stringify(record).toLowerCase();
+function entities(data) {
+  return [
+    ...data.ideas.map(x => ({...x, entityKind:'idea', subtitle:`${x.kind} · ${x.source}`, summary:x.statement, tags:x.tags, link:''})),
+    ...data.papers.map(x => ({...x, entityKind:'paper', subtitle:`${list(x.authors).join(', ')} · ${x.year}`, summary:x.extractable_idea, tags:x.topics, link:x.url || x.pdf || ''})),
+    ...data.dataset_source_citations.map(x => ({...x, entityKind:'paper', subtitle:`${list(x.authors).join(', ')} · ${x.year}`, summary:'Dataset source citation used by the seed paper.', tags:['dataset source'], link:x.url || ''})),
+    ...data.datasets.map(x => ({...x, entityKind:'dataset', subtitle:`${x.domain} · cited by ${x.cited_by}`, summary:list(x.ideas).join(' · '), tags:[x.availability, x.license_status], link:x.url || ''}))
+  ];
+}
+function render() {
+  const q = state.query.trim().toLowerCase();
+  const records = entities(state.data).filter(x => (state.kind === 'all' || x.entityKind === state.kind) && (!q || searchText(x).includes(q)));
+  document.querySelector('#result-count').textContent = `${records.length} of ${entities(state.data).length} entities`;
+  document.querySelector('#results').innerHTML = records.length ? records.map(x => `<article class="record"><div><span class="record-kind">${esc(x.entityKind)}</span><p class="meta">${esc(x.subtitle)}</p></div><div><h3>${esc(x.title || x.name)}</h3><p>${esc(x.summary || '')}</p><div class="tags">${list(x.tags).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>${x.link ? `<a class="record-link" href="${esc(x.link)}" rel="noreferrer">Open source →</a>` : '<span></span>'}</article>`).join('') : '<p class="empty">No matching evidence. Try a broader term.</p>';
+}
+fetch('/generated/literature.index.json').then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }).then(data => { state.data = data; render(); }).catch(error => { document.querySelector('#results').innerHTML = `<p class="empty">The evidence index could not be loaded: ${esc(error.message)}</p>`; });
+document.querySelector('#search').addEventListener('input', event => { state.query = event.target.value; render(); });
+document.querySelector('#kind').addEventListener('change', event => { state.kind = event.target.value; render(); });
+""".strip() + "\n"
 
 
 def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:

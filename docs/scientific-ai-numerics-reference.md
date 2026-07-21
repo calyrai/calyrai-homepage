@@ -33,6 +33,19 @@ For a new scientific prediction task, work through these steps in order:
 
 Start with the [prediction contract](#prediction-contract). Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the [validation contract](#validation-contract).
 
+## Literature and data graph
+
+The [calibration literature and data graph](/research/methods/scientific-ai-numerics/literature/) turns the references, datasets, and reusable ideas around Guo et al. (2017) into a searchable evidence index.
+
+Its YAML records keep four entities distinct:
+
+- papers and their role in the method lineage;
+- datasets and the split reported by the paper;
+- extracted ideas with source locations and operational consequences;
+- typed relations between evidence records.
+
+Use the [machine-readable JSON index](/generated/literature.index.json) when code, agents, or analytical tools need to scan this evidence. Treat an extracted idea as a traceable interpretation, not as a replacement for reading the primary source.
+
 ## How code should reference this contract
 
 Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:
