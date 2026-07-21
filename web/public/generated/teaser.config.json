@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "calyr.aí Pitch Engine",
-    "subtitle": "Data becomes surrogate intelligence and prediction",
+    "title": "calyr.aí Explore",
+    "subtitle": "Questions become evidence networks and actionable paths",
     "mode": "interactive-flow"
   },
   "page": {
-    "kicker": "calyr.aí works",
-    "title": "Data becomes surrogate. Surrogate becomes prediction.",
-    "subtitle": "Pythia converts data, simulations, and measurements into validated surrogate models and fast predictions. Oracles turn those predictions into domain-specific action.",
-    "deck_link_label": "calyr.aí engineering in action",
+    "kicker": "calyr.aí explore",
+    "title": "Explore systems. Understand responsibility. Follow evidence.",
+    "subtitle": "CALYR turns fragmented organisational and scientific information into navigable evidence networks.",
+    "deck_link_label": "Explore the project system",
     "deck_link_url": "/research/lithos/index.html",
     "insight_title": "Prediction becomes action",
     "insight_copy": "Oracles combine Pythia predictions, domain constraints, uncertainty, and adaptive AI-based user experiences in one usable system.",
@@ -96,5 +96,72 @@
       "invalid_connection": -1,
       "repeat_penalty": -2
     }
+  },
+  "workflow": {
+    "kicker": "04 / MODEL DEVELOPMENT",
+    "title": "From contact to validated model.",
+    "introduction": "Build the smallest system that can test the largest assumption.",
+    "phases": [
+      {
+        "id": "01",
+        "title": "Contact & context analysis",
+        "copy": "Requirements, data, target variables and constraints become an explicit problem frame."
+      },
+      {
+        "id": "02",
+        "title": "Predesign",
+        "copy": "Decompose the problem; define architecture, validation metrics and stop criteria."
+      },
+      {
+        "id": "03",
+        "title": "Rapid MVP prototyping",
+        "copy": "Implement the smallest end-to-end workflow and test it on deliberately small datasets."
+      },
+      {
+        "id": "04",
+        "title": "Pretraining on the CALYR.AI Cube",
+        "copy": "Iterate locally on the surrogate, data pipeline and training logic before scale-up."
+      },
+      {
+        "id": "05",
+        "title": "Specification review",
+        "copy": "Review model, data, compute and expected value against the project specification."
+      },
+      {
+        "id": "06",
+        "title": "VSC-5 training",
+        "copy": "Scale and train the model only when the core assumption holds."
+      },
+      {
+        "id": "07",
+        "title": "Validation & falsification",
+        "copy": "Test results against reference data, simulation and previously defined success criteria."
+      },
+      {
+        "id": "08",
+        "title": "Deployable MVP",
+        "copy": "Deliver a demonstrator, API, interface or decision model with an explicit validity envelope."
+      }
+    ],
+    "decisions": [
+      {
+        "after": "05",
+        "positive": "Assumption holds — scale on VSC-5",
+        "negative": "Assumption fails — redesign, simplify or stop"
+      },
+      {
+        "after": "07",
+        "positive": "Validated — package the deployable MVP",
+        "negative": "Not validated — return to predesign, data or pretraining"
+      }
+    ],
+    "questions": [
+      "Does the problem definition match the available evidence?",
+      "Does the MVP already create measurable value?",
+      "Does model quality justify the next scale step?",
+      "Does VSC-5 training improve the relevant target metrics?",
+      "Can the central assumption be validated or falsified?"
+    ],
+    "closing": "Rapid prototyping. Early falsification. Scalable validation."
   }
 }

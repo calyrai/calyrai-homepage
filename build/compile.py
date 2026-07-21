@@ -60,6 +60,7 @@ CONFIG = {
     "yaml_files": {
         "structure": "structure.yaml",
         "content": "content.yaml",
+        "projects": "projects.yaml",
     },
     "output_files": {
         "ast": "nexus.ast.json",
@@ -284,8 +285,40 @@ class NexusCompiler:
             self.source[key] = self._read_mapping_yaml(path, required=True)
 
     def _load_auxiliary_sources(self) -> None:
-        """Load graph, interaction, and flowchart from inline blocks with file fallback."""
+        """Merge canonical projects, then load graph and runtime auxiliary sources."""
         blob = self.source.get("content", {})
+        projects = self.source.pop("projects", {})
+        if not isinstance(blob, dict) or not isinstance(projects, dict):
+            raise ValueError("content.yaml and projects.yaml must contain mappings")
+        collisions = sorted(set(blob) & set(projects))
+        if collisions:
+            raise ValueError(f"Project IDs duplicated in content.yaml: {', '.join(collisions)}")
+
+        structure = self.source.get("structure", {})
+        project_ids: set[str] = set()
+        def collect_project_nodes(node_id: str) -> None:
+            if node_id in project_ids:
+                return
+            project_ids.add(node_id)
+            node = structure.get(node_id, {}) if isinstance(structure, dict) else {}
+            children = node.get("children", []) if isinstance(node, dict) else []
+            for child in children if isinstance(children, list) else []:
+                if isinstance(child, str):
+                    collect_project_nodes(child)
+
+        applied = structure.get("applied", {}) if isinstance(structure, dict) else {}
+        applied_children = applied.get("children", []) if isinstance(applied, dict) else []
+        for project_id in applied_children if isinstance(applied_children, list) else []:
+            if isinstance(project_id, str):
+                collect_project_nodes(project_id)
+
+        misplaced = sorted(project_ids & set(blob))
+        missing = sorted(project_ids - set(projects))
+        if misplaced:
+            raise ValueError(f"Application projects must live in projects.yaml: {', '.join(misplaced)}")
+        if missing:
+            raise ValueError(f"Application project definitions missing from projects.yaml: {', '.join(missing)}")
+        blob.update(projects)
         if isinstance(blob, dict):
             site_runtime = blob.pop("__site_runtime", None)
             if isinstance(site_runtime, dict):
@@ -732,7 +765,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                 accent_color = palette_color.strip()
 
         css_path = output_dir / "platform.css"
-        css_path.write_text(_platform_page_css(accent_color=accent_color), encoding="utf-8")
+        page_css = _pythia_page_css(accent_color) if platform_id == "pythia" else _platform_page_css(accent_color=accent_color)
+        css_path.write_text(page_css, encoding="utf-8")
 
         source_cfg = book.get("source", {}) if isinstance(book.get("source"), dict) else {}
         source_rel = source_cfg.get("path")
@@ -804,6 +838,67 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     </section>
                 """.rstrip()
             )
+
+        if platform_id == "pythia":
+            process_blocks = []
+            process_links = []
+            for index, section in enumerate(sections, start=1):
+                if not isinstance(section, dict):
+                    continue
+                section_id = escape(str(section.get("id", f"step-{index}")), quote=True)
+                section_title = escape(str(section.get("title", "")))
+                section_body = escape(str(section.get("body", "")))
+                bullets = section.get("bullets", []) if isinstance(section.get("bullets"), list) else []
+                bullet_html = "".join(f"<li>{escape(str(item))}</li>" for item in bullets)
+                process_links.append(f'<a href="#{section_id}"><span>{index:02d}</span>{section_title}</a>')
+                process_blocks.append(f"""
+      <section class="process-step" id="{section_id}">
+        <div class="step-index">{index:02d}</div>
+        <h2>{section_title}</h2>
+        <p class="step-body">{section_body}</p>
+        <ul>{bullet_html}</ul>
+      </section>""".rstrip())
+
+            html_content = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PYTHIA — Scientific Machine Learning for Interpretable Surrogate Intelligence" />
+  <title>PYTHIA — Scientific Machine Learning</title>
+  <link rel="stylesheet" href="./platform.css" />
+</head>
+<body>
+  <header class="system-bar">
+    <a class="wordmark" href="/">calyr.aí</a>
+    <span>Scientific intelligence / 01</span>
+    <span class="system-status">System online</span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-marker">Platform / PYTHIA</div>
+      <h1>{subtitle}</h1>
+      <p class="hero-title">{lead}</p>
+      <p class="hero-claim">{claim}</p>
+      <a class="process-link" href="#question">Enter process <span aria-hidden="true">↓</span></a>
+    </section>
+    <nav class="process-nav" aria-label="PYTHIA process">{''.join(process_links)}</nav>
+    <div class="process" aria-label="Scientific machine learning workflow">{''.join(process_blocks)}</div>
+    <section class="closing">
+      <p class="closing-label">Continuous learning</p>
+      <p>Every decision returns new evidence to the system and begins a better question.</p>
+      <a href="/research/methods/">Explore the method system →</a>
+    </section>
+  </main>
+  <footer><span>PYTHIA / calyr.aí</span><a href="/">Return to platform index</a></footer>
+</body>
+</html>
+"""
+            output_html_path = output_dir / "index.html"
+            output_html_path.write_text(html_content, encoding="utf-8")
+            rel_path = output_html_path.relative_to(project_root)
+            print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
+            continue
 
         source_meta = "source file not found"
         if source_exists and source_html_path is not None:
@@ -1738,6 +1833,57 @@ li { margin: 4px 0; }
 }
 """.strip() + "\n"
     return css.replace("__ACCENT_COLOR__", accent_color)
+
+
+def _pythia_page_css(accent_color: str = "#2f6bff") -> str:
+    """Swiss-grid scientific operating-system presentation for PYTHIA."""
+    return f"""
+:root {{ --paper:#050505; --ink:#f4f4f0; --muted:#9b9b96; --line:rgba(244,244,240,.22); --accent:{accent_color}; }}
+* {{ box-sizing:border-box; }}
+html {{ scroll-behavior:smooth; background:var(--paper); }}
+body {{ margin:0; color:var(--ink); background:var(--paper); font-family:Arial, Helvetica, sans-serif; line-height:1.35; }}
+body::before {{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background-image:linear-gradient(90deg,transparent calc(100% - 1px),var(--line) 1px); background-size:calc(100vw / 12) 100%; }}
+a {{ color:inherit; text-decoration:none; }}
+.system-bar {{ position:relative; z-index:2; min-height:58px; display:grid; grid-template-columns:4fr 5fr 3fr; align-items:center; padding:0 2.5vw; border-bottom:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.12em; }}
+.wordmark {{ font-size:15px; font-weight:700; text-transform:none; }}
+.system-status {{ text-align:right; }}
+.system-status::before {{ content:""; display:inline-block; width:7px; height:7px; margin-right:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 16px var(--accent); }}
+main, footer {{ position:relative; z-index:1; }}
+.hero {{ min-height:calc(100vh - 58px); display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:auto 1fr auto; padding:5vh 2.5vw 4vh; border-bottom:1px solid var(--line); }}
+.hero-marker {{ grid-column:1 / 4; align-self:start; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.14em; }}
+h1 {{ grid-column:1 / -1; margin:6vh 0 0; align-self:start; font-size:clamp(5rem,17vw,15rem); line-height:.74; letter-spacing:-.085em; font-weight:700; }}
+.hero-title {{ grid-column:5 / 12; margin:0 0 7vh; align-self:end; max-width:900px; font-size:clamp(2rem,4.2vw,5.2rem); line-height:.98; letter-spacing:-.045em; }}
+.hero-claim {{ grid-column:5 / 9; margin:0; padding-top:16px; border-top:3px solid var(--ink); font-size:clamp(1rem,1.4vw,1.35rem); }}
+.process-link {{ grid-column:11 / 13; align-self:start; display:flex; justify-content:space-between; padding-top:16px; border-top:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.12em; }}
+.process-nav {{ position:sticky; top:0; z-index:5; display:grid; grid-template-columns:repeat(6,1fr); background:rgba(5,5,5,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }}
+.process-nav a {{ min-height:74px; display:flex; flex-direction:column; justify-content:space-between; padding:12px 14px; border-right:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.08em; transition:background .2s,color .2s; }}
+.process-nav a:hover,.process-nav a:focus-visible {{ color:var(--paper); background:var(--ink); outline:none; }}
+.process-nav span {{ color:var(--muted); }}
+.process {{ padding:0 2.5vw; }}
+.process-step {{ min-height:78vh; display:grid; grid-template-columns:1fr 3fr 4fr 3fr 1fr; column-gap:0; align-content:start; padding:9vh 0; border-bottom:1px solid var(--line); scroll-margin-top:74px; }}
+.step-index {{ grid-column:1; padding-top:12px; color:var(--accent); font-size:12px; letter-spacing:.12em; }}
+.process-step h2 {{ grid-column:2 / 4; margin:0; font-size:clamp(4rem,10vw,10rem); line-height:.82; letter-spacing:-.065em; font-weight:500; }}
+.step-body {{ grid-column:3 / 5; margin:8vh 0 0; padding-top:16px; border-top:3px solid var(--ink); font-size:clamp(1.4rem,2.6vw,3rem); line-height:1.05; letter-spacing:-.035em; }}
+.process-step ul {{ grid-column:4 / 5; margin:4vh 0 0; padding:0; list-style:none; border-top:1px solid var(--line); }}
+.process-step li {{ padding:10px 0; border-bottom:1px solid var(--line); color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }}
+.closing {{ min-height:65vh; display:grid; grid-template-columns:4fr 5fr 3fr; padding:10vh 2.5vw; align-content:center; border-bottom:1px solid var(--line); background:var(--ink); color:var(--paper); }}
+.closing-label {{ grid-column:1; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
+.closing > p:nth-child(2) {{ grid-column:2 / 4; margin:0; font-size:clamp(2.6rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
+.closing a {{ grid-column:3; margin-top:8vh; padding-top:14px; border-top:1px solid currentColor; font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
+footer {{ min-height:120px; display:flex; justify-content:space-between; align-items:flex-end; padding:24px 2.5vw; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }}
+@media (max-width:760px) {{
+  body::before {{ background-size:25vw 100%; }}
+  .system-bar {{ grid-template-columns:1fr 1fr; }} .system-bar > span:nth-child(2) {{ display:none; }}
+  .hero {{ min-height:90vh; }} h1 {{ font-size:clamp(4rem,24vw,8rem); }}
+  .hero-title,.hero-claim {{ grid-column:1 / -1; }} .hero-title {{ margin-top:10vh; }} .process-link {{ grid-column:8 / 13; }}
+  .process-nav {{ overflow-x:auto; grid-template-columns:repeat(6,minmax(125px,1fr)); }}
+  .process-step {{ min-height:70vh; grid-template-columns:1fr 3fr; }}
+  .step-index {{ grid-column:1; }} .process-step h2 {{ grid-column:2; font-size:clamp(3rem,16vw,6rem); }}
+  .step-body,.process-step ul {{ grid-column:2; margin-top:6vh; }}
+  .closing {{ grid-template-columns:1fr; }} .closing-label,.closing > p:nth-child(2),.closing a {{ grid-column:1; }}
+}}
+@media (prefers-reduced-motion:reduce) {{ html {{ scroll-behavior:auto; }} }}
+"""
 
 
 def _platform_page_css(accent_color: str = "#00c7ff") -> str:

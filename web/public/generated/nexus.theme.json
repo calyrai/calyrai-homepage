@@ -174,9 +174,9 @@
     }
   },
   "skin": {
-    "id": "oracle",
-    "name": "oracle dark",
-    "description": "Dark, sophisticated design with mysterious violet accents",
+    "id": "pythia",
+    "name": "pythia swiss scientific",
+    "description": "Process-oriented scientific operating system built on a strict Swiss grid",
     "colors": {
       "background": "#000000",
       "surface": "#000000",
