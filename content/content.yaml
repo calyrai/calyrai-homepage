@@ -398,7 +398,7 @@ swiss_code:
   icon: layers
   route: /research/swiss-code/
   render:
-    grid_span: 3
+    grid_span: 6
 pythia_saxs:
   title: SAXS System
   tile_lead: molecular assembly

@@ -564,7 +564,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 3
+            "grid_span": 6
           },
           "behavior": {},
           "explain": {},
@@ -580,7 +580,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 3
+                "grid_span": 6
               }
             }
           }
