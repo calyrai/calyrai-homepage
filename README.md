@@ -486,3 +486,11 @@ Current logo implementation notes:
 - Only the minimal `deploy/` package is intended to go online.
 - Use LOCAL-README.md for personal local workflow details.
 - Keep deploy/ synchronized with web/dist before pushing if deploying static output directly.
+
+## YAML project contract
+
+All homepage application projects and their child models are authored in
+`content/projects.yaml`. `content/content.yaml` contains shared navigation,
+platform and page copy. The compiler merges both sources and fails when a
+project is missing, duplicated, or placed in the wrong YAML file. Generated
+JSON, tiles and interfaces must never become independent content sources.

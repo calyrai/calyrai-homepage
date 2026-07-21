@@ -201,22 +201,22 @@ platform_books:
     - id: platform-pythia
       platform_id: pythia
       type: platform-book
-      title: Pythia Compass Interface
+      title: PYTHIA — Scientific Machine Learning
       year: 2026
       authors:
         - Tscheliessnig, Rupert
       tags:
-        - interaction
-        - exploration
-        - insights
-        - compass
-        - interface-layer
-      objective: Define Pythia as the Compass interface and make explicit that the platform tile is the entry link into this interface.
-      summary: The Pythia platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.
-      canonical_claim: Human insight quality improves when graph exploration is guided by semantic context and reasoning cues through a dedicated Compass interface.
+        - scientific-machine-learning
+        - surrogate-models
+        - interpretability
+        - uncertainty
+        - decision-support
+      objective: Transform scientific questions into interpretable surrogate models, evidence, predictions, and defensible decisions.
+      summary: A process-oriented scientific operating system connecting questions, knowledge, methods, evidence, prediction, and decision.
+      canonical_claim: From scientific question to interpretable decision — with evidence and uncertainty visible at every step.
       ctas:
         - type: platform-page
-          label: Open Pythia Compass interface
+          label: Open PYTHIA
           url: /research/platforms/pythia/index.html
           online: true
         - type: philosophy-context
@@ -228,32 +228,30 @@ platform_books:
           url: /research/platforms/oracle/index.html
           online: true
       sections:
-        - id: scientific-design-engine
-          title: Scientific Design Engine
-          body: calyr.aí is not a generic AI chat. Pythia Compass is the interaction layer for AI-native scientific design across models, simulation, and knowledge graphs.
-          bullets:
-            - Knowledge graph exploration with semantic context
-            - Surrogate model guidance for faster option-space navigation
-            - HPC and simulation pathways connected to decision points
-            - AI agents and scientific documents integrated in one workspace
-        - id: compass-flow
-          title: Compass Flow
-          bullets:
-            - THINK
-            - MODEL
-            - SIMULATE
-            - VALIDATE
-            - DEPLOY
-        - id: interaction-model
-          title: Interaction Model
-          bullets:
-            - Zoomable brick-based knowledge landscape
-            - Fractal navigation between overview and detail
-            - Guided traversal of related entities
-            - Context-sensitive prompts and insight bookmarking
-        - id: value
-          title: Value
-          body: Pythia closes the loop between extracted knowledge and actionable human understanding and turns scientific reasoning into an explorable operating system.
+        - id: question
+          title: Question
+          body: Define the phenomenon, decision context, constraints, and measurable target before selecting a model.
+          bullets: [Scientific objective and hypothesis, Decision boundary and constraints, Observable quantities and success criteria]
+        - id: knowledge
+          title: Knowledge
+          body: Assemble domain structure, prior results, provenance, and physical constraints into a queryable context.
+          bullets: [Literature and experimental context, Knowledge graphs and semantic relations, Assumptions priors and governing physics]
+        - id: methods
+          title: Methods
+          body: Select an interpretable modeling strategy that matches the question, available evidence, and required fidelity.
+          bullets: [Surrogate and reduced-order models, Physics-informed machine learning, Calibration and uncertainty quantification]
+        - id: evidence
+          title: Evidence
+          body: Test the model against observations, simulations, and validation contracts while preserving provenance.
+          bullets: [Training and validation evidence, Residuals sensitivity and failure modes, Traceable model and data lineage]
+        - id: prediction
+          title: Prediction
+          body: Produce fast, uncertainty-aware estimates across the relevant parameter and design space.
+          bullets: [Interpretable response surfaces, Confidence and extrapolation warnings, Interactive scenario exploration]
+        - id: decision
+          title: Decision
+          body: Translate predictions into transparent options, trade-offs, and the next informative action.
+          bullets: [Ranked options and consequences, Evidence-linked recommendations, Feedback into the next question]
 
 method_catalog:
   route: /research/methods/
@@ -272,6 +270,15 @@ method_catalog:
       eyebrow: calyr.aí reading room · 001
       chapter: oracling
   items:
+    - id: CALYR-METHOD-EVIDENCE-WORKFLOW-001
+      source: docs/evidence-reading-workflow.md
+      route: /research/methods/evidence-reading-workflow/
+      title: Evidence Reading Workflow
+      summary: Capture sources in Safari, preserve them in Zotero, extract page-bound evidence, and publish curated claims to the calyr.aí knowledge catalog.
+      status: Working contract
+      family: Research practice
+      domains: [literature review, scientific writing, knowledge extraction]
+      tags: [Safari, Zotero, annotations, citations, evidence graph, YAML]
     - id: CALYR-METHOD-NR-AI-001
       source: docs/scientific-ai-numerics-reference.md
       route: /research/methods/scientific-ai-numerics/
@@ -492,8 +499,8 @@ platform_pages:
     - platform_id: pythia
       book_id: platform-pythia
       eyebrow: calyr.ai platform
-      subtitle: Pythia
-      lead: Compass interface layer entered via the Pythia platform tile for guided graph exploration and insight generation.
+      subtitle: PYTHIA
+      lead: Scientific Machine Learning for Interpretable Surrogate Intelligence
       show_method_reference: true
       footer_note: Pythia page generated from platform-pythia book entry in content/books.yaml.
 

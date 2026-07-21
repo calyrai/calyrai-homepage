@@ -103,10 +103,43 @@ research_system:
       - web/public/research/research-system.css
       - web/public/research/swiss-code/index.html
       - web/public/research/methods/index.html
+      - web/public/research/methods/evidence-reading-workflow/index.html
       - web/public/research/methods/oracling/index.html
       - web/public/research/methods/oracling/reading-room/index.html
       - web/public/research/interfaces/index.html
     rule: Generated HTML and CSS are publication artifacts. Edit their YAML or linked source and recompile; do not author the generated files directly.
+  evidence_citation_architecture:
+    id: SC-EVIDENCE-001
+    title: Evidence and Citation Architecture
+    purpose: Keep discovery, private source material, reviewed evidence, versioned knowledge, and published prose distinct but traceable.
+    method_route: /research/methods/evidence-reading-workflow/
+    flow:
+      - order: "01"
+        name: Discover
+        system: Safari
+        rule: Capture the canonical source page and its identity; a saved tab is not yet evidence.
+      - order: "02"
+        name: Preserve and annotate
+        system: Zotero
+        rule: Keep metadata, lawful attachments, annotations, locators, and private reading notes together.
+      - order: "03"
+        name: Review and extract
+        system: calyr.aí catalog
+        rule: Convert selected annotations into atomic claims with evidence level, applicability, limitations, and source location.
+      - order: "04"
+        name: Version
+        system: Git
+        rule: Store reviewed YAML records, schemas, and prose; exclude credentials and normally exclude copyrighted full documents.
+      - order: "05"
+        name: Publish and verify
+        system: calyr.aí
+        rule: Build text from reviewed claims and verify that every externally checkable assertion resolves to supporting evidence.
+    invariants:
+      - A highlight is not automatically a reviewed claim.
+      - A paraphrase and a verbatim excerpt remain distinguishable.
+      - Every published claim retains portable source identity and an exact locator.
+      - AI may retrieve, compare, and draft; it may not invent evidence or silently upgrade interpretation into fact.
+      - Private attachments, credentials, and the Zotero database never enter the public repository.
   validation_gates:
     - YAML parses and cross-references resolve.
     - All three chapter routes and Swiss Code are present in the shared navigation.

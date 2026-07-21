@@ -11,7 +11,7 @@ import { renderChildren } from './Renderer'
 import { applyTitleDefaults } from '../utils/titleDefaults'
 
 export default function Element({ node, theme, context = {} }) {
-  const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
+  const { id, title, summary, body, icon, route, tile_lead: tileLead, contacts = [], children = [], tagline = '' } = node
   const displayTitle = title ? applyTitleDefaults(title) : ''
   const authoredGridSpan = Number(node.render?.grid_span)
   const gridSpan = Number.isFinite(authoredGridSpan)
@@ -57,6 +57,8 @@ export default function Element({ node, theme, context = {} }) {
   return (
     <WrapperTag className={className} id={id} data-type={dataType} style={elementStyle}>
       <div className="element-content">
+        {tileLead && <p className="element-eyebrow">{tileLead}</p>}
+
         {icon && <div className="element-icon">{icon}</div>}
 
         {title && <h4 className="element-title">{displayTitle}</h4>}

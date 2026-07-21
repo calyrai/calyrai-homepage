@@ -60,15 +60,15 @@
     {
       "type": "section",
       "id": "movie",
-      "title": "Teaser",
+      "title": "Explore",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Short",
+      "subtitle": "Interactive system exploration",
       "landing_message": "",
-      "summary": "Pythia turns data into prediction. Oracles turn prediction into action.",
-      "body": "Data becomes surrogate. Surrogate becomes prediction. Prediction becomes oracle.",
+      "summary": "Questions become traceable evidence, interpretable models, and actionable paths.",
+      "body": "Ask a question. Follow the evidence. Understand the system. Choose the next action.",
       "icon": "",
       "route": "/research/teaser/index.html",
       "links": [],
@@ -252,15 +252,15 @@
         {
           "type": "tile",
           "id": "brix",
-          "title": "brix",
-          "tile_lead": "structural systems",
-          "tile_accent": "orange",
-          "tile_title": "brix",
-          "tile_summary": "optimized structural parts from simulation and measurement",
-          "subtitle": "Structural intelligence",
+          "title": "BRIX",
+          "tile_lead": "surrogate product design",
+          "tile_accent": "cyan",
+          "tile_title": "surrogate model product design",
+          "tile_summary": "turn simulation, measurement, constraints, and uncertainty into faster product-design decisions",
+          "subtitle": "Surrogate-assisted product design",
           "landing_message": "",
-          "summary": "Faster structural design, evaluation, and optimization.\n",
-          "body": "Brix combines simulations, measurements, surrogate models, and an adaptive AI-based user experience to explore structural variants, understand trade-offs, and develop optimized manufacturable parts with uncertainty-aware validation.\n",
+          "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
+          "body": "BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carries promising concepts through validation into an engineered product decision.",
           "icon": "bridge",
           "route": "/research/platforms/brix/index.html",
           "links": [],
@@ -477,7 +477,7 @@
           "landing_message": "",
           "summary": "Methods connect scientific principles to traceable implementation contracts.",
           "body": "The calyr.a\u00ed method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.",
-          "icon": "book",
+          "icon": "",
           "route": "/research/methods/",
           "links": [],
           "institutions": [],
@@ -517,7 +517,7 @@
           "landing_message": "",
           "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
           "body": "The calyr.a\u00ed interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.",
-          "icon": "panels-top-left",
+          "icon": "",
           "route": "/research/interfaces/",
           "links": [],
           "institutions": [],
@@ -595,9 +595,9 @@
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Multiple models become one product",
+      "subtitle": "Scientific systems become usable products",
       "landing_message": "",
-      "summary": "Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.",
+      "summary": "Each application combines sources, models, evidence, workflows, and interaction into one operational product.",
       "body": "",
       "icon": "",
       "route": "",
@@ -657,6 +657,52 @@
         }
       },
       "children": [
+        {
+          "type": "tile",
+          "id": "brix",
+          "title": "BRIX",
+          "tile_lead": "surrogate product design",
+          "tile_accent": "cyan",
+          "tile_title": "surrogate model product design",
+          "tile_summary": "turn simulation, measurement, constraints, and uncertainty into faster product-design decisions",
+          "subtitle": "Surrogate-assisted product design",
+          "landing_message": "",
+          "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
+          "body": "BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carries promising concepts through validation into an engineered product decision.",
+          "icon": "bridge",
+          "route": "/research/platforms/brix/index.html",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 4
+          },
+          "behavior": {},
+          "explain": {},
+          "relations": {
+            "incoming": [
+              "core"
+            ],
+            "outgoing": []
+          },
+          "meta": {
+            "source": {
+              "contentNodeId": "brix",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
+          }
+        },
         {
           "type": "tile",
           "id": "aflowtex",
@@ -1505,6 +1551,86 @@
               ]
             }
           ]
+        },
+        {
+          "type": "element",
+          "id": "core_facility_studio",
+          "title": "core facility studio",
+          "tile_lead": "research infrastructure",
+          "tile_accent": "blue",
+          "tile_title": "core facility architecture",
+          "tile_summary": "define, calculate, and explain KPIs from PPMS data across facilities, instruments, services, and workflows",
+          "subtitle": "Organisational intelligence for scientific infrastructure",
+          "landing_message": "",
+          "summary": "Turn PPMS operational data into reproducible KPIs with visible formulas, filters, provenance, and data quality.",
+          "body": "PPMS already manages and catalogues facilities, instruments, services, and reports. The Core Facility KPI Studio adds a controlled analytical layer: robust PUMAPI, API2, or export adapters; a canonical event model; versioned KPI definitions; cross-facility comparison; and Swiss-design views for utilisation, availability, demand, training, throughput, maintenance, and finance.",
+          "icon": "network",
+          "route": "",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 4
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "core_facility_studio",
+              "structureNodeId": null
+            },
+            "nodeType": "element",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
+          }
+        },
+        {
+          "type": "element",
+          "id": "qty_alphafold_oracle",
+          "title": "QTY AlphaFold Oracle",
+          "tile_lead": "protein evidence",
+          "tile_accent": "green",
+          "tile_title": "quality, traceability, yield",
+          "tile_summary": "AlphaFold, PDB, UniProt, publications, datasets, and public code as one evidence network",
+          "subtitle": "Public protein-structure repository intelligence",
+          "landing_message": "",
+          "summary": "Follow protein evidence from public structure models to experimental support, methods, code, and the next analysis.",
+          "body": "QTY AlphaFold Oracle regularly checks public repositories, resolves scientific identities and versions, and connects structures, publications, methods, datasets, and code with visible provenance and uncertainty.",
+          "icon": "particle",
+          "route": "",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {},
+          "render": {
+            "grid_span": 4
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "qty_alphafold_oracle",
+              "structureNodeId": null
+            },
+            "nodeType": "element",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "render": {
+                "grid_span": 4
+              }
+            }
+          }
         }
       ]
     },

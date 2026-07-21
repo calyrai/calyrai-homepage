@@ -133,6 +133,8 @@ After this route, write one page that names the traits, hard constraints, uncert
 
 ## Reading discipline
 
+Use the shared [Evidence Reading Workflow](/research/methods/evidence-reading-workflow/) to capture each paper, retain page-bound annotations, and publish only reviewed claims into the calyr.aí catalog.
+
 For every paper adopted into the method catalog, record:
 
 1. the Oracle failure it is meant to address;
