@@ -109,9 +109,9 @@
     }
   },
   "workflow": {
-    "kicker": "04 / MODEL DEVELOPMENT",
-    "title": "From contact to validated model.",
-    "introduction": "Build the smallest system that can test the largest assumption.",
+    "kicker": "05 / CALYR.AÍ WORKFLOW",
+    "title": "Prototype locally. Scale on VSC-5. Validate before deployment.",
+    "introduction": "Start small, test the decisive assumption early and use supercomputing only after the evidence justifies scale.",
     "phases": [
       {
         "id": "01",
@@ -130,40 +130,40 @@
       },
       {
         "id": "04",
-        "title": "Pretraining on the CALYR.AI Cube",
-        "copy": "Iterate locally on the surrogate, data pipeline and training logic before scale-up."
+        "title": "Local pretraining on the calyr.aí Cube",
+        "copy": "Iterate rapidly on the surrogate, data pipeline, features and training logic before consuming large-scale compute."
       },
       {
         "id": "05",
-        "title": "Specification review",
-        "copy": "Review model, data, compute and expected value against the project specification."
+        "title": "Evidence and specification gate",
+        "copy": "Review model behavior, data quality, compute demand, expected value and stop criteria against the project specification."
       },
       {
         "id": "06",
-        "title": "VSC-5 training",
-        "copy": "Scale and train the model only when the core assumption holds."
+        "title": "Scale training on VSC-5",
+        "copy": "Run the computationally intensive simulation, training and search workloads on VSC-5 only when the local MVP supports the central assumption."
       },
       {
         "id": "07",
-        "title": "Validation & falsification",
-        "copy": "Test results against reference data, simulation and previously defined success criteria."
+        "title": "Validation and falsification",
+        "copy": "Challenge the scaled result against independent reference data, simulations, uncertainty checks and the success criteria defined before training."
       },
       {
         "id": "08",
-        "title": "Deployable MVP",
-        "copy": "Deliver a demonstrator, API, interface or decision model with an explicit validity envelope."
+        "title": "Deployable MVP with validity envelope",
+        "copy": "Package the validated model as a demonstrator, API, interface or decision system with provenance, uncertainty and explicit operating limits."
       }
     ],
     "decisions": [
       {
         "after": "05",
-        "positive": "Assumption holds — scale on VSC-5",
-        "negative": "Assumption fails — redesign, simplify or stop"
+        "positive": "Evidence supports scale — allocate VSC-5 compute",
+        "negative": "Evidence is insufficient — redesign, simplify or stop"
       },
       {
         "after": "07",
-        "positive": "Validated — package the deployable MVP",
-        "negative": "Not validated — return to predesign, data or pretraining"
+        "positive": "Validation gate passed — package the deployable MVP",
+        "negative": "Validation gate failed — return to data, predesign or local pretraining"
       }
     ],
     "questions": [
@@ -173,6 +173,6 @@
       "Does VSC-5 training improve the relevant target metrics?",
       "Can the central assumption be validated or falsified?"
     ],
-    "closing": "Rapid prototyping. Early falsification. Scalable validation."
+    "closing": "Local speed. VSC-5 scale. Evidence before deployment."
   }
 }
