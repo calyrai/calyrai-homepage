@@ -272,6 +272,15 @@ method_catalog:
       eyebrow: calyr.aí reading room · 001
       chapter: oracling
   items:
+    - id: CALYR-METHOD-EVIDENCE-WORKFLOW-001
+      source: docs/evidence-reading-workflow.md
+      route: /research/methods/evidence-reading-workflow/
+      title: Evidence Reading Workflow
+      summary: Capture sources in Safari, preserve them in Zotero, extract page-bound evidence, and publish curated claims to the calyr.aí knowledge catalog.
+      status: Working contract
+      family: Research practice
+      domains: [literature review, scientific writing, knowledge extraction]
+      tags: [Safari, Zotero, annotations, citations, evidence graph, YAML]
     - id: CALYR-METHOD-NR-AI-001
       source: docs/scientific-ai-numerics-reference.md
       route: /research/methods/scientific-ai-numerics/
