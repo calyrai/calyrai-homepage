@@ -466,7 +466,7 @@
           }
         },
         {
-          "type": "element",
+          "type": "tile",
           "id": "method_catalog",
           "title": "method catalog",
           "tile_lead": "scientific practice",
@@ -493,7 +493,7 @@
               "contentNodeId": "method_catalog",
               "structureNodeId": null
             },
-            "nodeType": "element",
+            "nodeType": "tile",
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"
@@ -506,7 +506,7 @@
           }
         },
         {
-          "type": "element",
+          "type": "tile",
           "id": "interface_catalog",
           "title": "interface catalog",
           "tile_lead": "graphical intelligence",
@@ -533,7 +533,7 @@
               "contentNodeId": "interface_catalog",
               "structureNodeId": null
             },
-            "nodeType": "element",
+            "nodeType": "tile",
             "transformations": [
               "ApplyNodeTypeInference",
               "AttachResolvedContent"

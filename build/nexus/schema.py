@@ -22,6 +22,8 @@ NODE_TYPE_RULES = {
     "lithos": "tile",
     "oracle": "tile",
     "pythia": "tile",
+    "method_catalog": "tile",
+    "interface_catalog": "tile",
     "ecosystem": "tile",
     "philosophy": "tile",
     "contact": "tile",
