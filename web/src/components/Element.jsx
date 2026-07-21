@@ -13,6 +13,10 @@ import { applyTitleDefaults } from '../utils/titleDefaults'
 export default function Element({ node, theme, context = {} }) {
   const { id, title, summary, body, icon, route, contacts = [], children = [], tagline = '' } = node
   const displayTitle = title ? applyTitleDefaults(title) : ''
+  const authoredGridSpan = Number(node.render?.grid_span)
+  const gridSpan = Number.isFinite(authoredGridSpan)
+    ? Math.min(12, Math.max(1, Math.round(authoredGridSpan)))
+    : 6
 
   if (id === 'logo') {
     return (
@@ -32,13 +36,16 @@ export default function Element({ node, theme, context = {} }) {
     ? theme?.skin?.components?.footer
     : theme?.skin?.components?.element
 
-  const elementStyle = componentTheme
-    ? {
+  const elementStyle = {
+    '--element-grid-span': gridSpan,
+    ...(componentTheme
+      ? {
         backgroundColor: componentTheme.background,
         color: componentTheme.text_color,
         borderColor: componentTheme.border || componentTheme.border_top,
       }
-    : {}
+      : {}),
+  }
 
   const WrapperTag = isFooter ? 'footer' : 'div'
   const dataType = isFooter ? 'footer' : 'element'

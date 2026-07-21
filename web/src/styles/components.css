@@ -2988,6 +2988,12 @@ body.nav-open {
     height: 100%;
   }
 
+  .page-main .section-grid > .element {
+    grid-column: span var(--element-grid-span, 6);
+    min-width: 0;
+    height: 100%;
+  }
+
   .page-main .tile-content {
     min-height: 100%;
   }
