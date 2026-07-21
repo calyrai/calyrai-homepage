@@ -7,7 +7,7 @@ class ConfigLoader {
     const response = await fetch(path, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`Pitch config fetch failed (${response.status})`);
     const config = await response.json();
-    for (const key of ['meta', 'page', 'copy', 'nodes', 'edges', 'story_rules']) {
+    for (const key of ['meta', 'page', 'copy', 'nodes', 'edges', 'story_rules', 'workflow']) {
       if (!config[key] || (Array.isArray(config[key]) && config[key].length === 0)) throw new Error(`Pitch config requires ${key}`);
     }
     return config;
@@ -104,6 +104,41 @@ function hydratePage(config) {
   document.getElementById('insight-copy').textContent = page.insight_copy;
   document.getElementById('hpc-title').textContent = page.hpc_title;
   document.getElementById('hpc-copy').textContent = page.hpc_copy;
+  hydrateWorkflow(config.workflow);
+}
+
+function hydrateWorkflow(workflow) {
+  document.getElementById('workflow-kicker').textContent = workflow.kicker;
+  document.getElementById('workflow-title').textContent = workflow.title;
+  document.getElementById('workflow-introduction').textContent = workflow.introduction;
+  document.getElementById('workflow-closing').textContent = workflow.closing;
+  const decisions = new Map((workflow.decisions || []).map((item) => [item.after, item]));
+  const grid = document.getElementById('workflow-grid');
+  grid.replaceChildren();
+  workflow.phases.forEach((phase) => {
+    const article = document.createElement('article');
+    article.className = 'workflow-phase';
+    const number = document.createElement('span'); number.textContent = phase.id;
+    const copy = document.createElement('div');
+    const title = document.createElement('h3'); title.textContent = phase.title;
+    const body = document.createElement('p'); body.textContent = phase.copy;
+    copy.append(title, body); article.append(number, copy); grid.append(article);
+    const decision = decisions.get(phase.id);
+    if (decision) {
+      const fork = document.createElement('div'); fork.className = 'workflow-decision';
+      [decision.positive, decision.negative].forEach((label, index) => {
+        const branch = document.createElement('p');
+        branch.className = index === 0 ? 'positive' : 'negative';
+        branch.textContent = label; fork.append(branch);
+      });
+      grid.append(fork);
+    }
+  });
+  const questions = document.getElementById('workflow-questions');
+  questions.replaceChildren();
+  (workflow.questions || []).forEach((question) => {
+    const item = document.createElement('li'); item.textContent = question; questions.append(item);
+  });
 }
 
 class GraphEngine {

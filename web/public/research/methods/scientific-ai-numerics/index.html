@@ -14,7 +14,7 @@
   <div class="page-shell">
     <aside class="contents">
       <p class="contents-label">On this page</p>
-      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-apply-the-method">Quick start: apply the method</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-apply-the-method">Quick start: apply the method</a></li><li><a href="#literature-and-data-graph">Literature and data graph</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
     </aside>
     <main class="method-layout"><article><section class="method-hero"><h1 id="scientific-ai-and-numerical-methods-reference">Scientific AI and Numerical Methods Reference</h1>
 <dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-NR-AI-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Pythia surrogate prediction, SAXS, SPR, cryo-EM, and related scientific-AI implementations</dd></div></dl>
@@ -41,6 +41,16 @@
 <li>propose the next measurement or simulation when the evidence is insufficient.</li>
 </ol>
 <p>Start with the <a href="#prediction-contract" rel="noreferrer">prediction contract</a>. Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the <a href="#validation-contract" rel="noreferrer">validation contract</a>.</p>
+</section><section class="method-section"><h2 id="literature-and-data-graph">Literature and data graph</h2>
+<p>The <a href="/research/methods/scientific-ai-numerics/literature/" rel="noreferrer">calibration literature and data graph</a> turns the references, datasets, and reusable ideas around Guo et al. (2017) into a searchable evidence index.</p>
+<p>Its YAML records keep four entities distinct:</p>
+<ul>
+<li>papers and their role in the method lineage;</li>
+<li>datasets and the split reported by the paper;</li>
+<li>extracted ideas with source locations and operational consequences;</li>
+<li>typed relations between evidence records.</li>
+</ul>
+<p>Use the <a href="/generated/literature.index.json" rel="noreferrer">machine-readable JSON index</a> when code, agents, or analytical tools need to scan this evidence. Treat an extracted idea as a traceable interpretation, not as a replacement for reading the primary source.</p>
 </section><section class="method-section"><h2 id="how-code-should-reference-this-contract">How code should reference this contract</h2>
 <p>Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:</p>
 <pre><code>Method: CALYR-METHOD-NR-AI-001

@@ -30,9 +30,12 @@ applications:
 applied:
 
   children:
+    - brix
     - aflowtex
     - bio_nanoparticles
     - biophysical_applications
+    - core_facility_studio
+    - qty_alphafold_oracle
 
 biophysical_applications:
   children:

@@ -60,6 +60,7 @@ CONFIG = {
     "yaml_files": {
         "structure": "structure.yaml",
         "content": "content.yaml",
+        "projects": "projects.yaml",
     },
     "output_files": {
         "ast": "nexus.ast.json",
@@ -284,8 +285,40 @@ class NexusCompiler:
             self.source[key] = self._read_mapping_yaml(path, required=True)
 
     def _load_auxiliary_sources(self) -> None:
-        """Load graph, interaction, and flowchart from inline blocks with file fallback."""
+        """Merge canonical projects, then load graph and runtime auxiliary sources."""
         blob = self.source.get("content", {})
+        projects = self.source.pop("projects", {})
+        if not isinstance(blob, dict) or not isinstance(projects, dict):
+            raise ValueError("content.yaml and projects.yaml must contain mappings")
+        collisions = sorted(set(blob) & set(projects))
+        if collisions:
+            raise ValueError(f"Project IDs duplicated in content.yaml: {', '.join(collisions)}")
+
+        structure = self.source.get("structure", {})
+        project_ids: set[str] = set()
+        def collect_project_nodes(node_id: str) -> None:
+            if node_id in project_ids:
+                return
+            project_ids.add(node_id)
+            node = structure.get(node_id, {}) if isinstance(structure, dict) else {}
+            children = node.get("children", []) if isinstance(node, dict) else []
+            for child in children if isinstance(children, list) else []:
+                if isinstance(child, str):
+                    collect_project_nodes(child)
+
+        applied = structure.get("applied", {}) if isinstance(structure, dict) else {}
+        applied_children = applied.get("children", []) if isinstance(applied, dict) else []
+        for project_id in applied_children if isinstance(applied_children, list) else []:
+            if isinstance(project_id, str):
+                collect_project_nodes(project_id)
+
+        misplaced = sorted(project_ids & set(blob))
+        missing = sorted(project_ids - set(projects))
+        if misplaced:
+            raise ValueError(f"Application projects must live in projects.yaml: {', '.join(misplaced)}")
+        if missing:
+            raise ValueError(f"Application project definitions missing from projects.yaml: {', '.join(missing)}")
+        blob.update(projects)
         if isinstance(blob, dict):
             site_runtime = blob.pop("__site_runtime", None)
             if isinstance(site_runtime, dict):
@@ -692,6 +725,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
     _sync_research_system(project_root)
     method_reference = _sync_method_reference_page(project_root, config)
+    _sync_literature_database(project_root)
     _sync_interface_catalog_page(project_root, config)
 
     platform_books_cfg = config.get("platform_books", {}) if isinstance(config, dict) else {}
@@ -731,7 +765,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                 accent_color = palette_color.strip()
 
         css_path = output_dir / "platform.css"
-        css_path.write_text(_platform_page_css(accent_color=accent_color), encoding="utf-8")
+        page_css = _pythia_page_css(accent_color) if platform_id == "pythia" else _platform_page_css(accent_color=accent_color)
+        css_path.write_text(page_css, encoding="utf-8")
 
         source_cfg = book.get("source", {}) if isinstance(book.get("source"), dict) else {}
         source_rel = source_cfg.get("path")
@@ -803,6 +838,67 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     </section>
                 """.rstrip()
             )
+
+        if platform_id == "pythia":
+            process_blocks = []
+            process_links = []
+            for index, section in enumerate(sections, start=1):
+                if not isinstance(section, dict):
+                    continue
+                section_id = escape(str(section.get("id", f"step-{index}")), quote=True)
+                section_title = escape(str(section.get("title", "")))
+                section_body = escape(str(section.get("body", "")))
+                bullets = section.get("bullets", []) if isinstance(section.get("bullets"), list) else []
+                bullet_html = "".join(f"<li>{escape(str(item))}</li>" for item in bullets)
+                process_links.append(f'<a href="#{section_id}"><span>{index:02d}</span>{section_title}</a>')
+                process_blocks.append(f"""
+      <section class="process-step" id="{section_id}">
+        <div class="step-index">{index:02d}</div>
+        <h2>{section_title}</h2>
+        <p class="step-body">{section_body}</p>
+        <ul>{bullet_html}</ul>
+      </section>""".rstrip())
+
+            html_content = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PYTHIA — Scientific Machine Learning for Interpretable Surrogate Intelligence" />
+  <title>PYTHIA — Scientific Machine Learning</title>
+  <link rel="stylesheet" href="./platform.css" />
+</head>
+<body>
+  <header class="system-bar">
+    <a class="wordmark" href="/">calyr.aí</a>
+    <span>Scientific intelligence / 01</span>
+    <span class="system-status">System online</span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-marker">Platform / PYTHIA</div>
+      <h1>{subtitle}</h1>
+      <p class="hero-title">{lead}</p>
+      <p class="hero-claim">{claim}</p>
+      <a class="process-link" href="#question">Enter process <span aria-hidden="true">↓</span></a>
+    </section>
+    <nav class="process-nav" aria-label="PYTHIA process">{''.join(process_links)}</nav>
+    <div class="process" aria-label="Scientific machine learning workflow">{''.join(process_blocks)}</div>
+    <section class="closing">
+      <p class="closing-label">Continuous learning</p>
+      <p>Every decision returns new evidence to the system and begins a better question.</p>
+      <a href="/research/methods/">Explore the method system →</a>
+    </section>
+  </main>
+  <footer><span>PYTHIA / calyr.aí</span><a href="/">Return to platform index</a></footer>
+</body>
+</html>
+"""
+            output_html_path = output_dir / "index.html"
+            output_html_path.write_text(html_content, encoding="utf-8")
+            rel_path = output_html_path.relative_to(project_root)
+            print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
+            continue
 
         source_meta = "source file not found"
         if source_exists and source_html_path is not None:
@@ -1133,6 +1229,149 @@ def _render_method_reference_page(project_root: Path, reference: dict[str, Any])
     (output_dir / "method.css").write_text(_method_reference_css(eyebrow), encoding="utf-8")
     print(f"📐 Synced method reference to {(output_dir / 'index.html').relative_to(project_root)}")
     return True
+
+
+def _sync_literature_database(project_root: Path) -> dict[str, Any]:
+    """Validate and publish the YAML-first literature, dataset, and idea graph."""
+    source_path = project_root / "content" / "literature.yaml"
+    payload = _read_optional_yaml(source_path)
+    database = payload.get("literature_database", {}) if isinstance(payload, dict) else {}
+    if not isinstance(database, dict) or not database:
+        return {}
+
+    papers = payload.get("papers", [])
+    datasets = payload.get("datasets", [])
+    source_citations = payload.get("dataset_source_citations", [])
+    ideas = payload.get("ideas", [])
+    relations = payload.get("relations", [])
+    collections = {
+        "papers": papers,
+        "datasets": datasets,
+        "dataset_source_citations": source_citations,
+        "ideas": ideas,
+        "relations": relations,
+    }
+    for name, values in collections.items():
+        if not isinstance(values, list):
+            raise ValueError(f"content/literature.yaml: {name} must be a list")
+
+    entity_ids: set[str] = set()
+    for name in ("papers", "datasets", "dataset_source_citations", "ideas"):
+        for item in collections[name]:
+            if not isinstance(item, dict) or not str(item.get("id", "")).strip():
+                raise ValueError(f"content/literature.yaml: every {name} entry needs an id")
+            item_id = str(item["id"])
+            if item_id in entity_ids:
+                raise ValueError(f"content/literature.yaml: duplicate id {item_id}")
+            entity_ids.add(item_id)
+
+    allowed_external = {"uncited-dataset-origin"}
+    for dataset in datasets:
+        for field in ("source_paper", "cited_by"):
+            target = str(dataset.get(field, ""))
+            if target and target not in entity_ids and target not in allowed_external:
+                raise ValueError(f"content/literature.yaml: unresolved {field} {target}")
+    for idea in ideas:
+        source = str(idea.get("source", ""))
+        if source not in entity_ids:
+            raise ValueError(f"content/literature.yaml: unresolved idea source {source}")
+    for relation in relations:
+        if not isinstance(relation, dict):
+            raise ValueError("content/literature.yaml: relations must be mappings")
+        for field in ("from", "to"):
+            target = str(relation.get(field, ""))
+            if target not in entity_ids:
+                raise ValueError(f"content/literature.yaml: unresolved relation target {target}")
+
+    index_payload = {
+        "meta": {
+            key: value for key, value in database.items()
+            if key not in {"papers", "datasets", "dataset_source_citations", "ideas", "relations"}
+        },
+        "counts": {name: len(values) for name, values in collections.items()},
+        **collections,
+    }
+    generated_dir = project_root / "web" / "public" / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+    index_path = generated_dir / "literature.index.json"
+    index_path.write_text(json.dumps(index_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    route = str(database.get("route", "/research/methods/scientific-ai-numerics/literature/"))
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    title = escape(str(database.get("title", "Literature and data graph")))
+    scope = escape(str(database.get("scope", "A machine-readable evidence index.")))
+    status = escape(str(database.get("status", "Living index")))
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{scope}" />
+  <title>{title} · calyr.aí</title>
+  <link rel="stylesheet" href="./literature.css" />
+  <link rel="stylesheet" href="/research/research-system.css" />
+</head>
+<body>
+  <header class="research-system-header"><a class="brand research-brand" href="/">calyr.aí</a>{_research_chapter_nav(project_root, 'methods')}</header>
+  {_research_source_bar('content/literature.yaml', 'literature_database')}
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Evidence graph · {status}</p>
+      <h1>{title}</h1>
+      <p class="scope">{scope}</p>
+      <div class="counts" aria-label="Database counts"><span><strong>{len(papers) + len(source_citations):02d}</strong> citations</span><span><strong>{len(datasets):02d}</strong> datasets</span><span><strong>{len(ideas):02d}</strong> ideas</span><span><strong>{len(relations):02d}</strong> relations</span></div>
+    </section>
+    <section class="scanner" aria-labelledby="scanner-title">
+      <div class="scanner-head"><div><p class="eyebrow">Scan the graph</p><h2 id="scanner-title">Find evidence, data, and reusable ideas</h2></div><p id="result-count" aria-live="polite"></p></div>
+      <div class="controls"><label><span>Search</span><input id="search" type="search" placeholder="temperature, CIFAR, uncertainty…" autocomplete="off" /></label><label><span>Entity</span><select id="kind"><option value="all">All</option><option value="idea">Ideas</option><option value="paper">Papers</option><option value="dataset">Datasets</option></select></label></div>
+      <div id="results" class="results"></div>
+    </section>
+    <section class="contract"><p class="eyebrow">Extraction contract</p><ol>{''.join(f'<li>{escape(str(rule))}</li>' for rule in database.get('extraction_contract', []))}</ol><p><a href="/generated/literature.index.json">Open machine-readable JSON →</a></p></section>
+  </main>
+  <script src="./literature.js" defer></script>
+</body>
+</html>
+"""
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "literature.css").write_text(_literature_database_css(), encoding="utf-8")
+    (output_dir / "literature.js").write_text(_literature_database_js(), encoding="utf-8")
+    print(f"🔎 Synced literature database to {index_path.relative_to(project_root)} and {(output_dir / 'index.html').relative_to(project_root)}")
+    return index_payload
+
+
+def _literature_database_css() -> str:
+    return """
+:root{color-scheme:dark;--ink:#f5f5f2;--soft:#a7abb0;--paper:#050505;--card:#090909;--line:#343434;--accent:#39bfff}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.55 Helvetica Neue,Helvetica,Arial,sans-serif}a{color:var(--accent)}main{width:min(1240px,92vw);margin:0 auto 96px}.eyebrow{margin:0;color:var(--accent);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;min-height:500px;padding:76px 0 58px;border-bottom:1px solid var(--line)}.hero>.eyebrow{grid-column:1/4}.hero h1{grid-column:4/12;max-width:10ch;margin:0;font-size:clamp(3.4rem,7.6vw,7rem);line-height:.88;letter-spacing:-.065em}.scope{grid-column:4/10;max-width:70ch;color:var(--soft);font-size:1.05rem}.counts{grid-column:4/13;display:flex;flex-wrap:wrap;gap:24px;margin-top:auto;padding-top:32px;border-top:1px solid var(--line);color:var(--soft)}.counts strong{margin-right:7px;color:var(--ink);font-size:2rem;font-weight:500}.scanner{padding:64px 0}.scanner-head{display:grid;grid-template-columns:9fr 3fr;gap:20px;align-items:end}.scanner h2{max-width:16ch;margin:10px 0 0;font-size:clamp(2.2rem,5vw,4.4rem);line-height:.95;letter-spacing:-.05em}.scanner-head>p{text-align:right;color:var(--soft)}.controls{display:grid;grid-template-columns:9fr 3fr;gap:20px;margin:36px 0 22px}.controls label{display:grid;gap:7px;color:var(--soft);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}.controls input,.controls select{width:100%;min-height:52px;padding:0 14px;border:1px solid var(--line);border-radius:0;color:var(--ink);background:#080808;font:inherit}.results{border-top:1px solid var(--line)}.record{display:grid;grid-template-columns:2fr 7fr 3fr;gap:20px;padding:26px 0;border-bottom:1px solid var(--line)}.record-kind{color:var(--accent);font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.record h3{margin:0 0 7px;font-size:1.35rem;line-height:1.16}.record p{margin:0;color:var(--soft)}.record .meta{font-size:.8rem}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:13px}.tags span{padding:3px 7px;border:1px solid var(--line);color:#9eb0c4;font-size:.68rem}.record-link{align-self:end;justify-self:end;font-size:.8rem;font-weight:700;text-decoration:none}.contract{display:grid;grid-template-columns:3fr 9fr;gap:20px;padding:48px 0;border-top:1px solid var(--line)}.contract ol{margin:0;padding-left:1.2rem;color:var(--soft)}.contract>p:last-child{grid-column:2}.empty{padding:42px 0;color:var(--soft)}
+@media(max-width:760px){.hero{display:block;min-height:0;padding:48px 0}.hero h1{margin:18px 0 24px;font-size:3.55rem}.counts{margin-top:36px}.scanner-head,.controls,.record,.contract{display:block}.scanner-head>p{text-align:left}.controls label{margin-top:14px}.record>*{margin-bottom:12px}.record-link{display:inline-block}.contract ol{margin-top:20px}.contract>p:last-child{margin-top:28px}}
+""".strip() + "\n"
+
+
+def _literature_database_js() -> str:
+    return r"""
+const state = { data: null, query: '', kind: 'all' };
+const esc = (value = '') => String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const list = value => Array.isArray(value) ? value : value == null ? [] : [value];
+const searchText = record => JSON.stringify(record).toLowerCase();
+function entities(data) {
+  return [
+    ...data.ideas.map(x => ({...x, entityKind:'idea', subtitle:`${x.kind} · ${x.source}`, summary:x.statement, tags:x.tags, link:''})),
+    ...data.papers.map(x => ({...x, entityKind:'paper', subtitle:`${list(x.authors).join(', ')} · ${x.year}`, summary:x.extractable_idea, tags:x.topics, link:x.url || x.pdf || ''})),
+    ...data.dataset_source_citations.map(x => ({...x, entityKind:'paper', subtitle:`${list(x.authors).join(', ')} · ${x.year}`, summary:'Dataset source citation used by the seed paper.', tags:['dataset source'], link:x.url || ''})),
+    ...data.datasets.map(x => ({...x, entityKind:'dataset', subtitle:`${x.domain} · cited by ${x.cited_by}`, summary:list(x.ideas).join(' · '), tags:[x.availability, x.license_status], link:x.url || ''}))
+  ];
+}
+function render() {
+  const q = state.query.trim().toLowerCase();
+  const records = entities(state.data).filter(x => (state.kind === 'all' || x.entityKind === state.kind) && (!q || searchText(x).includes(q)));
+  document.querySelector('#result-count').textContent = `${records.length} of ${entities(state.data).length} entities`;
+  document.querySelector('#results').innerHTML = records.length ? records.map(x => `<article class="record"><div><span class="record-kind">${esc(x.entityKind)}</span><p class="meta">${esc(x.subtitle)}</p></div><div><h3>${esc(x.title || x.name)}</h3><p>${esc(x.summary || '')}</p><div class="tags">${list(x.tags).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>${x.link ? `<a class="record-link" href="${esc(x.link)}" rel="noreferrer">Open source →</a>` : '<span></span>'}</article>`).join('') : '<p class="empty">No matching evidence. Try a broader term.</p>';
+}
+fetch('/generated/literature.index.json').then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }).then(data => { state.data = data; render(); }).catch(error => { document.querySelector('#results').innerHTML = `<p class="empty">The evidence index could not be loaded: ${esc(error.message)}</p>`; });
+document.querySelector('#search').addEventListener('input', event => { state.query = event.target.value; render(); });
+document.querySelector('#kind').addEventListener('change', event => { state.kind = event.target.value; render(); });
+""".strip() + "\n"
 
 
 def _sync_method_reference_page(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
@@ -1605,6 +1844,57 @@ li { margin: 4px 0; }
 }
 """.strip() + "\n"
     return css.replace("__ACCENT_COLOR__", accent_color)
+
+
+def _pythia_page_css(accent_color: str = "#2f6bff") -> str:
+    """Swiss-grid scientific operating-system presentation for PYTHIA."""
+    return f"""
+:root {{ --paper:#050505; --ink:#f4f4f0; --muted:#9b9b96; --line:rgba(244,244,240,.22); --accent:{accent_color}; }}
+* {{ box-sizing:border-box; }}
+html {{ scroll-behavior:smooth; background:var(--paper); }}
+body {{ margin:0; color:var(--ink); background:var(--paper); font-family:Arial, Helvetica, sans-serif; line-height:1.35; }}
+body::before {{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background-image:linear-gradient(90deg,transparent calc(100% - 1px),var(--line) 1px); background-size:calc(100vw / 12) 100%; }}
+a {{ color:inherit; text-decoration:none; }}
+.system-bar {{ position:relative; z-index:2; min-height:58px; display:grid; grid-template-columns:4fr 5fr 3fr; align-items:center; padding:0 2.5vw; border-bottom:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.12em; }}
+.wordmark {{ font-size:15px; font-weight:700; text-transform:none; }}
+.system-status {{ text-align:right; }}
+.system-status::before {{ content:""; display:inline-block; width:7px; height:7px; margin-right:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 16px var(--accent); }}
+main, footer {{ position:relative; z-index:1; }}
+.hero {{ min-height:calc(100vh - 58px); display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:auto 1fr auto; padding:5vh 2.5vw 4vh; border-bottom:1px solid var(--line); }}
+.hero-marker {{ grid-column:1 / 4; align-self:start; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.14em; }}
+h1 {{ grid-column:1 / -1; margin:6vh 0 0; align-self:start; font-size:clamp(5rem,17vw,15rem); line-height:.74; letter-spacing:-.085em; font-weight:700; }}
+.hero-title {{ grid-column:5 / 12; margin:0 0 7vh; align-self:end; max-width:900px; font-size:clamp(2rem,4.2vw,5.2rem); line-height:.98; letter-spacing:-.045em; }}
+.hero-claim {{ grid-column:5 / 9; margin:0; padding-top:16px; border-top:3px solid var(--ink); font-size:clamp(1rem,1.4vw,1.35rem); }}
+.process-link {{ grid-column:11 / 13; align-self:start; display:flex; justify-content:space-between; padding-top:16px; border-top:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.12em; }}
+.process-nav {{ position:sticky; top:0; z-index:5; display:grid; grid-template-columns:repeat(6,1fr); background:rgba(5,5,5,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }}
+.process-nav a {{ min-height:74px; display:flex; flex-direction:column; justify-content:space-between; padding:12px 14px; border-right:1px solid var(--line); text-transform:uppercase; font-size:11px; letter-spacing:.08em; transition:background .2s,color .2s; }}
+.process-nav a:hover,.process-nav a:focus-visible {{ color:var(--paper); background:var(--ink); outline:none; }}
+.process-nav span {{ color:var(--muted); }}
+.process {{ padding:0 2.5vw; }}
+.process-step {{ min-height:78vh; display:grid; grid-template-columns:1fr 3fr 4fr 3fr 1fr; column-gap:0; align-content:start; padding:9vh 0; border-bottom:1px solid var(--line); scroll-margin-top:74px; }}
+.step-index {{ grid-column:1; padding-top:12px; color:var(--accent); font-size:12px; letter-spacing:.12em; }}
+.process-step h2 {{ grid-column:2 / 4; margin:0; font-size:clamp(4rem,10vw,10rem); line-height:.82; letter-spacing:-.065em; font-weight:500; }}
+.step-body {{ grid-column:3 / 5; margin:8vh 0 0; padding-top:16px; border-top:3px solid var(--ink); font-size:clamp(1.4rem,2.6vw,3rem); line-height:1.05; letter-spacing:-.035em; }}
+.process-step ul {{ grid-column:4 / 5; margin:4vh 0 0; padding:0; list-style:none; border-top:1px solid var(--line); }}
+.process-step li {{ padding:10px 0; border-bottom:1px solid var(--line); color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }}
+.closing {{ min-height:65vh; display:grid; grid-template-columns:4fr 5fr 3fr; padding:10vh 2.5vw; align-content:center; border-bottom:1px solid var(--line); background:var(--ink); color:var(--paper); }}
+.closing-label {{ grid-column:1; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
+.closing > p:nth-child(2) {{ grid-column:2 / 4; margin:0; font-size:clamp(2.6rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
+.closing a {{ grid-column:3; margin-top:8vh; padding-top:14px; border-top:1px solid currentColor; font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
+footer {{ min-height:120px; display:flex; justify-content:space-between; align-items:flex-end; padding:24px 2.5vw; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }}
+@media (max-width:760px) {{
+  body::before {{ background-size:25vw 100%; }}
+  .system-bar {{ grid-template-columns:1fr 1fr; }} .system-bar > span:nth-child(2) {{ display:none; }}
+  .hero {{ min-height:90vh; }} h1 {{ font-size:clamp(4rem,24vw,8rem); }}
+  .hero-title,.hero-claim {{ grid-column:1 / -1; }} .hero-title {{ margin-top:10vh; }} .process-link {{ grid-column:8 / 13; }}
+  .process-nav {{ overflow-x:auto; grid-template-columns:repeat(6,minmax(125px,1fr)); }}
+  .process-step {{ min-height:70vh; grid-template-columns:1fr 3fr; }}
+  .step-index {{ grid-column:1; }} .process-step h2 {{ grid-column:2; font-size:clamp(3rem,16vw,6rem); }}
+  .step-body,.process-step ul {{ grid-column:2; margin-top:6vh; }}
+  .closing {{ grid-template-columns:1fr; }} .closing-label,.closing > p:nth-child(2),.closing a {{ grid-column:1; }}
+}}
+@media (prefers-reduced-motion:reduce) {{ html {{ scroll-behavior:auto; }} }}
+"""
 
 
 def _platform_page_css(accent_color: str = "#00c7ff") -> str:

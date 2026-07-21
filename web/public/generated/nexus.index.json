@@ -48,22 +48,22 @@
     ]
   },
   "movie": {
-    "title": "Teaser",
-    "summary": "Pythia turns data into prediction. Oracles turn prediction into action.",
-    "body_preview": "Data becomes surrogate. Surrogate becomes prediction. Prediction becomes oracle.",
+    "title": "Explore",
+    "summary": "Questions become traceable evidence, interpretable models, and actionable paths.",
+    "body_preview": "Ask a question. Follow the evidence. Understand the system. Choose the next action.",
     "route": "/research/teaser/index.html",
     "icon": "",
     "keywords": [
-      "action.",
-      "data",
-      "into",
-      "oracles",
-      "prediction",
-      "prediction.",
-      "pythia",
-      "teaser",
-      "turn",
-      "turns"
+      "actionable",
+      "and",
+      "become",
+      "evidence,",
+      "explore",
+      "interpretable",
+      "models,",
+      "paths.",
+      "questions",
+      "traceable"
     ]
   },
   "platforms": {
@@ -109,27 +109,25 @@
   },
   "applied": {
     "title": "Applications",
-    "summary": "Each application combines measurements, simulations, surrogate models, interpretation, and adaptive interaction into one operational product.",
+    "summary": "Each application combines sources, models, evidence, workflows, and interaction into one operational product.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
-      "adaptive",
       "and",
       "application",
       "applications",
       "combines",
       "each",
+      "evidence,",
       "interaction",
-      "interpretation,",
       "into",
-      "measurements,",
       "models,",
       "one",
       "operational",
       "product.",
-      "simulations,",
-      "surrogate"
+      "sources,",
+      "workflows,"
     ]
   },
   "architecture": {
@@ -190,84 +188,6 @@
       "nexus",
       "platforms.",
       "workflows,"
-    ]
-  },
-  "brix": {
-    "title": "brix",
-    "summary": "Faster structural design, evaluation, and optimization.\n",
-    "body_preview": "Brix combines simulations, measurements, surrogate models, and an adaptive AI-based user experience to explore structural variants, understand trade-offs, and develop optimized manufacturable parts wi",
-    "route": "/research/platforms/brix/index.html",
-    "icon": "bridge",
-    "keywords": [
-      "and",
-      "brix",
-      "design,",
-      "evaluation,",
-      "faster",
-      "optimization.",
-      "structural"
-    ]
-  },
-  "aflowtex": {
-    "title": "vascular application",
-    "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
-    "body_preview": "AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models, uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together ",
-    "route": "/research/platforms/aflowtex/index.html",
-    "icon": "aorta",
-    "keywords": [
-      "a",
-      "application",
-      "combines",
-      "different",
-      "high-level",
-      "into",
-      "models",
-      "one",
-      "patient-specific",
-      "product.",
-      "that",
-      "vascular"
-    ]
-  },
-  "bio_nanoparticles": {
-    "title": "bio nanoparticles",
-    "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
-    "body_preview": "Local surface design, experimental characterization, purification behavior, and function become one traceable model.\n",
-    "route": "",
-    "icon": "particle",
-    "keywords": [
-      "across",
-      "and",
-      "bio",
-      "biological",
-      "engineered",
-      "interaction,",
-      "nanoparticles",
-      "production.",
-      "structure,"
-    ]
-  },
-  "biophysical_applications": {
-    "title": "biophysical applications",
-    "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
-    "body_preview": "SPR, SAXS, and metabolic inference are concrete systems in this application field.",
-    "route": "/research/pythia/saxs/index.html",
-    "icon": "scatter",
-    "keywords": [
-      "and",
-      "applications",
-      "behavior",
-      "biological",
-      "biophysical",
-      "from",
-      "indirect",
-      "interpretable",
-      "latent",
-      "measurements.",
-      "models",
-      "molecular",
-      "reconstruct",
-      "surrogate"
     ]
   },
   "lithos": {
@@ -375,6 +295,222 @@
       "scientific",
       "to",
       "visible"
+    ]
+  },
+  "ecosystem": {
+    "title": "ecosystem",
+    "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+    "body_preview": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, ",
+    "route": "/ecosystem",
+    "icon": "network",
+    "keywords": [
+      "and",
+      "applications,",
+      "architecture,",
+      "calyr.a\u00ed",
+      "connects",
+      "decisions.",
+      "domain",
+      "ecosystem",
+      "engineering",
+      "interpretable",
+      "models,",
+      "operational",
+      "surrogate"
+    ]
+  },
+  "philosophy": {
+    "title": "philosophy",
+    "summary": "calyr.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
+    "body_preview": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncert",
+    "route": "/philosophy",
+    "icon": "book",
+    "keywords": [
+      "and",
+      "behavior,",
+      "calyr.a\u00ed",
+      "evidence,",
+      "makes",
+      "model",
+      "philosophy",
+      "responsibility",
+      "uncertainty,",
+      "visible."
+    ]
+  },
+  "contact": {
+    "title": "contact",
+    "summary": "Research, engineering, and collaboration channels.\n",
+    "body_preview": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use emai",
+    "route": "/contact",
+    "icon": "mail",
+    "keywords": [
+      "and",
+      "channels.",
+      "collaboration",
+      "contact",
+      "engineering,",
+      "research,"
+    ]
+  },
+  "impressum": {
+    "title": "impressum",
+    "summary": "Name, function, and address.\n",
+    "body_preview": "Name: Rupert Tscheliessnig\nFunction: Founder\nAddress: Ogugasse 3/3/13, 1220 Vienna, Austria\n",
+    "route": "/legal",
+    "icon": "",
+    "keywords": [
+      "address.",
+      "and",
+      "function,",
+      "impressum",
+      "name,"
+    ]
+  },
+  "legal": {
+    "title": "Impressum",
+    "summary": "",
+    "body_preview": "Rupert Tscheliessnig\nOgugasse 3/3/13\n1220 Vienna, Austria\n",
+    "route": "/legal",
+    "icon": "",
+    "keywords": [
+      "impressum"
+    ]
+  },
+  "brix": {
+    "title": "BRIX",
+    "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
+    "body_preview": "BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carrie",
+    "route": "/research/platforms/brix/index.html",
+    "icon": "bridge",
+    "keywords": [
+      "and",
+      "brix",
+      "explore",
+      "interpretable",
+      "manufacturable",
+      "models.",
+      "product",
+      "surrogate",
+      "validate",
+      "variants",
+      "with"
+    ]
+  },
+  "aflowtex": {
+    "title": "vascular application",
+    "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
+    "body_preview": "AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models, uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together ",
+    "route": "/research/platforms/aflowtex/index.html",
+    "icon": "aorta",
+    "keywords": [
+      "a",
+      "application",
+      "combines",
+      "different",
+      "high-level",
+      "into",
+      "models",
+      "one",
+      "patient-specific",
+      "product.",
+      "that",
+      "vascular"
+    ]
+  },
+  "bio_nanoparticles": {
+    "title": "bio nanoparticles",
+    "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
+    "body_preview": "Local surface design, experimental characterization, purification behavior, and function become one traceable model.\n",
+    "route": "",
+    "icon": "particle",
+    "keywords": [
+      "across",
+      "and",
+      "bio",
+      "biological",
+      "engineered",
+      "interaction,",
+      "nanoparticles",
+      "production.",
+      "structure,"
+    ]
+  },
+  "core_facility_studio": {
+    "title": "core facility studio",
+    "summary": "Turn PPMS operational data into reproducible KPIs with visible formulas, filters, provenance, and data quality.",
+    "body_preview": "PPMS already manages and catalogues facilities, instruments, services, and reports. The Core Facility KPI Studio adds a controlled analytical layer: robust PUMAPI, API2, or export adapters; a canonica",
+    "route": "",
+    "icon": "network",
+    "keywords": [
+      "and",
+      "core",
+      "data",
+      "facility",
+      "filters,",
+      "formulas,",
+      "into",
+      "kpis",
+      "operational",
+      "ppms",
+      "provenance,",
+      "quality.",
+      "reproducible",
+      "studio",
+      "turn",
+      "visible",
+      "with"
+    ]
+  },
+  "qty_alphafold_oracle": {
+    "title": "QTY AlphaFold Oracle",
+    "summary": "Follow protein evidence from public structure models to experimental support, methods, code, and the next analysis.",
+    "body_preview": "QTY AlphaFold Oracle regularly checks public repositories, resolves scientific identities and versions, and connects structures, publications, methods, datasets, and code with visible provenance and u",
+    "route": "",
+    "icon": "particle",
+    "keywords": [
+      "alphafold",
+      "analysis.",
+      "and",
+      "code,",
+      "evidence",
+      "experimental",
+      "follow",
+      "from",
+      "methods,",
+      "models",
+      "next",
+      "oracle",
+      "protein",
+      "public",
+      "qty",
+      "structure",
+      "support,",
+      "the",
+      "to"
+    ]
+  },
+  "biophysical_applications": {
+    "title": "biophysical applications",
+    "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+    "body_preview": "SPR, SAXS, and metabolic inference are concrete systems in this application field.",
+    "route": "/research/pythia/saxs/index.html",
+    "icon": "scatter",
+    "keywords": [
+      "and",
+      "applications",
+      "behavior",
+      "biological",
+      "biophysical",
+      "from",
+      "indirect",
+      "interpretable",
+      "latent",
+      "measurements.",
+      "models",
+      "molecular",
+      "reconstruct",
+      "surrogate"
     ]
   },
   "pythia_saxs": {
@@ -770,86 +906,6 @@
       "metabolic",
       "oracle",
       "prediction"
-    ]
-  },
-  "ecosystem": {
-    "title": "ecosystem",
-    "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
-    "body_preview": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, ",
-    "route": "/ecosystem",
-    "icon": "network",
-    "keywords": [
-      "and",
-      "applications,",
-      "architecture,",
-      "calyr.a\u00ed",
-      "connects",
-      "decisions.",
-      "domain",
-      "ecosystem",
-      "engineering",
-      "interpretable",
-      "models,",
-      "operational",
-      "surrogate"
-    ]
-  },
-  "philosophy": {
-    "title": "philosophy",
-    "summary": "calyr.a\u00ed makes model behavior, evidence, uncertainty, and responsibility visible.\n",
-    "body_preview": "Traceability \u2014 Every result connects to its data, model version, assumptions, and validity range.\nValidation \u2014 Accuracy and limitations are measured against defined evidence and use conditions.\nUncert",
-    "route": "/philosophy",
-    "icon": "book",
-    "keywords": [
-      "and",
-      "behavior,",
-      "calyr.a\u00ed",
-      "evidence,",
-      "makes",
-      "model",
-      "philosophy",
-      "responsibility",
-      "uncertainty,",
-      "visible."
-    ]
-  },
-  "contact": {
-    "title": "contact",
-    "summary": "Research, engineering, and collaboration channels.\n",
-    "body_preview": "Contact us regarding collaborations, research partnerships, demonstrator projects, funding opportunities, and technology development. For scientific, industrial, and infrastructure inquiries, use emai",
-    "route": "/contact",
-    "icon": "mail",
-    "keywords": [
-      "and",
-      "channels.",
-      "collaboration",
-      "contact",
-      "engineering,",
-      "research,"
-    ]
-  },
-  "impressum": {
-    "title": "impressum",
-    "summary": "Name, function, and address.\n",
-    "body_preview": "Name: Rupert Tscheliessnig\nFunction: Founder\nAddress: Ogugasse 3/3/13, 1220 Vienna, Austria\n",
-    "route": "/legal",
-    "icon": "",
-    "keywords": [
-      "address.",
-      "and",
-      "function,",
-      "impressum",
-      "name,"
-    ]
-  },
-  "legal": {
-    "title": "Impressum",
-    "summary": "",
-    "body_preview": "Rupert Tscheliessnig\nOgugasse 3/3/13\n1220 Vienna, Austria\n",
-    "route": "/legal",
-    "icon": "",
-    "keywords": [
-      "impressum"
     ]
   }
 }

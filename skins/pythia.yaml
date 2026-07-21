@@ -1,10 +1,10 @@
-# Oracle Dark Skin
-# Deep, sophisticated dark theme with purple/violet accents for knowledge extraction
+# PYTHIA Swiss Scientific System
+# Strict monochrome grid with a restrained spectral accent
 
 skin:
-  id: oracle
-  name: oracle dark
-  description: Dark, sophisticated design with mysterious violet accents
+  id: pythia
+  name: pythia swiss scientific
+  description: Process-oriented scientific operating system built on a strict Swiss grid
 
   colors:
     background: "#000000"

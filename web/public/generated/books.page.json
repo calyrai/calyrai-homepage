@@ -393,21 +393,21 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Pythia Compass Interface",
+          "title": "PYTHIA — Scientific Machine Learning",
           "year": 2026,
           "tags": [
-            "interaction",
-            "exploration",
-            "insights",
-            "compass",
-            "interface-layer"
+            "scientific-machine-learning",
+            "surrogate-models",
+            "interpretability",
+            "uncertainty",
+            "decision-support"
           ],
-          "objective": "Define Pythia as the Compass interface and make explicit that the platform tile is the entry link into this interface.",
-          "summary": "The Pythia platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.",
+          "objective": "Transform scientific questions into interpretable surrogate models, evidence, predictions, and defensible decisions.",
+          "summary": "A process-oriented scientific operating system connecting questions, knowledge, methods, evidence, prediction, and decision.",
           "ctas": [
             {
               "type": "platform-page",
-              "label": "Open Pythia Compass interface",
+              "label": "Open PYTHIA",
               "url": "/research/platforms/pythia/index.html",
               "online": true
             },
@@ -445,7 +445,7 @@
     ]
   },
   "metadata": {
-    "generated_at": "2026-07-21T03:30:20.070665+00:00",
+    "generated_at": "2026-07-21T08:48:29.770384+00:00",
     "book_count": 10,
     "books_by_status": {
       "draft": 1,
