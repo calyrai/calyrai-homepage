@@ -60,13 +60,19 @@ __site_runtime:
       decisions:
       - {after: '05', positive: "Evidence supports scale — allocate VSC-5 compute", negative: "Evidence is insufficient — redesign, simplify or stop"}
       - {after: '07', positive: "Validation gate passed — package the deployable MVP", negative: "Validation gate failed — return to data, predesign or local pretraining"}
+      feedback_loops:
+      - {id: LOOP-01, from: '03', to: '01–02', title: MVP learning loop, trigger: "The demonstrator exposes a wrong target, missing constraint or weak value hypothesis.", action: "Reframe the problem and revise predesign before adding model complexity."}
+      - {id: LOOP-02, from: '05', to: '02–04', title: Evidence gate loop, trigger: "Data quality, model behavior, expected value or compute justification does not pass specification review.", action: "Return to data, architecture or local pretraining; simplify or stop when the assumption remains unsupported."}
+      - {id: LOOP-03, from: '06', to: '03–04', title: VSC-5 scale loop, trigger: "Large-scale training reveals instability, sensitivity, bottlenecks or insufficient generalization.", action: "Feed diagnostics back into the local MVP, features, sampling strategy and training logic before another VSC-5 run."}
+      - {id: LOOP-04, from: '07', to: '01–06', title: Validation loop, trigger: "Independent evidence falsifies the model or narrows its useful operating range.", action: "Return to the earliest stage responsible for the failure, then repeat every downstream gate."}
+      - {id: LOOP-05, from: '08', to: '01–07', title: Deployment learning loop, trigger: "Monitoring detects drift, new use conditions, user corrections or previously unseen evidence.", action: "Capture the observation as new evidence, update locally, rescale only if necessary and revalidate before release."}
       questions:
       - Does the problem definition match the available evidence?
       - Does the MVP already create measurable value?
       - Does model quality justify the next scale step?
       - Does VSC-5 training improve the relevant target metrics?
       - Can the central assumption be validated or falsified?
-      closing: Local speed. VSC-5 scale. Evidence before deployment.
+      closing: Learn locally. Scale deliberately. Feed evidence back. Revalidate before release.
   lithos_deck:
     seed: 5318008
     page:

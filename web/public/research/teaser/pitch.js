@@ -151,6 +151,17 @@ function hydrateWorkflow(workflow) {
       grid.append(fork);
     }
   });
+  const loops = document.getElementById('workflow-loops-grid');
+  loops.replaceChildren();
+  (workflow.feedback_loops || []).forEach((loop) => {
+    const article = document.createElement('article');
+    article.className = 'workflow-loop';
+    const route = document.createElement('span'); route.textContent = `${loop.id} · ${loop.from} ↩ ${loop.to}`;
+    const title = document.createElement('h4'); title.textContent = loop.title;
+    const trigger = document.createElement('p'); trigger.textContent = loop.trigger;
+    const action = document.createElement('strong'); action.textContent = loop.action;
+    article.append(route, title, trigger, action); loops.append(article);
+  });
   const questions = document.getElementById('workflow-questions');
   questions.replaceChildren();
   (workflow.questions || []).forEach((question) => {
