@@ -464,7 +464,7 @@ def _sync_site_runtime_configs(project_root: Path, source: dict[str, Any]) -> No
         raise ValueError("content/content.yaml must define __site_runtime")
 
     required = {
-        "teaser": ("meta", "page", "copy", "nodes", "edges", "story_rules"),
+        "teaser": ("meta", "page", "engagement", "copy", "nodes", "edges", "story_rules", "workflow"),
         "lithos_deck": ("seed", "page", "interaction", "ui", "formation_steps", "cluster_centers", "cluster_amounts", "slides"),
     }
     output_dir = project_root / "web" / "public" / "generated"

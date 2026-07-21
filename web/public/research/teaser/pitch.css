@@ -127,7 +127,7 @@ body {
   margin: 0;
   padding: clamp(22px, 3vw, 44px) 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: clamp(2.3rem, 5.2vw, 6.2rem);
+  font-size: clamp(2rem, 3.85vw, 4.8rem);
   font-weight: 400;
   letter-spacing: -0.07em;
   line-height: 0.9;
@@ -153,6 +153,18 @@ body {
   border-bottom: 0;
   font-size: clamp(1.1rem, 2vw, 2rem);
 }
+
+.engagement-card { grid-column: span 12; min-height: 0; }
+.engagement-head { display:grid; grid-template-columns:3fr 9fr; border-bottom:1px solid rgba(255,255,255,.22); }
+.engagement-head .card-meta { grid-column:1/-1; }
+.engagement-head h2 { grid-column:2; max-width:14ch; margin:0; padding:clamp(30px,5vw,64px) 20px; font-size:clamp(3rem,6vw,7rem); font-weight:500; letter-spacing:-.068em; line-height:.88; }
+.engagement-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+.engagement-phase { display:flex; flex-direction:column; min-height:330px; padding:22px 20px; border-right:1px solid rgba(255,255,255,.22); }
+.engagement-phase:last-child { border-right:0; }
+.engagement-phase>span { color:var(--cyan); font-size:.74rem; font-weight:700; letter-spacing:.1em; }
+.engagement-phase h3 { max-width:10ch; margin:auto 0 18px; font-size:clamp(2rem,3.7vw,4.6rem); font-weight:500; letter-spacing:-.058em; line-height:.9; }
+.engagement-phase p { max-width:48ch; min-height:5.4em; margin:0 0 24px; color:var(--muted); font-size:.88rem; line-height:1.4; }
+.engagement-phase strong { display:block; padding-top:12px; border-top:1px solid rgba(255,255,255,.22); color:var(--cyan); font-size:.7rem; letter-spacing:.055em; text-transform:uppercase; }
 
 .flow-card {
   grid-column: span 12;
@@ -289,11 +301,16 @@ body {
   .statement-card,
   .system-card,
   .flow-card,
+  .engagement-card,
   .workflow-card,
   .consequence-card {
     grid-column: span 1;
     min-height: 0;
   }
+
+  .engagement-head, .engagement-grid { grid-template-columns:1fr; }
+  .engagement-head h2 { grid-column:1; }
+  .engagement-phase { min-height:280px; border-right:0; border-bottom:1px solid rgba(255,255,255,.22); }
 
 
   .workflow-head, .workflow-grid, .workflow-bottom, .workflow-decision { grid-template-columns: 1fr; }

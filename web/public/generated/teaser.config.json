@@ -5,15 +5,39 @@
     "mode": "interactive-flow"
   },
   "page": {
-    "kicker": "calyr.aí explore",
-    "title": "Explore systems. Understand responsibility. Follow evidence.",
-    "subtitle": "CALYR turns fragmented organisational and scientific information into navigable evidence networks.",
+    "kicker": "How we work",
+    "title": "From complex challenge to scalable product.",
+    "subtitle": "We start with one valuable scientific or engineering challenge, prove measurable value with real evidence and grow the validated result into a deployable system.",
     "deck_link_label": "Explore the project system",
     "deck_link_url": "/research/lithos/index.html",
     "insight_title": "Prediction becomes action",
     "insight_copy": "Oracles combine Pythia predictions, domain constraints, uncertainty, and adaptive AI-based user experiences in one usable system.",
     "hpc_title": "Computation creates the surrogate",
     "hpc_copy": "High-Performance Computing on systems including VSC-5 generates the data that Pythia compresses into fast, explainable prediction."
+  },
+  "engagement": {
+    "kicker": "03 / VALUE PATH",
+    "title": "Start focused. Prove value. Scale together.",
+    "phases": [
+      {
+        "id": "01",
+        "title": "Start focused",
+        "copy": "Select one valuable scientific or engineering challenge with a clear user, evidence base, decision and measurable outcome.",
+        "result": "Output — explicit problem frame and success criteria"
+      },
+      {
+        "id": "02",
+        "title": "Prove value",
+        "copy": "Build the smallest interactive demonstrator with the customer's data and domain knowledge; validate or falsify the central assumption early.",
+        "result": "Output — evidence-backed go, redesign or stop decision"
+      },
+      {
+        "id": "03",
+        "title": "Scale together",
+        "copy": "Turn the validated demonstrator into a reliable deployment, platform capability and long-term partnership without restarting from zero.",
+        "result": "Output — deployable product and recurring platform value"
+      }
+    ]
   },
   "copy": {
     "mission": "Pythia turns data into surrogate prediction. Oracles turn prediction into decisions and engineered results.",
@@ -28,36 +52,28 @@
       "label": "Data",
       "x": 0.12,
       "y": 0.5,
-      "sentence": "Measurements",
-      "simulations": null,
-      "geometry": null,
-      "and constraints define the evidence space.": null
+      "sentence": "Measurements, simulations, geometry, and constraints define the evidence space."
     },
     {
       "id": "demonstrator",
       "label": "Surrogate",
       "x": 0.37,
       "y": 0.5,
-      "sentence": "Pythia compresses complex evidence into a fast",
-      "validated surrogate model.": null
+      "sentence": "Pythia compresses complex evidence into a fast, validated surrogate model."
     },
     {
       "id": "deployment",
       "label": "Prediction",
       "x": 0.63,
       "y": 0.5,
-      "sentence": "The surrogate predicts system behavior",
-      "valid variants": null,
-      "and uncertainty in real time.": null
+      "sentence": "The surrogate predicts system behavior, valid variants, and uncertainty in real time."
     },
     {
       "id": "partnership",
       "label": "Oracle",
       "x": 0.88,
       "y": 0.5,
-      "sentence": "An Oracle turns prediction into domain-specific decisions",
-      "designs": null,
-      "and engineered results.": null
+      "sentence": "An Oracle turns prediction into domain-specific decisions, designs, and engineered results."
     }
   ],
   "edges": [
@@ -72,9 +88,7 @@
       "from": "demonstrator",
       "to": "deployment",
       "slide": "Surrogate becomes prediction",
-      "thought": "The learned model evaluates new states",
-      "variants": null,
-      "and uncertainty in real time.": null,
+      "thought": "The learned model evaluates new states, variants, and uncertainty in real time.",
       "explanation": "Prediction makes complex systems immediately explorable."
     },
     {
@@ -82,10 +96,7 @@
       "to": "partnership",
       "slide": "Prediction becomes oracle",
       "thought": "Domain knowledge turns prediction into a usable engineering capability.",
-      "explanation": "The Oracle combines prediction",
-      "constraints": null,
-      "adaptive interaction": null,
-      "and action.": null
+      "explanation": "The Oracle combines prediction, constraints, adaptive interaction, and action."
     }
   ],
   "story_rules": {

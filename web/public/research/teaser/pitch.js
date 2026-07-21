@@ -7,7 +7,7 @@ class ConfigLoader {
     const response = await fetch(path, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`Pitch config fetch failed (${response.status})`);
     const config = await response.json();
-    for (const key of ['meta', 'page', 'copy', 'nodes', 'edges', 'story_rules', 'workflow']) {
+    for (const key of ['meta', 'page', 'engagement', 'copy', 'nodes', 'edges', 'story_rules', 'workflow']) {
       if (!config[key] || (Array.isArray(config[key]) && config[key].length === 0)) throw new Error(`Pitch config requires ${key}`);
     }
     return config;
@@ -104,7 +104,24 @@ function hydratePage(config) {
   document.getElementById('insight-copy').textContent = page.insight_copy;
   document.getElementById('hpc-title').textContent = page.hpc_title;
   document.getElementById('hpc-copy').textContent = page.hpc_copy;
+  hydrateEngagement(config.engagement);
   hydrateWorkflow(config.workflow);
+}
+
+function hydrateEngagement(engagement) {
+  document.getElementById('engagement-kicker').textContent = engagement.kicker;
+  document.getElementById('engagement-title').textContent = engagement.title;
+  const grid = document.getElementById('engagement-grid');
+  grid.replaceChildren();
+  engagement.phases.forEach((phase) => {
+    const article = document.createElement('article');
+    article.className = 'engagement-phase';
+    const number = document.createElement('span'); number.textContent = phase.id;
+    const title = document.createElement('h3'); title.textContent = phase.title;
+    const body = document.createElement('p'); body.textContent = phase.copy;
+    const result = document.createElement('strong'); result.textContent = phase.result;
+    article.append(number, title, body, result); grid.append(article);
+  });
 }
 
 function hydrateWorkflow(workflow) {
