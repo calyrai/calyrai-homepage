@@ -369,7 +369,6 @@ method_catalog:
   subtitle: The growing calyr.aí method system
   summary: Methods connect scientific principles to traceable implementation contracts.
   body: The calyr.aí method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.
-  icon: book
   route: /research/methods/
   render:
     grid_span: 3
@@ -382,7 +381,6 @@ interface_catalog:
   subtitle: The growing calyr.aí graphical interface system
   summary: Interfaces connect scientific questions to visible evidence and controlled action.
   body: The calyr.aí interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.
-  icon: panels-top-left
   route: /research/interfaces/
   render:
     grid_span: 3

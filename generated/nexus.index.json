@@ -342,7 +342,7 @@
     "summary": "Methods connect scientific principles to traceable implementation contracts.",
     "body_preview": "The calyr.a\u00ed method catalog organizes numerical foundations, scientific AI, probabilistic inference, validation, and domain-specific practice as stable, reusable references.",
     "route": "/research/methods/",
-    "icon": "book",
+    "icon": "",
     "keywords": [
       "catalog",
       "connect",
@@ -361,7 +361,7 @@
     "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
     "body_preview": "The calyr.a\u00ed interface catalog organizes overview, comparison, uncertainty, graph, spatial, workflow, decision, and adaptive interface patterns as testable contracts.",
     "route": "/research/interfaces/",
-    "icon": "panels-top-left",
+    "icon": "",
     "keywords": [
       "action.",
       "and",

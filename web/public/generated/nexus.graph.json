@@ -177,7 +177,7 @@
       "data": {
         "title": "method catalog",
         "summary": "Methods connect scientific principles to traceable implementation contracts.",
-        "icon": "book"
+        "icon": ""
       }
     },
     {
@@ -186,7 +186,7 @@
       "data": {
         "title": "interface catalog",
         "summary": "Interfaces connect scientific questions to visible evidence and controlled action.",
-        "icon": "panels-top-left"
+        "icon": ""
       }
     },
     {

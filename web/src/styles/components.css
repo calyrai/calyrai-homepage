@@ -1081,6 +1081,10 @@ body.books-route .app {
   margin-bottom: var(--space-md);
 }
 
+.element-eyebrow {
+  margin: 0 0 var(--space-md);
+}
+
 .element-title {
   color: var(--color-primary);
   margin-bottom: var(--space-sm);
@@ -2996,6 +3000,89 @@ body.nav-open {
 
   .page-main .tile-content {
     min-height: 100%;
+  }
+}
+
+/* Pythía system band: one Swiss typographic hierarchy for tile and catalog cards. */
+.page-main #applications .tile-topline-with-dot,
+.page-main #applications .element-eyebrow {
+  color: rgb(var(--tile-rgb, 47, 107, 255));
+  font-size: clamp(0.66rem, 0.72vw, 0.76rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-main #applications .section-grid > .element {
+  min-height: var(--card-min-height, 282px);
+  margin: 0;
+  padding: var(--card-padding, clamp(22px, 2.4vw, 34px));
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: var(--card-radius, 0);
+  background: #000 !important;
+}
+
+.page-main #applications .element-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: none;
+  min-height: 100%;
+  text-align: left;
+}
+
+.page-main #applications .element-eyebrow {
+  margin: 0 0 clamp(40px, 5vw, 72px);
+}
+
+.page-main #applications .element-title {
+  margin: 0 0 0.7rem;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(1.45rem, 2.1vw, 2.25rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-align: left;
+}
+
+.page-main #applications .element-summary,
+.page-main #applications .element-body {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: clamp(0.82rem, 0.9vw, 0.96rem);
+  line-height: 1.45;
+  text-align: left;
+}
+
+.page-main #applications .element-body {
+  margin-bottom: 1rem;
+}
+
+.page-main #applications .element-body p {
+  margin: 0;
+}
+
+.page-main #applications .element-link {
+  margin-top: auto;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+  border-radius: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .page-main #applications .section-grid > .element {
+    min-height: 220px;
+    padding: 18px 18px 20px;
+  }
+
+  .page-main #applications .element-eyebrow {
+    margin-bottom: 32px;
   }
 }
 
