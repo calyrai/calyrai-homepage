@@ -173,6 +173,7 @@ System-level contracts:
 - Oracling method contract: `docs/oracling.md` (`CALYR-METHOD-ORACLE-001`)
 - Oracling Reading Room: `docs/oracling-reading-room.md` (`CALYR-ROOM-ORACLE-001`)
 - Graphical Interface Catalog: `content/books.yaml` (`interface_catalog`) → `/research/interfaces/`
+- Unified research chapters and Swiss Code: `content/research-system.yaml` → `/research/swiss-code/`
 
 Concrete page mapping:
 

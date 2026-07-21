@@ -270,6 +270,7 @@ method_catalog:
       summary: A curated reading path from calibrated prediction to constrained, multi-objective decisions and the next informative action.
       status: Living reading room
       eyebrow: calyr.aí reading room · 001
+      chapter: oracling
   items:
     - id: CALYR-METHOD-NR-AI-001
       source: docs/scientific-ai-numerics-reference.md
@@ -325,6 +326,7 @@ method_catalog:
       family: Decision systems
       domains: [multi-objective design, oracle systems]
       tags: [trait models, constraints, diversity, Pareto ranking]
+      chapter: oracling
     - id: CALYR-METHOD-GOV-001
       title: Reusable Method and Project-Result Boundary
       summary: Classify reusable platform methods, project-specific results, mixed artifacts, licenses, and approval requirements before knowledge moves between repositories or products.
