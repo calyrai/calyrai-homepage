@@ -10,6 +10,7 @@
     "/research/platforms/core/index.html",
     "/research/platforms/lithos/index.html",
     "/research/platforms/pythia/index.html",
+    "/research/swiss-code/",
     "/research/teaser/index.html",
     "https://bsky.app",
     "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
@@ -24,5 +25,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-21T13:52:45.253003+00:00"
+  "generated_at": "2026-07-21T13:56:21.722896+00:00"
 }
