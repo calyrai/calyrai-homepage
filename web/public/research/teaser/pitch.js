@@ -966,11 +966,97 @@ class TeaserApp {
   }
 }
 
+function installEditorialOrigami() {
+  const cards = [...document.querySelectorAll('.editorial-card')];
+  let hoverTimer = null;
+  let interactionLockedUntil = 0;
+  const interactionLockMs = 900;
+
+  const setCardOpen = (card, open) => {
+    const fold = card.querySelector('.card-meta');
+    if (!fold) return;
+
+    if (open) {
+      card.classList.remove('folded');
+      card.style.setProperty('--origami-open-height', `${Math.ceil(card.scrollHeight)}px`);
+    } else {
+      card.classList.add('folded');
+    }
+    fold.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+
+  const arrangeCards = (activeCard) => {
+    const activeIndex = cards.indexOf(activeCard);
+    const beforeCount = activeIndex;
+    const afterCount = cards.length - activeIndex - 1;
+
+    cards.forEach((card, index) => {
+      card.classList.toggle('is-active', card === activeCard);
+      card.classList.toggle('before-active', index < activeIndex);
+      card.classList.toggle('after-active', index > activeIndex);
+
+      const groupCount = index < activeIndex ? beforeCount : afterCount;
+      if (card !== activeCard && groupCount > 0) {
+        card.style.setProperty('--mondrian-span', `${60 / groupCount}`);
+      } else {
+        card.style.removeProperty('--mondrian-span');
+      }
+    });
+  };
+
+  const activateCard = (card, block = 'center') => {
+    if (!card.classList.contains('folded')) return;
+    if (Date.now() < interactionLockedUntil) return;
+
+    interactionLockedUntil = Date.now() + interactionLockMs;
+    cards.forEach((otherCard) => setCardOpen(otherCard, otherCard === card));
+    arrangeCards(card);
+    window.requestAnimationFrame(() => {
+      card.scrollIntoView({ behavior: 'smooth', block });
+    });
+  };
+
+  cards.forEach((card, index) => {
+    const fold = card.querySelector('.card-meta');
+    if (!fold) return;
+
+    const openHeight = Math.max(card.scrollHeight, card.getBoundingClientRect().height);
+    card.classList.add('origami-card');
+    card.style.setProperty('--origami-open-height', `${Math.ceil(openHeight)}px`);
+    fold.classList.add('origami-fold');
+    fold.setAttribute('role', 'button');
+    fold.setAttribute('tabindex', '0');
+    fold.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+
+    if (index !== 0) card.classList.add('folded');
+
+    const toggle = () => activateCard(card, 'center');
+
+    fold.addEventListener('click', toggle);
+    fold.addEventListener('mouseenter', () => {
+      window.clearTimeout(hoverTimer);
+      hoverTimer = window.setTimeout(() => activateCard(card, 'center'), 160);
+    });
+    fold.addEventListener('mouseleave', () => {
+      window.clearTimeout(hoverTimer);
+      hoverTimer = null;
+    });
+    fold.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      toggle();
+    });
+  });
+
+  arrangeCards(cards[0]);
+}
+
 async function boot() {
   const config = await ConfigLoader.load('/generated/teaser.config.json');
   hydratePage(config);
   const app = new TeaserApp(config);
   app.start();
+  window.requestAnimationFrame(installEditorialOrigami);
 }
 
 boot().catch((err) => {

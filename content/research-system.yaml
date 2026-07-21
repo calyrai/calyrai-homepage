@@ -140,6 +140,60 @@ research_system:
       - Every published claim retains portable source identity and an exact locator.
       - AI may retrieve, compare, and draft; it may not invent evidence or silently upgrade interpretation into fact.
       - Private attachments, credentials, and the Zotero database never enter the public repository.
+  swiss_design_reading:
+    id: SC-READING-001
+    title: Swiss Design Reading Room
+    purpose: Read the history, grid logic, typography, and contemporary application behind the calyr.aí Swiss Code.
+    copyright_rule: Link to canonical sources and publish only short editorial descriptions; never mirror third-party articles.
+    sources:
+      - id: SD-001
+        title: Swiss Design — history, principles and lasting influence
+        publisher: Studio Flach
+        focus: Overview
+        url: https://www.studioflach.com/journal/swiss-design-a-deep-dive-into-its-history-principles-and-lasting-influence
+        note: A broad visual introduction to the movement and its continuing influence.
+      - id: SD-002
+        title: Swiss Style forever
+        publisher: Presence Switzerland
+        focus: History
+        url: https://www.aboutswitzerland.eda.admin.ch/en/swiss-style-forever-the-story-of-a-graphic-design-tradition
+        note: Official Swiss context for the schools, designers, educational tradition, and international legacy.
+      - id: SD-003
+        title: The International Style 1950–1970
+        publisher: Swiss National Library
+        focus: Archive
+        url: https://www.nb.admin.ch/en/the-international-style-1950-1970
+        note: Archival orientation around grids, sans-serif typography, geometry, photography, and Armin Hofmann.
+      - id: SD-004
+        title: The New Typography
+        publisher: MoMA
+        focus: Origins
+        url: https://www.moma.org/calendar/exhibitions/1013
+        note: The Central European avant-garde and Jan Tschichold as essential precursors to Swiss typography.
+      - id: SD-005
+        title: Typography and the Poster
+        publisher: MoMA
+        focus: Posters
+        url: https://www.moma.org/calendar/exhibitions/443
+        note: A collection-led path through typographic poster history and designers including Ernst Keller.
+      - id: SD-006
+        title: The Swiss International Style and the Grid That Ate Design
+        publisher: Posters.org
+        focus: Grid
+        url: https://posters.org/the-swiss-international-style-and-the-grid-that-ate-design/
+        note: A focused reading on grid systems and the legacy of Josef Müller-Brockmann.
+      - id: SD-007
+        title: Josef Müller-Brockmann — grid systems and Tonhalle posters
+        publisher: The Graphic Design School
+        focus: Designer
+        url: https://www.thegraphicdesignschool.com/design-history/joseph-mueller-brockmann/
+        note: Connects a central designer, concrete poster work, and systematic grid practice.
+      - id: SD-008
+        title: International Typographic Style and modern UX
+        publisher: LogRocket
+        focus: Digital practice
+        url: https://blog.logrocket.com/ux-design/history-international-typographic-style/
+        note: A bridge from historical principles to present-day interface and web design.
   validation_gates:
     - YAML parses and cross-references resolve.
     - All three chapter routes and Swiss Code are present in the shared navigation.

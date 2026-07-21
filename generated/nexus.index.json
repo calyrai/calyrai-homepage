@@ -18,7 +18,7 @@
   "logo": {
     "title": "calyr.a\u00ed",
     "summary": "Create what does not yet exist.",
-    "body_preview": "",
+    "body_preview": "We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.",
     "route": "",
     "icon": "",
     "keywords": [
@@ -64,6 +64,84 @@
       "paths.",
       "questions",
       "traceable"
+    ]
+  },
+  "explore_data": {
+    "title": "data",
+    "summary": "Measurements, simulations, geometry, and constraints define the evidence space.",
+    "body_preview": "",
+    "route": "/research/teaser/index.html",
+    "icon": "",
+    "keywords": [
+      "and",
+      "constraints",
+      "data",
+      "define",
+      "evidence",
+      "geometry,",
+      "measurements,",
+      "simulations,",
+      "space.",
+      "the"
+    ]
+  },
+  "explore_surrogate": {
+    "title": "surrogate",
+    "summary": "Pythia learns the relevant structure while preserving validity and provenance.",
+    "body_preview": "",
+    "route": "/research/teaser/index.html",
+    "icon": "",
+    "keywords": [
+      "and",
+      "learns",
+      "preserving",
+      "provenance.",
+      "pythia",
+      "relevant",
+      "structure",
+      "surrogate",
+      "the",
+      "validity",
+      "while"
+    ]
+  },
+  "explore_prediction": {
+    "title": "prediction",
+    "summary": "The surrogate makes new system states immediately explorable.",
+    "body_preview": "",
+    "route": "/research/teaser/index.html",
+    "icon": "",
+    "keywords": [
+      "explorable.",
+      "immediately",
+      "makes",
+      "new",
+      "prediction",
+      "states",
+      "surrogate",
+      "system",
+      "the"
+    ]
+  },
+  "explore_oracle": {
+    "title": "oracle",
+    "summary": "The Oracle turns controlled prediction into a domain-specific decision or engineered result.",
+    "body_preview": "",
+    "route": "/research/teaser/index.html",
+    "icon": "",
+    "keywords": [
+      "a",
+      "controlled",
+      "decision",
+      "domain-specific",
+      "engineered",
+      "into",
+      "or",
+      "oracle",
+      "prediction",
+      "result.",
+      "the",
+      "turns"
     ]
   },
   "platforms": {
@@ -131,7 +209,7 @@
     ]
   },
   "architecture": {
-    "title": "Ecosystem",
+    "title": "System",
     "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
     "body_preview": "",
     "route": "",
@@ -141,7 +219,6 @@
       "applications,",
       "as",
       "brix,",
-      "ecosystem",
       "engineering",
       "lithos,",
       "nexus,",
@@ -149,6 +226,7 @@
       "operate",
       "oracles",
       "pythia,",
+      "system",
       "system."
     ]
   },
@@ -324,25 +402,23 @@
     ]
   },
   "ecosystem": {
-    "title": "ecosystem",
-    "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+    "title": "system map",
+    "summary": "Follow how modules, models, applications, and operational decisions connect.\n",
     "body_preview": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, ",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [
       "and",
       "applications,",
-      "architecture,",
-      "calyr.a\u00ed",
-      "connects",
-      "decisions.",
-      "domain",
-      "ecosystem",
-      "engineering",
-      "interpretable",
+      "connect.",
+      "decisions",
+      "follow",
+      "how",
+      "map",
       "models,",
+      "modules,",
       "operational",
-      "surrogate"
+      "system"
     ]
   },
   "philosophy": {

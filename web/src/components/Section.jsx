@@ -25,6 +25,9 @@ export default function Section({ node, theme, context = {} }) {
   const lastPointerToggleTsRef = useRef(0)
   const formattedTitle = title ? applyTitleDefaults(title) : ''
   const formattedToggleLabel = applyTitleDefaults(title || id || '')
+  const sequenceLabel = Number.isFinite(context.sequenceNumber)
+    ? String(context.sequenceNumber).padStart(2, '0')
+    : ''
   const titleHref = layout.titleHref
   const titleContent = titleHref
     ? <a href={titleHref} className="section-title-link" aria-label={formattedTitle}>{formattedTitle}</a>
@@ -111,6 +114,7 @@ export default function Section({ node, theme, context = {} }) {
         <a className="teaser-link-card" href={route || `#${id}`}>
           <PythiaMeshCanvas seedKey={`section-${id}`} />
           <span className="teaser-link-copy">
+            {sequenceLabel && <span className="section-sequence">{sequenceLabel}</span>}
             <span className="teaser-link-title">{formattedTitle}</span>
             {summary && <span className="teaser-link-summary">{summary}</span>}
             {rawBody && <span className="teaser-link-body">{rawBody}</span>}
@@ -126,6 +130,7 @@ export default function Section({ node, theme, context = {} }) {
         {(title || summary) && (
           <div className="section-header">
             <div className="section-header-content">
+              {sequenceLabel && <span className="section-sequence">{sequenceLabel}</span>}
               {title && <h2 className="section-title">{titleContent}</h2>}
               {summary && <p className="section-summary">{summary}</p>}
             </div>
@@ -161,6 +166,7 @@ export default function Section({ node, theme, context = {} }) {
           aria-label={formattedToggleLabel}
         >
           <span className="section-collapse-line" aria-hidden="true" />
+          {sequenceLabel && <span className="section-sequence">{sequenceLabel}</span>}
           {(title || id) && <span className="section-collapse-label">{formattedToggleLabel}</span>}
         </button>
       )}
@@ -169,13 +175,26 @@ export default function Section({ node, theme, context = {} }) {
       {(title || summary) && isExpanded && !layout.isCollapsible && (
         <div className="section-header">
           <div className="section-header-content">
+            {sequenceLabel && <span className="section-sequence">{sequenceLabel}</span>}
             {title && <h2 className="section-title">{titleContent}</h2>}
             {summary && <p className="section-summary">{summary}</p>}
           </div>
         </div>
       )}
 
-      {isExpanded && (layout.isMovieSection ? renderMovie() : renderGrid())}
+      {layout.isCollapsible ? (
+        <div
+          className={`section-fold ${isExpanded ? 'open' : ''}`.trim()}
+          aria-hidden={!isExpanded}
+          inert={isExpanded ? undefined : ''}
+        >
+          <div className="section-fold-inner">
+            {layout.isMovieSection ? renderMovie() : renderGrid()}
+          </div>
+        </div>
+      ) : (
+        layout.isMovieSection ? renderMovie() : renderGrid()
+      )}
 
     </section>
   )

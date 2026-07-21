@@ -6,7 +6,6 @@
  */
 
 import React from 'react'
-import { renderChildren } from './Renderer'
 import { applyTitleDefaults } from '../utils/titleDefaults'
 
 export default function Page({ node, theme, renderNode, context = {} }) {
@@ -22,26 +21,35 @@ export default function Page({ node, theme, renderNode, context = {} }) {
     secondChild?.icon ||
     secondChild?.route,
   )
+  const heroActionCount = Array.isArray(firstChild?.links) ? firstChild.links.length : 0
+  const childContext = (index) => ({
+    ...context,
+    sequenceNumber: index === 0 ? 1 : index + heroActionCount + 1,
+  })
 
   const renderedChildren = canFuseLogoHero
     ? [
         <React.Fragment key={firstChild.id || 0}>
-          {renderNode({ ...firstChild, tagline: secondChild.summary?.trim() || '' }, theme, context)}
+          {renderNode({ ...firstChild, tagline: secondChild.summary?.trim() || '' }, theme, childContext(0))}
         </React.Fragment>,
         ...(heroHasStandaloneContent
           ? [
               <React.Fragment key={secondChild.id || 1}>
-                {renderNode({ ...secondChild, summary: '' }, theme, context)}
+                {renderNode({ ...secondChild, summary: '' }, theme, childContext(1))}
               </React.Fragment>,
             ]
           : []),
         ...children.slice(2).map((child, idx) => (
           <React.Fragment key={child.id || idx + 2}>
-            {renderNode(child, theme, context)}
+            {renderNode(child, theme, childContext(idx + 2))}
           </React.Fragment>
         )),
       ]
-    : renderChildren(children, theme, context)
+    : children.map((child, idx) => (
+        <React.Fragment key={child.id || idx}>
+          {renderNode(child, theme, childContext(idx))}
+        </React.Fragment>
+      ))
 
   return (
     <div className="page" id={id} data-type="page">

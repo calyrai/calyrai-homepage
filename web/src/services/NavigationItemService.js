@@ -17,12 +17,7 @@ export class NavigationItemService {
 
   static buildFromAst(ast) {
     const children = Array.isArray(ast?.children) ? ast.children : []
-    const logoNode = children.find((node) => node?.id === 'logo')
     const sectionNodes = children.filter((node) => node?.type === 'section')
-
-    const homeItem = logoNode?.title
-      ? [{ label: logoNode.title, href: '/' }]
-      : []
 
     const sectionItems = sectionNodes
       .filter((node) => node?.title && node?.id)
@@ -32,7 +27,8 @@ export class NavigationItemService {
         href: node.route || `/#${NavigationItemService.SECTION_ANCHOR_BY_ID[node.id] || node.id}`,
       }))
 
-    const items = [...homeItem, ...sectionItems]
+    // Home is represented by the expandable calyr.aí brand rail beside the burger.
+    const items = [...sectionItems]
     const knownHrefs = new Set(items.map((item) => item.href).filter(Boolean))
 
     NavigationItemService.QUICK_LINKS.forEach((item) => {
