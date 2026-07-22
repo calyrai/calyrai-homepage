@@ -87,9 +87,11 @@ body, button, input, textarea, select { font-family: var(--font-sans); }
 @media (max-width: 768px) {
   :root {
     --type-hero-size: clamp(1.8rem, 9vw, 2.8rem);
-    --type-section-size: 1.15rem;
-    --type-tile-title-size: clamp(1.22rem, 6vw, 1.55rem);
-    --type-tile-kicker-size: clamp(1.18rem, 5.5vw, 1.4rem);
+    --type-section-size: 1.25rem;
+    --type-copy-size: clamp(1.06rem, 4.5vw, 1.18rem);
+    --type-copy-leading: 1.52;
+    --type-tile-title-size: clamp(1.55rem, 7.2vw, 2rem);
+    --type-tile-kicker-size: clamp(1.3rem, 6vw, 1.65rem);
   }
   .page-main .calyr-logo-tagline { max-width: 17ch !important; }
 }
