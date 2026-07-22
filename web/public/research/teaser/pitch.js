@@ -157,10 +157,31 @@ function hydrateWorkflow(workflow) {
     const article = document.createElement('article');
     article.className = 'workflow-loop';
     const route = document.createElement('span'); route.textContent = `${loop.id} · ${loop.from} ↩ ${loop.to}`;
+    const diagram = document.createElement('figure');
+    diagram.className = 'workflow-loop-diagram';
+    diagram.setAttribute('aria-label', `${loop.title}: phase ${loop.from} returns to phase ${loop.to}`);
+
+    const source = document.createElement('span');
+    source.className = 'workflow-loop-node workflow-loop-node--source';
+    source.textContent = loop.from;
+    const evaluation = document.createElement('span');
+    evaluation.className = 'workflow-loop-gate';
+    evaluation.textContent = 'evaluate';
+    const destination = document.createElement('span');
+    destination.className = 'workflow-loop-node workflow-loop-node--destination';
+    destination.textContent = loop.to;
+    const forward = document.createElement('i');
+    forward.className = 'workflow-loop-forward';
+    forward.setAttribute('aria-hidden', 'true');
+    const feedback = document.createElement('i');
+    feedback.className = 'workflow-loop-feedback';
+    feedback.setAttribute('aria-hidden', 'true');
+    diagram.append(source, forward, evaluation, destination, feedback);
+
     const title = document.createElement('h4'); title.textContent = loop.title;
     const trigger = document.createElement('p'); trigger.textContent = loop.trigger;
     const action = document.createElement('strong'); action.textContent = loop.action;
-    article.append(route, title, trigger, action); loops.append(article);
+    article.append(route, diagram, title, trigger, action); loops.append(article);
   });
   const questions = document.getElementById('workflow-questions');
   questions.replaceChildren();
