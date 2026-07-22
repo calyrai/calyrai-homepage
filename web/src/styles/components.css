@@ -4188,8 +4188,13 @@ body .page-main #contact_main .section-grid > .tile {
     grid-template-columns: 1fr !important;
   }
 
-  /* Explore becomes a touch-first horizontal story on phones. */
-  .page-main #movie {
+  /* Every landing section follows the same touch-first tile story on phones. */
+  .page-main #movie,
+  .page-main #platforms,
+  .page-main #applications,
+  .page-main #applied,
+  .page-main #architecture,
+  .page-main #contact_main {
     width: 100% !important;
     max-width: 100vw !important;
     min-width: 0 !important;
@@ -4197,7 +4202,17 @@ body .page-main #contact_main .section-grid > .tile {
   }
 
   .page-main #movie .section-grid,
-  .page-main #movie .section-grid.scroll-mode {
+  .page-main #movie .section-grid.scroll-mode,
+  .page-main #platforms .section-grid,
+  .page-main #platforms .section-grid.scroll-mode,
+  .page-main #applications .section-grid,
+  .page-main #applications .section-grid.scroll-mode,
+  .page-main #applied .section-grid,
+  .page-main #applied .section-grid.scroll-mode,
+  .page-main #architecture .section-grid,
+  .page-main #architecture .section-grid.scroll-mode,
+  .page-main #contact_main .section-grid,
+  .page-main #contact_main .section-grid.scroll-mode {
     display: flex !important;
     width: 100vw !important;
     max-width: 100vw !important;
@@ -4214,14 +4229,24 @@ body .page-main #contact_main .section-grid > .tile {
     touch-action: pan-x pan-y;
   }
 
-  .page-main #movie .section-grid::-webkit-scrollbar {
+  .page-main #movie .section-grid::-webkit-scrollbar,
+  .page-main #platforms .section-grid::-webkit-scrollbar,
+  .page-main #applications .section-grid::-webkit-scrollbar,
+  .page-main #applied .section-grid::-webkit-scrollbar,
+  .page-main #architecture .section-grid::-webkit-scrollbar,
+  .page-main #contact_main .section-grid::-webkit-scrollbar {
     display: none;
   }
 
-  .page-main #movie .section-grid > .tile {
-    flex: 0 0 min(82vw, 340px) !important;
-    width: min(82vw, 340px) !important;
-    min-width: min(82vw, 340px) !important;
+  .page-main #movie .section-grid > :is(.tile, .element),
+  .page-main #platforms .section-grid > :is(.tile, .element),
+  .page-main #applications .section-grid > :is(.tile, .element),
+  .page-main #applied .section-grid > :is(.tile, .element),
+  .page-main #architecture .section-grid > :is(.tile, .element),
+  .page-main #contact_main .section-grid > :is(.tile, .element) {
+    flex: 0 0 min(84vw, 360px) !important;
+    width: min(84vw, 360px) !important;
+    min-width: min(84vw, 360px) !important;
     height: auto !important;
     scroll-snap-align: start;
     scroll-snap-stop: always;
