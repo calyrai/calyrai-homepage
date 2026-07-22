@@ -1022,6 +1022,7 @@ function installEditorialOrigami() {
   let hoverTimer = null;
   let interactionLockedUntil = 0;
   const interactionLockMs = 900;
+  const mobileChapterButtons = [];
 
   const setCardOpen = (card, open) => {
     const fold = card.querySelector('.card-meta');
@@ -1052,6 +1053,12 @@ function installEditorialOrigami() {
       } else {
         card.style.removeProperty('--mondrian-span');
       }
+    });
+
+    mobileChapterButtons.forEach(({ card, button }) => {
+      const active = card === activeCard;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-current', active ? 'true' : 'false');
     });
   };
 
@@ -1098,6 +1105,46 @@ function installEditorialOrigami() {
       toggle();
     });
   });
+
+  const editorialGrid = document.querySelector('.editorial-grid');
+  if (editorialGrid) {
+    const strip = document.createElement('nav');
+    strip.className = 'mobile-chapter-strip';
+    strip.setAttribute('aria-label', 'Explore chapters');
+
+    cards.forEach((card, index) => {
+      const meta = card.querySelector('.card-meta');
+      if (!meta) return;
+
+      const sourceSpans = meta.querySelectorAll('span');
+      const label = (sourceSpans[0]?.textContent || `Chapter ${index + 1}`)
+        .trim()
+        .replace(/^\d+\s*\/\s*/, '');
+      const number = (sourceSpans[sourceSpans.length - 1]?.textContent || `${index + 1}`.padStart(2, '0')).trim();
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mobile-chapter-tile';
+      button.setAttribute('aria-label', `${label} ${number}`);
+
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'mobile-chapter-label';
+      labelSpan.textContent = label;
+      const numberSpan = document.createElement('span');
+      numberSpan.className = 'mobile-chapter-number';
+      numberSpan.textContent = number;
+      button.append(labelSpan, numberSpan);
+
+      button.addEventListener('click', () => {
+        activateCard(card, 'start');
+        button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+
+      strip.appendChild(button);
+      mobileChapterButtons.push({ card, button });
+    });
+
+    editorialGrid.before(strip);
+  }
 
   arrangeCards(cards[0]);
 }
