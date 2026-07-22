@@ -491,6 +491,7 @@ class PointField {
     this.width = WIDTH;
     this.height = HEIGHT;
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.pointer = { x: 0, y: 0, inside: false };
   }
 
   sampleEdgeCurve(cubic, segments = 14) {
@@ -563,6 +564,16 @@ class PointField {
     sync();
     window.addEventListener('resize', sync);
 
+    this.graph.svg.addEventListener('pointermove', (event) => {
+      const rect = this.graph.svg.getBoundingClientRect();
+      this.pointer.x = event.clientX - rect.left;
+      this.pointer.y = event.clientY - rect.top;
+      this.pointer.inside = true;
+    });
+    this.graph.svg.addEventListener('pointerleave', () => {
+      this.pointer.inside = false;
+    });
+
     const count = this.reducedMotion ? 60 : 140;
     this.points = Array.from({ length: count }, () => ({
       x: Math.random() * this.width,
@@ -579,6 +590,46 @@ class PointField {
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
+
+    const gridStep = Math.max(24, Math.min(38, Math.round(this.width / 34)));
+    ctx.save();
+    ctx.lineWidth = 0.7;
+    ctx.strokeStyle = 'rgba(0, 224, 255, 0.18)';
+    for (let x = gridStep; x < this.width; x += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.height);
+      ctx.stroke();
+    }
+    for (let y = gridStep; y < this.height; y += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.width, y);
+      ctx.stroke();
+    }
+
+    if (this.pointer.inside) {
+      const { x, y } = this.pointer;
+      const halo = ctx.createRadialGradient(x, y, 0, x, y, 54);
+      halo.addColorStop(0, 'rgba(0, 224, 255, 0.34)');
+      halo.addColorStop(1, 'rgba(0, 224, 255, 0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(x - 54, y - 54, 108, 108);
+
+      ctx.strokeStyle = 'rgba(0, 224, 255, 0.9)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.width, y);
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.height);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
 
     const linkDistance = 24;
     const forceX = this.width * 0.5 + this.graph.motion.x * 16;
