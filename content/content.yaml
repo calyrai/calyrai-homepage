@@ -115,7 +115,16 @@ route_policy:
 logo:
   title: "calyr.aí"
   title_ref: brand.display_name
+  tile_lead: Scientific intelligence for engineered systems
   summary: Create what does not yet exist.
+  body: We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.
+  links:
+    - id: explore
+      label: Explore the system
+      route: /research/teaser/index.html
+    - id: contact
+      label: Start with one challenge
+      route: /contact
   layout: inline
   showCanvas: true
   contacts: []
@@ -139,18 +148,63 @@ movie:
   title: Explore
   subtitle: Interactive system exploration
   render:
-    variant: media-feature
+    variant: tile-grid
+    source: homepage.grid.explore-band
   behavior:
     collapsible: true
-    default_expanded: false
+    default_expanded: true
+    persistence: none
     anchor_aliases:
     - teaser
   explain:
-    why: Keep the teaser present but initially compressed so it does not dominate
-      the opening scan path.
+    why: Present Explore through the same clear tile system used by Pythia.
   summary: Questions become traceable evidence, interpretable models, and actionable paths.
   body: Ask a question. Follow the evidence. Understand the system. Choose the next action.
   route: /research/teaser/index.html
+explore_data:
+  title: data
+  tile_lead: evidence space
+  tile_accent: orange
+  tile_title: data
+  tile_summary: measurements, simulations, geometry, and constraints define the question
+  subtitle: Start with traceable evidence
+  summary: Measurements, simulations, geometry, and constraints define the evidence space.
+  route: /research/teaser/index.html
+  render:
+    grid_span: 3
+explore_surrogate:
+  title: surrogate
+  tile_lead: interpretable model
+  tile_accent: yellow
+  tile_title: surrogate
+  tile_summary: Pythia compresses complex evidence into a fast validated model
+  subtitle: Build the shared representation
+  summary: Pythia learns the relevant structure while preserving validity and provenance.
+  route: /research/teaser/index.html
+  render:
+    grid_span: 3
+explore_prediction:
+  title: prediction
+  tile_lead: controlled exploration
+  tile_accent: green
+  tile_title: prediction
+  tile_summary: evaluate new states, variants, sensitivities, and uncertainty in real time
+  subtitle: Explore system behavior
+  summary: The surrogate makes new system states immediately explorable.
+  route: /research/teaser/index.html
+  render:
+    grid_span: 3
+explore_oracle:
+  title: oracle
+  tile_lead: engineered action
+  tile_accent: magenta
+  tile_title: oracle
+  tile_summary: combine prediction, constraints, uncertainty, interaction, and action
+  subtitle: Turn evidence into decisions
+  summary: The Oracle turns controlled prediction into a domain-specific decision or engineered result.
+  route: /research/teaser/index.html
+  render:
+    grid_span: 3
 platforms:
   title: Architecture
   subtitle: calyr.aí is NEXUS, BRIX, and LITHOS
@@ -162,7 +216,7 @@ platforms:
     source: homepage.grid.system-band
   behavior:
     collapsible: true
-    default_expanded: true
+    default_expanded: false
     persistence: none
     anchor_aliases:
     - platform
@@ -180,7 +234,7 @@ applications:
     source: homepage.grid.application-band
   behavior:
     collapsible: true
-    default_expanded: true
+    default_expanded: false
     persistence: none
     anchor_aliases:
     - applications
@@ -198,7 +252,7 @@ applied:
     source: homepage.grid.applied-band
   behavior:
     collapsible: true
-    default_expanded: true
+    default_expanded: false
     persistence: none
     anchor_aliases:
     - applied
@@ -206,20 +260,19 @@ applied:
     why: Present application fields first and place concrete systems one level below.
   summary: Each application combines sources, models, evidence, workflows, and interaction into one operational product.
 architecture:
-  title: Ecosystem
-  subtitle: From architecture to application
+  title: System
+  subtitle: How the parts work together
   intent:
-    purpose: ecosystem-context
+    purpose: system-relationships
     audience: returning-visitor
   render:
     variant: tile-grid-secondary
     source: homepage.grid.second-band
   behavior:
     collapsible: true
-    default_expanded: true
+    default_expanded: false
   explain:
-    why: Show how ecosystem navigation, contact, and philosophy follow the core module
-      overview.
+    why: Show how modules, applications, principles, and contact paths relate.
   summary: NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.
 contact_main:
   title: Company
@@ -367,13 +420,13 @@ swiss_code:
   render:
     grid_span: 6
 ecosystem:
-  title: ecosystem
-  tile_lead: system architecture
+  title: system map
+  tile_lead: connected architecture
   tile_accent: cyan
-  tile_title: ecosystem
-  tile_summary: architecture, prediction, applications, and oracles form one system
-  subtitle: One connected engineering system
-  summary: 'calyr.aí connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.
+  tile_title: system map
+  tile_summary: follow modules, predictions, applications, and decisions as one connected path
+  subtitle: Relationships across the platform
+  summary: 'Follow how modules, models, applications, and operational decisions connect.
 
     '
   body: 'NEXUS connects the system. BRIX engineers structural form. LITHOS provides
@@ -481,7 +534,7 @@ contact:
     quick_contact: enabled
     mobile_panel: toggle-rail
   explain:
-    why: Provide a direct contact path after users understand the platform and ecosystem.
+    why: Provide a direct contact path after users understand the platform and its relationships.
 impressum:
   title: impressum
   tile_lead: company
@@ -576,7 +629,7 @@ __flowchart:
         purpose: explain-capabilities
     - id: architecture_stage
       ref: architecture
-      label: Ecosystem context
+      label: System relationships
       intent:
         purpose: explain-relationships
     - id: contact_stage

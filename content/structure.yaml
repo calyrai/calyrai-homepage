@@ -10,8 +10,11 @@ homepage:
     - footer
 
 movie:
-
-  children: []
+  children:
+    - explore_data
+    - explore_surrogate
+    - explore_prediction
+    - explore_oracle
 
 platforms:
 

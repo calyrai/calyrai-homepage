@@ -16,16 +16,23 @@ rainbow:
   tiles:
     core: red
     brix: orange
+    lithos: yellow
+    pythia: green
+    method_catalog: cyan
+    interface_catalog: blue
+    swiss_code: violet
     aflowtex: yellow
-    lithos: green
-    pythia: blue
+    bio_nanoparticles: green
+    biophysical_applications: cyan
+    core_facility_studio: blue
+    qty_alphafold_oracle: magenta
     pythia_spr: magenta
     pythia_saxs: cyan
     pythia_metabolic: green
     oracle: cyan
     ecosystem: violet
     contact: magenta
-    philosophy: magenta
+    philosophy: red
     impressum: red
 
 base:

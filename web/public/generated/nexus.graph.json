@@ -46,6 +46,42 @@
       }
     },
     {
+      "id": "explore_data",
+      "label": "data",
+      "data": {
+        "title": "data",
+        "summary": "Measurements, simulations, geometry, and constraints define the evidence space.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "explore_surrogate",
+      "label": "surrogate",
+      "data": {
+        "title": "surrogate",
+        "summary": "Pythia learns the relevant structure while preserving validity and provenance.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "explore_prediction",
+      "label": "prediction",
+      "data": {
+        "title": "prediction",
+        "summary": "The surrogate makes new system states immediately explorable.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "explore_oracle",
+      "label": "oracle",
+      "data": {
+        "title": "oracle",
+        "summary": "The Oracle turns controlled prediction into a domain-specific decision or engineered result.",
+        "icon": ""
+      }
+    },
+    {
       "id": "platforms",
       "label": "Architecture",
       "data": {
@@ -74,9 +110,9 @@
     },
     {
       "id": "architecture",
-      "label": "Ecosystem",
+      "label": "System",
       "data": {
-        "title": "Ecosystem",
+        "title": "System",
         "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
         "icon": ""
       }
@@ -164,10 +200,10 @@
     },
     {
       "id": "ecosystem",
-      "label": "ecosystem",
+      "label": "system map",
       "data": {
-        "title": "ecosystem",
-        "summary": "calyr.a\u00ed connects engineering architecture, interpretable surrogate models, domain applications, and operational decisions.\n",
+        "title": "system map",
+        "summary": "Follow how modules, models, applications, and operational decisions connect.\n",
         "icon": "network"
       }
     },

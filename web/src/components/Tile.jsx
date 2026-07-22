@@ -3,11 +3,12 @@
  * 
  * Individual card in tile grid
  * Displays: icon, title, summary, route
- * Handles: hover effects, click interactions, DRAGGING (Stage 4)
+ * Handles: hover effects, click interactions, optional authored dragging
  * 
- * Stage 4: Draggable Tiles
- * - Click and drag to move tile around grid
- * - Position persists in localStorage
+ * Optional Draggable Tiles
+ * - Disabled by default so landing-page grids remain stable
+ * - Enabled only through behavior.draggable in the authored YAML
+ * - Opted-in positions persist in localStorage
  * - Smooth animations and visual feedback
  * 
  * Stage 6: Context-Driven Selection
@@ -342,11 +343,16 @@ export default function Tile({ node, theme, context = {} }) {
   const gridSpan = Number.isFinite(authoredGridSpan)
     ? Math.min(12, Math.max(3, Math.round(authoredGridSpan)))
     : 6
+  // Landing-page tiles are stable Swiss-grid components. Free placement is an
+  // explicit, data-authored capability rather than an implicit UI default.
+  const allowTileDrag = node.behavior?.draggable === true
   const showTileMesh = true
   const leadDotClass = getTileLeadDotClass(tileAccent)
   const institutions = Array.isArray(node.institutions) ? node.institutions : []
   const visibleInstitutions = institutions.filter((institution) => institution?.visibility?.public !== false)
-  const topLineText = tileLead || icon
+  const semanticIcon = String(icon || '').trim().toLowerCase()
+  const iconIsVisualSignature = semanticIcon === 'network' || semanticIcon === 'particle'
+  const topLineText = tileLead || (iconIsVisualSignature ? '' : icon)
   const primaryTitle = tileTitle || (tileLead ? subtitle || title : title)
   const secondarySummary = tileSummary || (tileLead ? landingMessage || summary : summary)
   const shouldShowTopLine = Boolean(topLineText)
@@ -380,7 +386,7 @@ export default function Tile({ node, theme, context = {} }) {
 
   // Desktop supports persistent tile placement; phone always renders tiles at origin.
   useEffect(() => {
-    if (isMobileViewport) {
+    if (!allowTileDrag || isMobileViewport) {
       setPosition(DEFAULT_TILE_POSITION)
       return
     }
@@ -393,7 +399,7 @@ export default function Tile({ node, theme, context = {} }) {
         console.warn(`Failed to load position for tile ${id}`, e)
       }
     }
-  }, [id, isMobileViewport])
+  }, [id, isMobileViewport, allowTileDrag])
 
   useEffect(() => {
     if (!scrollCenter?.registerTile) {
@@ -408,14 +414,14 @@ export default function Tile({ node, theme, context = {} }) {
 
   // Save position to localStorage when it changes
   useEffect(() => {
-    if (isMobileViewport) {
+    if (!allowTileDrag || isMobileViewport) {
       return
     }
 
     if (position.x !== 0 || position.y !== 0) {
       localStorage.setItem(STORAGE_KEY_PREFIX + id, JSON.stringify(position))
     }
-  }, [position, id, isMobileViewport])
+  }, [position, id, isMobileViewport, allowTileDrag])
 
   useEffect(() => {
     if (!isMobileViewport) {
@@ -475,7 +481,7 @@ export default function Tile({ node, theme, context = {} }) {
   }, [ripples, showTileMesh])
 
   const handleMouseDown = (e) => {
-    if (isMobileViewport) {
+    if (!allowTileDrag || isMobileViewport) {
       return
     }
 
@@ -509,7 +515,7 @@ export default function Tile({ node, theme, context = {} }) {
     }
 
     // On mobile we prioritize native page scrolling over tile dragging.
-    if (isMobileViewport) {
+    if (!allowTileDrag || isMobileViewport) {
       return
     }
 
@@ -764,14 +770,14 @@ export default function Tile({ node, theme, context = {} }) {
     }
   }
 
-  const activePosition = isMobileViewport ? DEFAULT_TILE_POSITION : position
+  const activePosition = allowTileDrag && !isMobileViewport ? position : DEFAULT_TILE_POSITION
 
   const tileStyle = {
     '--tile-grid-span': gridSpan,
     '--tile-rgb': resolveTileRgb(theme, id, tileAccent),
     transform: `translate(${activePosition.x}px, ${activePosition.y}px)`,
     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
-    cursor: isMobileViewport ? 'pointer' : isDragging ? 'grabbing' : 'grab',
+    cursor: normalizedTileRoute ? 'pointer' : allowTileDrag ? (isDragging ? 'grabbing' : 'grab') : 'default',
     userSelect: 'none',
     // Apply theme colors
     ...(theme?.skin?.components?.tile && {
@@ -791,11 +797,10 @@ export default function Tile({ node, theme, context = {} }) {
       }`}
       id={id}
       data-type="tile"
-      data-draggable="true"
+      data-draggable={allowTileDrag ? 'true' : 'false'}
       role="link"
       tabIndex={0}
       aria-label={title || id}
-      title={title || id}
       style={tileStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

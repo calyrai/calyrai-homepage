@@ -11,7 +11,7 @@ import { renderChildren } from './Renderer'
 import { applyTitleDefaults } from '../utils/titleDefaults'
 
 export default function Element({ node, theme, context = {} }) {
-  const { id, title, summary, body, icon, route, tile_lead: tileLead, contacts = [], children = [], tagline = '' } = node
+  const { id, title, summary, body, icon, route, tile_lead: tileLead, links = [], contacts = [], children = [], tagline = '' } = node
   const displayTitle = title ? applyTitleDefaults(title) : ''
   const authoredGridSpan = Number(node.render?.grid_span)
   const gridSpan = Number.isFinite(authoredGridSpan)
@@ -22,10 +22,13 @@ export default function Element({ node, theme, context = {} }) {
     return (
       <LogoAnimation
         className="logo-element"
-        label={title}
-        tagline={summary}
+        label={title || 'calyr.aí'}
+        tagline={tagline || summary}
+        eyebrow={tileLead}
+        description={body}
+        actions={links}
         layout="inline"
-        showCanvas={true}
+        showCanvas={false}
       />
     )
   }

@@ -38,7 +38,7 @@
         {
           "id": "architecture_stage",
           "ref": "architecture",
-          "label": "Ecosystem context",
+          "label": "System relationships",
           "kind": "step",
           "intent": {
             "purpose": "explain-relationships"
@@ -75,7 +75,7 @@
           "label": "reach out"
         }
       ],
-      "mermaid": "flowchart TD\n    landing([Visitor lands])\n    hero_stage[Brand promise]\n    platforms_stage[Platform overview]\n    architecture_stage[Ecosystem context]\n    contact_stage([Contact / conversion])\n    landing --> hero_stage\n    hero_stage --> platforms_stage\n    platforms_stage --> architecture_stage\n    architecture_stage -->|reach out| contact_stage"
+      "mermaid": "flowchart TD\n    landing([Visitor lands])\n    hero_stage[Brand promise]\n    platforms_stage[Platform overview]\n    architecture_stage[System relationships]\n    contact_stage([Contact / conversion])\n    landing --> hero_stage\n    hero_stage --> platforms_stage\n    platforms_stage --> architecture_stage\n    architecture_stage -->|reach out| contact_stage"
     }
   }
 }

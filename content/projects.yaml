@@ -62,7 +62,8 @@ core_facility_studio:
   body: 'PPMS already manages and catalogues facilities, instruments, services, and reports. The Core
     Facility KPI Studio adds a controlled analytical layer: robust PUMAPI, API2, or export adapters; a
     canonical event model; versioned KPI definitions; cross-facility comparison; and Swiss-design views
-    for utilisation, availability, demand, training, throughput, maintenance, and finance.'
+    for utilisation, availability, demand, training, throughput, maintenance, and finance. A connection
+    to the BOKU PPMS environment is being prepared; access and implementation details remain private.'
   icon: network
   render:
     grid_span: 4

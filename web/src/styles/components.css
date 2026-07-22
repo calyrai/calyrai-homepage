@@ -214,7 +214,7 @@
   background: transparent;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
   cursor: pointer;
   touch-action: manipulation;
@@ -234,12 +234,48 @@
   font-weight: var(--section-heading-weight);
   line-height: var(--section-heading-line-height);
   letter-spacing: 0.01em;
-  text-align: right;
+  width: 100%;
+  text-align: left;
 }
 
 .section-collapse-toggle:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 6px;
+}
+
+/* Origami disclosure: the header is the fold, the grid is the unfolding plane. */
+.section-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-10px);
+  transform-origin: top center;
+  transition:
+    grid-template-rows 440ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease,
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section-fold.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-fold-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.section-fold.open .section-fold-inner {
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-fold {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* Tile Grid */
@@ -335,6 +371,29 @@
   .section-grid.scroll-mode .tile-scroll-centered .tile-mesh-canvas {
     opacity: 0.9;
     filter: saturate(1.25) brightness(1.2);
+  }
+}
+
+/* Final landing authority: copy leads, particle/QR field follows. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / span 8 !important;
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 9 / span 4 !important;
+    order: 2 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    order: 2 !important;
   }
 }
 
@@ -1573,6 +1632,115 @@ body.nav-open {
   transform: translateY(-6px) rotate(-45deg);
 }
 
+.nav-brand-rail {
+  position: fixed;
+  top: max(1rem, calc(env(safe-area-inset-top) + 1rem));
+  left: max(4.15rem, calc(env(safe-area-inset-left) + 4.15rem));
+  z-index: 1002;
+  display: grid;
+  grid-template-columns: 24px;
+  gap: 0;
+  align-items: center;
+  height: 33px;
+  padding: 0.5rem 0;
+  color: #fff;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: visible;
+}
+
+.nav-brand-line {
+  display: block;
+  width: 24px;
+  height: var(--line-width, 1px);
+  background: currentColor;
+  transform-origin: left center;
+  transition: transform 220ms ease, background-color 220ms ease;
+}
+
+.nav-brand-rail:hover,
+.nav-brand-rail:focus-visible,
+.nav-brand-rail.open {
+  outline: none;
+}
+
+.nav-brand-rail:hover .nav-brand-line,
+.nav-brand-rail:focus-visible .nav-brand-line,
+.nav-brand-rail.open .nav-brand-line {
+  transform: scaleX(0.5);
+  background: rgb(0, 199, 255);
+}
+
+.nav-brand-panel {
+  position: fixed;
+  top: max(4.5rem, calc(env(safe-area-inset-top) + 4.5rem));
+  left: max(1rem, calc(env(safe-area-inset-left) + 1rem));
+  z-index: 1001;
+  width: min(260px, calc(100vw - 2rem));
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.98);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.72);
+  overflow: hidden;
+  contain: layout paint;
+  transform-origin: top left;
+  animation: nav-brand-unfold 220ms ease-out both;
+}
+
+.nav-brand-panel .calyr-logo-wrap--nav {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-brand-panel .calyr-logo-interactive {
+  --logo-ring-size: auto;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  border-radius: 0;
+  background: #000;
+  contain: layout paint size;
+}
+
+.nav-brand-panel .calyr-logo-canvas,
+.nav-brand-panel .calyr-logo-mesh,
+.nav-brand-panel .pythia-mesh-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain;
+}
+
+@keyframes nav-brand-unfold {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 92% 0);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .nav-brand-panel {
+    top: max(4.2rem, calc(env(safe-area-inset-top) + 4.2rem));
+    width: min(220px, calc(100vw - 2rem));
+    padding: 7px;
+  }
+}
+
 .nav-overlay {
   position: fixed;
   top: 0;
@@ -2001,7 +2169,7 @@ body.nav-open {
 }
 
 .calyr-logo-label {
-  margin-top: 0;
+  margin: 0;
   font-size: clamp(5.4rem, 10vw, 8.5rem);
   font-weight: 700;
   line-height: 1;
@@ -2360,13 +2528,13 @@ body.nav-open {
   box-shadow: none;
 }
 
-/* Right-flush key section headers */
+/* All primary section headers share one flush-left Swiss grid. */
 #movie .section-collapse-toggle,
 #platforms .section-collapse-toggle,
 #applications .section-collapse-toggle,
 #applied .section-collapse-toggle,
 #architecture .section-collapse-toggle {
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 #movie .section-collapse-label,
@@ -2374,8 +2542,9 @@ body.nav-open {
 #applications .section-collapse-label,
 #applied .section-collapse-label,
 #architecture .section-collapse-label {
-  text-align: right;
-  margin-left: auto;
+  width: 100%;
+  text-align: left;
+  margin: 0;
 }
 
 #movie .section-collapse-line,
@@ -2383,8 +2552,8 @@ body.nav-open {
 #applications .section-collapse-line,
 #applied .section-collapse-line,
 #architecture .section-collapse-line {
-  width: min(78%, 640px);
-  margin-left: auto;
+  width: 100%;
+  margin: 0;
 }
 
 @media (min-width: 1024px) {
@@ -2641,6 +2810,73 @@ body.nav-open {
     top: 14px;
     right: 16px;
     bottom: auto;
+  }
+}
+
+/* High-contrast reading contract: black, white, and intentional accents only. */
+.page-main .calyr-hero-description,
+.page-main .section-summary,
+.page-main .section-grid > .tile .tile-summary,
+.page-main .teaser-link-summary,
+.page-main .teaser-link-body,
+.page-main .element-summary,
+.page-main .element-body,
+.page-main .tile-impressum-panel {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+.page-main .section-grid > .tile,
+.page-main .section-grid > .element,
+.page-main .teaser-link-card,
+.page-main .calyr-logo-wrap--inline {
+  background-color: #000 !important;
+}
+
+/* One authoritative section grid. ID specificity prevents legacy spans winning. */
+body .page-main #movie .section-grid,
+body .page-main #platforms .section-grid,
+body .page-main #applications .section-grid,
+body .page-main #applied .section-grid,
+body .page-main #architecture .section-grid,
+body .page-main #contact_main .section-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-auto-rows: minmax(var(--pythia-tile-height), auto) !important;
+  gap: var(--pythia-tile-gap) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-sizing: border-box;
+}
+
+body .page-main #movie .section-grid > .tile,
+body .page-main #platforms .section-grid > .tile,
+body .page-main #applications .section-grid > .tile,
+body .page-main #applied .section-grid > .tile,
+body .page-main #architecture .section-grid > .tile,
+body .page-main #contact_main .section-grid > .tile {
+  grid-column: auto !important;
+}
+
+@media (max-width: 1023px) {
+  body .page-main #movie .section-grid,
+  body .page-main #platforms .section-grid,
+  body .page-main #applications .section-grid,
+  body .page-main #applied .section-grid,
+  body .page-main #architecture .section-grid,
+  body .page-main #contact_main .section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body .page-main #movie .section-grid,
+  body .page-main #platforms .section-grid,
+  body .page-main #applications .section-grid,
+  body .page-main #applied .section-grid,
+  body .page-main #architecture .section-grid,
+  body .page-main #contact_main .section-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 }
 
@@ -2968,6 +3204,182 @@ body.nav-open {
   .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
     margin-left: 0 !important;
     justify-self: start !important;
+  }
+}
+
+/* Final landing authority: copy leads, particle/QR field follows. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / span 8 !important;
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 9 / span 4 !important;
+    order: 2 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    order: 2 !important;
+  }
+}
+
+/* Canonical landing hero — final Swiss Code authority. */
+.page-main .section-sequence {
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-main .section:hover .section-sequence,
+.page-main .section:focus-within .section-sequence {
+  color: rgb(0, 199, 255);
+}
+
+.page-main .section-collapse-toggle .section-sequence {
+  flex: 0 0 auto;
+}
+
+.page-main .calyr-logo-wrap--inline {
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.88);
+}
+
+.page-main .calyr-hero-eyebrow {
+  order: 0;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-main .calyr-hero-number,
+.page-main .calyr-hero-actions a span,
+.page-main .section-sequence {
+  transition: color 160ms ease;
+}
+
+.page-main .calyr-logo-lockup:hover .calyr-hero-number,
+.page-main .calyr-logo-lockup:focus-within .calyr-hero-number {
+  color: rgb(0, 199, 255);
+}
+
+.page-main .calyr-hero-description {
+  order: 3;
+  max-width: 58ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: clamp(0.92rem, 1.05vw, 1.06rem);
+  line-height: 1.5;
+}
+
+.page-main .calyr-hero-actions {
+  order: 4;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  margin-top: clamp(8px, 1.2vw, 18px);
+  border-top: 1px solid rgba(255, 255, 255, 0.36);
+  border-left: 1px solid rgba(255, 255, 255, 0.36);
+}
+
+.page-main .calyr-hero-actions a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 58px;
+  padding: 12px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.36);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.36);
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.page-main .calyr-hero-actions a span {
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.64rem;
+}
+
+.page-main .calyr-hero-actions a:hover span,
+.page-main .calyr-hero-actions a:focus-visible span {
+  color: rgb(0, 199, 255);
+}
+
+.page-main .calyr-hero-actions a b {
+  color: rgb(0, 199, 255);
+  font-size: 1rem;
+}
+
+.page-main .calyr-hero-actions a:hover,
+.page-main .calyr-hero-actions a:focus-visible {
+  color: #fff;
+  background: rgba(0, 199, 255, 0.08);
+  outline: none;
+}
+
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    min-height: clamp(590px, 52vw, 760px) !important;
+    padding-top: clamp(72px, 8vw, 118px) !important;
+    padding-bottom: clamp(64px, 7vw, 100px) !important;
+    align-items: center !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 9 / span 4 !important;
+    order: 2 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / span 8 !important;
+    order: 1 !important;
+    max-width: none;
+    gap: clamp(14px, 1.5vw, 22px);
+  }
+
+  .page-main .calyr-logo-label {
+    font-size: clamp(5.4rem, 8.4vw, 9rem);
+  }
+
+  .page-main .calyr-logo-tagline {
+    max-width: 18ch;
+    font-size: clamp(1.65rem, 2.4vw, 2.45rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline {
+    padding-top: 54px !important;
+    padding-bottom: 48px !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    order: 1;
+    gap: 14px;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    order: 2;
+  }
+
+  .page-main .calyr-hero-actions {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -3318,6 +3730,7 @@ body.nav-open {
   background: #fff;
 }
 
+.page-main #movie .section-collapse-toggle,
 .page-main #platforms .section-collapse-toggle,
 .page-main #applications .section-collapse-toggle,
 .page-main #applied .section-collapse-toggle,
@@ -3326,6 +3739,7 @@ body.nav-open {
   align-items: flex-start;
 }
 
+.page-main #movie .section-collapse-label,
 .page-main #platforms .section-collapse-label,
 .page-main #applications .section-collapse-label,
 .page-main #applied .section-collapse-label,
@@ -3336,6 +3750,7 @@ body.nav-open {
   text-align: left;
 }
 
+.page-main #movie .section-collapse-line,
 .page-main #platforms .section-collapse-line,
 .page-main #applications .section-collapse-line,
 .page-main #applied .section-collapse-line,
@@ -3603,7 +4018,7 @@ body.nav-open {
   }
 }
 
-/* Opening alignment override — intentionally last. */
+/* Opening alignment override. */
 @media (min-width: 769px) {
   .page-main .calyr-logo-wrap--inline {
     width: min(100%, 1280px) !important;
@@ -3638,5 +4053,138 @@ body.nav-open {
   .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
     margin-left: 0 !important;
     justify-self: start !important;
+  }
+}
+
+/* Final landing authority: copy leads, particle/QR field follows. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / span 8 !important;
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    grid-column: 9 / span 4 !important;
+    order: 2 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    order: 1 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-interactive {
+    order: 2 !important;
+  }
+}
+
+/* Pythia is the canonical tile geometry for every card. */
+.page-main {
+  --pythia-tile-height: 340px;
+  --pythia-tile-gap: clamp(18px, 2vw, 28px);
+}
+
+.page-main .section-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-auto-rows: minmax(var(--pythia-tile-height), auto) !important;
+  gap: var(--pythia-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+.page-main .section-grid > .tile,
+.page-main .section-grid > .element {
+  grid-column: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: var(--pythia-tile-height) !important;
+  max-height: none !important;
+  box-sizing: border-box;
+  padding: clamp(24px, 2.25vw, 34px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  background-color: #000 !important;
+}
+
+.page-main .section-grid > .tile {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  text-align: left !important;
+}
+
+.page-main .section-grid > .tile .tile-icon {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 2;
+  width: calc(100% - 42px);
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+.page-main .section-grid > .tile .tile-content {
+  position: relative !important;
+  inset: auto !important;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(20px, 3vh, 34px) 0 0 !important;
+  text-align: left !important;
+}
+
+.page-main .section-grid > .tile .tile-title {
+  position: static !important;
+  display: block;
+  max-width: 15ch !important;
+  margin: 0 0 18px !important;
+  overflow: visible;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  text-align: left !important;
+}
+
+.page-main .section-grid > .tile .tile-summary {
+  position: static !important;
+  display: block;
+  max-width: 34ch !important;
+  margin: 0 !important;
+  overflow: visible;
+  text-align: left !important;
+}
+
+.page-main .section-grid > .tile .tile-link-indicator {
+  position: absolute !important;
+  top: clamp(24px, 2.25vw, 34px) !important;
+  right: clamp(24px, 2.25vw, 34px) !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 3;
+  margin: 0 !important;
+}
+
+@media (max-width: 1023px) {
+  .page-main .section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-main {
+    --pythia-tile-height: 300px;
+  }
+
+  .page-main .section-grid,
+  .page-main .section-grid.scroll-mode {
+    grid-template-columns: 1fr !important;
   }
 }

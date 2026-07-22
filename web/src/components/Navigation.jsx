@@ -5,6 +5,7 @@ import { LinkItemService } from '../services/LinkItemService'
 import { NavigationItemService } from '../services/NavigationItemService'
 import { NodeQueryService } from '../services/NodeQueryService'
 import { applyTitleDefaults } from '../utils/titleDefaults'
+import LogoAnimation from './logo/LogoAnimation'
 
 const CONTACT_AUTO_CLOSE_MS = 5000
 
@@ -86,9 +87,11 @@ function ContactQrIcon({ value }) {
 
 export default function Navigation({ theme, ast }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isBrandOpen, setIsBrandOpen] = useState(false)
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [activeContactId, setActiveContactId] = useState(null)
   const contactTimerRef = useRef(null)
+  const brandCloseTimerRef = useRef(null)
 
   const clearActiveContactTimer = () => {
     window.clearTimeout(contactTimerRef.current)
@@ -109,6 +112,24 @@ export default function Navigation({ theme, ast }) {
     }, CONTACT_AUTO_CLOSE_MS)
   }
 
+  const clearBrandCloseTimer = () => {
+    window.clearTimeout(brandCloseTimerRef.current)
+    brandCloseTimerRef.current = null
+  }
+
+  const openBrandPanel = () => {
+    clearBrandCloseTimer()
+    setIsBrandOpen(true)
+  }
+
+  const scheduleBrandPanelClose = () => {
+    clearBrandCloseTimer()
+    brandCloseTimerRef.current = window.setTimeout(() => {
+      setIsBrandOpen(false)
+      brandCloseTimerRef.current = null
+    }, 180)
+  }
+
   useEffect(() => {
     if (!isOpen) {
       setIsContactsOpen(false)
@@ -127,7 +148,10 @@ export default function Navigation({ theme, ast }) {
     return () => document.body.classList.remove('nav-open')
   }, [isOpen])
 
-  useEffect(() => () => clearActiveContactTimer(), [])
+  useEffect(() => () => {
+    clearActiveContactTimer()
+    clearBrandCloseTimer()
+  }, [])
 
   const handleNavClick = () => {
     closeActiveContact()
@@ -173,6 +197,33 @@ export default function Navigation({ theme, ast }) {
         <span className="hamburger-line"></span>
         <span className="hamburger-line"></span>
       </button>
+
+      <button
+        type="button"
+        className={`nav-brand-rail ${isBrandOpen ? 'open' : ''}`.trim()}
+        onClick={openBrandPanel}
+        onMouseEnter={openBrandPanel}
+        onMouseLeave={scheduleBrandPanelClose}
+        onFocus={openBrandPanel}
+        onBlur={scheduleBrandPanelClose}
+        aria-label="Open calyr.aí particle ring"
+        aria-expanded={isBrandOpen}
+        aria-controls="nav-brand-panel"
+      >
+        <span className="nav-brand-line" aria-hidden="true" />
+      </button>
+
+      {isBrandOpen && (
+        <aside
+          id="nav-brand-panel"
+          className="nav-brand-panel open"
+          aria-label="calyr.aí particle ring and QR"
+          onMouseEnter={openBrandPanel}
+          onMouseLeave={scheduleBrandPanelClose}
+        >
+          <LogoAnimation layout="nav" showCanvas={true} />
+        </aside>
+      )}
 
       {isOpen && (
         <>

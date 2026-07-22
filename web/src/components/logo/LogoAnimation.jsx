@@ -12,7 +12,7 @@ import {
   QR_RENDER_STATES,
 } from '../../utils/qrMatrixOps'
 
-export default function LogoAnimation({ className = '', label = '', tagline = '', layout = 'inline', showCanvas = true, contacts = [] }) {
+export default function LogoAnimation({ className = '', label = '', tagline = '', eyebrow = '', description = '', actions = [], layout = 'inline', showCanvas = true, contacts = [] }) {
   const [state, setState] = useState(logoSpec?.interaction?.initialState || 'idle')
   const [activeTargetIndex, setActiveTargetIndex] = useState(0)
   const engineRef = useRef(null)
@@ -204,8 +204,8 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
     clearTimeout(qrTimerRef.current)
     qrTimerRef.current = null
 
-    // idle → start animation; any QR state → dismiss back to idle
-    const nextState = state === 'idle' ? 'qr_build' : 'idle'
+    // Navigation/logo interaction has two explicit states: ring and QR.
+    const nextState = state === 'idle' ? 'qr_show' : 'idle'
     setState(nextState)
     engineRef.current?.setState(nextState)
   }
@@ -240,6 +240,29 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
 
   return (
     <div className={`calyr-logo-wrap calyr-logo-wrap--${layout}`}>
+      {(label || tagline || eyebrow || description || actions.length > 0) && (
+        <div className="calyr-logo-lockup">
+          {eyebrow && (
+            <p className="calyr-hero-eyebrow">
+              <span className="calyr-hero-number">01</span> · {eyebrow}
+            </p>
+          )}
+          {label && <h1 className="calyr-logo-label">{renderLabel(label)}</h1>}
+          {tagline && <div className="calyr-logo-tagline">{renderTagline(tagline)}</div>}
+          {description && <p className="calyr-hero-description">{description}</p>}
+          {actions.length > 0 && (
+            <nav className="calyr-hero-actions" aria-label="Start exploring calyr.aí">
+              {actions.map((action, index) => (
+                <a key={action?.id || action?.route || index} href={action?.route || '#'}>
+                  <span>{String(index + 2).padStart(2, '0')}</span>
+                  {action?.label || 'Open'}
+                  <b aria-hidden="true">→</b>
+                </a>
+              ))}
+            </nav>
+          )}
+        </div>
+      )}
       {showCanvas && (
         <div
           className={`calyr-logo-interactive ${className}`.trim()}
@@ -249,12 +272,6 @@ export default function LogoAnimation({ className = '', label = '', tagline = ''
         >
           <PythiaMeshCanvas seedKey="calyr-logo" className="calyr-logo-mesh" />
           <canvas ref={canvasRef} className="calyr-logo-canvas" aria-hidden="true" />
-        </div>
-      )}
-      {(label || tagline) && (
-        <div className="calyr-logo-lockup">
-          {label && <div className="calyr-logo-label">{renderLabel(label)}</div>}
-          {tagline && <div className="calyr-logo-tagline">{renderTagline(tagline)}</div>}
         </div>
       )}
     </div>
