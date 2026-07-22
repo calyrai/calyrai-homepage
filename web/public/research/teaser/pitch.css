@@ -1874,3 +1874,51 @@ body .flow-card.origami-card.is-active .point-field {
     height: 100%;
   }
 }
+
+/* Evaluation typography: Swiss flush-left alignment with a measured size rhythm. */
+body .workflow-loops-head,
+body .workflow-loop,
+body .workflow-loop h4,
+body .workflow-loop p,
+body .workflow-loop strong {
+  text-align: left;
+}
+
+body .workflow-loops-head h3 {
+  justify-self: start;
+  max-width: 16ch;
+  text-align: left;
+}
+
+body .workflow-loop h4 {
+  width: 100%;
+  max-width: 12ch;
+  margin-right: auto;
+  margin-left: 0;
+  font-size: clamp(1.55rem, 2.15vw, 2.7rem);
+  line-height: .9;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+
+body .workflow-loop:nth-child(2) h4,
+body .workflow-loop:nth-child(5) h4 {
+  font-size: clamp(1.3rem, 1.75vw, 2.2rem);
+  max-width: 14ch;
+}
+
+body .workflow-loop:nth-child(3) h4 {
+  font-size: clamp(1.75rem, 2.45vw, 3rem);
+  max-width: 10ch;
+}
+
+@media (max-width: 820px) {
+  body .workflow-loop h4,
+  body .workflow-loop:nth-child(2) h4,
+  body .workflow-loop:nth-child(3) h4,
+  body .workflow-loop:nth-child(5) h4 {
+    max-width: 13ch;
+    font-size: clamp(2.1rem, 10vw, 3.6rem);
+    line-height: .9;
+  }
+}
