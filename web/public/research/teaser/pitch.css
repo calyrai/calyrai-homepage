@@ -1706,7 +1706,22 @@ body .flow-card.origami-card.is-active .point-field {
   body .editorial-card.origami-card.is-active {
     display: block;
     width: 100%;
+    height: calc(100dvh - 102px);
     min-height: calc(100dvh - 102px);
+    max-height: calc(100dvh - 102px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body .flow-card.origami-card.is-active {
+    overflow-y: auto;
+  }
+
+  body .flow-card.origami-card.is-active .scene {
+    min-height: 520px;
+    height: auto;
   }
 }
 
