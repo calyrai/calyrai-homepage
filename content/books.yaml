@@ -151,27 +151,52 @@ platform_books:
     - id: platform-lithos
       platform_id: lithos
       type: platform-book
-      title: Lithos Consequence Intelligence
+      title: Lithos — Science in Public
       year: 2026
       authors:
         - Tscheliessnig, Rupert
       tags:
-        - consequences
-        - risk
-        - trade-offs
-      objective: Frame consequence analysis as a first-class semantic reasoning task.
-      summary: Lithos translates model outputs into impact pathways, risks, and option-level trade-offs.
-      canonical_claim: Good decisions require consequence structure, not only predictions.
+        - science in public
+        - science communication
+        - participatory systems
+      objective: Create public forms in which scientific systems can be encountered, questioned, and discussed.
+      summary: Lithos translates scientific data, models, and uncertainty into spatial, visual, and participatory public experiences.
+      canonical_claim: Science becomes public when evidence can be encountered without losing its complexity.
       sections:
-        - id: reasoning-frame
-          title: Reasoning Frame
+        - id: scientific-material
+          title: Scientific Material
           bullets:
-            - Outcome pathways over time
-            - Risk and downside articulation
-            - Counterfactual option comparison
-        - id: governance
-          title: Governance Use
-          body: Lithos supports transparent justification by connecting decision choices to explicit consequence narratives.
+            - Measurements, simulations, and model states as source material
+            - Provenance and uncertainty remain visible
+            - Public repositories and research contexts stay connected
+        - id: translation
+          title: Artistic Translation
+          bullets:
+            - Installations and exhibition systems
+            - Spatial data narratives and responsive media
+            - Collaborations between artists, scientists, and institutions
+        - id: public-interface
+          title: Public Interface
+          body: Lithos creates legible encounters rather than simplified explanations. Visitors can explore relationships, assumptions, and consequences through a clear, accessible interface.
+        - id: strange-evidence
+          title: Strange Evidence
+          body: The experimental LITHOS format for exhibitions, public prototypes, and interventions. Strange Evidence puts data, models, uncertainty, and material form into productive tension.
+          bullets:
+            - Exhibition and installation series
+            - Public experiments and urban interventions
+            - Artist–scientist collaborations
+            - Open documentation and critical reflection
+        - id: process
+          title: From Evidence to Encounter
+          columns:
+            -
+              - 01 — Scientific question
+              - 02 — Data and model
+              - 03 — Curatorial translation
+            -
+              - 04 — Public prototype
+              - 05 — Situated installation
+              - 06 — Reflection and documentation
     - id: platform-oracle
       platform_id: oracle
       type: platform-book
@@ -465,6 +490,12 @@ interface_catalog:
 
 platform_pages:
   route_prefix: /research/platforms
+  reference_cta:
+    eyebrow: Expertise & engagement
+    title: Connect the system to the person behind it.
+    summary: See role fit, selected evidence, current interests, publications, and collaboration paths.
+    label: Work with Rupert
+    route: /company/expertise/
   items:
     - platform_id: core
       book_id: platform-core
@@ -488,7 +519,7 @@ platform_pages:
       book_id: platform-lithos
       eyebrow: calyr.ai platform
       subtitle: Lithos
-      lead: Consequence intelligence for transparent trade-off and risk-aware decisions.
+      lead: Science in Public — data, models, and uncertainty become material for public encounters.
       footer_note: Lithos page generated from platform-lithos book entry in content/books.yaml.
     - platform_id: oracle
       book_id: platform-oracle

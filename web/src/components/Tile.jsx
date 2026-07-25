@@ -63,11 +63,6 @@ function normalizeTileRoute(route) {
     return null
   }
 
-  // Route stale Lithos platform page directly to the interactive deck.
-  if (normalized === '/research/platforms/lithos/index.html') {
-    return '/research/lithos/index.html'
-  }
-
   if (normalized.startsWith('mailto:') || /^https?:\/\//i.test(normalized)) {
     return normalized
   }

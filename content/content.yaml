@@ -276,7 +276,7 @@ architecture:
   summary: NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.
 contact_main:
   title: Company
-  subtitle: Legal information
+  subtitle: Expertise, engagement, and legal information
   intent:
     purpose: legal-contact
     audience: returning-visitor
@@ -291,7 +291,7 @@ contact_main:
   explain:
     why: Provide a dedicated main-page contact section where Contact means Impressum/legal
       details.
-  summary: Publisher and legal information.
+  summary: Public professional reference, collaboration areas, and publisher information.
 footer:
   title: ''
   subtitle: ''
@@ -325,22 +325,26 @@ core:
     why: Route the brain tile to the architecture positioning page generated from
       YAML and linked source content.
 lithos:
-  title: lithos
-  tile_lead: adaptive interaction
-  tile_accent: green
+  title: LITHOS
+  tile_lead: science in public
+  tile_accent: yellow
   tile_title: lithos
-  tile_summary: an AI-native graphical interface that adapts to model, task, and context
-  subtitle: Adaptive graphical intelligence
-  summary: 'A dynamic graphical interface for interacting with models, predictions, and engineered systems.
+  tile_summary: data, models, and uncertainty become material for public encounters
+  subtitle: Science in Public
+  summary: 'A public interface where scientific data, models, and uncertainty become spatial, visual, and participatory experiences.
 
     '
-  body: 'LITHOS is the adaptive interaction layer of calyr.aí. It generates and evolves
-    graphical interfaces around the active model, available data, engineering task,
-    uncertainty, and user context instead of imposing one static interface.
+  body: 'LITHOS connects artists, scientists, institutions, and publics. It treats
+    scientific evidence as material for installations, exhibitions, urban interventions,
+    and open interfaces without reducing complex research to decoration. STRANGE
+    EVIDENCE is its experimental format for prototypes, interventions, and exhibitions.
 
     '
   icon: mountain
   route: /research/platforms/lithos/index.html
+  intent:
+    purpose: public-art-science
+    audience: first-visit
   render:
     grid_span: 4
 oracle:
@@ -495,6 +499,10 @@ contact:
   render:
     grid_span: 4
   contacts:
+  - id: expertise
+    label: Expertise
+    symbol: ↗
+    route: /company/expertise/
   - id: mail
     label: Mail
     symbol: '@'
@@ -510,7 +518,7 @@ contact:
   - id: linkedin
     label: LinkedIn
     symbol: in
-    route: https://www.linkedin.com
+    route: https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/
   - id: bluesky
     label: Bluesky
     symbol: "\U0001F98B"
@@ -555,7 +563,23 @@ impressum:
   icon: ''
   route: /legal
   render:
-    grid_span: 12
+    grid_span: 4
+expertise:
+  title: expertise & engagement
+  tile_lead: professional reference
+  tile_accent: blue
+  tile_title: work with Rupert
+  tile_summary: scientific AI, physical modelling, research infrastructure, and product development
+  subtitle: Public professional reference
+  summary: Evidence, projects, current interests, publications, and contact in one clear profile.
+  body: A public map of where Rupert contributes and which CALYR.AI systems demonstrate that work.
+  icon: network
+  route: /company/expertise/
+  intent:
+    purpose: professional-reference
+    audience: partner-or-collaborator
+  render:
+    grid_span: 8
 legal:
   title: Impressum
   subtitle: ''

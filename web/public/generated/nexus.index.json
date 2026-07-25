@@ -232,16 +232,20 @@
   },
   "contact_main": {
     "title": "Company",
-    "summary": "Publisher and legal information.",
+    "summary": "Public professional reference, collaboration areas, and publisher information.",
     "body_preview": "",
     "route": "",
     "icon": "",
     "keywords": [
       "and",
+      "areas,",
+      "collaboration",
       "company",
       "information.",
-      "legal",
-      "publisher"
+      "professional",
+      "public",
+      "publisher",
+      "reference,"
     ]
   },
   "footer": {
@@ -269,25 +273,27 @@
     ]
   },
   "lithos": {
-    "title": "lithos",
-    "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
-    "body_preview": "LITHOS is the adaptive interaction layer of calyr.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of ",
+    "title": "LITHOS",
+    "summary": "A public interface where scientific data, models, and uncertainty become spatial, visual, and participatory experiences.\n",
+    "body_preview": "LITHOS connects artists, scientists, institutions, and publics. It treats scientific evidence as material for installations, exhibitions, urban interventions, and open interfaces without reducing comp",
     "route": "/research/platforms/lithos/index.html",
     "icon": "mountain",
     "keywords": [
       "a",
       "and",
-      "dynamic",
-      "engineered",
-      "for",
-      "graphical",
-      "interacting",
+      "become",
+      "data,",
+      "experiences.",
       "interface",
       "lithos",
       "models,",
-      "predictions,",
-      "systems.",
-      "with"
+      "participatory",
+      "public",
+      "scientific",
+      "spatial,",
+      "uncertainty",
+      "visual,",
+      "where"
     ]
   },
   "oracle": {
@@ -467,6 +473,29 @@
       "function,",
       "impressum",
       "name,"
+    ]
+  },
+  "expertise": {
+    "title": "expertise & engagement",
+    "summary": "Evidence, projects, current interests, publications, and contact in one clear profile.",
+    "body_preview": "A public map of where Rupert contributes and which CALYR.AI systems demonstrate that work.",
+    "route": "/company/expertise/",
+    "icon": "network",
+    "keywords": [
+      "&",
+      "and",
+      "clear",
+      "contact",
+      "current",
+      "engagement",
+      "evidence,",
+      "expertise",
+      "in",
+      "interests,",
+      "one",
+      "profile.",
+      "projects,",
+      "publications,"
     ]
   },
   "legal": {

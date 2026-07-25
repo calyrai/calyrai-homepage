@@ -611,16 +611,16 @@ export default class LogoCanvasEngine {
 
       // Outer radial glow
       const grd = ctx.createRadialGradient(px, py, 0.4, px, py, 5.8)
-      grd.addColorStop(0, `rgba(255, 248, 220, ${(starAlpha * 0.94).toFixed(3)})`)
-      grd.addColorStop(0.38, `rgba(200, 228, 255, ${(starAlpha * 0.52).toFixed(3)})`)
-      grd.addColorStop(1, 'rgba(160, 200, 255, 0)')
+      grd.addColorStop(0, `rgba(255, 255, 255, ${(starAlpha * 0.98).toFixed(3)})`)
+      grd.addColorStop(0.38, `rgba(255, 255, 255, ${(starAlpha * 0.48).toFixed(3)})`)
+      grd.addColorStop(1, 'rgba(255, 255, 255, 0)')
       ctx.fillStyle = grd
       ctx.beginPath()
       ctx.arc(px, py, 5.8, 0, Math.PI * 2)
       ctx.fill()
 
       // Bright core point
-      ctx.fillStyle = `rgba(255, 252, 238, ${(starAlpha * 0.97).toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 255, 255, ${(starAlpha * 0.99).toFixed(3)})`
       ctx.beginPath()
       ctx.arc(px, py, 1.9, 0, Math.PI * 2)
       ctx.fill()
@@ -852,12 +852,15 @@ export default class LogoCanvasEngine {
       const initialY = initialQrTarget
         ? base.y * (1 - initialQrBlend) + initialQrTarget.y * initialQrBlend
         : base.y
+      const sizeMin = Number(this.config?.particle?.sizeMin) || 0.55
+      const sizeMax = Math.max(sizeMin, Number(this.config?.particle?.sizeMax) || 2.4)
       this.particles.push({
         x: initialX + (this.#hash2(i * 1.3, i * 2.1) - 0.5) * 0.006,
         y: initialY + (this.#hash2(i * 2.8, i * 0.9) - 0.5) * 0.006,
         vx: 0,
         vy: 0,
-        size: 0.66 + this.#hash2(i * 3.1, i * 1.7) * 1.08,
+        size: sizeMin + this.#hash2(i * 3.1, i * 1.7) * (sizeMax - sizeMin),
+        shapeSeed: this.#hash2(i * 8.71 + 2.3, i * 4.19 + 7.1),
         baseWeight: base.weight,
         ringAnchorIndex,
         armSign,
@@ -1252,7 +1255,7 @@ export default class LogoCanvasEngine {
   #drawBackgroundRaster(ctx, t) {
     for (const dot of this.gridDots) {
       const twinkle = 0.035 + (Math.sin(t * 0.68 + dot.seed) + 1) * 0.018
-      ctx.fillStyle = `rgba(210, 230, 255, ${twinkle.toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 255, 255, ${twinkle.toFixed(3)})`
       ctx.fillRect(dot.x * this.width, dot.y * this.height, 1.05, 1.05)
     }
   }
@@ -1483,6 +1486,15 @@ export default class LogoCanvasEngine {
       alpha *= (0.72 + shimmer * 0.34 + glint * 0.42 + sparkleBurst * 0.28) * alwaysSparkle
       size *= 0.78 + shimmer * 0.26 + glint * 0.18 + sparkleBurst * 0.16
       alpha = Math.max(0.03, alpha)
+      const shapeSeed = Number.isFinite(p.shapeSeed) ? p.shapeSeed : 0
+      const sparkChance = Number(this.config?.particle?.sparkChance) || 0.18
+      const largeDotChance = Number(this.config?.particle?.largeDotChance) || 0.08
+      const largeDotScale = Number(this.config?.particle?.largeDotScale) || 1.85
+      const isSpark = shapeSeed < sparkChance
+      const isLargeDot = !isSpark && shapeSeed > 1 - largeDotChance
+      if (isLargeDot) {
+        size *= largeDotScale
+      }
 
       if (glint > 0.65 || sparkleBurst > 0.6) {
         ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha * 0.78 + 0.16).toFixed(3)})`
@@ -1492,9 +1504,28 @@ export default class LogoCanvasEngine {
       }
 
       ctx.fillStyle = `rgba(255,255,255,${Math.min(1, alpha).toFixed(3)})`
-      ctx.beginPath()
-      ctx.arc(px, py, size, 0, Math.PI * 2)
-      ctx.fill()
+      if (isSpark) {
+        this.#drawCalyrSpark(ctx, px, py, size * (1.55 + glint * 0.7), Math.max(0.52, size * 0.34))
+      } else {
+        ctx.beginPath()
+        ctx.arc(px, py, size, 0, Math.PI * 2)
+        ctx.fill()
+      }
     }
+  }
+
+  #drawCalyrSpark(ctx, x, y, ray, core) {
+    const diagonal = core * 0.58
+    ctx.beginPath()
+    ctx.moveTo(x, y - ray)
+    ctx.lineTo(x + diagonal, y - diagonal)
+    ctx.lineTo(x + ray, y)
+    ctx.lineTo(x + diagonal, y + diagonal)
+    ctx.lineTo(x, y + ray)
+    ctx.lineTo(x - diagonal, y + diagonal)
+    ctx.lineTo(x - ray, y)
+    ctx.lineTo(x - diagonal, y - diagonal)
+    ctx.closePath()
+    ctx.fill()
   }
 }
