@@ -482,6 +482,12 @@ interface_catalog:
 
 platform_pages:
   route_prefix: /research/platforms
+  reference_cta:
+    eyebrow: Expertise & engagement
+    title: Connect the system to the person behind it.
+    summary: See role fit, selected evidence, current interests, publications, and collaboration paths.
+    label: Work with Rupert
+    route: /company/expertise/
   items:
     - platform_id: core
       book_id: platform-core

@@ -498,6 +498,10 @@ contact:
   render:
     grid_span: 4
   contacts:
+  - id: expertise
+    label: Expertise
+    symbol: ↗
+    route: /company/expertise/
   - id: mail
     label: Mail
     symbol: '@'
@@ -513,7 +517,7 @@ contact:
   - id: linkedin
     label: LinkedIn
     symbol: in
-    route: https://www.linkedin.com
+    route: https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/
   - id: bluesky
     label: Bluesky
     symbol: "\U0001F98B"

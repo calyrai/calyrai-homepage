@@ -785,6 +785,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
     platform_pages_cfg = config.get("platform_pages", {}) if isinstance(config, dict) else {}
     page_items = platform_pages_cfg.get("items", []) if isinstance(platform_pages_cfg, dict) else []
+    reference_cta = platform_pages_cfg.get("reference_cta", {}) if isinstance(platform_pages_cfg, dict) else {}
     if not isinstance(page_items, list) or not page_items:
         return
 
@@ -805,6 +806,11 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     route_prefix = str(platform_pages_cfg.get("route_prefix", "/research/platforms")).strip("/")
     output_root = project_root / "web" / "public" / Path(route_prefix)
     output_root.mkdir(parents=True, exist_ok=True)
+    cta_eyebrow = escape(str(reference_cta.get("eyebrow", "Expertise & engagement")))
+    cta_title = escape(str(reference_cta.get("title", "Connect the system to the person behind it.")))
+    cta_summary = escape(str(reference_cta.get("summary", "")))
+    cta_label = escape(str(reference_cta.get("label", "Work with Rupert")))
+    cta_route = escape(str(reference_cta.get("route", "/company/expertise/")), quote=True)
 
     for page_item in page_items:
         if not isinstance(page_item, dict):
@@ -954,6 +960,11 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p>Every decision returns new evidence to the system and begins a better question.</p>
       <a href="/research/methods/">Explore the method system →</a>
     </section>
+    <section class="reference-cta">
+      <p>{cta_eyebrow}</p>
+      <h2>{cta_title}</h2>
+      <a href="{cta_route}">{cta_label} →</a>
+    </section>
   </main>
   <footer><span>PYTHIA / calyr.aí</span><a href="/">Return to platform index</a></footer>
 </body>
@@ -992,6 +1003,12 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                   <p><a class=\"source-link\" href=\"{source_link_href}\">Back to homepage</a></p>
     </section>
     {''.join(section_blocks)}
+    <section class="card reference-cta">
+      <div class="eyebrow">{cta_eyebrow}</div>
+      <h2>{cta_title}</h2>
+      <p>{cta_summary}</p>
+      <p><a class="source-link" href="{cta_route}">{cta_label} →</a></p>
+    </section>
     <p class=\"footer-note\">{footer_note}</p>
   </main>
 </body>
@@ -1954,6 +1971,10 @@ h1 {{ grid-column:1 / -1; margin:6vh 0 0; align-self:start; font-size:clamp(5rem
 .closing-label {{ grid-column:1; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
 .closing > p:nth-child(2) {{ grid-column:2 / 4; margin:0; font-size:clamp(2.6rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
 .closing a {{ grid-column:3; margin-top:8vh; padding-top:14px; border-top:1px solid currentColor; font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
+.reference-cta {{ min-height:42vh; display:grid; grid-template-columns:4fr 5fr 3fr; gap:16px; padding:8vh 2.5vw; align-content:center; border-bottom:1px solid var(--line); }}
+.reference-cta p {{ grid-column:1; margin:0; color:var(--accent); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
+.reference-cta h2 {{ grid-column:2 / 4; margin:0; font-size:clamp(2.8rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
+.reference-cta a {{ grid-column:3; margin-top:5vh; padding-top:14px; border-top:1px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
 footer {{ min-height:120px; display:flex; justify-content:space-between; align-items:flex-end; padding:24px 2.5vw; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }}
 @media (max-width:760px) {{
   body::before {{ background-size:25vw 100%; }}
@@ -1965,6 +1986,7 @@ footer {{ min-height:120px; display:flex; justify-content:space-between; align-i
   .step-index {{ grid-column:1; }} .process-step h2 {{ grid-column:2; font-size:clamp(3rem,16vw,6rem); }}
   .step-body,.process-step ul {{ grid-column:2; margin-top:6vh; }}
   .closing {{ grid-template-columns:1fr; }} .closing-label,.closing > p:nth-child(2),.closing a {{ grid-column:1; }}
+  .reference-cta {{ grid-template-columns:1fr; }} .reference-cta p,.reference-cta h2,.reference-cta a {{ grid-column:1; }}
 }}
 @media (prefers-reduced-motion:reduce) {{ html {{ scroll-behavior:auto; }} }}
 """

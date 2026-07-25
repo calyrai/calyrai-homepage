@@ -1939,6 +1939,12 @@
           "institutions": [],
           "contacts": [
             {
+              "id": "expertise",
+              "label": "Expertise",
+              "symbol": "\u2197",
+              "route": "/company/expertise/"
+            },
+            {
               "id": "mail",
               "label": "Mail",
               "symbol": "@",
@@ -1960,7 +1966,7 @@
               "id": "linkedin",
               "label": "LinkedIn",
               "symbol": "in",
-              "route": "https://www.linkedin.com"
+              "route": "https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/"
             },
             {
               "id": "bluesky",
