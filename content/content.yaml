@@ -326,17 +326,18 @@ core:
       YAML and linked source content.
 lithos:
   title: LITHOS
-  tile_lead: public art & science
+  tile_lead: science in public
   tile_accent: yellow
   tile_title: lithos
-  tile_summary: scientific systems translated into public, spatial, and participatory experiences
-  subtitle: Public Art & Science
+  tile_summary: data, models, and uncertainty become material for public encounters
+  subtitle: Science in Public
   summary: 'A public interface where scientific data, models, and uncertainty become spatial, visual, and participatory experiences.
 
     '
   body: 'LITHOS connects artists, scientists, institutions, and publics. It treats
     scientific evidence as material for installations, exhibitions, urban interventions,
-    and open interfaces without reducing complex research to decoration.
+    and open interfaces without reducing complex research to decoration. STRANGE
+    EVIDENCE is its experimental format for prototypes, interventions, and exhibitions.
 
     '
   icon: mountain

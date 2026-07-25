@@ -28,13 +28,13 @@ evidence:
     label: Patient-specific flow intelligence
     route: /research/platforms/aflowtex/
   - title: LITHOS
-    label: Public Art & Science
+    label: Science in Public · Strange Evidence
     route: /research/platforms/lithos/
 interests:
   - Scientific AI and interpretable surrogate systems
   - Core-facility operations, KPIs, and measurement provenance
   - Research software and evidence-linked decision support
-  - Public Art & Science collaborations
+  - Science in Public and artist–scientist collaborations
 links:
   - label: Publications & literature
     route: /research/methods/scientific-ai-numerics/literature/

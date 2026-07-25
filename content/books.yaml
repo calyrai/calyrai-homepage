@@ -151,12 +151,12 @@ platform_books:
     - id: platform-lithos
       platform_id: lithos
       type: platform-book
-      title: Lithos Public Art & Science
+      title: Lithos — Science in Public
       year: 2026
       authors:
         - Tscheliessnig, Rupert
       tags:
-        - public art
+        - science in public
         - science communication
         - participatory systems
       objective: Create public forms in which scientific systems can be encountered, questioned, and discussed.
@@ -178,6 +178,14 @@ platform_books:
         - id: public-interface
           title: Public Interface
           body: Lithos creates legible encounters rather than simplified explanations. Visitors can explore relationships, assumptions, and consequences through a clear, accessible interface.
+        - id: strange-evidence
+          title: Strange Evidence
+          body: The experimental LITHOS format for exhibitions, public prototypes, and interventions. Strange Evidence puts data, models, uncertainty, and material form into productive tension.
+          bullets:
+            - Exhibition and installation series
+            - Public experiments and urban interventions
+            - Artist–scientist collaborations
+            - Open documentation and critical reflection
         - id: process
           title: From Evidence to Encounter
           columns:
@@ -511,7 +519,7 @@ platform_pages:
       book_id: platform-lithos
       eyebrow: calyr.ai platform
       subtitle: Lithos
-      lead: Public Art & Science translating scientific systems into spatial, visual, and participatory experiences.
+      lead: Science in Public — data, models, and uncertainty become material for public encounters.
       footer_note: Lithos page generated from platform-lithos book entry in content/books.yaml.
     - platform_id: oracle
       book_id: platform-oracle

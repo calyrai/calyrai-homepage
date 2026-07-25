@@ -116,10 +116,10 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Lithos Public Art & Science",
+          "title": "Lithos — Science in Public",
           "year": 2026,
           "tags": [
-            "public art",
+            "science in public",
             "science communication",
             "participatory systems"
           ],
@@ -210,6 +210,6 @@
   "home_route": "/",
   "metadata": {
     "book_count": 7,
-    "generated_at": "2026-07-25T10:18:02.402096+00:00"
+    "generated_at": "2026-07-25T10:20:40.086064+00:00"
   }
 }
