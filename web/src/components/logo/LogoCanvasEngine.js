@@ -611,16 +611,16 @@ export default class LogoCanvasEngine {
 
       // Outer radial glow
       const grd = ctx.createRadialGradient(px, py, 0.4, px, py, 5.8)
-      grd.addColorStop(0, `rgba(255, 248, 220, ${(starAlpha * 0.94).toFixed(3)})`)
-      grd.addColorStop(0.38, `rgba(200, 228, 255, ${(starAlpha * 0.52).toFixed(3)})`)
-      grd.addColorStop(1, 'rgba(160, 200, 255, 0)')
+      grd.addColorStop(0, `rgba(255, 255, 255, ${(starAlpha * 0.98).toFixed(3)})`)
+      grd.addColorStop(0.38, `rgba(255, 255, 255, ${(starAlpha * 0.48).toFixed(3)})`)
+      grd.addColorStop(1, 'rgba(255, 255, 255, 0)')
       ctx.fillStyle = grd
       ctx.beginPath()
       ctx.arc(px, py, 5.8, 0, Math.PI * 2)
       ctx.fill()
 
       // Bright core point
-      ctx.fillStyle = `rgba(255, 252, 238, ${(starAlpha * 0.97).toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 255, 255, ${(starAlpha * 0.99).toFixed(3)})`
       ctx.beginPath()
       ctx.arc(px, py, 1.9, 0, Math.PI * 2)
       ctx.fill()
@@ -1255,7 +1255,7 @@ export default class LogoCanvasEngine {
   #drawBackgroundRaster(ctx, t) {
     for (const dot of this.gridDots) {
       const twinkle = 0.035 + (Math.sin(t * 0.68 + dot.seed) + 1) * 0.018
-      ctx.fillStyle = `rgba(210, 230, 255, ${twinkle.toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 255, 255, ${twinkle.toFixed(3)})`
       ctx.fillRect(dot.x * this.width, dot.y * this.height, 1.05, 1.05)
     }
   }
