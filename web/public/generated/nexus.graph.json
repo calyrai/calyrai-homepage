@@ -122,7 +122,7 @@
       "label": "Company",
       "data": {
         "title": "Company",
-        "summary": "Publisher and legal information.",
+        "summary": "Public professional reference, collaboration areas, and publisher information.",
         "icon": ""
       }
     },
@@ -146,10 +146,10 @@
     },
     {
       "id": "lithos",
-      "label": "lithos",
+      "label": "LITHOS",
       "data": {
-        "title": "lithos",
-        "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
+        "title": "LITHOS",
+        "summary": "A public interface where scientific data, models, and uncertainty become spatial, visual, and participatory experiences.\n",
         "icon": "mountain"
       }
     },
@@ -232,6 +232,15 @@
         "title": "impressum",
         "summary": "Name, function, and address.\n",
         "icon": ""
+      }
+    },
+    {
+      "id": "expertise",
+      "label": "expertise & engagement",
+      "data": {
+        "title": "expertise & engagement",
+        "summary": "Evidence, projects, current interests, publications, and contact in one clear profile.",
+        "icon": "network"
       }
     },
     {

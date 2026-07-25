@@ -1,5 +1,6 @@
 {
   "checked_routes": [
+    "/company/expertise/",
     "/contact",
     "/ecosystem",
     "/legal",
@@ -25,5 +26,5 @@
     "mailto:rupert.tscheliessnig@calyr.ai"
   ],
   "unresolved_routes": [],
-  "generated_at": "2026-07-21T22:54:09.038820+00:00"
+  "generated_at": "2026-07-25T10:13:04.796087+00:00"
 }

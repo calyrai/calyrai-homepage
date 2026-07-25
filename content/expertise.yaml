@@ -1,0 +1,48 @@
+meta:
+  title: Expertise & Engagement
+  description: Public professional reference for Rupert Tscheliessnig.
+hero:
+  kicker: Professional reference / 2026
+  title: Expertise & engagement.
+  statement: I work at the intersection of scientific AI, physical modelling, research infrastructure, and product development.
+  introduction: Evidence, projects, and collaboration areas in one public, verifiable profile.
+role_fit:
+  - role: Scientific AI Engineer
+    evidence: PYTHIA · surrogate models · HPC workflows
+  - role: Research Infrastructure Architect
+    evidence: Core Facility KPI Studio · BMCA Studio
+  - role: Deep-Tech Product Designer
+    evidence: BRIX · AFLOWTEX · scientific interfaces
+  - role: Structural Biophysicist
+    evidence: SAXS · hybrid reconstruction · physical models
+  - role: Technical Lead
+    evidence: Research systems · prototypes · validation
+evidence:
+  - title: PYTHIA
+    label: Scientific machine learning
+    route: /research/platforms/pythia/
+  - title: BRIX
+    label: Surrogate-assisted product design
+    route: /research/platforms/brix/
+  - title: AFLOWTEX
+    label: Patient-specific flow intelligence
+    route: /research/platforms/aflowtex/
+  - title: LITHOS
+    label: Public Art & Science
+    route: /research/platforms/lithos/
+interests:
+  - Scientific AI and interpretable surrogate systems
+  - Core-facility operations, KPIs, and measurement provenance
+  - Research software and evidence-linked decision support
+  - Public Art & Science collaborations
+links:
+  - label: Publications & literature
+    route: /research/methods/scientific-ai-numerics/literature/
+  - label: Oracle reading room
+    route: /research/methods/oracling/reading-room/
+  - label: LinkedIn
+    route: https://www.linkedin.com/in/rupert-tscheliessnig
+contact:
+  label: Start a conversation
+  email: rupert.tscheliessnig@calyr.ai
+privacy: Active applications, employer conversations, and private references are intentionally not published.

@@ -95,6 +95,7 @@ architecture:
 contact_main:
 
   children:
+    - expertise
     - impressum
 
 footer:

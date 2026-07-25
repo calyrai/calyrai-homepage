@@ -35,6 +35,7 @@ NODE_TYPE_RULES = {
     "philosophy": "tile",
     "contact": "tile",
     "impressum": "tile",
+    "expertise": "tile",
 }
 
 # Core node payload fields shared by resolver/builders

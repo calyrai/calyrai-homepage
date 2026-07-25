@@ -476,21 +476,24 @@
         {
           "type": "tile",
           "id": "lithos",
-          "title": "lithos",
-          "tile_lead": "adaptive interaction",
-          "tile_accent": "green",
+          "title": "LITHOS",
+          "tile_lead": "public art & science",
+          "tile_accent": "yellow",
           "tile_title": "lithos",
-          "tile_summary": "an AI-native graphical interface that adapts to model, task, and context",
-          "subtitle": "Adaptive graphical intelligence",
+          "tile_summary": "scientific systems translated into public, spatial, and participatory experiences",
+          "subtitle": "Public Art & Science",
           "landing_message": "",
-          "summary": "A dynamic graphical interface for interacting with models, predictions, and engineered systems.\n",
-          "body": "LITHOS is the adaptive interaction layer of calyr.a\u00ed. It generates and evolves graphical interfaces around the active model, available data, engineering task, uncertainty, and user context instead of imposing one static interface.\n",
+          "summary": "A public interface where scientific data, models, and uncertainty become spatial, visual, and participatory experiences.\n",
+          "body": "LITHOS connects artists, scientists, institutions, and publics. It treats scientific evidence as material for installations, exhibitions, urban interventions, and open interfaces without reducing complex research to decoration.\n",
           "icon": "mountain",
           "route": "/research/platforms/lithos/index.html",
           "links": [],
           "institutions": [],
           "contacts": [],
-          "intent": {},
+          "intent": {
+            "purpose": "public-art-science",
+            "audience": "first-visit"
+          },
           "render": {
             "grid_span": 4
           },
@@ -513,6 +516,10 @@
               "AttachResolvedContent"
             ],
             "authored": {
+              "intent": {
+                "purpose": "public-art-science",
+                "audience": "first-visit"
+              },
               "render": {
                 "grid_span": 4
               }
@@ -2098,9 +2105,9 @@
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Legal information",
+      "subtitle": "Expertise, engagement, and legal information",
       "landing_message": "",
-      "summary": "Publisher and legal information.",
+      "summary": "Public professional reference, collaboration areas, and publisher information.",
       "body": "",
       "icon": "",
       "route": "",
@@ -2160,6 +2167,53 @@
       "children": [
         {
           "type": "tile",
+          "id": "expertise",
+          "title": "expertise & engagement",
+          "tile_lead": "professional reference",
+          "tile_accent": "blue",
+          "tile_title": "work with Rupert",
+          "tile_summary": "scientific AI, physical modelling, research infrastructure, and product development",
+          "subtitle": "Public professional reference",
+          "landing_message": "",
+          "summary": "Evidence, projects, current interests, publications, and contact in one clear profile.",
+          "body": "A public map of where Rupert contributes and which CALYR.AI systems demonstrate that work.",
+          "icon": "network",
+          "route": "/company/expertise/",
+          "links": [],
+          "institutions": [],
+          "contacts": [],
+          "intent": {
+            "purpose": "professional-reference",
+            "audience": "partner-or-collaborator"
+          },
+          "render": {
+            "grid_span": 8
+          },
+          "behavior": {},
+          "explain": {},
+          "meta": {
+            "source": {
+              "contentNodeId": "expertise",
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ],
+            "authored": {
+              "intent": {
+                "purpose": "professional-reference",
+                "audience": "partner-or-collaborator"
+              },
+              "render": {
+                "grid_span": 8
+              }
+            }
+          }
+        },
+        {
+          "type": "tile",
           "id": "impressum",
           "title": "impressum",
           "tile_lead": "company",
@@ -2177,7 +2231,7 @@
           "contacts": [],
           "intent": {},
           "render": {
-            "grid_span": 12
+            "grid_span": 4
           },
           "behavior": {},
           "explain": {},
@@ -2193,7 +2247,7 @@
             ],
             "authored": {
               "render": {
-                "grid_span": 12
+                "grid_span": 4
               }
             }
           }

@@ -126,6 +126,11 @@ class PlatformPublisher(PublicationStep):
         _sync_platform_pages_from_yaml(context.paths.project_root)
 
 
+class CompanyPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_company_expertise_page(context.paths.project_root)
+
+
 class RoutePublisher(PublicationStep):
     def publish(self, context: PublicationContext) -> None:
         _sync_route_policy_and_audit(context.paths.project_root)
@@ -154,6 +159,7 @@ class PublicationPipeline:
             BooksPublisher(),
             PositioningPublisher(),
             PlatformPublisher(),
+            CompanyPublisher(),
             RoutePublisher(),
             NexusArtifactPublisher(),
             RuntimeModulePublisher(),
@@ -162,6 +168,65 @@ class PublicationPipeline:
     def publish(self, context: PublicationContext) -> None:
         for step in self._steps:
             step.publish(context)
+
+
+def _sync_company_expertise_page(project_root: Path) -> None:
+    """Render the public professional reference from one YAML source."""
+    config = _read_optional_yaml(project_root / "content" / "expertise.yaml")
+    if not config:
+        return
+
+    output_dir = project_root / "web" / "public" / "company" / "expertise"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    hero = config.get("hero", {})
+    role_fit = config.get("role_fit", [])
+    evidence = config.get("evidence", [])
+    interests = config.get("interests", [])
+    links = config.get("links", [])
+    contact = config.get("contact", {})
+
+    roles_html = "".join(
+        f'<article><h3>{escape(str(item.get("role", "")))}</h3><p>{escape(str(item.get("evidence", "")))}</p></article>'
+        for item in role_fit if isinstance(item, dict)
+    )
+    evidence_html = "".join(
+        f'<a href="{escape(str(item.get("route", "/")), quote=True)}"><span>{escape(str(item.get("title", "")))}</span><small>{escape(str(item.get("label", "")))}</small></a>'
+        for item in evidence if isinstance(item, dict)
+    )
+    interests_html = "".join(f"<li>{escape(str(item))}</li>" for item in interests)
+    links_html = "".join(
+        f'<a href="{escape(str(item.get("route", "/")), quote=True)}">{escape(str(item.get("label", "")))} ↗</a>'
+        for item in links if isinstance(item, dict)
+    )
+    email = escape(str(contact.get("email", "")), quote=True)
+
+    html_content = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{escape(str(config.get('meta', {}).get('description', '')))}" />
+  <title>{escape(str(config.get('meta', {}).get('title', 'Expertise & Engagement')))} — CALYR.AI</title>
+  <link rel="stylesheet" href="./expertise.css" />
+</head>
+<body>
+  <header><a href="/">CALYR.AI</a><span>Company / Professional reference</span></header>
+  <main>
+    <section class="hero"><p>{escape(str(hero.get('kicker', '')))}</p><h1>{escape(str(hero.get('title', '')))}</h1><h2>{escape(str(hero.get('statement', '')))}</h2><div>{escape(str(hero.get('introduction', '')))}</div></section>
+    <section><div class="index">01</div><h2>Role fit</h2><div class="roles">{roles_html}</div></section>
+    <section><div class="index">02</div><h2>Selected evidence</h2><div class="evidence">{evidence_html}</div></section>
+    <section class="split"><div><div class="index">03</div><h2>Current interests</h2><ul>{interests_html}</ul></div><div><div class="index">04</div><h2>References</h2><nav>{links_html}</nav></div></section>
+    <section class="contact"><div class="index">05</div><h2>{escape(str(contact.get('label', 'Contact')))}</h2><a href="mailto:{email}">{email}</a><p>{escape(str(config.get('privacy', '')))}</p></section>
+  </main>
+  <footer><span>Source of truth: content/expertise.yaml</span><a href="/">Back to CALYR.AI</a></footer>
+</body>
+</html>"""
+    output_dir.joinpath("index.html").write_text(html_content, encoding="utf-8")
+    output_dir.joinpath("expertise.css").write_text(_company_expertise_css(), encoding="utf-8")
+
+
+def _company_expertise_css() -> str:
+    return """*{box-sizing:border-box}html{background:#050505;color:#f2f2ee;font-family:Arial,Helvetica,sans-serif}body{margin:0}a{color:inherit}header,footer{min-height:58px;padding:0 2.5vw;display:grid;grid-template-columns:1fr 1fr;align-items:center;border-bottom:1px solid #3b3b3b;font-size:12px;text-transform:uppercase;letter-spacing:.08em}header a{font-weight:800;text-decoration:none;color:#39bfff}main{padding:0 2.5vw}.hero{min-height:72vh;display:grid;grid-template-columns:repeat(12,1fr);gap:16px;align-content:end;padding:8vh 0;border-bottom:1px solid #3b3b3b}.hero p{grid-column:1/4;color:#39bfff;text-transform:uppercase;font-size:12px}.hero h1{grid-column:1/13;margin:0;font-size:clamp(64px,11vw,170px);line-height:.84;letter-spacing:-.075em;max-width:1100px}.hero h2{grid-column:6/13;margin:3rem 0 0;font-size:clamp(25px,3.5vw,52px);line-height:1.02;letter-spacing:-.035em}.hero div{grid-column:9/13;color:#aaa;font-size:15px;line-height:1.4}main>section:not(.hero){display:grid;grid-template-columns:repeat(12,1fr);gap:16px;padding:40px 0 70px;border-bottom:1px solid #3b3b3b}.index{grid-column:1;color:#39bfff;font-weight:800}section>h2{grid-column:2/5;margin:0;font-size:28px}.roles{grid-column:5/13}.roles article{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:14px 0;border-top:1px solid #3b3b3b}.roles h3,.roles p{margin:0;font-size:16px}.roles p{color:#aaa}.evidence{grid-column:5/13;display:grid;grid-template-columns:1fr 1fr}.evidence a{min-height:150px;padding:18px;border-top:1px solid #3b3b3b;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between}.evidence a:nth-child(odd){border-right:1px solid #3b3b3b}.evidence span{font-size:36px;font-weight:800;letter-spacing:-.04em}.evidence small{color:#aaa}.split>div{grid-column:1/7}.split>div+div{grid-column:7/13}.split h2{font-size:28px}.split ul{list-style:none;padding:0}.split li,.split nav a{display:block;padding:14px 0;border-top:1px solid #3b3b3b;text-decoration:none}.contact h2{grid-column:2/7}.contact>a{grid-column:7/13;font-size:clamp(24px,3vw,50px);font-weight:800;text-decoration:none}.contact p{grid-column:7/13;color:#777;font-size:12px}footer{border:0}footer a{text-align:right}@media(max-width:760px){header{grid-template-columns:1fr}.hero{min-height:68vh}.hero h2,.hero div{grid-column:1/13}.hero div{margin-top:10px}main>section:not(.hero){display:block}.index{margin-bottom:8px}.roles,.evidence{margin-top:30px}.roles article{grid-template-columns:1fr}.evidence{grid-template-columns:1fr}.evidence a:nth-child(odd){border-right:0}.contact>a{display:block;margin:30px 0;font-size:24px}.split>div+div{margin-top:50px}}"""
 
 
 class CompilerApplication:
@@ -900,7 +965,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
             print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
             continue
 
-        source_meta = "source file not found"
+        source_meta = "YAML-generated platform specification"
         if source_exists and source_html_path is not None:
             source_mtime = datetime.fromtimestamp(source_html_path.stat().st_mtime, tz=timezone.utc).isoformat()
             source_meta = f"linked source: {escape(str(source_html_path))} | updated: {source_mtime}"

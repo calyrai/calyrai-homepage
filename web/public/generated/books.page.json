@@ -116,15 +116,15 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Lithos Consequence Intelligence",
+          "title": "Lithos Public Art & Science",
           "year": 2026,
           "tags": [
-            "consequences",
-            "risk",
-            "trade-offs"
+            "public art",
+            "science communication",
+            "participatory systems"
           ],
-          "objective": "Frame consequence analysis as a first-class semantic reasoning task.",
-          "summary": "Lithos translates model outputs into impact pathways, risks, and option-level trade-offs.",
+          "objective": "Create public forms in which scientific systems can be encountered, questioned, and discussed.",
+          "summary": "Lithos translates scientific data, models, and uncertainty into spatial, visual, and participatory public experiences.",
           "ctas": [
             {
               "type": "platform-page",
@@ -210,6 +210,6 @@
   "home_route": "/",
   "metadata": {
     "book_count": 7,
-    "generated_at": "2026-07-21T22:54:08.748881+00:00"
+    "generated_at": "2026-07-25T10:13:04.592719+00:00"
   }
 }
