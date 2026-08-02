@@ -126,6 +126,11 @@ class PlatformPublisher(PublicationStep):
         _sync_platform_pages_from_yaml(context.paths.project_root)
 
 
+class ResearchDetailPublisher(PublicationStep):
+    def publish(self, context: PublicationContext) -> None:
+        _sync_spr_research_page(context.paths.project_root)
+
+
 class CompanyPublisher(PublicationStep):
     def publish(self, context: PublicationContext) -> None:
         _sync_company_expertise_page(context.paths.project_root)
@@ -164,6 +169,7 @@ class PublicationPipeline:
             BooksPublisher(),
             PositioningPublisher(),
             PlatformPublisher(),
+            ResearchDetailPublisher(),
             WhitepaperPublisher(),
             CompanyPublisher(),
             RoutePublisher(),
@@ -174,6 +180,44 @@ class PublicationPipeline:
     def publish(self, context: PublicationContext) -> None:
         for step in self._steps:
             step.publish(context)
+
+
+def _sync_spr_research_page(project_root: Path) -> None:
+    """Compile the SPR detail route from its registered source and template."""
+    projects = _read_optional_yaml(project_root / "content" / "projects.yaml")
+    spr = projects.get("pythia_spr", {}) if isinstance(projects, dict) else {}
+    render = spr.get("render", {}) if isinstance(spr, dict) else {}
+    source_rel = str(render.get("source", "")).strip()
+    route = str(spr.get("route", "")).strip() if isinstance(spr, dict) else ""
+    if not source_rel or not route:
+        return
+
+    source_path = project_root / source_rel
+    template_path = project_root / "build" / "templates" / "spr-research-direction.html"
+    if not source_path.exists():
+        raise ValueError(f"SPR page source does not exist: {source_rel}")
+    if not template_path.exists():
+        raise ValueError("SPR page template is missing")
+
+    markdown = source_path.read_text(encoding="utf-8")
+    title_match = re.search(r"^#\s+(.+)$", markdown, flags=re.MULTILINE)
+    if not title_match:
+        raise ValueError("SPR Markdown source requires one level-one title")
+
+    html = template_path.read_text(encoding="utf-8")
+    expected_title = escape(title_match.group(1))
+    if expected_title not in html:
+        raise ValueError("SPR template title has diverged from its Markdown source")
+    if "<math" not in html or "<msub" not in html:
+        raise ValueError("SPR equations must be compiled as semantic MathML")
+
+    route_path = Path(route.strip("/"))
+    output_path = project_root / "web" / "public" / route_path
+    if output_path.suffix.lower() != ".html":
+        output_path /= "index.html"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(html, encoding="utf-8")
+    print(f"🧮 Compiled SPR research page from {source_rel} to {output_path.relative_to(project_root)}")
 
 
 def _sync_company_expertise_page(project_root: Path) -> None:
