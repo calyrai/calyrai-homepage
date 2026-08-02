@@ -284,6 +284,8 @@ def _sync_whitepaper_catalog(project_root: Path) -> None:
     catalog = config.get("catalog", {}) if isinstance(config.get("catalog"), dict) else {}
     items = config.get("whitepapers", []) if isinstance(config.get("whitepapers"), list) else []
     allowed_visibility = set(catalog.get("visibility_levels", ["public", "registered", "restricted"]))
+    allowed_repositories = set(catalog.get("repositories", ["zenodo"]))
+    default_repository = str(catalog.get("default_repository", "zenodo"))
     narrative_path = project_root / str(catalog.get("narrative", "content/whitepapers.md"))
     if not narrative_path.exists():
         raise ValueError(f"White-paper narrative source does not exist: {narrative_path}")
@@ -314,8 +316,15 @@ def _sync_whitepaper_catalog(project_root: Path) -> None:
             raise ValueError(f"White paper '{publication_id}' references unknown application '{application_id}'.")
         public_visibility = str(item.get("public_visibility", "public"))
         full_visibility = str(item.get("full_visibility", "registered"))
+        repository = str(item.get("repository", default_repository))
+        record_url = str(item.get("record_url") or "")
+        doi = str(item.get("doi") or "")
         if public_visibility not in allowed_visibility or full_visibility not in allowed_visibility:
             raise ValueError(f"White paper '{publication_id}' uses an invalid visibility level.")
+        if repository not in allowed_repositories:
+            raise ValueError(f"White paper '{publication_id}' uses unsupported repository '{repository}'.")
+        if str(item.get("status", "")).lower() == "published" and not record_url:
+            raise ValueError(f"Published white paper '{publication_id}' requires a repository record URL.")
         abstract = narratives.get(publication_id, "")
         if not abstract:
             raise ValueError(f"White paper '{publication_id}' is missing its Markdown abstract.")
@@ -327,11 +336,19 @@ def _sync_whitepaper_catalog(project_root: Path) -> None:
             "status": str(item.get("status", "concept note")),
             "public_visibility": public_visibility,
             "full_visibility": full_visibility,
+            "repository": repository,
+            "record_url": record_url,
+            "doi": doi,
             "license": str(item.get("license", "All rights reserved")),
             "abstract": abstract,
         }
         public_records.append(record)
-        cards.append(f'''<article id="{escape(publication_id, quote=True)}"><p>{escape(record["display_title"])}</p><h2>{escape(record["title"])}</h2><div>{escape(abstract)}</div><dl><dt>Status</dt><dd>{escape(record["status"])}</dd><dt>Full edition</dt><dd>{escape(full_visibility)}</dd><dt>Licence</dt><dd>{escape(record["license"])}</dd></dl></article>''')
+        repository_html = (
+            f'<a href="{escape(record_url, quote=True)}" rel="noreferrer">Open {escape(repository)} record ↗</a>'
+            if record_url else f'{escape(repository.title())} deposit planned'
+        )
+        doi_html = escape(doi) if doi else "Assigned on publication"
+        cards.append(f'''<article id="{escape(publication_id, quote=True)}"><p>{escape(record["display_title"])}</p><h2>{escape(record["title"])}</h2><div>{escape(abstract)}</div><dl><dt>Status</dt><dd>{escape(record["status"])}</dd><dt>Full edition</dt><dd>{escape(full_visibility)}</dd><dt>Repository</dt><dd>{repository_html}</dd><dt>DOI</dt><dd>{doi_html}</dd><dt>Licence</dt><dd>{escape(record["license"])}</dd></dl></article>''')
 
     output_dir = project_root / "web" / "public" / str(catalog.get("route", "/research/whitepapers/")).strip("/")
     output_dir.mkdir(parents=True, exist_ok=True)

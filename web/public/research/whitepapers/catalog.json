@@ -7,6 +7,9 @@
     "status": "concept note",
     "public_visibility": "public",
     "full_visibility": "restricted",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "All rights reserved pending IP review",
     "abstract": "STAMPFORM describes a programmable transfer process in which material behavior, stamp geometry, contact, release, and fixation form one testable manufacturing loop."
   },
@@ -18,6 +21,9 @@
     "status": "concept note",
     "public_visibility": "public",
     "full_visibility": "restricted",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "All rights reserved pending IP review",
     "abstract": "Oil Print treats pigment composition, transparency, relief, texture, and registration as variables of a directly manufactured material image."
   },
@@ -29,6 +35,9 @@
     "status": "concept note",
     "public_visibility": "public",
     "full_visibility": "restricted",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "All rights reserved pending IP review",
     "abstract": "ChromStamp investigates designed flow paths and functional surface zones as an alternative to relying exclusively on random packed beds in protein chromatography."
   },
@@ -40,6 +49,9 @@
     "status": "working paper",
     "public_visibility": "public",
     "full_visibility": "registered",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "CALYR research licence",
     "abstract": "Aorta connects vessel geometry, boundary conditions, hemodynamics, wall mechanics, material gradients, surrogate prediction, and experimental validation."
   },
@@ -51,6 +63,9 @@
     "status": "working paper",
     "public_visibility": "public",
     "full_visibility": "registered",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "CALYR research licence",
     "abstract": "Nano Particle Surfaces combines Oracle-governed Cryo-EM morphology and SAXS ensemble constraints to reason about particle patterns and surface function."
   },
@@ -62,6 +77,9 @@
     "status": "working paper",
     "public_visibility": "public",
     "full_visibility": "registered",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "CALYR research licence",
     "abstract": "DOE · BMCA uses explicit factors, responses, constraints, uncertainty, and confirmation experiments to build a traceable surrogate-assisted design space."
   },
@@ -73,6 +91,9 @@
     "status": "working paper",
     "public_visibility": "public",
     "full_visibility": "registered",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "Third-party terms retained",
     "abstract": "The AlphaFold concept joins Oracle provenance, QTY hypotheses, an explicit external-service boundary, confidence interpretation, SAXS-surrogate comparison, and experimental decisions."
   },
@@ -84,6 +105,9 @@
     "status": "working paper",
     "public_visibility": "public",
     "full_visibility": "registered",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "CALYR research licence",
     "abstract": "The SAXS surrogate learns calibrated relationships among scattering evidence, simulations, QTY and AlphaFold hypotheses, structural descriptors, residuals, and experimental feedback."
   },
@@ -95,6 +119,9 @@
     "status": "concept note",
     "public_visibility": "public",
     "full_visibility": "restricted",
+    "repository": "zenodo",
+    "record_url": "",
+    "doi": "",
     "license": "All rights reserved pending IP review",
     "abstract": "Matomic describes a unit-aware material modelling loop with explicit boundary conditions, sensitivity, surrogate acceleration, applicability limits, and validation."
   }
