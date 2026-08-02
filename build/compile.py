@@ -837,6 +837,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
         css_path = output_dir / "platform.css"
         page_css = _pythia_page_css(accent_color) if platform_id == "pythia" else _platform_page_css(accent_color=accent_color)
+        if platform_id == "brix":
+            page_css += _brix_surrogate_css()
         css_path.write_text(page_css, encoding="utf-8")
 
         source_cfg = book.get("source", {}) if isinstance(book.get("source"), dict) else {}
@@ -893,6 +895,93 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     </section>
                 """.rstrip()
             )
+
+        surrogate_catalog_html = ""
+        surrogate_apps = book.get("surrogate_applications", []) if isinstance(book.get("surrogate_applications"), list) else []
+        surrogate_markdown_rel = str(book.get("surrogate_markdown", "")).strip()
+        surrogate_narratives: dict[str, str] = {}
+        if surrogate_markdown_rel:
+            surrogate_markdown_path = project_root / surrogate_markdown_rel
+            if surrogate_markdown_path.exists():
+                active_surrogate_id: str | None = None
+                narrative_lines: list[str] = []
+                for raw_line in surrogate_markdown_path.read_text(encoding="utf-8").splitlines():
+                    heading_match = re.match(r"^##\s+([a-z0-9-]+)\s*$", raw_line, flags=re.IGNORECASE)
+                    if heading_match:
+                        if active_surrogate_id:
+                            surrogate_narratives[active_surrogate_id] = " ".join(line.strip() for line in narrative_lines if line.strip())
+                        active_surrogate_id = heading_match.group(1)
+                        narrative_lines = []
+                    elif active_surrogate_id:
+                        narrative_lines.append(raw_line)
+                if active_surrogate_id:
+                    surrogate_narratives[active_surrogate_id] = " ".join(line.strip() for line in narrative_lines if line.strip())
+
+        if surrogate_apps:
+            surrogate_cards: list[str] = []
+            surrogate_flow_payload: list[dict[str, Any]] = []
+            for app_index, app in enumerate(surrogate_apps, start=1):
+                if not isinstance(app, dict):
+                    continue
+                app_id = str(app.get("id", f"surrogate-{app_index}"))
+                app_title = escape(str(app.get("title", app_id)))
+                app_domain = escape(str(app.get("domain", "Surrogate")))
+                app_accent = escape(str(app.get("accent", "cyan")), quote=True)
+                app_narrative = escape(surrogate_narratives.get(app_id, ""))
+                app_license = escape(str(app.get("license", "License not specified")))
+                app_flow = app.get("flow", []) if isinstance(app.get("flow"), list) else []
+                app_functions = app.get("functions", []) if isinstance(app.get("functions"), list) else []
+                if len(app_functions) != len(app_flow):
+                    raise ValueError(
+                        f"BRIX application '{app_id}' must define exactly one algorithm function per workflow step "
+                        f"({len(app_flow)} steps, {len(app_functions)} functions)."
+                    )
+                surrogate_flow_payload.append({
+                    "id": app_id,
+                    "index": app_index,
+                    "title": str(app.get("title", app_id)),
+                    "domain": str(app.get("domain", "Surrogate")),
+                    "accent": str(app.get("accent", "cyan")),
+                    "summary": surrogate_narratives.get(app_id, ""),
+                    "flow": [str(step) for step in app_flow],
+                    "functions": app_functions,
+                    "upstream": [str(item) for item in app.get("upstream", [])],
+                    "inputs": [str(item) for item in app.get("inputs", [])],
+                    "outputs": [str(item) for item in app.get("outputs", [])],
+                    "method": str(app.get("method", "")),
+                    "uncertainty": str(app.get("uncertainty", "")),
+                    "validation": str(app.get("validation", "")),
+                    "evidence": str(app.get("evidence", "")),
+                    "maturity": str(app.get("maturity", "Concept")),
+                    "disclosure": str(app.get("disclosure", "Public architecture; implementation details protected.")),
+                    "license": str(app.get("license", "License not specified")),
+                    "code": {"status": str(app.get("code_status", "planned")), "repository": app.get("code_url")},
+                })
+                flow_nodes = []
+                for flow_index, flow_step in enumerate(app_flow, start=1):
+                    flow_nodes.append(
+                        f'<li><span>{flow_index:02d}</span><strong>{escape(str(flow_step))}</strong></li>'
+                    )
+                surrogate_cards.append(f"""
+      <details class="surrogate" data-accent="{app_accent}" open>
+        <summary><span>{app_index:02d} / {app_domain}</span><strong>{app_title}</strong><i>Open flow</i></summary>
+        <div class="surrogate-body">
+          <p>{app_narrative}</p>
+          <ol class="surrogate-flow">{''.join(flow_nodes)}</ol>
+          <p class="surrogate-license"><span>License boundary</span>{app_license}</p>
+        </div>
+      </details>""".rstrip())
+            surrogate_json = json.dumps(surrogate_flow_payload, ensure_ascii=False).replace("<", "\\u003c")
+            surrogate_catalog_html = f"""
+    <section class="card surrogate-catalog">
+      <div class="eyebrow">BRIX / executable research structures</div>
+      <h2>Independent surrogate applications</h2>
+      <p>Each application has its own model, flow, evidence boundary, and future repository. YAML defines structure; Markdown provides scientific narrative.</p>
+      <div id="brix-flow-root" class="brix-flow-root" aria-label="Interactive BRIX concept flows"></div>
+      <script id="brix-flow-data" type="application/json">{surrogate_json}</script>
+      <script type="module" src="./brix-flow.js"></script>
+      <div class="surrogate-list">{''.join(surrogate_cards)}</div>
+    </section>""".rstrip()
 
         if page_item.get("show_method_reference") and method_reference:
             method_title = escape(str(method_reference.get("title", "Scientific AI and Numerical Methods")))
@@ -991,6 +1080,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
   <title>{title}</title>
   <link rel=\"stylesheet\" href=\"./platform.css\" />
+  {'<link rel="stylesheet" href="./brix-flow.css" />' if platform_id == 'brix' else ''}
 </head>
 <body>
   <main class=\"layout\">
@@ -1002,7 +1092,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p class=\"link-meta\">{source_meta}</p>
                   <p><a class=\"source-link\" href=\"{source_link_href}\">Back to homepage</a></p>
     </section>
-    {''.join(section_blocks)}
+    {''.join(section_blocks)}{surrogate_catalog_html}
     <section class="card reference-cta">
       <div class="eyebrow">{cta_eyebrow}</div>
       <h2>{cta_title}</h2>
@@ -1990,6 +2080,43 @@ footer {{ min-height:120px; display:flex; justify-content:space-between; align-i
 }}
 @media (prefers-reduced-motion:reduce) {{ html {{ scroll-behavior:auto; }} }}
 """
+
+
+def _brix_surrogate_css() -> str:
+    """Swiss flow catalogue used only by the BRIX platform page."""
+    return """
+.surrogate-catalog { border-radius: 0; }
+.surrogate-list { display: grid; gap: 1px; margin-top: 22px; background: var(--line); border: 1px solid var(--line); }
+.surrogate { --node-accent: var(--accent); background: #070a0f; }
+.surrogate[data-accent="green"] { --node-accent: #34c759; }
+.surrogate[data-accent="orange"] { --node-accent: #ff8c1a; }
+.surrogate[data-accent="cyan"] { --node-accent: #00c7ff; }
+.surrogate[data-accent="red"] { --node-accent: #ff3b30; }
+.surrogate[data-accent="violet"] { --node-accent: #7d42ff; }
+.surrogate[data-accent="magenta"] { --node-accent: #ff2d92; }
+.surrogate[data-accent="blue"] { --node-accent: #2f6bff; }
+.surrogate[data-accent="yellow"] { --node-accent: #ffd60a; }
+.surrogate[data-accent="pink"] { --node-accent: #ff6da8; }
+.surrogate summary { min-height: 92px; display: grid; grid-template-columns: 190px 1fr auto; align-items: center; gap: 20px; padding: 18px 22px; cursor: pointer; list-style: none; border-left: 4px solid var(--node-accent); }
+.surrogate summary::-webkit-details-marker { display: none; }
+.surrogate summary span, .surrogate summary i { color: var(--ink-soft); font-size: .72rem; font-style: normal; text-transform: uppercase; letter-spacing: .1em; }
+.surrogate summary strong { font-size: clamp(1.25rem, 2.4vw, 2rem); letter-spacing: -.035em; }
+.surrogate[open] summary { background: rgba(255,255,255,.035); }
+.surrogate-body { padding: 4px 22px 24px; border-left: 4px solid var(--node-accent); }
+.surrogate-body > p { max-width: 78ch; }
+.surrogate-flow { display: flex; gap: 22px; margin: 24px 0; padding: 24px 4px 8px; overflow-x: auto; list-style: none; }
+.surrogate-flow li { position: relative; flex: 0 0 175px; min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border: 1px solid rgba(255,255,255,.72); background: #05070b; }
+.surrogate-flow li:not(:last-child)::after { content: "→"; position: absolute; right: -18px; top: 43%; color: var(--node-accent); }
+.surrogate-flow li span { color: var(--node-accent); font: 700 .68rem/1 ui-monospace, SFMono-Regular, monospace; }
+.surrogate-flow li strong { font-size: .84rem; line-height: 1.3; }
+.surrogate-license { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .78rem; }
+.surrogate-license span { color: var(--node-accent); text-transform: uppercase; letter-spacing: .08em; }
+@media (max-width: 820px) {
+  .surrogate summary { grid-template-columns: 1fr auto; }
+  .surrogate summary span { grid-column: 1 / -1; }
+  .surrogate-license { grid-template-columns: 1fr; }
+}
+""".strip() + "\n"
 
 
 def _platform_page_css(accent_color: str = "#00c7ff") -> str:

@@ -105,6 +105,210 @@ platform_books:
       objective: Document how surrogate-assisted engineering decisions are modeled and operationalized.
       summary: Brix compresses expensive simulation space into faster, uncertainty-aware design exploration.
       canonical_claim: Engineering decisions become faster and more robust when surrogate spaces are coupled to semantic constraints.
+      surrogate_markdown: content/brix-surrogates.md
+      surrogate_applications:
+        - id: stampform
+          title: STAMPFORM
+          domain: Fabrication
+          accent: green
+          flow: [Parameter input, Surrogate model, Stamp geometry, Process simulation, Result, Validation]
+          functions:
+            - {name: normalize_process_parameters, role: Validate units, ranges, material state, and contact program.}
+            - {name: evaluate_stamp_surrogate, role: Predict transfer behavior and feasible process regions.}
+            - {name: generate_stamp_geometry, role: Convert target structure and constraints into manufacturable stamp geometry.}
+            - {name: simulate_stamp_process, role: Estimate contact, filling, release, and fixation response.}
+            - {name: assemble_manufacturing_result, role: Package geometry, settings, confidence, and warnings.}
+            - {name: validate_stamp_prediction, role: Compare predicted morphology with measured coupon geometry and repeatability.}
+          inputs: [Material rheology, Stamp geometry constraints, Pressure and contact program]
+          outputs: [Manufacturing geometry, Process window, Predicted structure quality]
+          method: Constraint-aware surrogate of contact, transfer, pull-off, and fixation.
+          uncertainty: Prediction intervals across material and process variation.
+          validation: Compare predicted and measured feature geometry, fidelity, and repeatability.
+          evidence: Simulation records and physical coupon measurements with traceable process metadata.
+          maturity: Concept
+          disclosure: Public architecture; exact rheology parameters, tolerances, and optimization heuristics protected.
+          license: Original surrogate code — Apache-2.0
+        - id: oil
+          title: Oil Print
+          domain: Fabrication
+          accent: orange
+          flow: [Image input, Surrogate model, Pigments and heights, Print simulation, Image body, Validation]
+          functions:
+            - {name: parse_material_image, role: Convert the source image into color, transparency, relief, and texture targets.}
+            - {name: predict_printability, role: Estimate feasible pigment-media transfer under process constraints.}
+            - {name: formulate_pigment_height_map, role: Assign premixed pigment recipes and material heights directly without conventional color separation.}
+            - {name: simulate_layer_transfer, role: Predict registration, spreading, curing, and optical interaction.}
+            - {name: compose_image_body, role: Generate the ordered template or stamp manufacturing plan.}
+            - {name: validate_oil_print, role: Evaluate spectral error, relief, adhesion, registration, and aging.}
+          inputs: [Source image or material field, Premixed pigment recipes, Relief and optical constraints]
+          outputs: [Layer or stamp plan, Pigment deposition map, Predicted optical and relief response]
+          method: Direct deposition of premixed pigment media with stamped or templated material transfer.
+          uncertainty: Color, transparency, layer-height, curing, and registration tolerances.
+          validation: Spectral color error, relief profilometry, registration, adhesion, and aging tests.
+          evidence: Pigment recipes, process logs, optical measurements, and physical print coupons.
+          maturity: Concept
+          disclosure: Public process architecture; exact media formulation and transfer parameters protected.
+          license: Original surrogate code — Apache-2.0
+        - id: chrom
+          title: ChromStamp
+          domain: Bioengineering
+          accent: cyan
+          flow: [Separation target, Surrogate model, Flow geometry, Binding simulation, Cartridge design, Validation]
+          functions:
+            - {name: define_separation_target, role: Formalize protein, impurity, recovery, purity, and operating constraints.}
+            - {name: evaluate_chromatography_surrogate, role: Predict separation performance across candidate structures and conditions.}
+            - {name: generate_flow_geometry, role: Create designed channels, active surfaces, and transport zones.}
+            - {name: simulate_binding_transport, role: Resolve convection, diffusion, binding, pressure drop, and fouling indicators.}
+            - {name: compile_cartridge_design, role: Produce a manufacturable cartridge and operating window.}
+            - {name: validate_chromstamp, role: Compare residence time, binding capacity, recovery, purity, and pressure drop.}
+          inputs: [Protein and impurity profile, Buffer and operating window, Ligand and surface constraints]
+          outputs: [Structured stationary-phase geometry, Operating window, Predicted separation performance]
+          method: Designed flow paths and functional surface zones replace an exclusively random packed bed.
+          uncertainty: Binding, mass-transfer, pressure-drop, fouling, and fabrication variability.
+          validation: Residence-time distribution, pressure drop, dynamic binding capacity, recovery, and purity.
+          evidence: Protein chromatography runs, surface characterization, and geometry-resolved simulations.
+          maturity: Research concept
+          disclosure: Public algorithm stages; ligand recipes, geometries, and operating thresholds protected pending IP review.
+          license: Original surrogate code — Apache-2.0
+        - id: aorta
+          title: Aorta
+          domain: Bioengineering
+          accent: red
+          flow: [Vessel data, Surrogate model, Flow and wall, Material gradient, Aorta design, Validation]
+          functions:
+            - {name: prepare_vessel_case, role: Register geometry, mesh assumptions, material data, and boundary conditions.}
+            - {name: evaluate_aorta_surrogate, role: Predict coupled hemodynamic and wall-mechanical response with confidence bounds.}
+            - {name: solve_flow_wall_state, role: Compute flow, pressure, deformation, shear, and stress fields.}
+            - {name: optimize_material_gradient, role: Map target mechanics to a spatially graded vessel material design.}
+            - {name: assemble_aorta_design, role: Package geometry, material field, risk indicators, and fabrication specification.}
+            - {name: validate_aorta_model, role: Compare simulation with flow-loop, pressure, deformation, and imaging measurements.}
+          inputs: [Patient or reference vessel geometry, Flow and pressure boundary conditions, Wall and material properties]
+          outputs: [Flow and wall fields, Risk-relevant indicators, Testable graded vessel design]
+          method: Coupled geometry, hemodynamics, wall mechanics, and material-gradient surrogate.
+          uncertainty: Propagate imaging, boundary-condition, constitutive-model, and surrogate uncertainty.
+          validation: Compare against flow-loop, pressure, deformation, and imaging measurements.
+          evidence: Versioned geometries, boundary conditions, simulation cases, and experimental measurements.
+          maturity: Prototype architecture
+          disclosure: Public scientific workflow; calibrated coefficients, clinical thresholds, and patient data protected.
+          license: Original surrogate code — Apache-2.0
+        - id: nano
+          title: Nano Particle Surfaces
+          domain: Materials
+          accent: violet
+          upstream: [Oracle evidence graph, Cryo-EM application, SAXS application]
+          flow: [Oracle evidence package, Cryo-EM map and particle morphology, SAXS curve and ensemble constraints, Cross-modal registration, Multiscale surrogate, Particle and surface pattern, Interface simulation, Surface recipe, Validation]
+          functions:
+            - {name: load_oracle_multimodal_evidence, role: Resolve Cryo-EM and SAXS records, identifiers, permissions, versions, and lineage.}
+            - {name: extract_cryoem_particle_morphology, role: Derive local shape, size, surface, and structural features with resolution-aware uncertainty.}
+            - {name: extract_saxs_ensemble_constraints, role: Derive ensemble size, distribution, and structural constraints from the registered SAXS analysis.}
+            - {name: register_cryoem_saxs_modalities, role: Align local Cryo-EM morphology with ensemble SAXS evidence and quantify disagreement.}
+            - {name: evaluate_nanoparticle_surrogate, role: Predict surface function from the fused particle representation and process variables.}
+            - {name: generate_particle_surface_pattern, role: Convert target function and constraints into a spatial particle and coating pattern.}
+            - {name: simulate_particle_interface, role: Predict interfacial transport, adhesion, wetting, optical, or application-specific response.}
+            - {name: compile_nanoparticle_surface_recipe, role: Package pattern, chemistry, process window, confidence, and fabrication instructions.}
+            - {name: validate_nanoparticle_surface, role: Cross-check both structural modalities and compare predicted function with physical measurements.}
+          inputs: [Oracle-governed Cryo-EM maps and metadata, Oracle-governed SAXS curves and uncertainty, Target interfacial effect, Particle descriptors, Substrate and coating chemistry]
+          outputs: [Cross-modal particle representation, Spatial particle pattern, Surface recipe, Predicted interface response]
+          method: Fuse local Cryo-EM morphology with ensemble-scale SAXS constraints, then connect particle distribution, density, topography, coating, and chemistry to surface function.
+          uncertainty: Propagate Cryo-EM resolution and segmentation uncertainty, SAXS measurement and model ambiguity, registration error, particle variation, and surrogate model-form uncertainty.
+          validation: Cross-check Cryo-EM-derived morphology against SAXS-derived ensemble constraints, then test microscopy, spectroscopy, wettability, adhesion, and application-specific performance.
+          evidence: Every Cryo-EM map, SAXS curve, transformation, model version, and fabrication batch is registered through Oracle provenance records.
+          maturity: Concept
+          disclosure: Public parameter classes; exact formulations, surface treatments, and target recipes protected.
+          license: Original surrogate code — Apache-2.0
+        - id: doe-bmca
+          title: DOE · BMCA
+          domain: Computational
+          accent: magenta
+          flow: [Factors and responses, Surrogate model, Design space, DOE selection, Prediction, Validation]
+          functions:
+            - {name: define_factors_responses, role: Validate factors, units, ranges, responses, acceptance criteria, and experimental constraints.}
+            - {name: fit_doe_surrogate, role: Estimate main effects, interactions, nonlinear response, and predictive uncertainty.}
+            - {name: construct_feasible_design_space, role: Apply physical, statistical, operational, and BMCA-relevant constraints.}
+            - {name: select_next_experiments, role: Rank informative and feasible experiments using the declared acquisition strategy.}
+            - {name: predict_operating_region, role: Produce response surfaces, trade-offs, confidence, and ranked candidate regions.}
+            - {name: validate_doe_model, role: Run residual diagnostics, held-out checks, confirmation experiments, and acceptance tests.}
+          inputs: [Factors and ranges, Responses and acceptance criteria, Constraints and prior evidence]
+          outputs: [Experiment set, Effect and interaction estimates, Ranked operating region]
+          method: Sequential design of experiments with surrogate-assisted candidate selection for BMCA-relevant methods.
+          uncertainty: Experimental noise, parameter uncertainty, interaction ambiguity, and extrapolation distance.
+          validation: Held-out runs, residual diagnostics, confirmation experiments, and predefined acceptance criteria.
+          evidence: Immutable design matrix, raw observations, model diagnostics, and decision record.
+          maturity: Prototype architecture
+          disclosure: Public statistical contract; customer data, selection weights, and tuned thresholds protected.
+          license: Original surrogate code — Apache-2.0
+        - id: alphafold
+          title: AlphaFold
+          domain: Computational
+          accent: blue
+          flow: [Sequence and entities, Data-source check, Model version, Structure inference, Confidence scores, Uncertain regions, SAXS or experiment, Decision record]
+          functions:
+            - {name: normalize_sequence_entities, role: Resolve chains, ligands, modifications, identifiers, and construct boundaries.}
+            - {name: verify_source_provenance, role: Check sequence identity, database sources, permissions, and evidence links.}
+            - {name: lock_model_version, role: Record model, weights, databases, parameters, and runtime environment.}
+            - {name: run_structure_inference, role: Produce structure candidates through the licensed AlphaFold implementation.}
+            - {name: extract_confidence_metrics, role: Collect confidence scores and map them to residues, interfaces, and domains.}
+            - {name: classify_uncertain_regions, role: Flag disorder, ambiguity, weak interfaces, and unsupported conformations.}
+            - {name: compare_experimental_evidence, role: Test candidates against Oracle-linked SAXS or other structural evidence.}
+            - {name: register_structure_decision, role: Store the selected interpretation, rejected alternatives, uncertainty, and provenance.}
+          inputs: [Sequence and entity definition, Model and database versions, Available experimental evidence]
+          outputs: [Structure candidates, Confidence map, Experiment and decision recommendations]
+          method: Provenance-aware decision wrapper around licensed AlphaFold inference outputs.
+          uncertainty: Preserve confidence scores and flag disordered, ambiguous, or unsupported regions.
+          validation: Compare predictions with SAXS and other available structural evidence.
+          evidence: Input identity, model version, confidence metrics, comparisons, and human decision record.
+          maturity: Integration design
+          disclosure: Workflow is public; model weights, databases, and third-party assets remain under their own terms.
+          license: Surrogate code — Apache-2.0; AlphaFold assets retain their official licenses and terms
+        - id: saxs
+          title: SAXS
+          domain: Computational
+          accent: yellow
+          upstream: [Oracle evidence graph]
+          flow: [Oracle evidence package, I(q) and metadata, Background and buffer, Quality control, Guinier and Rg, P(r) and Dmax, Model curve, Fit and residuals, Oracle result registration, Report and validation]
+          functions:
+            - {name: load_oracle_evidence_package, role: Resolve persistent identifiers, permissions, files, and provenance graph links.}
+            - {name: parse_scattering_curve, role: Validate q, I(q), uncertainty, units, instrument, and sample metadata.}
+            - {name: subtract_background_buffer, role: Apply traceable buffer and background corrections with propagated error.}
+            - {name: assess_saxs_quality, role: Detect aggregation, radiation damage, concentration effects, and unusable ranges.}
+            - {name: estimate_guinier_rg, role: Select valid Guinier regions and estimate Rg and I(0) with diagnostics.}
+            - {name: infer_pair_distribution, role: Estimate P(r) and Dmax while recording regularization and ambiguity.}
+            - {name: calculate_model_curve, role: Generate predicted scattering for each structural candidate.}
+            - {name: fit_models_and_residuals, role: Optimize allowed parameters and compare fits, residuals, and uncertainty.}
+            - {name: register_saxs_result_in_oracle, role: Return curves, parameters, models, diagnostics, and lineage to Oracle.}
+            - {name: validate_saxs_report, role: Apply quality gates and publish a reproducible evidence report.}
+          inputs: [Oracle-registered scattering curve and uncertainty, Oracle-registered buffer and background data, Sample and instrument metadata with persistent identifiers]
+          outputs: [Quality assessment, Rg and Dmax estimates, Model comparison and residual report]
+          method: Oracle-governed, traceable reduction and inference pipeline from I(q) to interpretable structural constraints.
+          uncertainty: Measurement errors, subtraction sensitivity, fit ranges, regularization, and model ambiguity.
+          validation: Automated quality gates, residual diagnostics, replicate agreement, and orthogonal evidence.
+          evidence: Raw and processed curves, metadata, parameter choices, software versions, and reports originate from and return to Oracle as linked provenance records.
+          maturity: Prototype architecture
+          disclosure: Public analytical workflow; private sample data and unpublished structures protected.
+          license: Original surrogate code — Apache-2.0; third-party tools and data retain their licenses
+        - id: matomic
+          title: Matomic
+          domain: Materials
+          accent: pink
+          flow: [Problem definition, Parameters and units, Matomic model, Boundary conditions, Simulation, Sensitivity, Prediction, Validation]
+          functions:
+            - {name: define_matomic_problem, role: Formalize the material system, target quantities, spatial scale, and validity domain.}
+            - {name: normalize_matomic_parameters, role: Validate parameter identities, units, ranges, sources, and uncertainty.}
+            - {name: assemble_matomic_model, role: Construct the selected material model and its declared constitutive relationships.}
+            - {name: apply_boundary_initial_conditions, role: Bind explicit boundary and initial conditions to the computational domain.}
+            - {name: solve_matomic_state, role: Execute the numerical model with convergence and stability monitoring.}
+            - {name: analyze_matomic_sensitivity, role: Rank parameter influence and detect poorly identifiable or unstable regions.}
+            - {name: generate_matomic_prediction, role: Return predicted states, confidence, assumptions, and validity limits.}
+            - {name: validate_matomic_model, role: Compare benchmarks and experiments while recording numerical and model-form error.}
+          inputs: [Material-system definition, Parameters with units, Boundary and initial conditions]
+          outputs: [Simulation state, Sensitivity ranking, Prediction with validity domain]
+          method: Unit-aware material model with explicit boundary conditions and surrogate acceleration.
+          uncertainty: Parameter, boundary-condition, numerical, surrogate, and model-form uncertainty.
+          validation: Benchmark cases, convergence checks, sensitivity tests, and experimental comparison.
+          evidence: Versioned model definition, solver configuration, benchmarks, and validation datasets.
+          maturity: Concept
+          disclosure: Public algorithm contract; proprietary model data, fitted parameters, and concept IP protected.
+          license: Surrogate code — Apache-2.0; concept IP and model data require explicit rights
       sections:
         - id: capability
           title: Capability
