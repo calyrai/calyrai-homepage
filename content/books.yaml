@@ -490,7 +490,7 @@ platform_books:
 method_catalog:
   route: /research/methods/
   title: calyr.aí method catalog
-  summary: A growing collection of reusable scientific-AI, numerical, inference, validation, and closed-loop experimental method contracts, informed by Pythia and the generalizable ideas developed through Parvotec.
+  summary: A growing collection of reusable scientific-AI, numerical, inference, validation, and closed-loop experimental method contracts developed within the calyr.aí research system.
   label: Open the method catalog
   design_contract: docs/reactflow-swiss-design-contract.md
   design_rules: [strict grid, typographic hierarchy, restrained palette, clarity before ornament]
@@ -529,8 +529,6 @@ method_catalog:
       family: Reproducibility
       domains: [scientific software, model reproduction]
       tags: [source freeze, environment lock, baseline, delta analysis]
-      informed_by: Parvotec Phase-I baseline-reproduction architecture
-      boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-DATA-001
       title: Traceable Scientific Data and Reuse
       summary: Move observations through immutable raw, staging, curated, feature, and registry layers with ownership, source, license, version, checksum, schema, and quality status.
@@ -538,8 +536,6 @@ method_catalog:
       family: Data governance
       domains: [experimental data, scientific ML]
       tags: [provenance, integrity, dataset cards, reuse]
-      informed_by: Parvotec data-rebuild and AAV catalog architecture
-      boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-EVID-001
       title: Evidence Levels and Acceptance Gates
       summary: Separate hypothesis, reproduced baseline, retrospective validation, prospective validation, and repeated closed-loop evidence; attach an explicit gate to every claim and release.
@@ -547,8 +543,6 @@ method_catalog:
       family: Validation
       domains: [scientific claims, model lifecycle]
       tags: [evidence levels, acceptance gates, limitations, release criteria]
-      informed_by: Parvotec evidence policy and Phase-I acceptance gates
-      boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-LOOP-001
       title: Closed-Loop Experimental Learning
       summary: Connect constrained design, informative candidate selection, multi-modal observation, surrogate updates, experimental validation, and selection of the next batch.
@@ -556,8 +550,6 @@ method_catalog:
       family: Experimental learning
       domains: [design of experiments, active learning]
       tags: [closed loop, assay, acquisition policy, batch update]
-      informed_by: Parvotec design-to-experiment-to-learning loop
-      boundary: Reusable method only; no Parvotec project data or results.
     - id: CALYR-METHOD-ORACLE-001
       source: docs/oracling.md
       route: /research/methods/oracling/
@@ -575,8 +567,6 @@ method_catalog:
       family: Scientific governance
       domains: [IP, knowledge transfer]
       tags: [background methods, project results, classification, approval]
-      informed_by: Parvotec and calyr.aí background/project-result boundary
-      boundary: This contract defines the boundary; it does not transfer project assets.
 
 interface_catalog:
   route: /research/interfaces/
