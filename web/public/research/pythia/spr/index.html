@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A schematic research direction for mechanistic and stochastic SPR intelligence.">
-  <title>SPR Research Direction — calyr.aí</title>
+  <meta name="description" content="A complete bi-Langmuir adsorption theory and an interpretable surrogate-modelling concept for SPR.">
+  <title>Bi-Langmuir Theory and SPR Surrogate Modelling — calyr.aí</title>
   <style>
     :root {
       color-scheme: dark;
@@ -238,11 +238,11 @@
   <main>
     <div class="shell hero">
       <div>
-        <div class="eyebrow">Surface plasmon resonance intelligence</div>
-        <h1>From curves <span>to decisions.</span></h1>
+        <div class="eyebrow">Bi-Langmuir adsorption · SPR intelligence</div>
+        <h1>Full theory. <span>Fast surrogate.</span></h1>
       </div>
       <div class="hero-copy">
-        A mechanistic and stochastic framework for asking which molecular interactions are actually identifiable—and which experiment should come next.
+        A complete two-population adsorption theory becomes the physical foundation for fast SPR prediction, inverse kinetic inference, uncertainty and experiment design.
         <small>Conceptual direction only · code and evidence remain under validation</small>
       </div>
     </div>
@@ -251,15 +251,15 @@
       <div class="shell">
         <div class="section-head">
           <div class="index">01 / Direction</div>
-          <p class="lead">SPR should move beyond a single best-fit curve. The system should expose competing mechanisms, parameter uncertainty, nuisance effects, and the measurement that can resolve what remains ambiguous.</p>
+          <p class="lead">The physical model remains in control. Machine learning accelerates the bi-Langmuir forward theory and its inversion without hiding kinetic parameters, constraints or uncertainty.</p>
         </div>
 
         <div class="flow" aria-label="SPR research workflow">
-          <article class="step"><div class="dot"></div><h3>Sensorgrams</h3><p>Concentration series, association and dissociation phases, controls and experimental context.</p></article>
-          <article class="step"><div class="dot"></div><h3>Correction</h3><p>Reference, blank, drift, bulk response and explicitly represented nuisance effects.</p></article>
-          <article class="step"><div class="dot"></div><h3>Model ladder</h3><p>Simple binding first, followed by transport, heterogeneity, multi-state and stochastic alternatives.</p></article>
-          <article class="step"><div class="dot"></div><h3>Uncertainty</h3><p>Identifiability, parameter distributions, residual structure and held-out prediction.</p></article>
-          <article class="step"><div class="dot"></div><h3>Next experiment</h3><p>Select concentration, flow rate or contact time that best separates plausible mechanisms.</p></article>
+          <article class="step"><div class="dot"></div><h3>Experiment</h3><p>Concentrations, flow, timing, surface capacity, controls and complete sensorgrams.</p></article>
+          <article class="step"><div class="dot"></div><h3>Bi-Langmuir theory</h3><p>Two binding-site populations with explicit kinetics, observation physics and nuisance terms.</p></article>
+          <article class="step"><div class="dot"></div><h3>Synthetic space</h3><p>Physically valid parameter combinations generate labelled families of complete sensorgrams.</p></article>
+          <article class="step"><div class="dot"></div><h3>SPR surrogate</h3><p>Fast forward prediction and inverse distributions over kinetic parameters and site fractions.</p></article>
+          <article class="step"><div class="dot"></div><h3>Decision</h3><p>Validate identifiability and select the next concentration, flow rate or contact time.</p></article>
         </div>
       </div>
     </section>
@@ -267,13 +267,13 @@
     <section>
       <div class="shell">
         <div class="section-head">
-          <div class="index">02 / Research object</div>
-          <h2>Code becomes evidence.</h2>
+          <div class="index">02 / Foundation</div>
+          <h2>Two populations. One observable.</h2>
         </div>
         <div class="cards">
-          <article class="card"><div class="index">Now</div><b>Recovered computational source</b><p>A Mathematica notebook contains mechanistic SPR models and a Gillespie stochastic formulation. Its original checksum and provenance are preserved.</p></article>
-          <article class="card"><div class="index">Next</div><b>Reproducible release</b><p>Clean-kernel execution, explicit units, parameters, random seeds, expected outputs and a synthetic open example dataset.</p></article>
-          <article class="card accent"><div class="index">Destination</div><b>Citable Zenodo object</b><p>Versioned code, transparent metadata, a DOI, a confirmed license and a precise scientific scope—published only after validation.</p></article>
+          <article class="card"><div class="index">Population 01</div><b>dθ₁/dt = kₐ,₁C(1−θ₁) − k_d,₁θ₁</b><p>The first kinetic population has an explicit association rate, dissociation rate, capacity and occupancy.</p></article>
+          <article class="card"><div class="index">Population 02</div><b>dθ₂/dt = kₐ,₂C(1−θ₂) − k_d,₂θ₂</b><p>The second population represents a distinct kinetic site class—not an unexplained empirical curve component.</p></article>
+          <article class="card accent"><div class="index">Observed response</div><b>R = Rmax[fθ₁ + (1−f)θ₂] + Rnuisance</b><p>Site fractions connect both occupancies to the sensorgram while transport, bulk response and drift remain explicit.</p></article>
         </div>
       </div>
     </section>
@@ -281,19 +281,19 @@
     <section>
       <div class="shell">
         <div class="section-head">
-          <div class="index">03 / Mechanisms</div>
-          <h2>A controlled model ladder.</h2>
+          <div class="index">03 / Surrogate</div>
+          <h2>Physics becomes explorable.</h2>
         </div>
         <div class="models">
           <div class="model-list">
-            <div class="model-row"><span>01</span><strong>1:1 binding</strong></div>
-            <div class="model-row"><span>02</span><strong>Bivalent analyte</strong></div>
-            <div class="model-row"><span>03</span><strong>Heterogeneous analyte</strong></div>
-            <div class="model-row"><span>04</span><strong>Heterogeneous ligand</strong></div>
-            <div class="model-row"><span>05</span><strong>Two-state reaction</strong></div>
-            <div class="model-row"><span>06</span><strong>Gillespie simulation</strong></div>
+            <div class="model-row"><span>01</span><strong>Forward sensorgram emulator</strong></div>
+            <div class="model-row"><span>02</span><strong>Inverse parameter posterior</strong></div>
+            <div class="model-row"><span>03</span><strong>Structured residual model</strong></div>
+            <div class="model-row"><span>04</span><strong>Applicability-domain gate</strong></div>
+            <div class="model-row"><span>05</span><strong>Uncertainty calibration</strong></div>
+            <div class="model-row"><span>06</span><strong>Design of experiments</strong></div>
           </div>
-          <div class="statement">Complexity earns its place only when it improves prediction and remains identifiable.</div>
+          <div class="statement">The surrogate accelerates the theory. It does not replace the theory.</div>
         </div>
       </div>
     </section>
@@ -323,7 +323,7 @@
       <div class="shell">
         <div class="section-head">
           <div class="index">05 / Outlook</div>
-          <p class="lead">The long-term destination is a transparent SPR oracle: measurements in, physically interpretable alternatives out, uncertainty visible, and every proposed next experiment traceable to the ambiguity it is designed to resolve.</p>
+          <p class="lead">The destination is a transparent SPR oracle built on bi-Langmuir theory: conditions and sensorgrams in; kinetic states, uncertainty, model adequacy and the next informative experiment out.</p>
         </div>
       </div>
     </section>

@@ -666,22 +666,25 @@
   },
   "pythia_spr": {
     "title": "SPR System",
-    "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
-    "body_preview": "The SPR application uses Pythia to transform experimental sensor responses into fast, validated estimates of interaction kinetics and affinity.",
+    "summary": "A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.",
+    "body_preview": "The SPR application develops a two-population adsorption theory and uses Pythia to accelerate forward sensorgram prediction, inverse kinetic inference, uncertainty estimation, and experiment design.",
     "route": "/research/pythia/spr/index.html",
     "icon": "wave",
     "keywords": [
-      "affinity,",
-      "and",
-      "binding",
-      "from",
-      "inferring",
-      "kinetics,",
-      "molecular",
-      "sensorgrams.",
+      "a",
+      "adsorption",
+      "bi-langmuir",
+      "complete",
+      "coupled",
+      "for",
+      "interpretable",
+      "modelling",
       "spr",
+      "spr.",
+      "surrogate",
       "system",
-      "uncertainty"
+      "theory",
+      "to"
     ]
   },
   "pythia_metabolic": {

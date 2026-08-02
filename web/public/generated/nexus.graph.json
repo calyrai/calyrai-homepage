@@ -320,7 +320,7 @@
       "label": "SPR System",
       "data": {
         "title": "SPR System",
-        "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
+        "summary": "A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.",
         "icon": "wave"
       }
     },

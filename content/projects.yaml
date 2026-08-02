@@ -118,9 +118,9 @@ pythia_spr:
   tile_title: spr
   tile_summary: binding kinetics from sensor response
   subtitle: Surface Plasmon Resonance intelligence
-  summary: Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.
-  body: The SPR application uses Pythia to transform experimental sensor responses into fast, validated
-    estimates of interaction kinetics and affinity.
+  summary: A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.
+  body: The SPR application develops a two-population adsorption theory and uses Pythia to accelerate
+    forward sensorgram prediction, inverse kinetic inference, uncertainty estimation, and experiment design.
   icon: wave
   route: /research/pythia/spr/index.html
   render:
