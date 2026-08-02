@@ -85,7 +85,7 @@ function ContactQrIcon({ value }) {
   )
 }
 
-export default function Navigation({ theme, ast }) {
+export default function Navigation({ theme, ast, visualsReady = true }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isBrandOpen, setIsBrandOpen] = useState(false)
   const [isContactsOpen, setIsContactsOpen] = useState(false)
@@ -221,7 +221,7 @@ export default function Navigation({ theme, ast }) {
           onMouseEnter={openBrandPanel}
           onMouseLeave={scheduleBrandPanelClose}
         >
-          <LogoAnimation layout="nav" showCanvas={true} />
+          <LogoAnimation layout="nav" showCanvas={visualsReady} />
         </aside>
       )}
 

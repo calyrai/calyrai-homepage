@@ -34,6 +34,7 @@ function App() {
   const [booksPage] = useState(BOOKS_PAGE_DATA)
   const [currentPath, setCurrentPath] = useState(getLocationPath())
   const [loading, setLoading] = useState(true)
+  const [visualsReady, setVisualsReady] = useState(false)
   const [error, setError] = useState(null)
 
   const themeVariableApplier = new ThemeVariableApplier()
@@ -50,6 +51,19 @@ function App() {
       setLoading(false)
     }
   }, [])
+
+  useEffect(() => {
+    if (loading) return undefined
+
+    const revealVisuals = () => setVisualsReady(true)
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(revealVisuals, { timeout: 1200 })
+      return () => window.cancelIdleCallback(idleId)
+    }
+
+    const timerId = window.setTimeout(revealVisuals, 450)
+    return () => window.clearTimeout(timerId)
+  }, [loading])
 
   useEffect(() => {
     const onPopState = () => setCurrentPath(getLocationPath())
@@ -113,8 +127,8 @@ function App() {
 
   return (
     <SelectionProvider>
-      <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} />
-      <Navigation theme={theme} ast={ast} />
+      {visualsReady ? <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} /> : null}
+      <Navigation theme={theme} ast={ast} visualsReady={visualsReady} />
 
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
         {routeState.isPhilosophyRoute
