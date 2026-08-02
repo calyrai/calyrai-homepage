@@ -22,8 +22,10 @@ evidence:
     label: Scientific machine learning
     route: /research/platforms/pythia/
   - title: BRIX
-    label: Executable application workflows · algorithms · validation
+    label: Schematic application workflows
     route: /research/platforms/brix/
+  - title: SAXS surrogate
+    publication_id: wp-saxs
   - title: AFLOWTEX
     label: Patient-specific flow intelligence
     route: /research/platforms/aflowtex/

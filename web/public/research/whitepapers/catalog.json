@@ -1,0 +1,101 @@
+[
+  {
+    "id": "wp-stampform",
+    "application_id": "stampform",
+    "display_title": "STAMPFORM",
+    "title": "Programmable Stamp-Form Manufacturing",
+    "status": "concept note",
+    "public_visibility": "public",
+    "full_visibility": "restricted",
+    "license": "All rights reserved pending IP review",
+    "abstract": "STAMPFORM describes a programmable transfer process in which material behavior, stamp geometry, contact, release, and fixation form one testable manufacturing loop."
+  },
+  {
+    "id": "wp-oil-print",
+    "application_id": "oil",
+    "display_title": "Oil Print",
+    "title": "Material Images Through Direct Pigment Transfer",
+    "status": "concept note",
+    "public_visibility": "public",
+    "full_visibility": "restricted",
+    "license": "All rights reserved pending IP review",
+    "abstract": "Oil Print treats pigment composition, transparency, relief, texture, and registration as variables of a directly manufactured material image."
+  },
+  {
+    "id": "wp-chromstamp",
+    "application_id": "chrom",
+    "display_title": "ChromStamp",
+    "title": "Structured Bodies for Protein Chromatography",
+    "status": "concept note",
+    "public_visibility": "public",
+    "full_visibility": "restricted",
+    "license": "All rights reserved pending IP review",
+    "abstract": "ChromStamp investigates designed flow paths and functional surface zones as an alternative to relying exclusively on random packed beds in protein chromatography."
+  },
+  {
+    "id": "wp-aorta",
+    "application_id": "aorta",
+    "display_title": "Aorta",
+    "title": "Surrogate-Guided Aortic Flow and Material Design",
+    "status": "working paper",
+    "public_visibility": "public",
+    "full_visibility": "registered",
+    "license": "CALYR research licence",
+    "abstract": "Aorta connects vessel geometry, boundary conditions, hemodynamics, wall mechanics, material gradients, surrogate prediction, and experimental validation."
+  },
+  {
+    "id": "wp-nano",
+    "application_id": "nano",
+    "display_title": "Nano Particle Surfaces",
+    "title": "Cryo-EM and SAXS Fusion for Nanoparticle Surfaces",
+    "status": "working paper",
+    "public_visibility": "public",
+    "full_visibility": "registered",
+    "license": "CALYR research licence",
+    "abstract": "Nano Particle Surfaces combines Oracle-governed Cryo-EM morphology and SAXS ensemble constraints to reason about particle patterns and surface function."
+  },
+  {
+    "id": "wp-doe-bmca",
+    "application_id": "doe-bmca",
+    "display_title": "DOE · BMCA",
+    "title": "Surrogate-Assisted Experimental Design for BMCA Methods",
+    "status": "working paper",
+    "public_visibility": "public",
+    "full_visibility": "registered",
+    "license": "CALYR research licence",
+    "abstract": "DOE · BMCA uses explicit factors, responses, constraints, uncertainty, and confirmation experiments to build a traceable surrogate-assisted design space."
+  },
+  {
+    "id": "wp-alphafold",
+    "application_id": "alphafold",
+    "display_title": "AlphaFold",
+    "title": "Oracle, QTY, AlphaFold, and Experimental Evidence",
+    "status": "working paper",
+    "public_visibility": "public",
+    "full_visibility": "registered",
+    "license": "Third-party terms retained",
+    "abstract": "The AlphaFold concept joins Oracle provenance, QTY hypotheses, an explicit external-service boundary, confidence interpretation, SAXS-surrogate comparison, and experimental decisions."
+  },
+  {
+    "id": "wp-saxs",
+    "application_id": "saxs",
+    "display_title": "SAXS",
+    "title": "A Calibrated SAXS Surrogate for Structural Hypotheses",
+    "status": "working paper",
+    "public_visibility": "public",
+    "full_visibility": "registered",
+    "license": "CALYR research licence",
+    "abstract": "The SAXS surrogate learns calibrated relationships among scattering evidence, simulations, QTY and AlphaFold hypotheses, structural descriptors, residuals, and experimental feedback."
+  },
+  {
+    "id": "wp-matomic",
+    "application_id": "matomic",
+    "display_title": "Matomic",
+    "title": "Unit-Aware Surrogate Modelling for Material Systems",
+    "status": "concept note",
+    "public_visibility": "public",
+    "full_visibility": "restricted",
+    "license": "All rights reserved pending IP review",
+    "abstract": "Matomic describes a unit-aware material modelling loop with explicit boundary conditions, sensitivity, surrogate acceleration, applicability limits, and validation."
+  }
+]
