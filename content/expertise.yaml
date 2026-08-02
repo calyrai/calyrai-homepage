@@ -1,22 +1,26 @@
 meta:
-  title: Expertise & Engagement
-  description: Public professional reference for Rupert Tscheliessnig.
+  title: Rupert Tscheliessnig — Scientific AI & Research Systems
+  description: Concise evidence-led CV for Rupert Tscheliessnig, connecting scientific AI, computational biophysics, research software, and deep-tech systems.
 hero:
-  kicker: Professional reference / 2026
-  title: Expertise & engagement.
-  statement: I work at the intersection of scientific AI, physical modelling, research infrastructure, and product development.
-  introduction: Evidence, projects, and collaboration areas in one public, verifiable profile.
+  kicker: Curriculum vitae / selected evidence / 2026
+  title: Rupert Tscheliessnig.
+  statement: Scientific AI & Research Systems Lead.
+  introduction: Computational biophysics, surrogate modelling, scientific software, and research infrastructure—connected to public evidence.
+section_labels:
+  capabilities: Profile
+  evidence: Selected evidence
+  interests: Current focus
+  references: Publications & links
+  contact: Contact
 role_fit:
-  - role: Scientific AI Engineer
-    evidence: PYTHIA · surrogate models · HPC workflows
-  - role: Research Infrastructure Architect
-    evidence: Core Facility KPI Studio · BMCA Studio
-  - role: Deep-Tech Product Designer
-    evidence: BRIX executable application workflows · AFLOWTEX · scientific interfaces
-  - role: Structural Biophysicist
-    evidence: SAXS · Cryo-EM/SAXS fusion · AlphaFold evidence workflows · physical models
-  - role: Technical Lead
-    evidence: Research systems · prototypes · validation
+  - role: Scientific AI & surrogate systems
+    evidence: PYTHIA · SAXS surrogate · DOE/BMCA · uncertainty and validation
+  - role: Computational biophysics
+    evidence: SAXS · Cryo-EM fusion · AlphaFold/QTY · haemodynamics
+  - role: Research software & infrastructure
+    evidence: NEXUS · provenance · HPC · governed scientific analytics
+  - role: Deep-tech systems
+    evidence: BRIX · Aorta · ChromStamp · fabrication concepts
 evidence:
   - title: PYTHIA
     label: Scientific machine learning
@@ -33,12 +37,10 @@ evidence:
     label: Science in Public · Strange Evidence
     route: /research/platforms/lithos/
 interests:
-  - Scientific AI and interpretable surrogate systems
-  - Multimodal Cryo-EM/SAXS evidence and nanoparticle-surface modelling
-  - Algorithmic workflows for Aorta, AlphaFold, chromatography, fabrication, and materials
-  - Core-facility operations, KPIs, and measurement provenance
-  - Research software and evidence-linked decision support
-  - Science in Public and artist–scientist collaborations
+  - Interpretable scientific AI and calibrated surrogate systems
+  - Multimodal structural evidence across SAXS, Cryo-EM, and AlphaFold
+  - Research software, provenance, and evidence-linked decisions
+  - Deep-tech translation from model to validated application
 links:
   - label: Publications & literature
     route: /research/methods/scientific-ai-numerics/literature/
@@ -47,6 +49,6 @@ links:
   - label: LinkedIn
     route: https://www.linkedin.com/in/rupert-tscheliessnig
 contact:
-  label: Start a conversation
+  label: Work with Rupert
   email: rupert.tscheliessnig@calyr.ai
 privacy: Active applications, employer conversations, and private references are intentionally not published.

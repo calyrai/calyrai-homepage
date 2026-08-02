@@ -196,6 +196,7 @@ def _sync_company_expertise_page(project_root: Path) -> None:
     interests = config.get("interests", [])
     links = config.get("links", [])
     contact = config.get("contact", {})
+    section_labels = config.get("section_labels", {}) if isinstance(config.get("section_labels"), dict) else {}
 
     roles_html = "".join(
         f'<article><h3>{escape(str(item.get("role", "")))}</h3><p>{escape(str(item.get("evidence", "")))}</p></article>'
@@ -236,14 +237,20 @@ def _sync_company_expertise_page(project_root: Path) -> None:
   <meta name="description" content="{escape(str(config.get('meta', {}).get('description', '')))}" />
   <title>{escape(str(config.get('meta', {}).get('title', 'Expertise & Engagement')))} — CALYR.AI</title>
   <link rel="stylesheet" href="./expertise.css" />
+  <style>
+    .hero{{min-height:58vh;padding:6vh 0}} .hero h1{{font-size:clamp(58px,9vw,136px)}}
+    .hero h2{{margin-top:2rem}} main>section:not(.hero){{padding:32px 0 46px}}
+    .evidence a{{min-height:126px}} .evidence span{{font-size:31px}}
+    @media print{{html{{background:#fff;color:#111}} header{{display:none}} main{{padding:0}} .hero{{min-height:auto;padding:20px 0 28px}} .hero p,.index{{color:#111}} .hero h1{{font-size:58px}} .hero h2{{font-size:25px;margin-top:18px}} main>section:not(.hero){{padding:18px 0 24px;break-inside:avoid}} .roles p,.evidence small,.hero div,.contact p{{color:#444}} footer{{display:none}}}}
+  </style>
 </head>
 <body>
   <header><a href="/">CALYR.AI</a><span>Company / Professional reference</span></header>
   <main>
     <section class="hero"><p>{escape(str(hero.get('kicker', '')))}</p><h1>{escape(str(hero.get('title', '')))}</h1><h2>{escape(str(hero.get('statement', '')))}</h2><div>{escape(str(hero.get('introduction', '')))}</div></section>
-    <section><div class="index">01</div><h2>Role fit</h2><div class="roles">{roles_html}</div></section>
-    <section><div class="index">02</div><h2>Selected evidence</h2><div class="evidence">{evidence_html}</div></section>
-    <section class="split"><div><div class="index">03</div><h2>Current interests</h2><ul>{interests_html}</ul></div><div><div class="index">04</div><h2>References</h2><nav>{links_html}</nav></div></section>
+    <section><div class="index">01</div><h2>{escape(str(section_labels.get('capabilities', 'Profile')))}</h2><div class="roles">{roles_html}</div></section>
+    <section><div class="index">02</div><h2>{escape(str(section_labels.get('evidence', 'Selected evidence')))}</h2><div class="evidence">{evidence_html}</div></section>
+    <section class="split"><div><div class="index">03</div><h2>{escape(str(section_labels.get('interests', 'Current focus')))}</h2><ul>{interests_html}</ul></div><div><div class="index">04</div><h2>{escape(str(section_labels.get('references', 'Publications & links')))}</h2><nav>{links_html}</nav></div></section>
     <section class="contact"><div class="index">05</div><h2>{escape(str(contact.get('label', 'Contact')))}</h2><a href="mailto:{email}">{email}</a><p>{escape(str(config.get('privacy', '')))}</p></section>
   </main>
   <footer><span>Source of truth: content/expertise.yaml</span><a href="/">Back to CALYR.AI</a></footer>
