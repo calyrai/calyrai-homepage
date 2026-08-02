@@ -960,18 +960,8 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                     "accent": str(app.get("accent", "cyan")),
                     "summary": surrogate_narratives.get(app_id, ""),
                     "flow": [str(step) for step in app_flow],
-                    "functions": normalized_functions,
-                    "upstream": [str(item) for item in app.get("upstream", [])],
-                    "inputs": [str(item) for item in app.get("inputs", [])],
-                    "outputs": [str(item) for item in app.get("outputs", [])],
-                    "method": str(app.get("method", "")),
-                    "uncertainty": str(app.get("uncertainty", "")),
-                    "validation": str(app.get("validation", "")),
-                    "evidence": str(app.get("evidence", "")),
                     "maturity": str(app.get("maturity", "Concept")),
-                    "disclosure": str(app.get("disclosure", "Public architecture; implementation details protected.")),
                     "license": str(app.get("license", "License not specified")),
-                    "code": {"status": str(app.get("code_status", "planned")), "repository": app.get("code_url")},
                 })
                 flow_nodes = []
                 for flow_index, flow_step in enumerate(app_flow, start=1):
