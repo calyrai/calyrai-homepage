@@ -212,7 +212,7 @@ def _sync_company_expertise_page(project_root: Path) -> None:
             if not publication:
                 raise ValueError(f"Expertise evidence references unknown publication '{publication_id}'.")
             title = str(item.get("title", publication.get("display_title", publication.get("title", publication_id))))
-            label = str(publication.get("title", "White paper"))
+            label = str(item.get("label", publication.get("title", "White paper")))
             route = f"/research/whitepapers/#{publication_id}"
         else:
             title = str(item.get("title", ""))
