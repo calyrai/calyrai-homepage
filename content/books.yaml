@@ -241,19 +241,24 @@ platform_books:
           title: AlphaFold
           domain: Computational
           accent: blue
-          flow: [Sequence and entities, Data-source check, Model version, Structure inference, Confidence scores, Uncertain regions, SAXS or experiment, Decision record]
+          upstream: [Oracle evidence graph, QTY design layer, Google AlphaFold service]
+          flow: [Oracle protein record, Sequence and entity resolution, QTY transformation hypothesis, External-service consent and licence gate, Google AlphaFold service request, Model and database version lock, Structure and complex inference, Confidence and interface metrics, Uncertain-region classification, SAXS surrogate comparison, Experimental decision gate, Oracle evidence registration]
           functions:
+            - {name: load_oracle_protein_record, role: Resolve the governed protein identity and its evidence links.}
             - {name: normalize_sequence_entities, role: Resolve chains, ligands, modifications, identifiers, and construct boundaries.}
-            - {name: verify_source_provenance, role: Check sequence identity, database sources, permissions, and evidence links.}
-            - {name: lock_model_version, role: Record model, weights, databases, parameters, and runtime environment.}
-            - {name: run_structure_inference, role: Produce structure candidates through the licensed AlphaFold implementation.}
-            - {name: extract_confidence_metrics, role: Collect confidence scores and map them to residues, interfaces, and domains.}
+            - {name: generate_qty_hypothesis, role: Represent the QTY transformation as an explicit design hypothesis rather than established evidence.}
+            - {name: verify_external_service_gate, role: Confirm consent, data classification, licence, and allowed external processing before transfer.}
+            - {name: submit_google_alphafold_request, role: Send only the approved molecular specification to the configured Google AlphaFold service.}
+            - {name: lock_model_database_versions, role: Record service, model, database, parameters, and request identifiers.}
+            - {name: receive_structure_inference, role: Collect predicted structures, complexes, ligands, and alternate candidates.}
+            - {name: extract_confidence_interfaces, role: Map confidence and interface metrics to residues, domains, chains, and contacts.}
             - {name: classify_uncertain_regions, role: Flag disorder, ambiguity, weak interfaces, and unsupported conformations.}
-            - {name: compare_experimental_evidence, role: Test candidates against Oracle-linked SAXS or other structural evidence.}
-            - {name: register_structure_decision, role: Store the selected interpretation, rejected alternatives, uncertainty, and provenance.}
-          inputs: [Sequence and entity definition, Model and database versions, Available experimental evidence]
-          outputs: [Structure candidates, Confidence map, Experiment and decision recommendations]
-          method: Provenance-aware decision wrapper around licensed AlphaFold inference outputs.
+            - {name: compare_saxs_surrogate, role: Compare predicted candidates with the Oracle-governed SAXS surrogate and its uncertainty.}
+            - {name: decide_experimental_followup, role: Select acceptance, revision, SAXS, Cryo-EM, or another experimental follow-up.}
+            - {name: register_alphafold_evidence, role: Return the decision, provenance, confidence, and external-service record to Oracle.}
+          inputs: [Oracle protein record, Sequence and entity definition, QTY hypothesis, Approved external-service request, Available SAXS evidence]
+          outputs: [Structure candidates, Confidence and interface map, SAXS comparison, Experiment and decision recommendations]
+          method: Provenance-aware QTY and AlphaFold decision workflow with an explicit Google-service boundary and SAXS surrogate validation.
           uncertainty: Preserve confidence scores and flag disordered, ambiguous, or unsupported regions.
           validation: Compare predictions with SAXS and other available structural evidence.
           evidence: Input identity, model version, confidence metrics, comparisons, and human decision record.
@@ -265,21 +270,21 @@ platform_books:
           domain: Computational
           accent: yellow
           upstream: [Oracle evidence graph]
-          flow: [Oracle evidence package, I(q) and metadata, Background and buffer, Quality control, Guinier and Rg, P(r) and Dmax, Model curve, Fit and residuals, Oracle result registration, Report and validation]
+          flow: [Oracle SAXS evidence package, QTY and AlphaFold candidate set, Curve correction and quality control, SAXS feature extraction, Training and calibration set, SAXS surrogate model, Calibrated structural prediction, Candidate ranking and residuals, Experimental feedback loop, Oracle result registration]
           functions:
-            - {name: load_oracle_evidence_package, role: Resolve persistent identifiers, permissions, files, and provenance graph links.}
-            - {name: parse_scattering_curve, role: Validate q, I(q), uncertainty, units, instrument, and sample metadata.}
-            - {name: subtract_background_buffer, role: Apply traceable buffer and background corrections with propagated error.}
-            - {name: assess_saxs_quality, role: Detect aggregation, radiation damage, concentration effects, and unusable ranges.}
-            - {name: estimate_guinier_rg, role: Select valid Guinier regions and estimate Rg and I(0) with diagnostics.}
-            - {name: infer_pair_distribution, role: Estimate P(r) and Dmax while recording regularization and ambiguity.}
-            - {name: calculate_model_curve, role: Generate predicted scattering for each structural candidate.}
-            - {name: fit_models_and_residuals, role: Optimize allowed parameters and compare fits, residuals, and uncertainty.}
-            - {name: register_saxs_result_in_oracle, role: Return curves, parameters, models, diagnostics, and lineage to Oracle.}
-            - {name: validate_saxs_report, role: Apply quality gates and publish a reproducible evidence report.}
-          inputs: [Oracle-registered scattering curve and uncertainty, Oracle-registered buffer and background data, Sample and instrument metadata with persistent identifiers]
-          outputs: [Quality assessment, Rg and Dmax estimates, Model comparison and residual report]
-          method: Oracle-governed, traceable reduction and inference pipeline from I(q) to interpretable structural constraints.
+            - {name: load_oracle_saxs_evidence, role: Resolve curves, metadata, permissions, uncertainty, and provenance links.}
+            - {name: assemble_structure_candidates, role: Join QTY hypotheses and AlphaFold candidates to the SAXS case.}
+            - {name: correct_and_validate_curves, role: Apply background correction and quality gates before model use.}
+            - {name: extract_saxs_features, role: Derive curve, Guinier, pair-distribution, shape, and residual descriptors.}
+            - {name: assemble_surrogate_dataset, role: Build the versioned training and calibration set from simulations and experiments.}
+            - {name: fit_saxs_surrogate, role: Learn the mapping between structural hypotheses, SAXS features, and response descriptors.}
+            - {name: predict_with_calibrated_uncertainty, role: Return structural-response predictions with applicability and uncertainty.}
+            - {name: rank_structure_candidates, role: Compare candidates using predicted curves, residual patterns, and confidence.}
+            - {name: update_from_experiment, role: Feed new SAXS or orthogonal measurements back into calibration and validation.}
+            - {name: register_saxs_surrogate_result, role: Return predictions, diagnostics, model version, and lineage to Oracle.}
+          inputs: [Oracle-governed SAXS curves, QTY and AlphaFold candidates, Simulated curves, Calibration and validation measurements]
+          outputs: [SAXS surrogate prediction, Applicability and uncertainty, Ranked structural candidates, Experimental next step]
+          method: Oracle-governed surrogate modelling that learns from SAXS curves, structural hypotheses, simulations, and experimental feedback.
           uncertainty: Measurement errors, subtraction sensitivity, fit ranges, regularization, and model ambiguity.
           validation: Automated quality gates, residual diagnostics, replicate agreement, and orthogonal evidence.
           evidence: Raw and processed curves, metadata, parameter choices, software versions, and reports originate from and return to Oracle as linked provenance records.

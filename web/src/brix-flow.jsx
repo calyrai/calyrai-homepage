@@ -25,7 +25,7 @@ function BrixFlow({ concepts }) {
   const [activeId, setActiveId] = useState(concepts[0]?.id);
   const active = concepts.find((item) => item.id === activeId) || concepts[0];
   const ideaNodes = useMemo(() => concepts.map((item,index) => ({ id:item.id, type:"idea", position:{x:(index%3)*310,y:Math.floor(index/3)*175}, data:{...item,color:accentMap[item.accent]||"#00c7ff"} })), [concepts]);
-  const stepNodes = useMemo(() => active.flow.map((label,index) => ({ id:`${active.id}-${index}`, type:"step", position:{x:index*225,y:index%2?150:25}, data:{label,index:index+1,color:accentMap[active.accent]||"#00c7ff"} })), [active]);
+  const stepNodes = useMemo(() => active.flow.map((label,index) => ({ id:`${active.id}-${index}`, type:"step", position:{x:(index%4)*225,y:Math.floor(index/4)*135}, data:{label,index:index+1,color:accentMap[active.accent]||"#00c7ff"} })), [active]);
   const stepEdges = useMemo(() => active.flow.slice(1).map((_,index) => ({ id:`${active.id}-edge-${index}`, source:`${active.id}-${index}`, target:`${active.id}-${index+1}`, type:"step", markerEnd:{type:MarkerType.ArrowClosed,color:"#f2f7ff"}, style:{stroke:"#f2f7ff",strokeWidth:1.2} })), [active]);
 
   return <div className="brix-flow-system">

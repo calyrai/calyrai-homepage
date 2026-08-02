@@ -28,11 +28,11 @@ An experimental-design surrogate that structures factors, responses, interaction
 
 ## alphafold
 
-A decision layer around structure predictions that exposes confidence, uncertain regions, provenance, and experimental follow-up through SAXS or other methods.
+The most explicit public concept flow: Oracle resolves the protein record, QTY defines a transformation hypothesis, an approved request crosses the Google AlphaFold service boundary, confidence and interfaces are inspected, and the candidates are challenged by the SAXS surrogate before the evidence returns to Oracle.
 
 ## saxs
 
-An Oracle-originated and Oracle-registered SAXS workflow from I(q) and metadata through quality control, shape parameters, model comparison, residuals, validation, and reusable evidence.
+An Oracle-governed SAXS surrogate that joins corrected scattering curves with QTY and AlphaFold candidates, learns calibrated structure-to-scattering relationships, ranks hypotheses with uncertainty, and improves through experimental feedback.
 
 ## matomic
 
