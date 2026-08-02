@@ -6,6 +6,12 @@ hero:
   title: Rupert Tscheliessnig.
   statement: Scientific AI & Research Systems Lead.
   introduction: Computational biophysics, surrogate modelling, scientific software, and research infrastructure—connected to public evidence.
+  portrait:
+    src: /company/expertise/cv-portrait-cmyk-halftone-coarse.png
+    alt: Rupert Tscheliessnig rendered as a coarse cyan, magenta, yellow, and black halftone portrait.
+    caption: Identity / scientific systems / material intelligence
+    motion: ring-glimmer
+    tone: restrained-color
 section_labels:
   capabilities: Profile
   evidence: Selected evidence
