@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:brix-flow && vite build",
+    "build:brix-flow": "vite build --config vite.brix.config.js",
     "preview": "vite preview",
     "lint": "eslint src",
     "sync:books": "cp ../../calyrai-ecosystem/build/books.page.json ./public/generated/books.page.json && echo '✅ books artifact synced'",

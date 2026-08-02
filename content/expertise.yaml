@@ -12,9 +12,9 @@ role_fit:
   - role: Research Infrastructure Architect
     evidence: Core Facility KPI Studio · BMCA Studio
   - role: Deep-Tech Product Designer
-    evidence: BRIX · AFLOWTEX · scientific interfaces
+    evidence: BRIX executable application workflows · AFLOWTEX · scientific interfaces
   - role: Structural Biophysicist
-    evidence: SAXS · hybrid reconstruction · physical models
+    evidence: SAXS · Cryo-EM/SAXS fusion · AlphaFold evidence workflows · physical models
   - role: Technical Lead
     evidence: Research systems · prototypes · validation
 evidence:
@@ -22,7 +22,7 @@ evidence:
     label: Scientific machine learning
     route: /research/platforms/pythia/
   - title: BRIX
-    label: Surrogate-assisted product design
+    label: Executable application workflows · algorithms · validation
     route: /research/platforms/brix/
   - title: AFLOWTEX
     label: Patient-specific flow intelligence
@@ -32,6 +32,8 @@ evidence:
     route: /research/platforms/lithos/
 interests:
   - Scientific AI and interpretable surrogate systems
+  - Multimodal Cryo-EM/SAXS evidence and nanoparticle-surface modelling
+  - Algorithmic workflows for Aorta, AlphaFold, chromatography, fabrication, and materials
   - Core-facility operations, KPIs, and measurement provenance
   - Research software and evidence-linked decision support
   - Science in Public and artist–scientist collaborations
