@@ -668,7 +668,7 @@
     "title": "SPR System",
     "summary": "Inferring molecular binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
     "body_preview": "The SPR application uses Pythia to transform experimental sensor responses into fast, validated estimates of interaction kinetics and affinity.",
-    "route": "/research/platforms/pythia/index.html",
+    "route": "/research/pythia/spr/index.html",
     "icon": "wave",
     "keywords": [
       "affinity,",

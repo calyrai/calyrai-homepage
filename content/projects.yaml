@@ -122,9 +122,10 @@ pythia_spr:
   body: The SPR application uses Pythia to transform experimental sensor responses into fast, validated
     estimates of interaction kinetics and affinity.
   icon: wave
-  route: /research/platforms/pythia/index.html
+  route: /research/pythia/spr/index.html
   render:
     grid_span: 6
+    source: content/spr-research-direction.md
 pythia_metabolic:
   title: Metabolic System
   tile_lead: biological systems
