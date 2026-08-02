@@ -936,6 +936,22 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                         f"BRIX application '{app_id}' must define exactly one algorithm function per workflow step "
                         f"({len(app_flow)} steps, {len(app_functions)} functions)."
                     )
+                normalized_functions: list[dict[str, str]] = []
+                for function in app_functions:
+                    if not isinstance(function, dict) or not function.get("name") or not function.get("role"):
+                        raise ValueError(f"BRIX application '{app_id}' contains an invalid algorithm function.")
+                    role_parts = [str(function.get("role", "")).strip()]
+                    # Inline YAML maps split unquoted comma-separated prose into
+                    # additional null-valued keys. Reassemble that prose into the
+                    # public role string while keeping the authored source compact.
+                    for key, value in function.items():
+                        if key in {"name", "role"}:
+                            continue
+                        role_parts.append(str(key) if value is None else f"{key}: {value}")
+                    normalized_functions.append({
+                        "name": str(function["name"]),
+                        "role": ", ".join(part for part in role_parts if part),
+                    })
                 surrogate_flow_payload.append({
                     "id": app_id,
                     "index": app_index,
@@ -944,7 +960,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
                     "accent": str(app.get("accent", "cyan")),
                     "summary": surrogate_narratives.get(app_id, ""),
                     "flow": [str(step) for step in app_flow],
-                    "functions": app_functions,
+                    "functions": normalized_functions,
                     "upstream": [str(item) for item in app.get("upstream", [])],
                     "inputs": [str(item) for item in app.get("inputs", [])],
                     "outputs": [str(item) for item in app.get("outputs", [])],
