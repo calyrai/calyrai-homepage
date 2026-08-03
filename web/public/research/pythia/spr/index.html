@@ -170,7 +170,8 @@
     .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
     .card { min-height: 320px; padding: 26px; background: var(--panel); }
     .card b { display: block; margin: 70px 0 12px; font-size: 1.55rem; letter-spacing: -.03em; }
-    .card math { display: block; margin: 70px 0 12px; font-size: clamp(1.05rem, 1.55vw, 1.55rem); white-space: nowrap; }
+    .card math { display: block; max-width: 100%; margin: 70px 0 8px; overflow-x: auto; overflow-y: hidden; font-size: clamp(1.05rem, 1.55vw, 1.55rem); white-space: nowrap; }
+    .equation-label { margin: 0 0 16px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.2rem, 1.7vw, 1.65rem); font-weight: 700; }
     .card p { color: var(--muted); margin: 0; }
     .card.accent { background: var(--ink); color: var(--bg); }
     .card.accent p, .card.accent .index { color: #55554f; }
@@ -272,9 +273,9 @@
           <h2>From one process to a process spectrum.</h2>
         </div>
         <div class="cards">
-          <article class="card"><div class="index">Integer limit</div><math display="block" aria-label="fractional order alpha equals one recovers classical Langmuir kinetics"><mi>α</mi><mo>=</mo><mn>1</mn><mo> </mo><mo>⇒</mo><mo> </mo><mtext>classical Langmuir</mtext></math><p>The established 1:1 model remains the reference and limiting case, not a discarded predecessor.</p></article>
-          <article class="card"><div class="index">Fractional dynamics</div><math display="block" aria-label="fractional derivative of occupancy equals association minus dissociation"><msubsup><mi>D</mi><mi>t</mi><mi>α</mi></msubsup><mi>θ</mi><mo>=</mo><msub><mi>k</mi><mi>a</mi></msub><mi>C</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>θ</mi><mo>)</mo><mo>−</mo><msub><mi>k</mi><mi>d</mi></msub><mi>θ</mi></math><p>A non-integer order represents effective memory and unresolved timescales; it is not a fractional number of physical states.</p></article>
-          <article class="card accent"><div class="index">Selection principle</div><math display="block" aria-label="choose the least complex model supported by held-out evidence"><mtext>model</mtext><mo>*</mo><mo>=</mo><mtext>least complex supported explanation</mtext></math><p>Complexity earns its place only through held-out prediction, calibrated uncertainty and identifiable parameters.</p></article>
+          <article class="card"><div class="index">Integer limit</div><math display="block" aria-label="fractional order alpha equals one"><mrow><mi>α</mi><mo>=</mo><mn>1</mn></mrow></math><div class="equation-label">Classical Langmuir limit</div><p>The established 1:1 model remains the reference and limiting case, not a discarded predecessor.</p></article>
+          <article class="card"><div class="index">Fractional dynamics</div><math display="block" aria-label="fractional derivative of occupancy equals association minus dissociation"><mrow><msubsup><mi>D</mi><mi>t</mi><mi>α</mi></msubsup><mi>θ</mi><mo>=</mo><msub><mi>k</mi><mi>a</mi></msub><mi>C</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>θ</mi><mo>)</mo><mo>−</mo><msub><mi>k</mi><mi>d</mi></msub><mi>θ</mi></mrow></math><div class="equation-label">Memory without hidden-state counting</div><p>A non-integer order represents effective memory and unresolved timescales; it is not a fractional number of physical states.</p></article>
+          <article class="card accent"><div class="index">Selection principle</div><math display="block" aria-label="select the model with minimum supported complexity"><mrow><msup><mi>M</mi><mo>*</mo></msup><mo>=</mo><munder><mi>arg min</mi><mi>M</mi></munder><mtext> complexity</mtext><mo>(</mo><mi>M</mi><mo>)</mo></mrow></math><div class="equation-label">Least complex supported explanation</div><p>Complexity earns its place only through held-out prediction, calibrated uncertainty and identifiable parameters.</p></article>
         </div>
       </div>
     </section>
@@ -324,7 +325,7 @@
       <div class="shell">
         <div class="section-head">
           <div class="index">05 / Outlook</div>
-          <p class="lead">The destination is a transparent SPR oracle built on bi-Langmuir theory: conditions and sensorgrams in; kinetic states, uncertainty, model adequacy and the next informative experiment out.</p>
+          <p class="lead">The destination is a transparent SPR oracle: conditions and sensorgrams in; the least complex supported explanation, kinetic states, uncertainty, model adequacy and the next informative experiment out.</p>
         </div>
       </div>
     </section>
