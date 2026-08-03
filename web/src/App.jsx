@@ -4,6 +4,7 @@ import Navigation from './components/Navigation'
 import DotRasterBackground from './components/DotRasterBackground'
 import BooksPage from './components/pages/BooksPage'
 import PhilosophyPage from './components/pages/PhilosophyPage'
+import SearchOverlay from './components/SearchOverlay'
 import { SelectionProvider } from './context/SelectionContext'
 import { RippleProvider } from './context/RippleContext'
 import { AST_DATA, THEME_DATA, BOOKS_PAGE_DATA } from './data/runtimeArtifacts'
@@ -129,6 +130,7 @@ function App() {
     <SelectionProvider>
       {visualsReady ? <DotRasterBackground theme={theme} isBooksRoute={routeState.isSpecialRoute} /> : null}
       <Navigation theme={theme} ast={ast} visualsReady={visualsReady} />
+      <SearchOverlay />
 
       <div className="app" style={{ '--theme-primary': theme.colors?.primary || '#000' }}>
         {routeState.isPhilosophyRoute
