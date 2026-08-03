@@ -1,9 +1,9 @@
 page:
   title: calyr.aí positioning
   eyebrow: calyr.aí positioning
-  subtitle: A knowledge-first compiler for research publishing
-  lead: calyr.aí applies established compiler and model-driven techniques to research knowledge so one semantic source can compile to synchronized outputs.
-  claim: knowledge -> compiler -> website | paper | presentation | graph | workflow | code | interactive objects
+  subtitle: A scientific thinking system built from one semantic source
+  lead: calyr.aí connects scientific reasoning with computational form. Evidence, models, workflows, publications, and decisions share one governed semantic structure that compiles into synchronized research objects.
+  claim: question -> evidence -> model -> prediction -> decision | website | paper | graph | workflow | code
 
 sections:
   - id: established
@@ -24,7 +24,7 @@ sections:
 
   - id: distinctive
     title: Where calyr.aí is distinctive
-    body: The DSL models research semantics and relationships, not only page layout, and keeps outputs synchronized.
+    body: The system models scientific meaning and relationships—not only page layout—so the same traceable knowledge can drive analysis, communication, interaction, and decisions.
     columns:
       -
         - Project

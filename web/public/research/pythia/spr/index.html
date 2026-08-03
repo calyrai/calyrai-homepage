@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A complete bi-Langmuir adsorption theory and an interpretable surrogate-modelling concept for SPR.">
-  <title>Bi-Langmuir Theory and SPR Surrogate Modelling — calyr.aí</title>
+  <meta name="description" content="Fractional adsorption theory and interpretable surrogate inference for distributed SPR processes.">
+  <title>Fractional Adsorption Theory and SPR Surrogate Inference — calyr.aí</title>
   <style>
     :root {
       color-scheme: dark;
@@ -239,11 +239,11 @@
   <main>
     <div class="shell hero">
       <div>
-        <div class="eyebrow">Bi-Langmuir adsorption · SPR intelligence</div>
-        <h1>Full theory. <span>Fast surrogate.</span></h1>
+        <div class="eyebrow">Fractional adsorption · SPR intelligence</div>
+        <h1>Distributed processes. <span>Interpretable inference.</span></h1>
       </div>
       <div class="hero-copy">
-        A complete two-population adsorption theory becomes the physical foundation for fast SPR prediction, inverse kinetic inference, uncertainty and experiment design.
+        Fractional-order dynamics represent unresolved adsorption, transport and relaxation processes as a distribution of timescales with memory—not as an arbitrary integer chain of hidden states.
         <small>Conceptual direction only · code and evidence remain under validation</small>
       </div>
     </div>
@@ -252,14 +252,14 @@
       <div class="shell">
         <div class="section-head">
           <div class="index">01 / Direction</div>
-          <p class="lead">The physical model remains in control. Machine learning accelerates the bi-Langmuir forward theory and its inversion without hiding kinetic parameters, constraints or uncertainty.</p>
+          <p class="lead">The physical model remains in control. Machine learning accelerates forward prediction and probabilistic inversion while competing mechanisms, uncertainty and identifiability stay visible.</p>
         </div>
 
         <div class="flow" aria-label="SPR research workflow">
           <article class="step"><div class="dot"></div><h3>Experiment</h3><p>Concentrations, flow, timing, surface capacity, controls and complete sensorgrams.</p></article>
-          <article class="step"><div class="dot"></div><h3>Bi-Langmuir theory</h3><p>Two binding-site populations with explicit kinetics, observation physics and nuisance terms.</p></article>
+          <article class="step"><div class="dot"></div><h3>Model hierarchy</h3><p>Langmuir, Bi-Langmuir, transport-aware and fractional alternatives share one observation model.</p></article>
           <article class="step"><div class="dot"></div><h3>Synthetic space</h3><p>Physically valid parameter combinations generate labelled families of complete sensorgrams.</p></article>
-          <article class="step"><div class="dot"></div><h3>SPR surrogate</h3><p>Fast forward prediction and inverse distributions over kinetic parameters and site fractions.</p></article>
+          <article class="step"><div class="dot"></div><h3>SPR surrogate</h3><p>Fast forward prediction and inverse distributions over kinetics, fractional order and nuisance parameters.</p></article>
           <article class="step"><div class="dot"></div><h3>Decision</h3><p>Validate identifiability and select the next concentration, flow rate or contact time.</p></article>
         </div>
       </div>
@@ -269,12 +269,12 @@
       <div class="shell">
         <div class="section-head">
           <div class="index">02 / Foundation</div>
-          <h2>Two populations. One observable.</h2>
+          <h2>From one process to a process spectrum.</h2>
         </div>
         <div class="cards">
-          <article class="card"><div class="index">Population 01</div><math display="block" aria-label="rate of theta one equals association rate one times concentration times one minus theta one, minus dissociation rate one times theta one"><mfrac><mrow><mi>d</mi><msub><mi>θ</mi><mn>1</mn></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mi>a</mi><mo>,</mo><mn>1</mn></mrow></msub><mi>C</mi><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>θ</mi><mn>1</mn></msub><mo>)</mo><mo>−</mo><msub><mi>k</mi><mrow><mi>d</mi><mo>,</mo><mn>1</mn></mrow></msub><msub><mi>θ</mi><mn>1</mn></msub></math><p>The first kinetic population has an explicit association rate, dissociation rate, capacity and occupancy.</p></article>
-          <article class="card"><div class="index">Population 02</div><math display="block" aria-label="rate of theta two equals association rate two times concentration times one minus theta two, minus dissociation rate two times theta two"><mfrac><mrow><mi>d</mi><msub><mi>θ</mi><mn>2</mn></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mi>a</mi><mo>,</mo><mn>2</mn></mrow></msub><mi>C</mi><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>θ</mi><mn>2</mn></msub><mo>)</mo><mo>−</mo><msub><mi>k</mi><mrow><mi>d</mi><mo>,</mo><mn>2</mn></mrow></msub><msub><mi>θ</mi><mn>2</mn></msub></math><p>The second population represents a distinct kinetic site class—not an unexplained empirical curve component.</p></article>
-          <article class="card accent"><div class="index">Observed response</div><math display="block" aria-label="response equals maximum response times fraction f theta one plus one minus f theta two, plus nuisance response"><mi>R</mi><mo>=</mo><msub><mi>R</mi><mi>max</mi></msub><mo>[</mo><mi>f</mi><msub><mi>θ</mi><mn>1</mn></msub><mo>+</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>f</mi><mo>)</mo><msub><mi>θ</mi><mn>2</mn></msub><mo>]</mo><mo>+</mo><msub><mi>R</mi><mi>nuisance</mi></msub></math><p>Site fractions connect both occupancies to the sensorgram while transport, bulk response and drift remain explicit.</p></article>
+          <article class="card"><div class="index">Integer limit</div><math display="block" aria-label="fractional order alpha equals one recovers classical Langmuir kinetics"><mi>α</mi><mo>=</mo><mn>1</mn><mo> </mo><mo>⇒</mo><mo> </mo><mtext>classical Langmuir</mtext></math><p>The established 1:1 model remains the reference and limiting case, not a discarded predecessor.</p></article>
+          <article class="card"><div class="index">Fractional dynamics</div><math display="block" aria-label="fractional derivative of occupancy equals association minus dissociation"><msubsup><mi>D</mi><mi>t</mi><mi>α</mi></msubsup><mi>θ</mi><mo>=</mo><msub><mi>k</mi><mi>a</mi></msub><mi>C</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>θ</mi><mo>)</mo><mo>−</mo><msub><mi>k</mi><mi>d</mi></msub><mi>θ</mi></math><p>A non-integer order represents effective memory and unresolved timescales; it is not a fractional number of physical states.</p></article>
+          <article class="card accent"><div class="index">Selection principle</div><math display="block" aria-label="choose the least complex model supported by held-out evidence"><mtext>model</mtext><mo>*</mo><mo>=</mo><mtext>least complex supported explanation</mtext></math><p>Complexity earns its place only through held-out prediction, calibrated uncertainty and identifiable parameters.</p></article>
         </div>
       </div>
     </section>
