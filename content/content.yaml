@@ -530,10 +530,6 @@ contact:
     label: Mail
     symbol: '@'
     route: mailto:rupert.tscheliessnig@calyr.ai
-  - id: whatsapp
-    label: WhatsApp
-    symbol: '~'
-    route: https://wa.me/4369919200915
   - id: x
     label: X
     symbol: X
@@ -591,11 +587,11 @@ expertise:
   title: expertise & engagement
   tile_lead: professional reference
   tile_accent: blue
-  tile_title: work with Rupert
+  tile_title: work with calyr.aí
   tile_summary: scientific AI, physical modelling, research infrastructure, and product development
   subtitle: Public professional reference
   summary: Evidence, projects, current interests, publications, and contact in one clear profile.
-  body: A public map of where Rupert contributes and which CALYR.AI systems demonstrate that work.
+  body: A public map of where calyr.aí contributes and which systems demonstrate that work.
   icon: network
   route: /company/expertise/
   intent:
