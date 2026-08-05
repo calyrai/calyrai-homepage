@@ -4,10 +4,10 @@ brix:
   tile_lead: surrogate product design
   tile_accent: cyan
   tile_title: surrogate model product design
-  tile_summary: turn simulation, measurement, constraints, and uncertainty into faster product-design decisions
+  tile_summary: faster product decisions from simulation and measurement
   subtitle: Surrogate-assisted product design
-  summary: Explore and validate manufacturable product variants with interpretable surrogate models.
-  body: BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carries promising concepts through validation into an engineered product decision.
+  summary: Explore and validate manufacturable variants with interpretable surrogate models.
+  body: BRIX couples simulation and measurement with uncertainty-aware surrogates for interactive design and validation.
   icon: bridge
   route: /research/platforms/brix/index.html
   render:
@@ -17,17 +17,10 @@ aflowtex:
   tile_lead: aflowtex
   tile_accent: red
   tile_title: vascular application
-  tile_summary: simulation, measurement, and interpretation become one patient-specific product
+  tile_summary: one patient-specific product workflow
   subtitle: Integrated vascular intelligence
-  summary: 'A high-level application that combines different models into one patient-specific vascular
-    product.
-
-    '
-  body: 'AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models,
-    uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together
-    as one application.
-
-    '
+  summary: Combines distinct models into one patient-specific vascular product workflow.
+  body: Integrates measurements, geometry, simulation, surrogate models, uncertainty, and interaction into one application.
   icon: aorta
   route: /research/platforms/aflowtex/index.html
   render:
@@ -37,15 +30,10 @@ bio_nanoparticles:
   tile_lead: molecular systems
   tile_accent: magenta
   tile_title: bio nanoparticles
-  tile_summary: structure, interaction, and production as one interpretable system
+  tile_summary: structure, interaction, and production in one system
   subtitle: Interpretable particle engineering
-  summary: 'Biological nanoparticles engineered across structure, interaction, and production.
-
-    '
-  body: 'Local surface design, experimental characterization, purification behavior, and function become
-    one traceable model.
-
-    '
+  summary: Biological nanoparticles engineered across structure, interaction, and production.
+  body: Surface design, characterization, purification behavior, and function are linked in one traceable model.
   icon: particle
   render:
     grid_span: 4
@@ -54,16 +42,10 @@ core_facility_studio:
   tile_lead: research infrastructure
   tile_accent: blue
   tile_title: core facility architecture
-  tile_summary: define, calculate, and explain KPIs from PPMS data across facilities, instruments, services,
-    and workflows
+  tile_summary: KPI intelligence from PPMS data
   subtitle: Organisational intelligence for scientific infrastructure
-  summary: Turn PPMS operational data into reproducible KPIs with visible formulas, filters, provenance,
-    and data quality.
-  body: 'PPMS already manages and catalogues facilities, instruments, services, and reports. The Core
-    Facility KPI Studio adds a controlled analytical layer: robust PUMAPI, API2, or export adapters; a
-    canonical event model; versioned KPI definitions; cross-facility comparison; and Swiss-design views
-    for utilisation, availability, demand, training, throughput, maintenance, and finance. A connection
-    to the BOKU PPMS environment is being prepared; access and implementation details remain private.'
+  summary: Turn PPMS data into reproducible KPIs with visible formulas, filters, and provenance.
+  body: Adds a controlled analytics layer with robust adapters, canonical events, versioned KPI definitions, and cross-facility comparison.
   icon: network
   render:
     grid_span: 4
@@ -72,13 +54,10 @@ qty_alphafold_oracle:
   tile_lead: protein evidence
   tile_accent: green
   tile_title: quality, traceability, yield
-  tile_summary: AlphaFold, PDB, UniProt, publications, datasets, and public code as one evidence network
+  tile_summary: public protein evidence as one network
   subtitle: Public protein-structure repository intelligence
-  summary: Follow protein evidence from public structure models to experimental support, methods, code,
-    and the next analysis.
-  body: QTY AlphaFold Oracle regularly checks public repositories, resolves scientific identities and
-    versions, and connects structures, publications, methods, datasets, and code with visible provenance
-    and uncertainty.
+  summary: Follow protein evidence from public models to methods, code, and experimental support.
+  body: Checks public repositories, resolves identities and versions, and links structures with provenance and uncertainty.
   icon: particle
   render:
     grid_span: 4
@@ -87,10 +66,9 @@ biophysical_applications:
   tile_lead: experimental systems
   tile_accent: cyan
   tile_title: biophysical interpretation and inference
-  tile_summary: hidden structure, interaction, and system state from experimental evidence
+  tile_summary: hidden structure and system state from evidence
   subtitle: Biophysical intelligence
-  summary: Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect
-    measurements.
+  summary: Interpretable surrogate models reconstruct latent biological behavior from indirect measurements.
   body: SPR, SAXS, and metabolic inference are concrete systems in this application field.
   icon: scatter
   route: /research/pythia/saxs/index.html
@@ -103,10 +81,8 @@ pythia_saxs:
   tile_title: saxs
   tile_summary: structure from scattering profiles
   subtitle: Small-Angle Scattering Pythia
-  summary: Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.
-  body: The SAXS Oracle applies PYTHIA structural inference to solution scattering data. It infers the
-    hidden three-dimensional organization of macromolecular assemblies from one-dimensional scattering
-    curves, combining physics-based constraints with probabilistic multi-scale reasoning.
+  summary: Reconstruct molecular assembly structure from SAXS profiles.
+  body: Applies PYTHIA inference to solution scattering and estimates plausible 3D organization with physics-based constraints.
   icon: scatter
   route: /research/pythia/saxs/index.html
   render:
@@ -118,14 +94,12 @@ pythia_spr:
   tile_title: spr
   tile_summary: binding kinetics from sensor response
   subtitle: Surface Plasmon Resonance intelligence
-  summary: A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.
-  body: The SPR application develops a two-population adsorption theory and uses Pythia to accelerate
-    forward sensorgram prediction, inverse kinetic inference, uncertainty estimation, and experiment design.
+  summary: Infer binding kinetics, affinity, and uncertainty from SPR sensorgrams.
+  body: Transforms sensor responses into fast, validated interaction estimates.
   icon: wave
-  route: /research/pythia/spr/index.html
+  route: /research/platforms/pythia/index.html
   render:
     grid_span: 6
-    source: content/spr-research-direction.md
 pythia_metabolic:
   title: Metabolic System
   tile_lead: biological systems
@@ -133,10 +107,8 @@ pythia_metabolic:
   tile_title: metabolic
   tile_summary: flux states and network topology
   subtitle: Metabolic Network Pythia
-  summary: Inferring metabolic flux states and network topology from experimental constraints.
-  body: The Metabolic Oracle applies PYTHIA to biochemical network reconstruction. It integrates stoichiometric
-    constraints, thermodynamic feasibility, and experimental observations to infer the most plausible
-    flux organization of a living cell under given conditions.
+  summary: Infer metabolic flux states and network topology from constraints.
+  body: Integrates stoichiometry, thermodynamics, and observations to estimate plausible cellular flux organization.
   icon: network
   route: /research/pythia/metabolic/index.html
   render:

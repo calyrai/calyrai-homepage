@@ -1,9 +1,9 @@
 page:
   title: calyr.aí positioning
   eyebrow: calyr.aí positioning
-  subtitle: A scientific thinking system built from one semantic source
-  lead: calyr.aí connects scientific reasoning with computational form. Evidence, models, workflows, publications, and decisions share one governed semantic structure that compiles into synchronized research objects.
-  claim: question -> evidence -> model -> prediction -> decision | website | paper | graph | workflow | code
+  subtitle: Knowledge compiler for research
+  lead: One semantic source compiles to synchronized outputs.
+  claim: knowledge -> compiler -> outputs
 
 sections:
   - id: established
@@ -24,7 +24,7 @@ sections:
 
   - id: distinctive
     title: Where calyr.aí is distinctive
-    body: The system models scientific meaning and relationships—not only page layout—so the same traceable knowledge can drive analysis, communication, interaction, and decisions.
+    body: The DSL models research semantics and keeps outputs synchronized.
     columns:
       -
         - Project
@@ -47,8 +47,8 @@ sections:
     title: What To Avoid
     class_name: avoid
     bullets:
-      - Copy pasted content across outputs
-      - Hidden structure in ad hoc component logic
-      - One-off static pages that drift from source knowledge
+        - Copy pasted content
+        - Hidden ad hoc logic
+        - Static pages that drift
 
-footer_note: Source linked into homepage workflow from calyrai-perspectives-pack/docs/positioning.html and regenerated on compile.
+footer_note: Source linked into the homepage workflow and regenerated on compile.
