@@ -126,7 +126,7 @@
     ]
   },
   "platforms": {
-    "title": "AI-assisted modelling",
+    "title": "AI-assisted surrogate modelling",
     "summary": "Pythia \u00b7 surrogate models. BRIX \u00b7 engineered form. LITHOS \u00b7 interaction.",
     "body_preview": "",
     "route": "",
