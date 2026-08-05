@@ -32,6 +32,7 @@ NODE_TYPE_RULES = {
     "interface_catalog": "tile",
     "swiss_code": "tile",
     "ecosystem": "tile",
+    "publications": "tile",
     "philosophy": "tile",
     "contact": "tile",
     "impressum": "tile",

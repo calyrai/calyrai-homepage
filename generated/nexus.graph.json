@@ -23,25 +23,16 @@
       "label": "calyr.a\u00ed",
       "data": {
         "title": "calyr.a\u00ed",
-        "summary": "Create what does not yet exist.",
+        "summary": "AI-assisted scientific modelling.",
         "icon": ""
       }
     },
     {
       "id": "hero",
-      "label": "calyr.a\u00ed",
-      "data": {
-        "title": "calyr.a\u00ed",
-        "summary": "Create what does not yet exist.",
-        "icon": ""
-      }
-    },
-    {
-      "id": "movie",
       "label": "Explore",
       "data": {
         "title": "Explore",
-        "summary": "Questions become traceable evidence, interpretable models, and actionable paths.",
+        "summary": "Data becomes surrogate model becomes engineered result.",
         "icon": ""
       }
     },
@@ -83,10 +74,10 @@
     },
     {
       "id": "platforms",
-      "label": "Architecture",
+      "label": "AI-assisted modelling",
       "data": {
-        "title": "Architecture",
-        "summary": "NEXUS, BRIX, and LITHOS are calyr.a\u00ed.",
+        "title": "AI-assisted modelling",
+        "summary": "Pythia \u00b7 surrogate models. BRIX \u00b7 engineered form. LITHOS \u00b7 interaction.",
         "icon": ""
       }
     },
@@ -95,16 +86,16 @@
       "label": "Pythia",
       "data": {
         "title": "Pythia",
-        "summary": "Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.",
+        "summary": "Data and simulation become fast, validated surrogate predictions with calibrated uncertainty.",
         "icon": ""
       }
     },
     {
       "id": "applied",
-      "label": "Applications",
+      "label": "Examples",
       "data": {
-        "title": "Applications",
-        "summary": "Each application combines sources, models, evidence, workflows, and interaction into one operational product.",
+        "title": "Examples",
+        "summary": "Two active medical AI projects. Details available on request.",
         "icon": ""
       }
     },
@@ -113,7 +104,7 @@
       "label": "System",
       "data": {
         "title": "System",
-        "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
+        "summary": "Pythia, BRIX, and LITHOS. Two medical applications in development.",
         "icon": ""
       }
     },
@@ -158,7 +149,7 @@
       "label": "Oracles",
       "data": {
         "title": "Oracles",
-        "summary": "Oracles turn Pythia predictions into decisions, designs, and engineered results.\n",
+        "summary": "Oracles turn Pythia predictions into decisions, designs, and engineered results. Every oracle separates what the data shows, what the model infers, and where uncertainty remains \u2014 making AI-driven decisions auditable and trustworthy.\n",
         "icon": "crystal-ball"
       }
     },
@@ -253,11 +244,65 @@
       }
     },
     {
+      "id": "cv",
+      "label": "CV \u00b7 Rupert Tscheliessnig",
+      "data": {
+        "title": "CV \u00b7 Rupert Tscheliessnig",
+        "summary": "Dr.techn. DI Rupert Tscheliessnig \u00b7 scientific ML engineer, structural biophysicist, research infrastructure architect, MBA. VSC5 surrogate modelling. Calyrai founder.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "method_oracling",
+      "label": "Oracling",
+      "data": {
+        "title": "Oracling",
+        "summary": "Turn evidence, predictions, uncertainty, constraints, and trade-offs into traceable decision proposals and explicit next actions.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "method_evidence_reading",
+      "label": "Evidence Reading Workflow",
+      "data": {
+        "title": "Evidence Reading Workflow",
+        "summary": "Capture sources, preserve them in Zotero, extract page-bound evidence, and publish curated claims to the calyr.a\u00ed knowledge catalog.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "method_ai_numerics",
+      "label": "Scientific AI and Numerical Methods",
+      "data": {
+        "title": "Scientific AI and Numerical Methods",
+        "summary": "Trustworthy surrogate prediction through numerical baselines, uncertainty, applicability limits, and validation.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "philosophy_biophysics",
+      "label": "Closed-loop Biophysical Interrogation",
+      "data": {
+        "title": "Closed-loop Biophysical Interrogation",
+        "summary": "Measurement, surrogate model, prediction, and experiment form one closed scientific interrogation loop where every result feeds the next question.",
+        "icon": ""
+      }
+    },
+    {
+      "id": "whitepapers",
+      "label": "White Papers",
+      "data": {
+        "title": "White Papers",
+        "summary": "calyr.a\u00ed white papers covering surrogate modelling, oracle design, scientific AI numerics, and research infrastructure.",
+        "icon": ""
+      }
+    },
+    {
       "id": "brix",
       "label": "BRIX",
       "data": {
         "title": "BRIX",
-        "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
+        "summary": "Explore and validate manufacturable variants with interpretable surrogate models.",
         "icon": "bridge"
       }
     },
@@ -266,7 +311,7 @@
       "label": "vascular application",
       "data": {
         "title": "vascular application",
-        "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
+        "summary": "Combines distinct models into one patient-specific vascular product workflow.",
         "icon": "aorta"
       }
     },
@@ -275,7 +320,7 @@
       "label": "bio nanoparticles",
       "data": {
         "title": "bio nanoparticles",
-        "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
+        "summary": "Biological nanoparticles engineered across structure, interaction, and production.",
         "icon": "particle"
       }
     },
@@ -284,7 +329,7 @@
       "label": "core facility studio",
       "data": {
         "title": "core facility studio",
-        "summary": "Turn PPMS operational data into reproducible KPIs with visible formulas, filters, provenance, and data quality.",
+        "summary": "Turn PPMS data into reproducible KPIs with visible formulas, filters, and provenance.",
         "icon": "network"
       }
     },
@@ -293,7 +338,7 @@
       "label": "QTY AlphaFold Oracle",
       "data": {
         "title": "QTY AlphaFold Oracle",
-        "summary": "Follow protein evidence from public structure models to experimental support, methods, code, and the next analysis.",
+        "summary": "Follow protein evidence from public models to methods, code, and experimental support.",
         "icon": "particle"
       }
     },
@@ -302,7 +347,7 @@
       "label": "biophysical applications",
       "data": {
         "title": "biophysical applications",
-        "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+        "summary": "Interpretable surrogate models reconstruct latent biological behavior from indirect measurements.",
         "icon": "scatter"
       }
     },
@@ -311,7 +356,7 @@
       "label": "SAXS System",
       "data": {
         "title": "SAXS System",
-        "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
+        "summary": "Reconstruct molecular assembly structure from SAXS profiles.",
         "icon": "scatter"
       }
     },
@@ -320,7 +365,7 @@
       "label": "SPR System",
       "data": {
         "title": "SPR System",
-        "summary": "A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.",
+        "summary": "Infer binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
         "icon": "wave"
       }
     },
@@ -329,7 +374,7 @@
       "label": "Metabolic System",
       "data": {
         "title": "Metabolic System",
-        "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
+        "summary": "Infer metabolic flux states and network topology from constraints.",
         "icon": "network"
       }
     },

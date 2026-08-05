@@ -126,19 +126,9 @@ class PlatformPublisher(PublicationStep):
         _sync_platform_pages_from_yaml(context.paths.project_root)
 
 
-class ResearchDetailPublisher(PublicationStep):
+class PublicationsPublisher(PublicationStep):
     def publish(self, context: PublicationContext) -> None:
-        _sync_spr_research_page(context.paths.project_root)
-
-
-class CompanyPublisher(PublicationStep):
-    def publish(self, context: PublicationContext) -> None:
-        _sync_company_expertise_page(context.paths.project_root)
-
-
-class WhitepaperPublisher(PublicationStep):
-    def publish(self, context: PublicationContext) -> None:
-        _sync_whitepaper_catalog(context.paths.project_root)
+        _sync_publications_page_from_yaml(context.paths.project_root)
 
 
 class RoutePublisher(PublicationStep):
@@ -169,9 +159,7 @@ class PublicationPipeline:
             BooksPublisher(),
             PositioningPublisher(),
             PlatformPublisher(),
-            ResearchDetailPublisher(),
-            WhitepaperPublisher(),
-            CompanyPublisher(),
+            PublicationsPublisher(),
             RoutePublisher(),
             NexusArtifactPublisher(),
             RuntimeModulePublisher(),
@@ -180,255 +168,6 @@ class PublicationPipeline:
     def publish(self, context: PublicationContext) -> None:
         for step in self._steps:
             step.publish(context)
-
-
-def _sync_spr_research_page(project_root: Path) -> None:
-    """Compile the SPR detail route from its registered source and template."""
-    projects = _read_optional_yaml(project_root / "content" / "projects.yaml")
-    spr = projects.get("pythia_spr", {}) if isinstance(projects, dict) else {}
-    render = spr.get("render", {}) if isinstance(spr, dict) else {}
-    source_rel = str(render.get("source", "")).strip()
-    route = str(spr.get("route", "")).strip() if isinstance(spr, dict) else ""
-    if not source_rel or not route:
-        return
-
-    source_path = project_root / source_rel
-    template_path = project_root / "build" / "templates" / "spr-research-direction.html"
-    if not source_path.exists():
-        raise ValueError(f"SPR page source does not exist: {source_rel}")
-    if not template_path.exists():
-        raise ValueError("SPR page template is missing")
-
-    markdown = source_path.read_text(encoding="utf-8")
-    title_match = re.search(r"^#\s+(.+)$", markdown, flags=re.MULTILINE)
-    if not title_match:
-        raise ValueError("SPR Markdown source requires one level-one title")
-
-    html = template_path.read_text(encoding="utf-8")
-    expected_title = escape(title_match.group(1))
-    if expected_title not in html:
-        raise ValueError("SPR template title has diverged from its Markdown source")
-    if "<math" not in html or "<msub" not in html:
-        raise ValueError("SPR equations must be compiled as semantic MathML")
-
-    route_path = Path(route.strip("/"))
-    output_path = project_root / "web" / "public" / route_path
-    if output_path.suffix.lower() != ".html":
-        output_path /= "index.html"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(html, encoding="utf-8")
-    print(f"🧮 Compiled SPR research page from {source_rel} to {output_path.relative_to(project_root)}")
-
-
-def _sync_company_expertise_page(project_root: Path) -> None:
-    """Render the public professional reference from one YAML source."""
-    config = _read_optional_yaml(project_root / "content" / "expertise.yaml")
-    if not config:
-        return
-
-    output_dir = project_root / "web" / "public" / "company" / "expertise"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    hero = config.get("hero", {})
-    role_fit = config.get("role_fit", [])
-    evidence = config.get("evidence", [])
-    publication_config = _read_optional_yaml(project_root / "content" / "publications.yaml")
-    publication_index = {
-        str(item.get("id")): item
-        for item in publication_config.get("whitepapers", [])
-        if isinstance(item, dict) and item.get("id")
-    }
-    interests = config.get("interests", [])
-    links = config.get("links", [])
-    contact = config.get("contact", {})
-    section_labels = config.get("section_labels", {}) if isinstance(config.get("section_labels"), dict) else {}
-    portrait = hero.get("portrait", {}) if isinstance(hero.get("portrait"), dict) else {}
-
-    roles_html = "".join(
-        f'<article><h3>{escape(str(item.get("role", "")))}</h3><p>{escape(str(item.get("evidence", "")))}</p></article>'
-        for item in role_fit if isinstance(item, dict)
-    )
-    evidence_nodes = []
-    for item in evidence:
-        if not isinstance(item, dict):
-            continue
-        publication_id = str(item.get("publication_id", ""))
-        if publication_id:
-            publication = publication_index.get(publication_id)
-            if not publication:
-                raise ValueError(f"Expertise evidence references unknown publication '{publication_id}'.")
-            title = str(item.get("title", publication.get("display_title", publication.get("title", publication_id))))
-            label = str(item.get("label", publication.get("title", "White paper")))
-            route = f"/research/whitepapers/#{publication_id}"
-        else:
-            title = str(item.get("title", ""))
-            label = str(item.get("label", ""))
-            route = str(item.get("route", "/"))
-        evidence_nodes.append(
-            f'<a href="{escape(route, quote=True)}"><span>{escape(title)}</span><small>{escape(label)}</small></a>'
-        )
-    evidence_html = "".join(evidence_nodes)
-    interests_html = "".join(f"<li>{escape(str(item))}</li>" for item in interests)
-    links_html = "".join(
-        f'<a href="{escape(str(item.get("route", "/")), quote=True)}">{escape(str(item.get("label", "")))} ↗</a>'
-        for item in links if isinstance(item, dict)
-    )
-    email = escape(str(contact.get("email", "")), quote=True)
-    portrait_html = ""
-    if portrait.get("src"):
-        portrait_src = escape(str(portrait.get("src")), quote=True)
-        portrait_alt = escape(str(portrait.get("alt", "Portrait of Rupert Tscheliessnig")), quote=True)
-        portrait_caption = escape(str(portrait.get("caption", "")))
-        portrait_motion = escape(str(portrait.get("motion", "")), quote=True)
-        portrait_tone = escape(str(portrait.get("tone", "")), quote=True)
-        portrait_html = (
-            f'<figure class="hero-portrait" data-motion="{portrait_motion}" data-tone="{portrait_tone}">'
-            f'<div class="hero-portrait__image">'
-            f'<img src="{portrait_src}" alt="{portrait_alt}" width="1448" height="1086" loading="lazy" decoding="async" fetchpriority="low" />'
-            f'<img class="hero-portrait__glimmer" src="{portrait_src}" alt="" aria-hidden="true" width="1448" height="1086" loading="lazy" decoding="async" fetchpriority="low" />'
-            f'<img class="hero-portrait__sparkle" src="{portrait_src}" alt="" aria-hidden="true" width="1448" height="1086" loading="lazy" decoding="async" fetchpriority="low" />'
-            f'</div><figcaption>{portrait_caption}</figcaption></figure>'
-        )
-
-    html_content = f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{escape(str(config.get('meta', {}).get('description', '')))}" />
-  <title>{escape(str(config.get('meta', {}).get('title', 'Expertise & Engagement')))} — CALYR.AI</title>
-  <link rel="stylesheet" href="./expertise.css" />
-  <style>
-    .hero{{min-height:auto;padding:5vh 0 4vh}} .hero h1{{font-size:clamp(54px,8vw,118px)}}
-    .hero h2{{margin-top:1rem}} main>section:not(.hero){{padding:24px 0 30px}}
-    .evidence a{{min-height:104px}} .evidence span{{font-size:27px}}
-    @page{{size:A4;margin:10mm}} @media print{{html{{background:#fff;color:#111}} body{{font-size:9pt}} header{{display:none}} main{{padding:0}} .hero{{min-height:auto;padding:0 0 7mm}} .hero p,.index{{color:#111}} .hero h1{{font-size:34pt}} .hero h2{{font-size:17pt;margin-top:3mm}} .hero-introduction{{font-size:8.5pt}} .hero-portrait{{max-width:55mm;margin-top:4mm}} .hero-portrait__glimmer,.hero-portrait__sparkle{{display:none}} main>section:not(.hero){{padding:4mm 0 5mm;break-inside:avoid}} section>h2,.split h2{{font-size:14pt}} .roles article{{padding:2mm 0}} .roles h3,.roles p{{font-size:8.5pt}} .evidence a{{min-height:25mm;padding:3mm}} .evidence span{{font-size:15pt}} .evidence small{{font-size:7.5pt}} .split li,.split nav a{{padding:2mm 0;font-size:8pt}} .contact>a{{font-size:15pt}} .roles p,.evidence small,.hero div,.contact p{{color:#444}} footer{{display:none}}}}
-  </style>
-</head>
-<body>
-  <header><a href="/">CALYR.AI</a><span>Company / Professional reference</span></header>
-  <main>
-    <section class="hero"><p>{escape(str(hero.get('kicker', '')))}</p><h1>{escape(str(hero.get('title', '')))}</h1><h2>{escape(str(hero.get('statement', '')))}</h2><div class="hero-introduction">{escape(str(hero.get('introduction', '')))}</div>{portrait_html}</section>
-    <section class="profile"><div class="index">01</div><h2>{escape(str(section_labels.get('capabilities', 'Profile')))}</h2><div class="roles">{roles_html}</div></section>
-    <section class="selected-evidence"><div class="index">02</div><h2>{escape(str(section_labels.get('evidence', 'Selected evidence')))}</h2><div class="evidence">{evidence_html}</div></section>
-    <section class="split"><div><div class="index">03</div><h2>{escape(str(section_labels.get('interests', 'Current focus')))}</h2><ul>{interests_html}</ul></div><div><div class="index">04</div><h2>{escape(str(section_labels.get('references', 'Publications & links')))}</h2><nav>{links_html}</nav></div></section>
-    <section class="contact"><div class="index">05</div><h2>{escape(str(contact.get('label', 'Contact')))}</h2><a href="mailto:{email}">{email}</a><p>{escape(str(config.get('privacy', '')))}</p></section>
-  </main>
-  <footer><span>Source of truth: content/expertise.yaml</span><a href="/">Back to CALYR.AI</a></footer>
-</body>
-</html>"""
-    output_dir.joinpath("index.html").write_text(html_content, encoding="utf-8")
-    output_dir.joinpath("expertise.css").write_text(
-        _company_expertise_css() + _company_expertise_motion_css(),
-        encoding="utf-8",
-    )
-
-
-def _company_expertise_css() -> str:
-    return """*{box-sizing:border-box}html{background:#050505;color:#f2f2ee;font-family:Arial,Helvetica,sans-serif}body{margin:0}a{color:inherit}header,footer{min-height:58px;padding:0 2.5vw;display:grid;grid-template-columns:1fr 1fr;align-items:center;border-bottom:1px solid #3b3b3b;font-size:12px;text-transform:uppercase;letter-spacing:.08em}header a{font-weight:800;text-decoration:none;color:#39bfff}main{padding:0 2.5vw}.hero{min-height:72vh;display:grid;grid-template-columns:repeat(12,1fr);gap:16px;align-content:end;padding:8vh 0;border-bottom:1px solid #3b3b3b}.hero>p{grid-column:1/4;color:#39bfff;text-transform:uppercase;font-size:12px}.hero h1{grid-column:1/13;margin:0;font-size:clamp(64px,11vw,170px);line-height:.84;letter-spacing:-.075em;max-width:1100px}.hero h2{grid-column:6/13;margin:3rem 0 0;font-size:clamp(25px,3.5vw,52px);line-height:1.02;letter-spacing:-.035em}.hero-introduction{grid-column:9/13;color:#aaa;font-size:15px;line-height:1.4}.hero-portrait{grid-column:1/8;grid-row:4/6;margin:2.5rem 0 0;align-self:end}.hero-portrait__image{position:relative;overflow:hidden;isolation:isolate;aspect-ratio:4/3;background:#f2f2ee}.hero-portrait img{display:block;width:100%;height:100%;object-fit:cover}.hero-portrait[data-tone="restrained-color"] img:not(.hero-portrait__glimmer){filter:grayscale(.32) saturate(.72) contrast(1.07)}.hero-portrait__glimmer{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;filter:saturate(1.45) brightness(1.18);-webkit-mask-image:linear-gradient(112deg,transparent 38%,#000 48%,#000 52%,transparent 62%);mask-image:linear-gradient(112deg,transparent 38%,#000 48%,#000 52%,transparent 62%);-webkit-mask-size:260% 100%;mask-size:260% 100%;animation:portrait-ring-glimmer 7s cubic-bezier(.45,0,.55,1) infinite}.hero-portrait figcaption{margin-top:9px;color:#777;font-size:10px;line-height:1.2;text-transform:uppercase;letter-spacing:.12em}@keyframes portrait-ring-glimmer{0%,20%{opacity:0;-webkit-mask-position:120% 0;mask-position:120% 0}28%{opacity:.5}48%{opacity:.16;-webkit-mask-position:-120% 0;mask-position:-120% 0}49%,100%{opacity:0;-webkit-mask-position:-120% 0;mask-position:-120% 0}}main>section:not(.hero){display:grid;grid-template-columns:repeat(12,1fr);gap:16px;padding:40px 0 70px;border-bottom:1px solid #3b3b3b}.index{grid-column:1;color:#39bfff;font-weight:800}section>h2{grid-column:2/5;margin:0;font-size:28px}.roles{grid-column:5/13}.roles article{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:14px 0;border-top:1px solid #3b3b3b}.roles h3,.roles p{margin:0;font-size:16px}.roles p{color:#aaa}.evidence{grid-column:5/13;display:grid;grid-template-columns:1fr 1fr}.evidence a{min-height:150px;padding:18px;border-top:1px solid #3b3b3b;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between}.evidence a:nth-child(odd){border-right:1px solid #3b3b3b}.evidence span{font-size:36px;font-weight:800;letter-spacing:-.04em}.evidence small{color:#aaa}.split>div{grid-column:1/7}.split>div+div{grid-column:7/13}.split h2{font-size:28px}.split ul{list-style:none;padding:0}.split li,.split nav a{display:block;padding:14px 0;border-top:1px solid #3b3b3b;text-decoration:none}.contact h2{grid-column:2/7}.contact>a{grid-column:7/13;font-size:clamp(24px,3vw,50px);font-weight:800;text-decoration:none}.contact p{grid-column:7/13;color:#777;font-size:12px}footer{border:0}footer a{text-align:right}@media(min-width:761px){main{display:grid;grid-template-columns:repeat(12,1fr);column-gap:16px}.hero{grid-column:1/13;grid-template-rows:auto auto auto auto}.hero h2{grid-column:5/13;grid-row:3;margin-top:1rem}.hero-introduction{grid-column:5/10;grid-row:4}.hero-portrait{grid-column:1/5;grid-row:3/5;margin-top:1rem}.profile{grid-column:1/7}.selected-evidence{grid-column:7/13}.profile,.selected-evidence{align-content:start}.profile .index,.selected-evidence .index{grid-column:1/2}.profile>h2,.selected-evidence>h2{grid-column:2/13}.profile .roles,.selected-evidence .evidence{grid-column:2/13;margin-top:12px}.profile .roles article{grid-template-columns:1fr;gap:5px;padding:10px 0}.selected-evidence .evidence{grid-template-columns:1fr 1fr}.selected-evidence .evidence a{padding:12px}.split,.contact{grid-column:1/13}.split{padding-bottom:24px}.contact{padding-top:22px;padding-bottom:24px}}@media(max-width:760px){header{grid-template-columns:1fr}.hero{min-height:68vh}.hero h2,.hero-introduction,.hero-portrait{grid-column:1/13}.hero-introduction{margin-top:10px}.hero-portrait{grid-row:auto;margin-top:28px}main>section:not(.hero){display:block}.index{margin-bottom:8px}.roles,.evidence{margin-top:30px}.roles article{grid-template-columns:1fr}.evidence{grid-template-columns:1fr}.evidence a:nth-child(odd){border-right:0}.contact>a{display:block;margin:30px 0;font-size:24px}.split>div+div{margin-top:50px}}@media(prefers-reduced-motion:reduce){.hero-portrait__glimmer{animation:none;display:none}}"""
-
-
-def _company_expertise_motion_css() -> str:
-    return """.hero-portrait__sparkle{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;filter:saturate(2.15) brightness(1.24) contrast(1.08)!important;-webkit-mask-image:radial-gradient(circle,#000 0 18%,transparent 23%);mask-image:radial-gradient(circle,#000 0 18%,transparent 23%);-webkit-mask-size:31px 31px;mask-size:31px 31px;-webkit-mask-position:0 0;mask-position:0 0;animation:portrait-dot-flicker 3.4s steps(1,end) infinite}@keyframes portrait-dot-flicker{0%,7%,18%,29%,46%,61%,78%,100%{opacity:0}8%{opacity:.34;-webkit-mask-position:0 0;mask-position:0 0}19%{opacity:.2;-webkit-mask-position:13px 7px;mask-position:13px 7px}30%{opacity:.42;-webkit-mask-position:5px 17px;mask-position:5px 17px}47%{opacity:.24;-webkit-mask-position:21px 9px;mask-position:21px 9px}62%{opacity:.38;-webkit-mask-position:9px 24px;mask-position:9px 24px}79%{opacity:.18;-webkit-mask-position:25px 15px;mask-position:25px 15px}}@media(prefers-reduced-motion:reduce){.hero-portrait__sparkle{animation:none;display:none}}"""
-
-
-def _markdown_sections(path: Path) -> dict[str, str]:
-    """Read public Markdown narratives keyed by second-level heading IDs."""
-    sections: dict[str, str] = {}
-    active_id: str | None = None
-    lines: list[str] = []
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^##\s+([a-z0-9-]+)\s*$", raw_line, flags=re.IGNORECASE)
-        if match:
-            if active_id:
-                sections[active_id] = " ".join(line.strip() for line in lines if line.strip())
-            active_id = match.group(1)
-            lines = []
-        elif active_id:
-            lines.append(raw_line)
-    if active_id:
-        sections[active_id] = " ".join(line.strip() for line in lines if line.strip())
-    return sections
-
-
-def _sync_whitepaper_catalog(project_root: Path) -> None:
-    """Compile public white-paper metadata and abstracts from YAML + Markdown."""
-    config = _read_optional_yaml(project_root / "content" / "publications.yaml")
-    if not config:
-        return
-    catalog = config.get("catalog", {}) if isinstance(config.get("catalog"), dict) else {}
-    items = config.get("whitepapers", []) if isinstance(config.get("whitepapers"), list) else []
-    allowed_visibility = set(catalog.get("visibility_levels", ["public", "registered", "restricted"]))
-    allowed_repositories = set(catalog.get("repositories", ["zenodo"]))
-    default_repository = str(catalog.get("default_repository", "zenodo"))
-    narrative_path = project_root / str(catalog.get("narrative", "content/whitepapers.md"))
-    if not narrative_path.exists():
-        raise ValueError(f"White-paper narrative source does not exist: {narrative_path}")
-    narratives = _markdown_sections(narrative_path)
-
-    books = _read_optional_yaml(project_root / "content" / "books.yaml")
-    platform_books = books.get("platform_books", {}) if isinstance(books.get("platform_books"), dict) else {}
-    application_ids: set[str] = set()
-    for book in platform_books.get("items", []):
-        if isinstance(book, dict) and book.get("id") == "platform-brix":
-            application_ids = {
-                str(app.get("id")) for app in book.get("surrogate_applications", [])
-                if isinstance(app, dict) and app.get("id")
-            }
-
-    seen: set[str] = set()
-    public_records: list[dict[str, str]] = []
-    cards: list[str] = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        publication_id = str(item.get("id", ""))
-        application_id = str(item.get("application_id", ""))
-        if not publication_id or publication_id in seen:
-            raise ValueError(f"White-paper IDs must be present and unique: '{publication_id}'.")
-        seen.add(publication_id)
-        if application_id not in application_ids:
-            raise ValueError(f"White paper '{publication_id}' references unknown application '{application_id}'.")
-        public_visibility = str(item.get("public_visibility", "public"))
-        full_visibility = str(item.get("full_visibility", "registered"))
-        repository = str(item.get("repository", default_repository))
-        record_url = str(item.get("record_url") or "")
-        doi = str(item.get("doi") or "")
-        if public_visibility not in allowed_visibility or full_visibility not in allowed_visibility:
-            raise ValueError(f"White paper '{publication_id}' uses an invalid visibility level.")
-        if repository not in allowed_repositories:
-            raise ValueError(f"White paper '{publication_id}' uses unsupported repository '{repository}'.")
-        if str(item.get("status", "")).lower() == "published" and not record_url:
-            raise ValueError(f"Published white paper '{publication_id}' requires a repository record URL.")
-        abstract = narratives.get(publication_id, "")
-        if not abstract:
-            raise ValueError(f"White paper '{publication_id}' is missing its Markdown abstract.")
-        record = {
-            "id": publication_id,
-            "application_id": application_id,
-            "display_title": str(item.get("display_title", application_id)),
-            "title": str(item.get("title", publication_id)),
-            "status": str(item.get("status", "concept note")),
-            "public_visibility": public_visibility,
-            "full_visibility": full_visibility,
-            "repository": repository,
-            "record_url": record_url,
-            "doi": doi,
-            "license": str(item.get("license", "All rights reserved")),
-            "abstract": abstract,
-        }
-        public_records.append(record)
-        repository_html = (
-            f'<a href="{escape(record_url, quote=True)}" rel="noreferrer">Open {escape(repository)} record ↗</a>'
-            if record_url else f'{escape(repository.title())} deposit planned'
-        )
-        doi_html = escape(doi) if doi else "Assigned on publication"
-        cards.append(f'''<article id="{escape(publication_id, quote=True)}"><p>{escape(record["display_title"])}</p><h2>{escape(record["title"])}</h2><div>{escape(abstract)}</div><dl><dt>Status</dt><dd>{escape(record["status"])}</dd><dt>Full edition</dt><dd>{escape(full_visibility)}</dd><dt>Repository</dt><dd>{repository_html}</dd><dt>DOI</dt><dd>{doi_html}</dd><dt>Licence</dt><dd>{escape(record["license"])}</dd></dl></article>''')
-
-    output_dir = project_root / "web" / "public" / str(catalog.get("route", "/research/whitepapers/")).strip("/")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_dir.joinpath("catalog.json").write_text(json.dumps(public_records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    output_dir.joinpath("index.html").write_text(f'''<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CALYR White Papers</title><style>*{{box-sizing:border-box}}html{{background:#050505;color:#f4f4f0;font-family:Arial,sans-serif}}body{{margin:0}}header,main,footer{{padding:32px 3vw}}header{{min-height:55vh;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid #444}}h1{{margin:0;font-size:clamp(64px,11vw,160px);line-height:.84;letter-spacing:-.07em}}header p,article>p,dt{{color:#48c8ff;text-transform:uppercase;letter-spacing:.1em;font-size:12px}}main{{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#444}}article{{min-height:420px;padding:28px;background:#080808}}h2{{font-size:32px;letter-spacing:-.04em}}article div,dd{{color:#bbb;line-height:1.6}}dl{{margin-top:40px}}dt{{margin-top:15px}}dd{{margin:6px 0}}a{{color:inherit}}@media(max-width:760px){{main{{grid-template-columns:1fr}}}}</style></head><body><header><p>Compiled from content/publications.yaml + content/whitepapers.md</p><h1>White papers.</h1></header><main>{''.join(cards)}</main><footer><a href="/">Back to CALYR.AI</a></footer></body></html>''', encoding="utf-8")
-    print(f"📄 Synced white-paper catalog to {output_dir.relative_to(project_root)}")
 
 
 class CompilerApplication:
@@ -777,6 +516,119 @@ def _sync_runtime_artifacts_module(project_root: Path, output_dir: Path) -> None
     print(f"🧩 Synced bundled runtime artifacts to {rel_path}")
 
 
+def _sync_publications_page_from_yaml(project_root: Path) -> None:
+    """Render the selected publications and patents page from YAML."""
+    config = _read_optional_yaml(project_root / "content" / "publications.yaml")
+    if not config:
+        return
+
+    page = config.get("page", {}) if isinstance(config, dict) else {}
+    publications = config.get("publications", []) if isinstance(config, dict) else []
+    patents = config.get("patents", []) if isinstance(config, dict) else []
+    sources = config.get("sources", []) if isinstance(config, dict) else []
+    if not isinstance(page, dict) or not isinstance(publications, list) or not isinstance(patents, list):
+        raise ValueError("content/publications.yaml must define page, publications, and patents")
+
+    route = str(page.get("route", "/research/publications/")).strip()
+    output_dir = project_root / "web" / "public" / route.strip("/")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    def render_publication(item: Any, index: int) -> str:
+        if not isinstance(item, dict):
+            return ""
+        doi = str(item.get("doi", "")).strip()
+        doi_url = f"https://doi.org/{escape(doi, quote=True)}"
+        return f"""
+        <article class="record">
+          <p class="record-index">{index:02d} · {escape(str(item.get("year", "")))}</p>
+          <div class="record-main">
+            <h3>{escape(str(item.get("title", "")))}</h3>
+            <p class="authors">{escape(str(item.get("authors", "")))}</p>
+            <p class="venue">{escape(str(item.get("venue", "")))}</p>
+          </div>
+          <div class="record-meta">
+            <p>{escape(str(item.get("focus", "")))}</p>
+            <a href="{doi_url}" rel="noreferrer">DOI {escape(doi)} ↗</a>
+          </div>
+        </article>"""
+
+    def render_patent(item: Any, index: int) -> str:
+        if not isinstance(item, dict):
+            return ""
+        inventor_line = str(item.get("inventors", item.get("inventors_note", "")))
+        assignees = str(item.get("assignees", "")).strip()
+        if assignees:
+            inventor_line = f"{inventor_line} · {assignees}"
+        return f"""
+        <article class="record record--patent">
+          <p class="record-index">P{index:02d} · {escape(str(item.get("year", "")))}</p>
+          <div class="record-main">
+            <h3>{escape(str(item.get("title", "")))}</h3>
+            <p class="authors">{escape(inventor_line)}</p>
+            <p class="venue">{escape(str(item.get("family", "")))}</p>
+          </div>
+          <div class="record-meta">
+            <p>{escape(str(item.get("focus", "")))}</p>
+            <a href="{escape(str(item.get("url", "")), quote=True)}" rel="noreferrer">Patent family ↗</a>
+          </div>
+        </article>"""
+
+    publication_html = "".join(render_publication(item, index) for index, item in enumerate(publications, 1))
+    patent_html = "".join(render_patent(item, index) for index, item in enumerate(patents, 1))
+    source_html = "".join(
+        f'<a href="{escape(str(item.get("url", "")), quote=True)}" rel="noreferrer">{escape(str(item.get("label", "Source")))} ↗</a>'
+        for item in sources
+        if isinstance(item, dict)
+    )
+
+    title = escape(str(page.get("title", "Evidence into application.")))
+    intro = escape(str(page.get("intro", "")))
+    eyebrow = escape(str(page.get("eyebrow", "SELECTED RESEARCH")))
+    note = escape(str(page.get("note", "")))
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{intro}" />
+  <title>Publications + Patents · calyr.aí</title>
+  <link rel="stylesheet" href="/research/publications/publications.css" />
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="/">calyr.aí</a>
+    <a href="/">Back to system</a>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p class="intro">{intro}</p>
+      <p class="note">{note}</p>
+    </section>
+    <section class="collection">
+      <header><span>01</span><h2>Peer-reviewed publications</h2><strong>{len(publications):02d}</strong></header>
+      {publication_html}
+    </section>
+    <section class="collection">
+      <header><span>02</span><h2>Patents + translation</h2><strong>{len(patents):02d}</strong></header>
+      {patent_html}
+    </section>
+    <footer>
+      <p>Stable identifiers connect each record to its source.</p>
+      <nav>{source_html}</nav>
+    </footer>
+  </main>
+</body>
+</html>
+"""
+    css = """:root{--bg:#050505;--fg:#f6f6f2;--muted:#a8a8a3;--line:#555;--cyan:#00c8ed;--magenta:#ff2ab5;font-family:Arial,Helvetica,sans-serif;color-scheme:dark}*{box-sizing:border-box}html{background:var(--bg);color:var(--fg)}body{margin:0;background:var(--bg)}a{color:inherit;text-decoration:none}.masthead{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:1rem clamp(1rem,4vw,4rem);border-bottom:1px solid var(--line);background:rgba(5,5,5,.96);font-size:.8rem;text-transform:uppercase;letter-spacing:.12em}.brand{font-size:1.35rem;font-weight:800;text-transform:none;letter-spacing:-.05em}.brand::first-letter{color:var(--fg)}main{max-width:1600px;margin:auto;padding:0 clamp(1rem,4vw,4rem) 5rem}.hero{min-height:65vh;display:grid;align-content:end;padding:8rem 0 4rem;border-bottom:2px solid var(--fg)}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.14em;font-size:clamp(.78rem,1.2vw,1rem)}h1{max-width:12ch;margin:.6rem 0 1.5rem;font-size:clamp(3.5rem,10vw,9rem);line-height:.85;letter-spacing:-.075em}.intro{max-width:36ch;margin:0;font-size:clamp(1.25rem,2.4vw,2.2rem);line-height:1.15}.note{max-width:70ch;margin:2rem 0 0;color:var(--muted);line-height:1.5}.collection{border-bottom:2px solid var(--fg)}.collection>header{display:grid;grid-template-columns:4rem 1fr auto;gap:1rem;align-items:baseline;padding:1.4rem 0;border-bottom:1px solid var(--line);text-transform:uppercase}.collection h2{margin:0;font-size:clamp(1.1rem,2.2vw,2rem)}.collection header span{color:var(--cyan);font-weight:800}.collection header strong{font-size:clamp(2rem,5vw,5rem);line-height:.8}.record{display:grid;grid-template-columns:minmax(5rem,1fr) minmax(16rem,3fr) minmax(14rem,2fr);gap:clamp(1rem,3vw,3rem);padding:2rem 0;border-bottom:1px solid var(--line)}.record:last-child{border-bottom:0}.record-index{margin:0;color:var(--cyan);font-weight:800}.record-main h3{margin:0 0 .8rem;font-size:clamp(1.45rem,2.6vw,2.6rem);line-height:1;letter-spacing:-.035em}.authors,.venue,.record-meta p{margin:.4rem 0;color:var(--muted);line-height:1.45}.venue{color:var(--fg)}.record-meta{display:flex;flex-direction:column;justify-content:space-between}.record-meta a{margin-top:1.5rem;color:var(--cyan);font-weight:800}.record--patent .record-index,.record--patent .record-meta a{color:var(--magenta)}footer{display:grid;grid-template-columns:1fr 2fr;gap:2rem;padding:2rem 0;color:var(--muted)}footer p{margin:0}footer nav{display:flex;flex-wrap:wrap;gap:1rem 2rem}footer a{color:var(--fg)}@media(max-width:760px){.hero{min-height:70svh}.record{grid-template-columns:1fr}.record-meta a{margin-top:.5rem}.collection>header{grid-template-columns:3rem 1fr}.collection header strong{display:none}footer{grid-template-columns:1fr}.masthead{position:relative}}"""
+
+    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "publications.css").write_text(css, encoding="utf-8")
+    print(f"🧾 Synced publications + patents page to {(output_dir / 'index.html').relative_to(project_root)}")
+
+
 def _sync_books_page_from_yaml(project_root: Path) -> None:
     """Merge architecture books entries from YAML into books.page.json."""
     config = _read_optional_yaml(project_root / "content" / "books.yaml")
@@ -987,7 +839,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
     platform_pages_cfg = config.get("platform_pages", {}) if isinstance(config, dict) else {}
     page_items = platform_pages_cfg.get("items", []) if isinstance(platform_pages_cfg, dict) else []
-    reference_cta = platform_pages_cfg.get("reference_cta", {}) if isinstance(platform_pages_cfg, dict) else {}
     if not isinstance(page_items, list) or not page_items:
         return
 
@@ -1008,11 +859,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     route_prefix = str(platform_pages_cfg.get("route_prefix", "/research/platforms")).strip("/")
     output_root = project_root / "web" / "public" / Path(route_prefix)
     output_root.mkdir(parents=True, exist_ok=True)
-    cta_eyebrow = escape(str(reference_cta.get("eyebrow", "Expertise & engagement")))
-    cta_title = escape(str(reference_cta.get("title", "Connect the system to the person behind it.")))
-    cta_summary = escape(str(reference_cta.get("summary", "")))
-    cta_label = escape(str(reference_cta.get("label", "Work with Rupert")))
-    cta_route = escape(str(reference_cta.get("route", "/company/expertise/")), quote=True)
 
     for page_item in page_items:
         if not isinstance(page_item, dict):
@@ -1039,8 +885,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
 
         css_path = output_dir / "platform.css"
         page_css = _pythia_page_css(accent_color) if platform_id == "pythia" else _platform_page_css(accent_color=accent_color)
-        if platform_id == "brix":
-            page_css += _brix_surrogate_css()
         css_path.write_text(page_css, encoding="utf-8")
 
         source_cfg = book.get("source", {}) if isinstance(book.get("source"), dict) else {}
@@ -1097,99 +941,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
     </section>
                 """.rstrip()
             )
-
-        surrogate_catalog_html = ""
-        surrogate_apps = book.get("surrogate_applications", []) if isinstance(book.get("surrogate_applications"), list) else []
-        surrogate_markdown_rel = str(book.get("surrogate_markdown", "")).strip()
-        surrogate_narratives: dict[str, str] = {}
-        if surrogate_markdown_rel:
-            surrogate_markdown_path = project_root / surrogate_markdown_rel
-            if surrogate_markdown_path.exists():
-                active_surrogate_id: str | None = None
-                narrative_lines: list[str] = []
-                for raw_line in surrogate_markdown_path.read_text(encoding="utf-8").splitlines():
-                    heading_match = re.match(r"^##\s+([a-z0-9-]+)\s*$", raw_line, flags=re.IGNORECASE)
-                    if heading_match:
-                        if active_surrogate_id:
-                            surrogate_narratives[active_surrogate_id] = " ".join(line.strip() for line in narrative_lines if line.strip())
-                        active_surrogate_id = heading_match.group(1)
-                        narrative_lines = []
-                    elif active_surrogate_id:
-                        narrative_lines.append(raw_line)
-                if active_surrogate_id:
-                    surrogate_narratives[active_surrogate_id] = " ".join(line.strip() for line in narrative_lines if line.strip())
-
-        if surrogate_apps:
-            surrogate_cards: list[str] = []
-            surrogate_flow_payload: list[dict[str, Any]] = []
-            for app_index, app in enumerate(surrogate_apps, start=1):
-                if not isinstance(app, dict):
-                    continue
-                app_id = str(app.get("id", f"surrogate-{app_index}"))
-                app_title = escape(str(app.get("title", app_id)))
-                app_domain = escape(str(app.get("domain", "Surrogate")))
-                app_accent = escape(str(app.get("accent", "cyan")), quote=True)
-                app_narrative = escape(surrogate_narratives.get(app_id, ""))
-                app_license = escape(str(app.get("license", "License not specified")))
-                app_flow = app.get("flow", []) if isinstance(app.get("flow"), list) else []
-                app_functions = app.get("functions", []) if isinstance(app.get("functions"), list) else []
-                if len(app_functions) != len(app_flow):
-                    raise ValueError(
-                        f"BRIX application '{app_id}' must define exactly one algorithm function per workflow step "
-                        f"({len(app_flow)} steps, {len(app_functions)} functions)."
-                    )
-                normalized_functions: list[dict[str, str]] = []
-                for function in app_functions:
-                    if not isinstance(function, dict) or not function.get("name") or not function.get("role"):
-                        raise ValueError(f"BRIX application '{app_id}' contains an invalid algorithm function.")
-                    role_parts = [str(function.get("role", "")).strip()]
-                    # Inline YAML maps split unquoted comma-separated prose into
-                    # additional null-valued keys. Reassemble that prose into the
-                    # public role string while keeping the authored source compact.
-                    for key, value in function.items():
-                        if key in {"name", "role"}:
-                            continue
-                        role_parts.append(str(key) if value is None else f"{key}: {value}")
-                    normalized_functions.append({
-                        "name": str(function["name"]),
-                        "role": ", ".join(part for part in role_parts if part),
-                    })
-                surrogate_flow_payload.append({
-                    "id": app_id,
-                    "index": app_index,
-                    "title": str(app.get("title", app_id)),
-                    "domain": str(app.get("domain", "Surrogate")),
-                    "accent": str(app.get("accent", "cyan")),
-                    "summary": surrogate_narratives.get(app_id, ""),
-                    "flow": [str(step) for step in app_flow],
-                    "maturity": str(app.get("maturity", "Concept")),
-                    "license": str(app.get("license", "License not specified")),
-                })
-                flow_nodes = []
-                for flow_index, flow_step in enumerate(app_flow, start=1):
-                    flow_nodes.append(
-                        f'<li><span>{flow_index:02d}</span><strong>{escape(str(flow_step))}</strong></li>'
-                    )
-                surrogate_cards.append(f"""
-      <details class="surrogate" data-accent="{app_accent}" open>
-        <summary><span>{app_index:02d} / {app_domain}</span><strong>{app_title}</strong><i>Open flow</i></summary>
-        <div class="surrogate-body">
-          <p>{app_narrative}</p>
-          <ol class="surrogate-flow">{''.join(flow_nodes)}</ol>
-          <p class="surrogate-license"><span>License boundary</span>{app_license}</p>
-        </div>
-      </details>""".rstrip())
-            surrogate_json = json.dumps(surrogate_flow_payload, ensure_ascii=False).replace("<", "\\u003c")
-            surrogate_catalog_html = f"""
-    <section class="card surrogate-catalog">
-      <div class="eyebrow">BRIX / executable research structures</div>
-      <h2>Independent surrogate applications</h2>
-      <p>Each application has its own schematic flow and publication boundary. YAML defines structure; Markdown provides scientific narrative. <a class="source-link" href="/research/whitepapers/">Open compiled white papers →</a></p>
-      <div id="brix-flow-root" class="brix-flow-root" aria-label="Interactive BRIX concept flows"></div>
-      <script id="brix-flow-data" type="application/json">{surrogate_json}</script>
-      <script type="module" src="./brix-flow.js" fetchpriority="low"></script>
-      <div class="surrogate-list">{''.join(surrogate_cards)}</div>
-    </section>""".rstrip()
 
         if page_item.get("show_method_reference") and method_reference:
             method_title = escape(str(method_reference.get("title", "Scientific AI and Numerical Methods")))
@@ -1257,11 +1008,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p>Every decision returns new evidence to the system and begins a better question.</p>
       <a href="/research/methods/">Explore the method system →</a>
     </section>
-    <section class="reference-cta">
-      <p>{cta_eyebrow}</p>
-      <h2>{cta_title}</h2>
-      <a href="{cta_route}">{cta_label} →</a>
-    </section>
   </main>
   <footer><span>PYTHIA / calyr.aí</span><a href="/">Return to platform index</a></footer>
 </body>
@@ -1273,7 +1019,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
             print(f"📘 Synced platform page ({platform_id}) to {rel_path}")
             continue
 
-        source_meta = "YAML-generated platform specification"
+        source_meta = "source file not found"
         if source_exists and source_html_path is not None:
             source_mtime = datetime.fromtimestamp(source_html_path.stat().st_mtime, tz=timezone.utc).isoformat()
             source_meta = f"linked source: {escape(str(source_html_path))} | updated: {source_mtime}"
@@ -1288,7 +1034,6 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
   <title>{title}</title>
   <link rel=\"stylesheet\" href=\"./platform.css\" />
-  {'<link rel="stylesheet" href="./brix-flow.css" />' if platform_id == 'brix' else ''}
 </head>
 <body>
   <main class=\"layout\">
@@ -1300,13 +1045,7 @@ def _sync_platform_pages_from_yaml(project_root: Path) -> None:
       <p class=\"link-meta\">{source_meta}</p>
                   <p><a class=\"source-link\" href=\"{source_link_href}\">Back to homepage</a></p>
     </section>
-    {''.join(section_blocks)}{surrogate_catalog_html}
-    <section class="card reference-cta">
-      <div class="eyebrow">{cta_eyebrow}</div>
-      <h2>{cta_title}</h2>
-      <p>{cta_summary}</p>
-      <p><a class="source-link" href="{cta_route}">{cta_label} →</a></p>
-    </section>
+    {''.join(section_blocks)}
     <p class=\"footer-note\">{footer_note}</p>
   </main>
 </body>
@@ -1449,7 +1188,6 @@ def _sync_research_system(project_root: Path) -> dict[str, Any]:
     principles = system.get("principles", []) if isinstance(system.get("principles"), list) else []
     contract = system.get("content_contract", {}) if isinstance(system.get("content_contract"), dict) else {}
     evidence = system.get("evidence_citation_architecture", {}) if isinstance(system.get("evidence_citation_architecture"), dict) else {}
-    reading = system.get("swiss_design_reading", {}) if isinstance(system.get("swiss_design_reading"), dict) else {}
     gates = system.get("validation_gates", []) if isinstance(system.get("validation_gates"), list) else []
     anatomy_html = "".join(
         f'<article><span>{escape(str(x.get("order", "")))}</span><h3>{escape(str(x.get("name", "")))}</h3><p>{escape(str(x.get("rule", "")))}</p></article>'
@@ -1477,11 +1215,6 @@ def _sync_research_system(project_root: Path) -> dict[str, Any]:
     )
     evidence_invariants_html = "".join(f'<li>{escape(str(x))}</li>' for x in evidence_invariants)
     evidence_route = escape(str(evidence.get("method_route", "/research/methods/evidence-reading-workflow/")), quote=True)
-    reading_sources = reading.get("sources", []) if isinstance(reading.get("sources"), list) else []
-    reading_html = "".join(
-        f'<article><span>{escape(str(x.get("id", "")))}</span><p class="swiss-system-label">{escape(str(x.get("focus", "")))}</p><h3>{escape(str(x.get("title", "")))}</h3><p>{escape(str(x.get("note", "")))}</p><a href="{escape(str(x.get("url", "")), quote=True)}" target="_blank" rel="noopener noreferrer">{escape(str(x.get("publisher", "Source")))} →</a></article>'
-        for x in reading_sources if isinstance(x, dict)
-    )
     title = escape(str(swiss.get("title", "Swiss Code")))
     summary = escape(str(swiss.get("purpose", "Shared research design contract.")))
     html = f"""<!doctype html>
@@ -1493,8 +1226,7 @@ def _sync_research_system(project_root: Path) -> dict[str, Any]:
 <section class="swiss-section"><header><span>03</span><div><p>Design principles</p><h2>Rules before components</h2></div></header><div class="swiss-card-grid swiss-card-grid--principles">{principles_html}</div></section>
 <section class="swiss-section"><header><span>04</span><div><p>YAML first</p><h2>Content provenance</h2></div></header><div class="swiss-provenance"><div><h3>Canonical files</h3><ul>{canonical_html}</ul></div><div><h3>Generated outputs</h3><ul>{outputs_html}</ul></div><p>{escape(str(contract.get("rule", "")))}</p></div></section>
 <section class="swiss-section"><header><span>05</span><div><p>{escape(str(evidence.get("id", "SC-EVIDENCE-001")))}</p><h2>{escape(str(evidence.get("title", "Evidence and Citation Architecture")))}</h2></div></header><div class="swiss-evidence-intro"><p>{escape(str(evidence.get("purpose", "")))}</p><a href="{evidence_route}">Open the operational method →</a></div><div class="swiss-card-grid swiss-card-grid--evidence">{evidence_flow_html}</div><ul class="swiss-evidence-invariants">{evidence_invariants_html}</ul></section>
-<section class="swiss-section"><header><span>06</span><div><p>{escape(str(reading.get("id", "SC-READING-001")))}</p><h2>{escape(str(reading.get("title", "Swiss Design Reading Room")))}</h2></div></header><div class="swiss-reading-intro"><p>{escape(str(reading.get("purpose", "")))}</p><small>{escape(str(reading.get("copyright_rule", "")))}</small></div><div class="swiss-reading-grid">{reading_html}</div></section>
-<section class="swiss-section"><header><span>07</span><div><p>Release contract</p><h2>Validation gates</h2></div></header><ol class="swiss-gates">{gates_html}</ol></section></main></body></html>"""
+<section class="swiss-section"><header><span>06</span><div><p>Release contract</p><h2>Validation gates</h2></div></header><ol class="swiss-gates">{gates_html}</ol></section></main></body></html>"""
     (output_dir / "index.html").write_text(html, encoding="utf-8")
     print(f"🇨🇭 Synced Swiss Code to {(output_dir / 'index.html').relative_to(project_root)}")
     return system
@@ -1517,10 +1249,9 @@ def _research_system_css(system: dict[str, Any]) -> str:
 .swiss-section {{ border-bottom:1px solid var(--research-line); }} .swiss-section>header {{ display:grid; grid-template-columns:3fr 9fr; padding:36px 28px; border-bottom:1px solid var(--research-line); }} .swiss-section>header>span {{ color:var(--research-accent); }} .swiss-section header p {{ margin:0; color:#718197; font-size:.7rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }} .swiss-section h2 {{ margin:.35rem 0 0; font-size:clamp(2rem,4vw,4rem); line-height:.95; letter-spacing:-.045em; }}
 .swiss-card-grid {{ display:grid; grid-template-columns:repeat(5,1fr); }} .swiss-card-grid article {{ min-height:260px; padding:24px; border-right:1px solid var(--research-line); }} .swiss-card-grid span {{ color:var(--research-accent); font-size:.7rem; }} .swiss-card-grid h3,.swiss-token-grid h3,.swiss-provenance h3 {{ margin:28px 0 10px; font-size:1rem; }} .swiss-card-grid p,.swiss-provenance p {{ color:var(--research-soft); font-size:.88rem; }} .swiss-card-grid--principles {{ grid-template-columns:repeat(4,1fr); }} .swiss-card-grid--principles article {{ border-bottom:1px solid var(--research-line); }}
 .swiss-evidence-intro {{ display:grid; grid-template-columns:3fr 6fr 3fr; padding:24px 28px; border-bottom:1px solid var(--research-line); }} .swiss-evidence-intro p {{ grid-column:2; max-width:68ch; margin:0; color:var(--research-soft); }} .swiss-evidence-intro a {{ grid-column:3; align-self:end; justify-self:end; color:var(--research-accent); font-size:.78rem; font-weight:700; text-decoration:none; }} .swiss-card-grid--evidence {{ grid-template-columns:repeat(5,1fr); }} .swiss-card-grid--evidence .swiss-system-label {{ min-height:2.4em; margin:16px 0 0; color:#718197; font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }} .swiss-card-grid--evidence h3 {{ margin:8px 0 10px; }} .swiss-evidence-invariants {{ display:grid; grid-template-columns:repeat(5,1fr); margin:0; padding:0; list-style:none; border-top:1px solid var(--research-line); }} .swiss-evidence-invariants li {{ min-height:150px; padding:24px; border-right:1px solid var(--research-line); color:var(--research-soft); font-size:.86rem; }}
-.swiss-reading-intro {{ display:grid; grid-template-columns:3fr 6fr 3fr; gap:20px; padding:24px 28px; border-bottom:1px solid var(--research-line); }} .swiss-reading-intro p {{ grid-column:2; margin:0; color:var(--research-soft); }} .swiss-reading-intro small {{ grid-column:3; color:#718197; }} .swiss-reading-grid {{ display:grid; grid-template-columns:repeat(4,1fr); }} .swiss-reading-grid article {{ display:flex; flex-direction:column; min-height:310px; padding:24px; border-right:1px solid var(--research-line); border-bottom:1px solid var(--research-line); }} .swiss-reading-grid article>span {{ color:var(--research-accent); font-size:.7rem; }} .swiss-reading-grid .swiss-system-label {{ margin:18px 0 0; color:#718197; font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }} .swiss-reading-grid h3 {{ margin:10px 0; font-size:1.05rem; line-height:1.15; }} .swiss-reading-grid article>p:not(.swiss-system-label) {{ color:var(--research-soft); font-size:.86rem; }} .swiss-reading-grid a {{ margin-top:auto; color:var(--research-ink); font-size:.78rem; font-weight:800; text-decoration:none; }} .swiss-reading-grid a:hover {{ color:var(--research-accent); }}
 .swiss-token-grid {{ display:grid; grid-template-columns:repeat(3,1fr); }} .swiss-token-grid article {{ padding:24px; border-right:1px solid var(--research-line); border-bottom:1px solid var(--research-line); }} .swiss-token-grid dl {{ margin:0; }} .swiss-token-grid dl div {{ padding:10px 0; border-top:1px solid var(--research-line); }} .swiss-token-grid dt {{ color:#718197; font-size:.68rem; text-transform:uppercase; }} .swiss-token-grid dd {{ margin:3px 0 0; color:var(--research-soft); overflow-wrap:anywhere; }}
 .swiss-provenance {{ display:grid; grid-template-columns:1fr 1fr; gap:28px; padding:28px; }} .swiss-provenance>p {{ grid-column:1/-1; padding-top:20px; border-top:1px solid var(--research-line); }} .swiss-provenance ul {{ margin:0; padding:0; list-style:none; }} .swiss-provenance li {{ padding:8px 0; border-top:1px solid var(--research-line); }} .swiss-provenance code {{ color:#d6f1ff; overflow-wrap:anywhere; word-break:break-word; }} .swiss-gates {{ display:grid; grid-template-columns:repeat(3,1fr); margin:0; padding:0; list-style:none; counter-reset:gates; }} .swiss-gates li {{ counter-increment:gates; min-height:150px; padding:24px; border-right:1px solid var(--research-line); color:var(--research-soft); }} .swiss-gates li::before {{ content:"0" counter(gates); display:block; margin-bottom:22px; color:var(--research-accent); font-size:.7rem; }}
-@media(max-width:780px){{.research-system-header{{position:static!important;display:block!important;padding:14px 5vw!important}}.research-chapter-nav{{width:100%;min-width:0;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px;border-top:1px solid var(--research-line)}}.research-chapter-nav a{{min-width:0;min-height:46px;border-bottom:1px solid var(--research-line)}}.research-source-bar{{display:grid;gap:5px}}.research-unified-hero,.swiss-section>header,.swiss-provenance,.swiss-evidence-intro,.swiss-reading-intro{{display:block}}.research-unified-hero{{min-height:0;padding:48px 20px}}.research-unified-hero h1{{margin:24px 0}}.research-unified-hero>div{{margin-top:38px}}.swiss-card-grid,.swiss-card-grid--principles,.swiss-card-grid--evidence,.swiss-reading-grid,.swiss-token-grid,.swiss-gates,.swiss-evidence-invariants{{grid-template-columns:1fr}}.swiss-card-grid article,.swiss-reading-grid article,.swiss-gates li,.swiss-evidence-invariants li{{min-height:0;border-right:0;border-bottom:1px solid var(--research-line)}}.swiss-evidence-intro a{{display:inline-block;margin-top:18px}}.swiss-reading-intro small{{display:block;margin-top:18px}}.swiss-section>header{{padding:28px 20px}}}}
+@media(max-width:780px){{.research-system-header{{position:static!important;display:block!important;padding:14px 5vw!important}}.research-chapter-nav{{width:100%;min-width:0;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px;border-top:1px solid var(--research-line)}}.research-chapter-nav a{{min-width:0;min-height:46px;border-bottom:1px solid var(--research-line)}}.research-source-bar{{display:grid;gap:5px}}.research-unified-hero,.swiss-section>header,.swiss-provenance,.swiss-evidence-intro{{display:block}}.research-unified-hero{{min-height:0;padding:48px 20px}}.research-unified-hero h1{{margin:24px 0}}.research-unified-hero>div{{margin-top:38px}}.swiss-card-grid,.swiss-card-grid--principles,.swiss-card-grid--evidence,.swiss-token-grid,.swiss-gates,.swiss-evidence-invariants{{grid-template-columns:1fr}}.swiss-card-grid article,.swiss-gates li,.swiss-evidence-invariants li{{min-height:0;border-right:0;border-bottom:1px solid var(--research-line)}}.swiss-evidence-intro a{{display:inline-block;margin-top:18px}}.swiss-section>header{{padding:28px 20px}}}}
 """.strip() + "\n"
 
 
@@ -2269,10 +2000,6 @@ h1 {{ grid-column:1 / -1; margin:6vh 0 0; align-self:start; font-size:clamp(5rem
 .closing-label {{ grid-column:1; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
 .closing > p:nth-child(2) {{ grid-column:2 / 4; margin:0; font-size:clamp(2.6rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
 .closing a {{ grid-column:3; margin-top:8vh; padding-top:14px; border-top:1px solid currentColor; font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
-.reference-cta {{ min-height:42vh; display:grid; grid-template-columns:4fr 5fr 3fr; gap:16px; padding:8vh 2.5vw; align-content:center; border-bottom:1px solid var(--line); }}
-.reference-cta p {{ grid-column:1; margin:0; color:var(--accent); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
-.reference-cta h2 {{ grid-column:2 / 4; margin:0; font-size:clamp(2.8rem,6vw,7rem); line-height:.92; letter-spacing:-.055em; }}
-.reference-cta a {{ grid-column:3; margin-top:5vh; padding-top:14px; border-top:1px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:.1em; }}
 footer {{ min-height:120px; display:flex; justify-content:space-between; align-items:flex-end; padding:24px 2.5vw; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }}
 @media (max-width:760px) {{
   body::before {{ background-size:25vw 100%; }}
@@ -2284,47 +2011,9 @@ footer {{ min-height:120px; display:flex; justify-content:space-between; align-i
   .step-index {{ grid-column:1; }} .process-step h2 {{ grid-column:2; font-size:clamp(3rem,16vw,6rem); }}
   .step-body,.process-step ul {{ grid-column:2; margin-top:6vh; }}
   .closing {{ grid-template-columns:1fr; }} .closing-label,.closing > p:nth-child(2),.closing a {{ grid-column:1; }}
-  .reference-cta {{ grid-template-columns:1fr; }} .reference-cta p,.reference-cta h2,.reference-cta a {{ grid-column:1; }}
 }}
 @media (prefers-reduced-motion:reduce) {{ html {{ scroll-behavior:auto; }} }}
 """
-
-
-def _brix_surrogate_css() -> str:
-    """Swiss flow catalogue used only by the BRIX platform page."""
-    return """
-.surrogate-catalog { border-radius: 0; }
-.surrogate-list { display: grid; gap: 1px; margin-top: 22px; background: var(--line); border: 1px solid var(--line); }
-.surrogate { --node-accent: var(--accent); background: #070a0f; }
-.surrogate[data-accent="green"] { --node-accent: #34c759; }
-.surrogate[data-accent="orange"] { --node-accent: #ff8c1a; }
-.surrogate[data-accent="cyan"] { --node-accent: #00c7ff; }
-.surrogate[data-accent="red"] { --node-accent: #ff3b30; }
-.surrogate[data-accent="violet"] { --node-accent: #7d42ff; }
-.surrogate[data-accent="magenta"] { --node-accent: #ff2d92; }
-.surrogate[data-accent="blue"] { --node-accent: #2f6bff; }
-.surrogate[data-accent="yellow"] { --node-accent: #ffd60a; }
-.surrogate[data-accent="pink"] { --node-accent: #ff6da8; }
-.surrogate summary { min-height: 92px; display: grid; grid-template-columns: 190px 1fr auto; align-items: center; gap: 20px; padding: 18px 22px; cursor: pointer; list-style: none; border-left: 4px solid var(--node-accent); }
-.surrogate summary::-webkit-details-marker { display: none; }
-.surrogate summary span, .surrogate summary i { color: var(--ink-soft); font-size: .72rem; font-style: normal; text-transform: uppercase; letter-spacing: .1em; }
-.surrogate summary strong { font-size: clamp(1.25rem, 2.4vw, 2rem); letter-spacing: -.035em; }
-.surrogate[open] summary { background: rgba(255,255,255,.035); }
-.surrogate-body { padding: 4px 22px 24px; border-left: 4px solid var(--node-accent); }
-.surrogate-body > p { max-width: 78ch; }
-.surrogate-flow { display: flex; gap: 22px; margin: 24px 0; padding: 24px 4px 8px; overflow-x: auto; list-style: none; }
-.surrogate-flow li { position: relative; flex: 0 0 175px; min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border: 1px solid rgba(255,255,255,.72); background: #05070b; }
-.surrogate-flow li:not(:last-child)::after { content: "→"; position: absolute; right: -18px; top: 43%; color: var(--node-accent); }
-.surrogate-flow li span { color: var(--node-accent); font: 700 .68rem/1 ui-monospace, SFMono-Regular, monospace; }
-.surrogate-flow li strong { font-size: .84rem; line-height: 1.3; }
-.surrogate-license { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .78rem; }
-.surrogate-license span { color: var(--node-accent); text-transform: uppercase; letter-spacing: .08em; }
-@media (max-width: 820px) {
-  .surrogate summary { grid-template-columns: 1fr auto; }
-  .surrogate summary span { grid-column: 1 / -1; }
-  .surrogate-license { grid-template-columns: 1fr; }
-}
-""".strip() + "\n"
 
 
 def _platform_page_css(accent_color: str = "#00c7ff") -> str:

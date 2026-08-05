@@ -91,7 +91,9 @@ export default function SearchOverlay() {
       })
 
     return () => controller.abort()
-  }, [open, indexState])
+    // indexState intentionally omitted: including it causes setIndexState('loading')
+    // to trigger cleanup which aborts the in-flight fetch immediately
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = () => {
     setOpen(false)

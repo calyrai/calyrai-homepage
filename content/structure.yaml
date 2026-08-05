@@ -89,6 +89,7 @@ architecture:
 
   children:
     - ecosystem
+    - publications
     - contact
     - philosophy
 

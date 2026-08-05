@@ -25,7 +25,7 @@
       "tile_summary": "",
       "subtitle": "",
       "landing_message": "",
-      "summary": "Create what does not yet exist.",
+      "summary": "AI-assisted scientific modelling.",
       "body": "We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.",
       "icon": "",
       "route": "",
@@ -71,39 +71,9 @@
     {
       "type": "section",
       "id": "movie",
-      "title": "Explore",
-      "tile_lead": "",
-      "tile_accent": "",
-      "tile_title": "",
-      "tile_summary": "",
-      "subtitle": "Interactive system exploration",
-      "landing_message": "",
-      "summary": "Questions become traceable evidence, interpretable models, and actionable paths.",
-      "body": "Ask a question. Follow the evidence. Understand the system. Choose the next action.",
-      "icon": "",
-      "route": "/research/teaser/index.html",
-      "links": [],
-      "institutions": [],
-      "contacts": [],
-      "intent": {},
-      "render": {
-        "variant": "tile-grid",
-        "source": "homepage.grid.explore-band"
-      },
-      "behavior": {
-        "collapsible": true,
-        "default_expanded": true,
-        "persistence": "none",
-        "anchor_aliases": [
-          "teaser"
-        ]
-      },
-      "explain": {
-        "why": "Present Explore through the same clear tile system used by Pythia."
-      },
       "meta": {
         "source": {
-          "contentNodeId": "movie",
+          "contentNodeId": null,
           "structureNodeId": "movie"
         },
         "nodeType": "section",
@@ -111,24 +81,7 @@
           "ApplyNodeTypeInference",
           "AttachResolvedContent",
           "BuildChildNodes"
-        ],
-        "authored": {
-          "render": {
-            "variant": "tile-grid",
-            "source": "homepage.grid.explore-band"
-          },
-          "behavior": {
-            "collapsible": true,
-            "default_expanded": true,
-            "persistence": "none",
-            "anchor_aliases": [
-              "teaser"
-            ]
-          },
-          "explain": {
-            "why": "Present Explore through the same clear tile system used by Pythia."
-          }
-        }
+        ]
       },
       "children": [
         {
@@ -296,14 +249,14 @@
     {
       "type": "section",
       "id": "platforms",
-      "title": "Architecture",
+      "title": "AI-assisted modelling",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "calyr.a\u00ed is NEXUS, BRIX, and LITHOS",
+      "subtitle": "Pythia \u00b7 BRIX \u00b7 LITHOS",
       "landing_message": "",
-      "summary": "NEXUS, BRIX, and LITHOS are calyr.a\u00ed.",
+      "summary": "Pythia \u00b7 surrogate models. BRIX \u00b7 engineered form. LITHOS \u00b7 interaction.",
       "body": "",
       "icon": "",
       "route": "",
@@ -370,11 +323,11 @@
           "tile_lead": "integration",
           "tile_accent": "blue",
           "tile_title": "nexus",
-          "tile_summary": "NEXUS connects the calyr.a\u00ed architecture",
-          "subtitle": "System integration",
+          "tile_summary": "connects data, models, and decisions",
+          "subtitle": "Integration",
           "landing_message": "",
           "summary": "NEXUS connects data, models, workflows, and platforms.\n",
-          "body": "NEXUS is the connective architecture of calyr.a\u00ed. It links data, knowledge, models, workflows, platforms, and decisions while Pythia supplies surrogate modelling and prediction.\n",
+          "body": "NEXUS links data, knowledge, models, workflows, and decisions across the calyr.a\u00ed system.\n",
           "icon": "brain",
           "route": "/research/platforms/core/index.html",
           "links": [],
@@ -434,11 +387,11 @@
           "tile_lead": "surrogate product design",
           "tile_accent": "cyan",
           "tile_title": "surrogate model product design",
-          "tile_summary": "turn simulation, measurement, constraints, and uncertainty into faster product-design decisions",
+          "tile_summary": "faster product decisions from simulation and measurement",
           "subtitle": "Surrogate-assisted product design",
           "landing_message": "",
-          "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
-          "body": "BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carries promising concepts through validation into an engineered product decision.",
+          "summary": "Explore and validate manufacturable variants with interpretable surrogate models.",
+          "body": "BRIX couples simulation and measurement with uncertainty-aware surrogates for interactive design and validation.",
           "icon": "bridge",
           "route": "/research/platforms/brix/index.html",
           "links": [],
@@ -536,9 +489,9 @@
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Interpretable surrogate prediction for engineering",
+      "subtitle": "surrogate prediction",
       "landing_message": "",
-      "summary": "Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.",
+      "summary": "Data and simulation become fast, validated surrogate predictions with calibrated uncertainty.",
       "body": "",
       "icon": "",
       "route": "",
@@ -775,14 +728,14 @@
     {
       "type": "section",
       "id": "applied",
-      "title": "Applications",
+      "title": "Examples",
       "tile_lead": "",
       "tile_accent": "",
       "tile_title": "",
       "tile_summary": "",
-      "subtitle": "Scientific systems become usable products",
+      "subtitle": "Two stealth projects \u00b7 details on request",
       "landing_message": "",
-      "summary": "Each application combines sources, models, evidence, workflows, and interaction into one operational product.",
+      "summary": "Two active medical AI projects. Details available on request.",
       "body": "",
       "icon": "",
       "route": "",
@@ -849,11 +802,11 @@
           "tile_lead": "surrogate product design",
           "tile_accent": "cyan",
           "tile_title": "surrogate model product design",
-          "tile_summary": "turn simulation, measurement, constraints, and uncertainty into faster product-design decisions",
+          "tile_summary": "faster product decisions from simulation and measurement",
           "subtitle": "Surrogate-assisted product design",
           "landing_message": "",
-          "summary": "Explore and validate manufacturable product variants with interpretable surrogate models.",
-          "body": "BRIX couples simulation and measurement data with fast, uncertainty-aware surrogate models. It makes design spaces interactive, exposes trade-offs and constraints, ranks candidate variants, and carries promising concepts through validation into an engineered product decision.",
+          "summary": "Explore and validate manufacturable variants with interpretable surrogate models.",
+          "body": "BRIX couples simulation and measurement with uncertainty-aware surrogates for interactive design and validation.",
           "icon": "bridge",
           "route": "/research/platforms/brix/index.html",
           "links": [],
@@ -895,11 +848,11 @@
           "tile_lead": "aflowtex",
           "tile_accent": "red",
           "tile_title": "vascular application",
-          "tile_summary": "simulation, measurement, and interpretation become one patient-specific product",
+          "tile_summary": "one patient-specific product workflow",
           "subtitle": "Integrated vascular intelligence",
           "landing_message": "",
-          "summary": "A high-level application that combines different models into one patient-specific vascular product.\n",
-          "body": "AFLOWTEX integrates clinical measurements, vascular geometry, flow simulation, surrogate models, uncertainty, interpretation, and adaptive interaction. The models remain distinct but operate together as one application.\n",
+          "summary": "Combines distinct models into one patient-specific vascular product workflow.",
+          "body": "Integrates measurements, geometry, simulation, surrogate models, uncertainty, and interaction into one application.",
           "icon": "aorta",
           "route": "/research/platforms/aflowtex/index.html",
           "links": [],
@@ -1076,11 +1029,11 @@
           "tile_lead": "molecular systems",
           "tile_accent": "magenta",
           "tile_title": "bio nanoparticles",
-          "tile_summary": "structure, interaction, and production as one interpretable system",
+          "tile_summary": "structure, interaction, and production in one system",
           "subtitle": "Interpretable particle engineering",
           "landing_message": "",
-          "summary": "Biological nanoparticles engineered across structure, interaction, and production.\n",
-          "body": "Local surface design, experimental characterization, purification behavior, and function become one traceable model.\n",
+          "summary": "Biological nanoparticles engineered across structure, interaction, and production.",
+          "body": "Surface design, characterization, purification behavior, and function are linked in one traceable model.",
           "icon": "particle",
           "route": "",
           "links": [],
@@ -1257,10 +1210,10 @@
           "tile_lead": "experimental systems",
           "tile_accent": "cyan",
           "tile_title": "biophysical interpretation and inference",
-          "tile_summary": "hidden structure, interaction, and system state from experimental evidence",
+          "tile_summary": "hidden structure and system state from evidence",
           "subtitle": "Biophysical intelligence",
           "landing_message": "",
-          "summary": "Interpretable surrogate models reconstruct latent biological and molecular behavior from indirect measurements.",
+          "summary": "Interpretable surrogate models reconstruct latent biological behavior from indirect measurements.",
           "body": "SPR, SAXS, and metabolic inference are concrete systems in this application field.",
           "icon": "scatter",
           "route": "/research/pythia/saxs/index.html",
@@ -1301,17 +1254,16 @@
               "tile_summary": "binding kinetics from sensor response",
               "subtitle": "Surface Plasmon Resonance intelligence",
               "landing_message": "",
-              "summary": "A complete bi-Langmuir adsorption theory coupled to interpretable surrogate modelling for SPR.",
-              "body": "The SPR application develops a two-population adsorption theory and uses Pythia to accelerate forward sensorgram prediction, inverse kinetic inference, uncertainty estimation, and experiment design.",
+              "summary": "Infer binding kinetics, affinity, and uncertainty from SPR sensorgrams.",
+              "body": "Transforms sensor responses into fast, validated interaction estimates.",
               "icon": "wave",
-              "route": "/research/pythia/spr/index.html",
+              "route": "/research/platforms/pythia/index.html",
               "links": [],
               "institutions": [],
               "contacts": [],
               "intent": {},
               "render": {
-                "grid_span": 6,
-                "source": "content/spr-research-direction.md"
+                "grid_span": 6
               },
               "behavior": {},
               "explain": {},
@@ -1334,8 +1286,7 @@
                 ],
                 "authored": {
                   "render": {
-                    "grid_span": 6,
-                    "source": "content/spr-research-direction.md"
+                    "grid_span": 6
                   }
                 }
               },
@@ -1451,8 +1402,8 @@
               "tile_summary": "structure from scattering profiles",
               "subtitle": "Small-Angle Scattering Pythia",
               "landing_message": "",
-              "summary": "Reconstructing molecular assembly structure from small-angle X-ray scattering profiles.",
-              "body": "The SAXS Oracle applies PYTHIA structural inference to solution scattering data. It infers the hidden three-dimensional organization of macromolecular assemblies from one-dimensional scattering curves, combining physics-based constraints with probabilistic multi-scale reasoning.",
+              "summary": "Reconstruct molecular assembly structure from SAXS profiles.",
+              "body": "Applies PYTHIA inference to solution scattering and estimates plausible 3D organization with physics-based constraints.",
               "icon": "scatter",
               "route": "/research/pythia/saxs/index.html",
               "links": [],
@@ -1599,8 +1550,8 @@
               "tile_summary": "flux states and network topology",
               "subtitle": "Metabolic Network Pythia",
               "landing_message": "",
-              "summary": "Inferring metabolic flux states and network topology from experimental constraints.",
-              "body": "The Metabolic Oracle applies PYTHIA to biochemical network reconstruction. It integrates stoichiometric constraints, thermodynamic feasibility, and experimental observations to infer the most plausible flux organization of a living cell under given conditions.",
+              "summary": "Infer metabolic flux states and network topology from constraints.",
+              "body": "Integrates stoichiometry, thermodynamics, and observations to estimate plausible cellular flux organization.",
               "icon": "network",
               "route": "/research/pythia/metabolic/index.html",
               "links": [],
@@ -1746,11 +1697,11 @@
           "tile_lead": "research infrastructure",
           "tile_accent": "blue",
           "tile_title": "core facility architecture",
-          "tile_summary": "define, calculate, and explain KPIs from PPMS data across facilities, instruments, services, and workflows",
+          "tile_summary": "KPI intelligence from PPMS data",
           "subtitle": "Organisational intelligence for scientific infrastructure",
           "landing_message": "",
-          "summary": "Turn PPMS operational data into reproducible KPIs with visible formulas, filters, provenance, and data quality.",
-          "body": "PPMS already manages and catalogues facilities, instruments, services, and reports. The Core Facility KPI Studio adds a controlled analytical layer: robust PUMAPI, API2, or export adapters; a canonical event model; versioned KPI definitions; cross-facility comparison; and Swiss-design views for utilisation, availability, demand, training, throughput, maintenance, and finance. A connection to the BOKU PPMS environment is being prepared; access and implementation details remain private.",
+          "summary": "Turn PPMS data into reproducible KPIs with visible formulas, filters, and provenance.",
+          "body": "Adds a controlled analytics layer with robust adapters, canonical events, versioned KPI definitions, and cross-facility comparison.",
           "icon": "network",
           "route": "",
           "links": [],
@@ -1786,11 +1737,11 @@
           "tile_lead": "protein evidence",
           "tile_accent": "green",
           "tile_title": "quality, traceability, yield",
-          "tile_summary": "AlphaFold, PDB, UniProt, publications, datasets, and public code as one evidence network",
+          "tile_summary": "public protein evidence as one network",
           "subtitle": "Public protein-structure repository intelligence",
           "landing_message": "",
-          "summary": "Follow protein evidence from public structure models to experimental support, methods, code, and the next analysis.",
-          "body": "QTY AlphaFold Oracle regularly checks public repositories, resolves scientific identities and versions, and connects structures, publications, methods, datasets, and code with visible provenance and uncertainty.",
+          "summary": "Follow protein evidence from public models to methods, code, and experimental support.",
+          "body": "Checks public repositories, resolves identities and versions, and links structures with provenance and uncertainty.",
           "icon": "particle",
           "route": "",
           "links": [],
@@ -1831,7 +1782,7 @@
       "tile_summary": "",
       "subtitle": "How the parts work together",
       "landing_message": "",
-      "summary": "NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.",
+      "summary": "Pythia, BRIX, and LITHOS. Two medical applications in development.",
       "body": "",
       "icon": "",
       "route": "",
@@ -1894,7 +1845,7 @@
           "subtitle": "Relationships across the platform",
           "landing_message": "",
           "summary": "Follow how modules, models, applications, and operational decisions connect.\n",
-          "body": "NEXUS connects the system. BRIX engineers structural form. LITHOS provides adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models. Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX engineers patient-specific vascular systems. Bio nanoparticles connect structure, interaction, and production.\n",
+          "body": "The calyr.a\u00ed system is built around AI-assisted modelling. Pythia is the shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable form from surrogate predictions. LITHOS provides the adaptive AI-native interaction layer that makes models explorable. NEXUS connects data, knowledge, and decisions across the system. Two stealth medical projects demonstrate the full pattern from evidence to engineered result.\n",
           "icon": "network",
           "route": "/ecosystem",
           "links": [],
@@ -1921,6 +1872,21 @@
                 "grid_span": 4
               }
             }
+          }
+        },
+        {
+          "type": "tile",
+          "id": "publications",
+          "meta": {
+            "source": {
+              "contentNodeId": null,
+              "structureNodeId": null
+            },
+            "nodeType": "tile",
+            "transformations": [
+              "ApplyNodeTypeInference",
+              "AttachResolvedContent"
+            ]
           }
         },
         {

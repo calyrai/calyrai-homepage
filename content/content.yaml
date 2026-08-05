@@ -1,7 +1,7 @@
 brand:
   display_name: "calyr.a\xED"
   domain: calyr.ai
-  tagline: calyr.aí is NEXUS, BRIX, and LITHOS.
+  tagline: AI-assisted modelling. Pythia. BRIX. LITHOS.
 __site_runtime:
   teaser:
     meta:
@@ -116,7 +116,7 @@ logo:
   title: "calyr.aí"
   title_ref: brand.display_name
   tile_lead: Scientific intelligence for engineered systems
-  summary: Create what does not yet exist.
+  summary: AI-assisted scientific modelling.
   body: We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.
   links:
     - id: explore
@@ -143,10 +143,9 @@ hero:
     variant: hero-banner
   explain:
     why: Introduce the brand promise before module exploration.
-  summary: Create what does not yet exist.
-movie:
+  summary: AI-assisted scientific modelling.
   title: Explore
-  subtitle: Interactive system exploration
+  subtitle: Interactive model exploration
   render:
     variant: tile-grid
     source: homepage.grid.explore-band
@@ -158,8 +157,8 @@ movie:
     - teaser
   explain:
     why: Present Explore through the same clear tile system used by Pythia.
-  summary: Questions become traceable evidence, interpretable models, and actionable paths.
-  body: Ask a question. Follow the evidence. Understand the system. Choose the next action.
+  summary: Data becomes surrogate model becomes engineered result.
+  body: Ask a question. Follow the evidence. Choose the next action.
   route: /research/teaser/index.html
 explore_data:
   title: data
@@ -206,8 +205,8 @@ explore_oracle:
   render:
     grid_span: 3
 platforms:
-  title: Architecture
-  subtitle: calyr.aí is NEXUS, BRIX, and LITHOS
+  title: AI-assisted modelling
+  subtitle: Pythia · BRIX · LITHOS
   intent:
     purpose: architecture-platform-overview
     audience: first-visit
@@ -222,10 +221,10 @@ platforms:
     - platform
   explain:
     why: Present the primary product modules before the broader ecosystem context.
-  summary: NEXUS, BRIX, and LITHOS are calyr.aí.
+  summary: Pythia · surrogate models. BRIX · engineered form. LITHOS · interaction.
 applications:
   title: Pythia
-  subtitle: Interpretable surrogate prediction for engineering
+  subtitle: surrogate prediction
   intent:
     purpose: pythia-system-overview
     audience: first-visit
@@ -240,10 +239,10 @@ applications:
     - applications
   explain:
     why: Present Pythia as the shared data-to-surrogate-to-prediction system.
-  summary: Pythia turns physics-informed surrogate models into fast, interpretable scientific predictions with uncertainty and explicit validity limits.
+  summary: Data and simulation become fast, validated surrogate predictions with calibrated uncertainty.
 applied:
-  title: Applications
-  subtitle: Scientific systems become usable products
+  title: Examples
+  subtitle: Two stealth projects · details on request
   intent:
     purpose: applied-system-overview
     audience: first-visit
@@ -258,7 +257,7 @@ applied:
     - applied
   explain:
     why: Present application fields first and place concrete systems one level below.
-  summary: Each application combines sources, models, evidence, workflows, and interaction into one operational product.
+  summary: Two active medical AI projects. Details available on request.
 architecture:
   title: System
   subtitle: How the parts work together
@@ -273,7 +272,7 @@ architecture:
     default_expanded: false
   explain:
     why: Show how modules, applications, principles, and contact paths relate.
-  summary: NEXUS, BRIX, LITHOS, Pythia, applications, and oracles operate as one engineering system.
+  summary: Pythia, BRIX, and LITHOS. Two medical applications in development.
 contact_main:
   title: Company
   subtitle: Expertise, engagement, and legal information
@@ -302,14 +301,12 @@ core:
   tile_lead: integration
   tile_accent: blue
   tile_title: nexus
-  tile_summary: NEXUS connects the calyr.aí architecture
-  subtitle: System integration
+  tile_summary: connects data, models, and decisions
+  subtitle: Integration
   summary: 'NEXUS connects data, models, workflows, and platforms.
 
     '
-  body: 'NEXUS is the connective architecture of calyr.aí. It links data, knowledge,
-    models, workflows, platforms, and decisions while Pythia supplies surrogate
-    modelling and prediction.
+  body: 'NEXUS links data, knowledge, models, workflows, and decisions across the calyr.aí system.
 
     '
   icon: brain
@@ -352,14 +349,22 @@ oracle:
   tile_lead: domain systems
   tile_accent: magenta
   tile_title: oracles
-  tile_summary: prediction becomes a domain-specific capability
+  tile_summary: evidence, surrogate, and uncertainty become a usable decision
   subtitle: Prediction in context
   summary: 'Oracles turn Pythia predictions into decisions, designs, and engineered results.
+    Every oracle separates what the data shows, what the model infers, and where
+    uncertainty remains — making AI-driven decisions auditable and trustworthy.
 
     '
-  body: 'An Oracle is the usable consequence of Pythia: surrogate prediction,
-    uncertainty, domain constraints, adaptive AI-based interaction, and action
-    combined for one defined class of problems.
+  body: 'An Oracle is the usable consequence of Pythia: surrogate prediction trained
+    at scale on the Vienna Scientific Cluster 5 (VSC5), calibrated uncertainty,
+    domain constraints, and adaptive interaction combined for one defined class of
+    problems. Development oracles extend this pattern into engineering workflows —
+    keeping evidence, model output, and uncertainty explicitly separated so developers,
+    clients, and regulators can interrogate every recommendation rather than simply
+    trust it. Oracles exist for vascular design, bio-nanoparticle engineering, SAXS
+    structural inference, SPR binding kinetics, metabolic flux, and public protein
+    evidence via the QTY/AlphaFold Oracle.
 
     '
   icon: crystal-ball
@@ -433,9 +438,11 @@ ecosystem:
   summary: 'Follow how modules, models, applications, and operational decisions connect.
 
     '
-  body: 'NEXUS connects the system. BRIX engineers structural form. LITHOS provides
-    adaptive AI-native graphical interaction. Pythia builds interpretable surrogate models.
-    Applications integrate measurements, simulations, domain models, interpretation, and interaction into products. AFLOWTEX engineers patient-specific vascular systems. Bio nanoparticles connect structure, interaction, and production.
+  body: 'The calyr.aí system is built around AI-assisted modelling. Pythia is the
+    shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable
+    form from surrogate predictions. LITHOS provides the adaptive AI-native interaction
+    layer that makes models explorable. NEXUS connects data, knowledge, and decisions
+    across the system. Two stealth medical projects demonstrate the full pattern from evidence to engineered result.
 
     '
   icon: network
@@ -685,3 +692,54 @@ __flowchart:
     - - architecture_stage
       - contact_stage
       - reach out
+cv:
+  title: CV · Rupert Tscheliessnig
+  tile_lead: professional reference
+  tile_accent: blue
+  tile_title: curriculum vitae
+  tile_summary: scientific AI, surrogate modelling, structural biophysics, research infrastructure
+  subtitle: Curriculum Vitae
+  summary: Dr.techn. DI Rupert Tscheliessnig · scientific ML engineer, structural biophysicist, research infrastructure architect, MBA. VSC5 surrogate modelling. Calyrai founder.
+  body: Two decades across structural biology, thermodynamic modelling, HPC surrogate modelling on VSC5, research infrastructure, and scientific AI product development. PhD Technical Physics, TU Vienna.
+  route: https://www.linkedin.com/in/rupert-tscheliessnig-a7865015b/
+  keywords: [cv, resume, curriculum vitae, rupert, tscheliessnig, phd, physicist, surrogate, modelling, biophysics, saxs, vsc5, calyrai]
+method_oracling:
+  title: Oracling
+  tile_lead: method
+  tile_title: oracling
+  tile_summary: evidence, predictions, uncertainty, and trade-offs into traceable decisions
+  subtitle: Decision method
+  summary: Turn evidence, predictions, uncertainty, constraints, and trade-offs into traceable decision proposals and explicit next actions.
+  route: /research/methods/oracling/
+method_evidence_reading:
+  title: Evidence Reading Workflow
+  tile_lead: method
+  tile_title: evidence reading workflow
+  tile_summary: capture, preserve, and publish curated evidence to the knowledge catalog
+  subtitle: Research workflow
+  summary: Capture sources, preserve them in Zotero, extract page-bound evidence, and publish curated claims to the calyr.aí knowledge catalog.
+  route: /research/methods/evidence-reading-workflow/
+method_ai_numerics:
+  title: Scientific AI and Numerical Methods
+  tile_lead: method
+  tile_title: scientific AI numerics
+  tile_summary: trustworthy surrogate prediction through numerical baselines and validation
+  subtitle: Reference methods
+  summary: Trustworthy surrogate prediction through numerical baselines, uncertainty, applicability limits, and validation.
+  route: /research/methods/scientific-ai-numerics/
+philosophy_biophysics:
+  title: Closed-loop Biophysical Interrogation
+  tile_lead: philosophy
+  tile_title: closed-loop biophysics
+  tile_summary: measurement, model, prediction, and experiment form one closed scientific loop
+  subtitle: Research philosophy
+  summary: Measurement, surrogate model, prediction, and experiment form one closed scientific interrogation loop where every result feeds the next question.
+  route: /research/philosophy/closed-loop-biophysics/
+whitepapers:
+  title: White Papers
+  tile_lead: publications
+  tile_title: white papers
+  tile_summary: calyr.aí research and method white papers
+  subtitle: Technical publications
+  summary: calyr.aí white papers covering surrogate modelling, oracle design, scientific AI numerics, and research infrastructure.
+  route: /research/whitepapers/
