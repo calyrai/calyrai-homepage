@@ -115,15 +115,45 @@ function App() {
   }, [routeState.isHomeAliasRoute, routeState.homeAnchor, currentPath])
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className="boot-screen" role="status" aria-live="polite" aria-busy="true">
+        <div className="boot-card">
+          <p className="boot-eyebrow">calyr.aí</p>
+          <h1 className="boot-title">Compiling knowledge</h1>
+          <p className="boot-copy">Initializing runtime artifacts and interface graph.</p>
+          <div className="boot-bar" aria-hidden="true">
+            <span className="boot-bar-fill" />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return (
+      <div className="boot-screen boot-screen-error" role="alert">
+        <div className="boot-card">
+          <p className="boot-eyebrow">Startup error</p>
+          <h1 className="boot-title">Could not initialize</h1>
+          <p className="boot-copy">{error}</p>
+          <button type="button" className="boot-action" onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (!ast || !theme) {
-    return <div>No data</div>
+    return (
+      <div className="boot-screen" role="alert">
+        <div className="boot-card">
+          <p className="boot-eyebrow">Data missing</p>
+          <h1 className="boot-title">No runtime data</h1>
+          <p className="boot-copy">The page payload is incomplete. Rebuild artifacts and refresh.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
