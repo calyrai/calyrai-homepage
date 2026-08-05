@@ -17,15 +17,17 @@
   },
   "logo": {
     "title": "calyr.a\u00ed",
-    "summary": "AI-assisted scientific modelling.",
+    "summary": "med \u00b7 nano \u00b7 bio modelling.",
     "body_preview": "We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.",
     "route": "",
     "icon": "",
     "keywords": [
-      "ai-assisted",
+      "bio",
       "calyr.a\u00ed",
+      "med",
       "modelling.",
-      "scientific"
+      "nano",
+      "\u00b7"
     ]
   },
   "hero": {
