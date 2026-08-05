@@ -1,7 +1,7 @@
 brand:
   display_name: "calyr.a\xED"
   domain: calyr.ai
-  tagline: AI-assisted modelling. Pythia. BRIX. LITHOS.
+  tagline: ai-ssisted modelling. Pythia. BRIX. LITHOS.
 __site_runtime:
   teaser:
     meta:
@@ -205,7 +205,7 @@ explore_oracle:
   render:
     grid_span: 3
 platforms:
-  title: AI-assisted surrogate modelling
+  title: ai-ssisted surrogate modelling
   subtitle: Pythia · BRIX · LITHOS
   intent:
     purpose: architecture-platform-overview

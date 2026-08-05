@@ -74,9 +74,9 @@
     },
     {
       "id": "platforms",
-      "label": "AI-assisted surrogate modelling",
+      "label": "ai-ssisted surrogate modelling",
       "data": {
-        "title": "AI-assisted surrogate modelling",
+        "title": "ai-ssisted surrogate modelling",
         "summary": "Pythia \u00b7 surrogate models. BRIX \u00b7 engineered form. LITHOS \u00b7 interaction.",
         "icon": ""
       }
