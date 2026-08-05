@@ -116,7 +116,7 @@ logo:
   title: "calyr.aí"
   title_ref: brand.display_name
   tile_lead: Scientific intelligence for engineered systems
-  summary: med · nano · bio modelling.
+  summary: Surrogate intelligence for medicine and nanobiotech.
   body: We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.
   links:
     - id: explore
@@ -143,7 +143,7 @@ hero:
     variant: hero-banner
   explain:
     why: Introduce the brand promise before module exploration.
-  summary: med · nano · bio modelling.
+  summary: Surrogate intelligence for medicine and nanobiotech.
   title: Explore
   subtitle: Interactive model exploration
   render:
