@@ -95,7 +95,7 @@
       "label": "Examples",
       "data": {
         "title": "Examples",
-        "summary": "Two active medical AI projects. Details available on request.",
+        "summary": "Three active projects \u2014 cardiovascular AI, molecular medicine, and nanobiotech. Details on request.",
         "icon": ""
       }
     },
@@ -104,7 +104,7 @@
       "label": "System",
       "data": {
         "title": "System",
-        "summary": "Pythia, BRIX, and LITHOS. Two medical applications in development.",
+        "summary": "Pythia, BRIX, and LITHOS. Three stealth projects in medical and nanobiotech AI.",
         "icon": ""
       }
     },
@@ -317,10 +317,19 @@
     },
     {
       "id": "bio_nanoparticles",
-      "label": "bio nanoparticles",
+      "label": "stealth medical project II",
       "data": {
-        "title": "bio nanoparticles",
-        "summary": "Biological nanoparticles engineered across structure, interaction, and production.",
+        "title": "stealth medical project II",
+        "summary": "Molecular design, characterisation, and manufacturing behaviour linked through interpretable surrogate models and evidence-backed oracles.",
+        "icon": "particle"
+      }
+    },
+    {
+      "id": "stealth_nanobiotech",
+      "label": "stealth nanobiotech project",
+      "data": {
+        "title": "stealth nanobiotech project",
+        "summary": "Nanoparticle targeting, surface engineering, and biological function linked through surrogate models trained on VSC5 experimental datasets.",
         "icon": "particle"
       }
     },

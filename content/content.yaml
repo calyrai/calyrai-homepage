@@ -257,7 +257,7 @@ applied:
     - applied
   explain:
     why: Present application fields first and place concrete systems one level below.
-  summary: Three active projects: cardiovascular AI, molecular medicine, and nanobiotech. Details on request.
+  summary: 'Three active projects — cardiovascular AI, molecular medicine, and nanobiotech. Details on request.'
 architecture:
   title: System
   subtitle: How the parts work together
