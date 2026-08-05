@@ -242,7 +242,7 @@ applications:
   summary: Data and simulation become fast, validated surrogate predictions with calibrated uncertainty.
 applied:
   title: Examples
-  subtitle: Two stealth projects · details on request
+  subtitle: Three stealth projects · details on request
   intent:
     purpose: applied-system-overview
     audience: first-visit
@@ -257,7 +257,7 @@ applied:
     - applied
   explain:
     why: Present application fields first and place concrete systems one level below.
-  summary: Two active medical AI projects. Details available on request.
+  summary: Three active projects: cardiovascular AI, molecular medicine, and nanobiotech. Details on request.
 architecture:
   title: System
   subtitle: How the parts work together
@@ -272,7 +272,7 @@ architecture:
     default_expanded: false
   explain:
     why: Show how modules, applications, principles, and contact paths relate.
-  summary: Pythia, BRIX, and LITHOS. Two medical applications in development.
+  summary: Pythia, BRIX, and LITHOS. Three stealth projects in medical and nanobiotech AI.
 contact_main:
   title: Company
   subtitle: Expertise, engagement, and legal information
@@ -442,7 +442,7 @@ ecosystem:
     shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable
     form from surrogate predictions. LITHOS provides the adaptive AI-native interaction
     layer that makes models explorable. NEXUS connects data, knowledge, and decisions
-    across the system. Two stealth medical projects demonstrate the full pattern from evidence to engineered result.
+    across the system. Three stealth projects in medical and nanobiotech AI demonstrate the full pattern from evidence to engineered result.
 
     '
   icon: network
