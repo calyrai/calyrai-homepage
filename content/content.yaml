@@ -442,6 +442,19 @@ ecosystem:
   route: /ecosystem
   render:
     grid_span: 4
+  publications:
+    title: active workstreams
+    tile_lead: present work
+    tile_accent: cyan
+    tile_title: current systems in build
+    tile_summary: active scientific ML systems across structural biology, core facilities, and oracle engineering
+    subtitle: Present work only
+    summary: Current work focuses on building and validating operational scientific ML systems, interfaces, and evidence-linked workflows.
+    body: Active workstreams include Core Facility KPI Studio, BMCA Studio, QTY or AlphaFold Oracle, AI-assisted hybrid structural reconstruction, and RedHuman or ParvoTech modelling pipelines.
+    icon: book
+    route: /research/publications/
+    render:
+      grid_span: 4
 philosophy:
   title: philosophy
   tile_lead: scientific AI
