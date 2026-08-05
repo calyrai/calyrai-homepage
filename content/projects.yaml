@@ -31,9 +31,9 @@ bio_nanoparticles:
   tile_accent: magenta
   tile_title: molecular medicine
   tile_summary: structure, function, and production as one traceable model
-  subtitle: AI-assisted molecular medicine
+  subtitle: ai-ssisted molecular medicine
   summary: Molecular design, characterisation, and manufacturing behaviour linked through interpretable surrogate models and evidence-backed oracles.
-  body: Surface function, structural envelope, purification behaviour, and clinical applicability are connected in one traceable AI-assisted modelling system validated on VSC5.
+  body: Surface function, structural envelope, purification behaviour, and clinical applicability are connected in one traceable ai-ssisted modelling system validated on VSC5.
   icon: particle
   render:
     grid_span: 4
@@ -43,7 +43,7 @@ stealth_nanobiotech:
   tile_accent: green
   tile_title: nanobiotech
   tile_summary: nanobiotech AI · structure, targeting, and function from evidence
-  subtitle: AI-assisted nanobiotech
+  subtitle: ai-ssisted nanobiotech
   summary: Nanoparticle targeting, surface engineering, and biological function linked through surrogate models trained on VSC5 experimental datasets.
   body: Particle design, characterisation, interaction with biological systems, and functional validation are integrated into one evidence-linked AI workflow. Details on request.
   icon: particle

@@ -408,7 +408,7 @@
   "ecosystem": {
     "title": "system map",
     "summary": "Follow how modules, models, applications, and operational decisions connect.\n",
-    "body_preview": "The calyr.a\u00ed system is built around AI-assisted modelling. Pythia is the shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable form from surrogate predictions. LITHOS prov",
+    "body_preview": "The calyr.a\u00ed system is built around ai-ssisted modelling. Pythia is the shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable form from surrogate predictions. LITHOS provi",
     "route": "/ecosystem",
     "icon": "network",
     "keywords": [
@@ -706,7 +706,7 @@
   "bio_nanoparticles": {
     "title": "stealth medical project II",
     "summary": "Molecular design, characterisation, and manufacturing behaviour linked through interpretable surrogate models and evidence-backed oracles.",
-    "body_preview": "Surface function, structural envelope, purification behaviour, and clinical applicability are connected in one traceable AI-assisted modelling system validated on VSC5.",
+    "body_preview": "Surface function, structural envelope, purification behaviour, and clinical applicability are connected in one traceable ai-ssisted modelling system validated on VSC5.",
     "route": "",
     "icon": "particle",
     "keywords": [

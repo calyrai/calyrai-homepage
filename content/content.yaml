@@ -441,7 +441,7 @@ ecosystem:
   summary: 'Follow how modules, models, applications, and operational decisions connect.
 
     '
-  body: 'The calyr.aí system is built around AI-assisted modelling. Pythia is the
+  body: 'The calyr.aí system is built around ai-ssisted modelling. Pythia is the
     shared surrogate ML engine trained at scale on VSC5. BRIX engineers manufacturable
     form from surrogate predictions. LITHOS provides the adaptive AI-native interaction
     layer that makes models explorable. NEXUS connects data, knowledge, and decisions
@@ -460,7 +460,7 @@ ecosystem:
     tile_summary: active scientific ML systems across structural biology, core facilities, and oracle engineering
     subtitle: Present work only
     summary: Current work focuses on building and validating operational scientific ML systems, interfaces, and evidence-linked workflows.
-    body: Active workstreams include Core Facility KPI Studio, BMCA Studio, QTY or AlphaFold Oracle, AI-assisted hybrid structural reconstruction, and RedHuman or ParvoTech modelling pipelines.
+    body: Active workstreams include Core Facility KPI Studio, BMCA Studio, QTY or AlphaFold Oracle, ai-ssisted hybrid structural reconstruction, and RedHuman or ParvoTech modelling pipelines.
     icon: book
     route: /research/publications/
     render:
