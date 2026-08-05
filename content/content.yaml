@@ -225,6 +225,7 @@ platforms:
 applications:
   title: Pythia
   subtitle: surrogate prediction
+  route: /research/platforms/pythia/index.html
   intent:
     purpose: pythia-system-overview
     audience: first-visit
@@ -261,6 +262,7 @@ applied:
 architecture:
   title: System
   subtitle: How the parts work together
+  route: /ecosystem
   intent:
     purpose: system-relationships
     audience: returning-visitor
@@ -276,6 +278,7 @@ architecture:
 contact_main:
   title: Company
   subtitle: Expertise, engagement, and legal information
+  route: /contact
   intent:
     purpose: legal-contact
     audience: returning-visitor

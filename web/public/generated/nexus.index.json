@@ -146,7 +146,7 @@
     "title": "Pythia",
     "summary": "Data and simulation become fast, validated surrogate predictions with calibrated uncertainty.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/pythia/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -190,7 +190,7 @@
     "title": "System",
     "summary": "Pythia, BRIX, and LITHOS. Three stealth projects in medical and nanobiotech AI.",
     "body_preview": "",
-    "route": "",
+    "route": "/ecosystem",
     "icon": "",
     "keywords": [
       "ai.",
@@ -211,7 +211,7 @@
     "title": "Company",
     "summary": "Public professional reference, collaboration areas, and publisher information.",
     "body_preview": "",
-    "route": "",
+    "route": "/contact",
     "icon": "",
     "keywords": [
       "and",
@@ -758,7 +758,7 @@
     "title": "core facility studio",
     "summary": "Turn PPMS data into reproducible KPIs with visible formulas, filters, and provenance.",
     "body_preview": "Adds a controlled analytics layer with robust adapters, canonical events, versioned KPI definitions, and cross-facility comparison.",
-    "route": "",
+    "route": "/research/publications/",
     "icon": "network",
     "keywords": [
       "and",
@@ -782,7 +782,7 @@
     "title": "QTY AlphaFold Oracle",
     "summary": "Follow protein evidence from public models to methods, code, and experimental support.",
     "body_preview": "Checks public repositories, resolves identities and versions, and links structures with provenance and uncertainty.",
-    "route": "",
+    "route": "/research/publications/",
     "icon": "particle",
     "keywords": [
       "alphafold",
@@ -882,7 +882,7 @@
     "title": "Vascular Oracle",
     "summary": "Prediction becomes clinical and engineering decision support.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/aflowtex/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -900,7 +900,7 @@
     "title": "vascular measurement models",
     "summary": "Clinical imaging, observed anatomy, flow measurements, and patient evidence.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/aflowtex/index.html",
     "icon": "",
     "keywords": [
       "anatomy,",
@@ -921,7 +921,7 @@
     "title": "vascular simulation models",
     "summary": "Geometry, fluid dynamics, boundary conditions, and virtual intervention states.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/aflowtex/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -942,7 +942,7 @@
     "title": "vascular interpretation models",
     "summary": "Surrogate prediction, uncertainty, comparison, and patient-specific meaning.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/aflowtex/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -961,7 +961,7 @@
     "title": "local nanoparticle surface design",
     "summary": "Defined surface regions are modified against explicit functional and production constraints.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/brix/index.html",
     "icon": "",
     "keywords": [
       "against",
@@ -984,7 +984,7 @@
     "title": "nanoparticle characterization",
     "summary": "SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/brix/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1007,7 +1007,7 @@
     "title": "nanoparticle purification behavior",
     "summary": "Chromatographic structure and manufacturability become explicit design traits.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/brix/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1027,7 +1027,7 @@
     "title": "bio-nanoparticle oracle",
     "summary": "White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/platforms/brix/index.html",
     "icon": "",
     "keywords": [
       "across",
@@ -1049,7 +1049,7 @@
     "title": "SPR Data",
     "summary": "Sensorgrams, concentrations, assay conditions, and experimental controls.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/spr/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1067,7 +1067,7 @@
     "title": "SPR Surrogate",
     "summary": "Fast models of molecular association, dissociation, affinity, and uncertainty.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/spr/index.html",
     "icon": "",
     "keywords": [
       "affinity,",
@@ -1087,7 +1087,7 @@
     "title": "SPR Oracle",
     "summary": "Prediction becomes interpretable binding and assay decisions.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/spr/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1105,7 +1105,7 @@
     "title": "SAXS Data",
     "summary": "Scattering profiles, experimental conditions, priors, and structural constraints.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/saxs/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1124,7 +1124,7 @@
     "title": "SAXS Surrogate",
     "summary": "Fast inference of molecular assembly and plausible structural states.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/saxs/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1144,7 +1144,7 @@
     "title": "SAXS Oracle",
     "summary": "Prediction becomes structural interpretation and experiment guidance.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/saxs/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1162,7 +1162,7 @@
     "title": "Metabolic Data",
     "summary": "Experimental observations, stoichiometry, and thermodynamic constraints.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/metabolic/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1179,7 +1179,7 @@
     "title": "Metabolic Surrogate",
     "summary": "Fast models of flux states, network behavior, and uncertainty.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/metabolic/index.html",
     "icon": "",
     "keywords": [
       "and",
@@ -1199,7 +1199,7 @@
     "title": "Metabolic Oracle",
     "summary": "Prediction becomes biological interpretation and intervention guidance.",
     "body_preview": "",
-    "route": "",
+    "route": "/research/pythia/metabolic/index.html",
     "icon": "",
     "keywords": [
       "and",

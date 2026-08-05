@@ -51,6 +51,7 @@ stealth_nanobiotech:
     grid_span: 4
 core_facility_studio:
   title: core facility studio
+  route: /research/publications/
   tile_lead: research infrastructure
   tile_accent: blue
   tile_title: core facility architecture
@@ -63,6 +64,7 @@ core_facility_studio:
     grid_span: 4
 qty_alphafold_oracle:
   title: QTY AlphaFold Oracle
+  route: /research/publications/
   tile_lead: protein evidence
   tile_accent: green
   tile_title: quality, traceability, yield
@@ -128,68 +130,85 @@ pythia_metabolic:
 vascular_oracle:
   title: Vascular Oracle
   subtitle: Oracle
+  route: /research/platforms/aflowtex/index.html
   summary: Prediction becomes clinical and engineering decision support.
 vascular_measurement:
   title: vascular measurement models
   subtitle: Measurement
+  route: /research/platforms/aflowtex/index.html
   summary: Clinical imaging, observed anatomy, flow measurements, and patient evidence.
 vascular_simulation:
   title: vascular simulation models
   subtitle: Simulation
+  route: /research/platforms/aflowtex/index.html
   summary: Geometry, fluid dynamics, boundary conditions, and virtual intervention states.
 vascular_interpretation:
   title: vascular interpretation models
   subtitle: Interpretation
+  route: /research/platforms/aflowtex/index.html
   summary: Surrogate prediction, uncertainty, comparison, and patient-specific meaning.
 nanoparticle_design:
   title: local nanoparticle surface design
   subtitle: Design
+  route: /research/platforms/brix/index.html
   summary: Defined surface regions are modified against explicit functional and production constraints.
 nanoparticle_characterization:
   title: nanoparticle characterization
   subtitle: Evidence
+  route: /research/platforms/brix/index.html
   summary: SPR, SAXS, structural envelopes, and functional assays connect design to measured behavior.
 nanoparticle_purification:
   title: nanoparticle purification behavior
   subtitle: Manufacturing
+  route: /research/platforms/brix/index.html
   summary: Chromatographic structure and manufacturability become explicit design traits.
 nanoparticle_oracle:
   title: bio-nanoparticle oracle
   subtitle: Oracle
+  route: /research/platforms/brix/index.html
   summary: White-box predictions expose evidence, uncertainty, and trade-offs across every design trait.
 spr_data:
   title: SPR Data
   subtitle: Data
+  route: /research/pythia/spr/index.html
   summary: Sensorgrams, concentrations, assay conditions, and experimental controls.
 spr_surrogate:
   title: SPR Surrogate
   subtitle: Surrogate
+  route: /research/pythia/spr/index.html
   summary: Fast models of molecular association, dissociation, affinity, and uncertainty.
 spr_oracle:
   title: SPR Oracle
   subtitle: Oracle
+  route: /research/pythia/spr/index.html
   summary: Prediction becomes interpretable binding and assay decisions.
 saxs_data:
   title: SAXS Data
   subtitle: Data
+  route: /research/pythia/saxs/index.html
   summary: Scattering profiles, experimental conditions, priors, and structural constraints.
 saxs_surrogate:
   title: SAXS Surrogate
   subtitle: Surrogate
+  route: /research/pythia/saxs/index.html
   summary: Fast inference of molecular assembly and plausible structural states.
 saxs_oracle:
   title: SAXS Oracle
   subtitle: Oracle
+  route: /research/pythia/saxs/index.html
   summary: Prediction becomes structural interpretation and experiment guidance.
 metabolic_data:
   title: Metabolic Data
   subtitle: Data
+  route: /research/pythia/metabolic/index.html
   summary: Experimental observations, stoichiometry, and thermodynamic constraints.
 metabolic_surrogate:
   title: Metabolic Surrogate
   subtitle: Surrogate
+  route: /research/pythia/metabolic/index.html
   summary: Fast models of flux states, network behavior, and uncertainty.
 metabolic_oracle:
   title: Metabolic Oracle
   subtitle: Oracle
+  route: /research/pythia/metabolic/index.html
   summary: Prediction becomes biological interpretation and intervention guidance.
