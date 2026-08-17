@@ -115,9 +115,9 @@ route_policy:
 logo:
   title: "calyr.aí"
   title_ref: brand.display_name
-  tile_lead: Scientific intelligence for engineered systems
+  tile_lead: ""
   summary: Surrogate intelligence for medicine and nanobiotech.
-  body: We turn complex scientific and engineering questions into traceable evidence, interpretable surrogate predictions, and deployable decision systems.
+  body: Traceable evidence. Interpretable predictions. Deployable decisions.
   links:
     - id: explore
       label: Explore the system
