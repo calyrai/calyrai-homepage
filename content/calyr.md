@@ -59,6 +59,7 @@ challenge_body: Hi, this is [name]. The problem is: [briefly describe the diffic
 
 ### 01 · Aorta
 summary: Patient-specific flow, wall mechanics, and devices.
+url: /research/aorta/
 
 ### 02 · Nanoparticles
 summary: SBPA concepts connect structure, properties, bioactivity, corona formation, transport, and uptake.
