@@ -55,6 +55,20 @@ challenge_email: hello@calyr.ai
 challenge_subject: Can calyr.aí build a surrogate and Oracle for this problem?
 challenge_body: Hi, this is [name]. The problem is: [briefly describe the difficult decision, simulation, or experiment]. Available evidence: [data, simulations, experiments, or measurements]. The result we need is: [desired prediction or decision]. Can we build a validated surrogate and Oracle for it?
 
+## Research buttons
+
+### 01 · Aorta
+summary: Patient-specific flow, wall mechanics, and devices.
+
+### 02 · Nanoparticles
+summary: SBPA concepts connect structure, properties, bioactivity, corona formation, transport, and uptake.
+
+### 03 · Nanobiophysics
+summary: Interfaces, binding, assembly, and membrane interaction.
+
+### 04 · DOE / PPMS
+summary: Designed experiments, parameter spaces, and predictive process models.
+
 ## Impressum
 
 label: 04 · IMPRESSUM
