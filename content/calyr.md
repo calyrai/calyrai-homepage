@@ -67,9 +67,11 @@ url: /research/nanoparticles/
 
 ### 03 · Nanobiophysics
 summary: Interfaces, binding, assembly, and membrane interaction.
+url: /research/nanobiophysics/
 
 ### 04 · DOE / PPMS
 summary: Designed experiments, parameter spaces, and predictive process models.
+url: /research/doe-ppms/
 
 ### 05 · Impressum
 summary: Rupert Glisnig · Founder and responsible for content · Vienna, Austria.
