@@ -179,7 +179,7 @@ function applyMarkdownVisibility(frame: HTMLIFrameElement) {
       label.textContent = labelParts?.[1] ?? copy.label;
     }
     if (title) title.textContent = copy.title;
-    if (summary) {
+    if (summary && !summary.querySelector(".calyr-case-row")) {
       const rows = [
         ["QUESTION", copy.summary],
         ["HOW", copy.how.replace(/^HOW\s*·\s*/i, "")],
@@ -202,7 +202,6 @@ function applyMarkdownVisibility(frame: HTMLIFrameElement) {
         return row;
       }));
       const content = element?.querySelector(".tile-content");
-      content?.querySelector(".calyr-case-kicker")?.remove();
       if (content && labelParts?.[2]) {
         const kicker = document.createElement("p");
         kicker.className = "calyr-case-kicker";
