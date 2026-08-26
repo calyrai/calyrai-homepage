@@ -1,10 +1,10 @@
-# CALYR.AÍ
+# calyr.aí
 
 ## 01 · Scientific intelligence for engineered systems
 
 eyebrow: SCIENTIFIC AÍ FOR ENGINEERED SYSTEMS
 tagline: VSC-5 evidence. Surrogate speed. Oracle decisions
-description: CALYR.AÍ turns high-fidelity simulations and experiments into fast, uncertainty-aware models—and selects what should be computed, measured, or designed next.
+description: calyr.aí turns high-fidelity simulations and experiments into fast, uncertainty-aware models—and selects what should be computed, measured, or designed next.
 
 ## 02 · Explore the system
 
@@ -45,25 +45,25 @@ next: RETURN → VSC-5 / EXPERIMENT
 ## Links
 
 start_label: No decisions in time.
-email_label: Can CALYR.AÍ build a surrogate and Oracle for it?
+email_label: Can calyr.aí build a surrogate and Oracle for it?
 limit_label: Push the limit
 explore_label: Explore the system
 explore_url: https://github.com/calyrai/CALYR-Research
 limit_url: https://github.com/calyrai/CALYR-Research/issues
 challenge_label: Start the challenge
 challenge_email: hello@calyr.ai
-challenge_subject: Can CALYR.AÍ build a surrogate and Oracle for this problem?
+challenge_subject: Can calyr.aí build a surrogate and Oracle for this problem?
 challenge_body: Hi, this is [name]. The problem is: [briefly describe the difficult decision, simulation, or experiment]. Available evidence: [data, simulations, experiments, or measurements]. The result we need is: [desired prediction or decision]. Can we build a validated surrogate and Oracle for it?
 
 ## Impressum
 
 label: 04 · IMPRESSUM
-title: CALYR.AÍ
-name: Rupert Tscheliessnig
+title: calyr.aí
+name: Rupert Glisnig
 role: Founder and responsible for content
 address: Ogugasse 3/3/13, 1220 Vienna, Austria
 email: hello@calyr.ai
-description: Develops scientific surrogate and Oracle workflows for engineered systems. This website presents the research approach, demonstrators, and contact path. Rupert Tscheliessnig is responsible for its editorial content.
+description: Develops scientific surrogate and Oracle workflows for engineered systems. This website presents the research approach, demonstrators, and contact path. Rupert Glisnig is responsible for its editorial content.
 
 <!--
 ## 05 · AÍ-ssisted surrogate modelling
@@ -76,7 +76,7 @@ description: Develops scientific surrogate and Oracle workflows for engineered s
 
 ## 09 · Company
 
-Name: Rupert Tscheliessnig  
+Name: Rupert Glisnig  
 Function: Founder  
 Address: Ogugasse 3/3/13, 1220 Vienna, Austria
 -->
