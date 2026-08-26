@@ -55,7 +55,7 @@ function applyMarkdownVisibility(frame: HTMLIFrameElement) {
   const privateSearchUrl = `${links.explore_url}/search?q=`;
   if (searchButton && searchButton.dataset.privateGitSearch !== "true") {
     searchButton.dataset.privateGitSearch = "true";
-    searchButton.setAttribute("aria-label", "Search the private CALYR Git repository");
+    searchButton.setAttribute("aria-label", "Search the private CALYR.AÍ Git repository");
     searchButton.addEventListener("click", event => {
       event.preventDefault();
       event.stopImmediatePropagation();
