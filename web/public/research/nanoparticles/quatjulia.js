@@ -14,6 +14,7 @@
   const orbitCanvas = document.createElement('canvas');
   orbitCanvas.className = 'lv-orbits';
   orbitCanvas.setAttribute('aria-hidden', 'true');
+  orbitCanvas.style.display = 'none';
   host.insertBefore(orbitCanvas, note);
   const orbit = orbitCanvas.getContext('2d');
 
@@ -60,6 +61,12 @@
       float bands=.5+.5*sin(30.*length(p)+time*.8);
       vec3 ink=mix(vec3(.025),vec3(.72,.0,.015),diff*.75+rim*.65);
       col=ink+vec3(.22,.0,.0)*bands*rim;
+      vec3 surfaceP=p;
+      surfaceP.xy*=rot(rotation.x); surfaceP.yz*=rot(rotation.y);
+      float orbitPhase=12.*atan(surfaceP.y,surfaceP.x)+8.*surfaceP.z+time*.32;
+      float orbitLine=1.-smoothstep(.035,.115,abs(sin(orbitPhase)));
+      float orbitGate=smoothstep(.08,.34,diff+rim*.42);
+      col=mix(col,vec3(1.,.035,.045),orbitLine*orbitGate*.92);
     }
     float vignette=1.-.14*dot(uv,uv);
     outColor=vec4(col*vignette,1.);
@@ -103,21 +110,22 @@
       const ow=orbitCanvas.width,oh=orbitCanvas.height,scale=Math.min(ow,oh);
       orbit.clearRect(0,0,ow,oh); orbit.globalCompositeOperation='multiply';
       const stateX=Math.tanh(prey-1.1),stateY=Math.tanh(pred-.85);
-      for(let lane=-6;lane<=6;lane++){
+      const tilt=Math.sin(ry)*.22, turn=rx*.42;
+      for(let lane=-5;lane<=5;lane++){
         orbit.beginPath();
-        for(let i=0;i<=180;i++){
-          const u=i/180,x=ow*(.10+.82*u);
-          const envelope=Math.sin(Math.PI*u);
-          const bend=Math.sin(u*6.4+elapsed*.16+stateX*1.8)*.11+Math.sin(u*13.2-stateY*2.)*.025;
-          const y=oh*(.49+bend*envelope)+lane*scale*(.009+.004*envelope);
+        for(let i=0;i<=220;i++){
+          const u=i/220,a=u*Math.PI*2+turn;
+          const radius=1+lane*.028+Math.sin(a*3+elapsed*.16+stateX*1.8)*.045;
+          const x=ow*(.5+Math.cos(a)*.245*radius);
+          const y=oh*(.5+(Math.sin(a)*.13+Math.cos(a)*tilt)*radius+Math.sin(a*5-stateY*2.)*.012);
           i?orbit.lineTo(x,y):orbit.moveTo(x,y);
         }
-        orbit.strokeStyle=`rgba(210,0,18,${lane===0?.58:.15+Math.abs(lane)*.012})`;
-        orbit.lineWidth=Math.max(1,scale*(lane===0?.0026:.0011)); orbit.stroke();
+        orbit.strokeStyle=`rgba(245,35,35,${lane===0?.92:.38})`;
+        orbit.lineWidth=Math.max(1,scale*(lane===0?.0032:.0014)); orbit.stroke();
       }
       for(let particle=0;particle<7;particle++){
-        const u=(elapsed*(.045+particle*.002)+particle/7)%1,x=ow*(.10+.82*u);
-        const y=oh*(.49+(Math.sin(u*6.4+elapsed*.16+stateX*1.8)*.11+Math.sin(u*13.2-stateY*2.)*.025)*Math.sin(Math.PI*u));
+        const u=(elapsed*(.045+particle*.002)+particle/7)%1,a=u*Math.PI*2+turn;
+        const x=ow*(.5+Math.cos(a)*.245),y=oh*(.5+Math.sin(a)*.13+Math.cos(a)*tilt);
         orbit.fillStyle='rgba(235,0,20,.95)';orbit.shadowColor='rgba(235,0,20,.8)';orbit.shadowBlur=12;orbit.beginPath();orbit.arc(x,y,Math.max(2,scale*.005),0,Math.PI*2);orbit.fill();orbit.shadowBlur=0;
       }
     };
