@@ -11,7 +11,7 @@
   host.prepend(canvas);
   const note = document.createElement('div');
   note.className = 'sbpa-hull-note';
-  note.innerHTML = '<strong>CONTINUOUS SbpA SURFACE</strong><span>28,783 vertices · 57,512 triangles · normal-shaded reconstruction</span>';
+  note.innerHTML = '<strong>SbpA SURFACE · SPATIAL CUBE</strong><span>28,783 vertices · 57,512 triangles · normal-shaded reconstruction</span>';
   host.append(note);
   const status = host.querySelector('.status');
   if (status) status.textContent = '● SURFACE MESH';
@@ -26,17 +26,29 @@
     out vec3 vNormal; out vec3 vPosition;
     mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}
     mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
-    void main(){mat3 r=rotX(uRotation.y)*rotY(uRotation.x);vec3 p=r*aPosition;vPosition=p;vNormal=normalize(r*aNormal);float scale=.0122*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);}`;
+    void main(){mat3 r=rotX(uRotation.y)*rotY(uRotation.x);vec3 p=r*aPosition;vPosition=p;vNormal=normalize(r*aNormal);float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);}`;
   const fragmentSource = `#version 300 es
     precision highp float; in vec3 vNormal; in vec3 vPosition; out vec4 outColor;
-    void main(){vec3 n=normalize(vNormal);vec3 light=normalize(vec3(-.65,.85,1.2));float diff=.2+.8*abs(dot(n,light));float rim=pow(1.-abs(n.z),2.2);vec3 red=mix(vec3(.48,.0,.018),vec3(1.,.035,.055),diff);red+=vec3(.22,.0,.01)*rim;outColor=vec4(red,1.);}`;
+    void main(){vec3 n=normalize(vNormal);vec3 light=normalize(vec3(-.65,.85,1.2));float diff=.16+.84*abs(dot(n,light));float rim=pow(1.-abs(n.z),2.2);vec3 red=mix(vec3(.09,.0,.008),vec3(.52,.008,.025),diff);red+=vec3(.11,.0,.008)*rim;outColor=vec4(red,1.);}`;
   const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s};
   const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vertexSource));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragmentSource));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));gl.useProgram(program);
-  const bind=(name,data)=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0)};
-  bind('aPosition',positions);bind('aNormal',normals);const indexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
+  const bind=(name,data)=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);return{buffer,loc}};
+  const positionBinding=bind('aPosition',positions),normalBinding=bind('aNormal',normals);const indexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
   const rotationLoc=gl.getUniformLocation(program,'uRotation'),zoomLoc=gl.getUniformLocation(program,'uZoom'),aspectLoc=gl.getUniformLocation(program,'uAspect');
+  const cubeVertexSource=`#version 300 es
+    in vec3 aPosition;uniform vec2 uRotation;uniform float uZoom;uniform float uAspect;
+    mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
+    void main(){vec3 p=rotX(uRotation.y)*rotY(uRotation.x)*aPosition;float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);}`;
+  const cubeFragmentSource=`#version 300 es
+    precision highp float;out vec4 outColor;void main(){outColor=vec4(.20,.015,.02,.62);}`;
+  const cubeProgram=gl.createProgram();gl.attachShader(cubeProgram,shader(gl.VERTEX_SHADER,cubeVertexSource));gl.attachShader(cubeProgram,shader(gl.FRAGMENT_SHADER,cubeFragmentSource));gl.linkProgram(cubeProgram);
+  const cubePositions=new Float32Array([-74,-74,-74,74,-74,-74,74,74,-74,-74,74,-74,-74,-74,74,74,-74,74,74,74,74,-74,74,74]);
+  const cubeEdges=new Uint16Array([0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7]);
+  const cubeBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,cubeBuffer);gl.bufferData(gl.ARRAY_BUFFER,cubePositions,gl.STATIC_DRAW);const cubePositionLoc=gl.getAttribLocation(cubeProgram,'aPosition');
+  const cubeIndexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,cubeIndexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,cubeEdges,gl.STATIC_DRAW);
+  const cubeRotationLoc=gl.getUniformLocation(cubeProgram,'uRotation'),cubeZoomLoc=gl.getUniformLocation(cubeProgram,'uZoom'),cubeAspectLoc=gl.getUniformLocation(cubeProgram,'uAspect');
   let yaw=-.72,pitch=.48,zoom=1,dragging=false,lastX=0,lastY=0;
-  const draw=()=>{gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.961,.957,.945,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.uniform2f(rotationLoc,yaw,pitch);gl.uniform1f(zoomLoc,zoom);gl.uniform1f(aspectLoc,canvas.width/canvas.height);gl.drawElements(gl.TRIANGLES,indices.length,gl.UNSIGNED_INT,0)};
+  const draw=()=>{gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.961,.957,.945,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,positionBinding.buffer);gl.enableVertexAttribArray(positionBinding.loc);gl.vertexAttribPointer(positionBinding.loc,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,normalBinding.buffer);gl.enableVertexAttribArray(normalBinding.loc);gl.vertexAttribPointer(normalBinding.loc,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.uniform2f(rotationLoc,yaw,pitch);gl.uniform1f(zoomLoc,zoom);gl.uniform1f(aspectLoc,canvas.width/canvas.height);gl.drawElements(gl.TRIANGLES,indices.length,gl.UNSIGNED_INT,0);gl.useProgram(cubeProgram);gl.bindBuffer(gl.ARRAY_BUFFER,cubeBuffer);gl.enableVertexAttribArray(cubePositionLoc);gl.vertexAttribPointer(cubePositionLoc,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,cubeIndexBuffer);gl.uniform2f(cubeRotationLoc,yaw,pitch);gl.uniform1f(cubeZoomLoc,zoom);gl.uniform1f(cubeAspectLoc,canvas.width/canvas.height);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.DEPTH_TEST);gl.drawElements(gl.LINES,cubeEdges.length,gl.UNSIGNED_SHORT,0)};
   const resize=()=>{const d=Math.min(devicePixelRatio||1,2),w=host.clientWidth,h=host.clientHeight;canvas.width=Math.max(1,Math.round(w*d));canvas.height=Math.max(1,Math.round(h*d));canvas.style.width=w+'px';canvas.style.height=h+'px';draw()};
   canvas.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
   canvas.addEventListener('pointermove',e=>{if(!dragging)return;yaw+=(e.clientX-lastX)*.009;pitch=Math.max(-1.45,Math.min(1.45,pitch+(e.clientY-lastY)*.009));lastX=e.clientX;lastY=e.clientY;draw()});
