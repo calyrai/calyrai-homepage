@@ -5,6 +5,10 @@
   canvas.className = 'quat-julia';
   canvas.setAttribute('aria-label', 'Interactive Lotka–Volterra driven quaternion Julia body');
   host.prepend(canvas);
+  const note = document.createElement('div');
+  note.className = 'model-note';
+  note.innerHTML = '<strong>LOTKA–VOLTERRA × QUATERNION JULIA</strong><span>Predator–prey states continuously deform the 3D body.</span>';
+  host.append(note);
   const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
   if (!gl) { canvas.remove(); return; }
 
