@@ -11,6 +11,11 @@
   host.append(note);
   const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
   if (!gl) { canvas.remove(); return; }
+  const orbitCanvas = document.createElement('canvas');
+  orbitCanvas.className = 'lv-orbits';
+  orbitCanvas.setAttribute('aria-hidden', 'true');
+  host.insertBefore(orbitCanvas, note);
+  const orbit = orbitCanvas.getContext('2d');
 
   const vertex = `#version 300 es
   in vec2 p; void main(){gl_Position=vec4(p,0.,1.);}`;
@@ -76,12 +81,13 @@
     const u=n=>gl.getUniformLocation(program,n), U={resolution:u('resolution'),rotation:u('rotation'),zoom:u('zoom'),time:u('time'),juliaC:u('juliaC')};
     let rx=-.28, ry=.18, zoom=1, dragging=false, px=0, py=0, paused=false;
     let prey=1.15,pred=.82,last=performance.now(),elapsed=0;
+    const trail=[];
     canvas.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
     canvas.addEventListener('pointermove',e=>{if(!dragging)return;rx+=(e.clientX-px)*.007;ry+=(e.clientY-py)*.007;px=e.clientX;py=e.clientY});
     canvas.addEventListener('pointerup',()=>dragging=false);
     canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.min(1.8,Math.max(.65,zoom*Math.exp(-e.deltaY*.001)))},{passive:false});
     addEventListener('keydown',e=>{if(e.code==='Space'&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();paused=!paused}});
-    const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight),d=Math.min(devicePixelRatio,w<700?1:1.4);canvas.width=w*d;canvas.height=h*d;gl.viewport(0,0,canvas.width,canvas.height)};
+    const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight),d=Math.min(devicePixelRatio,w<700?1:1.4);canvas.width=w*d;canvas.height=h*d;orbitCanvas.width=w*d;orbitCanvas.height=h*d;orbitCanvas.style.width=w+'px';orbitCanvas.style.height=h+'px';gl.viewport(0,0,canvas.width,canvas.height)};
     new ResizeObserver(resize).observe(host); resize();
     const draw=now=>{
       const dt=Math.min((now-last)/1000,.03); last=now;
@@ -89,10 +95,31 @@
         const alpha=1.25,beta=.92,delta=.72,gamma=1.05;
         const dx=alpha*prey-beta*prey*pred,dy=delta*prey*pred-gamma*pred;
         prey=Math.max(.08,prey+dx*dt*.34); pred=Math.max(.08,pred+dy*dt*.34); elapsed+=dt;
+        trail.push([prey,pred]); if(trail.length>520)trail.shift();
       }
       gl.uniform2f(U.resolution,canvas.width,canvas.height);gl.uniform2f(U.rotation,rx,ry);gl.uniform1f(U.zoom,zoom);gl.uniform1f(U.time,elapsed);
       gl.uniform4f(U.juliaC,-.48+.055*Math.tanh(prey-1.),.52+.06*Math.tanh(pred-1.),.19+.035*Math.sin(elapsed*.23),-.31+.04*Math.cos(elapsed*.17));
       gl.drawArrays(gl.TRIANGLES,0,3); requestAnimationFrame(draw);
+      const ow=orbitCanvas.width,oh=orbitCanvas.height,scale=Math.min(ow,oh);
+      orbit.clearRect(0,0,ow,oh); orbit.globalCompositeOperation='multiply';
+      const stateX=Math.tanh(prey-1.1),stateY=Math.tanh(pred-.85);
+      for(let lane=-6;lane<=6;lane++){
+        orbit.beginPath();
+        for(let i=0;i<=180;i++){
+          const u=i/180,x=ow*(.10+.82*u);
+          const envelope=Math.sin(Math.PI*u);
+          const bend=Math.sin(u*6.4+elapsed*.16+stateX*1.8)*.11+Math.sin(u*13.2-stateY*2.)*.025;
+          const y=oh*(.49+bend*envelope)+lane*scale*(.009+.004*envelope);
+          i?orbit.lineTo(x,y):orbit.moveTo(x,y);
+        }
+        orbit.strokeStyle=`rgba(210,0,18,${lane===0?.58:.15+Math.abs(lane)*.012})`;
+        orbit.lineWidth=Math.max(1,scale*(lane===0?.0026:.0011)); orbit.stroke();
+      }
+      for(let particle=0;particle<7;particle++){
+        const u=(elapsed*(.045+particle*.002)+particle/7)%1,x=ow*(.10+.82*u);
+        const y=oh*(.49+(Math.sin(u*6.4+elapsed*.16+stateX*1.8)*.11+Math.sin(u*13.2-stateY*2.)*.025)*Math.sin(Math.PI*u));
+        orbit.fillStyle='rgba(235,0,20,.95)';orbit.shadowColor='rgba(235,0,20,.8)';orbit.shadowBlur=12;orbit.beginPath();orbit.arc(x,y,Math.max(2,scale*.005),0,Math.PI*2);orbit.fill();orbit.shadowBlur=0;
+      }
     };
     requestAnimationFrame(draw);
   } catch (error) { console.warn('Quaternion Julia unavailable', error); canvas.remove(); }
