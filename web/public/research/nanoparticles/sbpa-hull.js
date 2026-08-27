@@ -26,7 +26,7 @@
     out vec3 vNormal; out vec3 vPosition;
     mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}
     mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
-    void main(){mat3 r=rotX(uRotation.y)*rotY(uRotation.x);vec3 flat=vec3(aPosition.xy,-72.);vec3 p=r*mix(flat,aPosition,uMorph);vPosition=p;vNormal=normalize(r*aNormal);float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);}`;
+    void main(){mat3 r=rotX(uRotation.y)*rotY(uRotation.x);vec3 basePlane=vec3(aPosition.xy,-72.);vec3 p=r*mix(basePlane,aPosition,uMorph);vPosition=p;vNormal=normalize(r*aNormal);float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);}`;
   const fragmentSource = `#version 300 es
     precision highp float; in vec3 vNormal; in vec3 vPosition; out vec4 outColor;
     void main(){vec3 n=normalize(vNormal);vec3 light=normalize(vec3(-.65,.85,1.2));float diff=.16+.84*abs(dot(n,light));float rim=pow(1.-abs(n.z),2.2);vec3 red=mix(vec3(.09,.0,.008),vec3(.52,.008,.025),diff);red+=vec3(.11,.0,.008)*rim;outColor=vec4(red,1.);}`;
