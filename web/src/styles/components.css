@@ -4394,3 +4394,86 @@ body .page-main #contact_main .section-grid > .tile {
     scroll-snap-stop: always;
   }
 }
+
+/* Homepage hero: use the former visual field for the research entry tiles. */
+@media (min-width: 769px) {
+  .page-main .calyr-logo-wrap--inline {
+    min-height: clamp(500px, 44vw, 660px) !important;
+    padding-top: clamp(72px, 7vw, 104px) !important;
+    padding-bottom: clamp(56px, 6vw, 88px) !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup {
+    grid-column: 1 / -1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.88fr) minmax(460px, 1.12fr);
+    grid-template-areas:
+      "eyebrow actions"
+      "logo actions"
+      "tagline actions"
+      "description actions";
+    column-gap: clamp(48px, 6vw, 104px);
+    row-gap: clamp(14px, 1.4vw, 22px);
+    max-width: none !important;
+    align-items: start;
+  }
+
+  .page-main .calyr-hero-eyebrow { grid-area: eyebrow; }
+  .page-main .calyr-logo-label {
+    grid-area: logo;
+    font-size: clamp(5rem, 7.2vw, 8rem);
+  }
+  .page-main .calyr-logo-tagline { grid-area: tagline; }
+  .page-main .calyr-hero-description { grid-area: description; }
+
+  .page-main .calyr-hero-actions {
+    grid-area: actions;
+    align-self: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0;
+    border: 0;
+  }
+
+  .page-main .calyr-hero-actions a {
+    min-height: clamp(118px, 11vw, 154px);
+    padding: clamp(18px, 2vw, 26px);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-left: 5px solid rgb(255, 56, 209);
+    border-radius: 12px;
+    font-size: clamp(0.82rem, 0.92vw, 0.98rem);
+  }
+
+  .page-main .calyr-hero-actions a:nth-child(2) { border-left-color: rgb(255, 221, 0); }
+  .page-main .calyr-hero-actions a:nth-child(3) { border-left-color: rgb(0, 219, 255); }
+  .page-main .calyr-hero-actions a:nth-child(4) { border-left-color: rgb(0, 136, 255); }
+}
+
+@media (max-width: 768px) {
+  .page-main .calyr-logo-wrap--inline {
+    min-height: 0 !important;
+    padding-top: 56px !important;
+    padding-bottom: 28px !important;
+    gap: 0 !important;
+  }
+
+  .page-main .calyr-logo-wrap--inline .calyr-logo-lockup { gap: 12px !important; }
+
+  .page-main .calyr-hero-actions {
+    gap: 9px;
+    margin-top: 18px;
+    border: 0;
+  }
+
+  .page-main .calyr-hero-actions a {
+    min-height: 76px;
+    padding: 13px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-left: 4px solid rgb(255, 56, 209);
+    border-radius: 10px;
+  }
+
+  .page-main .calyr-hero-actions a:nth-child(2) { border-left-color: rgb(255, 221, 0); }
+  .page-main .calyr-hero-actions a:nth-child(3) { border-left-color: rgb(0, 219, 255); }
+  .page-main .calyr-hero-actions a:nth-child(4) { border-left-color: rgb(0, 136, 255); }
+}
