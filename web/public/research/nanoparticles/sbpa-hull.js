@@ -64,7 +64,7 @@
   const grid=[];for(let i=0;i<positions.length;i+=18){grid.push(positions[i],positions[i+1],positions[i+2])}
   const gridPositions=new Float32Array(grid),gridBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,gridBuffer);gl.bufferData(gl.ARRAY_BUFFER,gridPositions,gl.STATIC_DRAW);
   const gridPositionLoc=gl.getAttribLocation(gridProgram,'aPosition'),gridRotationLoc=gl.getUniformLocation(gridProgram,'uRotation'),gridZoomLoc=gl.getUniformLocation(gridProgram,'uZoom'),gridAspectLoc=gl.getUniformLocation(gridProgram,'uAspect'),gridAlphaLoc=gl.getUniformLocation(gridProgram,'uAlpha');
-  let yaw=0,pitch=0,zoom=1,morph=0,dragging=false,pulling=false,lastX=0,lastY=0;
+  let yaw=0,pitch=0,zoom=.78,morph=0,dragging=false,pulling=false,lastX=0,lastY=0;
   const draw=()=>{
     const aspect=canvas.width/canvas.height;
     gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.961,.957,.945,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
@@ -78,6 +78,6 @@
   canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;const extract=pulling||(morph<.98&&Math.abs(dy)>=Math.abs(dx)*.5);if(extract){morph=Math.max(0,Math.min(1,morph-dy*.008))}else{yaw+=dx*.009;pitch=Math.max(-1.45,Math.min(1.45,pitch+dy*.009))}lastX=e.clientX;lastY=e.clientY;draw()});
   canvas.addEventListener('pointerup',()=>{dragging=false;pulling=false});canvas.addEventListener('pointercancel',()=>{dragging=false;pulling=false});
   canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.62,Math.min(2.2,zoom*(e.deltaY>0?.92:1.08)));draw()},{passive:false});
-  canvas.addEventListener('dblclick',()=>{yaw=0;pitch=0;zoom=1;morph=0;draw()});
+  canvas.addEventListener('dblclick',()=>{yaw=0;pitch=0;zoom=.78;morph=0;draw()});
   new ResizeObserver(resize).observe(host);resize();
 })();
