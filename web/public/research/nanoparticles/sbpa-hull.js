@@ -60,9 +60,9 @@
   const gridVertexSource=`#version 300 es
     in vec3 aPosition;uniform vec2 uRotation;uniform float uZoom;uniform float uAspect;
     mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
-    void main(){vec3 p=rotX(uRotation.y)*rotY(uRotation.x)*vec3(aPosition.xy,-72.);float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);float h=clamp((aPosition.z+72.)/144.,0.,1.);gl_PointSize=2.5+5.*h;}`;
+    void main(){vec3 p=rotX(uRotation.y)*rotY(uRotation.x)*vec3(aPosition.xy,-72.);float scale=.0104*uZoom;gl_Position=vec4(p.x*scale/uAspect,p.y*scale,-p.z/180.,1.);float h=clamp((aPosition.z+72.)/144.,0.,1.);gl_PointSize=7.5+4.*h;}`;
   const gridFragmentSource=`#version 300 es
-    precision highp float;uniform float uAlpha;out vec4 outColor;void main(){vec2 q=gl_PointCoord-.5;if(dot(q,q)>.22)discard;outColor=vec4(.89,.02,.05,.58*uAlpha);}`;
+    precision highp float;uniform float uAlpha;out vec4 outColor;void main(){vec2 q=gl_PointCoord-.5;float d=length(q);if(d>.48)discard;vec3 disk=mix(vec3(.015,.07,.24),vec3(.02,.30,.98),smoothstep(.47,.34,d));outColor=vec4(disk,.92*uAlpha);}`;
   const gridProgram=gl.createProgram();gl.attachShader(gridProgram,shader(gl.VERTEX_SHADER,gridVertexSource));gl.attachShader(gridProgram,shader(gl.FRAGMENT_SHADER,gridFragmentSource));gl.linkProgram(gridProgram);
   const grid=[];for(const [x,y,w] of projectionAnchors)grid.push(x,y,-72+w*144)
   const gridPositions=new Float32Array(grid),gridBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,gridBuffer);gl.bufferData(gl.ARRAY_BUFFER,gridPositions,gl.STATIC_DRAW);
