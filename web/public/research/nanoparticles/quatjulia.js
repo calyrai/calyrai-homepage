@@ -1,11 +1,4 @@
 (() => {
-  document.title = document.title.replace('SBPA', 'SbpA');
-  const platformName = document.querySelector('.topbar strong');
-  if (platformName) platformName.textContent = 'SbpA-NANO';
-  const subtitle = document.querySelector('.subtitle');
-  if (subtitle) subtitle.innerHTML = 'SbpA as structural reference model<br>for porous biological and nanostructured interfaces';
-  const footerBrand = document.querySelector('.footer .brand span:last-child');
-  if (footerBrand) footerBrand.innerHTML = 'SbpA-NANO<br><small>INTERFACE MODEL</small>';
   const host = document.querySelector('.visual');
   if (!host) return;
   const canvas = document.createElement('canvas');
