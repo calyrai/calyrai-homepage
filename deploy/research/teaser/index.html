@@ -3,65 +3,104 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>calyr.aí Pitch</title>
-    <link rel="stylesheet" href="/research/teaser/pitch.css" />
+    <title>calyr.aí Explore</title>
+    <link rel="stylesheet" href="/styles/typography.css" />
+    <link rel="stylesheet" href="/research/teaser/pitch.css?v=20260722m" />
   </head>
   <body>
-    <main class="stage" aria-label="CALYR pitch stage">
-      <header class="header">
-        <div>
-          <div class="kicker">How we work</div>
-          <h1 class="title">From complex challenge to scalable product.</h1>
-          <p class="subtitle">
-            We start with a focused demonstrator, prove measurable value and grow it into a lasting platform partnership.
-          </p>
-          <a class="teaser-deck-link" href="/research/lithos/index.html">
-            <span>Explore the interactive pitch deck</span>
+    <main class="stage" aria-label="calyr.aí teaser">
+      <section class="editorial-grid">
+        <header class="editorial-card statement-card">
+          <div class="card-meta">
+            <span id="page-kicker"></span>
+            <span>01</span>
+          </div>
+          <h1 class="title" id="page-title"></h1>
+          <div class="card-footer">
+            <p class="subtitle" id="page-subtitle"></p>
+            <span class="edition">calyr.aí · 2026</span>
+          </div>
+        </header>
+
+        <section class="editorial-card system-card" aria-label="calyr.aí system">
+          <div class="card-meta">
+            <span>THE SYSTEM</span>
+            <span>02</span>
+          </div>
+          <p class="system-line"><span>Data</span><i>→</i><span>Surrogate</span></p>
+          <p class="system-line"><span>Prediction</span><i>→</i><strong>Oracle</strong></p>
+          <a class="teaser-deck-link" id="page-deck-link" href="">
+            <span id="page-deck-link-label"></span>
             <span class="teaser-deck-arrow" aria-hidden="true">→</span>
           </a>
-        </div>
-      </header>
+        </section>
 
-      <section class="meta-grid" aria-label="Business model">
-        <article class="meta-card">
-          <h2>Start focused</h2>
-          <p>We select one valuable scientific or engineering challenge.</p>
-          <p class="meta-inline">A clear use case · a clear outcome.</p>
-        </article>
-        <article class="meta-card">
-          <h2>Prove value</h2>
-          <p>We build an interactive demonstrator with the customer’s data and domain knowledge.</p>
-          <p class="meta-inline">Fast validation before full deployment.</p>
-        </article>
-        <article class="meta-card">
-          <h2>Scale together</h2>
-          <p>The demonstrator grows into a deployment, platform access and a long-term partnership.</p>
-          <p class="meta-inline">Projects first · recurring platform value next.</p>
-        </article>
-      </section>
+        <section class="editorial-card engagement-card" aria-labelledby="engagement-title">
+          <div class="engagement-head">
+            <div class="card-meta"><span id="engagement-kicker"></span><span>03</span></div>
+            <h2 id="engagement-title"></h2>
+          </div>
+          <div class="engagement-grid" id="engagement-grid"></div>
+        </section>
 
-      <section class="scene" aria-label="Pitch graph scene">
-        <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
-        <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="CALYR scientific pitch graph"></svg>
-        <div class="scene-status" id="scene-status">Game ready</div>
-        <div class="game-hud" aria-label="Flow game controls">
-          <span id="game-progress" class="game-progress">Slides 0</span>
-          <span id="game-score" class="game-score">Score 0</span>
-          <button id="game-reset" class="game-button" type="button">Reset</button>
-          <button id="game-demo" class="game-button" type="button">Play the flow →</button>
-        </div>
-      </section>
+        <section class="editorial-card flow-card" aria-label="Interactive scientific flow">
+          <div class="card-meta flow-meta">
+            <span>INTERACTIVE MODEL</span>
+            <span>04</span>
+          </div>
+          <div class="scene" aria-label="Pitch graph scene">
+            <canvas id="point-field" class="point-field" aria-hidden="true"></canvas>
+            <svg id="pitch-graph" viewBox="0 0 960 460" role="img" aria-label="calyr.aí scientific pitch graph"></svg>
+            <div class="scene-status" id="scene-status">System ready</div>
+            <div class="game-hud" aria-label="Flow controls">
+              <span id="game-progress" class="game-progress">Slides 0</span>
+              <span id="game-score" class="game-score">Score 0</span>
+              <button id="game-reset" class="game-button" type="button">Reset</button>
+              <button id="game-demo" class="game-button" type="button">Run the chain →</button>
+            </div>
+          </div>
+        </section>
 
-      <section class="insight-grid" aria-label="Active insight">
-        <article class="panel">
-          <h2 id="insight-title">Who needs it</h2>
-          <p id="insight-copy">Research labs, MedTech teams, engineering groups, and industrial R&amp;D units that need explainable scientific decisions.</p>
-          <ul id="insight-points" class="insight-points"></ul>
-        </article>
+        <section class="editorial-card workflow-card" aria-labelledby="workflow-title">
+          <div class="workflow-head">
+            <div class="card-meta"><span id="workflow-kicker"></span><span>05</span></div>
+            <h2 id="workflow-title"></h2>
+            <p id="workflow-introduction"></p>
+          </div>
+          <div class="workflow-grid" id="workflow-grid"></div>
+          <section class="workflow-loops" aria-labelledby="workflow-loops-title">
+            <div class="workflow-loops-head"><span>FEEDBACK LOOPS</span><h3 id="workflow-loops-title">Every result can change an earlier decision.</h3></div>
+            <div class="workflow-loops-grid" id="workflow-loops-grid"></div>
+          </section>
+          <div class="workflow-bottom">
+            <div><span class="workflow-small-label">ITERATIVE BY DESIGN</span><ul id="workflow-questions"></ul></div>
+            <blockquote id="workflow-closing"></blockquote>
+          </div>
+        </section>
 
+        <section class="editorial-card consequence-card" aria-label="Scientific consequence">
+          <div class="card-meta">
+            <span>THE CONSEQUENCE</span>
+            <span>06</span>
+          </div>
+          <div class="consequence-copy">
+            <p>Prediction becomes <strong>decision.</strong></p>
+            <p>Decision becomes <strong>an engineered result.</strong></p>
+          </div>
+          <aside class="hpc-note" aria-labelledby="hpc-title">
+            <span class="hpc-note-label" id="hpc-title"></span>
+            <p id="hpc-copy"></p>
+          </aside>
+          <article class="panel">
+            <h2 id="insight-title"></h2>
+            <p id="insight-copy"></p>
+            <ul id="insight-points" class="insight-points"></ul>
+          </article>
+        </section>
       </section>
     </main>
 
-    <script type="module" src="/research/teaser/pitch.js"></script>
+    <script type="module" src="/research/teaser/pitch.js?v=20260722l"></script>
+    <script src="/calyr-home.js"></script>
   </body>
 </html>
