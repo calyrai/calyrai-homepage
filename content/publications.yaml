@@ -37,6 +37,22 @@ publications:
     doi: 10.1128/AEM.04111-14
     focus: Enzyme-interface engineering and polymer biocatalysis
 
+foundational_literature:
+  - year: 1995
+    title: Anisotropic crystal growth of the S-layer of Bacillus sphaericus CCM 2177 at the air/water interface
+    authors: Pum, D.; Sleytr, U. B.
+    venue: "Colloids and Surfaces A: Physicochemical and Engineering Aspects 102, 99–104"
+    doi: 10.1016/0927-7757(95)03190-O
+    focus: Ca²⁺ concentration controls SbpA crystal morphology, spanning delicate fractal-like structures to micrometre-scale monocrystalline patches while preserving local p4 lattice order.
+    relevance: Experimental foundation for treating SbpA assembly as a parameter-dependent growth process and for testing stochastic, fractal, and surrogate models against observed morphology.
+  - year: 2025
+    title: "S-layers: from a serendipitous discovery to a toolkit for nanobiotechnology"
+    authors: Sleytr, U. B.; Pum, D.
+    venue: Quarterly Reviews of Biophysics 58, e4
+    doi: 10.1017/S0033583524000106
+    focus: Current synthesis of bacterial and archaeal S-layer structure, self-assembly, biological function, and nanobiotechnology, including the calcium-dependent SbpA fractal-growth experiments.
+    relevance: Contemporary review and provenance bridge connecting the 1995 morphology experiments to the present SbpA research programme.
+
 patents:
   - year: 2014
     title: Porous Nanomembranes

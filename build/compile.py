@@ -524,9 +524,10 @@ def _sync_publications_page_from_yaml(project_root: Path) -> None:
 
     page = config.get("page", {}) if isinstance(config, dict) else {}
     publications = config.get("publications", []) if isinstance(config, dict) else []
+    foundational_literature = config.get("foundational_literature", []) if isinstance(config, dict) else []
     patents = config.get("patents", []) if isinstance(config, dict) else []
     sources = config.get("sources", []) if isinstance(config, dict) else []
-    if not isinstance(page, dict) or not isinstance(publications, list) or not isinstance(patents, list):
+    if not isinstance(page, dict) or not isinstance(publications, list) or not isinstance(foundational_literature, list) or not isinstance(patents, list):
         raise ValueError("content/publications.yaml must define page, publications, and patents")
 
     route = str(page.get("route", "/research/publications/")).strip()
@@ -573,7 +574,29 @@ def _sync_publications_page_from_yaml(project_root: Path) -> None:
           </div>
         </article>"""
 
+    def render_foundation(item: Any, index: int) -> str:
+        if not isinstance(item, dict):
+            return ""
+        doi = str(item.get("doi", "")).strip()
+        doi_url = f"https://doi.org/{escape(doi, quote=True)}"
+        relevance = escape(str(item.get("relevance", "")))
+        return f"""
+        <article class="record record--foundation">
+          <p class="record-index">F{index:02d} · {escape(str(item.get("year", "")))}</p>
+          <div class="record-main">
+            <h3>{escape(str(item.get("title", "")))}</h3>
+            <p class="authors">{escape(str(item.get("authors", "")))}</p>
+            <p class="venue">{escape(str(item.get("venue", "")))}</p>
+          </div>
+          <div class="record-meta">
+            <p>{escape(str(item.get("focus", "")))}</p>
+            <p class="research-relevance"><strong>Research relevance</strong><br>{relevance}</p>
+            <a href="{doi_url}" rel="noreferrer">DOI {escape(doi)} ↗</a>
+          </div>
+        </article>"""
+
     publication_html = "".join(render_publication(item, index) for index, item in enumerate(publications, 1))
+    foundation_html = "".join(render_foundation(item, index) for index, item in enumerate(foundational_literature, 1))
     patent_html = "".join(render_patent(item, index) for index, item in enumerate(patents, 1))
     source_html = "".join(
         f'<a href="{escape(str(item.get("url", "")), quote=True)}" rel="noreferrer">{escape(str(item.get("label", "Source")))} ↗</a>'
@@ -611,7 +634,11 @@ def _sync_publications_page_from_yaml(project_root: Path) -> None:
       {publication_html}
     </section>
     <section class="collection">
-      <header><span>02</span><h2>Patents + translation</h2><strong>{len(patents):02d}</strong></header>
+      <header><span>02</span><h2>Foundational literature</h2><strong>{len(foundational_literature):02d}</strong></header>
+      {foundation_html}
+    </section>
+    <section class="collection">
+      <header><span>03</span><h2>Patents + translation</h2><strong>{len(patents):02d}</strong></header>
       {patent_html}
     </section>
     <footer>
@@ -622,7 +649,7 @@ def _sync_publications_page_from_yaml(project_root: Path) -> None:
 </body>
 </html>
 """
-    css = """:root{--bg:#050505;--fg:#f6f6f2;--muted:#a8a8a3;--line:#555;--cyan:#00c8ed;--magenta:#ff2ab5;font-family:Arial,Helvetica,sans-serif;color-scheme:dark}*{box-sizing:border-box}html{background:var(--bg);color:var(--fg)}body{margin:0;background:var(--bg)}a{color:inherit;text-decoration:none}.masthead{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:1rem clamp(1rem,4vw,4rem);border-bottom:1px solid var(--line);background:rgba(5,5,5,.96);font-size:.8rem;text-transform:uppercase;letter-spacing:.12em}.brand{font-size:1.35rem;font-weight:800;text-transform:none;letter-spacing:-.05em}.brand::first-letter{color:var(--fg)}main{max-width:1600px;margin:auto;padding:0 clamp(1rem,4vw,4rem) 5rem}.hero{min-height:65vh;display:grid;align-content:end;padding:8rem 0 4rem;border-bottom:2px solid var(--fg)}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.14em;font-size:clamp(.78rem,1.2vw,1rem)}h1{max-width:12ch;margin:.6rem 0 1.5rem;font-size:clamp(3.5rem,10vw,9rem);line-height:.85;letter-spacing:-.075em}.intro{max-width:36ch;margin:0;font-size:clamp(1.25rem,2.4vw,2.2rem);line-height:1.15}.note{max-width:70ch;margin:2rem 0 0;color:var(--muted);line-height:1.5}.collection{border-bottom:2px solid var(--fg)}.collection>header{display:grid;grid-template-columns:4rem 1fr auto;gap:1rem;align-items:baseline;padding:1.4rem 0;border-bottom:1px solid var(--line);text-transform:uppercase}.collection h2{margin:0;font-size:clamp(1.1rem,2.2vw,2rem)}.collection header span{color:var(--cyan);font-weight:800}.collection header strong{font-size:clamp(2rem,5vw,5rem);line-height:.8}.record{display:grid;grid-template-columns:minmax(5rem,1fr) minmax(16rem,3fr) minmax(14rem,2fr);gap:clamp(1rem,3vw,3rem);padding:2rem 0;border-bottom:1px solid var(--line)}.record:last-child{border-bottom:0}.record-index{margin:0;color:var(--cyan);font-weight:800}.record-main h3{margin:0 0 .8rem;font-size:clamp(1.45rem,2.6vw,2.6rem);line-height:1;letter-spacing:-.035em}.authors,.venue,.record-meta p{margin:.4rem 0;color:var(--muted);line-height:1.45}.venue{color:var(--fg)}.record-meta{display:flex;flex-direction:column;justify-content:space-between}.record-meta a{margin-top:1.5rem;color:var(--cyan);font-weight:800}.record--patent .record-index,.record--patent .record-meta a{color:var(--magenta)}footer{display:grid;grid-template-columns:1fr 2fr;gap:2rem;padding:2rem 0;color:var(--muted)}footer p{margin:0}footer nav{display:flex;flex-wrap:wrap;gap:1rem 2rem}footer a{color:var(--fg)}@media(max-width:760px){.hero{min-height:70svh}.record{grid-template-columns:1fr}.record-meta a{margin-top:.5rem}.collection>header{grid-template-columns:3rem 1fr}.collection header strong{display:none}footer{grid-template-columns:1fr}.masthead{position:relative}}"""
+    css = """:root{--bg:#050505;--fg:#f6f6f2;--muted:#a8a8a3;--line:#555;--cyan:#00c8ed;--magenta:#ff2ab5;--yellow:#ffd400;font-family:Arial,Helvetica,sans-serif;color-scheme:dark}*{box-sizing:border-box}html{background:var(--bg);color:var(--fg)}body{margin:0;background:var(--bg)}a{color:inherit;text-decoration:none}.masthead{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:1rem clamp(1rem,4vw,4rem);border-bottom:1px solid var(--line);background:rgba(5,5,5,.96);font-size:.8rem;text-transform:uppercase;letter-spacing:.12em}.brand{font-size:1.35rem;font-weight:800;text-transform:none;letter-spacing:-.05em}.brand::first-letter{color:var(--fg)}main{max-width:1600px;margin:auto;padding:0 clamp(1rem,4vw,4rem) 5rem}.hero{min-height:65vh;display:grid;align-content:end;padding:8rem 0 4rem;border-bottom:2px solid var(--fg)}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.14em;font-size:clamp(.78rem,1.2vw,1rem)}h1{max-width:12ch;margin:.6rem 0 1.5rem;font-size:clamp(3.5rem,10vw,9rem);line-height:.85;letter-spacing:-.075em}.intro{max-width:36ch;margin:0;font-size:clamp(1.25rem,2.4vw,2.2rem);line-height:1.15}.note{max-width:70ch;margin:2rem 0 0;color:var(--muted);line-height:1.5}.collection{border-bottom:2px solid var(--fg)}.collection>header{display:grid;grid-template-columns:4rem 1fr auto;gap:1rem;align-items:baseline;padding:1.4rem 0;border-bottom:1px solid var(--line);text-transform:uppercase}.collection h2{margin:0;font-size:clamp(1.1rem,2.2vw,2rem)}.collection header span{color:var(--cyan);font-weight:800}.collection header strong{font-size:clamp(2rem,5vw,5rem);line-height:.8}.record{display:grid;grid-template-columns:minmax(5rem,1fr) minmax(16rem,3fr) minmax(14rem,2fr);gap:clamp(1rem,3vw,3rem);padding:2rem 0;border-bottom:1px solid var(--line)}.record:last-child{border-bottom:0}.record-index{margin:0;color:var(--cyan);font-weight:800}.record-main h3{margin:0 0 .8rem;font-size:clamp(1.45rem,2.6vw,2.6rem);line-height:1;letter-spacing:-.035em}.authors,.venue,.record-meta p{margin:.4rem 0;color:var(--muted);line-height:1.45}.venue{color:var(--fg)}.record-meta{display:flex;flex-direction:column;justify-content:space-between}.record-meta a{margin-top:1.5rem;color:var(--cyan);font-weight:800}.record--foundation .record-index,.record--foundation .record-meta a{color:var(--yellow)}.research-relevance{padding-top:1rem;border-top:1px solid var(--line)}.research-relevance strong{color:var(--fg);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em}.record--patent .record-index,.record--patent .record-meta a{color:var(--magenta)}footer{display:grid;grid-template-columns:1fr 2fr;gap:2rem;padding:2rem 0;color:var(--muted)}footer p{margin:0}footer nav{display:flex;flex-wrap:wrap;gap:1rem 2rem}footer a{color:var(--fg)}@media(max-width:760px){.hero{min-height:70svh}.record{grid-template-columns:1fr}.record-meta a{margin-top:.5rem}.collection>header{grid-template-columns:3rem 1fr}.collection header strong{display:none}footer{grid-template-columns:1fr}.masthead{position:relative}}"""
 
     (output_dir / "index.html").write_text(html, encoding="utf-8")
     (output_dir / "publications.css").write_text(css, encoding="utf-8")

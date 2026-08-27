@@ -62,7 +62,7 @@ summary: Patient-specific flow, wall mechanics, and devices.
 url: /research/aorta/
 
 ### 02 · Nanoparticles
-summary: SBPA concepts connect structure, properties, bioactivity, corona formation, transport, and uptake.
+summary: SbpA concepts connect structure, properties, bioactivity, corona formation, transport, and uptake.
 url: /research/nanoparticles/
 
 ### 03 · Nanobiophysics
