@@ -18,13 +18,13 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><figure class="aorta-phase-mark"><canvas width="132" height="132" aria-label="CALYR phase-space mark from zero to two pi"></canvas><figcaption>Φ · 0 → 2π</figcaption></figure><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT</strong><span>FLOW REMAINS CONFINED TO THE AORTIC ARCH</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><figure class="aorta-phase-mark"><canvas width="132" height="132" aria-label="CALYR phase-space mark from zero to two pi"></canvas><figcaption>Φ · 0 → 2π</figcaption></figure><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>HOLD + DRAG · COMPRESS FLOW</strong><span>RELEASE · PARTICLE BURST</span></div>`;
   visual.append(hud);
 
 
   const context = canvas.getContext('2d', { alpha: true });
-  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
-  const manipulation = { active: false, startX: 0, startY: 0, x: 0, y: 0, rotation: 0, scale: 1.04 };
+  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, px: 0, py: 0 };
+  const manipulation = { active: false, startX: 0, startY: 0, lastX: 0, lastY: 0, x: 0, y: 0, squeeze: 0, targetSqueeze: 0 };
   let modeIndex = 0;
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
@@ -64,6 +64,24 @@
       });
     }
     if (burstParticles.length > 1800) burstParticles.splice(0, burstParticles.length - 1800);
+  };
+
+  const spawnReleaseBurst = (point, energy) => {
+    const shardCount = Math.round(90 + energy * 190);
+    for (let shard = 0; shard < shardCount; shard += 1) {
+      const angle = shard * 2.399963229728653 + energy * 3.1;
+      const force = 24 + energy * 82 + (shard % 17) * 1.9;
+      burstParticles.push({
+        x: point.x + Math.cos(angle) * (shard % 9),
+        y: point.y + Math.sin(angle) * (shard % 9),
+        vx: Math.cos(angle) * force + 20,
+        vy: Math.sin(angle) * force,
+        age: 0,
+        life: .55 + (shard % 11) * .035,
+        size: .65 + (shard % 5) * .28,
+        warm: shard % 5 === 0,
+      });
+    }
   };
 
   let width = 1;
@@ -123,6 +141,8 @@
     const localY = (event.clientY - rect.top) / rect.height;
     pointer.targetX = (localX - .5) * 2;
     pointer.targetY = (localY - .5) * 2;
+    pointer.px = localX * rect.width;
+    pointer.py = localY * rect.height;
     velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
     if (manipulation.active) {
@@ -130,8 +150,10 @@
       const dy = event.clientY - manipulation.startY;
       manipulation.x = Math.max(-46, Math.min(46, dx * .22));
       manipulation.y = Math.max(-34, Math.min(34, dy * .18));
-      manipulation.rotation = Math.max(-4.5, Math.min(4.5, dx * .018));
-      manipulation.scale = 1.04 + Math.min(.08, Math.hypot(dx, dy) * .00022);
+      const travel = Math.hypot(event.clientX - manipulation.lastX, event.clientY - manipulation.lastY);
+      manipulation.targetSqueeze = Math.min(1, manipulation.targetSqueeze + .018 + travel * .0045);
+      manipulation.lastX = event.clientX;
+      manipulation.lastY = event.clientY;
     }
   });
   visual.addEventListener('pointerleave', () => {
@@ -144,11 +166,18 @@
     manipulation.active = true;
     manipulation.startX = event.clientX;
     manipulation.startY = event.clientY;
+    manipulation.lastX = event.clientX;
+    manipulation.lastY = event.clientY;
+    manipulation.targetSqueeze = Math.max(.16, manipulation.squeeze);
     visual.classList.add('is-steering');
     visual.setPointerCapture?.(event.pointerId);
   });
   window.addEventListener('pointerup', () => {
+    if (manipulation.active && manipulation.squeeze > .12) {
+      spawnReleaseBurst({ x: pointer.px, y: pointer.py }, manipulation.squeeze);
+    }
     manipulation.active = false;
+    manipulation.targetSqueeze = 0;
     visual.classList.remove('is-steering');
   });
 
@@ -162,6 +191,7 @@
     drawPhaseMark(flowClock * .00022);
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
+    manipulation.squeeze += (manipulation.targetSqueeze - manipulation.squeeze) * (manipulation.active ? .13 : .075);
     imageLayer.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1.04)';
     context.clearRect(0, 0, width, height);
     context.save();
@@ -192,7 +222,9 @@
       const influence = Math.sin((step / 30) * Math.PI);
       const centreX = centre.x + manipulation.x * .16 * influence * (1 - mode.stiffness);
       const centreY = centre.y + manipulation.y * .12 * influence * (1 - mode.stiffness);
-      const halfWidth = (config.stentHalfWidth || 29) + mode.flare * 18 + deformation * 10 * influence;
+      const travellingWave = Math.sin(seconds * 5.4 - step * .92) * (1.4 + manipulation.squeeze * 4.8) * influence;
+      const zigzagPulse = (step % 2 ? -1 : 1) * manipulation.squeeze * 2.6 * influence;
+      const halfWidth = (config.stentHalfWidth || 29) + mode.flare * 18 + deformation * 10 * influence + travellingWave + zigzagPulse;
       stentStations.push({
         left: { x: centreX + normalX * halfWidth, y: centreY + normalY * halfWidth },
         right: { x: centreX - normalX * halfWidth, y: centreY - normalY * halfWidth },
@@ -253,9 +285,13 @@
       const tailY = tail.y + wanderY * .58;
       const middleX = middle.x + wanderX * .78;
       const middleY = middle.y + wanderY * .78;
+      const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
+      const squeezeInfluence = manipulation.squeeze * Math.max(0, 1 - squeezeDistance / Math.max(90, width * .19));
+      const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .34;
+      const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .34;
       context.beginPath();
       context.moveTo(tailX, tailY);
-      context.quadraticCurveTo(middleX, middleY, flowX, flowY);
+      context.quadraticCurveTo(middleX, middleY, compressedX, compressedY);
       context.strokeStyle = `rgba(255,32,38,${particle.alpha * (.52 + pulse * .42)})`;
       context.lineWidth = particle.size;
       context.lineCap = 'round';
@@ -263,7 +299,7 @@
       if (particle.path % 4 === 0) {
         context.beginPath();
         context.moveTo(middleX, middleY);
-        context.lineTo(flowX, flowY);
+        context.lineTo(compressedX, compressedY);
         context.strokeStyle = `rgba(255,178,150,${particle.alpha * .36})`;
         context.lineWidth = particle.size * .42;
         context.stroke();
