@@ -1,0 +1,107 @@
+{
+  "seed": 5318008,
+  "page": {
+    "language": "en",
+    "title": "calyr.aí engineering in action",
+    "description": "An interactive calyr.aí story showing how observations become surrogate models, controllable predictions, and an engineered vascular result.",
+    "canonical": "https://calyr.ai/research/lithos/index.html",
+    "theme_color": "#000000"
+  },
+  "interaction": {
+    "swipe_enabled": true,
+    "swipe_threshold": 64,
+    "swipe_max_vertical_ratio": 0.72
+  },
+  "ui": {
+    "footer_primary": "FROM DATA TO FORM.",
+    "footer_secondary": "FROM MODEL TO ENGINEERED RESULT.",
+    "default_hint": "Use left/right arrows, the top buttons, or swipe horizontally on a phone.",
+    "journey": [
+      "OBSERVE",
+      "MODEL",
+      "COUPLE",
+      "STEER",
+      "APPLY"
+    ]
+  },
+  "formation_steps": [
+    0.22,
+    0.36,
+    0.52,
+    0.68,
+    0.82,
+    0.92,
+    1.0
+  ],
+  "cluster_centers": [
+    {
+      "x": 92,
+      "y": 228
+    },
+    {
+      "x": 182,
+      "y": 186
+    },
+    {
+      "x": 286,
+      "y": 166
+    },
+    {
+      "x": 398,
+      "y": 176
+    },
+    {
+      "x": 502,
+      "y": 220
+    }
+  ],
+  "cluster_amounts": [
+    14,
+    14,
+    18,
+    14,
+    14
+  ],
+  "slides": [
+    {
+      "phase": "OBSERVE",
+      "title": "Complex Systems Hide Their Structure.",
+      "subtitle": "Observations simulations and constraints remain disconnected.",
+      "story": "Incomplete evidence reveals fragments of a system but not the organization that connects them.",
+      "type": "line",
+      "hint": "Explore the isolated data spaces before a shared model exists."
+    },
+    {
+      "phase": "MODEL",
+      "title": "A Surrogate Creates a Shared Model.",
+      "subtitle": "Experimental and theoretical spaces become one representation.",
+      "story": "The surrogate learns a navigable model that connects observations simulation and domain knowledge.",
+      "type": "magenta",
+      "hint": "Observe how the magenta surrogate aligns previously separate data spaces."
+    },
+    {
+      "phase": "COUPLE",
+      "title": "Coupling Enables Prediction.",
+      "subtitle": "A change in one domain propagates through the model.",
+      "story": "Connected variables respond together so the system can predict consequences rather than evaluate isolated points.",
+      "type": "flow",
+      "hint": "Move a control point and watch the coupled representation adapt."
+    },
+    {
+      "phase": "STEER",
+      "title": "Steering Enables Design.",
+      "subtitle": "Constraints become controls for valid solution spaces.",
+      "story": "Interactive boundary conditions guide exploration toward feasible high-value outcomes.",
+      "type": "flow-finalize",
+      "hint": "Adjust the magenta controls and steer the constrained solution space."
+    },
+    {
+      "phase": "APPLY",
+      "title": "Application: Patient-specific vascular design.",
+      "subtitle": "One surrogate produces an editable engineered result.",
+      "story": "The controlled representation converges into patient-specific vascular geometry while preserving evidence constraints and uncertainty.",
+      "type": "final-bow",
+      "hint": "Rotate the aortic arch and inspect the resulting medical geometry."
+    }
+  ]
+}

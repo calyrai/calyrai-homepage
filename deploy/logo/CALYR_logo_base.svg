@@ -6,5 +6,5 @@
   <circle cx="600" cy="700" r="340" fill="none" stroke="white" stroke-width="3" opacity="0.2"/>
   <text x="600" y="1450" text-anchor="middle"
         font-family="Avenir, Helvetica, Arial, sans-serif"
-        font-size="84" letter-spacing="18" fill="white">CALYR<tspan fill="#ff00aa">.</tspan>AI</text>
+        font-size="84" letter-spacing="18" fill="white">calyr<tspan fill="#ff00aa">.</tspan>ai</text>
 </svg>

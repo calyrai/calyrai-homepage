@@ -2,7 +2,7 @@ seed: 5318008
 
 page:
   language: "en"
-  title: "calyr.aí | Interactive Deck"
+  title: "calyr.aí engineering in action"
   description: "An interactive calyr.aí visual story showing how scientific data converges into an editable three-dimensional aortic arch."
   canonical: "https://calyr.ai/research/lithos/index.html"
   theme_color: "#000000"
@@ -71,7 +71,13 @@ slides:
     hint: "Adjust the magenta controls to modify boundary conditions and observe the surrogate model response."
 
   - title: "Aortic Bow: Example."
-    subtitle: "Abstract control yields concrete geometry."
-    story: "The aortic arch emerges as a concrete example. Abstract data space control via the surrogate and magenta steering converges to a stabilized, editable 3D shape."
+    subtitle: "Abstract control yields concrete medical geometry."
+    story: "The aortic arch demonstrates how surrogate-guided control converges to a stabilized, editable 3D form."
     type: "final-bow"
-    hint: "Drag on the model to rotate in 3D and inspect the organic aortic bow with stent lattice."
+    hint: "Drag on the model to rotate the aortic arch and inspect its stent lattice."
+
+  - title: "Universal Transfer."
+    subtitle: "The same surrogate logic crosses domains."
+    story: "The aortic curve becomes a sculptural bridge. This transfer from medicine to architecture demonstrates that surrogate models are universally applicable wherever complex data, constraints, and geometry must converge."
+    type: "final-bridge"
+    hint: "Rotate and reshape the bridge to see the same surrogate-controlled curve operate in a new domain."

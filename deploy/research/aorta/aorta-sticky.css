@@ -1,0 +1,49 @@
+@media (min-width: 901px) {
+  [data-aorta-content] {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: start;
+  }
+
+  [data-aorta-content] > .topbar {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  [data-aorta-content] > .hero {
+    display: contents;
+  }
+
+  .intro {
+    grid-column: 1;
+    min-height: 548px;
+  }
+
+  .visual {
+    position: sticky;
+    top: 0;
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    align-self: start;
+    height: 100vh;
+    min-height: 548px;
+  }
+
+  [data-aorta-content] > .details {
+    display: block;
+    grid-column: 1;
+    min-height: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .panel {
+    min-height: 230px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+
+  .impact {
+    min-height: 260px;
+  }
+}

@@ -9,85 +9,13 @@ class DeckConfigLoader {
     if (!response.ok) {
       throw new Error(`Deck config fetch failed (${response.status})`);
     }
-    const text = await response.text();
-    const config = this.parseYaml(text);
+    const config = await response.json();
     if (!Array.isArray(config.slides) || config.slides.length === 0) {
       throw new Error('Deck config must contain at least one slide');
     }
     return config;
   }
 
-  static parseYaml(text) {
-    const lines = text.replace(/\t/g, '  ').split('\n');
-    const root = {};
-    let i = 0;
-
-    const parseScalar = (v) => {
-      const value = v.trim();
-      if (value === 'true') return true;
-      if (value === 'false') return false;
-      if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
-      return value.replace(/^"|"$/g, '');
-    };
-
-    const indentOf = (line) => line.match(/^\s*/)[0].length;
-
-    function parseBlock(baseIndent) {
-      const obj = {};
-      const arr = [];
-      let mode = null;
-
-      while (i < lines.length) {
-        const raw = lines[i];
-        if (!raw.trim() || raw.trim().startsWith('#')) {
-          i += 1;
-          continue;
-        }
-        const indent = indentOf(raw);
-        if (indent < baseIndent) break;
-        const line = raw.trim();
-
-        if (line.startsWith('- ')) {
-          mode = 'array';
-          const itemText = line.slice(2);
-          if (itemText.includes(':')) {
-            const [k, ...rest] = itemText.split(':');
-            const val = rest.join(':').trim();
-            const item = { [k.trim()]: val ? parseScalar(val) : null };
-            i += 1;
-            const nested = parseBlock(indent + 2);
-            if (nested && typeof nested === 'object' && !Array.isArray(nested) && Object.keys(nested).length > 0) {
-              Object.assign(item, nested);
-            }
-            arr.push(item);
-          } else {
-            arr.push(parseScalar(itemText));
-            i += 1;
-          }
-          continue;
-        }
-
-        mode = mode || 'object';
-        const [key, ...rest] = line.split(':');
-        const k = key.trim();
-        const v = rest.join(':').trim();
-        i += 1;
-
-        if (v) {
-          obj[k] = parseScalar(v);
-        } else {
-          const nested = parseBlock(indent + 2);
-          obj[k] = nested;
-        }
-      }
-
-      return mode === 'array' ? arr : obj;
-    }
-
-    i = 0;
-    Object.assign(root, parseBlock(0));
-    return root;
-  }
 }
 
 function createSeededRandom(seed) {
@@ -98,44 +26,7 @@ function createSeededRandom(seed) {
   };
 }
 
-const DEFAULT_DECK_CONFIG = {
-  seed: 5318008,
-  page: {
-    language: 'en',
-    title: 'calyr.aí | Interactive Deck',
-    description: 'An interactive calyr.aí visual story showing how scientific data converges into an editable three-dimensional aortic arch.',
-    canonical: 'https://calyr.ai/research/lithos/index.html',
-    theme_color: '#000000',
-  },
-  interaction: {
-    swipe_enabled: true,
-    swipe_threshold: 64,
-    swipe_max_vertical_ratio: .72,
-  },
-  ui: {
-    footer_primary: 'FROM DATA TO FORM.',
-    footer_secondary: 'FROM COMPLEXITY TO INTELLIGENCE.',
-    default_hint: 'Use left/right arrows, the top buttons, or swipe horizontally on a phone.',
-  },
-  formation_steps: [0.22, 0.36, 0.52, 0.68, 0.82, 0.92, 1.0],
-  cluster_amounts: [14, 14, 18, 14, 14],
-  cluster_centers: [
-    { x: 92, y: 228 },
-    { x: 182, y: 186 },
-    { x: 286, y: 166 },
-    { x: 398, y: 176 },
-    { x: 502, y: 220 },
-  ],
-  slides: [
-  { title: 'Phase-Space Seeds.', subtitle: 'Data points are only weakly connected.', story: 'At first, points move in phase space with minimal coupling, and each one is individually optimized before global structure emerges.', type: 'line', hint: 'Sparse links only: observe phase-space motion, then drag points to test individual optimization behavior.' },
-  { title: 'Magenta Linkage.', subtitle: 'A surrogate model links data domains.', story: 'A surrogate model is introduced to connect experimental data points with theoretical data points into one coherent latent structure.', type: 'magenta', hint: 'Observe how the surrogate linkage aligns experimental and theoretical datapoints.' },
-  { title: 'Flow Conditioning.', subtitle: 'Surrogate model and datapoint modes are connected.', story: 'The surrogate model is now coupled to experimental and theoretical datapoint modes, so changes in one mode propagate through the connected structure.', type: 'flow', hint: 'Move the control points to see connected surrogate and datapoint modes co-adapt in real time.' },
-  { title: 'Convergence.', subtitle: 'Magenta boundary conditions are introduced.', story: 'Magenta boundary conditions are introduced and implemented directly in the surrogate model, constraining how connected datapoint modes evolve.', type: 'flow-finalize', hint: 'Adjust the magenta controls to modify boundary conditions and observe the surrogate model response.' },
-  { title: 'Final Aortic Bow.', subtitle: 'Best bow form appears at the end.', story: 'Only at the end, the stabilized result is shown as the final aortic bow.', type: 'final-bow', hint: 'Drag on the model to rotate in 3D and inspect the organic aortic bow with stent lattice.' }
-  ],
-};
-
-let slides = DEFAULT_DECK_CONFIG.slides.slice();
+let slides = [];
 
 const BRIDGE_CURVE = curvePoints(14, 0);
 const STAR_FIELD = (() => {
@@ -152,7 +43,7 @@ const STAR_FIELD = (() => {
 })();
 
 const BRIDGE_NODE_INDICES = [3, 9, 14, 19, 24, 30, 36, 42, 49, 56, 64, 72];
-let CLUSTER_CENTERS = DEFAULT_DECK_CONFIG.cluster_centers.slice();
+let CLUSTER_CENTERS = [];
 let CLUSTER_FIELD = [];
 let activeCrownScene = null;
 let previousConvergenceState = null;
@@ -169,10 +60,10 @@ const slideCounter = document.querySelector('#slideCounter');
 const footerSpans = Array.from(document.querySelectorAll('.footer span'));
 let active = -1;
 let activeCleanup = null;
-let deckUi = { ...DEFAULT_DECK_CONFIG.ui };
-let deckInteraction = { ...DEFAULT_DECK_CONFIG.interaction };
+let deckUi = null;
+let deckInteraction = null;
 
-let FORMATION_STEPS = DEFAULT_DECK_CONFIG.formation_steps.slice();
+let FORMATION_STEPS = [];
 
 function buildClusterField(centers, amounts, seed) {
   const rand = createSeededRandom(seed);
@@ -191,10 +82,24 @@ function buildClusterField(centers, amounts, seed) {
 }
 
 function applyDeckConfig(raw) {
-  const config = raw && typeof raw === 'object' ? raw : {};
-  const page = config.page && typeof config.page === 'object' ? config.page : {};
-  const pageConfig = { ...DEFAULT_DECK_CONFIG.page, ...page };
-  document.documentElement.lang = String(pageConfig.language || 'en');
+  if (!raw || typeof raw !== 'object') throw new Error('Deck config must be a mapping');
+  const config = raw;
+  const requireMapping = (value, path) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${path} must be a mapping`);
+    return value;
+  };
+  const requireString = (value, path) => {
+    if (typeof value !== 'string' || !value.trim()) throw new Error(`${path} must be a non-empty string`);
+    return value.trim();
+  };
+  const requireNumber = (value, path) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) throw new Error(`${path} must be numeric`);
+    return number;
+  };
+  const pageConfig = requireMapping(config.page, 'page');
+  document.documentElement.lang = requireString(pageConfig.language, 'page.language');
+  ['title', 'description', 'canonical', 'theme_color'].forEach((key) => requireString(pageConfig[key], `page.${key}`));
   document.title = String(pageConfig.title);
   document.querySelector('meta[name="description"]')?.setAttribute('content', String(pageConfig.description));
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', String(pageConfig.theme_color));
@@ -203,17 +108,18 @@ function applyDeckConfig(raw) {
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', String(pageConfig.canonical));
   document.querySelector('link[rel="canonical"]')?.setAttribute('href', String(pageConfig.canonical));
 
-  const interaction = config.interaction && typeof config.interaction === 'object' ? config.interaction : {};
+  const interaction = requireMapping(config.interaction, 'interaction');
   deckInteraction = {
-    swipe_enabled: interaction.swipe_enabled !== false,
-    swipe_threshold: Math.max(40, Number(interaction.swipe_threshold) || DEFAULT_DECK_CONFIG.interaction.swipe_threshold),
-    swipe_max_vertical_ratio: Math.max(.35, Math.min(1, Number(interaction.swipe_max_vertical_ratio) || DEFAULT_DECK_CONFIG.interaction.swipe_max_vertical_ratio)),
+    swipe_enabled: Boolean(interaction.swipe_enabled),
+    swipe_threshold: requireNumber(interaction.swipe_threshold, 'interaction.swipe_threshold'),
+    swipe_max_vertical_ratio: requireNumber(interaction.swipe_max_vertical_ratio, 'interaction.swipe_max_vertical_ratio'),
   };
-  const ui = config.ui && typeof config.ui === 'object' ? config.ui : {};
+  const ui = requireMapping(config.ui, 'ui');
   deckUi = {
-    footer_primary: String(ui.footer_primary || DEFAULT_DECK_CONFIG.ui.footer_primary),
-    footer_secondary: String(ui.footer_secondary || DEFAULT_DECK_CONFIG.ui.footer_secondary),
-    default_hint: String(ui.default_hint || DEFAULT_DECK_CONFIG.ui.default_hint),
+    footer_primary: requireString(ui.footer_primary, 'ui.footer_primary'),
+    footer_secondary: requireString(ui.footer_secondary, 'ui.footer_secondary'),
+    default_hint: requireString(ui.default_hint, 'ui.default_hint'),
+    journey: Array.isArray(ui.journey) ? ui.journey.map((phase, index) => requireString(phase, `ui.journey[${index}]`)) : (() => { throw new Error('ui.journey must be a list'); })(),
   };
 
   if (footerSpans[0]) {
@@ -223,30 +129,32 @@ function applyDeckConfig(raw) {
     footerSpans[1].textContent = deckUi.footer_secondary;
   }
 
-  const slidesCandidate = Array.isArray(config.slides) && config.slides.length > 0 ? config.slides : DEFAULT_DECK_CONFIG.slides;
-  slides = slidesCandidate.map((slide) => ({
-    title: String(slide.title || ''),
-    subtitle: String(slide.subtitle || ''),
-    story: String(slide.story || ''),
-    type: String(slide.type || 'line'),
-    hint: String(slide.hint || deckUi.default_hint),
+  if (!Array.isArray(config.slides) || config.slides.length === 0) throw new Error('slides must be a non-empty list');
+  slides = config.slides.map((slide, index) => ({
+    phase: requireString(slide.phase, `slides[${index}].phase`),
+    title: requireString(slide.title, `slides[${index}].title`),
+    subtitle: requireString(slide.subtitle, `slides[${index}].subtitle`),
+    story: requireString(slide.story, `slides[${index}].story`),
+    type: requireString(slide.type, `slides[${index}].type`),
+    hint: requireString(slide.hint, `slides[${index}].hint`),
+  }));
+  if (deckUi.journey.length !== slides.length) throw new Error('ui.journey must match slide count');
+  slides.forEach((slide, index) => {
+    if (slide.phase !== deckUi.journey[index]) throw new Error(`slides[${index}].phase must match ui.journey`);
+  });
+
+  if (!Array.isArray(config.formation_steps) || config.formation_steps.length === 0) throw new Error('formation_steps must be a non-empty list');
+  FORMATION_STEPS = config.formation_steps.map((value, index) => requireNumber(value, `formation_steps[${index}]`));
+
+  if (!Array.isArray(config.cluster_centers) || config.cluster_centers.length === 0) throw new Error('cluster_centers must be a non-empty list');
+  CLUSTER_CENTERS = config.cluster_centers.map((point, index) => ({
+    x: requireNumber(point.x, `cluster_centers[${index}].x`),
+    y: requireNumber(point.y, `cluster_centers[${index}].y`),
   }));
 
-  const steps = Array.isArray(config.formation_steps) && config.formation_steps.length > 0
-    ? config.formation_steps.map((v) => Number(v)).filter((v) => Number.isFinite(v))
-    : DEFAULT_DECK_CONFIG.formation_steps;
-  FORMATION_STEPS = steps.length ? steps : DEFAULT_DECK_CONFIG.formation_steps.slice();
-
-  const centers = Array.isArray(config.cluster_centers) && config.cluster_centers.length > 0
-    ? config.cluster_centers
-    : DEFAULT_DECK_CONFIG.cluster_centers;
-  CLUSTER_CENTERS = centers.map((p) => ({ x: Number(p.x), y: Number(p.y) })).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
-  if (!CLUSTER_CENTERS.length) {
-    CLUSTER_CENTERS = DEFAULT_DECK_CONFIG.cluster_centers.slice();
-  }
-
-  const amounts = Array.isArray(config.cluster_amounts) ? config.cluster_amounts.map((v) => Number(v)) : DEFAULT_DECK_CONFIG.cluster_amounts;
-  const seed = Number.isFinite(Number(config.seed)) ? Number(config.seed) : DEFAULT_DECK_CONFIG.seed;
+  if (!Array.isArray(config.cluster_amounts) || config.cluster_amounts.length !== CLUSTER_CENTERS.length) throw new Error('cluster_amounts must match cluster_centers');
+  const amounts = config.cluster_amounts.map((value, index) => requireNumber(value, `cluster_amounts[${index}]`));
+  const seed = requireNumber(config.seed, 'seed');
   CLUSTER_FIELD = buildClusterField(CLUSTER_CENTERS, amounts, seed);
 }
 
@@ -1899,7 +1807,7 @@ function addAortaPointCloudBridge(svg) {
   };
 }
 
-function addAdvancedAorticArch(svg, transitionState = null) {
+function addAdvancedAorticArch(svg, transitionState = null, mode = 'aorta') {
   const container = document.createElement('div');
   container.className = 'aortic-arch-stage';
   const canvas = document.createElement('canvas');
@@ -1908,10 +1816,11 @@ function addAdvancedAorticArch(svg, transitionState = null) {
   const help = document.createElement('p');
   help.id = helpId;
   help.className = 'visually-hidden';
-  help.textContent = 'Use arrow keys to rotate. Use plus and minus to zoom. Use left and right brackets to select a control point, then W, A, S, and D to deform the arch. Press Escape to clear the selected control point.';
+  const isBridge = mode === 'bridge';
+  help.textContent = `Use arrow keys to rotate the ${isBridge ? 'bridge' : 'aortic arch'}. Use plus and minus to zoom. Use left and right brackets to select a control point, then W, A, S, and D to reshape it. Press Escape to clear the selected control point.`;
   canvas.setAttribute('role', 'application');
   canvas.setAttribute('tabindex', '0');
-  canvas.setAttribute('aria-label', 'Interactive three-dimensional aortic arch');
+  canvas.setAttribute('aria-label', isBridge ? 'Interactive three-dimensional bridge derived from an aortic arch' : 'Interactive three-dimensional aortic arch');
   canvas.setAttribute('aria-describedby', helpId);
   container.append(canvas, help);
   svg.parentElement.appendChild(container);
@@ -1954,7 +1863,7 @@ function addAdvancedAorticArch(svg, transitionState = null) {
     });
   };
 
-  const scene = new window.AorticArchScene(canvas, { transitionState, onModelChange: updateLegacy });
+  const scene = new window.AorticArchScene(canvas, { transitionState, onModelChange: updateLegacy, mode });
   return () => {
     scene.destroy();
     legacyLayer.remove();
@@ -2040,6 +1949,9 @@ function renderVisual(svg, slide, index, interactive = true) {
   } else if (type === 'final-bow') {
     svg.classList.add('slide-final-bow');
     interactionMode = 'crown-flow-bow';
+  } else if (type === 'final-bridge') {
+    svg.classList.add('slide-final-bow', 'slide-final-bridge');
+    interactionMode = 'crown-flow-bridge';
   } else {
     drawProgressiveGraph(svg, formationProgress, interactive);
   }
@@ -2140,6 +2052,7 @@ function openSlide(i) {
   const s = slides[i];
   const shell = document.createElement('div');
   shell.className = `slide-shell slide-${s.type}`;
+  shell.dataset.accent = i % 2 === 0 ? 'magenta' : 'cyan';
 
   const wrap = document.createElement('div');
   wrap.className = 'slide-canvas-wrap';
@@ -2153,7 +2066,8 @@ function openSlide(i) {
 
   const info = document.createElement('aside');
   info.className = 'slide-info';
-  info.innerHTML = `<div><div class="slide-num">${String(i + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}</div><h1 class="slide-title">${s.title}</h1><p class="slide-subtitle">${s.subtitle}</p><p class="slide-story">${s.story}</p></div><p class="slide-hint">${s.hint || deckUi.default_hint}</p>`;
+  const journey = deckUi.journey.map((phase, phaseIndex) => `<span class="journey-step${phaseIndex === i ? ' active' : ''}${phaseIndex < i ? ' complete' : ''}">${phase}</span>`).join('');
+  info.innerHTML = `<div><div class="slide-num"><strong>${String(i + 1).padStart(2, '0')}</strong><span>/ ${String(slides.length).padStart(2, '0')}</span></div><div class="slide-phase">${s.phase}</div><h1 class="slide-title">${s.title}</h1><p class="slide-subtitle">${s.subtitle}</p><p class="slide-story">${s.story}</p></div><div><nav class="slide-journey" aria-label="Deck journey">${journey}</nav><p class="slide-hint">${s.hint}</p></div>`;
 
   shell.append(info, wrap);
   stage.appendChild(shell);
@@ -2188,7 +2102,12 @@ function openSlide(i) {
       dragCleanup?.();
     };
   } else if (interaction.mode === 'crown-flow-bow') {
-    const schematicCleanup = addAdvancedAorticArch(svg, previousConvergenceState);
+    const schematicCleanup = addAdvancedAorticArch(svg, previousConvergenceState, 'aorta');
+    interactionCleanup = () => {
+      schematicCleanup?.();
+    };
+  } else if (interaction.mode === 'crown-flow-bridge') {
+    const schematicCleanup = addAdvancedAorticArch(svg, previousConvergenceState, 'bridge');
     interactionCleanup = () => {
       schematicCleanup?.();
     };
@@ -2212,7 +2131,7 @@ function openSlide(i) {
     interactionCleanup = enableDragging(svg);
   }
 
-  const motionCleanup = s.type === 'final-bow' ? () => {} : addNodeMotion(svg);
+  const motionCleanup = ['final-bow', 'final-bridge'].includes(s.type) ? () => {} : addNodeMotion(svg);
   activeCleanup = () => {
     interactionCleanup?.();
     motionCleanup?.();
@@ -2238,6 +2157,28 @@ function prev() {
 
 document.querySelector('#nextBtn').addEventListener('click', next);
 document.querySelector('#prevBtn').addEventListener('click', prev);
+const presentationBtn = document.querySelector('#presentationBtn');
+
+async function togglePresentationMode() {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch (error) {
+    document.body.classList.toggle('presentation-mode');
+    presentationBtn.setAttribute('aria-pressed', String(document.body.classList.contains('presentation-mode')));
+  }
+}
+
+presentationBtn.addEventListener('click', togglePresentationMode);
+document.addEventListener('fullscreenchange', () => {
+  const isPresenting = Boolean(document.fullscreenElement);
+  document.body.classList.toggle('presentation-mode', isPresenting);
+  presentationBtn.setAttribute('aria-pressed', String(isPresenting));
+  presentationBtn.textContent = isPresenting ? 'exit presentation' : 'presentation';
+});
 
 function enableMobileSwipe(target) {
   let gesture = null;
@@ -2271,18 +2212,23 @@ window.addEventListener('keydown', (e) => {
   if (e.defaultPrevented || e.target.closest?.('.aortic-arch-canvas')) return;
   if (e.key === 'ArrowRight') next();
   if (e.key === 'ArrowLeft') prev();
-  if (e.key === 'Escape') restartDeck();
+  if (e.key === 'Home') openSlide(0);
 });
 
 async function boot() {
   try {
-    const yamlConfig = await DeckConfigLoader.load('/research/lithos/deck.config.yaml');
-    applyDeckConfig(yamlConfig);
-    document.documentElement.dataset.configSource = 'yaml';
+    const compiledConfig = await DeckConfigLoader.load('/generated/lithos-deck.config.json');
+    applyDeckConfig(compiledConfig);
+    document.documentElement.dataset.configSource = 'compiled-yaml';
   } catch (err) {
-    applyDeckConfig(DEFAULT_DECK_CONFIG);
-    document.documentElement.dataset.configSource = 'fallback';
-    console.warn('Deck config fallback to defaults:', err?.message || err);
+    document.documentElement.dataset.configSource = 'error';
+    stage.replaceChildren();
+    const message = document.createElement('p');
+    message.className = 'deck-config-error';
+    message.textContent = `Configuration error: ${err?.message || err}`;
+    stage.appendChild(message);
+    stage.setAttribute('aria-busy', 'false');
+    throw err;
   }
   openSlide(0);
   stage.setAttribute('aria-busy', 'false');

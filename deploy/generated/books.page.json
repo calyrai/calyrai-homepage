@@ -1,197 +1,6 @@
 {
   "id": "books-home",
-  "style_reference": "shifta-like-structure",
-  "header": {
-    "brand": "calyr.aí",
-    "section_label": "Research",
-    "page_label": "book.",
-    "nav": [
-      {
-        "label": "Books",
-        "target": "/research/books"
-      },
-      {
-        "label": "Publications",
-        "target": "/research/publications"
-      },
-      {
-        "label": "White Papers",
-        "target": "/research/whitepapers"
-      },
-      {
-        "label": "Notes",
-        "target": "/research/notes"
-      }
-    ]
-  },
-  "hero": {
-    "title": "book.",
-    "subtitle": "Long-form concepts and frameworks",
-    "cta": {
-      "label": "See all books",
-      "target": "/research/books/archive"
-    }
-  },
   "sections": [
-    {
-      "id": "featured",
-      "title": "Featured",
-      "description": "Active, published, and in-development books",
-      "items": [
-        {
-          "id": "modern-biophysics",
-          "type": "book",
-          "authors": [
-            "Tscheliessnig, Rupert"
-          ],
-          "title": "Modern Biophysics",
-          "year": 2026,
-          "tags": [
-            "biophysics",
-            "thermodynamics",
-            "structural-biology"
-          ],
-          "objective": "Move beyond classical interpretations of biological systems by applying modern thermodynamic principles and surrogate models to understand cellular architecture and dynamics.",
-          "summary": "A framework for reinterpreting biological structure through modern thermodynamics and computational surrogate models.",
-          "links": {
-            "pdf": "/docs/books/modern-biophysics.pdf",
-            "latex": "/src/books/modern-biophysics.tex"
-          },
-          "visual": {
-            "type": "icon",
-            "status_color_code": true,
-            "fallback": "initial-letter",
-            "initial": "M"
-          },
-          "ctas": [
-            {
-              "type": "pdf",
-              "label": "Read PDF",
-              "url": "/docs/books/modern-biophysics.pdf"
-            },
-            {
-              "type": "latex",
-              "label": "Source LaTeX",
-              "url": "/src/books/modern-biophysics.tex"
-            }
-          ]
-        },
-        {
-          "id": "surrogate-thinking",
-          "type": "book",
-          "authors": [
-            "Tscheliessnig, Rupert"
-          ],
-          "title": "Surrogate Thinking",
-          "year": 2026,
-          "tags": [
-            "surrogate-models",
-            "inference",
-            "decision-making"
-          ],
-          "objective": "Define a conceptual framework for using surrogate models to guide reasoning, decision-making, and intervention planning under uncertainty and incomplete information.",
-          "summary": "A framework for surrogate-guided reasoning under uncertainty, with applications to product design and scientific inference.",
-          "links": {
-            "outline": {
-              "url": "/docs/books/surrogate-thinking-outline.md",
-              "online": true
-            }
-          },
-          "visual": {
-            "type": "icon",
-            "status_color_code": true,
-            "fallback": "initial-letter",
-            "initial": "S"
-          },
-          "ctas": [
-            {
-              "type": "outline",
-              "label": "Outline",
-              "url": "/docs/books/surrogate-thinking-outline.md",
-              "online": true
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "in_progress",
-      "title": "In Progress",
-      "description": "Manuscripts and concepts being written",
-      "items": [
-        {
-          "id": "modern-biophysics",
-          "type": "book",
-          "authors": [
-            "Tscheliessnig, Rupert"
-          ],
-          "title": "Modern Biophysics",
-          "year": 2026,
-          "status_badge": {
-            "value": "draft",
-            "label": "Draft"
-          },
-          "tags": [
-            "biophysics",
-            "thermodynamics",
-            "structural-biology"
-          ],
-          "summary": "A framework for reinterpreting biological structure through modern thermodynamics and computational surrogate models.",
-          "visual": {
-            "type": "icon",
-            "status_color_code": true,
-            "fallback": "initial-letter",
-            "initial": "M"
-          },
-          "ctas": []
-        },
-        {
-          "id": "surrogate-thinking",
-          "type": "book",
-          "authors": [
-            "Tscheliessnig, Rupert"
-          ],
-          "title": "Surrogate Thinking",
-          "year": 2026,
-          "status_badge": {
-            "value": "concept",
-            "label": "Concept"
-          },
-          "tags": [
-            "surrogate-models",
-            "inference",
-            "decision-making"
-          ],
-          "summary": "A framework for surrogate-guided reasoning under uncertainty, with applications to product design and scientific inference.",
-          "visual": {
-            "type": "icon",
-            "status_color_code": true,
-            "fallback": "initial-letter",
-            "initial": "S"
-          },
-          "ctas": [
-            {
-              "type": "outline",
-              "label": "Outline",
-              "url": "/docs/books/surrogate-thinking-outline.md",
-              "online": true
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "contributors",
-      "title": "Contributors",
-      "description": null,
-      "items": []
-    },
-    {
-      "id": "newsletter",
-      "title": "Newsletter",
-      "description": null,
-      "items": []
-    },
     {
       "id": "architecture_books",
       "title": "Architecture Books",
@@ -203,7 +12,7 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "calyr.aí Positioning",
+          "title": "calyr.aí positioning",
           "year": 2026,
           "tags": [
             "architecture",
@@ -235,7 +44,7 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "calyr.aí Core Foundations",
+          "title": "calyr.aí core foundations",
           "year": 2026,
           "tags": [
             "reasoning",
@@ -307,15 +116,15 @@
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Lithos Consequence Intelligence",
+          "title": "Lithos — Science in Public",
           "year": 2026,
           "tags": [
-            "consequences",
-            "risk",
-            "trade-offs"
+            "science in public",
+            "science communication",
+            "participatory systems"
           ],
-          "objective": "Frame consequence analysis as a first-class semantic reasoning task.",
-          "summary": "Lithos translates model outputs into impact pathways, risks, and option-level trade-offs.",
+          "objective": "Create public forms in which scientific systems can be encountered, questioned, and discussed.",
+          "summary": "Lithos translates scientific data, models, and uncertainty into spatial, visual, and participatory public experiences.",
           "ctas": [
             {
               "type": "platform-page",
@@ -350,64 +159,26 @@
           ]
         },
         {
-          "id": "platform-delphi",
-          "type": "platform-book",
-          "authors": [
-            "Tscheliessnig, Rupert"
-          ],
-          "title": "Delphi Compass Interface",
-          "year": 2026,
-          "tags": [
-            "interaction",
-            "exploration",
-            "insights",
-            "compass",
-            "interface-layer"
-          ],
-          "objective": "Define Delphi as the Compass interface and make explicit that the platform tile is the entry link into this interface.",
-          "summary": "The Delphi platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.",
-          "ctas": [
-            {
-              "type": "platform-page",
-              "label": "Open Delphi Compass interface",
-              "url": "/research/platforms/delphi/index.html",
-              "online": true
-            },
-            {
-              "type": "philosophy-context",
-              "label": "Open Philosophy context",
-              "url": "/philosophy",
-              "online": true
-            },
-            {
-              "type": "upstream-oracle",
-              "label": "Open Oracle source layer",
-              "url": "/research/platforms/oracle/index.html",
-              "online": true
-            }
-          ]
-        },
-        {
           "id": "platform-pythia",
           "type": "platform-book",
           "authors": [
             "Tscheliessnig, Rupert"
           ],
-          "title": "Pythia Compass Interface",
+          "title": "PYTHIA — Scientific Machine Learning",
           "year": 2026,
           "tags": [
-            "interaction",
-            "exploration",
-            "insights",
-            "compass",
-            "interface-layer"
+            "scientific-machine-learning",
+            "surrogate-models",
+            "interpretability",
+            "uncertainty",
+            "decision-support"
           ],
-          "objective": "Define Pythia as the Compass interface and make explicit that the platform tile is the entry link into this interface.",
-          "summary": "The Pythia platform tile links into Compass, where guided exploration, pattern finding, and insight capture are executed.",
+          "objective": "Transform scientific questions into interpretable surrogate models, evidence, predictions, and defensible decisions.",
+          "summary": "A process-oriented scientific operating system connecting questions, knowledge, methods, evidence, prediction, and decision.",
           "ctas": [
             {
               "type": "platform-page",
-              "label": "Open Pythia Compass interface",
+              "label": "Open PYTHIA",
               "url": "/research/platforms/pythia/index.html",
               "online": true
             },
@@ -428,30 +199,6 @@
       ]
     }
   ],
-  "footer": {
-    "links": [
-      {
-        "label": "Research",
-        "target": "/research"
-      },
-      {
-        "label": "Books",
-        "target": "/research/books"
-      },
-      {
-        "label": "Contact",
-        "target": "/contact"
-      }
-    ]
-  },
-  "metadata": {
-    "generated_at": "2026-07-13T11:18:16.069795+00:00",
-    "book_count": 10,
-    "books_by_status": {
-      "draft": 1,
-      "concept": 1
-    }
-  },
   "style": {
     "hero": {
       "title_color": "#ffffff",
@@ -460,5 +207,9 @@
       "title_dot_glow": "rgba(255, 42, 122, 0.9)"
     }
   },
-  "home_route": "/"
+  "home_route": "/",
+  "metadata": {
+    "book_count": 7,
+    "generated_at": "2026-08-27T05:18:50.287860+00:00"
+  }
 }

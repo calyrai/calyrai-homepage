@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Capture sources in Safari, preserve them in Zotero, extract page-bound evidence, and publish curated claims to the calyr.aí knowledge catalog." />
+  <title>Evidence Reading Workflow · calyr.aí</title>
+  <link rel="stylesheet" href="./method.css" />
+  <link rel="stylesheet" href="/research/research-system.css" />
+</head>
+<body>
+  <header class="site-header research-system-header"><span aria-hidden="true"></span><nav class="research-chapter-nav" aria-label="Research chapters"><a href="/research/methods/" aria-current="page"><span>01</span>Methods</a><a href="/research/methods/oracling/"><span>02</span>Oracling</a><a href="/research/interfaces/"><span>03</span>Interfaces</a><a href="/research/swiss-code/"><span>04</span>Swiss Code</a></nav></header>
+  <div class="research-source-bar"><span>YAML source of truth <code>content/books.yaml</code></span><span>Binding <code>method_catalog.CALYR-METHOD-EVIDENCE-WORKFLOW-001</code></span><span>Linked source <code>docs/evidence-reading-workflow.md</code></span></div>
+  <div class="page-shell">
+    <aside class="contents">
+      <p class="contents-label">On this page</p>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#system-location">System location</a></li><li><a href="#capture-from-safari">Capture from Safari</a></li><li><a href="#read-and-mark">Read and mark</a></li><li><a href="#extract-an-evidence-record">Extract an evidence record</a></li><li><a href="#build-text-from-ideas">Build text from ideas</a></li><li><a href="#api-and-synchronization-boundary">API and synchronization boundary</a></li><li><a href="#validation-gates">Validation gates</a></li><li><a href="#output">Output</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
+    </aside>
+    <main class="method-layout"><article><section class="method-hero"><h1 id="evidence-reading-workflow">Evidence Reading Workflow</h1>
+<dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-EVIDENCE-WORKFLOW-001</code></dd></div><div><dt>Status</dt><dd>Working contract</dd></div><div><dt>Scope</dt><dd>From a source discovered in Safari to traceable evidence, reusable ideas, and citation-ready scientific writing</dd></div></dl>
+</section><section class="method-section"><h2 id="purpose">Purpose</h2>
+<p>This workflow separates collecting a source from making a scientific claim. Safari is the discovery surface, Zotero is the private source and annotation system, and the calyr.aí catalog is the reviewed layer of claims, evidence, relations, and methods.</p>
+<p>The contract is:</p>
+<p><code>discover → preserve → read → mark → extract → relate → write → verify</code></p>
+<p>A saved tab is not evidence. A highlight is not yet a claim. A generated paragraph is not publishable until its assertions resolve to reviewed sources and exact locations.</p>
+</section><section class="method-section"><h2 id="system-location">System location</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Responsibility</th><th>Stored material</th></tr></thead><tbody><tr><td>Safari</td><td>Discovery and capture</td><td>Current page and source URL</td></tr><tr><td>Zotero</td><td>Private library and reading record</td><td>Metadata, PDFs, snapshots, annotations, notes, collections, tags</td></tr><tr><td>calyr.aí catalog</td><td>Reviewed knowledge layer</td><td>Claims, interpretations, evidence level, relations, applicability, citation keys</td></tr><tr><td>Git</td><td>Versioned publication source</td><td>YAML records, schemas, prose, validation rules; normally no copyrighted PDFs</td></tr></tbody></table></div>
+<p>This method belongs to <strong>Methods / Research practice</strong>. Reading rooms use it, but do not own it. Oracling, scientific machine learning, numerical methods, SAXS, SPR, cryo-EM, and future catalogs can therefore share one evidence contract.</p>
+</section><section class="method-section"><h2 id="capture-from-safari">Capture from Safari</h2>
+<ol>
+<li>Save the publisher or repository landing page with the Zotero Connector whenever possible.</li>
+<li>Let Zotero attach the original PDF and extract its bibliographic metadata.</li>
+<li>If only a PDF is available, retrieve or create its parent item and verify title, authors, year, venue, DOI, and canonical URL.</li>
+<li>Preserve an ordinary webpage as a Zotero webpage item or snapshot. Create a PDF only when a fixed rendering is required.</li>
+<li>Put the item into a purposeful collection and assign a workflow status.</li>
+</ol>
+<p>Suggested status tags are <code>inbox</code>, <code>to-read</code>, <code>reading</code>, <code>annotated</code>, <code>extracted</code>, <code>verified</code>, and <code>used</code>.</p>
+</section><section class="method-section"><h2 id="read-and-mark">Read and mark</h2>
+<p>Use a stable color vocabulary across the library:</p>
+<div class="table-wrap"><table><thead><tr><th>Color</th><th>Semantic role</th><th>Extraction target</th></tr></thead><tbody><tr><td>Yellow</td><td>Claim or finding</td><td>What does the source assert?</td></tr><tr><td>Blue</td><td>Method or definition</td><td>How is the result obtained or a term defined?</td></tr><tr><td>Green</td><td>Data or evidence</td><td>Which observation, dataset, or experiment supports it?</td></tr><tr><td>Red</td><td>Limitation or contradiction</td><td>Where does it fail, disagree, or remain uncertain?</td></tr><tr><td>Purple</td><td>Interpretation or application</td><td>Why might this matter to the active calyr.aí question?</td></tr></tbody></table></div>
+<p>Every consequential highlight receives a short annotation note stating why it matters. Preserve the page or section locator. Paraphrases must remain visibly distinct from verbatim excerpts.</p>
+</section><section class="method-section"><h2 id="extract-an-evidence-record">Extract an evidence record</h2>
+<p>Only reviewed annotations cross from Zotero into Git. Each record must be atomic enough to evaluate independently and rich enough to return to its source.</p>
+<pre><code>- id: claim-guo-2017-calibration-001
+  source:
+    zotero_key: &quot;&quot;
+    citation_key: guo2017calibration
+    doi: 10.48550/arXiv.1706.04599
+    url: https://proceedings.mlr.press/v70/guo17a.html
+    locator:
+      type: page
+      value: &quot;2&quot;
+  claim: Modern neural-network confidence can be poorly calibrated even when predictive accuracy is high.
+  excerpt: &quot;&quot;
+  interpretation: Calibration must be validated independently from accuracy.
+  evidence_type: empirical
+  evidence_level: published
+  applicability:
+    domains: [classification, scientific machine learning]
+    limits: [dataset shift, task-specific recalibration]
+  relations:
+    supports: [calibration-check-per-trait]
+    challenges: []
+  topics: [calibration, uncertainty, oracling]
+  review:
+    status: pending
+    reviewer: &quot;&quot;
+    verified_at: &quot;&quot;</code></pre>
+<p>The Zotero key provides a local return path. DOI and canonical URL provide portable identity. The locator makes the assertion auditable. Empty review fields prevent unreviewed extraction from appearing finished.</p>
+</section><section class="method-section"><h2 id="build-text-from-ideas">Build text from ideas</h2>
+<p>Write from a question or argument, not from a sequence of papers.</p>
+<ol>
+<li>Select reviewed claims relevant to the section objective.</li>
+<li>Group supporting, limiting, and contradictory records.</li>
+<li>Draft the argument in original language.</li>
+<li>Attach a citation to every externally checkable assertion.</li>
+<li>Return to Zotero for exact context before quoting.</li>
+<li>Verify that the cited source supports the sentence as written.</li>
+<li>Keep uncertainty, applicability, and disagreement visible in the finished text.</li>
+</ol>
+<p>AI may cluster, compare, retrieve, and draft from the reviewed records. It must not invent locators, silently merge distinct claims, or upgrade an interpretation into source evidence.</p>
+</section><section class="method-section"><h2 id="api-and-synchronization-boundary">API and synchronization boundary</h2>
+<p>Begin with a local, read-only Zotero integration. Read items, collections, tags, notes, annotations, attachment metadata, and indexed text through the Zotero local API. Transform selected records into the catalog schema only after an explicit review action.</p>
+<p>Do not commit API keys, authentication tokens, the Zotero database, or private attachments. Do not publish full PDFs unless their license and repository policy explicitly permit redistribution. A later web integration may use the Zotero Web API with a narrowly scoped credential stored outside Git.</p>
+<p>The first implementation boundary is one-way:</p>
+<p><code>Zotero → reviewed extraction → YAML → generated catalog</code></p>
+<p>Bidirectional synchronization is deferred until conflicts, deletion, permissions, and provenance can be handled without ambiguity.</p>
+</section><section class="method-section"><h2 id="validation-gates">Validation gates</h2>
+<p>A record can move to <code>verified</code> only when:</p>
+<ul>
+<li>bibliographic identity has been checked;</li>
+<li>the claim resolves to an exact source location;</li>
+<li>excerpt and paraphrase are distinguished;</li>
+<li>evidence type and level are explicit;</li>
+<li>applicability and important limitations are recorded;</li>
+<li>the source actually supports the local interpretation;</li>
+<li>redistribution of stored material is permitted;</li>
+<li>a human reviewer is named and the review date is recorded.</li>
+</ul>
+</section><section class="method-section"><h2 id="output">Output</h2>
+<p>The workflow produces three distinct outputs:</p>
+<ol>
+<li>a private, annotated source in Zotero;</li>
+<li>a versioned evidence record in the calyr.aí catalog;</li>
+<li>citation-ready prose whose claims can be traced back through the evidence record to the source.</li>
+</ol>
+<p>This separation allows the literature base to grow without turning Git into a document archive or turning generated prose into an unreviewed authority.</p>
+</section><section class="method-section method-section--references"><h2 id="sources-and-further-reading">Sources and further reading</h2>
+<ul>
+<li><a href="https://www.zotero.org/support/connector" rel="noreferrer">Zotero Connector</a></li>
+<li><a href="https://www.zotero.org/support/pdf_reader" rel="noreferrer">Zotero PDF reader and annotations</a></li>
+<li><a href="https://www.zotero.org/support/notes" rel="noreferrer">Zotero notes</a></li>
+<li><a href="https://www.zotero.org/support/dev/web_api/v3/" rel="noreferrer">Zotero Web API v3</a></li>
+<li><a href="https://www.zotero.org/support/dev/web_api/v3/fulltext_content" rel="noreferrer">Zotero Web API full-text access</a></li>
+</ul></section></article></main>
+  </div>
+<script src="/calyr-home.js"></script></body>
+</html>

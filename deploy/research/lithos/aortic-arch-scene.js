@@ -6,7 +6,7 @@
   const MAIN_SIDES = 12;
   const BRANCH_RINGS = 7;
   const BRANCH_SIDES = 6;
-  const LANDING_MESH = [[170, 220, 232], [0, 224, 255], [98, 190, 208], [255, 0, 214]];
+  const LANDING_MESH = [[226, 236, 240], [255, 255, 255], [168, 194, 204], [205, 225, 232]];
 
   const cross = (a, b) => ({
     x: a.y * b.z - a.z * b.y,
@@ -177,6 +177,7 @@
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.model = new AorticArchModel();
+      this.mode = options.mode === 'bridge' ? 'bridge' : 'aorta';
       const orientation = options.transitionState?.orientation || { tilt: 0, yaw: 0 };
       this.rotationX = -.04 + orientation.tilt * .18;
       this.rotationY = -.08 + orientation.yaw * .24;
@@ -263,12 +264,86 @@
       points.forEach((point, index) => index ? path.lineTo(point.x, point.y) : path.moveTo(point.x, point.y));
     }
 
+    drawBridge() {
+      const { ctx, model } = this;
+      const spline = model.mainSpline;
+      const progress = this.transitionProgress;
+      const samples = spline.samples(72);
+      const visible = Math.max(2, Math.floor((samples.length - 1) * progress) + 1);
+      const shown = samples.slice(0, visible);
+      const offsetPoint = (point, z, y = 0) => ({ x: point.x, y: point.y + y, z: point.z + z });
+      const projectedLine = (points, style, width, shadow = 0) => {
+        const path = new Path2D();
+        this.drawPath(points.map((point) => this.projected(point)), path);
+        ctx.save();
+        ctx.strokeStyle = style;
+        ctx.lineWidth = width;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        if (shadow) { ctx.shadowColor = 'rgba(170,225,242,.75)'; ctx.shadowBlur = shadow; }
+        ctx.stroke(path);
+        ctx.restore();
+      };
+
+      // The aortic centreline becomes a paired, gently cambered bridge deck.
+      projectedLine(shown.map((point) => offsetPoint(point, -.22, -.02)), 'rgba(236,244,247,.96)', 7.2, 12);
+      projectedLine(shown.map((point) => offsetPoint(point, .22, -.02)), 'rgba(255,255,255,.99)', 7.2, 12);
+      projectedLine(shown.map((point) => offsetPoint(point, 0, .035)), 'rgba(6,13,17,.98)', 4.2);
+
+      // Repeated transverse ribs translate the former stent rhythm into architecture.
+      const ribCount = this.lowQuality ? 9 : 18;
+      for (let index = 0; index < ribCount; index += 1) {
+        const t = .04 + index / Math.max(1, ribCount - 1) * .92;
+        if (t > progress) break;
+        const center = spline.at(t);
+        const crown = .16 + .11 * Math.sin(Math.PI * t);
+        const rib = [
+          offsetPoint(center, -.28, -.03),
+          offsetPoint(center, -.18, crown * .72),
+          offsetPoint(center, 0, crown),
+          offsetPoint(center, .18, crown * .72),
+          offsetPoint(center, .28, -.03),
+        ];
+        projectedLine(rib, index % 3 === 0 ? 'rgba(255,255,255,.96)' : 'rgba(194,218,226,.72)', index % 3 === 0 ? 1.8 : 1.05);
+      }
+
+      // Lean white pylons and fan cables give the bridge its sculptural gesture.
+      const pylons = [
+        { t: .2, lean: -.18, height: .72 },
+        { t: .43, lean: .28, height: 1.48 },
+        { t: .68, lean: -.1, height: .78 },
+      ];
+      pylons.forEach((spec, pylonIndex) => {
+        if (spec.t > progress) return;
+        const base = spline.at(spec.t);
+        const tip = { x: base.x + spec.lean, y: base.y + spec.height, z: base.z };
+        projectedLine([offsetPoint(base, -.23), offsetPoint(tip, -.04)], 'rgba(255,255,255,.98)', 4.2, 6);
+        projectedLine([offsetPoint(base, .23), offsetPoint(tip, .04)], 'rgba(226,239,244,.9)', 3.2, 5);
+        [-.22, -.16, -.1, .1, .16, .22].forEach((delta, cableIndex) => {
+          const target = spline.at(Math.max(.02, Math.min(.98, spec.t + delta)));
+          projectedLine([tip, offsetPoint(target, cableIndex % 2 ? .22 : -.22, -.01)], 'rgba(196,220,229,.68)', .85);
+        });
+        const footing = this.projected({ x: base.x, y: -1.88, z: base.z });
+        const baseProjected = this.projected(base);
+        const pier = new Path2D();
+        pier.moveTo(baseProjected.x, baseProjected.y);
+        pier.lineTo(footing.x, footing.y);
+        ctx.save();
+        ctx.strokeStyle = pylonIndex === 1 ? 'rgba(255,255,255,.82)' : 'rgba(172,198,208,.6)';
+        ctx.lineWidth = pylonIndex === 1 ? 3 : 2;
+        ctx.stroke(pier);
+        ctx.restore();
+      });
+    }
+
     draw() {
       const { ctx, canvas, model } = this;
       const width = canvas.clientWidth, height = canvas.clientHeight;
       ctx.clearRect(0, 0, width, height);
       const aura = ctx.createRadialGradient(width * .48, height * .47, 10, width * .48, height * .47, Math.min(width, height) * .48);
-      aura.addColorStop(0, 'rgba(255,0,204,.11)'); aura.addColorStop(.38, 'rgba(90,124,255,.065)'); aura.addColorStop(1, 'rgba(0,0,0,0)');
+      aura.addColorStop(0, this.mode === 'bridge' ? 'rgba(151,222,240,.14)' : 'rgba(255,0,204,.11)');
+      aura.addColorStop(.38, this.mode === 'bridge' ? 'rgba(65,118,144,.075)' : 'rgba(90,124,255,.065)');
+      aura.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = aura; ctx.fillRect(0, 0, width, height);
       const points = model.surface.nodes.map((point) => this.projected(point));
 
@@ -282,7 +357,15 @@
         const b = stent[(ring + 1) * model.stent.sides + ((side - 1 + model.stent.sides) % model.stent.sides)];
         stentPath.moveTo(current.x, current.y); stentPath.lineTo(a.x, a.y); stentPath.moveTo(current.x, current.y); stentPath.lineTo(b.x, b.y);
       }
-      ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.strokeStyle = '#ff00cc'; ctx.shadowColor = '#ff00cc'; ctx.shadowBlur = this.lowQuality ? 0 : 10; ctx.lineWidth = 1.35; ctx.stroke(stentPath); ctx.restore();
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = this.mode === 'bridge' ? Math.max(.025, .28 * (1 - this.transitionProgress)) : 1;
+      ctx.strokeStyle = this.mode === 'bridge' ? '#d9edf4' : '#ff00cc';
+      ctx.shadowColor = this.mode === 'bridge' ? '#b7e8f3' : '#ff00cc';
+      ctx.shadowBlur = this.lowQuality ? 0 : (this.mode === 'bridge' ? 7 : 10);
+      ctx.lineWidth = this.mode === 'bridge' ? 1.05 : 1.35;
+      ctx.stroke(stentPath);
+      ctx.restore();
 
       if (this.lowQuality) {
         const fast = new Path2D();
@@ -291,7 +374,7 @@
           const triangle = model.surface.triangles[index];
           fast.moveTo(points[triangle[0]].x, points[triangle[0]].y); fast.lineTo(points[triangle[1]].x, points[triangle[1]].y); fast.lineTo(points[triangle[2]].x, points[triangle[2]].y); fast.closePath();
         }
-        ctx.strokeStyle = 'rgba(170,220,232,.34)'; ctx.lineWidth = .72; ctx.stroke(fast);
+        ctx.strokeStyle = this.mode === 'bridge' ? 'rgba(170,220,232,.04)' : 'rgba(170,220,232,.34)'; ctx.lineWidth = .72; ctx.stroke(fast);
       } else {
         const visibleTriangles = Math.floor(model.surface.triangles.length * this.transitionProgress);
         model.surface.triangles.slice(0, visibleTriangles).map((indices) => ({ indices, depth: indices.reduce((sum, index) => sum + points[index].z, 0) / 3 })).sort((a, b) => a.depth - b.depth).forEach(({ indices, depth }, index) => {
@@ -300,26 +383,34 @@
           const color = LANDING_MESH[colorIndex];
           const light = Math.max(0, Math.min(1, (depth + 1.1) / 2.2));
           const reflective = .5 + .5 * Math.sin(index * 1.71 + depth * 2.4);
-          const fillAlpha = .035 + light * .075 + reflective * .035;
-          const edgeAlpha = .23 + light * .23 + reflective * .09;
+          const bridgeFade = this.mode === 'bridge' ? Math.max(.035, .34 * (1 - this.transitionProgress)) : 1;
+          const fillAlpha = (.035 + light * .075 + reflective * .035) * bridgeFade;
+          const edgeAlpha = (.23 + light * .23 + reflective * .09) * bridgeFade;
           ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${fillAlpha})`;
           ctx.fill(path);
-          ctx.strokeStyle = colorIndex === 3
-            ? `rgba(255,0,214,${edgeAlpha * .58})`
-            : `rgba(170,220,232,${edgeAlpha})`;
+          ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},${edgeAlpha * .78})`;
           ctx.lineWidth = .48 + light * .58 + reflective * .18;
           ctx.stroke(path);
         });
       }
 
-      const splinePath = new Path2D();
-      model.surface.splines.forEach((spline) => this.drawPath(spline.map((point) => this.projected(point)), splinePath));
-      ctx.strokeStyle = '#ff00cc'; ctx.shadowColor = '#ff00cc'; ctx.shadowBlur = this.lowQuality ? 0 : 8; ctx.lineWidth = 2.4; ctx.stroke(splinePath); ctx.shadowBlur = 0;
+      if (this.mode === 'bridge') {
+        this.drawBridge();
+      } else {
+        const splinePath = new Path2D();
+        model.surface.splines.forEach((spline) => this.drawPath(spline.map((point) => this.projected(point)), splinePath));
+        ctx.strokeStyle = '#ff00cc';
+        ctx.shadowColor = '#ff00cc';
+        ctx.shadowBlur = this.lowQuality ? 0 : 8;
+        ctx.lineWidth = 2.4;
+        ctx.stroke(splinePath);
+        ctx.shadowBlur = 0;
+      }
 
       ctx.globalAlpha = Math.max(0, Math.min(1, (this.transitionProgress - .35) / .65));
       model.handles().forEach((handle) => {
         const point = this.projected(handle.point), anchor = handle.type === 'anchor';
-        ctx.beginPath(); ctx.arc(point.x, point.y, this.activeHandle?.point === handle.point ? 6.5 : 4.5, 0, TAU); ctx.fillStyle = anchor ? '#ff00cc' : '#00e5ff'; ctx.fill();
+        ctx.beginPath(); ctx.arc(point.x, point.y, this.activeHandle?.point === handle.point ? 6.5 : 4.5, 0, TAU); ctx.fillStyle = this.mode === 'bridge' ? (anchor ? '#ffffff' : '#7ce8ff') : (anchor ? '#ff00cc' : '#00e5ff'); ctx.fill();
       });
       ctx.globalAlpha = 1;
     }

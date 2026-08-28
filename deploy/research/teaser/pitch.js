@@ -4,81 +4,15 @@ const HEIGHT = 460;
 
 class ConfigLoader {
   static async load(path) {
-    const text = await fetch(path).then((r) => r.text());
-    return this.parseYaml(text);
-  }
-
-  static parseYaml(text) {
-    const lines = text.replace(/\t/g, '  ').split('\n');
-    const root = {};
-    let i = 0;
-
-    const parseScalar = (v) => {
-      const value = v.trim();
-      if (value === 'true') return true;
-      if (value === 'false') return false;
-      if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
-      return value.replace(/^"|"$/g, '');
-    };
-
-    const indentOf = (line) => line.match(/^\s*/)[0].length;
-
-    function parseBlock(baseIndent) {
-      const obj = {};
-      const arr = [];
-      let mode = null;
-
-      while (i < lines.length) {
-        const raw = lines[i];
-        if (!raw.trim() || raw.trim().startsWith('#')) {
-          i += 1;
-          continue;
-        }
-        const indent = indentOf(raw);
-        if (indent < baseIndent) break;
-        const line = raw.trim();
-
-        if (line.startsWith('- ')) {
-          mode = 'array';
-          const itemText = line.slice(2);
-          if (itemText.includes(':')) {
-            const [k, ...rest] = itemText.split(':');
-            const val = rest.join(':').trim();
-            const item = { [k.trim()]: val ? parseScalar(val) : null };
-            i += 1;
-            const nested = parseBlock(indent + 2);
-            if (nested && typeof nested === 'object' && !Array.isArray(nested) && Object.keys(nested).length > 0) {
-              Object.assign(item, nested);
-            }
-            arr.push(item);
-          } else {
-            arr.push(parseScalar(itemText));
-            i += 1;
-          }
-          continue;
-        }
-
-        mode = mode || 'object';
-        const [key, ...rest] = line.split(':');
-        const k = key.trim();
-        const v = rest.join(':').trim();
-        i += 1;
-
-        if (v) {
-          obj[k] = parseScalar(v);
-        } else {
-          const nested = parseBlock(indent + 2);
-          obj[k] = nested;
-        }
-      }
-
-      return mode === 'array' ? arr : obj;
+    const response = await fetch(path, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`Pitch config fetch failed (${response.status})`);
+    const config = await response.json();
+    for (const key of ['meta', 'page', 'engagement', 'copy', 'nodes', 'edges', 'story_rules', 'workflow']) {
+      if (!config[key] || (Array.isArray(config[key]) && config[key].length === 0)) throw new Error(`Pitch config requires ${key}`);
     }
-
-    i = 0;
-    Object.assign(root, parseBlock(0));
-    return root;
+    return config;
   }
+
 }
 
 class StoryEngine {
@@ -154,6 +88,108 @@ class StoryEngine {
   }
 }
 
+function hydratePage(config) {
+  const page = config.page;
+  const required = ['kicker', 'title', 'subtitle', 'deck_link_label', 'deck_link_url', 'insight_title', 'insight_copy', 'hpc_title', 'hpc_copy'];
+  required.forEach((key) => {
+    if (typeof page[key] !== 'string' || !page[key].trim()) throw new Error(`page.${key} is required`);
+  });
+  document.title = config.meta.title;
+  document.getElementById('page-kicker').textContent = page.kicker;
+  document.getElementById('page-title').textContent = page.title;
+  document.getElementById('page-subtitle').textContent = page.subtitle;
+  document.getElementById('page-deck-link').href = page.deck_link_url;
+  document.getElementById('page-deck-link-label').textContent = page.deck_link_label;
+  document.getElementById('insight-title').textContent = page.insight_title;
+  document.getElementById('insight-copy').textContent = page.insight_copy;
+  document.getElementById('hpc-title').textContent = page.hpc_title;
+  document.getElementById('hpc-copy').textContent = page.hpc_copy;
+  hydrateEngagement(config.engagement);
+  hydrateWorkflow(config.workflow);
+}
+
+function hydrateEngagement(engagement) {
+  document.getElementById('engagement-kicker').textContent = engagement.kicker;
+  document.getElementById('engagement-title').textContent = engagement.title;
+  const grid = document.getElementById('engagement-grid');
+  grid.replaceChildren();
+  engagement.phases.forEach((phase) => {
+    const article = document.createElement('article');
+    article.className = 'engagement-phase';
+    const number = document.createElement('span'); number.textContent = phase.id;
+    const title = document.createElement('h3'); title.textContent = phase.title;
+    const body = document.createElement('p'); body.textContent = phase.copy;
+    const result = document.createElement('strong'); result.textContent = phase.result;
+    article.append(number, title, body, result); grid.append(article);
+  });
+}
+
+function hydrateWorkflow(workflow) {
+  document.getElementById('workflow-kicker').textContent = workflow.kicker;
+  document.getElementById('workflow-title').textContent = workflow.title;
+  document.getElementById('workflow-introduction').textContent = workflow.introduction;
+  document.getElementById('workflow-closing').textContent = workflow.closing;
+  const decisions = new Map((workflow.decisions || []).map((item) => [item.after, item]));
+  const grid = document.getElementById('workflow-grid');
+  grid.replaceChildren();
+  workflow.phases.forEach((phase) => {
+    const article = document.createElement('article');
+    article.className = 'workflow-phase';
+    const number = document.createElement('span'); number.textContent = phase.id;
+    const copy = document.createElement('div');
+    const title = document.createElement('h3'); title.textContent = phase.title;
+    const body = document.createElement('p'); body.textContent = phase.copy;
+    copy.append(title, body); article.append(number, copy); grid.append(article);
+    const decision = decisions.get(phase.id);
+    if (decision) {
+      const fork = document.createElement('div'); fork.className = 'workflow-decision';
+      [decision.positive, decision.negative].forEach((label, index) => {
+        const branch = document.createElement('p');
+        branch.className = index === 0 ? 'positive' : 'negative';
+        branch.textContent = label; fork.append(branch);
+      });
+      grid.append(fork);
+    }
+  });
+  const loops = document.getElementById('workflow-loops-grid');
+  loops.replaceChildren();
+  (workflow.feedback_loops || []).forEach((loop) => {
+    const article = document.createElement('article');
+    article.className = 'workflow-loop';
+    const route = document.createElement('span'); route.textContent = `${loop.id} · ${loop.from} ↩ ${loop.to}`;
+    const diagram = document.createElement('figure');
+    diagram.className = 'workflow-loop-diagram';
+    diagram.setAttribute('aria-label', `${loop.title}: phase ${loop.from} returns to phase ${loop.to}`);
+
+    const source = document.createElement('span');
+    source.className = 'workflow-loop-node workflow-loop-node--source';
+    source.textContent = loop.from;
+    const evaluation = document.createElement('span');
+    evaluation.className = 'workflow-loop-gate';
+    evaluation.textContent = 'evaluate';
+    const destination = document.createElement('span');
+    destination.className = 'workflow-loop-node workflow-loop-node--destination';
+    destination.textContent = loop.to;
+    const forward = document.createElement('i');
+    forward.className = 'workflow-loop-forward';
+    forward.setAttribute('aria-hidden', 'true');
+    const feedback = document.createElement('i');
+    feedback.className = 'workflow-loop-feedback';
+    feedback.setAttribute('aria-hidden', 'true');
+    diagram.append(source, forward, evaluation, destination, feedback);
+
+    const title = document.createElement('h4'); title.textContent = loop.title;
+    const trigger = document.createElement('p'); trigger.textContent = loop.trigger;
+    const action = document.createElement('strong'); action.textContent = loop.action;
+    article.append(route, diagram, title, trigger, action); loops.append(article);
+  });
+  const questions = document.getElementById('workflow-questions');
+  questions.replaceChildren();
+  (workflow.questions || []).forEach((question) => {
+    const item = document.createElement('li'); item.textContent = question; questions.append(item);
+  });
+}
+
 class GraphEngine {
   constructor(config, svg) {
     this.config = config;
@@ -164,20 +200,46 @@ class GraphEngine {
     this.anchorById = new Map(config.nodes.map((n) => [n.id, { x: n.x, y: n.y }]));
     this.motion = { targetX: 0, targetY: 0, x: 0, y: 0 };
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mobileLayout = window.matchMedia('(max-width: 820px)');
     this.dragPreview = null;
   }
 
   point(node, t) {
+    if (this.mobileLayout.matches) {
+      const index = Math.max(0, this.config.nodes.findIndex((item) => item.id === node.id));
+      const xOffsets = [-34, 38, -30, 34];
+      return {
+        x: 240 + (xOffsets[index] || 0),
+        y: 72 + index * 128,
+      };
+    }
+    const index = Math.max(0, this.config.nodes.findIndex((item) => item.id === node.id));
+    const verticalOffsets = [-52, 48, -34, 52];
     return {
       x: node.x * WIDTH,
-      y: node.y * HEIGHT,
+      y: node.y * HEIGHT + (verticalOffsets[index] || 0),
     };
+  }
+
+  dimensions() {
+    return this.mobileLayout.matches ? { width: 480, height: 500 } : { width: WIDTH, height: HEIGHT };
+  }
+
+  configureViewport() {
+    const { width, height } = this.dimensions();
+    this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   }
 
   estimateNodeRadius(node) {
     const textLen = (node?.label || '').length;
     const halfWidth = Math.max(52, textLen * 7.2);
     return Math.min(132, halfWidth + 14);
+  }
+
+  nodePadding(node, ux, uy) {
+    const rx = this.estimateNodeRadius(node);
+    const ry = this.mobileLayout.matches ? 30 : 24;
+    return 1 / Math.sqrt((ux * ux) / (rx * rx) + (uy * uy) / (ry * ry));
   }
 
   cubic(edge, t) {
@@ -192,8 +254,8 @@ class GraphEngine {
     const ux = dx / len;
     const uy = dy / len;
 
-    const fromPad = this.estimateNodeRadius(from);
-    const toPad = this.estimateNodeRadius(to);
+    const fromPad = this.nodePadding(from, ux, uy);
+    const toPad = this.nodePadding(to, ux, uy);
 
     const p0 = { x: fromCenter.x + ux * fromPad, y: fromCenter.y + uy * fromPad };
     const p3 = { x: toCenter.x - ux * toPad, y: toCenter.y - uy * toPad };
@@ -221,10 +283,12 @@ class GraphEngine {
   }
 
   init() {
+    this.configureViewport();
     this.renderEdges();
     this.renderNodes();
     this.renderDragPreview();
     this.registerMouseParallax();
+    this.mobileLayout.addEventListener('change', () => this.configureViewport());
   }
 
   renderEdges() {
@@ -291,12 +355,22 @@ class GraphEngine {
 
       const hit = document.createElementNS(NS, 'rect');
       hit.setAttribute('class', 'node-hitbox');
-      hit.setAttribute('x', '-58');
-      hit.setAttribute('y', '-15');
-      hit.setAttribute('width', '116');
-      hit.setAttribute('height', '30');
-      hit.setAttribute('rx', '6');
-      hit.setAttribute('ry', '6');
+      const nodeWidth = Math.min(280, Math.max(150, node.label.length * 18));
+      hit.setAttribute('x', `${-nodeWidth / 2}`);
+      hit.setAttribute('y', '-28');
+      hit.setAttribute('width', `${nodeWidth}`);
+      hit.setAttribute('height', '56');
+      hit.setAttribute('rx', '16');
+      hit.setAttribute('ry', '16');
+
+      const shell = document.createElementNS(NS, 'rect');
+      shell.setAttribute('class', 'node-shell');
+      shell.setAttribute('x', `${-nodeWidth / 2}`);
+      shell.setAttribute('y', '-28');
+      shell.setAttribute('width', `${nodeWidth}`);
+      shell.setAttribute('height', '56');
+      shell.setAttribute('rx', '16');
+      shell.setAttribute('ry', '16');
 
       const label = document.createElementNS(NS, 'text');
       label.setAttribute('class', 'node-label');
@@ -305,6 +379,7 @@ class GraphEngine {
       label.setAttribute('dominant-baseline', 'middle');
       label.textContent = node.label;
 
+      g.appendChild(shell);
       g.appendChild(hit);
       g.appendChild(label);
       this.svg.appendChild(g);
@@ -336,8 +411,9 @@ class GraphEngine {
 
   nearestNode(clientX, clientY, t) {
     const rect = this.svg.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * WIDTH;
-    const y = ((clientY - rect.top) / rect.height) * HEIGHT;
+    const { width, height } = this.dimensions();
+    const x = ((clientX - rect.left) / rect.width) * width;
+    const y = ((clientY - rect.top) / rect.height) * height;
 
     let best = null;
     let bestDist = Infinity;
@@ -358,9 +434,10 @@ class GraphEngine {
     if (!this.dragPreview) return;
     const fromCenter = this.point(fromNode, t);
     const rect = this.svg.getBoundingClientRect();
+    const { width, height } = this.dimensions();
     const to = {
-      x: ((pointerX - rect.left) / rect.width) * WIDTH,
-      y: ((pointerY - rect.top) / rect.height) * HEIGHT,
+      x: ((pointerX - rect.left) / rect.width) * width,
+      y: ((pointerY - rect.top) / rect.height) * height,
     };
 
     const dx = to.x - fromCenter.x;
@@ -435,6 +512,7 @@ class PointField {
     this.width = WIDTH;
     this.height = HEIGHT;
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.pointer = { x: 0, y: 0, inside: false };
   }
 
   sampleEdgeCurve(cubic, segments = 14) {
@@ -507,6 +585,16 @@ class PointField {
     sync();
     window.addEventListener('resize', sync);
 
+    this.graph.svg.addEventListener('pointermove', (event) => {
+      const rect = this.graph.svg.getBoundingClientRect();
+      this.pointer.x = event.clientX - rect.left;
+      this.pointer.y = event.clientY - rect.top;
+      this.pointer.inside = true;
+    });
+    this.graph.svg.addEventListener('pointerleave', () => {
+      this.pointer.inside = false;
+    });
+
     const count = this.reducedMotion ? 60 : 140;
     this.points = Array.from({ length: count }, () => ({
       x: Math.random() * this.width,
@@ -523,6 +611,46 @@ class PointField {
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
+
+    const gridStep = Math.max(24, Math.min(38, Math.round(this.width / 34)));
+    ctx.save();
+    ctx.lineWidth = 0.7;
+    ctx.strokeStyle = 'rgba(0, 224, 255, 0.18)';
+    for (let x = gridStep; x < this.width; x += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.height);
+      ctx.stroke();
+    }
+    for (let y = gridStep; y < this.height; y += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.width, y);
+      ctx.stroke();
+    }
+
+    if (this.pointer.inside) {
+      const { x, y } = this.pointer;
+      const halo = ctx.createRadialGradient(x, y, 0, x, y, 54);
+      halo.addColorStop(0, 'rgba(0, 224, 255, 0.34)');
+      halo.addColorStop(1, 'rgba(0, 224, 255, 0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(x - 54, y - 54, 108, 108);
+
+      ctx.strokeStyle = 'rgba(0, 224, 255, 0.9)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.width, y);
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.height);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
 
     const linkDistance = 24;
     const forceX = this.width * 0.5 + this.graph.motion.x * 16;
@@ -910,10 +1038,144 @@ class TeaserApp {
   }
 }
 
+function installEditorialOrigami() {
+  const cards = [...document.querySelectorAll('.editorial-card')];
+  let hoverTimer = null;
+  let interactionLockedUntil = 0;
+  const interactionLockMs = 900;
+  const mobileChapterButtons = [];
+
+  const setCardOpen = (card, open) => {
+    const fold = card.querySelector('.card-meta');
+    if (!fold) return;
+
+    if (open) {
+      card.classList.remove('folded');
+      card.style.setProperty('--origami-open-height', `${Math.ceil(card.scrollHeight)}px`);
+    } else {
+      card.classList.add('folded');
+    }
+    fold.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+
+  const arrangeCards = (activeCard) => {
+    const activeIndex = cards.indexOf(activeCard);
+    const beforeCount = activeIndex;
+    const afterCount = cards.length - activeIndex - 1;
+
+    cards.forEach((card, index) => {
+      card.classList.toggle('is-active', card === activeCard);
+      card.classList.toggle('before-active', index < activeIndex);
+      card.classList.toggle('after-active', index > activeIndex);
+
+      const groupCount = index < activeIndex ? beforeCount : afterCount;
+      if (card !== activeCard && groupCount > 0) {
+        card.style.setProperty('--mondrian-span', `${60 / groupCount}`);
+      } else {
+        card.style.removeProperty('--mondrian-span');
+      }
+    });
+
+    mobileChapterButtons.forEach(({ card, button }) => {
+      const active = card === activeCard;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-current', active ? 'true' : 'false');
+    });
+  };
+
+  const activateCard = (card, block = 'center') => {
+    if (!card.classList.contains('folded')) return;
+    if (Date.now() < interactionLockedUntil) return;
+
+    interactionLockedUntil = Date.now() + interactionLockMs;
+    cards.forEach((otherCard) => setCardOpen(otherCard, otherCard === card));
+    arrangeCards(card);
+    window.requestAnimationFrame(() => {
+      card.scrollIntoView({ behavior: 'smooth', block });
+    });
+  };
+
+  cards.forEach((card, index) => {
+    const fold = card.querySelector('.card-meta');
+    if (!fold) return;
+
+    const openHeight = Math.max(card.scrollHeight, card.getBoundingClientRect().height);
+    card.classList.add('origami-card');
+    card.style.setProperty('--origami-open-height', `${Math.ceil(openHeight)}px`);
+    fold.classList.add('origami-fold');
+    fold.setAttribute('role', 'button');
+    fold.setAttribute('tabindex', '0');
+    fold.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+
+    if (index !== 0) card.classList.add('folded');
+
+    const toggle = () => activateCard(card, 'center');
+
+    fold.addEventListener('click', toggle);
+    fold.addEventListener('mouseenter', () => {
+      window.clearTimeout(hoverTimer);
+      hoverTimer = window.setTimeout(() => activateCard(card, 'center'), 160);
+    });
+    fold.addEventListener('mouseleave', () => {
+      window.clearTimeout(hoverTimer);
+      hoverTimer = null;
+    });
+    fold.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      toggle();
+    });
+  });
+
+  const editorialGrid = document.querySelector('.editorial-grid');
+  if (editorialGrid) {
+    const strip = document.createElement('nav');
+    strip.className = 'mobile-chapter-strip';
+    strip.setAttribute('aria-label', 'Explore chapters');
+
+    cards.forEach((card, index) => {
+      const meta = card.querySelector('.card-meta');
+      if (!meta) return;
+
+      const sourceSpans = meta.querySelectorAll('span');
+      const label = (sourceSpans[0]?.textContent || `Chapter ${index + 1}`)
+        .trim()
+        .replace(/^\d+\s*\/\s*/, '');
+      const number = (sourceSpans[sourceSpans.length - 1]?.textContent || `${index + 1}`.padStart(2, '0')).trim();
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mobile-chapter-tile';
+      button.setAttribute('aria-label', `${label} ${number}`);
+
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'mobile-chapter-label';
+      labelSpan.textContent = label;
+      const numberSpan = document.createElement('span');
+      numberSpan.className = 'mobile-chapter-number';
+      numberSpan.textContent = number;
+      button.append(labelSpan, numberSpan);
+
+      button.addEventListener('click', () => {
+        activateCard(card, 'start');
+        button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+
+      strip.appendChild(button);
+      mobileChapterButtons.push({ card, button });
+    });
+
+    editorialGrid.before(strip);
+  }
+
+  arrangeCards(cards[0]);
+}
+
 async function boot() {
-  const config = await ConfigLoader.load('/research/teaser/pitch.config.yaml');
+  const config = await ConfigLoader.load('/generated/teaser.config.json');
+  hydratePage(config);
   const app = new TeaserApp(config);
   app.start();
+  window.requestAnimationFrame(installEditorialOrigami);
 }
 
 boot().catch((err) => {

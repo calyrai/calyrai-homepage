@@ -1771,6 +1771,12 @@ body.search-open { overflow: hidden; }
   transform: translateY(-6px) rotate(-45deg);
 }
 
+@media (max-width: 600px) {
+  .hamburger {
+    top: max(1.75rem, calc(env(safe-area-inset-top) + 1.75rem));
+  }
+}
+
 .nav-brand-rail {
   position: fixed;
   top: max(1rem, calc(env(safe-area-inset-top) + 1rem));
