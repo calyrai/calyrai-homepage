@@ -1,8 +1,9 @@
 (() => {
-  const config = window.CALYR_AORTA_FLOW_CONFIG;
-  if (!config) return;
-  const visual = document.querySelector('.visual');
-  if (!visual || visual.querySelector('.aorta-flow-canvas')) return;
+  const init = () => {
+    const config = window.CALYR_AORTA_FLOW_CONFIG;
+    if (!config) return;
+    const visual = document.querySelector('.visual');
+    if (!visual || visual.querySelector('.aorta-flow-canvas')) return;
 
   const imageLayer = document.createElement('div');
   imageLayer.className = 'aorta-image-layer';
@@ -147,5 +148,9 @@
     context.restore();
     requestAnimationFrame(draw);
   };
-  requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
+  };
+
+  if (document.querySelector('.visual')) init();
+  else document.addEventListener('calyr:aorta-content-ready', init, { once: true });
 })();
