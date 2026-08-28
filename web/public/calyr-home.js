@@ -3,6 +3,7 @@
   const qrBits = '1111111011001111101111111100000101000100000100000110111010010100110010111011011101000110011101011101101110100001001000101110110000010110011101010000011111111010101010101111111000000001101011010000000000011010010101011111000110100100011011111110011111010000110010000110001010110000101100010111010001101011011001011010010110100110110000111100001010000110100111011000000100110110001000001101111000010110111101100010110011111001100000000000100101000111001111111000111001101011001100000100110111110001001010111010111000101111100101011101011110011000000101101110100100000110001010010000010011001100001010001111111000111011001011111';
   const qrSize = 25;
   const cells = [...qrBits].map((bit, i) => bit === '1' ? `<rect x="${i % qrSize + 4}" y="${Math.floor(i / qrSize) + 4}" width="1" height="1"/>` : '').join('');
+  const qrDots = [...qrBits].map((bit, i) => bit === '1' ? { x: i % qrSize, y: Math.floor(i / qrSize) } : null).filter(Boolean);
   const shell = document.createElement('div');
   shell.className = 'calyr-shell';
   shell.innerHTML = `<button class="calyr-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="calyr-drawer"><i></i><i></i><i></i></button><button class="calyr-brand-rail" type="button" aria-label="Open calyr.aí particle ring" aria-expanded="false" aria-controls="calyr-brand-panel"><i></i></button><aside id="calyr-brand-panel" class="calyr-brand-panel" aria-hidden="true"><canvas width="240" height="240" aria-label="Animated CALYR particle ring"></canvas></aside><div class="calyr-shade" hidden></div><aside id="calyr-drawer" class="calyr-drawer" aria-hidden="true"><header><a href="/">calyr.aí</a><button type="button" aria-label="Close navigation">×</button></header><nav aria-label="Research navigation"><a href="/">00 <strong>Home</strong></a><a href="/research/aorta/index.html">01 <strong>Aorta</strong></a><a href="/research/nanoparticles/index.html">02 <strong>Nanoparticles</strong></a><a href="/research/nanobiophysics/index.html">03 <strong>Nanobiophysics</strong></a><a href="/research/doe-ppms/index.html">04 <strong>DOE / PPMS</strong></a></nav><a class="calyr-contact" href="mailto:rupert.tscheliessnig@calyr.ai"><span><small>CONTACT</small><strong>Scan or write</strong><em>rupert.tscheliessnig@calyr.ai</em></span><svg viewBox="0 0 33 33" role="img" aria-label="QR code for CALYR email contact"><rect width="33" height="33" fill="#000"/><g fill="#fff">${cells}</g></svg></a></aside>`;
@@ -21,21 +22,29 @@
   const ringContext = ringCanvas.getContext('2d');
   let brandOpen = false;
   let ringFrame = 0;
+  let brandStartedAt = 0;
   const renderRing = (time = 0) => {
     if (!brandOpen) return;
     ringContext.clearRect(0, 0, 240, 240);
     ringContext.fillStyle = '#000';
     ringContext.fillRect(0, 0, 240, 240);
-    for (let i = 0; i < 96; i += 1) {
-      const angle = (i / 96) * Math.PI * 2 + time * 0.00008;
+    const elapsed = Math.max(0, time - brandStartedAt);
+    const rawProgress = Math.min(1, Math.max(0, (elapsed - 650) / 1900));
+    const progress = rawProgress * rawProgress * (3 - 2 * rawProgress);
+    for (let i = 0; i < qrDots.length; i += 1) {
+      const angle = (i / qrDots.length) * Math.PI * 2 + time * 0.00008;
       const wave = Math.sin(angle * 6 + time * 0.0012) * 7;
       const radius = 72 + wave;
-      const x = 120 + Math.cos(angle) * radius;
-      const y = 120 + Math.sin(angle) * radius;
+      const ringX = 120 + Math.cos(angle) * radius;
+      const ringY = 120 + Math.sin(angle) * radius;
+      const targetX = 48 + qrDots[i].x * 6;
+      const targetY = 48 + qrDots[i].y * 6;
+      const x = ringX + (targetX - ringX) * progress;
+      const y = ringY + (targetY - ringY) * progress;
       const pulse = 0.42 + 0.42 * Math.sin(time * 0.0015 + i * 0.27);
       ringContext.beginPath();
-      ringContext.arc(x, y, 1.05 + pulse * 0.75, 0, Math.PI * 2);
-      ringContext.fillStyle = i % 13 === 0 ? '#00c7ff' : `rgba(255,255,255,${0.48 + pulse * 0.44})`;
+      ringContext.arc(x, y, 1.05 + pulse * 0.75 + progress * 1.15, 0, Math.PI * 2);
+      ringContext.fillStyle = progress > .82 ? '#fff' : (i % 13 === 0 ? '#00c7ff' : `rgba(255,255,255,${0.48 + pulse * 0.44})`);
       ringContext.fill();
     }
     ringFrame = requestAnimationFrame(renderRing);
@@ -47,7 +56,10 @@
     brandRail.setAttribute('aria-expanded', String(open));
     brandPanel.setAttribute('aria-hidden', String(!open));
     cancelAnimationFrame(ringFrame);
-    if (open) ringFrame = requestAnimationFrame(renderRing);
+    if (open) {
+      brandStartedAt = performance.now();
+      ringFrame = requestAnimationFrame(renderRing);
+    }
   };
   const setOpen = (open) => {
     burger.classList.toggle('active', open);
