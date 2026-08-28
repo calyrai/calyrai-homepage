@@ -28,7 +28,7 @@ export default function Element({ node, theme, context = {} }) {
         description={body}
         actions={links}
         layout="inline"
-        showCanvas={false}
+        showCanvas
       />
     )
   }
