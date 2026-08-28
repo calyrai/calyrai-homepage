@@ -1729,15 +1729,26 @@ body.search-open { overflow: hidden; }
 @media (max-width: 620px) {
   .site-search-trigger {
     top: max(0.65rem, calc(env(safe-area-inset-top) + 0.65rem));
-    left: max(1rem, calc(env(safe-area-inset-left) + 1rem));
+    left: auto;
     right: max(1rem, calc(env(safe-area-inset-right) + 1rem));
-    justify-content: flex-end;
-    gap: clamp(8px, 2.8vw, 12px);
-    min-height: 2.25rem;
-    padding-bottom: 0.45rem;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0.62rem;
+    min-height: 0;
+    padding: 0;
+    border-bottom: 0;
     white-space: nowrap;
     font-size: 0.61rem;
     background: #000;
+  }
+
+  .site-search-trigger > * {
+    display: block;
+    min-height: 0;
+    padding: 0;
+    line-height: 1;
+    text-align: right;
   }
 
   .site-search-trigger kbd { display: none; }
