@@ -68,6 +68,10 @@
   opacity: 0.88;
 }
 
+.aorta-hud-reticle {
+  display: none !important;
+}
+
 .aorta-phase-mark canvas {
   display: block;
   width: 88px;
