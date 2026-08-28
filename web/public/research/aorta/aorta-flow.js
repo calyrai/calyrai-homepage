@@ -146,7 +146,7 @@
     drawPhaseMark(flowClock * .00022);
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
-    imageLayer.style.transform = `translate3d(${pointer.x * 5 + manipulation.x}px,${pointer.y * 4 + manipulation.y}px,0) rotate(${manipulation.rotation}deg) scale(${manipulation.scale})`;
+    imageLayer.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1.04)';
     context.clearRect(0, 0, width, height);
     context.save();
     context.translate(pointer.x * 5, pointer.y * 4);
