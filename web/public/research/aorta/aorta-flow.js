@@ -18,7 +18,7 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><figure class="aorta-phase-mark"><canvas width="132" height="132" aria-label="CALYR phase-space mark from zero to twenty pi"></canvas><figcaption>Φ · 0 → 20π</figcaption></figure><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT / STEER FLOW</strong><span>SELECT MODE · POINTER MODULATES THE FIELD</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><figure class="aorta-phase-mark"><canvas width="132" height="132" aria-label="CALYR phase-space mark from zero to two pi"></canvas><figcaption>Φ · 0 → 2π</figcaption></figure><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT / STEER FLOW</strong><span>SELECT MODE · POINTER MODULATES THE FIELD</span></div>`;
   visual.append(hud);
 
 
@@ -85,8 +85,8 @@
     drawFinder(99, 8);
     drawFinder(8, 99);
     for (let index = 0; index <= 240; index += 1) {
-      const theta = index / 240 * 20 * Math.PI;
-      const envelope = .72 + .28 * Math.sin(theta * .1);
+      const theta = index / 240 * 2 * Math.PI;
+      const envelope = .72 + .28 * Math.sin(theta);
       const x = 66 + Math.sin(theta * .7 + phase) * 47 * envelope;
       const y = 66 + Math.sin(theta * 1.1) * 47 * envelope;
       if ((x < 38 && y < 38) || (x > 94 && y < 38) || (x < 38 && y > 94)) continue;
