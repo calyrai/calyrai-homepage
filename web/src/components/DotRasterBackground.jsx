@@ -17,6 +17,7 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
     const maxDotRadius = 4.2
     const distortionStrength = spacing * 0.18
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isLandingRoute = window.location.pathname === '/'
     let rafId = 0
     let touchFadeTimer = 0
     const pointer = {
@@ -113,8 +114,60 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
         pointer.energy = 0
       }
 
-      // The page stays completely black at rest. The hex field exists only
-      // inside a soft discovery radius around the pointer.
+      // Keep a quiet molecular field alive on the landing page. Pointer motion
+      // locally reveals, brightens and bends it without competing with copy.
+      if (isLandingRoute) {
+        const hexRadius = Math.max(46, Math.min(67, w * .045))
+        const hexWidth = hexRadius * Math.sqrt(3)
+        const rowGap = hexRadius * 1.5
+        const phase = reducedMotion ? 0 : now * .00032
+        const distort = (x, y) => {
+          const dx = x - pointer.x
+          const dy = y - pointer.y
+          const distance = Math.max(1, Math.hypot(dx, dy))
+          const influence = Math.exp(-(distance * distance) / (2 * revealRadius * revealRadius)) * pointer.visibility
+          const pulse = .5 + .5 * Math.sin(phase * 2.2 + x * .008 - y * .006)
+          const energy = reducedMotion ? 0 : (4.2 + pulse * 2.8) * (.22 + influence * 1.35)
+          return {
+            x: x + Math.sin(phase + y * .007) * energy + pointer.vx * pointer.energy * influence * 15,
+            y: y + Math.cos(phase * .83 + x * .006) * energy + pointer.vy * pointer.energy * influence * 15,
+            influence,
+          }
+        }
+
+        ctx.lineWidth = 1
+        for (let row = -1, cy = -rowGap; cy < h + rowGap; row += 1, cy = row * rowGap) {
+          const offset = (row & 1) ? hexWidth * .5 : 0
+          for (let cx = offset - hexWidth; cx < w + hexWidth; cx += hexWidth) {
+            const vertices = Array.from({ length: 6 }, (_, index) => {
+              const angle = Math.PI / 6 + index * Math.PI / 3
+              return distort(cx + Math.cos(angle) * hexRadius, cy + Math.sin(angle) * hexRadius)
+            })
+            const localInfluence = Math.max(...vertices.map((vertex) => vertex.influence))
+            const breathe = reducedMotion ? .11 : .09 + .035 * (.5 + .5 * Math.sin(phase * 2 + cx * .004 + cy * .005))
+            ctx.beginPath()
+            vertices.forEach((vertex, index) => {
+              if (index === 0) ctx.moveTo(vertex.x, vertex.y)
+              else ctx.lineTo(vertex.x, vertex.y)
+            })
+            ctx.closePath()
+            ctx.strokeStyle = dotColor
+            ctx.globalAlpha = Math.min(.42, breathe + localInfluence * .31)
+            ctx.stroke()
+
+            vertices.forEach((vertex) => {
+              if (vertex.influence < .035) return
+              ctx.beginPath()
+              ctx.arc(vertex.x, vertex.y, 1.1 + vertex.influence * 2.2, 0, Math.PI * 2)
+              ctx.globalAlpha = .22 + vertex.influence * .65
+              ctx.fillStyle = dotColor
+              ctx.fill()
+            })
+          }
+        }
+        ctx.globalAlpha = 1
+      }
+
       ctx.fillStyle = dotColor
       for (let row = 0, y = 0; y <= h + rowStep; row += 1, y = row * rowStep) {
         const xOffset = (row & 1) ? spacing * 0.5 : 0
@@ -122,7 +175,8 @@ export default function DotRasterBackground({ theme, isBooksRoute = false }) {
           const dx = x - pointer.x
           const dy = y - pointer.y
           const dist = Math.hypot(dx, dy)
-          const influence = Math.exp(-(dist * dist) / (2 * revealRadius * revealRadius)) * pointer.visibility
+          const passive = isLandingRoute ? .055 + .025 * (.5 + .5 * Math.sin(now * .0012 + x * .018 - y * .014)) : 0
+          const influence = Math.min(1, passive + Math.exp(-(dist * dist) / (2 * revealRadius * revealRadius)) * pointer.visibility)
           if (influence < 0.012) continue
           const motion = reducedMotion ? 0 : pointer.energy * influence * influence
           const nx = dist > 0.001 ? dx / dist : 0
