@@ -18,7 +18,7 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT / STEER FLOW</strong><span>SELECT MODE · POINTER MODULATES THE FIELD</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><figure class="aorta-phase-mark"><canvas width="132" height="132" aria-label="CALYR phase-space mark from zero to twenty pi"></canvas><figcaption>Φ · 0 → 20π</figcaption></figure><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT / STEER FLOW</strong><span>SELECT MODE · POINTER MODULATES THE FIELD</span></div>`;
   visual.append(hud);
 
 
@@ -29,6 +29,8 @@
   const reticle = hud.querySelector('.aorta-hud-reticle');
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
+  const phaseCanvas = hud.querySelector('.aorta-phase-mark canvas');
+  const phaseContext = phaseCanvas.getContext('2d');
   const paths = config.paths;
   hud.querySelectorAll('[data-aorta-mode]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -47,6 +49,8 @@
   let width = 1;
   let height = 1;
   let dpr = 1;
+  let flowClock = 0;
+  let previousTime = 0;
   const resize = () => {
     const rect = visual.getBoundingClientRect();
     width = Math.max(1, rect.width);
@@ -64,6 +68,33 @@
     const x = mt ** 3 * curve[0][0] + 3 * mt ** 2 * t * curve[1][0] + 3 * mt * t ** 2 * curve[2][0] + t ** 3 * curve[3][0];
     const y = mt ** 3 * curve[0][1] + 3 * mt ** 2 * t * curve[1][1] + 3 * mt * t ** 2 * curve[2][1] + t ** 3 * curve[3][1];
     return { x: x * width, y: y * height };
+  };
+
+  const drawFinder = (x, y) => {
+    phaseContext.strokeStyle = 'rgba(255,255,255,.88)';
+    phaseContext.lineWidth = 2;
+    phaseContext.strokeRect(x, y, 25, 25);
+    phaseContext.strokeRect(x + 6, y + 6, 13, 13);
+    phaseContext.fillStyle = '#fff';
+    phaseContext.fillRect(x + 10, y + 10, 5, 5);
+  };
+
+  const drawPhaseMark = (phase) => {
+    phaseContext.clearRect(0, 0, 132, 132);
+    drawFinder(8, 8);
+    drawFinder(99, 8);
+    drawFinder(8, 99);
+    for (let index = 0; index <= 240; index += 1) {
+      const theta = index / 240 * 20 * Math.PI;
+      const envelope = .72 + .28 * Math.sin(theta * .1);
+      const x = 66 + Math.sin(theta * .7 + phase) * 47 * envelope;
+      const y = 66 + Math.sin(theta * 1.1) * 47 * envelope;
+      if ((x < 38 && y < 38) || (x > 94 && y < 38) || (x < 38 && y > 94)) continue;
+      phaseContext.beginPath();
+      phaseContext.arc(x, y, index % 7 === 0 ? 1.6 : 1.05, 0, Math.PI * 2);
+      phaseContext.fillStyle = index % 13 === 0 ? '#f10b0b' : 'rgba(255,255,255,.82)';
+      phaseContext.fill();
+    }
   };
 
   visual.addEventListener('pointermove', (event) => {
@@ -109,6 +140,10 @@
     const seconds = time * .001;
     const pulse = .72 + .28 * (.5 + .5 * Math.sin(seconds * Math.PI * 2 * config.pulseHz));
     const mode = config.modes[modeIndex];
+    const deltaTime = previousTime ? Math.min(34, time - previousTime) : 16.67;
+    previousTime = time;
+    flowClock += deltaTime * pulse;
+    drawPhaseMark(flowClock * .00022);
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
     imageLayer.style.transform = `translate3d(${pointer.x * 5 + manipulation.x}px,${pointer.y * 4 + manipulation.y}px,0) rotate(${manipulation.rotation}deg) scale(${manipulation.scale})`;
@@ -147,7 +182,7 @@
     context.restore();
 
     particles.forEach((particle) => {
-      const t = (particle.phase + time * particle.speed * pulse * (1 + pointer.x * .28)) % 1;
+      const t = (particle.phase + flowClock * particle.speed * (1 + pointer.x * .28)) % 1;
       const point = pointOnCurve(paths[particle.path], t);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - .018));
       const turbulence = 4 + (particle.path % 4) * 1.8 + Math.abs(pointer.y) * 7;

@@ -31,6 +31,28 @@
   font-size: 7px;
 }
 
+.aorta-phase-mark {
+  position: absolute;
+  top: 92px;
+  right: 28px;
+  width: 88px;
+  margin: 0;
+  opacity: 0.88;
+}
+
+.aorta-phase-mark canvas {
+  display: block;
+  width: 88px;
+  height: 88px;
+}
+
+.aorta-phase-mark figcaption {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 7px;
+  text-align: right;
+}
+
 @media (max-width: 700px) {
   .aorta-mode-switch {
     top: 54px;
@@ -40,5 +62,12 @@
   .aorta-stent-label {
     right: 22px;
     bottom: 58px;
+  }
+
+  .aorta-phase-mark {
+    top: 88px;
+    right: 18px;
+    transform: scale(0.82);
+    transform-origin: top right;
   }
 }
