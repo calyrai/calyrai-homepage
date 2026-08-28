@@ -69,7 +69,7 @@ url: /research/nanoparticles/
 summary: Interfaces, binding, assembly, and membrane interaction.
 url: /research/nanobiophysics/
 
-### 04 · DOE / PPMS
+### 04 · Pythia / DOE
 summary: Designed experiments, parameter spaces, and predictive process models.
 url: /research/doe-ppms/
 
