@@ -38,18 +38,28 @@
       hud.querySelectorAll('[data-aorta-mode]').forEach((item, index) => item.setAttribute('aria-pressed', String(index === modeIndex)));
     });
   });
-  const particles = Array.from({ length: config.particleCount }, (_, index) => ({
-    path: index % paths.length,
-    phase: ((index * 0.61803398875) % 1),
-    speed: config.baseSpeed + (index % 9) * config.speedStep,
-    size: .45 + (index % 7) * .12,
-    alpha: .18 + (index % 11) * .034,
-    strand: 1.4 + (index % 9) * .34,
-    flock: (index % 13) - 6,
-    wing: index % 5 === 0,
-    cold: index % 7 === 0,
-    previousT: ((index * 0.61803398875) % 1),
-  }));
+  const randomFor = (index, salt = 0) => {
+    const value = Math.sin(index * 91.731 + salt * 47.233) * 43758.5453;
+    return value - Math.floor(value);
+  };
+  const particles = Array.from({ length: config.particleCount }, (_, index) => {
+    const phase = randomFor(index, 1);
+    const cluster = randomFor(index, 2) ** 2;
+    return {
+      path: Math.min(paths.length - 1, Math.floor(randomFor(index, 3) * paths.length)),
+      phase,
+      speed: config.baseSpeed * (.68 + randomFor(index, 4) * .82) + randomFor(index, 5) * config.speedStep * 7,
+      size: .32 + randomFor(index, 6) * 1.08,
+      alpha: .12 + randomFor(index, 7) * .44,
+      strand: .35 + cluster * 4.8,
+      flock: randomFor(index, 8) * 2 - 1,
+      drift: .45 + randomFor(index, 9) * 1.75,
+      frequency: .55 + randomFor(index, 10) * 2.4,
+      wing: randomFor(index, 11) > .76,
+      cold: randomFor(index, 12) > .88,
+      previousT: phase,
+    };
+  });
   const burstParticles = [];
   const spawnBurst = (point, source) => {
     const shardCount = 12 + (source.path % 5) * 3;
@@ -272,18 +282,18 @@
       if (t < particle.previousT) spawnBurst(pointOnCurve(paths[particle.path], 1), particle);
       particle.previousT = t;
       const point = pointOnCurve(paths[particle.path], t);
-      const trail = (.012 + particle.strand * .0035) * (.82 + pulse * .35);
+      const trail = (.004 + particle.strand * .0042) * (.75 + pulse * .38);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - trail));
       const middle = pointOnCurve(paths[particle.path], Math.max(0, t - trail * .48));
-      const turbulence = 2.6 + (particle.path % 4) * 1.12;
-      const flockWave = Math.sin(time * .0024 + t * 54 + particle.flock * .47);
-      const flockSpread = (config.flockSpread || 7.5) * (particle.flock / 6);
+      const turbulence = (2.1 + (particle.path % 4) * 1.08) * particle.drift;
+      const flockWave = Math.sin(time * .0017 * particle.frequency + t * (31 + particle.frequency * 15) + particle.flock * 9.7);
+      const flockSpread = (config.flockSpread || 7.5) * particle.flock;
       const ahead = pointOnCurve(paths[particle.path], Math.min(.999, t + .003));
       const tangentLength = Math.max(1, Math.hypot(ahead.x - point.x, ahead.y - point.y));
       const normalX = -(ahead.y - point.y) / tangentLength;
       const normalY = (ahead.x - point.x) / tangentLength;
-      const wanderX = Math.sin(time * .0011 + particle.phase * 31 + particle.path) * turbulence + normalX * (flockSpread + flockWave * 2.4);
-      const wanderY = Math.cos(time * .00135 + particle.phase * 23 - particle.path) * turbulence * .72 + normalY * (flockSpread + flockWave * 2.4);
+      const wanderX = Math.sin(time * .0011 * particle.frequency + particle.phase * 37 + particle.path) * turbulence + normalX * (flockSpread + flockWave * 3.2 * particle.drift);
+      const wanderY = Math.cos(time * .0013 * particle.frequency + particle.phase * 29 - particle.path) * turbulence * .72 + normalY * (flockSpread + flockWave * 3.2 * particle.drift);
       const flowX = point.x + wanderX;
       const flowY = point.y + wanderY;
       const tailX = tail.x + wanderX * .58;
