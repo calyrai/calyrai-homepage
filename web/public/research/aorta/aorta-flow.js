@@ -24,14 +24,17 @@
 
 
   const context = canvas.getContext('2d', { alpha: true });
-  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, px: 0, py: 0 };
+  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, rawX: 0, rawY: 0, px: 0, py: 0, guideT: .5 };
   const manipulation = { active: false, startX: 0, startY: 0, lastX: 0, lastY: 0, x: 0, y: 0, squeeze: 0, targetSqueeze: 0 };
+  const arch = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
   let modeIndex = 0;
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
   const scoreReadout = hud.querySelector('[data-flow-score]');
   const stateReadout = hud.querySelector('[data-flow-state]');
   const paths = config.paths;
+  const stentCurve = config.stentPath || paths[Math.floor(paths.length / 2)];
+  const guideCurve = paths[Math.floor(paths.length / 2)];
   hud.querySelectorAll('[data-aorta-mode]').forEach((button) => {
     button.addEventListener('click', () => {
       modeIndex = Number(button.dataset.aortaMode);
@@ -56,7 +59,10 @@
       swarm: Math.floor(randomFor(index, 11) * 17),
       orbit: randomFor(index, 13) * Math.PI * 2,
       depth: .45 + randomFor(index, 14) * .85,
-      cold: randomFor(index, 12) > .88,
+      cold: randomFor(index, 12) > .64,
+      streak: 2.2 + randomFor(index, 15) * 11.8,
+      previousX: null,
+      previousY: null,
       previousT: phase,
     };
   });
@@ -134,17 +140,42 @@
     return { x: x * width, y: y * height };
   };
 
+  const archWeight = (t) => Math.exp(-((t - .46) ** 2) / .052);
+  const flowPoint = (curve, t) => {
+    const point = pointOnCurve(curve, t);
+    const influence = archWeight(t);
+    return { x: point.x + arch.offsetX * influence * .42, y: point.y + arch.offsetY * influence * .42 };
+  };
+  const nearestGuidePoint = (x, y) => {
+    let nearest = { t: 0, point: flowPoint(guideCurve, 0), distance: Infinity };
+    for (let step = 0; step <= 100; step += 1) {
+      const t = step / 100;
+      const point = flowPoint(guideCurve, t);
+      const distance = (point.x - x) ** 2 + (point.y - y) ** 2;
+      if (distance < nearest.distance) nearest = { t, point, distance };
+    }
+    return nearest;
+  };
+
   visual.addEventListener('pointermove', (event) => {
     const rect = visual.getBoundingClientRect();
     const localX = (event.clientX - rect.left) / rect.width;
     const localY = (event.clientY - rect.top) / rect.height;
     pointer.targetX = (localX - .5) * 2;
     pointer.targetY = (localY - .5) * 2;
-    pointer.px = localX * rect.width;
-    pointer.py = localY * rect.height;
+    pointer.rawX = localX * rect.width;
+    pointer.rawY = localY * rect.height;
+    const guide = nearestGuidePoint(pointer.rawX, pointer.rawY);
+    pointer.guideT = guide.t;
+    pointer.px = guide.point.x;
+    pointer.py = guide.point.y;
     velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
-    if (manipulation.active) {
+    if (arch.active) {
+      arch.offsetX = Math.max(-110, Math.min(110, arch.baseX + event.clientX - arch.startX));
+      arch.offsetY = Math.max(-90, Math.min(90, arch.baseY + event.clientY - arch.startY));
+      pressureReadout.textContent = (12.4 + Math.hypot(arch.offsetX, arch.offsetY) * .055).toFixed(1);
+    } else if (manipulation.active) {
       const dx = event.clientX - manipulation.startX;
       const dy = event.clientY - manipulation.startY;
       manipulation.x = Math.max(-46, Math.min(46, dx * .22));
@@ -162,6 +193,21 @@
     pressureReadout.textContent = '12.4';
   });
   visual.addEventListener('pointerdown', (event) => {
+    const handleBase = pointOnCurve(stentCurve, .46);
+    const handle = { x: handleBase.x + arch.offsetX, y: handleBase.y + arch.offsetY };
+    const rect = visual.getBoundingClientRect();
+    const hitX = event.clientX - rect.left;
+    const hitY = event.clientY - rect.top;
+    if (Math.hypot(hitX - handle.x, hitY - handle.y) < 62) {
+      arch.active = true;
+      arch.startX = event.clientX;
+      arch.startY = event.clientY;
+      arch.baseX = arch.offsetX;
+      arch.baseY = arch.offsetY;
+      visual.classList.add('is-steering');
+      visual.setPointerCapture?.(event.pointerId);
+      return;
+    }
     manipulation.active = true;
     manipulation.startX = event.clientX;
     manipulation.startY = event.clientY;
@@ -172,6 +218,12 @@
     visual.setPointerCapture?.(event.pointerId);
   });
   window.addEventListener('pointerup', () => {
+    if (arch.active) {
+      arch.active = false;
+      visual.classList.remove('is-steering');
+      stateReadout.textContent = ui.idleState;
+      return;
+    }
     if (manipulation.active && manipulation.squeeze > .12) {
       const outlet = pointOnCurve(paths[Math.floor(paths.length / 2)], .995);
       spawnReleaseBurst(outlet, manipulation.squeeze);
@@ -199,29 +251,65 @@
     context.clearRect(0, 0, width, height);
     context.save();
 
+    // Keep the vascular anatomy legible: a restrained lumen ribbon sits behind
+    // the particles, with explicit outer and inner aortic-arch boundaries.
+    if (config.vesselBounds) {
+      const drawCurve = (curve, reverse = false) => {
+        const steps = 72;
+        for (let step = 0; step <= steps; step += 1) {
+          const t = reverse ? 1 - step / steps : step / steps;
+          const point = pointOnCurve(curve, t);
+          if (step === 0) context.moveTo(point.x, point.y);
+          else context.lineTo(point.x, point.y);
+        }
+      };
+      context.save();
+      context.beginPath();
+      drawCurve(config.vesselBounds.outer);
+      drawCurve(config.vesselBounds.inner, true);
+      context.closePath();
+      const lumen = context.createLinearGradient(0, 0, width, height);
+      lumen.addColorStop(0, 'rgba(255,20,46,.16)');
+      lumen.addColorStop(.52, 'rgba(121,9,74,.09)');
+      lumen.addColorStop(1, 'rgba(255,20,46,.13)');
+      context.fillStyle = lumen;
+      context.fill();
+      [config.vesselBounds.outer, config.vesselBounds.inner].forEach((curve, index) => {
+        context.beginPath();
+        drawCurve(curve);
+        context.strokeStyle = index === 0 ? 'rgba(255,45,70,.62)' : 'rgba(255,120,150,.38)';
+        context.lineWidth = index === 0 ? 1.7 : 1.05;
+        context.stroke();
+      });
+      context.restore();
+    }
+
     context.save();
     context.globalCompositeOperation = 'lighter';
     context.lineWidth = 1.35 + pulse * .85;
     paths.forEach((curve, pathIndex) => {
       context.beginPath();
       for (let step = 0; step <= 34; step += 1) {
-        const point = pointOnCurve(curve, step / 34);
+        const point = flowPoint(curve, step / 34);
         if (step === 0) context.moveTo(point.x, point.y);
         else context.lineTo(point.x, point.y);
       }
-      context.strokeStyle = `rgba(255,18,42,${.18 + pulse * .12})`;
+      context.strokeStyle = `rgba(126,226,255,${.055 + pulse * .045})`;
       context.stroke();
     });
     context.restore();
 
     // Schematic, deformable research overlay — not a clinically validated device model.
-    const stentCurve = config.stentPath || paths[5];
     const deformation = Math.min(1, Math.hypot(manipulation.x, manipulation.y) / 54);
     const stentStations = [];
     for (let step = 0; step <= 30; step += 1) {
       const t = .02 + (step / 30) * .96;
-      const centre = pointOnCurve(stentCurve, t);
-      const ahead = pointOnCurve(stentCurve, Math.min(.999, t + .004));
+      const baseCentre = pointOnCurve(stentCurve, t);
+      const baseAhead = pointOnCurve(stentCurve, Math.min(.999, t + .004));
+      const localArch = archWeight(t);
+      const nextArch = archWeight(Math.min(.999, t + .004));
+      const centre = { x: baseCentre.x + arch.offsetX * localArch, y: baseCentre.y + arch.offsetY * localArch };
+      const ahead = { x: baseAhead.x + arch.offsetX * nextArch, y: baseAhead.y + arch.offsetY * nextArch };
       const tangentLength = Math.max(1, Math.hypot(ahead.x - centre.x, ahead.y - centre.y));
       const normalX = -(ahead.y - centre.y) / tangentLength;
       const normalY = (ahead.x - centre.x) / tangentLength;
@@ -274,20 +362,41 @@
     context.shadowBlur = 0;
     context.restore();
 
+    const handleBase = pointOnCurve(stentCurve, .46);
+    const handle = { x: handleBase.x + arch.offsetX, y: handleBase.y + arch.offsetY };
+    context.save();
+    context.beginPath();
+    context.moveTo(handleBase.x, handleBase.y);
+    context.lineTo(handle.x, handle.y);
+    context.strokeStyle = 'rgba(93,214,255,.58)';
+    context.setLineDash([4, 5]);
+    context.lineWidth = 1;
+    context.stroke();
+    context.setLineDash([]);
+    context.beginPath();
+    context.arc(handle.x, handle.y, arch.active ? 10 : 7, 0, Math.PI * 2);
+    context.fillStyle = arch.active ? 'rgba(220,252,255,.98)' : 'rgba(70,202,255,.92)';
+    context.shadowColor = '#39caff';
+    context.shadowBlur = 18;
+    context.fill();
+    context.restore();
+
     let guidedParticles = 0;
     context.save();
     context.globalCompositeOperation = 'lighter';
     particles.forEach((particle) => {
-      const t = (particle.phase + flowClock * particle.speed) % 1;
+      const archStrain = Math.min(1, Math.hypot(arch.offsetX, arch.offsetY) / 125);
+      const t = (particle.phase + flowClock * particle.speed * (1 + archStrain * .34)) % 1;
       if (t < particle.previousT) spawnBurst(pointOnCurve(paths[particle.path], 1), particle);
       particle.previousT = t;
-      const point = pointOnCurve(paths[particle.path], t);
-      const turbulence = (2.1 + (particle.path % 4) * 1.08) * particle.drift;
+      const point = flowPoint(paths[particle.path], t);
+      const localArchImpact = archWeight(t) * archStrain;
+      const turbulence = (2.1 + (particle.path % 4) * 1.08 + localArchImpact * 9.5) * particle.drift;
       const swarmClock = time * .00034 + particle.swarm * .83;
       const swarmBreath = .35 + .65 * (.5 + .5 * Math.sin(swarmClock * 2.3));
       const flockWave = Math.sin(time * .0017 * particle.frequency + t * (31 + particle.frequency * 15) + particle.flock * 9.7);
       const flockSpread = (config.flockSpread || 7.5) * particle.flock * swarmBreath;
-      const ahead = pointOnCurve(paths[particle.path], Math.min(.999, t + .003));
+      const ahead = flowPoint(paths[particle.path], Math.min(.999, t + .003));
       const tangentLength = Math.max(1, Math.hypot(ahead.x - point.x, ahead.y - point.y));
       const normalX = -(ahead.y - point.y) / tangentLength;
       const normalY = (ahead.x - point.x) / tangentLength;
@@ -298,22 +407,44 @@
       const flowX = point.x + wanderX;
       const flowY = point.y + wanderY;
       const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
-      const squeezeInfluence = manipulation.squeeze * Math.max(0, 1 - squeezeDistance / Math.max(90, width * .19));
+      const guideInfluence = Math.max(0, 1 - squeezeDistance / Math.max(72, width * .14));
+      const squeezeInfluence = Math.max(manipulation.squeeze, pointer.rawX ? .28 : 0) * guideInfluence;
       if (squeezeInfluence > .08) guidedParticles += 1;
-      const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .34;
-      const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .34;
+      const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .26;
+      const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .26;
       const densityWave = .58 + .42 * (.5 + .5 * Math.sin(t * 42 - time * .0032 + particle.swarm));
-      const particleRadius = particle.size * particle.depth * (.58 + pulse * .34 + squeezeInfluence * .55) * densityWave;
+      const particleRadius = particle.size * particle.depth * (.52 + pulse * .3 + squeezeInfluence * .5) * densityWave;
+      const tangentX = (ahead.x - point.x) / tangentLength;
+      const tangentY = (ahead.y - point.y) / tangentLength;
+      const directionalCurl = flockWave * (.34 + particle.drift * .16) + Math.sin(orbit * 1.37) * .28 + localArchImpact * Math.sin(orbit) * 1.05;
+      const directionLength = Math.max(.25, Math.hypot(tangentX + normalX * directionalCurl, tangentY + normalY * directionalCurl));
+      const directionX = (tangentX + normalX * directionalCurl) / directionLength;
+      const directionY = (tangentY + normalY * directionalCurl) / directionLength;
+      const trailLength = particle.streak * (1 + localArchImpact * 1.65 + squeezeInfluence * .65) * (.72 + densityWave * .55);
+      const trailX = compressedX - directionX * trailLength;
+      const trailY = compressedY - directionY * trailLength;
+      const alpha = Math.min(1, particle.alpha * densityWave * (.62 + pulse * .48));
       context.beginPath();
-      context.arc(compressedX, compressedY, particleRadius, 0, Math.PI * 2);
-      context.fillStyle = particle.cold
-        ? `rgba(80,207,255,${Math.min(1, particle.alpha * densityWave * (.74 + pulse * .62))})`
-        : `rgba(255,28,55,${Math.min(1, particle.alpha * densityWave * (.95 + pulse * .72))})`;
-      context.fill();
+      context.moveTo(trailX, trailY);
+      context.lineTo(compressedX, compressedY);
+      context.strokeStyle = particle.cold
+        ? `rgba(73,211,255,${alpha})`
+        : `rgba(231,250,255,${alpha})`;
+      context.lineWidth = Math.max(.48, particleRadius * (particle.alpha > .55 ? 1.05 : .72));
+      context.lineCap = 'round';
+      context.stroke();
+      if (particle.alpha > .48) {
+        context.beginPath();
+        context.arc(compressedX, compressedY, Math.max(.3, particleRadius * .58), 0, Math.PI * 2);
+        context.fillStyle = particle.cold
+          ? `rgba(117,229,255,${alpha * .88})`
+          : `rgba(255,255,255,${alpha * .86})`;
+        context.fill();
+      }
       if (particle.path % 4 === 0 && particle.alpha > .42) {
         context.beginPath();
-        context.arc(compressedX, compressedY, particleRadius * 2.15, 0, Math.PI * 2);
-        context.fillStyle = `rgba(255,178,150,${particle.alpha * .1})`;
+        context.arc(compressedX, compressedY, particleRadius * 2.6, 0, Math.PI * 2);
+        context.fillStyle = `rgba(130,229,255,${particle.alpha * .075})`;
         context.fill();
       }
     });
