@@ -168,17 +168,27 @@
     const deformation = Math.min(1, Math.hypot(manipulation.x, manipulation.y) / 54);
     context.save();
     context.lineCap = 'round';
-    for (let ring = 0; ring < 13; ring += 1) {
-      const t = .08 + ring / 15;
-      const centre = pointOnCurve(stentCurve, t);
-      const radius = (9 + mode.flare * 20 + deformation * 10) * (1 + Math.sin(ring * 1.7) * .14);
-      const skew = manipulation.x * .11 * (ring / 12) * (1 - mode.stiffness);
+    context.lineJoin = 'miter';
+    context.shadowColor = '#72eaff';
+    context.shadowBlur = 8 + pulse * 8;
+    for (let rail = -1; rail <= 1; rail += 2) {
       context.beginPath();
-      context.ellipse(centre.x + skew, centre.y, radius, radius * .42, -.66 + manipulation.rotation * .012, 0, Math.PI * 2);
-      context.strokeStyle = `rgba(235,245,255,${.28 + pulse * .34})`;
-      context.lineWidth = 1.15;
+      for (let step = 0; step <= 52; step += 1) {
+        const t = .08 + step / 66;
+        const centre = pointOnCurve(stentCurve, t);
+        const widthOffset = rail * (8 + mode.flare * 14 + deformation * 8);
+        const facet = (step % 4 < 2 ? -1 : 1) * (3.2 + deformation * 2.8);
+        const skew = manipulation.x * .11 * t * (1 - mode.stiffness);
+        const x = centre.x + skew + widthOffset + facet;
+        const y = centre.y + manipulation.y * .05 * t + facet * .42;
+        if (step === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      }
+      context.strokeStyle = `rgba(203,248,255,${.34 + pulse * .44})`;
+      context.lineWidth = 1.05 + pulse * .4;
       context.stroke();
     }
+    context.shadowBlur = 0;
     context.restore();
 
     particles.forEach((particle) => {
