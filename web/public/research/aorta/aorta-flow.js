@@ -28,6 +28,11 @@
   const manipulation = { active: false, startX: 0, startY: 0, lastX: 0, lastY: 0, x: 0, y: 0, squeeze: 0, targetSqueeze: 0 };
   const arch = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
   const vessel = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
+  const innerWall = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
+  const outerWallNodes = [.16, .29, .42, .55, .68, .81, .91].map((t) => ({ t, dx: 0, dy: 0 }));
+  const innerWallNodes = [.16, .29, .42, .55, .68, .81, .91].map((t) => ({ t, dx: 0, dy: 0 }));
+  const stentNodes = [.08, .23, .38, .53, .68, .83, .96].map((t) => ({ t, dx: 0, dy: 0 }));
+  const nodeDrag = { active: false, kind: '', node: null, startX: 0, startY: 0, baseX: 0, baseY: 0 };
   let modeIndex = 0;
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
@@ -144,6 +149,18 @@
 
   const archWeight = (t) => Math.exp(-((t - .46) ** 2) / .052);
   const vesselWeight = (t) => Math.exp(-((t - .49) ** 2) / .072);
+  const localNodeOffset = (nodes, t, spread = .0095) => nodes.reduce((offset, node) => {
+    const influence = Math.exp(-((t - node.t) ** 2) / spread);
+    offset.x += node.dx * influence;
+    offset.y += node.dy * influence;
+    return offset;
+  }, { x: 0, y: 0 });
+  const wallPoint = (curve, wall, nodes, t) => {
+    const point = pointOnCurve(curve, t);
+    const local = localNodeOffset(nodes, t);
+    const influence = vesselWeight(t);
+    return { x: point.x + wall.offsetX * influence + local.x, y: point.y + wall.offsetY * influence + local.y };
+  };
   const smoothstep = (edge0, edge1, value) => {
     const x = Math.max(0, Math.min(1, (value - edge0) / (edge1 - edge0)));
     return x * x * (3 - 2 * x);
@@ -151,15 +168,20 @@
   const deformedStentPoint = (t) => {
     const point = pointOnCurve(stentCurve, t);
     const influence = archWeight(.42 + t * .42);
-    return { x: point.x + arch.offsetX * influence, y: point.y + arch.offsetY * influence };
+    const local = localNodeOffset(stentNodes, t, .014);
+    return { x: point.x + arch.offsetX * influence + local.x, y: point.y + arch.offsetY * influence + local.y };
   };
   const flowPoint = (curve, t) => {
     const point = pointOnCurve(curve, t);
     const influence = archWeight(t);
     const vascularInfluence = vesselWeight(t);
+    const meanWallOffsetX = (vessel.offsetX + innerWall.offsetX) * .5;
+    const meanWallOffsetY = (vessel.offsetY + innerWall.offsetY) * .5;
+    const outerLocal = localNodeOffset(outerWallNodes, t);
+    const innerLocal = localNodeOffset(innerWallNodes, t);
     const base = {
-      x: point.x + vessel.offsetX * vascularInfluence + arch.offsetX * influence * .42,
-      y: point.y + vessel.offsetY * vascularInfluence + arch.offsetY * influence * .42,
+      x: point.x + meanWallOffsetX * vascularInfluence + (outerLocal.x + innerLocal.x) * .5 + arch.offsetX * influence * .42,
+      y: point.y + meanWallOffsetY * vascularInfluence + (outerLocal.y + innerLocal.y) * .5 + arch.offsetY * influence * .42,
     };
     const pathIndex = paths.indexOf(curve);
     if (pathIndex < 0 || t < .36 || t > .88) return base;
@@ -194,14 +216,25 @@
     [config.vesselBounds.outer, config.vesselBounds.inner].forEach((curve) => {
       for (let step = 0; step <= 120; step += 1) {
         const t = step / 120;
-        const base = pointOnCurve(curve, t);
-        const influence = vesselWeight(t);
-        const point = { x: base.x + vessel.offsetX * influence, y: base.y + vessel.offsetY * influence };
+        const wall = curve === config.vesselBounds.inner ? innerWall : vessel;
+        const nodes = curve === config.vesselBounds.inner ? innerWallNodes : outerWallNodes;
+        const point = wallPoint(curve, wall, nodes, t);
         const distance = Math.hypot(point.x - x, point.y - y);
         if (distance < nearest.distance) nearest = { curve, t, point, distance };
       }
     });
     return nearest;
+  };
+  const nearestControlNode = (x, y) => {
+    const candidates = [
+      ...outerWallNodes.map((node) => ({ kind: 'outer', node, point: wallPoint(config.vesselBounds.outer, vessel, outerWallNodes, node.t) })),
+      ...innerWallNodes.map((node) => ({ kind: 'inner', node, point: wallPoint(config.vesselBounds.inner, innerWall, innerWallNodes, node.t) })),
+      ...stentNodes.map((node) => ({ kind: 'stent', node, point: deformedStentPoint(node.t) })),
+    ];
+    return candidates.reduce((nearest, candidate) => {
+      const distance = Math.hypot(candidate.point.x - x, candidate.point.y - y);
+      return distance < nearest.distance ? { ...candidate, distance } : nearest;
+    }, { distance: Infinity });
   };
 
   visual.addEventListener('pointermove', (event) => {
@@ -218,7 +251,15 @@
     pointer.px = guide.point.x;
     pointer.py = guide.point.y;
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
-    if (vessel.active) {
+    if (nodeDrag.active && nodeDrag.node) {
+      nodeDrag.node.dx = Math.max(-82, Math.min(82, nodeDrag.baseX + event.clientX - nodeDrag.startX));
+      nodeDrag.node.dy = Math.max(-72, Math.min(72, nodeDrag.baseY + event.clientY - nodeDrag.startY));
+      pressureReadout.textContent = (12.4 + Math.hypot(nodeDrag.node.dx, nodeDrag.node.dy) * .045).toFixed(1);
+    } else if (innerWall.active) {
+      innerWall.offsetX = Math.max(-105, Math.min(105, innerWall.baseX + event.clientX - innerWall.startX));
+      innerWall.offsetY = Math.max(-90, Math.min(90, innerWall.baseY + event.clientY - innerWall.startY));
+      pressureReadout.textContent = (12.4 + Math.hypot(innerWall.offsetX, innerWall.offsetY) * .04).toFixed(1);
+    } else if (vessel.active) {
       vessel.offsetX = Math.max(-120, Math.min(120, vessel.baseX + event.clientX - vessel.startX));
       vessel.offsetY = Math.max(-105, Math.min(105, vessel.baseY + event.clientY - vessel.startY));
       pressureReadout.textContent = (12.4 + Math.hypot(vessel.offsetX, vessel.offsetY) * .04).toFixed(1);
@@ -245,21 +286,41 @@
     pressureReadout.textContent = '12.4';
   });
   visual.addEventListener('pointerdown', (event) => {
-    const handleBase = pointOnCurve(stentCurve, .46);
-    const handle = { x: handleBase.x + arch.offsetX, y: handleBase.y + arch.offsetY };
+    const handle = deformedStentPoint(.46);
     const rect = visual.getBoundingClientRect();
     const hitX = event.clientX - rect.left;
     const hitY = event.clientY - rect.top;
+    const controlNode = nearestControlNode(hitX, hitY);
+    if (controlNode.distance < 24) {
+      nodeDrag.active = true;
+      nodeDrag.kind = controlNode.kind;
+      nodeDrag.node = controlNode.node;
+      nodeDrag.startX = event.clientX;
+      nodeDrag.startY = event.clientY;
+      nodeDrag.baseX = controlNode.node.dx;
+      nodeDrag.baseY = controlNode.node.dy;
+      visual.classList.add('is-steering');
+      visual.setPointerCapture?.(event.pointerId);
+      return;
+    }
     const vesselBase = pointOnCurve(config.vesselBounds.outer, vesselHandleT);
     const vesselHandleInfluence = vesselWeight(vesselHandleT);
     const vesselHandle = { x: vesselBase.x + vessel.offsetX * vesselHandleInfluence, y: vesselBase.y + vessel.offsetY * vesselHandleInfluence };
+    const innerBase = pointOnCurve(config.vesselBounds.inner, vesselHandleT);
+    const innerHandle = { x: innerBase.x + innerWall.offsetX * vesselHandleInfluence, y: innerBase.y + innerWall.offsetY * vesselHandleInfluence };
     const vesselHit = nearestVesselPoint(hitX, hitY);
-    if (Math.hypot(hitX - vesselHandle.x, hitY - vesselHandle.y) < 72 || vesselHit.distance < 28) {
-      vessel.active = true;
-      vessel.startX = event.clientX;
-      vessel.startY = event.clientY;
-      vessel.baseX = vessel.offsetX;
-      vessel.baseY = vessel.offsetY;
+    const outerHandleDistance = Math.hypot(hitX - vesselHandle.x, hitY - vesselHandle.y);
+    const innerHandleDistance = Math.hypot(hitX - innerHandle.x, hitY - innerHandle.y);
+    if (Math.min(outerHandleDistance, innerHandleDistance) < 72 || vesselHit.distance < 28) {
+      const handleWasHit = Math.min(outerHandleDistance, innerHandleDistance) < 72;
+      const selectedWall = handleWasHit
+        ? (innerHandleDistance < outerHandleDistance ? innerWall : vessel)
+        : (vesselHit.curve === config.vesselBounds.inner ? innerWall : vessel);
+      selectedWall.active = true;
+      selectedWall.startX = event.clientX;
+      selectedWall.startY = event.clientY;
+      selectedWall.baseX = selectedWall.offsetX;
+      selectedWall.baseY = selectedWall.offsetY;
       visual.classList.add('is-steering');
       visual.setPointerCapture?.(event.pointerId);
       return;
@@ -284,6 +345,20 @@
     visual.setPointerCapture?.(event.pointerId);
   });
   window.addEventListener('pointerup', () => {
+    if (nodeDrag.active) {
+      nodeDrag.active = false;
+      nodeDrag.kind = '';
+      nodeDrag.node = null;
+      visual.classList.remove('is-steering');
+      stateReadout.textContent = ui.idleState;
+      return;
+    }
+    if (innerWall.active) {
+      innerWall.active = false;
+      visual.classList.remove('is-steering');
+      stateReadout.textContent = ui.idleState;
+      return;
+    }
     if (vessel.active) {
       vessel.active = false;
       visual.classList.remove('is-steering');
@@ -336,10 +411,9 @@
         const steps = 72;
         for (let step = 0; step <= steps; step += 1) {
           const t = reverse ? 1 - step / steps : step / steps;
-          const point = pointOnCurve(curve, t);
-          const vascularInfluence = vesselWeight(t);
-          point.x += vessel.offsetX * vascularInfluence;
-          point.y += vessel.offsetY * vascularInfluence;
+          const wall = curve === config.vesselBounds.inner ? innerWall : vessel;
+          const nodes = curve === config.vesselBounds.inner ? innerWallNodes : outerWallNodes;
+          const point = wallPoint(curve, wall, nodes, t);
           if (step === 0) context.moveTo(point.x, point.y);
           else context.lineTo(point.x, point.y);
         }
@@ -384,13 +458,39 @@
       context.shadowColor = '#ff1939';
       context.shadowBlur = 18;
       context.fill();
-      [.34, .52, .69].forEach((t, index) => {
-        const base = pointOnCurve(config.vesselBounds.outer, t);
-        const influence = vesselWeight(t);
-        const node = { x: base.x + vessel.offsetX * influence, y: base.y + vessel.offsetY * influence };
+      outerWallNodes.forEach((control) => {
+        const node = wallPoint(config.vesselBounds.outer, vessel, outerWallNodes, control.t);
+        const active = nodeDrag.active && nodeDrag.node === control;
         context.beginPath();
-        context.arc(node.x, node.y, index === 2 ? 5.2 : 3.2, 0, Math.PI * 2);
-        context.fillStyle = index === 2 ? 'rgba(255,225,230,.96)' : 'rgba(255,42,67,.82)';
+        context.arc(node.x, node.y, active ? 7.5 : 4.6, 0, Math.PI * 2);
+        context.fillStyle = active ? 'rgba(255,238,241,1)' : 'rgba(255,42,67,.94)';
+        context.fill();
+      });
+      context.restore();
+
+      const innerBase = pointOnCurve(config.vesselBounds.inner, vesselHandleT);
+      const innerHandle = { x: innerBase.x + innerWall.offsetX * vesselHandleInfluence, y: innerBase.y + innerWall.offsetY * vesselHandleInfluence };
+      context.save();
+      context.beginPath();
+      context.moveTo(innerBase.x, innerBase.y);
+      context.lineTo(innerHandle.x, innerHandle.y);
+      context.setLineDash([4, 5]);
+      context.strokeStyle = 'rgba(255,92,135,.78)';
+      context.lineWidth = 1;
+      context.stroke();
+      context.setLineDash([]);
+      context.beginPath();
+      context.arc(innerHandle.x, innerHandle.y, innerWall.active ? 10 : 7, 0, Math.PI * 2);
+      context.fillStyle = innerWall.active ? 'rgba(255,234,240,.98)' : 'rgba(255,82,125,.96)';
+      context.shadowColor = '#ff426f';
+      context.shadowBlur = 18;
+      context.fill();
+      innerWallNodes.forEach((control) => {
+        const node = wallPoint(config.vesselBounds.inner, innerWall, innerWallNodes, control.t);
+        const active = nodeDrag.active && nodeDrag.node === control;
+        context.beginPath();
+        context.arc(node.x, node.y, active ? 7.5 : 4.6, 0, Math.PI * 2);
+        context.fillStyle = active ? 'rgba(255,242,246,1)' : 'rgba(255,92,135,.94)';
         context.fill();
       });
       context.restore();
@@ -416,12 +516,8 @@
     const stentStations = [];
     for (let step = 0; step <= 30; step += 1) {
       const t = .02 + (step / 30) * .96;
-      const baseCentre = pointOnCurve(stentCurve, t);
-      const baseAhead = pointOnCurve(stentCurve, Math.min(.999, t + .004));
-      const localArch = archWeight(t);
-      const nextArch = archWeight(Math.min(.999, t + .004));
-      const centre = { x: baseCentre.x + arch.offsetX * localArch, y: baseCentre.y + arch.offsetY * localArch };
-      const ahead = { x: baseAhead.x + arch.offsetX * nextArch, y: baseAhead.y + arch.offsetY * nextArch };
+      const centre = deformedStentPoint(t);
+      const ahead = deformedStentPoint(Math.min(.999, t + .004));
       const tangentLength = Math.max(1, Math.hypot(ahead.x - centre.x, ahead.y - centre.y));
       const normalX = -(ahead.y - centre.y) / tangentLength;
       const normalY = (ahead.x - centre.x) / tangentLength;
@@ -475,7 +571,7 @@
     context.restore();
 
     const handleBase = pointOnCurve(stentCurve, .46);
-    const handle = { x: handleBase.x + arch.offsetX, y: handleBase.y + arch.offsetY };
+    const handle = deformedStentPoint(.46);
     context.save();
     context.beginPath();
     context.moveTo(handleBase.x, handleBase.y);
@@ -491,6 +587,14 @@
     context.shadowColor = '#39caff';
     context.shadowBlur = 18;
     context.fill();
+    stentNodes.forEach((control) => {
+      const node = deformedStentPoint(control.t);
+      const active = nodeDrag.active && nodeDrag.node === control;
+      context.beginPath();
+      context.arc(node.x, node.y, active ? 7.5 : 4.6, 0, Math.PI * 2);
+      context.fillStyle = active ? 'rgba(230,253,255,1)' : 'rgba(61,204,255,.96)';
+      context.fill();
+    });
     context.restore();
 
     let guidedParticles = 0;

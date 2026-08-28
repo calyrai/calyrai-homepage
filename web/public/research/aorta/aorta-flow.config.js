@@ -10,7 +10,7 @@ window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
     releaseInstruction: "ARCH + STENT GEOMETRY CHANGE THE PULSATILE FLOW",
     modelLabel: "HYPOTHETICAL STENT · RESEARCH MODEL"
   }),
-  particleCount: 1320,
+  particleCount: 1900,
   baseSpeed: 0.000038,
   speedStep: 0.0000042,
   maxDevicePixelRatio: 2,
