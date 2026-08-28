@@ -7,12 +7,20 @@
   canvas.setAttribute('aria-hidden', 'true');
   visual.append(canvas);
 
+  const hud = document.createElement('div');
+  hud.className = 'aorta-hud';
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>FLOW FIELD · LIVE</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW</span><i></i><b></b></div><div class="aorta-hud-command"><strong>DRAG · STEER FLOW</strong><span>POINTER MODULATES VELOCITY FIELD</span></div>`;
+  visual.append(hud);
+
   const style = document.createElement('style');
-  style.textContent = `.visual{overflow:hidden;background-size:108% auto!important;transition:background-position .18s ease-out}.aorta-flow-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}.visual .progress{z-index:2}@media(prefers-reduced-motion:reduce){.aorta-flow-canvas{display:none}.visual{background-size:cover!important}}`;
+  style.textContent = `.visual{overflow:hidden;background-size:108% auto!important;transition:background-position .18s ease-out;cursor:crosshair}.aorta-flow-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}.visual .progress{display:none}.aorta-hud{position:absolute;inset:0;z-index:2;pointer-events:none;color:#fff;font:700 9px/1.2 Arial,sans-serif;letter-spacing:.12em;text-shadow:0 1px 4px #000}.aorta-hud:before{content:"";position:absolute;inset:18px;border:1px solid rgba(255,255,255,.22);clip-path:polygon(0 0,18% 0,18% 1px,82% 1px,82% 0,100% 0,100% 28%,calc(100% - 1px) 28%,calc(100% - 1px) 72%,100% 72%,100% 100%,82% 100%,82% calc(100% - 1px),18% calc(100% - 1px),18% 100%,0 100%,0 72%,1px 72%,1px 28%,0 28%)}.aorta-hud-status{position:absolute;top:30px;left:30px;display:flex;align-items:center;gap:9px}.aorta-hud-status i{width:7px;height:7px;border-radius:50%;background:#f10b0b;box-shadow:0 0 12px #f10b0b;animation:aorta-pulse 1.5s ease-in-out infinite}.aorta-hud-readout{position:absolute;top:30px;right:30px;display:flex;gap:18px}.aorta-hud-readout>span{display:grid;gap:5px;color:rgba(255,255,255,.55);font-size:7px}.aorta-hud-readout>span span{color:#fff;font-size:11px}.aorta-hud-reticle{position:absolute;left:50%;top:50%;width:54px;height:54px;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.34);border-radius:50%;transition:left .12s linear,top .12s linear,transform .18s ease}.aorta-hud-reticle:before,.aorta-hud-reticle:after{content:"";position:absolute;background:rgba(255,255,255,.7)}.aorta-hud-reticle:before{left:50%;top:-10px;width:1px;height:74px}.aorta-hud-reticle:after{top:50%;left:-10px;width:74px;height:1px}.aorta-hud-reticle i{position:absolute;inset:8px;border:1px dashed rgba(241,11,11,.8);border-radius:50%;animation:aorta-spin 8s linear infinite}.aorta-hud-reticle b{position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);border-radius:50%;background:#f10b0b;box-shadow:0 0 10px #f10b0b}.visual.is-steering .aorta-hud-reticle{transform:translate(-50%,-50%) scale(.72)}.aorta-hud-axis{position:absolute;right:30px;top:50%;height:120px;width:18px;transform:translateY(-50%);border-left:1px solid rgba(255,255,255,.35)}.aorta-hud-axis span{position:absolute;top:-17px;left:-2px;color:rgba(255,255,255,.6);font-size:7px}.aorta-hud-axis i{position:absolute;left:-3px;top:18px;width:5px;height:72px;background:linear-gradient(#f10b0b,rgba(241,11,11,.08));transform-origin:bottom}.aorta-hud-axis b{position:absolute;left:-5px;top:17px;width:9px;height:1px;background:#fff}.aorta-hud-command{position:absolute;left:30px;bottom:30px;display:grid;gap:6px}.aorta-hud-command strong{color:#fff;font-size:10px}.aorta-hud-command span{color:rgba(255,255,255,.5);font-size:7px}@keyframes aorta-pulse{50%{opacity:.35;transform:scale(.72)}}@keyframes aorta-spin{to{transform:rotate(360deg)}}@media(max-width:700px){.aorta-hud-readout{display:none}.aorta-hud-axis{right:22px}.aorta-hud-command{left:22px;bottom:22px}}@media(prefers-reduced-motion:reduce){.aorta-flow-canvas{display:none}.visual{background-size:cover!important}.aorta-hud *{animation:none!important}}`;
   document.head.append(style);
 
   const context = canvas.getContext('2d', { alpha: true });
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+  const reticle = hud.querySelector('.aorta-hud-reticle');
+  const velocityReadout = hud.querySelector('[data-flow-velocity]');
+  const pressureReadout = hud.querySelector('[data-flow-pressure]');
   const paths = [
     [[-.08,.86],[.12,.52],[.14,.08],[.44,.10]],
     [[-.06,.75],[.14,.46],[.18,.12],[.52,.14]],
@@ -57,13 +65,25 @@
 
   visual.addEventListener('pointermove', (event) => {
     const rect = visual.getBoundingClientRect();
-    pointer.targetX = ((event.clientX - rect.left) / rect.width - .5) * 2;
-    pointer.targetY = ((event.clientY - rect.top) / rect.height - .5) * 2;
+    const localX = (event.clientX - rect.left) / rect.width;
+    const localY = (event.clientY - rect.top) / rect.height;
+    pointer.targetX = (localX - .5) * 2;
+    pointer.targetY = (localY - .5) * 2;
+    reticle.style.left = `${localX * 100}%`;
+    reticle.style.top = `${localY * 100}%`;
+    velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
+    pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
   });
   visual.addEventListener('pointerleave', () => {
     pointer.targetX = 0;
     pointer.targetY = 0;
+    reticle.style.left = '50%';
+    reticle.style.top = '50%';
+    velocityReadout.textContent = '1.00';
+    pressureReadout.textContent = '12.4';
   });
+  visual.addEventListener('pointerdown', () => visual.classList.add('is-steering'));
+  window.addEventListener('pointerup', () => visual.classList.remove('is-steering'));
 
   const draw = (time) => {
     pointer.x += (pointer.targetX - pointer.x) * .055;
@@ -86,7 +106,7 @@
     });
 
     particles.forEach((particle) => {
-      const t = (particle.phase + time * particle.speed) % 1;
+      const t = (particle.phase + time * particle.speed * (1 + pointer.x * .28)) % 1;
       const point = pointOnCurve(paths[particle.path], t);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - .018));
       context.beginPath();
