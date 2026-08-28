@@ -44,7 +44,27 @@
     size: .45 + (index % 7) * .12,
     alpha: .18 + (index % 11) * .034,
     strand: 1.4 + (index % 9) * .34,
+    previousT: ((index * 0.61803398875) % 1),
   }));
+  const burstParticles = [];
+  const spawnBurst = (point, source) => {
+    const shardCount = 5 + (source.path % 4);
+    for (let shard = 0; shard < shardCount; shard += 1) {
+      const angle = (shard / shardCount) * Math.PI * 2 + source.phase * 7.3;
+      const force = 18 + ((source.path * 13 + shard * 17) % 31);
+      burstParticles.push({
+        x: point.x,
+        y: point.y,
+        vx: Math.cos(angle) * force + 14,
+        vy: Math.sin(angle) * force,
+        age: 0,
+        life: .42 + ((source.path + shard) % 5) * .055,
+        size: .55 + (shard % 3) * .32,
+        warm: shard % 4 === 0,
+      });
+    }
+    if (burstParticles.length > 1800) burstParticles.splice(0, burstParticles.length - 1800);
+  };
 
   let width = 1;
   let height = 1;
@@ -158,29 +178,59 @@
       context.stroke();
     });
 
-    // Schematic research overlay, not a clinically validated device model.
-    const stentCurve = paths[5];
+    // Schematic, deformable research overlay — not a clinically validated device model.
+    const stentCurve = config.stentPath || paths[5];
     const deformation = Math.min(1, Math.hypot(manipulation.x, manipulation.y) / 54);
+    const stentStations = [];
+    for (let step = 0; step <= 30; step += 1) {
+      const t = .02 + (step / 30) * .96;
+      const centre = pointOnCurve(stentCurve, t);
+      const ahead = pointOnCurve(stentCurve, Math.min(.999, t + .004));
+      const tangentLength = Math.max(1, Math.hypot(ahead.x - centre.x, ahead.y - centre.y));
+      const normalX = -(ahead.y - centre.y) / tangentLength;
+      const normalY = (ahead.x - centre.x) / tangentLength;
+      const influence = Math.sin((step / 30) * Math.PI);
+      const centreX = centre.x + manipulation.x * .16 * influence * (1 - mode.stiffness);
+      const centreY = centre.y + manipulation.y * .12 * influence * (1 - mode.stiffness);
+      const halfWidth = (config.stentHalfWidth || 29) + mode.flare * 18 + deformation * 10 * influence;
+      stentStations.push({
+        left: { x: centreX + normalX * halfWidth, y: centreY + normalY * halfWidth },
+        right: { x: centreX - normalX * halfWidth, y: centreY - normalY * halfWidth },
+      });
+    }
     context.save();
     context.lineCap = 'round';
     context.lineJoin = 'miter';
-    context.shadowColor = '#72eaff';
-    context.shadowBlur = 8 + pulse * 8;
-    for (let rail = -1; rail <= 1; rail += 2) {
+    context.shadowColor = '#159cff';
+    context.shadowBlur = 7 + pulse * 7;
+    ['left', 'right'].forEach((rail) => {
       context.beginPath();
-      for (let step = 0; step <= 52; step += 1) {
-        const t = .08 + step / 66;
-        const centre = pointOnCurve(stentCurve, t);
-        const widthOffset = rail * (8 + mode.flare * 14 + deformation * 8);
-        const facet = (step % 4 < 2 ? -1 : 1) * (3.2 + deformation * 2.8);
-        const skew = manipulation.x * .11 * t * (1 - mode.stiffness);
-        const x = centre.x + skew + widthOffset + facet;
-        const y = centre.y + manipulation.y * .05 * t + facet * .42;
-        if (step === 0) context.moveTo(x, y);
-        else context.lineTo(x, y);
+      stentStations.forEach((station, index) => {
+        const point = station[rail];
+        if (index === 0) context.moveTo(point.x, point.y);
+        else context.lineTo(point.x, point.y);
+      });
+      context.strokeStyle = `rgba(67,180,255,${.58 + pulse * .32})`;
+      context.lineWidth = 1.15 + pulse * .38;
+      context.stroke();
+    });
+    for (let step = 0; step < stentStations.length - 1; step += 1) {
+      const current = stentStations[step];
+      const next = stentStations[step + 1];
+      context.beginPath();
+      if (step % 2 === 0) {
+        context.moveTo(current.left.x, current.left.y);
+        context.lineTo(next.right.x, next.right.y);
+        context.moveTo(current.right.x, current.right.y);
+        context.lineTo(next.left.x, next.left.y);
+      } else {
+        context.moveTo(current.left.x, current.left.y);
+        context.lineTo(next.left.x, next.left.y);
+        context.moveTo(current.right.x, current.right.y);
+        context.lineTo(next.right.x, next.right.y);
       }
-      context.strokeStyle = `rgba(203,248,255,${.34 + pulse * .44})`;
-      context.lineWidth = 1.05 + pulse * .4;
+      context.strokeStyle = `rgba(124,218,255,${.42 + pulse * .34})`;
+      context.lineWidth = .72 + pulse * .32;
       context.stroke();
     }
     context.shadowBlur = 0;
@@ -188,6 +238,8 @@
 
     particles.forEach((particle) => {
       const t = (particle.phase + flowClock * particle.speed) % 1;
+      if (t < particle.previousT) spawnBurst(pointOnCurve(paths[particle.path], 1), particle);
+      particle.previousT = t;
       const point = pointOnCurve(paths[particle.path], t);
       const trail = (.012 + particle.strand * .0035) * (.82 + pulse * .35);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - trail));
@@ -217,6 +269,42 @@
         context.stroke();
       }
     });
+
+    const dt = deltaTime * .001;
+    context.save();
+    context.globalCompositeOperation = 'lighter';
+    for (let index = burstParticles.length - 1; index >= 0; index -= 1) {
+      const shard = burstParticles[index];
+      shard.age += dt;
+      if (shard.age >= shard.life) {
+        burstParticles.splice(index, 1);
+        continue;
+      }
+      const fade = 1 - shard.age / shard.life;
+      const previousX = shard.x;
+      const previousY = shard.y;
+      shard.vx *= Math.pow(.12, dt);
+      shard.vy *= Math.pow(.16, dt);
+      shard.vy += 13 * dt;
+      shard.x += shard.vx * dt;
+      shard.y += shard.vy * dt;
+      context.beginPath();
+      context.moveTo(previousX, previousY);
+      context.lineTo(shard.x, shard.y);
+      context.strokeStyle = shard.warm
+        ? `rgba(255,92,112,${fade * .9})`
+        : `rgba(116,239,255,${fade * .82})`;
+      context.lineWidth = shard.size * (.45 + fade);
+      context.lineCap = 'round';
+      context.stroke();
+      context.beginPath();
+      context.arc(shard.x, shard.y, shard.size * fade, 0, Math.PI * 2);
+      context.fillStyle = shard.warm
+        ? `rgba(255,202,181,${fade})`
+        : `rgba(216,253,255,${fade})`;
+      context.fill();
+    }
+    context.restore();
     context.restore();
     requestAnimationFrame(draw);
   };
