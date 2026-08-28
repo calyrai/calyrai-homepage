@@ -1,0 +1,44 @@
+.aorta-mode-switch {
+  position: absolute;
+  top: 58px;
+  left: 30px;
+  display: flex;
+  gap: 5px;
+  pointer-events: auto;
+}
+
+.aorta-mode-switch button {
+  appearance: none;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(0, 0, 0, 0.56);
+  color: #fff;
+  font: 700 7px/1 Arial, sans-serif;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+.aorta-mode-switch button[aria-pressed="true"] {
+  border-color: #f10b0b;
+  background: #f10b0b;
+}
+
+.aorta-stent-label {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 7px;
+}
+
+@media (max-width: 700px) {
+  .aorta-mode-switch {
+    top: 54px;
+    left: 22px;
+  }
+
+  .aorta-stent-label {
+    right: 22px;
+    bottom: 58px;
+  }
+}

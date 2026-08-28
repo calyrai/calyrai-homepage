@@ -4,6 +4,12 @@ window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
   baseSpeed: 0.000035,
   speedStep: 0.0000038,
   maxDevicePixelRatio: 2,
+  pulseHz: 1.15,
+  modes: [
+    { id: "flow", label: "FLOW", stiffness: 0.35, flare: 0.12 },
+    { id: "pressure", label: "PRESSURE", stiffness: 0.62, flare: 0.2 },
+    { id: "conform", label: "CONFORM", stiffness: 0.22, flare: 0.34 }
+  ],
   paths: [
     [[-0.08,0.86],[0.12,0.52],[0.14,0.08],[0.44,0.10]],
     [[-0.06,0.75],[0.14,0.46],[0.18,0.12],[0.52,0.14]],

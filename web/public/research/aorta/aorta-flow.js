@@ -18,17 +18,24 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>FLOW FIELD · LIVE</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW</span><i></i><b></b></div><div class="aorta-hud-command"><strong>DRAG · STEER FLOW</strong><span>POINTER MODULATES VELOCITY FIELD</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-hud-reticle" aria-hidden="true"><i></i><b></b></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>DRAG · DEFORM STENT / STEER FLOW</strong><span>SELECT MODE · POINTER MODULATES THE FIELD</span></div>`;
   visual.append(hud);
 
 
   const context = canvas.getContext('2d', { alpha: true });
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
   const manipulation = { active: false, startX: 0, startY: 0, x: 0, y: 0, rotation: 0, scale: 1.04 };
+  let modeIndex = 0;
   const reticle = hud.querySelector('.aorta-hud-reticle');
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
   const paths = config.paths;
+  hud.querySelectorAll('[data-aorta-mode]').forEach((button) => {
+    button.addEventListener('click', () => {
+      modeIndex = Number(button.dataset.aortaMode);
+      hud.querySelectorAll('[data-aorta-mode]').forEach((item, index) => item.setAttribute('aria-pressed', String(index === modeIndex)));
+    });
+  });
   const particles = Array.from({ length: config.particleCount }, (_, index) => ({
     path: index % paths.length,
     phase: ((index * 0.61803398875) % 1),
@@ -99,6 +106,9 @@
   });
 
   const draw = (time) => {
+    const seconds = time * .001;
+    const pulse = .72 + .28 * (.5 + .5 * Math.sin(seconds * Math.PI * 2 * config.pulseHz));
+    const mode = config.modes[modeIndex];
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
     imageLayer.style.transform = `translate3d(${pointer.x * 5 + manipulation.x}px,${pointer.y * 4 + manipulation.y}px,0) rotate(${manipulation.rotation}deg) scale(${manipulation.scale})`;
@@ -118,8 +128,26 @@
       context.stroke();
     });
 
+    // Schematic research overlay, not a clinically validated device model.
+    const stentCurve = paths[5];
+    const deformation = Math.min(1, Math.hypot(manipulation.x, manipulation.y) / 54);
+    context.save();
+    context.lineCap = 'round';
+    for (let ring = 0; ring < 13; ring += 1) {
+      const t = .08 + ring / 15;
+      const centre = pointOnCurve(stentCurve, t);
+      const radius = (9 + mode.flare * 20 + deformation * 10) * (1 + Math.sin(ring * 1.7) * .14);
+      const skew = manipulation.x * .11 * (ring / 12) * (1 - mode.stiffness);
+      context.beginPath();
+      context.ellipse(centre.x + skew, centre.y, radius, radius * .42, -.66 + manipulation.rotation * .012, 0, Math.PI * 2);
+      context.strokeStyle = `rgba(235,245,255,${.28 + pulse * .34})`;
+      context.lineWidth = 1.15;
+      context.stroke();
+    }
+    context.restore();
+
     particles.forEach((particle) => {
-      const t = (particle.phase + time * particle.speed * (1 + pointer.x * .28)) % 1;
+      const t = (particle.phase + time * particle.speed * pulse * (1 + pointer.x * .28)) % 1;
       const point = pointOnCurve(paths[particle.path], t);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - .018));
       const turbulence = 4 + (particle.path % 4) * 1.8 + Math.abs(pointer.y) * 7;
@@ -139,7 +167,7 @@
       context.stroke();
       context.beginPath();
       context.arc(flowX, flowY, particle.size, 0, Math.PI * 2);
-      context.fillStyle = `rgba(255,18,18,${particle.alpha})`;
+      context.fillStyle = `rgba(255,18,18,${particle.alpha * (.62 + pulse * .5)})`;
       context.shadowColor = '#f00';
       context.shadowBlur = particle.size * 2.2;
       context.fill();
