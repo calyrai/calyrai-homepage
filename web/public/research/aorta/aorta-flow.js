@@ -42,8 +42,9 @@
     path: index % paths.length,
     phase: ((index * 0.61803398875) % 1),
     speed: config.baseSpeed + (index % 9) * config.speedStep,
-    size: .55 + (index % 7) * .16,
-    alpha: .28 + (index % 11) * .045,
+    size: .45 + (index % 7) * .12,
+    alpha: .18 + (index % 11) * .034,
+    strand: 1.4 + (index % 9) * .34,
   }));
 
   let width = 1;
@@ -194,7 +195,9 @@
     particles.forEach((particle) => {
       const t = (particle.phase + flowClock * particle.speed * (1 + pointer.x * .28)) % 1;
       const point = pointOnCurve(paths[particle.path], t);
-      const tail = pointOnCurve(paths[particle.path], Math.max(0, t - .018));
+      const trail = (.012 + particle.strand * .0035) * (.82 + pulse * .35);
+      const tail = pointOnCurve(paths[particle.path], Math.max(0, t - trail));
+      const middle = pointOnCurve(paths[particle.path], Math.max(0, t - trail * .48));
       const turbulence = 4 + (particle.path % 4) * 1.8 + Math.abs(pointer.y) * 7;
       const wanderX = Math.sin(time * .0011 + particle.phase * 31 + particle.path) * turbulence;
       const wanderY = Math.cos(time * .00135 + particle.phase * 23 - particle.path) * turbulence * .72;
@@ -204,19 +207,25 @@
       const vortex = manipulation.active ? Math.min(18, 520 / vortexDistance) : Math.min(7, 210 / vortexDistance);
       const flowX = point.x + wanderX - (point.y - vortexY) / vortexDistance * vortex;
       const flowY = point.y + wanderY + (point.x - vortexX) / vortexDistance * vortex;
+      const tailX = tail.x + wanderX * .58;
+      const tailY = tail.y + wanderY * .58;
+      const middleX = middle.x + wanderX * .78 - (middle.y - vortexY) / vortexDistance * vortex * .45;
+      const middleY = middle.y + wanderY * .78 + (middle.x - vortexX) / vortexDistance * vortex * .45;
       context.beginPath();
-      context.moveTo(tail.x + wanderX * .65, tail.y + wanderY * .65);
-      context.lineTo(flowX, flowY);
-      context.strokeStyle = `rgba(255,0,0,${particle.alpha * .48})`;
-      context.lineWidth = particle.size * .72;
+      context.moveTo(tailX, tailY);
+      context.quadraticCurveTo(middleX, middleY, flowX, flowY);
+      context.strokeStyle = `rgba(255,32,38,${particle.alpha * (.52 + pulse * .42)})`;
+      context.lineWidth = particle.size;
+      context.lineCap = 'round';
       context.stroke();
-      context.beginPath();
-      context.arc(flowX, flowY, particle.size, 0, Math.PI * 2);
-      context.fillStyle = `rgba(255,18,18,${particle.alpha * (.62 + pulse * .5)})`;
-      context.shadowColor = '#f00';
-      context.shadowBlur = particle.size * 2.2;
-      context.fill();
-      context.shadowBlur = 0;
+      if (particle.path % 4 === 0) {
+        context.beginPath();
+        context.moveTo(middleX, middleY);
+        context.lineTo(flowX, flowY);
+        context.strokeStyle = `rgba(255,178,150,${particle.alpha * .36})`;
+        context.lineWidth = particle.size * .42;
+        context.stroke();
+      }
     });
     context.restore();
     requestAnimationFrame(draw);

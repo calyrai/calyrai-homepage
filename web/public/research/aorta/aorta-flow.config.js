@@ -1,6 +1,6 @@
 window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
   image: "./aorta-arch-dark-2026.webp",
-  particleCount: 310,
+  particleCount: 560,
   baseSpeed: 0.000035,
   speedStep: 0.0000038,
   maxDevicePixelRatio: 2,
