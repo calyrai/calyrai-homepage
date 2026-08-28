@@ -9,7 +9,10 @@ DEPLOY_HTML="${DEPLOY_HTML:-index.html}"
 
 cd "$repo_root"
 
-# Build a single self-contained HTML from the local web app state.
+# Compile and validate canonical content before building presentation output.
+python3 build/compile.py
+
+# Build a single self-contained HTML from the compiled local web app state.
 npm --prefix "$WEB_DIR" ci
 npm --prefix "$WEB_DIR" run build
 

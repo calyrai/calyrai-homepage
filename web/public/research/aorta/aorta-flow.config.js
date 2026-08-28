@@ -1,5 +1,15 @@
 window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
   image: "./aorta-arch-dark-2026.webp",
+  ui: Object.freeze({
+    status: "PULSATILE FLOW · FORWARD",
+    gameTitle: "FLOW CONTROL",
+    idleState: "FOLLOW THE ARCH",
+    activeState: "COMPRESSING",
+    lockedState: "FLOW LOCKED",
+    instruction: "HOLD + DRAG · COMPRESS FLOW",
+    releaseInstruction: "GUIDE THE STREAM · RELEASE AT OUTLET",
+    modelLabel: "HYPOTHETICAL STENT · RESEARCH MODEL"
+  }),
   particleCount: 920,
   baseSpeed: 0.000035,
   speedStep: 0.0000038,

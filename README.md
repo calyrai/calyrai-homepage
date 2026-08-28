@@ -9,7 +9,7 @@ The site is generated from YAML content through a Python compiler into JSON arti
 - **Local source of truth:** `/Users/rtscheliessnig/Workspace/calyrai-homepage`
 - **Git remote:** `https://github.com/calyrai/calyrai-homepage.git`
 - **Primary branch:** `main`
-- **Deployment source:** generated contents of `deploy/`
+- **Deployment artifact:** generated contents of `deploy/` (never hand-edited or committed)
 
 This repository is the only active source for the Calyr.ai homepage. The former
 location `/Users/rtscheliessnig/Workspace/workspace-active/calyrai-homepage` is
@@ -41,11 +41,11 @@ Design decision:
 2. Compile layer: Python compiler in build/
 3. Artifact layer: generated/*.json
 4. Presentation layer: React app in web/src/
-5. Deployment layer: deploy/ served by GitHub Pages
+5. Deployment layer: ephemeral `deploy/` artifact served by GitHub Pages
 
-Publication rule: only the minimal content in `deploy/` is intended to go online.
+Publication rule: only the minimal content generated into `deploy/` goes online. The directory is rebuilt from `web/public/` plus the Vite bundle for every release and is not a source tree.
 
-Source-of-truth rule: do not maintain page behavior/content in generated HTML files under publication folders; regenerate them from YAML and compiler rules.
+Source-of-truth rule: never maintain behavior or content in `deploy/`. Author content under `content/`, application code under `web/src/`, and static research modules under `web/public/`; regenerate the publication artifact through `scripts/prepare-deploy.sh`.
 
 CALYRAI/LITHOS ownership rule:
 - CALYRAI page owns orientation and routing semantics.
@@ -189,10 +189,10 @@ npm run build
 ### Prepare deploy folder (manual)
 
 ```bash
-cd /Users/rtscheliessnig/Workspace/calyrai-homepage
-rm -rf deploy
-cp -r web/dist deploy
+./scripts/prepare-deploy.sh
 ```
+
+This command rebuilds `deploy/` from the canonical sources. Never edit the generated directory directly.
 
 ## Repository Structure
 

@@ -1,7 +1,8 @@
 (() => {
   const init = () => {
-    const config = window.CALYR_AORTA_FLOW_CONFIG;
-    if (!config) return;
+  const config = window.CALYR_AORTA_FLOW_CONFIG;
+  if (!config) return;
+  const ui = config.ui || {};
     const visual = document.querySelector('.visual');
     if (!visual || visual.querySelector('.aorta-flow-canvas')) return;
 
@@ -18,7 +19,7 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-game"><span>FLOW CONTROL</span><strong data-flow-score>0000</strong><em data-flow-state>FOLLOW THE ARCH</em></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>HOLD + DRAG · COMPRESS FLOW</strong><span>GUIDE THE STREAM · RELEASE AT OUTLET</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>${ui.status}</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-game"><span>${ui.gameTitle}</span><strong data-flow-score>0000</strong><em data-flow-state>${ui.idleState}</em></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">${ui.modelLabel}</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>${ui.instruction}</strong><span>${ui.releaseInstruction}</span></div>`;
   visual.append(hud);
 
 
@@ -166,7 +167,7 @@
     manipulation.active = false;
     manipulation.targetSqueeze = 0;
     visual.classList.remove('is-steering');
-    stateReadout.textContent = 'FOLLOW THE ARCH';
+    stateReadout.textContent = ui.idleState;
   });
 
   const draw = (time) => {
@@ -180,7 +181,7 @@
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
     manipulation.squeeze += (manipulation.targetSqueeze - manipulation.squeeze) * (manipulation.active ? .13 : .075);
-    stateReadout.textContent = manipulation.active ? (manipulation.squeeze > .55 ? 'FLOW LOCKED' : 'COMPRESSING') : 'FOLLOW THE ARCH';
+    stateReadout.textContent = manipulation.active ? (manipulation.squeeze > .55 ? ui.lockedState : ui.activeState) : ui.idleState;
     imageLayer.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1.04)';
     context.clearRect(0, 0, width, height);
     context.save();
