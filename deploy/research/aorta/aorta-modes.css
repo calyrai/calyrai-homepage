@@ -32,6 +32,41 @@
   font-size: 7px;
 }
 
+.aorta-game {
+  position: absolute;
+  right: 30px;
+  bottom: 66px;
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  padding: 8px 10px;
+  border-right: 2px solid #ff173f;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.76));
+}
+
+.aorta-game span,
+.aorta-game em {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 7px;
+  font-style: normal;
+}
+
+.aorta-game strong {
+  color: #fff;
+  font-size: 22px;
+  line-height: 0.9;
+  text-shadow: 0 0 14px #ff173f;
+}
+
+.visual.is-steering .aorta-flow-canvas {
+  filter: saturate(1.55) brightness(1.28);
+}
+
+.visual.is-steering .aorta-game {
+  border-color: #72efff;
+  box-shadow: 12px 0 28px rgba(64, 225, 255, 0.28);
+}
+
 .aorta-image-layer {
   transition: none;
   will-change: auto;
@@ -94,6 +129,11 @@
   .aorta-stent-label {
     right: 22px;
     bottom: 58px;
+  }
+
+  .aorta-game {
+    right: 22px;
+    bottom: 88px;
   }
 
   .aorta-phase-mark {

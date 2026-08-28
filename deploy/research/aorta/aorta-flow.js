@@ -18,7 +18,7 @@
 
   const hud = document.createElement('div');
   hud.className = 'aorta-hud';
-  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>HOLD + DRAG · COMPRESS FLOW</strong><span>RELEASE · PARTICLE BURST AT OUTLET</span></div>`;
+  hud.innerHTML = `<div class="aorta-hud-status"><i></i><span>PULSATILE FLOW · FORWARD</span></div><div class="aorta-hud-readout"><span>V<span data-flow-velocity>1.00</span></span><span>ΔP<span data-flow-pressure>12.4</span></span><span>UQ<span>±04</span></span></div><div class="aorta-game"><span>FLOW CONTROL</span><strong data-flow-score>0000</strong><em data-flow-state>FOLLOW THE ARCH</em></div><div class="aorta-hud-axis" aria-hidden="true"><span>FLOW →</span><i></i><b></b></div><div class="aorta-stent-label">HYPOTHETICAL STENT · RESEARCH MODEL</div><div class="aorta-mode-switch" aria-label="Stent deformation modes">${config.modes.map((mode, index) => `<button type="button" data-aorta-mode="${index}" aria-pressed="${index === 0}">${mode.label}</button>`).join('')}</div><div class="aorta-hud-command"><strong>HOLD + DRAG · COMPRESS FLOW</strong><span>GUIDE THE STREAM · RELEASE AT OUTLET</span></div>`;
   visual.append(hud);
 
 
@@ -28,6 +28,8 @@
   let modeIndex = 0;
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
+  const scoreReadout = hud.querySelector('[data-flow-score]');
+  const stateReadout = hud.querySelector('[data-flow-state]');
   const paths = config.paths;
   hud.querySelectorAll('[data-aorta-mode]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -87,6 +89,7 @@
   let dpr = 1;
   let flowClock = 0;
   let previousTime = 0;
+  let score = 0;
   const resize = () => {
     const rect = visual.getBoundingClientRect();
     width = Math.max(1, rect.width);
@@ -156,11 +159,14 @@
   });
   window.addEventListener('pointerup', () => {
     if (manipulation.active && manipulation.squeeze > .12) {
-      spawnReleaseBurst({ x: pointer.px, y: pointer.py }, manipulation.squeeze);
+      const outlet = pointOnCurve(paths[Math.floor(paths.length / 2)], .995);
+      spawnReleaseBurst(outlet, manipulation.squeeze);
+      score += Math.round(160 * manipulation.squeeze);
     }
     manipulation.active = false;
     manipulation.targetSqueeze = 0;
     visual.classList.remove('is-steering');
+    stateReadout.textContent = 'FOLLOW THE ARCH';
   });
 
   const draw = (time) => {
@@ -168,16 +174,20 @@
     const pulse = .72 + .28 * (.5 + .5 * Math.sin(seconds * Math.PI * 2 * config.pulseHz));
     const mode = config.modes[modeIndex];
     const deltaTime = previousTime ? Math.min(34, time - previousTime) : 16.67;
+    const dt = deltaTime * .001;
     previousTime = time;
     flowClock += deltaTime * pulse;
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
     manipulation.squeeze += (manipulation.targetSqueeze - manipulation.squeeze) * (manipulation.active ? .13 : .075);
+    stateReadout.textContent = manipulation.active ? (manipulation.squeeze > .55 ? 'FLOW LOCKED' : 'COMPRESSING') : 'FOLLOW THE ARCH';
     imageLayer.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1.04)';
     context.clearRect(0, 0, width, height);
     context.save();
 
-    context.lineWidth = .65;
+    context.save();
+    context.globalCompositeOperation = 'lighter';
+    context.lineWidth = 1.35 + pulse * .85;
     paths.forEach((curve, pathIndex) => {
       context.beginPath();
       for (let step = 0; step <= 34; step += 1) {
@@ -185,9 +195,10 @@
         if (step === 0) context.moveTo(point.x, point.y);
         else context.lineTo(point.x, point.y);
       }
-      context.strokeStyle = `rgba(255,18,18,${pathIndex < 8 ? .19 : .10})`;
+      context.strokeStyle = `rgba(255,18,42,${.18 + pulse * .12})`;
       context.stroke();
     });
+    context.restore();
 
     // Schematic, deformable research overlay — not a clinically validated device model.
     const stentCurve = config.stentPath || paths[5];
@@ -249,6 +260,9 @@
     context.shadowBlur = 0;
     context.restore();
 
+    let guidedParticles = 0;
+    context.save();
+    context.globalCompositeOperation = 'lighter';
     particles.forEach((particle) => {
       const t = (particle.phase + flowClock * particle.speed) % 1;
       if (t < particle.previousT) spawnBurst(pointOnCurve(paths[particle.path], 1), particle);
@@ -268,13 +282,14 @@
       const middleY = middle.y + wanderY * .78;
       const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
       const squeezeInfluence = manipulation.squeeze * Math.max(0, 1 - squeezeDistance / Math.max(90, width * .19));
+      if (squeezeInfluence > .08) guidedParticles += 1;
       const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .34;
       const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .34;
       context.beginPath();
       context.moveTo(tailX, tailY);
       context.quadraticCurveTo(middleX, middleY, compressedX, compressedY);
-      context.strokeStyle = `rgba(255,32,38,${particle.alpha * (.52 + pulse * .42)})`;
-      context.lineWidth = particle.size;
+      context.strokeStyle = `rgba(255,28,55,${Math.min(1, particle.alpha * (.95 + pulse * .72))})`;
+      context.lineWidth = particle.size * (1.45 + pulse * .55 + squeezeInfluence * 1.4);
       context.lineCap = 'round';
       context.stroke();
       if (particle.path % 4 === 0) {
@@ -286,8 +301,10 @@
         context.stroke();
       }
     });
+    context.restore();
+    if (manipulation.active && guidedParticles) score += guidedParticles * dt * (config.gameGain || 1);
+    scoreReadout.textContent = String(Math.floor(score)).padStart(4, '0').slice(-4);
 
-    const dt = deltaTime * .001;
     context.save();
     context.globalCompositeOperation = 'lighter';
     for (let index = burstParticles.length - 1; index >= 0; index -= 1) {
