@@ -30,6 +30,7 @@ if [[ ! -f "$source_html" ]]; then
 fi
 
 cp "$source_html" "$DEPLOY_DIR/$DEPLOY_HTML"
+node scripts/inject-home-mouse.mjs "$DEPLOY_DIR/$DEPLOY_HTML"
 
 for route in contact books; do
   mkdir -p "$DEPLOY_DIR/$route"
