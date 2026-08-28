@@ -45,21 +45,24 @@
     size: .45 + (index % 7) * .12,
     alpha: .18 + (index % 11) * .034,
     strand: 1.4 + (index % 9) * .34,
+    flock: (index % 13) - 6,
+    wing: index % 5 === 0,
+    cold: index % 7 === 0,
     previousT: ((index * 0.61803398875) % 1),
   }));
   const burstParticles = [];
   const spawnBurst = (point, source) => {
-    const shardCount = 5 + (source.path % 4);
+    const shardCount = 12 + (source.path % 5) * 3;
     for (let shard = 0; shard < shardCount; shard += 1) {
       const angle = (shard / shardCount) * Math.PI * 2 + source.phase * 7.3;
-      const force = 18 + ((source.path * 13 + shard * 17) % 31);
+      const force = 26 + ((source.path * 13 + shard * 17) % 48);
       burstParticles.push({
         x: point.x,
         y: point.y,
-        vx: Math.cos(angle) * force + 14,
-        vy: Math.sin(angle) * force,
+        vx: Math.cos(angle) * force + 42,
+        vy: Math.sin(angle) * force * .72,
         age: 0,
-        life: .42 + ((source.path + shard) % 5) * .055,
+        life: .5 + ((source.path + shard) % 7) * .05,
         size: .55 + (shard % 3) * .32,
         warm: shard % 4 === 0,
       });
@@ -272,9 +275,15 @@
       const trail = (.012 + particle.strand * .0035) * (.82 + pulse * .35);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - trail));
       const middle = pointOnCurve(paths[particle.path], Math.max(0, t - trail * .48));
-      const turbulence = 2.2 + (particle.path % 4) * 1.05;
-      const wanderX = Math.sin(time * .0011 + particle.phase * 31 + particle.path) * turbulence;
-      const wanderY = Math.cos(time * .00135 + particle.phase * 23 - particle.path) * turbulence * .72;
+      const turbulence = 2.6 + (particle.path % 4) * 1.12;
+      const flockWave = Math.sin(time * .0024 + t * 54 + particle.flock * .47);
+      const flockSpread = (config.flockSpread || 7.5) * (particle.flock / 6);
+      const ahead = pointOnCurve(paths[particle.path], Math.min(.999, t + .003));
+      const tangentLength = Math.max(1, Math.hypot(ahead.x - point.x, ahead.y - point.y));
+      const normalX = -(ahead.y - point.y) / tangentLength;
+      const normalY = (ahead.x - point.x) / tangentLength;
+      const wanderX = Math.sin(time * .0011 + particle.phase * 31 + particle.path) * turbulence + normalX * (flockSpread + flockWave * 2.4);
+      const wanderY = Math.cos(time * .00135 + particle.phase * 23 - particle.path) * turbulence * .72 + normalY * (flockSpread + flockWave * 2.4);
       const flowX = point.x + wanderX;
       const flowY = point.y + wanderY;
       const tailX = tail.x + wanderX * .58;
@@ -289,10 +298,25 @@
       context.beginPath();
       context.moveTo(tailX, tailY);
       context.quadraticCurveTo(middleX, middleY, compressedX, compressedY);
-      context.strokeStyle = `rgba(255,28,55,${Math.min(1, particle.alpha * (.95 + pulse * .72))})`;
+      context.strokeStyle = particle.cold
+        ? `rgba(80,207,255,${Math.min(1, particle.alpha * (.74 + pulse * .62))})`
+        : `rgba(255,28,55,${Math.min(1, particle.alpha * (.95 + pulse * .72))})`;
       context.lineWidth = particle.size * (1.45 + pulse * .55 + squeezeInfluence * 1.4);
       context.lineCap = 'round';
       context.stroke();
+      if (particle.wing) {
+        const fin = (config.finStrength || 5.8) * (.55 + pulse * .45) * Math.sin(time * .004 + particle.phase * 43);
+        const rootX = middleX * .38 + compressedX * .62;
+        const rootY = middleY * .38 + compressedY * .62;
+        context.beginPath();
+        context.moveTo(rootX - normalX * fin, rootY - normalY * fin);
+        context.quadraticCurveTo(compressedX, compressedY, rootX + normalX * fin, rootY + normalY * fin);
+        context.strokeStyle = particle.cold
+          ? `rgba(157,239,255,${particle.alpha * .72})`
+          : `rgba(255,114,132,${particle.alpha * .66})`;
+        context.lineWidth = Math.max(.45, particle.size * .5);
+        context.stroke();
+      }
       if (particle.path % 4 === 0) {
         context.beginPath();
         context.moveTo(middleX, middleY);
