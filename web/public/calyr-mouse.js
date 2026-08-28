@@ -20,18 +20,12 @@
   const context = canvas.getContext('2d', { alpha: true })
   if (!context) return
 
-  const pointCount = 184
-  const points = Array.from({ length: pointCount }, (_, index) => {
-    const angle = (index / pointCount) * Math.PI * 2
-    const band = ((index * 37) % 19) / 19
-    return { angle, radius: 0.24 + band * 0.21, phase: band * Math.PI * 2, accent: index % 23 === 0 }
-  })
   const pointer = { x: 0.5, y: 0.5, active: false }
-  let frame = 0
+  let cells = []
   let width = 0
   let height = 0
   let pixelRatio = 1
-  let animationFrame = 0
+  let drawPending = false
 
   const resize = () => {
     const rect = canvas.getBoundingClientRect()
@@ -41,6 +35,20 @@
     canvas.width = Math.round(width * pixelRatio)
     canvas.height = Math.round(height * pixelRatio)
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+
+    const radius = width < 769 ? 22 : 30
+    const horizontal = Math.sqrt(3) * radius
+    const vertical = radius * 1.5
+    const fieldWidth = width < 769 ? width : width * 0.58
+    cells = []
+    let row = 0
+    for (let y = -radius; y < height + radius; y += vertical) {
+      const offset = row % 2 ? horizontal / 2 : 0
+      for (let x = -horizontal + offset; x < fieldWidth + horizontal; x += horizontal) {
+        cells.push({ x, y, radius })
+      }
+      row += 1
+    }
   }
 
   const updatePointer = (event) => {
@@ -52,49 +60,78 @@
 
   const draw = () => {
     context.clearRect(0, 0, width, height)
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const time = reducedMotion ? 0 : frame * 0.008
-    const compact = width < 769
-    const centerX = width * (compact ? 0.73 : 0.25)
-    const centerY = height * (compact ? 0.19 : 0.53)
-    const scale = Math.min(width, height)
+    const pointerX = pointer.x * width
+    const pointerY = pointer.y * height
+    const influenceRadius = Math.max(130, Math.min(width, height) * 0.24)
 
-    context.beginPath()
-    context.ellipse(centerX, centerY, scale * 0.39, scale * 0.33, -0.16, 0, Math.PI * 2)
-    context.strokeStyle = 'rgba(255,255,255,.12)'
-    context.lineWidth = 1
-    context.stroke()
-
-    for (const point of points) {
-      const wave = Math.sin(time + point.phase) * 0.018
-      const radius = scale * (point.radius + wave)
-      const angle = point.angle + time * 0.095
-      const x = centerX + Math.cos(angle) * radius
-      const y = centerY + Math.sin(angle) * radius * 0.82
-      const dx = pointer.x * width - x
-      const dy = pointer.y * height - y
+    const deform = (x, y) => {
+      if (!pointer.active) return { x, y, influence: 0 }
+      const dx = x - pointerX
+      const dy = y - pointerY
       const distance = Math.hypot(dx, dy)
-      const influence = pointer.active ? Math.max(0, 1 - distance / (scale * 0.28)) : 0
-      const size = (point.accent ? 1.8 : 0.85) + influence * 2.4
-      context.beginPath()
-      context.arc(x - dx * influence * 0.12, y - dy * influence * 0.12, size, 0, Math.PI * 2)
-      context.fillStyle = point.accent
-        ? `rgba(255,56,209,${0.62 + influence * 0.36})`
-        : `rgba(255,255,255,${0.26 + influence * 0.7})`
-      context.fill()
+      const influence = Math.max(0, 1 - distance / influenceRadius)
+      if (!influence || !distance) return { x, y, influence }
+      const push = influence * influence * 24
+      return {
+        x: x + (dx / distance) * push,
+        y: y + (dy / distance) * push,
+        influence,
+      }
     }
 
-    frame += 1
-    animationFrame = requestAnimationFrame(draw)
+    for (const cell of cells) {
+      const vertices = []
+      let peakInfluence = 0
+      for (let side = 0; side < 6; side += 1) {
+        const angle = Math.PI / 6 + side * Math.PI / 3
+        const vertex = deform(
+          cell.x + Math.cos(angle) * cell.radius,
+          cell.y + Math.sin(angle) * cell.radius,
+        )
+        vertices.push(vertex)
+        peakInfluence = Math.max(peakInfluence, vertex.influence)
+      }
+
+      context.beginPath()
+      context.moveTo(vertices[0].x, vertices[0].y)
+      for (let side = 1; side < vertices.length; side += 1) {
+        context.lineTo(vertices[side].x, vertices[side].y)
+      }
+      context.closePath()
+      context.strokeStyle = `rgba(255,255,255,${0.075 + peakInfluence * 0.42})`
+      context.lineWidth = 0.75 + peakInfluence * 0.9
+      context.stroke()
+
+      for (const vertex of vertices) {
+        context.beginPath()
+        context.arc(vertex.x, vertex.y, 0.7 + vertex.influence * 1.7, 0, Math.PI * 2)
+        context.fillStyle = `rgba(255,255,255,${0.22 + vertex.influence * 0.68})`
+        context.fill()
+      }
+    }
   }
 
-  window.addEventListener('pointermove', updatePointer, { passive: true })
-  document.documentElement.addEventListener('pointerleave', () => { pointer.active = false }, { passive: true })
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) cancelAnimationFrame(animationFrame)
-    else animationFrame = requestAnimationFrame(draw)
-  })
-  new ResizeObserver(resize).observe(canvas)
+  const scheduleDraw = () => {
+    if (drawPending) return
+    drawPending = true
+    requestAnimationFrame(() => {
+      drawPending = false
+      draw()
+    })
+  }
+
+  window.addEventListener('pointermove', (event) => {
+    updatePointer(event)
+    scheduleDraw()
+  }, { passive: true })
+  document.documentElement.addEventListener('pointerleave', () => {
+    pointer.active = false
+    scheduleDraw()
+  }, { passive: true })
+  new ResizeObserver(() => {
+    resize()
+    scheduleDraw()
+  }).observe(canvas)
   resize()
   draw()
 })()
