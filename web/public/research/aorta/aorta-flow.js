@@ -2,6 +2,11 @@
   const visual = document.querySelector('.visual');
   if (!visual || visual.querySelector('.aorta-flow-canvas')) return;
 
+  const imageLayer = document.createElement('div');
+  imageLayer.className = 'aorta-image-layer';
+  imageLayer.setAttribute('aria-hidden', 'true');
+  visual.prepend(imageLayer);
+
   const canvas = document.createElement('canvas');
   canvas.className = 'aorta-flow-canvas';
   canvas.setAttribute('aria-hidden', 'true');
@@ -14,10 +19,12 @@
 
   const style = document.createElement('style');
   style.textContent = `.visual{overflow:hidden;background-size:108% auto!important;transition:background-position .18s ease-out;cursor:crosshair}.aorta-flow-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}.visual .progress{display:none}.aorta-hud{position:absolute;inset:0;z-index:2;pointer-events:none;color:#fff;font:700 9px/1.2 Arial,sans-serif;letter-spacing:.12em;text-shadow:0 1px 4px #000}.aorta-hud:before{content:"";position:absolute;inset:18px;border:1px solid rgba(255,255,255,.22);clip-path:polygon(0 0,18% 0,18% 1px,82% 1px,82% 0,100% 0,100% 28%,calc(100% - 1px) 28%,calc(100% - 1px) 72%,100% 72%,100% 100%,82% 100%,82% calc(100% - 1px),18% calc(100% - 1px),18% 100%,0 100%,0 72%,1px 72%,1px 28%,0 28%)}.aorta-hud-status{position:absolute;top:30px;left:30px;display:flex;align-items:center;gap:9px}.aorta-hud-status i{width:7px;height:7px;border-radius:50%;background:#f10b0b;box-shadow:0 0 12px #f10b0b;animation:aorta-pulse 1.5s ease-in-out infinite}.aorta-hud-readout{position:absolute;top:30px;right:30px;display:flex;gap:18px}.aorta-hud-readout>span{display:grid;gap:5px;color:rgba(255,255,255,.55);font-size:7px}.aorta-hud-readout>span span{color:#fff;font-size:11px}.aorta-hud-reticle{position:absolute;left:50%;top:50%;width:54px;height:54px;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.34);border-radius:50%;transition:left .12s linear,top .12s linear,transform .18s ease}.aorta-hud-reticle:before,.aorta-hud-reticle:after{content:"";position:absolute;background:rgba(255,255,255,.7)}.aorta-hud-reticle:before{left:50%;top:-10px;width:1px;height:74px}.aorta-hud-reticle:after{top:50%;left:-10px;width:74px;height:1px}.aorta-hud-reticle i{position:absolute;inset:8px;border:1px dashed rgba(241,11,11,.8);border-radius:50%;animation:aorta-spin 8s linear infinite}.aorta-hud-reticle b{position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);border-radius:50%;background:#f10b0b;box-shadow:0 0 10px #f10b0b}.visual.is-steering .aorta-hud-reticle{transform:translate(-50%,-50%) scale(.72)}.aorta-hud-axis{position:absolute;right:30px;top:50%;height:120px;width:18px;transform:translateY(-50%);border-left:1px solid rgba(255,255,255,.35)}.aorta-hud-axis span{position:absolute;top:-17px;left:-2px;color:rgba(255,255,255,.6);font-size:7px}.aorta-hud-axis i{position:absolute;left:-3px;top:18px;width:5px;height:72px;background:linear-gradient(#f10b0b,rgba(241,11,11,.08));transform-origin:bottom}.aorta-hud-axis b{position:absolute;left:-5px;top:17px;width:9px;height:1px;background:#fff}.aorta-hud-command{position:absolute;left:30px;bottom:30px;display:grid;gap:6px}.aorta-hud-command strong{color:#fff;font-size:10px}.aorta-hud-command span{color:rgba(255,255,255,.5);font-size:7px}@keyframes aorta-pulse{50%{opacity:.35;transform:scale(.72)}}@keyframes aorta-spin{to{transform:rotate(360deg)}}@media(max-width:700px){.aorta-hud-readout{display:none}.aorta-hud-axis{right:22px}.aorta-hud-command{left:22px;bottom:22px}}@media(prefers-reduced-motion:reduce){.aorta-flow-canvas{display:none}.visual{background-size:cover!important}.aorta-hud *{animation:none!important}}`;
+  style.textContent += `.visual{background-image:none!important;cursor:grab;touch-action:none}.visual.is-steering{cursor:grabbing}.aorta-image-layer{position:absolute;inset:-5%;z-index:0;background:#000 url('./aorta-arch-dark-2026.webp') center/cover no-repeat;transform:translate3d(0,0,0) rotate(0deg) scale(1.04);transform-origin:52% 42%;transition:transform .12s ease-out;will-change:transform}`;
   document.head.append(style);
 
   const context = canvas.getContext('2d', { alpha: true });
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+  const manipulation = { active: false, startX: 0, startY: 0, x: 0, y: 0, rotation: 0, scale: 1.04 };
   const reticle = hud.querySelector('.aorta-hud-reticle');
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
@@ -73,6 +80,14 @@
     reticle.style.top = `${localY * 100}%`;
     velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
+    if (manipulation.active) {
+      const dx = event.clientX - manipulation.startX;
+      const dy = event.clientY - manipulation.startY;
+      manipulation.x = Math.max(-46, Math.min(46, dx * .22));
+      manipulation.y = Math.max(-34, Math.min(34, dy * .18));
+      manipulation.rotation = Math.max(-4.5, Math.min(4.5, dx * .018));
+      manipulation.scale = 1.04 + Math.min(.08, Math.hypot(dx, dy) * .00022);
+    }
   });
   visual.addEventListener('pointerleave', () => {
     pointer.targetX = 0;
@@ -82,13 +97,22 @@
     velocityReadout.textContent = '1.00';
     pressureReadout.textContent = '12.4';
   });
-  visual.addEventListener('pointerdown', () => visual.classList.add('is-steering'));
-  window.addEventListener('pointerup', () => visual.classList.remove('is-steering'));
+  visual.addEventListener('pointerdown', (event) => {
+    manipulation.active = true;
+    manipulation.startX = event.clientX;
+    manipulation.startY = event.clientY;
+    visual.classList.add('is-steering');
+    visual.setPointerCapture?.(event.pointerId);
+  });
+  window.addEventListener('pointerup', () => {
+    manipulation.active = false;
+    visual.classList.remove('is-steering');
+  });
 
   const draw = (time) => {
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
-    visual.style.backgroundPosition = `${50 + pointer.x * 2.4}% ${50 + pointer.y * 1.7}%`;
+    imageLayer.style.transform = `translate3d(${pointer.x * 5 + manipulation.x}px,${pointer.y * 4 + manipulation.y}px,0) rotate(${manipulation.rotation}deg) scale(${manipulation.scale})`;
     context.clearRect(0, 0, width, height);
     context.save();
     context.translate(pointer.x * 5, pointer.y * 4);
@@ -109,14 +133,23 @@
       const t = (particle.phase + time * particle.speed * (1 + pointer.x * .28)) % 1;
       const point = pointOnCurve(paths[particle.path], t);
       const tail = pointOnCurve(paths[particle.path], Math.max(0, t - .018));
+      const turbulence = 4 + (particle.path % 4) * 1.8 + Math.abs(pointer.y) * 7;
+      const wanderX = Math.sin(time * .0011 + particle.phase * 31 + particle.path) * turbulence;
+      const wanderY = Math.cos(time * .00135 + particle.phase * 23 - particle.path) * turbulence * .72;
+      const vortexX = width * (.5 + pointer.x * .5);
+      const vortexY = height * (.5 + pointer.y * .5);
+      const vortexDistance = Math.max(34, Math.hypot(point.x - vortexX, point.y - vortexY));
+      const vortex = manipulation.active ? Math.min(18, 520 / vortexDistance) : Math.min(7, 210 / vortexDistance);
+      const flowX = point.x + wanderX - (point.y - vortexY) / vortexDistance * vortex;
+      const flowY = point.y + wanderY + (point.x - vortexX) / vortexDistance * vortex;
       context.beginPath();
-      context.moveTo(tail.x, tail.y);
-      context.lineTo(point.x, point.y);
+      context.moveTo(tail.x + wanderX * .65, tail.y + wanderY * .65);
+      context.lineTo(flowX, flowY);
       context.strokeStyle = `rgba(255,0,0,${particle.alpha * .48})`;
       context.lineWidth = particle.size * .72;
       context.stroke();
       context.beginPath();
-      context.arc(point.x, point.y, particle.size, 0, Math.PI * 2);
+      context.arc(flowX, flowY, particle.size, 0, Math.PI * 2);
       context.fillStyle = `rgba(255,18,18,${particle.alpha})`;
       context.shadowColor = '#f00';
       context.shadowBlur = particle.size * 2.2;
