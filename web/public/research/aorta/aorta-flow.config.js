@@ -17,7 +17,6 @@ window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
   pulseHz: 1.15,
   gameGain: 1.35,
   flockSpread: 7.5,
-  finStrength: 5.8,
   stentPath: [[0.455,0.105],[0.655,0.035],[0.855,0.235],[0.835,0.625]],
   stentHalfWidth: 29,
   modes: [

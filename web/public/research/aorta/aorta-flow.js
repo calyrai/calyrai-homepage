@@ -44,18 +44,15 @@
   };
   const particles = Array.from({ length: config.particleCount }, (_, index) => {
     const phase = randomFor(index, 1);
-    const cluster = randomFor(index, 2) ** 2;
     return {
       path: Math.min(paths.length - 1, Math.floor(randomFor(index, 3) * paths.length)),
       phase,
       speed: config.baseSpeed * (.68 + randomFor(index, 4) * .82) + randomFor(index, 5) * config.speedStep * 7,
       size: .32 + randomFor(index, 6) * 1.08,
       alpha: .12 + randomFor(index, 7) * .44,
-      strand: .35 + cluster * 4.8,
       flock: randomFor(index, 8) * 2 - 1,
       drift: .45 + randomFor(index, 9) * 1.75,
       frequency: .55 + randomFor(index, 10) * 2.4,
-      wing: randomFor(index, 11) > .76,
       cold: randomFor(index, 12) > .88,
       previousT: phase,
     };
@@ -282,9 +279,6 @@
       if (t < particle.previousT) spawnBurst(pointOnCurve(paths[particle.path], 1), particle);
       particle.previousT = t;
       const point = pointOnCurve(paths[particle.path], t);
-      const trail = (.004 + particle.strand * .0042) * (.75 + pulse * .38);
-      const tail = pointOnCurve(paths[particle.path], Math.max(0, t - trail));
-      const middle = pointOnCurve(paths[particle.path], Math.max(0, t - trail * .48));
       const turbulence = (2.1 + (particle.path % 4) * 1.08) * particle.drift;
       const flockWave = Math.sin(time * .0017 * particle.frequency + t * (31 + particle.frequency * 15) + particle.flock * 9.7);
       const flockSpread = (config.flockSpread || 7.5) * particle.flock;
@@ -296,44 +290,23 @@
       const wanderY = Math.cos(time * .0013 * particle.frequency + particle.phase * 29 - particle.path) * turbulence * .72 + normalY * (flockSpread + flockWave * 3.2 * particle.drift);
       const flowX = point.x + wanderX;
       const flowY = point.y + wanderY;
-      const tailX = tail.x + wanderX * .58;
-      const tailY = tail.y + wanderY * .58;
-      const middleX = middle.x + wanderX * .78;
-      const middleY = middle.y + wanderY * .78;
       const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
       const squeezeInfluence = manipulation.squeeze * Math.max(0, 1 - squeezeDistance / Math.max(90, width * .19));
       if (squeezeInfluence > .08) guidedParticles += 1;
       const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .34;
       const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .34;
+      const particleRadius = particle.size * (.72 + pulse * .42 + squeezeInfluence * .55);
       context.beginPath();
-      context.moveTo(tailX, tailY);
-      context.quadraticCurveTo(middleX, middleY, compressedX, compressedY);
-      context.strokeStyle = particle.cold
+      context.arc(compressedX, compressedY, particleRadius, 0, Math.PI * 2);
+      context.fillStyle = particle.cold
         ? `rgba(80,207,255,${Math.min(1, particle.alpha * (.74 + pulse * .62))})`
         : `rgba(255,28,55,${Math.min(1, particle.alpha * (.95 + pulse * .72))})`;
-      context.lineWidth = particle.size * (1.45 + pulse * .55 + squeezeInfluence * 1.4);
-      context.lineCap = 'round';
-      context.stroke();
-      if (particle.wing) {
-        const fin = (config.finStrength || 5.8) * (.55 + pulse * .45) * Math.sin(time * .004 + particle.phase * 43);
-        const rootX = middleX * .38 + compressedX * .62;
-        const rootY = middleY * .38 + compressedY * .62;
+      context.fill();
+      if (particle.path % 4 === 0 && particle.alpha > .42) {
         context.beginPath();
-        context.moveTo(rootX - normalX * fin, rootY - normalY * fin);
-        context.quadraticCurveTo(compressedX, compressedY, rootX + normalX * fin, rootY + normalY * fin);
-        context.strokeStyle = particle.cold
-          ? `rgba(157,239,255,${particle.alpha * .72})`
-          : `rgba(255,114,132,${particle.alpha * .66})`;
-        context.lineWidth = Math.max(.45, particle.size * .5);
-        context.stroke();
-      }
-      if (particle.path % 4 === 0) {
-        context.beginPath();
-        context.moveTo(middleX, middleY);
-        context.lineTo(compressedX, compressedY);
-        context.strokeStyle = `rgba(255,178,150,${particle.alpha * .36})`;
-        context.lineWidth = particle.size * .42;
-        context.stroke();
+        context.arc(compressedX, compressedY, particleRadius * 2.15, 0, Math.PI * 2);
+        context.fillStyle = `rgba(255,178,150,${particle.alpha * .1})`;
+        context.fill();
       }
     });
     context.restore();
@@ -350,22 +323,11 @@
         continue;
       }
       const fade = 1 - shard.age / shard.life;
-      const previousX = shard.x;
-      const previousY = shard.y;
       shard.vx *= Math.pow(.12, dt);
       shard.vy *= Math.pow(.16, dt);
       shard.vy += 13 * dt;
       shard.x += shard.vx * dt;
       shard.y += shard.vy * dt;
-      context.beginPath();
-      context.moveTo(previousX, previousY);
-      context.lineTo(shard.x, shard.y);
-      context.strokeStyle = shard.warm
-        ? `rgba(255,92,112,${fade * .9})`
-        : `rgba(116,239,255,${fade * .82})`;
-      context.lineWidth = shard.size * (.45 + fade);
-      context.lineCap = 'round';
-      context.stroke();
       context.beginPath();
       context.arc(shard.x, shard.y, shard.size * fade, 0, Math.PI * 2);
       context.fillStyle = shard.warm
