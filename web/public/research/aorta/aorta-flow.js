@@ -36,6 +36,7 @@
   const paths = config.paths;
   const stentCurve = config.stentPath || paths[Math.floor(paths.length / 2)];
   const guideCurve = paths[Math.floor(paths.length / 2)];
+  const vesselHandleT = .69;
   hud.querySelectorAll('[data-aorta-mode]').forEach((button) => {
     button.addEventListener('click', () => {
       modeIndex = Number(button.dataset.aortaMode);
@@ -188,6 +189,20 @@
     }
     return nearest;
   };
+  const nearestVesselPoint = (x, y) => {
+    let nearest = { curve: config.vesselBounds.outer, t: 0, point: pointOnCurve(config.vesselBounds.outer, 0), distance: Infinity };
+    [config.vesselBounds.outer, config.vesselBounds.inner].forEach((curve) => {
+      for (let step = 0; step <= 120; step += 1) {
+        const t = step / 120;
+        const base = pointOnCurve(curve, t);
+        const influence = vesselWeight(t);
+        const point = { x: base.x + vessel.offsetX * influence, y: base.y + vessel.offsetY * influence };
+        const distance = Math.hypot(point.x - x, point.y - y);
+        if (distance < nearest.distance) nearest = { curve, t, point, distance };
+      }
+    });
+    return nearest;
+  };
 
   visual.addEventListener('pointermove', (event) => {
     pointer.active = true;
@@ -202,7 +217,6 @@
     pointer.guideT = guide.t;
     pointer.px = guide.point.x;
     pointer.py = guide.point.y;
-    velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
     if (vessel.active) {
       vessel.offsetX = Math.max(-120, Math.min(120, vessel.baseX + event.clientX - vessel.startX));
@@ -236,9 +250,11 @@
     const rect = visual.getBoundingClientRect();
     const hitX = event.clientX - rect.left;
     const hitY = event.clientY - rect.top;
-    const vesselBase = pointOnCurve(config.vesselBounds.outer, .49);
-    const vesselHandle = { x: vesselBase.x + vessel.offsetX, y: vesselBase.y + vessel.offsetY };
-    if (Math.hypot(hitX - vesselHandle.x, hitY - vesselHandle.y) < 64) {
+    const vesselBase = pointOnCurve(config.vesselBounds.outer, vesselHandleT);
+    const vesselHandleInfluence = vesselWeight(vesselHandleT);
+    const vesselHandle = { x: vesselBase.x + vessel.offsetX * vesselHandleInfluence, y: vesselBase.y + vessel.offsetY * vesselHandleInfluence };
+    const vesselHit = nearestVesselPoint(hitX, hitY);
+    if (Math.hypot(hitX - vesselHandle.x, hitY - vesselHandle.y) < 72 || vesselHit.distance < 28) {
       vessel.active = true;
       vessel.startX = event.clientX;
       vessel.startY = event.clientY;
@@ -298,11 +314,13 @@
     const rebound = .52 * Math.exp(-((heartCycle - .19) ** 2) / .0048);
     const heartPulse = Math.min(1, systole + rebound);
     const pulse = .58 + heartPulse * .42;
+    const speedPulse = .28 + heartPulse * 2.65;
     const mode = config.modes[modeIndex];
     const deltaTime = previousTime ? Math.min(34, time - previousTime) : 16.67;
     const dt = deltaTime * .001;
     previousTime = time;
-    flowClock += deltaTime * pulse;
+    flowClock += deltaTime * speedPulse;
+    velocityReadout.textContent = Math.max(.1, .42 + heartPulse * 1.9 + pointer.targetX * .12).toFixed(2);
     pointer.x += (pointer.targetX - pointer.x) * .055;
     pointer.y += (pointer.targetY - pointer.y) * .055;
     manipulation.squeeze += (manipulation.targetSqueeze - manipulation.squeeze) * (manipulation.active ? .13 : .075);
@@ -348,8 +366,9 @@
     }
 
     if (config.vesselBounds) {
-      const vesselBase = pointOnCurve(config.vesselBounds.outer, .49);
-      const vesselHandle = { x: vesselBase.x + vessel.offsetX, y: vesselBase.y + vessel.offsetY };
+      const vesselBase = pointOnCurve(config.vesselBounds.outer, vesselHandleT);
+      const vesselHandleInfluence = vesselWeight(vesselHandleT);
+      const vesselHandle = { x: vesselBase.x + vessel.offsetX * vesselHandleInfluence, y: vesselBase.y + vessel.offsetY * vesselHandleInfluence };
       context.save();
       context.beginPath();
       context.moveTo(vesselBase.x, vesselBase.y);
@@ -365,6 +384,15 @@
       context.shadowColor = '#ff1939';
       context.shadowBlur = 18;
       context.fill();
+      [.34, .52, .69].forEach((t, index) => {
+        const base = pointOnCurve(config.vesselBounds.outer, t);
+        const influence = vesselWeight(t);
+        const node = { x: base.x + vessel.offsetX * influence, y: base.y + vessel.offsetY * influence };
+        context.beginPath();
+        context.arc(node.x, node.y, index === 2 ? 5.2 : 3.2, 0, Math.PI * 2);
+        context.fillStyle = index === 2 ? 'rgba(255,225,230,.96)' : 'rgba(255,42,67,.82)';
+        context.fill();
+      });
       context.restore();
     }
 
