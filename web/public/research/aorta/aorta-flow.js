@@ -53,6 +53,9 @@
       flock: randomFor(index, 8) * 2 - 1,
       drift: .45 + randomFor(index, 9) * 1.75,
       frequency: .55 + randomFor(index, 10) * 2.4,
+      swarm: Math.floor(randomFor(index, 11) * 17),
+      orbit: randomFor(index, 13) * Math.PI * 2,
+      depth: .45 + randomFor(index, 14) * .85,
       cold: randomFor(index, 12) > .88,
       previousT: phase,
     };
@@ -280,14 +283,18 @@
       particle.previousT = t;
       const point = pointOnCurve(paths[particle.path], t);
       const turbulence = (2.1 + (particle.path % 4) * 1.08) * particle.drift;
+      const swarmClock = time * .00034 + particle.swarm * .83;
+      const swarmBreath = .35 + .65 * (.5 + .5 * Math.sin(swarmClock * 2.3));
       const flockWave = Math.sin(time * .0017 * particle.frequency + t * (31 + particle.frequency * 15) + particle.flock * 9.7);
-      const flockSpread = (config.flockSpread || 7.5) * particle.flock;
+      const flockSpread = (config.flockSpread || 7.5) * particle.flock * swarmBreath;
       const ahead = pointOnCurve(paths[particle.path], Math.min(.999, t + .003));
       const tangentLength = Math.max(1, Math.hypot(ahead.x - point.x, ahead.y - point.y));
       const normalX = -(ahead.y - point.y) / tangentLength;
       const normalY = (ahead.x - point.x) / tangentLength;
-      const wanderX = Math.sin(time * .0011 * particle.frequency + particle.phase * 37 + particle.path) * turbulence + normalX * (flockSpread + flockWave * 3.2 * particle.drift);
-      const wanderY = Math.cos(time * .0013 * particle.frequency + particle.phase * 29 - particle.path) * turbulence * .72 + normalY * (flockSpread + flockWave * 3.2 * particle.drift);
+      const orbit = particle.orbit + time * .0011 * particle.frequency + t * 18;
+      const curl = Math.sin(orbit) * turbulence * (1.2 + swarmBreath);
+      const wanderX = Math.cos(orbit * .73) * turbulence + normalX * (flockSpread + flockWave * 3.2 * particle.drift + curl);
+      const wanderY = Math.sin(orbit * .91) * turbulence * .72 + normalY * (flockSpread + flockWave * 3.2 * particle.drift + curl);
       const flowX = point.x + wanderX;
       const flowY = point.y + wanderY;
       const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
@@ -295,12 +302,13 @@
       if (squeezeInfluence > .08) guidedParticles += 1;
       const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .34;
       const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .34;
-      const particleRadius = particle.size * (.72 + pulse * .42 + squeezeInfluence * .55);
+      const densityWave = .58 + .42 * (.5 + .5 * Math.sin(t * 42 - time * .0032 + particle.swarm));
+      const particleRadius = particle.size * particle.depth * (.58 + pulse * .34 + squeezeInfluence * .55) * densityWave;
       context.beginPath();
       context.arc(compressedX, compressedY, particleRadius, 0, Math.PI * 2);
       context.fillStyle = particle.cold
-        ? `rgba(80,207,255,${Math.min(1, particle.alpha * (.74 + pulse * .62))})`
-        : `rgba(255,28,55,${Math.min(1, particle.alpha * (.95 + pulse * .72))})`;
+        ? `rgba(80,207,255,${Math.min(1, particle.alpha * densityWave * (.74 + pulse * .62))})`
+        : `rgba(255,28,55,${Math.min(1, particle.alpha * densityWave * (.95 + pulse * .72))})`;
       context.fill();
       if (particle.path % 4 === 0 && particle.alpha > .42) {
         context.beginPath();
