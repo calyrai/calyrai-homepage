@@ -24,9 +24,10 @@
 
 
   const context = canvas.getContext('2d', { alpha: true });
-  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, rawX: 0, rawY: 0, px: 0, py: 0, guideT: .5 };
+  const pointer = { active: false, x: 0, y: 0, targetX: 0, targetY: 0, rawX: 0, rawY: 0, px: 0, py: 0, guideT: .5 };
   const manipulation = { active: false, startX: 0, startY: 0, lastX: 0, lastY: 0, x: 0, y: 0, squeeze: 0, targetSqueeze: 0 };
   const arch = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
+  const vessel = { active: false, offsetX: 0, offsetY: 0, startX: 0, startY: 0, baseX: 0, baseY: 0 };
   let modeIndex = 0;
   const velocityReadout = hud.querySelector('[data-flow-velocity]');
   const pressureReadout = hud.querySelector('[data-flow-pressure]');
@@ -141,10 +142,41 @@
   };
 
   const archWeight = (t) => Math.exp(-((t - .46) ** 2) / .052);
+  const vesselWeight = (t) => Math.exp(-((t - .49) ** 2) / .072);
+  const smoothstep = (edge0, edge1, value) => {
+    const x = Math.max(0, Math.min(1, (value - edge0) / (edge1 - edge0)));
+    return x * x * (3 - 2 * x);
+  };
+  const deformedStentPoint = (t) => {
+    const point = pointOnCurve(stentCurve, t);
+    const influence = archWeight(.42 + t * .42);
+    return { x: point.x + arch.offsetX * influence, y: point.y + arch.offsetY * influence };
+  };
   const flowPoint = (curve, t) => {
     const point = pointOnCurve(curve, t);
     const influence = archWeight(t);
-    return { x: point.x + arch.offsetX * influence * .42, y: point.y + arch.offsetY * influence * .42 };
+    const vascularInfluence = vesselWeight(t);
+    const base = {
+      x: point.x + vessel.offsetX * vascularInfluence + arch.offsetX * influence * .42,
+      y: point.y + vessel.offsetY * vascularInfluence + arch.offsetY * influence * .42,
+    };
+    const pathIndex = paths.indexOf(curve);
+    if (pathIndex < 0 || t < .36 || t > .88) return base;
+    const enter = smoothstep(.36, .48, t);
+    const exit = 1 - smoothstep(.76, .88, t);
+    const stentInfluence = enter * exit * .94;
+    const stentT = Math.max(0, Math.min(1, (t - .42) / .42));
+    const centre = deformedStentPoint(stentT);
+    const ahead = deformedStentPoint(Math.min(.999, stentT + .006));
+    const tangentLength = Math.max(1, Math.hypot(ahead.x - centre.x, ahead.y - centre.y));
+    const normalX = -(ahead.y - centre.y) / tangentLength;
+    const normalY = (ahead.x - centre.x) / tangentLength;
+    const laneOffset = (pathIndex - (paths.length - 1) / 2) * 7.2;
+    const target = { x: centre.x + normalX * laneOffset, y: centre.y + normalY * laneOffset };
+    return {
+      x: base.x + (target.x - base.x) * stentInfluence,
+      y: base.y + (target.y - base.y) * stentInfluence,
+    };
   };
   const nearestGuidePoint = (x, y) => {
     let nearest = { t: 0, point: flowPoint(guideCurve, 0), distance: Infinity };
@@ -158,6 +190,7 @@
   };
 
   visual.addEventListener('pointermove', (event) => {
+    pointer.active = true;
     const rect = visual.getBoundingClientRect();
     const localX = (event.clientX - rect.left) / rect.width;
     const localY = (event.clientY - rect.top) / rect.height;
@@ -171,7 +204,11 @@
     pointer.py = guide.point.y;
     velocityReadout.textContent = (1 + pointer.targetX * .28).toFixed(2);
     pressureReadout.textContent = (12.4 + pointer.targetY * 2.8).toFixed(1);
-    if (arch.active) {
+    if (vessel.active) {
+      vessel.offsetX = Math.max(-120, Math.min(120, vessel.baseX + event.clientX - vessel.startX));
+      vessel.offsetY = Math.max(-105, Math.min(105, vessel.baseY + event.clientY - vessel.startY));
+      pressureReadout.textContent = (12.4 + Math.hypot(vessel.offsetX, vessel.offsetY) * .04).toFixed(1);
+    } else if (arch.active) {
       arch.offsetX = Math.max(-110, Math.min(110, arch.baseX + event.clientX - arch.startX));
       arch.offsetY = Math.max(-90, Math.min(90, arch.baseY + event.clientY - arch.startY));
       pressureReadout.textContent = (12.4 + Math.hypot(arch.offsetX, arch.offsetY) * .055).toFixed(1);
@@ -187,6 +224,7 @@
     }
   });
   visual.addEventListener('pointerleave', () => {
+    pointer.active = false;
     pointer.targetX = 0;
     pointer.targetY = 0;
     velocityReadout.textContent = '1.00';
@@ -198,6 +236,18 @@
     const rect = visual.getBoundingClientRect();
     const hitX = event.clientX - rect.left;
     const hitY = event.clientY - rect.top;
+    const vesselBase = pointOnCurve(config.vesselBounds.outer, .49);
+    const vesselHandle = { x: vesselBase.x + vessel.offsetX, y: vesselBase.y + vessel.offsetY };
+    if (Math.hypot(hitX - vesselHandle.x, hitY - vesselHandle.y) < 64) {
+      vessel.active = true;
+      vessel.startX = event.clientX;
+      vessel.startY = event.clientY;
+      vessel.baseX = vessel.offsetX;
+      vessel.baseY = vessel.offsetY;
+      visual.classList.add('is-steering');
+      visual.setPointerCapture?.(event.pointerId);
+      return;
+    }
     if (Math.hypot(hitX - handle.x, hitY - handle.y) < 62) {
       arch.active = true;
       arch.startX = event.clientX;
@@ -218,6 +268,12 @@
     visual.setPointerCapture?.(event.pointerId);
   });
   window.addEventListener('pointerup', () => {
+    if (vessel.active) {
+      vessel.active = false;
+      visual.classList.remove('is-steering');
+      stateReadout.textContent = ui.idleState;
+      return;
+    }
     if (arch.active) {
       arch.active = false;
       visual.classList.remove('is-steering');
@@ -237,7 +293,11 @@
 
   const draw = (time) => {
     const seconds = time * .001;
-    const pulse = .72 + .28 * (.5 + .5 * Math.sin(seconds * Math.PI * 2 * config.pulseHz));
+    const heartCycle = (seconds * config.pulseHz) % 1;
+    const systole = Math.exp(-((heartCycle - .075) ** 2) / .0022);
+    const rebound = .52 * Math.exp(-((heartCycle - .19) ** 2) / .0048);
+    const heartPulse = Math.min(1, systole + rebound);
+    const pulse = .58 + heartPulse * .42;
     const mode = config.modes[modeIndex];
     const deltaTime = previousTime ? Math.min(34, time - previousTime) : 16.67;
     const dt = deltaTime * .001;
@@ -259,6 +319,9 @@
         for (let step = 0; step <= steps; step += 1) {
           const t = reverse ? 1 - step / steps : step / steps;
           const point = pointOnCurve(curve, t);
+          const vascularInfluence = vesselWeight(t);
+          point.x += vessel.offsetX * vascularInfluence;
+          point.y += vessel.offsetY * vascularInfluence;
           if (step === 0) context.moveTo(point.x, point.y);
           else context.lineTo(point.x, point.y);
         }
@@ -281,6 +344,27 @@
         context.lineWidth = index === 0 ? 1.7 : 1.05;
         context.stroke();
       });
+      context.restore();
+    }
+
+    if (config.vesselBounds) {
+      const vesselBase = pointOnCurve(config.vesselBounds.outer, .49);
+      const vesselHandle = { x: vesselBase.x + vessel.offsetX, y: vesselBase.y + vessel.offsetY };
+      context.save();
+      context.beginPath();
+      context.moveTo(vesselBase.x, vesselBase.y);
+      context.lineTo(vesselHandle.x, vesselHandle.y);
+      context.setLineDash([4, 5]);
+      context.strokeStyle = 'rgba(255,45,70,.72)';
+      context.lineWidth = 1;
+      context.stroke();
+      context.setLineDash([]);
+      context.beginPath();
+      context.arc(vesselHandle.x, vesselHandle.y, vessel.active ? 10 : 7, 0, Math.PI * 2);
+      context.fillStyle = vessel.active ? 'rgba(255,225,230,.98)' : 'rgba(255,34,61,.95)';
+      context.shadowColor = '#ff1939';
+      context.shadowBlur = 18;
+      context.fill();
       context.restore();
     }
 
@@ -408,22 +492,22 @@
       const flowY = point.y + wanderY;
       const squeezeDistance = Math.hypot(flowX - pointer.px, flowY - pointer.py);
       const guideInfluence = Math.max(0, 1 - squeezeDistance / Math.max(72, width * .14));
-      const squeezeInfluence = Math.max(manipulation.squeeze, pointer.rawX ? .28 : 0) * guideInfluence;
+      const squeezeInfluence = Math.max(manipulation.squeeze, pointer.active ? .64 : 0) * guideInfluence;
       if (squeezeInfluence > .08) guidedParticles += 1;
       const compressedX = flowX + (pointer.px - flowX) * squeezeInfluence * .26;
       const compressedY = flowY + (pointer.py - flowY) * squeezeInfluence * .26;
       const densityWave = .58 + .42 * (.5 + .5 * Math.sin(t * 42 - time * .0032 + particle.swarm));
-      const particleRadius = particle.size * particle.depth * (.52 + pulse * .3 + squeezeInfluence * .5) * densityWave;
+      const particleRadius = particle.size * particle.depth * (.44 + pulse * .48 + squeezeInfluence * .5) * densityWave;
       const tangentX = (ahead.x - point.x) / tangentLength;
       const tangentY = (ahead.y - point.y) / tangentLength;
       const directionalCurl = flockWave * (.34 + particle.drift * .16) + Math.sin(orbit * 1.37) * .28 + localArchImpact * Math.sin(orbit) * 1.05;
       const directionLength = Math.max(.25, Math.hypot(tangentX + normalX * directionalCurl, tangentY + normalY * directionalCurl));
       const directionX = (tangentX + normalX * directionalCurl) / directionLength;
       const directionY = (tangentY + normalY * directionalCurl) / directionLength;
-      const trailLength = particle.streak * (1 + localArchImpact * 1.65 + squeezeInfluence * .65) * (.72 + densityWave * .55);
+      const trailLength = particle.streak * (1 + localArchImpact * 1.65 + squeezeInfluence * .65) * (.58 + densityWave * .45 + heartPulse * .62);
       const trailX = compressedX - directionX * trailLength;
       const trailY = compressedY - directionY * trailLength;
-      const alpha = Math.min(1, particle.alpha * densityWave * (.62 + pulse * .48));
+      const alpha = Math.min(1, particle.alpha * densityWave * (.46 + pulse * .5 + heartPulse * .42));
       context.beginPath();
       context.moveTo(trailX, trailY);
       context.lineTo(compressedX, compressedY);

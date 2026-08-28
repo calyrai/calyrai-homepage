@@ -6,8 +6,8 @@ window.CALYR_AORTA_FLOW_CONFIG = Object.freeze({
     idleState: "FOLLOW THE ARCH",
     activeState: "COMPRESSING",
     lockedState: "FLOW LOCKED",
-    instruction: "MOVE · GUIDE FLOW / DRAG CYAN NODE · BEND STENT",
-    releaseInstruction: "STENT CURVATURE CHANGES VELOCITY + TURBULENCE",
+    instruction: "MOVE · ATTRACT FLOW / DRAG CYAN STENT / DRAG RED AORTA",
+    releaseInstruction: "ARCH + STENT GEOMETRY CHANGE THE PULSATILE FLOW",
     modelLabel: "HYPOTHETICAL STENT · RESEARCH MODEL"
   }),
   particleCount: 1320,
