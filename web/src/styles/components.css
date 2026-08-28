@@ -1798,11 +1798,11 @@ body.search-open { overflow: hidden; }
 @media (max-width: 600px) {
   .hamburger {
     top: max(3.85rem, calc(env(safe-area-inset-top) + 3.85rem));
-    left: max(1.75rem, calc(env(safe-area-inset-left) + 1.75rem));
+    left: max(3rem, calc(env(safe-area-inset-left) + 3rem));
   }
 
   .nav-brand-rail {
-    left: max(4.9rem, calc(env(safe-area-inset-left) + 4.9rem));
+    left: max(6.15rem, calc(env(safe-area-inset-left) + 6.15rem));
   }
 }
 
@@ -1910,7 +1910,7 @@ body.search-open { overflow: hidden; }
 @media (max-width: 520px) {
   .nav-brand-rail {
     top: max(3.85rem, calc(env(safe-area-inset-top) + 3.85rem));
-    left: max(4.9rem, calc(env(safe-area-inset-left) + 4.9rem));
+    left: max(6.15rem, calc(env(safe-area-inset-left) + 6.15rem));
   }
 
   .nav-brand-panel {
