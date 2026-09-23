@@ -1,0 +1,50 @@
+{
+  "calyr_a_predict_test_decide": "CALYR.aí | Predict. Test. Decide.",
+  "01": "01",
+  "sc_ent_f_c_a_for_eng_neered_systems": "· SCÍENTÍFÍC AÍ FOR ENGÍNEERED SYSTEMS",
+  "calyr_a": "calyr.a",
+  "punctuation": "í",
+  "predict_the_outcome_test_what_matters": "Predict the outcome. Test what matters",
+  "punctuation_84": ".",
+  "start_with_a_real_problem_prove_the_model_locally_scale_simu": "Start with a real problem. Prove the model locally. Scale simulations and training on VSC-5. Pythia turns the results into fast predictions with explicit uncertainty. Our Oracles identify what to simulate, measure or design next. Validate against independent evidence. Put the model to work in an app.",
+  "our_next_step_generate_simulation_datasets_train_larger_scie": "Our next step: generate simulation datasets, train larger scientific surrogate models and validate their predictions. These workloads can run on VSC-5.",
+  "aorta": "AORTA",
+  "test_the_intervention_predict_the_flow": "Test the intervention. Predict the flow.",
+  "02": "02",
+  "nanopart_cles": "NANOPARTÍCLES",
+  "design_the_structure_predict_the_function": "Design the structure. Predict the function.",
+  "03": "03",
+  "nanob_ophys_cs": "NANOBÍOPHYSÍCS",
+  "find_the_mechanism_guide_the_design": "Find the mechanism. Guide the design.",
+  "04": "04",
+  "pythia_doe": "Pythia / DOE",
+  "make_the_next_experiment_count": "Make the next experiment count.",
+  "05": "05",
+  "mpressum": "ÍMPRESSUM",
+  "rupert_gl_sn_g_founder_and_respons_ble_for_content_v_enna_au": "Rupert Glísníg · Founder and responsíble for content · Víenna, Austría.",
+  "news": "NEWS",
+  "we_have_applied_for": "We have applied for",
+  "eurohpc_access": "EuroHPC access",
+  "for_additional_training_capacity": "for additional training capacity.",
+  "math": {
+    "label": "THE MODEL BEHIND THE DECISION",
+    "items": [
+      {
+        "title": "01 / SIMULATE",
+        "formula": "y = f(x)",
+        "text": "x describes the design and operating conditions. A physics simulation gives the response y."
+      },
+      {
+        "title": "02 / LEARN",
+        "formula": "ŷ = f̂(x; θ)",
+        "text": "Train a surrogate on simulation and experimental data. Predict new responses, then check error and uncertainty."
+      },
+      {
+        "title": "03 / SELECT",
+        "formula": "xₙₑₓₜ = arg maxₓ a(x)",
+        "text": "Rank the next simulation or experiment with a score a(x): expected information, design improvement and cost."
+      }
+    ]
+  },
+  "research_navigation_label": "Research areas"
+}
