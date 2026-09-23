@@ -13,9 +13,9 @@ AI-assisted CFD / DPD framework for branched aortic stent-graft optimization.
 
 ## Objective
 
-Develop and validate an AI-assisted CFD / DPD platform for patient-specific hemodynamics and thromboembolism prediction in branched aortic stent-grafts.
+We want to turn patient-specific aortic models into an interactive research tool. Change vessel geometry, blood flow or stent-graft design and explore how the predicted flow responds.
 
-Reduce complications. Optimize design. Improve clinical outcomes.
+We will use detailed simulations on VSC-5 to train fast surrogate models, then test their predictions against independent simulations and measurements. The aim: compare designs, expose uncertainty and identify what needs testing next.
 
 ## Core assets
 
