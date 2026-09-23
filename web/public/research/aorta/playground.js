@@ -87,10 +87,10 @@ function init() {
     handles.inflow.setAttribute('transform', `translate(210,${440 - (state.inflow - 40) / 120 * 65})`);
     document.getElementById('speed').innerHTML = `${state.relativeSpeed.toFixed(2)}<span>×</span>`;
     document.getElementById('explanation').textContent = state.narrowing > 0
-      ? `${Math.round(state.narrowing)}% local narrowing makes the particles accelerate through the smaller section. At your chosen inflow and diameter, average speed there is ${state.relativeSpeed.toFixed(2)} times the starting value.`
+      ? `${Math.round(state.narrowing)}% narrower diameter. Local speed: ${state.relativeSpeed.toFixed(2)} times the starting value. Same flow through a smaller opening.`
       : state.diameter !== 100 || state.inflow !== 100
-        ? `A wider vessel slows the flow; a higher inflow speeds it up. With these settings, average speed is ${state.relativeSpeed.toFixed(2)} times the starting value.`
-        : 'Try narrowing the vessel. At the same inflow, particles move faster through the smaller section.';
+        ? `Speed: ${state.relativeSpeed.toFixed(2)} times the starting value. More inflow speeds it up. More space slows it down.`
+        : 'Pull NARROW inward. Keep inflow fixed. Watch the flow accelerate.';
     drawParticles();
   }
   function tick(time) {
@@ -127,10 +127,10 @@ function init() {
   });
   let drag = null;
   const descriptions = {
-    arch: 'Lift or lower the arch. The particles follow its new shape.',
-    diameter: 'Pull the wall outward to widen the vessel. The flow slows down.',
-    narrowing: 'Push inward to squeeze the vessel. Watch the local flow speed up.',
-    inflow: 'Pull upward to drive more flow through the vessel.'
+    arch: 'Lift the arch. Lower it. The flow follows.',
+    diameter: 'Widen the vessel. At fixed inflow, speed drops.',
+    narrowing: 'Narrow the opening. At fixed inflow, local speed rises.',
+    inflow: 'Pull upward. Increase inflow. Speed rises.'
   };
   for (const [kind, handle] of Object.entries(handles)) {
     handle.addEventListener('pointerdown', event => {
