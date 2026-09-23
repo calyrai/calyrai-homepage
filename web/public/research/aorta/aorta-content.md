@@ -9,7 +9,7 @@ status: In development
 
 Endovascular Aortic Flow and Thromboembolism Exploration
 
-AI-assisted CFD / DPD framework for branched aortic stent-graft optimization.
+Test the intervention. Predict the flow.
 
 ## Objective
 
