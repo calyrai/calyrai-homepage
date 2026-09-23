@@ -1,16 +1,41 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Change vessel shape and inflow in CALYR's interactive aortic flow playground."><title>Aorta / Flow Lab · CALYR</title><link rel="stylesheet" href="./playground.css"><script type="module" src="./playground.js"></script></head>
-<body><main><nav class="top" aria-label="Site"><a href="/">CALYR.AI</a><span>RESEARCH / 01</span><a href="/#research-title">All research</a></nav>
-<header><p class="eyebrow">AORTA / INTERACTIVE EXPERIMENT</p><h1>SHAPE<br>THE <span>FLOW.</span></h1><p class="deck">Pull the wall.<br>Change the flow.</p></header>
-<section class="lab" aria-label="Interactive vessel experiment"><div class="stage"><div class="stage-bar"><span><i></i> FLOW FIELD / LIVE</span><div class="stage-actions"><button id="beat" type="button">Tap a rhythm</button><button id="pause" type="button" aria-pressed="false">Pause</button><button id="reset" type="button">Reset</button></div></div>
-<svg id="vessel" viewBox="0 0 640 500" role="group" aria-labelledby="vessel-title vessel-desc"><title id="vessel-title">Flow through a simplified aortic arch</title><desc id="vessel-desc">Particles travel from the left inlet through the arch to the right outlet. Drag the four marked points to change shape and flow. Each point also responds to up and down keys.</desc><defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#242424" stroke-width=".5"/></pattern></defs><rect width="640" height="500" fill="url(#grid)"/><path id="baseline" fill="none" stroke="#aaa" stroke-dasharray="5 7" stroke-width="1" opacity=".6"/><path id="tube" d="M180 440 C130 10 500 10 460 440 L400 440 C450 100 190 100 240 440 Z" fill="#102d30" stroke="#86e5e2" stroke-width="1.5"/><path id="centerline" fill="none" stroke="#416d70" stroke-dasharray="2 9"/><g id="particles" fill="#d9ffff" aria-hidden="true"></g><g id="handles">
-<g id="arch-handle" class="handle" role="button" tabindex="0" aria-label="Reshape the arch. Drag vertically or use up and down keys."><circle class="hit" r="24"/><circle class="grip" r="9"/><text y="-30" text-anchor="middle">01 / ARCH</text></g>
-<g id="diameter-handle" class="handle" role="button" tabindex="0" aria-label="Change vessel diameter. Drag the wall or use up and down keys."><circle class="hit" r="24"/><circle class="grip" r="9"/><text x="-25" y="4" text-anchor="end">02 / DIAMETER</text></g>
-<g id="narrowing-handle" class="handle" role="button" tabindex="0" aria-label="Narrow the vessel. Drag inward or use up and down keys."><circle class="hit" r="24"/><circle class="grip" r="9"/><text x="25" y="4">03 / NARROW</text></g>
-<g id="inflow-handle" class="handle" role="button" tabindex="0" aria-label="Change inflow. Drag upward to increase or use up and down keys."><circle class="hit" r="24"/><circle class="grip" r="11"/><text x="-28" y="5" text-anchor="end">04 / INFLOW</text></g>
-</g><text x="430" y="480" text-anchor="middle">OUTLET</text></svg>
-<div class="stage-note">Drag the orange points. Touch or mouse.<br>Brighter particles move faster. Dashed outline: starting shape.</div></div>
-<aside class="controls"><p class="eyebrow">DIRECT MANIPULATION</p><h2>DRAG.<br>WATCH.</h2><p class="control-intro">Drag a point. The flow responds.</p><dl class="readouts"><div><dt>01 / Arch height</dt><dd id="arch-value">100%</dd></div><div><dt>02 / Vessel diameter</dt><dd id="diameter-value">100%</dd></div><div><dt>03 / Local narrowing</dt><dd id="narrowing-value">0%</dd></div><div><dt>04 / Inflow</dt><dd id="inflow-value">100%</dd></div><div><dt>Pulse rhythm</dt><dd id="pulse-value">70 / min</dd></div></dl><p class="gesture-help" id="gesture-help" role="status">Pull NARROW into the vessel. Smaller opening. Faster flow.</p><p class="hint">Tap a rhythm at least three times to set the pulse. Keyboard: focus a point, then use up or down.</p><button id="compare" type="button" aria-pressed="true">Hide starting shape</button></aside>
-<div class="feedback"><div><span>SPEED AT THE NARROWEST POINT</span><strong id="speed">1.00<span>×</span></strong><small>Cycle average / starting state = 1×</small></div><p id="explanation" role="status">Try narrowing the vessel. At the same inflow, particles move faster through the smaller section.</p></div></section>
-<p class="model-note">ILLUSTRATIVE MODEL / Speed follows <a href="https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/mass-flow-rate/">conservation of flow</a>. This is not patient-specific CFD: pressure, turbulence and clinical risk are not calculated. Particle motion is slowed for visibility.</p><noscript><p>Enable JavaScript to use the interactive experiment.</p></noscript>
-<section class="learn"><div><p class="eyebrow">BEHIND THE EXPERIMENT</p><h2>THE MODEL.<br>THE RESEARCH.</h2><p>AFLOWTEX-Endo studies aortic flow and stent-graft design. The programme connects patient anatomy, fluid simulation and particle models. Validation is part of the research.</p></div><nav aria-label="Further Aorta research"><a href="/research/platforms/aflowtex/index.html">01 / AFLOWTEX research platform</a><a href="/research/platforms/pythia/index.html">02 / Pythia predictive models</a><a href="/research/methods/oracling/index.html">03 / Experiment selection and validation</a><a href="mailto:hello@calyr.ai">04 / Discuss the research</a></nav></section><footer><a href="/">CALYR / CODE-BASED SCIENTIFIC MODELS</a><span>RESEARCH IN DEVELOPMENT</span></footer></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f4f1">
+  <title>AFLOWTEX-ENDO · Endovascular Aortic Flow</title>
+  <link rel="preload" as="image" href="./aorta-arch-dark-2026.webp" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="./aorta.css">
+  <link rel="stylesheet" href="./aorta-hud.css">
+  <link rel="stylesheet" href="./aorta-modes.css">
+  <link rel="stylesheet" href="./aorta-sticky.css">
+  <link rel="stylesheet" href="/research/deep-links.css">
+</head>
+<body>
+  <div class="page">
+  <main data-aorta-content aria-live="polite"></main>
+
+  <nav class="deep-links" aria-label="Deeper Aorta research">
+    <a href="/research/platforms/aflowtex/index.html"><small>01 · PLATFORM</small><strong>AFLOWTEX</strong><span>Patient-specific medical-flow intelligence.</span></a>
+    <a href="/research/platforms/pythia/index.html"><small>02 · SURROGATE</small><strong>Pythia</strong><span>Prediction, uncertainty and applicability.</span></a>
+    <a href="/research/methods/oracling/index.html"><small>03 · DECISION</small><strong>Oracling</strong><span>Design selection and validation gates.</span></a>
+    <a href="http://localhost:3001/"><small>04 · PRIVATE</small><strong>Research Journal</strong><span>Aorta programme, evidence and next actions.</span></a>
+  </nav>
+
+  <footer class="footer">
+    <div class="brand"><span class="mark"></span><span>AFLOWTEX-ENDO<br><small>RESEARCH PLATFORM</small></span></div>
+    <div class="meta">COLLABORATION<br>ACADEMIA / CLINICAL / INDUSTRY</div>
+    <div class="meta">COMPUTE<br>VSC-5 / ASC HPC</div>
+    <div class="meta">METHODS<br>CFD · DPD · SURROGATES · UQ</div>
+    <div class="meta">STATUS<br>IN DEVELOPMENT</div>
+    <div class="dots"><i></i><i></i><i></i></div>
+  </footer>
+  </div>
+
+  <script src="/research/aorta/aorta-flow.config.js"></script>
+  <script src="/research/aorta/aorta-content.js"></script>
+  <script src="/research/aorta/aorta-flow.js"></script>
+  <script src="/calyr-home.js"></script>
+</body>
+</html>
