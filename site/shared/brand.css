@@ -1,0 +1,36 @@
+/* Common CALYR / LITHÍOS layout contract. Brand content stays in each site. */
+:root{color-scheme:dark;--brand-bg:#050505;--brand-text:#f5f5f5;--brand-muted:#bdbdbd;--brand-accent:#ff20dc;--brand-glow:#ff20dc70}
+html{scroll-behavior:smooth}body{margin:0;background:var(--brand-bg);color:var(--brand-text);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.fs-site{max-width:1440px;margin:auto;padding:0 24px}
+.fs-header{grid-template-columns:auto 1fr auto;gap:30px;border-bottom:1px solid #ffffff30}
+.fs-brand{font-size:30px;letter-spacing:-.065em}.fs-brand-mark,.fs-brand-meta{display:none}.fs-nav{justify-content:center;flex-wrap:wrap;gap:24px}
+.fs-hero{padding:72px 0 88px}.fs-hero h1{font-weight:600;font-size:clamp(48px,6.8vw,96px);max-width:1100px}.fs-hero-bottom{align-items:start;flex-direction:column;gap:24px}.fs-hero-bottom p{max-width:850px}.fs-section{padding:72px 0;border-top:1px solid #ffffff30}.fs-section-heading{grid-template-columns:1fr 2fr}
+.fs-section-heading h2{font-size:clamp(34px,4.5vw,64px)}.fs-brand-wordmark{display:block;font-size:clamp(76px,11vw,156px);font-weight:650;letter-spacing:-.085em;line-height:1;margin:0 0 40px}.fs-brand-wordmark em{font-style:normal;color:var(--brand-accent);text-shadow:0 0 24px var(--brand-glow)}
+.platform-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px}.platform-grid article{border-top:1px solid #ffffff40;padding:24px 0}.platform-grid h3{margin:18px 0;font-size:26px}.platform-grid p{color:var(--brand-muted);line-height:1.6}.platform-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px}.platform-links a{display:block;border-top:1px solid #ffffff40;padding:24px 0}.platform-links strong{display:block;font-size:24px;margin:10px 0}.platform-links small{display:block;line-height:1.5;color:var(--brand-muted)}.platform-links a:hover strong{color:var(--brand-accent)}.platform-boundary{margin-top:32px!important;max-width:850px;line-height:1.6;color:var(--brand-muted)}.fs-text-link{border-bottom:1px solid #aaa;padding-bottom:8px}.platform-footer{border-top:1px solid #ffffff40;padding:32px 0;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px}.platform-footer a{text-decoration:underline}.studio-details{border-top:1px solid #ffffff40;padding:32px 0}.studio-details>summary{font-size:24px;cursor:pointer}.studio-details .fs-section{border:0}
+@media(max-width:900px){.fs-header{grid-template-columns:auto 1fr}.fs-header-contact{justify-self:end}.fs-nav{grid-column:1/-1;grid-row:2;justify-content:flex-start;padding-bottom:20px}.fs-menu-button{display:none}.fs-nav{display:flex}.fs-section-heading{grid-template-columns:1fr;gap:20px}.platform-grid{grid-template-columns:1fr}.fs-hero{padding:48px 0 64px}}
+@media(max-width:600px){.fs-site{padding:0 20px}.fs-header{min-height:90px;gap:16px}.fs-nav{gap:16px;font-size:12px}.fs-section{padding:48px 0}.platform-links{grid-template-columns:1fr}.fs-brand-wordmark{font-size:clamp(60px,16vw,96px)}.fs-hero-bottom p{font-size:19px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.fs-header-contact{display:flex}.fs-menu-button{display:none}
+
+.shared-brand{font-size:42px;font-weight:650;letter-spacing:-.065em;color:#fff!important;line-height:1;text-shadow:none}
+
+/* Both landing pages share the same opening composition and vertical rhythm. */
+.fs-landing-hero{display:grid;grid-template-rows:auto auto auto 1fr;min-height:740px}
+.fs-landing-hero .fs-hero-bottom{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:24px;min-height:168px}
+.fs-landing-hero .fs-hero-bottom p{max-width:790px}
+.fs-landing-hero .fs-text-link{margin-top:0}
+@media(max-width:900px){.fs-landing-hero{min-height:0}.fs-landing-hero .fs-hero-bottom{min-height:0}}
+@media(max-width:600px){.fs-landing-hero h1{font-size:clamp(30px,9.5vw,48px)}}
+
+.platform-links .application-secondary{grid-column:1/-1;margin-top:24px;color:var(--brand-muted)}.platform-links .application-secondary summary{font-size:16px;font-weight:400;cursor:pointer}.platform-links .application-secondary p{max-width:760px}.platform-links .application-secondary a{display:inline;border-top:0;padding:0 0 4px;font-size:14px}
+
+[data-brand="lithios"]{--brand-accent:#00f5ff;--brand-glow:#00f5ff70;--fs-accent:#00f5ff}
+
+/* Keep the glow on the accented letter, including the compact header mark. */
+.shared-brand em{font-style:normal;color:var(--brand-accent);text-shadow:0 0 8px var(--brand-glow),0 0 24px var(--brand-glow)}
+[data-brand="lithios"] .fs-brand-wordmark em{text-shadow:0 0 8px var(--brand-glow),0 0 24px var(--brand-glow),0 0 48px var(--brand-glow)}
+
+/* Neon tube treatment: bright letter core and a broad, saturated halo. */
+.fs-brand-wordmark em,.shared-brand em{text-shadow:0 0 5px var(--brand-accent),0 0 16px var(--brand-accent),0 0 36px var(--brand-glow),0 0 60px var(--brand-glow)}
+[data-brand="lithios"] .fs-brand-wordmark em{text-shadow:0 0 5px var(--brand-accent),0 0 16px var(--brand-accent),0 0 36px var(--brand-glow),0 0 60px var(--brand-glow)}
+.shared-brand{gap:0}

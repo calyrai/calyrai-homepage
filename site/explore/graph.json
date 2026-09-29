@@ -1,0 +1,6963 @@
+{
+  "nodes": [
+    {
+      "id": "calyr",
+      "brand": "calyrai",
+      "title": "calyr",
+      "summary": "Scientific models. Better decisions.",
+      "body": "Physical models, surrogate predictions and experimental evidence support decisions with explicit uncertainty.",
+      "url": "https://calyr.ai/#platform",
+      "related": [
+        "lithios",
+        "aorta",
+        "brix",
+        "biophysics",
+        "journal"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "lithios",
+      "brand": "lithios",
+      "title": "líthíos",
+      "summary": "Make function take form.",
+      "body": "Explore functions, materials and mechanisms. Compare physical models and test prototypes against the intended use.",
+      "url": "https://lithios.ai/#platform",
+      "related": [
+        "calyr",
+        "colemak",
+        "glisnig",
+        "journal"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "aorta",
+      "brand": "calyrai",
+      "title": "aorta / aflowtex",
+      "summary": "Test the intervention. Predict the flow.",
+      "body": "Patient-specific flow modelling and intervention design. Explore vessel geometry and compare predicted flow; independent simulations and measurements are needed to validate predictions.",
+      "url": "https://calyr.ai/research/aorta/",
+      "related": [
+        "calyr",
+        "brix",
+        "journal"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "brix",
+      "brand": "calyrai",
+      "title": "bríx",
+      "summary": "Explore geometry. Compare designs.",
+      "body": "Geometry, simulation and surrogate models support engineering design exploration. Model predictions must be checked for each intended use.",
+      "url": "https://calyr.ai/research/platforms/brix/",
+      "related": [
+        "calyr",
+        "aorta",
+        "lithios"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "biophysics",
+      "brand": "calyrai",
+      "title": "biophysical inference",
+      "summary": "Find the mechanism. Guide the experiment.",
+      "body": "SPR, SAXS and nanoparticle models connect measurements to competing physical explanations. The Research Journal retains the evidence and open questions.",
+      "url": "https://calyr.ai/research/nanobiophysics/",
+      "related": [
+        "calyr",
+        "spr",
+        "trajectories",
+        "journal"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "trajectories",
+      "brand": "calyrai",
+      "title": "trajectoríes",
+      "summary": "Explore paths through a process.",
+      "body": "A research direction for computing and optimising individual purification trajectories. LNP / mRNA nanoparticles are the first application; other particle systems may follow.",
+      "url": "https://calyr.ai/research/separation/",
+      "related": [
+        "calyr",
+        "biophysics",
+        "journal"
+      ],
+      "secondary": true
+    },
+    {
+      "id": "journal",
+      "brand": "calyrai",
+      "title": "Research Journal",
+      "summary": "Follow the evidence.",
+      "body": "The master record of research, evidence and decisions. The SPR Research Series belongs within this journal.",
+      "url": "https://calyr.ai/research-journal/",
+      "related": [
+        "calyr",
+        "lithios",
+        "spr",
+        "biophysics"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "spr",
+      "brand": "calyrai",
+      "title": "SPR Research Series",
+      "summary": "Compare mechanisms against measurements.",
+      "body": "A research series within the Research Journal, connecting sensorgrams, models and the next informative experiment.",
+      "url": "https://calyr.ai/spr/",
+      "related": [
+        "journal",
+        "biophysics"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "colemak",
+      "brand": "lithios",
+      "title": "Colémak",
+      "summary": "Control shaped around the hand.",
+      "body": "An interaction prototype and hardware concept. Explore text entry, navigation and control through key layout, reach and measured input performance.",
+      "url": "https://lithios.ai/#colemak",
+      "related": [
+        "lithios",
+        "glisnig",
+        "journal"
+      ],
+      "secondary": false
+    },
+    {
+      "id": "glisnig",
+      "brand": "lithios",
+      "title": "ǵlísníg",
+      "summary": "Eyewear shaped around the person.",
+      "body": "A modular eyewear concept coupling personal fit, optics, materials and mechanism. Test fit, retention, repeatability and whole-object balance.",
+      "url": "https://lithios.ai/#glisnig-g",
+      "related": [
+        "lithios",
+        "colemak",
+        "brix"
+      ],
+      "secondary": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "calyr",
+      "target": "lithios"
+    },
+    {
+      "source": "calyr",
+      "target": "aorta"
+    },
+    {
+      "source": "calyr",
+      "target": "brix"
+    },
+    {
+      "source": "calyr",
+      "target": "biophysics"
+    },
+    {
+      "source": "calyr",
+      "target": "journal"
+    },
+    {
+      "source": "lithios",
+      "target": "calyr"
+    },
+    {
+      "source": "lithios",
+      "target": "colemak"
+    },
+    {
+      "source": "lithios",
+      "target": "glisnig"
+    },
+    {
+      "source": "lithios",
+      "target": "journal"
+    },
+    {
+      "source": "aorta",
+      "target": "calyr"
+    },
+    {
+      "source": "aorta",
+      "target": "brix"
+    },
+    {
+      "source": "aorta",
+      "target": "journal"
+    },
+    {
+      "source": "brix",
+      "target": "calyr"
+    },
+    {
+      "source": "brix",
+      "target": "aorta"
+    },
+    {
+      "source": "brix",
+      "target": "lithios"
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr"
+    },
+    {
+      "source": "biophysics",
+      "target": "spr"
+    },
+    {
+      "source": "biophysics",
+      "target": "trajectories"
+    },
+    {
+      "source": "biophysics",
+      "target": "journal"
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr"
+    },
+    {
+      "source": "trajectories",
+      "target": "biophysics"
+    },
+    {
+      "source": "trajectories",
+      "target": "journal"
+    },
+    {
+      "source": "journal",
+      "target": "calyr"
+    },
+    {
+      "source": "journal",
+      "target": "lithios"
+    },
+    {
+      "source": "journal",
+      "target": "spr"
+    },
+    {
+      "source": "journal",
+      "target": "biophysics"
+    },
+    {
+      "source": "spr",
+      "target": "journal"
+    },
+    {
+      "source": "spr",
+      "target": "biophysics"
+    },
+    {
+      "source": "colemak",
+      "target": "lithios"
+    },
+    {
+      "source": "colemak",
+      "target": "glisnig"
+    },
+    {
+      "source": "colemak",
+      "target": "journal"
+    },
+    {
+      "source": "glisnig",
+      "target": "lithios"
+    },
+    {
+      "source": "glisnig",
+      "target": "colemak"
+    },
+    {
+      "source": "glisnig",
+      "target": "brix"
+    }
+  ],
+  "resources": [
+    {
+      "id": "aorta",
+      "url": "https://calyr.ai/research/aorta/",
+      "kind": "page"
+    },
+    {
+      "id": "url:7316b364676d9811",
+      "url": "https://calyr.ai/aorta/",
+      "kind": "page"
+    },
+    {
+      "id": "biophysics",
+      "url": "https://calyr.ai/research/nanobiophysics/",
+      "kind": "page"
+    },
+    {
+      "id": "url:e07a44cdc5e0d588",
+      "url": "https://calyr.ai/biophys/",
+      "kind": "page"
+    },
+    {
+      "id": "url:629c72800165a82e",
+      "url": "https://calyr.ai/books/#main",
+      "kind": "page"
+    },
+    {
+      "id": "url:24bcab8d79bbbdbf",
+      "url": "https://calyr.ai/books/",
+      "kind": "page"
+    },
+    {
+      "id": "calyr-home",
+      "url": "https://calyr.ai/",
+      "kind": "page"
+    },
+    {
+      "id": "calyr",
+      "url": "https://calyr.ai/#platform",
+      "kind": "page"
+    },
+    {
+      "id": "calyr-method",
+      "url": "https://calyr.ai/#method",
+      "kind": "page"
+    },
+    {
+      "id": "calyr-applications",
+      "url": "https://calyr.ai/#applications",
+      "kind": "page"
+    },
+    {
+      "id": "network",
+      "url": "https://calyr.ai/explore/",
+      "kind": "page"
+    },
+    {
+      "id": "journal",
+      "url": "https://calyr.ai/research-journal/",
+      "kind": "page"
+    },
+    {
+      "id": "lithios-home",
+      "url": "https://lithios.ai/",
+      "kind": "page"
+    },
+    {
+      "id": "calyr-contact",
+      "url": "mailto:hello@calyr.ai",
+      "kind": "external"
+    },
+    {
+      "id": "scientific-ai-whitepaper",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/",
+      "kind": "page"
+    },
+    {
+      "id": "url:9e1801afba636487",
+      "url": "https://calyr.ai/explore/calyr/",
+      "kind": "page"
+    },
+    {
+      "id": "url:cf4fd77ec12f604d",
+      "url": "https://calyr.ai/explore/lithios/",
+      "kind": "page"
+    },
+    {
+      "id": "url:b6e2c140b14f060d",
+      "url": "https://calyr.ai/explore/aorta/",
+      "kind": "page"
+    },
+    {
+      "id": "url:5373c45c90d059a9",
+      "url": "https://calyr.ai/explore/brix/",
+      "kind": "page"
+    },
+    {
+      "id": "url:e5b50b5f6dede554",
+      "url": "https://calyr.ai/explore/biophysics/",
+      "kind": "page"
+    },
+    {
+      "id": "url:7b26db837e89d1a2",
+      "url": "https://calyr.ai/explore/journal/",
+      "kind": "page"
+    },
+    {
+      "id": "url:b9863a805e79244c",
+      "url": "https://calyr.ai/explore/spr/",
+      "kind": "page"
+    },
+    {
+      "id": "url:c192c4f32ff44cde",
+      "url": "https://calyr.ai/explore/trajectories/",
+      "kind": "page"
+    },
+    {
+      "id": "brix",
+      "url": "https://calyr.ai/research/platforms/brix/",
+      "kind": "page"
+    },
+    {
+      "id": "url:15ae66f7664a07eb",
+      "url": "https://calyr.ai/brix/",
+      "kind": "page"
+    },
+    {
+      "id": "url:231b0b529820566d",
+      "url": "https://calyr.ai/company/expertise/",
+      "kind": "page"
+    },
+    {
+      "id": "url:a2ba01d5e6cc2667",
+      "url": "https://calyr.ai/research/platforms/pythia/",
+      "kind": "page"
+    },
+    {
+      "id": "url:6a4f5d90d9f7a39a",
+      "url": "https://calyr.ai/research/whitepapers/#wp-saxs",
+      "kind": "page"
+    },
+    {
+      "id": "url:6d332b50c413a0f3",
+      "url": "https://calyr.ai/research/platforms/aflowtex/",
+      "kind": "page"
+    },
+    {
+      "id": "url:d8c881916ac1be18",
+      "url": "https://calyr.ai/research/platforms/lithos/",
+      "kind": "page"
+    },
+    {
+      "id": "url:0a31f1089e44a980",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/literature/",
+      "kind": "page"
+    },
+    {
+      "id": "url:31275db876669d42",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/",
+      "kind": "page"
+    },
+    {
+      "id": "url:b871b973ec105819",
+      "url": "https://www.linkedin.com/in/rupert-tscheliessnig",
+      "kind": "external"
+    },
+    {
+      "id": "url:52442527d689c91e",
+      "url": "mailto:rupert.tscheliessnig@calyr.ai",
+      "kind": "external"
+    },
+    {
+      "id": "url:7d3bba8ccf3d821b",
+      "url": "https://calyr.ai/contact/#main",
+      "kind": "page"
+    },
+    {
+      "id": "url:7e9395d16ca1a018",
+      "url": "https://calyr.ai/contact/",
+      "kind": "page"
+    },
+    {
+      "id": "url:7a9dd0c65c532d90",
+      "url": "https://calyr.ai/content/",
+      "kind": "page"
+    },
+    {
+      "id": "url:e11ae470c72e90a0",
+      "url": "https://calyr.ai/explore/glisnig/",
+      "kind": "page"
+    },
+    {
+      "id": "url:e9802a84fa1b8046",
+      "url": "https://calyr.ai/explore/colemak/",
+      "kind": "page"
+    },
+    {
+      "id": "colemak",
+      "url": "https://lithios.ai/#colemak",
+      "kind": "page"
+    },
+    {
+      "id": "glisnig",
+      "url": "https://lithios.ai/#glisnig-g",
+      "kind": "page"
+    },
+    {
+      "id": "lithios",
+      "url": "https://lithios.ai/#platform",
+      "kind": "page"
+    },
+    {
+      "id": "spr",
+      "url": "https://calyr.ai/spr/",
+      "kind": "page"
+    },
+    {
+      "id": "trajectories",
+      "url": "https://calyr.ai/research/separation/",
+      "kind": "page"
+    },
+    {
+      "id": "url:338d7889c4cfa9fe",
+      "url": "https://calyr.ai/#main",
+      "kind": "page"
+    },
+    {
+      "id": "url:c8894a4cc884c505",
+      "url": "https://calyr.ai/live-calyr.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:98527770b4ee2d19",
+      "url": "https://github.com/calyrai/CALYR-Research/search?q=",
+      "kind": "external"
+    },
+    {
+      "id": "url:90009da1837b22e5",
+      "url": "https://dash.cloudflare.com/",
+      "kind": "external"
+    },
+    {
+      "id": "url:718bd7b2d967a835",
+      "url": "https://calyr.ai/research/nanoparticles/",
+      "kind": "page"
+    },
+    {
+      "id": "url:ddd89bc9fe9af8e8",
+      "url": "https://calyr.ai/research/doe-ppms/",
+      "kind": "page"
+    },
+    {
+      "id": "url:4443df9c90dfd49e",
+      "url": "https://calyr.ai/research/platforms/oracle/",
+      "kind": "page"
+    },
+    {
+      "id": "url:29e9932042067454",
+      "url": "https://calyr.ai/oracle/",
+      "kind": "page"
+    },
+    {
+      "id": "url:017dc815fd8088be",
+      "url": "https://calyr.ai/parvotec/",
+      "kind": "page"
+    },
+    {
+      "id": "url:6bc5942913ff5a1c",
+      "url": "https://parvotec.pages.dev",
+      "kind": "external"
+    },
+    {
+      "id": "url:bbb9d441bbc07349",
+      "url": "mailto:rupert.tscheliess@calyrai.ai",
+      "kind": "external"
+    },
+    {
+      "id": "url:00dbdd108d85de3b",
+      "url": "https://github.com/ruperttscheliessnig",
+      "kind": "external"
+    },
+    {
+      "id": "url:1eb2fe1d423b48c0",
+      "url": "https://calyr.ai/research/platforms/aflowtex/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:eb1ecf0e204d9bf9",
+      "url": "https://calyr.ai/research/platforms/pythia/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:5bf75387ab77f7ee",
+      "url": "https://calyr.ai/research/methods/oracling/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:1198bd64c2d203c9",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:b8522845881b575f",
+      "url": "https://calyr.ai/research/interfaces/",
+      "kind": "page"
+    },
+    {
+      "id": "url:f7fc7fc5fa202c26",
+      "url": "https://calyr.ai/research/methods/",
+      "kind": "page"
+    },
+    {
+      "id": "url:763ad9f279636cf4",
+      "url": "https://calyr.ai/research/methods/oracling/",
+      "kind": "page"
+    },
+    {
+      "id": "url:327891f7de35a18e",
+      "url": "https://calyr.ai/research/swiss-code/",
+      "kind": "page"
+    },
+    {
+      "id": "url:ef5340cb6f5f24d9",
+      "url": "https://ieeexplore.ieee.org/document/545307",
+      "kind": "external"
+    },
+    {
+      "id": "url:f9522dbb198099b3",
+      "url": "https://doi.org/10.1109/TVCG.2009.111",
+      "kind": "external"
+    },
+    {
+      "id": "url:946e8ba6e65206bb",
+      "url": "https://doi.org/10.1109/TVCG.2012.213",
+      "kind": "external"
+    },
+    {
+      "id": "url:dcdd76c81b8aa6e8",
+      "url": "https://doi.org/10.1109/TVCG.2011.185",
+      "kind": "external"
+    },
+    {
+      "id": "url:a1882952ead9eec6",
+      "url": "https://calyr.ai/research/lithos/",
+      "kind": "page"
+    },
+    {
+      "id": "url:826de08b74767540",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/",
+      "kind": "page"
+    },
+    {
+      "id": "url:37c05eceda1cc7b1",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#purpose",
+      "kind": "page"
+    },
+    {
+      "id": "url:919adb27ee526c21",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#system-location",
+      "kind": "page"
+    },
+    {
+      "id": "url:43432c6b13e16190",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#capture-from-safari",
+      "kind": "page"
+    },
+    {
+      "id": "url:e25e14c91c1c1f2f",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#read-and-mark",
+      "kind": "page"
+    },
+    {
+      "id": "url:5c549161eb1fd51d",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#extract-an-evidence-record",
+      "kind": "page"
+    },
+    {
+      "id": "url:825195cd57832734",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#build-text-from-ideas",
+      "kind": "page"
+    },
+    {
+      "id": "url:d19819e4a934fb34",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#api-and-synchronization-boundary",
+      "kind": "page"
+    },
+    {
+      "id": "url:0223728ab45db936",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#validation-gates",
+      "kind": "page"
+    },
+    {
+      "id": "url:ac088c5694e79472",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#output",
+      "kind": "page"
+    },
+    {
+      "id": "url:b9953a46e89e56bd",
+      "url": "https://calyr.ai/research/methods/evidence-reading-workflow/#sources-and-further-reading",
+      "kind": "page"
+    },
+    {
+      "id": "url:aa2f0166395adbeb",
+      "url": "https://www.zotero.org/support/connector",
+      "kind": "external"
+    },
+    {
+      "id": "url:f0027f639a531030",
+      "url": "https://www.zotero.org/support/pdf_reader",
+      "kind": "external"
+    },
+    {
+      "id": "url:ab206f4dead43d4f",
+      "url": "https://www.zotero.org/support/notes",
+      "kind": "external"
+    },
+    {
+      "id": "url:7cdf3b00378a146a",
+      "url": "https://www.zotero.org/support/dev/web_api/v3/",
+      "kind": "external"
+    },
+    {
+      "id": "url:9a0fce3d5cd56cc3",
+      "url": "https://www.zotero.org/support/dev/web_api/v3/fulltext_content",
+      "kind": "external"
+    },
+    {
+      "id": "url:3d41c1543b7b6f1d",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/",
+      "kind": "page"
+    },
+    {
+      "id": "url:1b458aefd6465e7d",
+      "url": "https://calyr.ai/research/methods/oracling/#purpose",
+      "kind": "page"
+    },
+    {
+      "id": "url:7de0077cfb593dcd",
+      "url": "https://calyr.ai/research/methods/oracling/#quick-start-construct-an-oracle",
+      "kind": "page"
+    },
+    {
+      "id": "url:a5c2276d572e4a7d",
+      "url": "https://calyr.ai/research/methods/oracling/#oracle-layers",
+      "kind": "page"
+    },
+    {
+      "id": "url:20ffccd38ea3413c",
+      "url": "https://calyr.ai/research/methods/oracling/#trait-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:ddae7a868e087a6a",
+      "url": "https://calyr.ai/research/methods/oracling/#constraint-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:2632615b471296c6",
+      "url": "https://calyr.ai/research/methods/oracling/#multi-objective-fusion",
+      "kind": "page"
+    },
+    {
+      "id": "url:d6666fa07922ca10",
+      "url": "https://calyr.ai/research/methods/oracling/#diversity-aware-selection",
+      "kind": "page"
+    },
+    {
+      "id": "url:8a0f937815815f38",
+      "url": "https://calyr.ai/research/methods/oracling/#evidence-progression",
+      "kind": "page"
+    },
+    {
+      "id": "url:4704856e71eead4f",
+      "url": "https://calyr.ai/research/methods/oracling/#decision-proposal-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:9ed35ec75920f39c",
+      "url": "https://calyr.ai/research/methods/oracling/#closed-loop-update",
+      "kind": "page"
+    },
+    {
+      "id": "url:7916cedcec97cfa9",
+      "url": "https://calyr.ai/research/methods/oracling/#validation-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:33476cc749d08a20",
+      "url": "https://calyr.ai/research/methods/oracling/#failure-behavior",
+      "kind": "page"
+    },
+    {
+      "id": "url:e80c0819e9d0f23b",
+      "url": "https://calyr.ai/research/methods/oracling/#sources-and-further-reading",
+      "kind": "page"
+    },
+    {
+      "id": "url:1b55b085bbbc5578",
+      "url": "https://doi.org/10.1007/978-3-540-31880-4_13",
+      "kind": "external"
+    },
+    {
+      "id": "url:1a9a9c6742fab449",
+      "url": "https://burrsettles.com/pub/settles.activelearning.pdf",
+      "kind": "external"
+    },
+    {
+      "id": "url:4c505880d828f73a",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#read-this-room-to-do-something",
+      "kind": "page"
+    },
+    {
+      "id": "url:71ee3cc1adf3b51f",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#core-route-90-minutes",
+      "kind": "page"
+    },
+    {
+      "id": "url:de35386db2510cd3",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#shelf-01-calibrated-uncertainty",
+      "kind": "page"
+    },
+    {
+      "id": "url:cb2e35a265483cac",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#shelf-02-constraints-and-feasibility",
+      "kind": "page"
+    },
+    {
+      "id": "url:0e5d89a5757510a7",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#shelf-03-pareto-decisions-not-hidden-scores",
+      "kind": "page"
+    },
+    {
+      "id": "url:d1a9a11dc0817bf6",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#shelf-04-next-experiment-and-model-criticism",
+      "kind": "page"
+    },
+    {
+      "id": "url:b2138fc8ff1c94bb",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#shelf-05-abstention-and-human-review",
+      "kind": "page"
+    },
+    {
+      "id": "url:4222efbb24095d35",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#reading-to-implementation-map",
+      "kind": "page"
+    },
+    {
+      "id": "url:4c4d89faf01ee90e",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#reading-discipline",
+      "kind": "page"
+    },
+    {
+      "id": "url:9aa282d3129ebad5",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#boundaries-that-must-stay-visible",
+      "kind": "page"
+    },
+    {
+      "id": "url:072998ff5085c571",
+      "url": "https://calyr.ai/research/methods/oracling/reading-room/#return-to-the-method",
+      "kind": "page"
+    },
+    {
+      "id": "url:3c51f14e61f1ca81",
+      "url": "https://proceedings.mlr.press/v70/guo17a.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:6524178eb7c8acab",
+      "url": "https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:0e26322a4e392f48",
+      "url": "https://proceedings.mlr.press/v37/hernandez-lobatob15.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:8d4c9581f20e08b2",
+      "url": "https://proceedings.neurips.cc/paper/2020/hash/6fec24eac8f18ed793f5eaad3dd7977c-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:c4ddb16bef3fd69b",
+      "url": "https://papers.nips.cc/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:eb85a5bad51129be",
+      "url": "https://papers.nips.cc/paper_files/paper/2019/hash/5103c3584b063c431bd1268e9b5e76fb-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:1e884228dda3c6ac",
+      "url": "https://papers.nips.cc/paper_files/paper/2020/hash/543e83748234f7cbab21aa0ade66565f-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:c9cef42172cd4955",
+      "url": "https://proceedings.mlr.press/v130/eriksson21a.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:9ba24d4fd7a9ada9",
+      "url": "https://papers.nips.cc/paper_files/paper/2012/hash/05311655a15b75fab86956663e1819cd-Abstract.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:f3756fa3858b6a25",
+      "url": "https://proceedings.mlr.press/v216/foldager23a.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:ae57a63762cf105a",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#purpose",
+      "kind": "page"
+    },
+    {
+      "id": "url:7c61b49f5197b47b",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#quick-start-apply-the-method",
+      "kind": "page"
+    },
+    {
+      "id": "url:0f4e8e2009fb7139",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#literature-and-data-graph",
+      "kind": "page"
+    },
+    {
+      "id": "url:d8b5b2b5e7d734f9",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#how-code-should-reference-this-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:5721c132966c2aed",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#division-of-responsibility",
+      "kind": "page"
+    },
+    {
+      "id": "url:d0eb9d62afbcc400",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#numerical-baseline-before-learned-model",
+      "kind": "page"
+    },
+    {
+      "id": "url:8c3284f40aa26e5a",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#prediction-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:29bcadea501bb8f1",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#applicability-domain",
+      "kind": "page"
+    },
+    {
+      "id": "url:a0a8558e7f67c392",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#saxs-method-map",
+      "kind": "page"
+    },
+    {
+      "id": "url:cc266e3d75679fd3",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#spr-method-map",
+      "kind": "page"
+    },
+    {
+      "id": "url:04c26984d6e42569",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#cryo-em-method-map",
+      "kind": "page"
+    },
+    {
+      "id": "url:a5d2f8b87c8d0bb7",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#numerical-recipes-code-policy",
+      "kind": "page"
+    },
+    {
+      "id": "url:b7b0341032302334",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#validation-contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:7de3f575c0416c61",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#recommended-repository-pattern",
+      "kind": "page"
+    },
+    {
+      "id": "url:a9be21b1dd5f0d15",
+      "url": "https://calyr.ai/research/methods/scientific-ai-numerics/#sources-and-further-reading",
+      "kind": "page"
+    },
+    {
+      "id": "url:20c4064f31cae8ad",
+      "url": "https://calyr.ai/generated/literature.index.json",
+      "kind": "page"
+    },
+    {
+      "id": "url:62d84dcdb9ff5bcc",
+      "url": "https://numerical.recipes/routines/",
+      "kind": "external"
+    },
+    {
+      "id": "url:e2eafabaf497051c",
+      "url": "https://numerical.recipes/",
+      "kind": "external"
+    },
+    {
+      "id": "url:54c20a68e1d705e5",
+      "url": "https://numerical.recipes/book.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:58e7b283a87a8a7b",
+      "url": "https://numerical.recipes/routines/instc.html",
+      "kind": "external"
+    },
+    {
+      "id": "url:8610ee3ae20f27cc",
+      "url": "https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf",
+      "kind": "external"
+    },
+    {
+      "id": "url:5eb413cdb9ed84fc",
+      "url": "https://www.bishopbook.com/",
+      "kind": "external"
+    },
+    {
+      "id": "url:5c344ffc5517f578",
+      "url": "https://link.springer.com/book/10.1007/978-3-031-45468-4",
+      "kind": "external"
+    },
+    {
+      "id": "url:1ff9d274f3c4154c",
+      "url": "https://doi.org/10.1007/978-3-031-45468-4",
+      "kind": "external"
+    },
+    {
+      "id": "url:c062d8626af591da",
+      "url": "https://probml.github.io/book2",
+      "kind": "external"
+    },
+    {
+      "id": "url:3190c3a3e5590cf7",
+      "url": "https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/",
+      "kind": "external"
+    },
+    {
+      "id": "url:ccdac6a79210fcf9",
+      "url": "https://calyr.ai/research/pythia/spr/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:46ba1d94dc3bf60f",
+      "url": "https://calyr.ai/research/pythia/saxs/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:7cd6ae7e6325f714",
+      "url": "https://calyr.ai/research/philosophy/closed-loop-biophysics/index.html",
+      "kind": "page"
+    },
+    {
+      "id": "url:829218397b3bdd90",
+      "url": "https://calyr.ai/research/philosophy/closed-loop-biophysics/",
+      "kind": "page"
+    },
+    {
+      "id": "url:d0142d79ae1e65a9",
+      "url": "https://calyr.ai/philosophy",
+      "kind": "page"
+    },
+    {
+      "id": "url:c1b84218c50469f5",
+      "url": "https://www.frontiersin.org/journals/molecular-biosciences/articles/10.3389/fmolb.2022.800856/full",
+      "kind": "external"
+    },
+    {
+      "id": "url:8da222766adb7bdd",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5453429/",
+      "kind": "external"
+    },
+    {
+      "id": "url:01122e1289d32732",
+      "url": "https://www.ucl.ac.uk/biosciences/sites/biosciences/files/21waudby_jmr.pdf",
+      "kind": "external"
+    },
+    {
+      "id": "url:831bc933f58d3cb6",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10637738/",
+      "kind": "external"
+    },
+    {
+      "id": "url:4094cdaad9956759",
+      "url": "https://www.nature.com/articles/s41467-025-64856-3",
+      "kind": "external"
+    },
+    {
+      "id": "url:86ae16a9094dd052",
+      "url": "https://calyr.ai/research/platforms/core/",
+      "kind": "page"
+    },
+    {
+      "id": "url:5df03d57b6ef4181",
+      "url": "https://calyr.ai/research/platforms/pythia/#question",
+      "kind": "page"
+    },
+    {
+      "id": "url:83a2a54538280b6d",
+      "url": "https://calyr.ai/research/platforms/pythia/#knowledge",
+      "kind": "page"
+    },
+    {
+      "id": "url:3a57127aeaa645ba",
+      "url": "https://calyr.ai/research/platforms/pythia/#methods",
+      "kind": "page"
+    },
+    {
+      "id": "url:60df594cf46c8e16",
+      "url": "https://calyr.ai/research/platforms/pythia/#evidence",
+      "kind": "page"
+    },
+    {
+      "id": "url:70679fa250642039",
+      "url": "https://calyr.ai/research/platforms/pythia/#prediction",
+      "kind": "page"
+    },
+    {
+      "id": "url:62966be8d351dec3",
+      "url": "https://calyr.ai/research/platforms/pythia/#decision",
+      "kind": "page"
+    },
+    {
+      "id": "url:299789816381535f",
+      "url": "https://calyr.ai/research/positioning/",
+      "kind": "page"
+    },
+    {
+      "id": "url:10fed5aceb526c75",
+      "url": "https://calyr.ai/research/publications/",
+      "kind": "page"
+    },
+    {
+      "id": "url:d9a81421c827b5fc",
+      "url": "https://doi.org/10.3390/cryst11091147",
+      "kind": "external"
+    },
+    {
+      "id": "url:e915bc0d7bdead51",
+      "url": "https://doi.org/10.1021/nn102886y",
+      "kind": "external"
+    },
+    {
+      "id": "url:51e8ee570d71b19e",
+      "url": "https://doi.org/10.1021/nn400263j",
+      "kind": "external"
+    },
+    {
+      "id": "url:b664daceec83b611",
+      "url": "https://doi.org/10.1103/PhysRevLett.87.086103",
+      "kind": "external"
+    },
+    {
+      "id": "url:a8a8abb31d3c1cdc",
+      "url": "https://doi.org/10.1128/AEM.04111-14",
+      "kind": "external"
+    },
+    {
+      "id": "url:6d55a1c16a8e40c9",
+      "url": "https://doi.org/10.1016/0927-7757(95)03190-O",
+      "kind": "external"
+    },
+    {
+      "id": "url:0d4396e718d594e4",
+      "url": "https://doi.org/10.1017/S0033583524000106",
+      "kind": "external"
+    },
+    {
+      "id": "url:f2a0305236765e84",
+      "url": "https://patents.google.com/patent/WO2014206735A1/en",
+      "kind": "external"
+    },
+    {
+      "id": "url:ec31b12f2e751563",
+      "url": "https://boku.ac.at/fileadmin/data/H05000/H13000/Techtrans/TechOffers/TO_Porous_hydrophilic_nanomembranes_20160216.pdf",
+      "kind": "external"
+    },
+    {
+      "id": "url:3702d7bc17477b18",
+      "url": "https://calyr.ai/research/pythia/metabolic/",
+      "kind": "page"
+    },
+    {
+      "id": "url:94a39d4f65b912c3",
+      "url": "https://calyr.ai/research/pythia/saxs/",
+      "kind": "page"
+    },
+    {
+      "id": "url:71678ab97d1c29dd",
+      "url": "https://calyr.ai/research/pythia/spr/",
+      "kind": "page"
+    },
+    {
+      "id": "url:2f49248d06afec1f",
+      "url": "https://calyr.ai/research/teaser/",
+      "kind": "page"
+    },
+    {
+      "id": "url:1dcfd210e6fb2239",
+      "url": "https://calyr.ai/research/whitepapers/",
+      "kind": "page"
+    },
+    {
+      "id": "url:fa63b9a1b4520665",
+      "url": "https://calyr.ai/research-biotope/",
+      "kind": "page"
+    },
+    {
+      "id": "url:c52173ea6a78df33",
+      "url": "https://calyr.ai/research-journal/#research-tracks",
+      "kind": "page"
+    },
+    {
+      "id": "url:1ff3f1a438b472bf",
+      "url": "https://calyr.ai/research-journal/#evidence-stream",
+      "kind": "page"
+    },
+    {
+      "id": "url:919b254fec622c78",
+      "url": "https://calyr.ai/research-journal/#model-aware-saxs",
+      "kind": "page"
+    },
+    {
+      "id": "url:43714ae09260d6ed",
+      "url": "https://calyr.ai/spr/#executive",
+      "kind": "page"
+    },
+    {
+      "id": "url:b394ecdc585e768e",
+      "url": "https://calyr.ai/spr/#occupancy",
+      "kind": "page"
+    },
+    {
+      "id": "url:4c8ae1edd76f7d8e",
+      "url": "https://calyr.ai/spr/#stochastic",
+      "kind": "page"
+    },
+    {
+      "id": "url:afbf03faf2bf4bc2",
+      "url": "https://calyr.ai/spr/#kernels",
+      "kind": "page"
+    },
+    {
+      "id": "url:502ab2964ac095b3",
+      "url": "https://calyr.ai/spr/#atlas",
+      "kind": "page"
+    },
+    {
+      "id": "url:4c8cf46e4454d303",
+      "url": "https://calyr.ai/research-journal/#research-operating-system",
+      "kind": "page"
+    },
+    {
+      "id": "url:26e040fe01ea3432",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#shadow-reasoning",
+      "kind": "page"
+    },
+    {
+      "id": "url:7ccf97dec102ccf7",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#governance-gap",
+      "kind": "page"
+    },
+    {
+      "id": "url:38c0010dfe8903be",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#evidence",
+      "kind": "page"
+    },
+    {
+      "id": "url:3357619a651e4cd9",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#evidence-graph",
+      "kind": "page"
+    },
+    {
+      "id": "url:0ca31ddb81accddd",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#surrogates",
+      "kind": "page"
+    },
+    {
+      "id": "url:4cd4048f23d5edc0",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#oracle",
+      "kind": "page"
+    },
+    {
+      "id": "url:f74b28d4f2a2be65",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#verification",
+      "kind": "page"
+    },
+    {
+      "id": "url:9f1f2c87af379b62",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#human",
+      "kind": "page"
+    },
+    {
+      "id": "url:e36aa1228f5fe3c1",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#architecture",
+      "kind": "page"
+    },
+    {
+      "id": "url:38075a03122f7fe5",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#aorta",
+      "kind": "page"
+    },
+    {
+      "id": "url:b6a527230ea53e2c",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#engineering",
+      "kind": "page"
+    },
+    {
+      "id": "url:d87bebf1cc91be04",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#assurance",
+      "kind": "page"
+    },
+    {
+      "id": "url:2a2ce2e66617828a",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#contract",
+      "kind": "page"
+    },
+    {
+      "id": "url:b37d2232a3fe0f80",
+      "url": "https://calyr.ai/whitepapers/scientific-ai-evidence/#calyr",
+      "kind": "page"
+    },
+    {
+      "id": "url:39ca54fd17eff5cc",
+      "url": "https://xensam.com/resources/white-papers/out-of-the-shadows-governing-enterprise-ai-handbook/",
+      "kind": "external"
+    },
+    {
+      "id": "url:acc5ad4063972046",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "kind": "external"
+    },
+    {
+      "id": "url:6b9c978375a917b2",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act",
+      "kind": "external"
+    },
+    {
+      "id": "url:71c6bf63ebcbf1c6",
+      "url": "https://airc.nist.gov/",
+      "kind": "external"
+    },
+    {
+      "id": "url:919ea5c2ea32d2e3",
+      "url": "https://www.nist.gov/artificial-intelligence/ai-research/tevv-athlon-framework-evaluating-ai-systems",
+      "kind": "external"
+    },
+    {
+      "id": "url:1844760601fe8323",
+      "url": "https://www.fda.gov/medical-devices/digital-health-center-excellence/artificial-intelligence-enabled-medical-devices",
+      "kind": "external"
+    }
+  ],
+  "hyperlinks": [
+    {
+      "source": "url:7316b364676d9811",
+      "target": "aorta",
+      "href": "/research/aorta/",
+      "label": "Continue to CALYRAI "
+    },
+    {
+      "source": "url:e07a44cdc5e0d588",
+      "target": "biophysics",
+      "href": "/research/nanobiophysics/",
+      "label": "Continue to CALYRAI "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:629c72800165a82e",
+      "href": "/books/#main",
+      "label": "Skip to content "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Explore the platform "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "Read the scientific AI white paper "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "04 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "05 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "06 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "07 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "01 aorta / aflowtex Patient-specific flow modelling and intervention design. A research and validation domain for the platform. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Geometry, simulation and surrogate models for engineering design exploration. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "03 biophysical inference SPR, SAXS and nanoparticle models connect measurements to competing physical explanations. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "Explore the research "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Research Journal The master record for research, evidence and next decisions, including the SPR Research Series. "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:24bcab8d79bbbdbf",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:15ae66f7664a07eb",
+      "target": "brix",
+      "href": "/research/platforms/brix/",
+      "label": "Continue to CALYRAI "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "CALYR.AI "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:a2ba01d5e6cc2667",
+      "href": "/research/platforms/pythia/",
+      "label": "PYTHIA Interpretable scientific machine learning with calibrated uncertainty and explicit validity limits. "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "brix",
+      "href": "/research/platforms/brix/",
+      "label": "BRIX Schematic workflows that connect evidence, surrogate prediction, engineering choices, and validation. "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:6a4f5d90d9f7a39a",
+      "href": "/research/whitepapers/#wp-saxs",
+      "label": "SAXS surrogate A calibrated surrogate that ranks structural hypotheses against scattering evidence and experimental feedback. "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:6d332b50c413a0f3",
+      "href": "/research/platforms/aflowtex/",
+      "label": "AFLOWTEX Patient-specific vascular modelling that joins geometry, flow simulation, uncertainty, and clinical reasoning. "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:d8c881916ac1be18",
+      "href": "/research/platforms/lithos/",
+      "label": "LITHOS Public encounters that make scientific evidence, models, and uncertainty spatial, visual, and discussable. "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:0a31f1089e44a980",
+      "href": "/research/methods/scientific-ai-numerics/literature/",
+      "label": "Publications literature ↗ "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:31275db876669d42",
+      "href": "/research/methods/oracling/reading-room/",
+      "label": "Oracle reading room ↗ "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:b871b973ec105819",
+      "href": "https://www.linkedin.com/in/rupert-tscheliessnig",
+      "label": "LinkedIn ↗ "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "url:52442527d689c91e",
+      "href": "mailto:rupert.tscheliessnig@calyr.ai",
+      "label": "rupert.tscheliessnig@calyr.ai "
+    },
+    {
+      "source": "url:231b0b529820566d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to CALYR.AI "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:7d3bba8ccf3d821b",
+      "href": "/contact/#main",
+      "label": "Skip to content "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Explore the platform "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "Read the scientific AI white paper "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "04 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "05 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "06 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "07 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "01 aorta / aflowtex Patient-specific flow modelling and intervention design. A research and validation domain for the platform. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Geometry, simulation and surrogate models for engineering design exploration. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "03 biophysical inference SPR, SAXS and nanoparticle models connect measurements to competing physical explanations. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "Explore the research "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Research Journal The master record for research, evidence and next decisions, including the SPR Research Series. "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:7e9395d16ca1a018",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:7a9dd0c65c532d90",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Continue to CALYRAI "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "aorta",
+      "href": "/research/aorta/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "03 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:b6e2c140b14f060d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "biophysics",
+      "href": "/research/nanobiophysics/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "02 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "03 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e5b50b5f6dede554",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "brix",
+      "href": "/research/platforms/brix/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "url:e11ae470c72e90a0",
+      "href": "/explore/glisnig/",
+      "label": "04 ǵlísníg Eyewear shaped around the person. "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:5373c45c90d059a9",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "01 líthíos Make function take form. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "02 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "03 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "04 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "05 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:9e1801afba636487",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "colemak",
+      "href": "https://lithios.ai/#colemak",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "01 líthíos Make function take form. "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "02 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "url:e11ae470c72e90a0",
+      "href": "/explore/glisnig/",
+      "label": "03 ǵlísníg Eyewear shaped around the person. "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e9802a84fa1b8046",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "glisnig",
+      "href": "https://lithios.ai/#glisnig-g",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "01 líthíos Make function take form. "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "url:e9802a84fa1b8046",
+      "href": "/explore/colemak/",
+      "label": "03 Colémak Control shaped around the hand. "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:e11ae470c72e90a0",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "network",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "network",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "network",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "network",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "network",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "network",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "network",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "network",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "network",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "network",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "calyr "
+    },
+    {
+      "source": "network",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "líthíos "
+    },
+    {
+      "source": "network",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "aorta / aflowtex "
+    },
+    {
+      "source": "network",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "bríx "
+    },
+    {
+      "source": "network",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "biophysical inference "
+    },
+    {
+      "source": "network",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "trajectoríes "
+    },
+    {
+      "source": "network",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "Research Journal "
+    },
+    {
+      "source": "network",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "SPR Research Series "
+    },
+    {
+      "source": "network",
+      "target": "url:e9802a84fa1b8046",
+      "href": "/explore/colemak/",
+      "label": "Colémak "
+    },
+    {
+      "source": "network",
+      "target": "url:e11ae470c72e90a0",
+      "href": "/explore/glisnig/",
+      "label": "ǵlísníg "
+    },
+    {
+      "source": "network",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "network",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "network",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "network",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "04 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "network",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "05 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "network",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "06 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "network",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "07 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "network",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "network",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "network",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "network",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "04 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "05 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:e9802a84fa1b8046",
+      "href": "/explore/colemak/",
+      "label": "06 Colémak Control shaped around the hand. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:7b26db837e89d1a2",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "lithios",
+      "href": "https://lithios.ai/#platform",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "03 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "url:e9802a84fa1b8046",
+      "href": "/explore/colemak/",
+      "label": "04 Colémak Control shaped around the hand. "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "url:e11ae470c72e90a0",
+      "href": "/explore/glisnig/",
+      "label": "05 ǵlísníg Eyewear shaped around the person. "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:cf4fd77ec12f604d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "spr",
+      "href": "/spr/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "01 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "02 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:b9863a805e79244c",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Research & design network "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "trajectories",
+      "href": "/research/separation/",
+      "label": "Open the work "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "02 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "03 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:c192c4f32ff44cde",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:338d7889c4cfa9fe",
+      "href": "/#main",
+      "label": "Skip to content "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "calyr-home",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "calyr-home",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "calyr-home",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Explore the platform "
+    },
+    {
+      "source": "calyr-home",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "Read the scientific AI white paper "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "04 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "05 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "06 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "07 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "01 aorta / aflowtex Patient-specific flow modelling and intervention design. A research and validation domain for the platform. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Geometry, simulation and surrogate models for engineering design exploration. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "03 biophysical inference SPR, SAXS and nanoparticle models connect measurements to competing physical explanations. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "Explore the research "
+    },
+    {
+      "source": "calyr-home",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS "
+    },
+    {
+      "source": "calyr-home",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Research Journal The master record for research, evidence and next decisions, including the SPR Research Series. "
+    },
+    {
+      "source": "calyr-home",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "calyr-home",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LITHÍOS / Physical products "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "url:98527770b4ee2d19",
+      "href": "https://github.com/calyrai/CALYR-Research/search?q=",
+      "label": "GÍT ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "url:90009da1837b22e5",
+      "href": "https://dash.cloudflare.com/",
+      "label": "CLOUDFLARE ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "aorta",
+      "href": "/research/aorta/",
+      "label": "01 AORTA Patíent-specífíc flow, wall mechanícs and devíces. ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "url:718bd7b2d967a835",
+      "href": "/research/nanoparticles/",
+      "label": "02 NANOPARTÍCLES SBPA: structure, propertíes, bíoactívíty, corona, transport and uptake. ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "biophysics",
+      "href": "/research/nanobiophysics/",
+      "label": "03 NANOBÍOPHYSÍCS Ínterfaces, bíndíng, assembly and membrane ínteractíon. ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "url:ddd89bc9fe9af8e8",
+      "href": "/research/doe-ppms/",
+      "label": "04 Pythia / DOE Desígned experíments, parameter spaces and predíctíve process models. ↗ "
+    },
+    {
+      "source": "url:c8894a4cc884c505",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "05 ÍMPRESSUM Rupert Glísníg · Founder and responsíble for content · Víenna, Austría. ↗ "
+    },
+    {
+      "source": "url:29e9932042067454",
+      "target": "url:4443df9c90dfd49e",
+      "href": "/research/platforms/oracle/",
+      "label": "Continue to CALYRAI "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "url:6bc5942913ff5a1c",
+      "href": "https://parvotec.pages.dev",
+      "label": "Private evidence "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to executive overview "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "White paper 01 "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "url:bbb9d441bbc07349",
+      "href": "mailto:rupert.tscheliess@calyrai.ai",
+      "label": "Kontakt "
+    },
+    {
+      "source": "url:017dc815fd8088be",
+      "target": "url:00dbdd108d85de3b",
+      "href": "https://github.com/ruperttscheliessnig",
+      "label": "github.com/ruperttscheliessnig "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "aorta",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "aorta",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "aorta",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "aorta",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "aorta",
+      "target": "url:1eb2fe1d423b48c0",
+      "href": "/research/platforms/aflowtex/index.html",
+      "label": "01 · PLATFORM AFLOWTEX Patient-specific medical-flow intelligence. "
+    },
+    {
+      "source": "aorta",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "02 · SURROGATE Pythia Prediction, uncertainty and applicability. "
+    },
+    {
+      "source": "aorta",
+      "target": "url:5bf75387ab77f7ee",
+      "href": "/research/methods/oracling/index.html",
+      "label": "03 · DECISION Oracling Design selection and validation gates. "
+    },
+    {
+      "source": "aorta",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "04 · RESEARCH Research Journal Public research, methods and evidence. "
+    },
+    {
+      "source": "aorta",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "aorta",
+      "target": "url:5373c45c90d059a9",
+      "href": "/explore/brix/",
+      "label": "02 bríx Explore geometry. Compare designs. "
+    },
+    {
+      "source": "aorta",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "03 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "aorta",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "01 · PLATFORM Pythia Predictive process models and calibrated uncertainty. "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "url:1198bd64c2d203c9",
+      "href": "/research/methods/scientific-ai-numerics/index.html",
+      "label": "02 · METHOD Scientific AI Numerical and validation contracts. "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "url:5bf75387ab77f7ee",
+      "href": "/research/methods/oracling/index.html",
+      "label": "03 · DECISION Oracling Information value, constraints and next-run selection. "
+    },
+    {
+      "source": "url:ddd89bc9fe9af8e8",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Research overview "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "Open Oracling contract → "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:d8c881916ac1be18",
+      "href": "/research/platforms/lithos/",
+      "label": "Open LITHOS → "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:ef5340cb6f5f24d9",
+      "href": "https://ieeexplore.ieee.org/document/545307",
+      "label": "The Eyes Have It — task by data type taxonomy "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:f9522dbb198099b3",
+      "href": "https://doi.org/10.1109/TVCG.2009.111",
+      "label": "A Nested Model for Visualization Design and Validation "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:946e8ba6e65206bb",
+      "href": "https://doi.org/10.1109/TVCG.2012.213",
+      "label": "Design Study Methodology "
+    },
+    {
+      "source": "url:b8522845881b575f",
+      "target": "url:dcdd76c81b8aa6e8",
+      "href": "https://doi.org/10.1109/TVCG.2011.185",
+      "label": "D3 — Data-Driven Documents "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-home",
+      "href": "/",
+      "label": " calyr.aí engineering in action  "
+    },
+    {
+      "source": "url:a1882952ead9eec6",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "back to homepage "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:37c05eceda1cc7b1",
+      "href": "/research/methods/evidence-reading-workflow/#purpose",
+      "label": "Purpose "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:919adb27ee526c21",
+      "href": "/research/methods/evidence-reading-workflow/#system-location",
+      "label": "System location "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:43432c6b13e16190",
+      "href": "/research/methods/evidence-reading-workflow/#capture-from-safari",
+      "label": "Capture from Safari "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:e25e14c91c1c1f2f",
+      "href": "/research/methods/evidence-reading-workflow/#read-and-mark",
+      "label": "Read and mark "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:5c549161eb1fd51d",
+      "href": "/research/methods/evidence-reading-workflow/#extract-an-evidence-record",
+      "label": "Extract an evidence record "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:825195cd57832734",
+      "href": "/research/methods/evidence-reading-workflow/#build-text-from-ideas",
+      "label": "Build text from ideas "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:d19819e4a934fb34",
+      "href": "/research/methods/evidence-reading-workflow/#api-and-synchronization-boundary",
+      "label": "API and synchronization boundary "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:0223728ab45db936",
+      "href": "/research/methods/evidence-reading-workflow/#validation-gates",
+      "label": "Validation gates "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:ac088c5694e79472",
+      "href": "/research/methods/evidence-reading-workflow/#output",
+      "label": "Output "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:b9953a46e89e56bd",
+      "href": "/research/methods/evidence-reading-workflow/#sources-and-further-reading",
+      "label": "Sources and further reading "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:aa2f0166395adbeb",
+      "href": "https://www.zotero.org/support/connector",
+      "label": "Zotero Connector "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:f0027f639a531030",
+      "href": "https://www.zotero.org/support/pdf_reader",
+      "label": "Zotero PDF reader and annotations "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:ab206f4dead43d4f",
+      "href": "https://www.zotero.org/support/notes",
+      "label": "Zotero notes "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:7cdf3b00378a146a",
+      "href": "https://www.zotero.org/support/dev/web_api/v3/",
+      "label": "Zotero Web API v3 "
+    },
+    {
+      "source": "url:826de08b74767540",
+      "target": "url:9a0fce3d5cd56cc3",
+      "href": "https://www.zotero.org/support/dev/web_api/v3/fulltext_content",
+      "label": "Zotero Web API full-text access "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:826de08b74767540",
+      "href": "/research/methods/evidence-reading-workflow/",
+      "label": "Open method contract → "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:3d41c1543b7b6f1d",
+      "href": "/research/methods/scientific-ai-numerics/",
+      "label": "Open method contract → "
+    },
+    {
+      "source": "url:f7fc7fc5fa202c26",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "Open method contract → "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:1b458aefd6465e7d",
+      "href": "/research/methods/oracling/#purpose",
+      "label": "Purpose "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:7de0077cfb593dcd",
+      "href": "/research/methods/oracling/#quick-start-construct-an-oracle",
+      "label": "Quick start: construct an Oracle "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:a5c2276d572e4a7d",
+      "href": "/research/methods/oracling/#oracle-layers",
+      "label": "Oracle layers "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:20ffccd38ea3413c",
+      "href": "/research/methods/oracling/#trait-contract",
+      "label": "Trait contract "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:ddae7a868e087a6a",
+      "href": "/research/methods/oracling/#constraint-contract",
+      "label": "Constraint contract "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:2632615b471296c6",
+      "href": "/research/methods/oracling/#multi-objective-fusion",
+      "label": "Multi-objective fusion "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:d6666fa07922ca10",
+      "href": "/research/methods/oracling/#diversity-aware-selection",
+      "label": "Diversity-aware selection "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:8a0f937815815f38",
+      "href": "/research/methods/oracling/#evidence-progression",
+      "label": "Evidence progression "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:4704856e71eead4f",
+      "href": "/research/methods/oracling/#decision-proposal-contract",
+      "label": "Decision proposal contract "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:9ed35ec75920f39c",
+      "href": "/research/methods/oracling/#closed-loop-update",
+      "label": "Closed-loop update "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:7916cedcec97cfa9",
+      "href": "/research/methods/oracling/#validation-contract",
+      "label": "Validation contract "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:33476cc749d08a20",
+      "href": "/research/methods/oracling/#failure-behavior",
+      "label": "Failure behavior "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:e80c0819e9d0f23b",
+      "href": "/research/methods/oracling/#sources-and-further-reading",
+      "label": "Sources and further reading "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:31275db876669d42",
+      "href": "/research/methods/oracling/reading-room/",
+      "label": "Enter the Oracling Reading Room "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:3d41c1543b7b6f1d",
+      "href": "/research/methods/scientific-ai-numerics/",
+      "label": "Scientific AI and Numerical Methods "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:1b55b085bbbc5578",
+      "href": "https://doi.org/10.1007/978-3-540-31880-4_13",
+      "label": "Expected hypervolume improvement "
+    },
+    {
+      "source": "url:763ad9f279636cf4",
+      "target": "url:1a9a9c6742fab449",
+      "href": "https://burrsettles.com/pub/settles.activelearning.pdf",
+      "label": "Active learning literature overview "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:4c505880d828f73a",
+      "href": "/research/methods/oracling/reading-room/#read-this-room-to-do-something",
+      "label": "Read this room to do something "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:71ee3cc1adf3b51f",
+      "href": "/research/methods/oracling/reading-room/#core-route-90-minutes",
+      "label": "Core route: 90 minutes "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:de35386db2510cd3",
+      "href": "/research/methods/oracling/reading-room/#shelf-01-calibrated-uncertainty",
+      "label": "Shelf 01 — calibrated uncertainty "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:cb2e35a265483cac",
+      "href": "/research/methods/oracling/reading-room/#shelf-02-constraints-and-feasibility",
+      "label": "Shelf 02 — constraints and feasibility "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:0e5d89a5757510a7",
+      "href": "/research/methods/oracling/reading-room/#shelf-03-pareto-decisions-not-hidden-scores",
+      "label": "Shelf 03 — Pareto decisions, not hidden scores "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:d1a9a11dc0817bf6",
+      "href": "/research/methods/oracling/reading-room/#shelf-04-next-experiment-and-model-criticism",
+      "label": "Shelf 04 — next experiment and model criticism "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:b2138fc8ff1c94bb",
+      "href": "/research/methods/oracling/reading-room/#shelf-05-abstention-and-human-review",
+      "label": "Shelf 05 — abstention and human review "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:4222efbb24095d35",
+      "href": "/research/methods/oracling/reading-room/#reading-to-implementation-map",
+      "label": "Reading-to-implementation map "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:4c4d89faf01ee90e",
+      "href": "/research/methods/oracling/reading-room/#reading-discipline",
+      "label": "Reading discipline "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:9aa282d3129ebad5",
+      "href": "/research/methods/oracling/reading-room/#boundaries-that-must-stay-visible",
+      "label": "Boundaries that must stay visible "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:072998ff5085c571",
+      "href": "/research/methods/oracling/reading-room/#return-to-the-method",
+      "label": "Return to the method "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:3c51f14e61f1ca81",
+      "href": "https://proceedings.mlr.press/v70/guo17a.html",
+      "label": "On Calibration of Modern Neural Networks "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:6524178eb7c8acab",
+      "href": "https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html",
+      "label": "Deep Ensembles "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:0e26322a4e392f48",
+      "href": "https://proceedings.mlr.press/v37/hernandez-lobatob15.html",
+      "label": "Predictive Entropy Search with Unknown Constraints "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:8d4c9581f20e08b2",
+      "href": "https://proceedings.neurips.cc/paper/2020/hash/6fec24eac8f18ed793f5eaad3dd7977c-Abstract.html",
+      "label": "Differentiable Expected Hypervolume Improvement "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:c4ddb16bef3fd69b",
+      "href": "https://papers.nips.cc/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html",
+      "label": "Selective Classification for Deep Neural Networks "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:3c51f14e61f1ca81",
+      "href": "https://proceedings.mlr.press/v70/guo17a.html",
+      "label": "Paper and code references "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:6524178eb7c8acab",
+      "href": "https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:eb85a5bad51129be",
+      "href": "https://papers.nips.cc/paper_files/paper/2019/hash/5103c3584b063c431bd1268e9b5e76fb-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:1e884228dda3c6ac",
+      "href": "https://papers.nips.cc/paper_files/paper/2020/hash/543e83748234f7cbab21aa0ade66565f-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:0e26322a4e392f48",
+      "href": "https://proceedings.mlr.press/v37/hernandez-lobatob15.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:c9cef42172cd4955",
+      "href": "https://proceedings.mlr.press/v130/eriksson21a.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:8d4c9581f20e08b2",
+      "href": "https://proceedings.neurips.cc/paper/2020/hash/6fec24eac8f18ed793f5eaad3dd7977c-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:9ba24d4fd7a9ada9",
+      "href": "https://papers.nips.cc/paper_files/paper/2012/hash/05311655a15b75fab86956663e1819cd-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:f3756fa3858b6a25",
+      "href": "https://proceedings.mlr.press/v216/foldager23a.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:1a9a9c6742fab449",
+      "href": "https://burrsettles.com/pub/settles.activelearning.pdf",
+      "label": "Survey "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:c4ddb16bef3fd69b",
+      "href": "https://papers.nips.cc/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html",
+      "label": "Paper "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:826de08b74767540",
+      "href": "/research/methods/evidence-reading-workflow/",
+      "label": "Evidence Reading Workflow "
+    },
+    {
+      "source": "url:31275db876669d42",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "Oracling Method Contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:ae57a63762cf105a",
+      "href": "/research/methods/scientific-ai-numerics/#purpose",
+      "label": "Purpose "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:7c61b49f5197b47b",
+      "href": "/research/methods/scientific-ai-numerics/#quick-start-apply-the-method",
+      "label": "Quick start: apply the method "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:0f4e8e2009fb7139",
+      "href": "/research/methods/scientific-ai-numerics/#literature-and-data-graph",
+      "label": "Literature and data graph "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:d8b5b2b5e7d734f9",
+      "href": "/research/methods/scientific-ai-numerics/#how-code-should-reference-this-contract",
+      "label": "How code should reference this contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:5721c132966c2aed",
+      "href": "/research/methods/scientific-ai-numerics/#division-of-responsibility",
+      "label": "Division of responsibility "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:d0eb9d62afbcc400",
+      "href": "/research/methods/scientific-ai-numerics/#numerical-baseline-before-learned-model",
+      "label": "Numerical baseline before learned model "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:8c3284f40aa26e5a",
+      "href": "/research/methods/scientific-ai-numerics/#prediction-contract",
+      "label": "Prediction contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:29bcadea501bb8f1",
+      "href": "/research/methods/scientific-ai-numerics/#applicability-domain",
+      "label": "Applicability domain "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:a0a8558e7f67c392",
+      "href": "/research/methods/scientific-ai-numerics/#saxs-method-map",
+      "label": "SAXS method map "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:cc266e3d75679fd3",
+      "href": "/research/methods/scientific-ai-numerics/#spr-method-map",
+      "label": "SPR method map "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:04c26984d6e42569",
+      "href": "/research/methods/scientific-ai-numerics/#cryo-em-method-map",
+      "label": "Cryo-EM method map "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:a5d2f8b87c8d0bb7",
+      "href": "/research/methods/scientific-ai-numerics/#numerical-recipes-code-policy",
+      "label": "Numerical Recipes code policy "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:b7b0341032302334",
+      "href": "/research/methods/scientific-ai-numerics/#validation-contract",
+      "label": "Validation contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:7de3f575c0416c61",
+      "href": "/research/methods/scientific-ai-numerics/#recommended-repository-pattern",
+      "label": "Recommended repository pattern "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:a9be21b1dd5f0d15",
+      "href": "/research/methods/scientific-ai-numerics/#sources-and-further-reading",
+      "label": "Sources and further reading "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:8c3284f40aa26e5a",
+      "href": "/research/methods/scientific-ai-numerics/#prediction-contract",
+      "label": "prediction contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:b7b0341032302334",
+      "href": "/research/methods/scientific-ai-numerics/#validation-contract",
+      "label": "validation contract "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:0a31f1089e44a980",
+      "href": "/research/methods/scientific-ai-numerics/literature/",
+      "label": "calibration literature and data graph "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:20c4064f31cae8ad",
+      "href": "/generated/literature.index.json",
+      "label": "machine-readable JSON index "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:62d84dcdb9ff5bcc",
+      "href": "https://numerical.recipes/routines/",
+      "label": "official routine index "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:e2eafabaf497051c",
+      "href": "https://numerical.recipes/",
+      "label": "Numerical Recipes official website "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:54c20a68e1d705e5",
+      "href": "https://numerical.recipes/book.html",
+      "label": "Third Edition online book "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:62d84dcdb9ff5bcc",
+      "href": "https://numerical.recipes/routines/",
+      "label": "Third Edition routine index "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:58e7b283a87a8a7b",
+      "href": "https://numerical.recipes/routines/instc.html",
+      "label": "Official legacy C routines "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:8610ee3ae20f27cc",
+      "href": "https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf",
+      "label": "Cambridge front matter and license information "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:5eb413cdb9ed84fc",
+      "href": "https://www.bishopbook.com/",
+      "label": "Bishop and Bishop official book website "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:5c344ffc5517f578",
+      "href": "https://link.springer.com/book/10.1007/978-3-031-45468-4",
+      "label": "Springer table of contents "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:1ff9d274f3c4154c",
+      "href": "https://doi.org/10.1007/978-3-031-45468-4",
+      "label": "10.1007/978-3-031-45468-4 "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:c062d8626af591da",
+      "href": "https://probml.github.io/book2",
+      "label": "Murphy official open-access book page "
+    },
+    {
+      "source": "url:3d41c1543b7b6f1d",
+      "target": "url:3190c3a3e5590cf7",
+      "href": "https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/",
+      "label": "MIT Press book page "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:0a31f1089e44a980",
+      "target": "url:20c4064f31cae8ad",
+      "href": "/generated/literature.index.json",
+      "label": "Open machine-readable JSON → "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "biophysics",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "biophysics",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "biophysics",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:ccdac6a79210fcf9",
+      "href": "/research/pythia/spr/index.html",
+      "label": "01 · EVIDENCE SPR Mechanisms, complete sensorgrams and uncertainty. "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:46ba1d94dc3bf60f",
+      "href": "/research/pythia/saxs/index.html",
+      "label": "02 · EVIDENCE SAXS Ensembles, scattering and ambiguity. "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:7cd6ae7e6325f714",
+      "href": "/research/philosophy/closed-loop-biophysics/index.html",
+      "label": "03 · FRAMEWORK Closed loop Prediction, measurement and prospective validation. "
+    },
+    {
+      "source": "biophysics",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Research overview "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "02 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "03 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "biophysics",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "biophysics",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "01 · PLATFORM Pythia Surrogate prediction, uncertainty and applicability. "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "url:46ba1d94dc3bf60f",
+      "href": "/research/pythia/saxs/index.html",
+      "label": "02 · EVIDENCE SAXS Scattering evidence and assembly inference. "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "url:5bf75387ab77f7ee",
+      "href": "/research/methods/oracling/index.html",
+      "label": "03 · METHOD Oracling Select the next discriminating experiment. "
+    },
+    {
+      "source": "url:718bd7b2d967a835",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Research overview "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:d0142d79ae1e65a9",
+      "href": "/philosophy",
+      "label": "← Philosophy "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr.aí → "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:c1b84218c50469f5",
+      "href": "https://www.frontiersin.org/journals/molecular-biosciences/articles/10.3389/fmolb.2022.800856/full",
+      "label": "Optimal experimental design in systems biology ↗ "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:8da222766adb7bdd",
+      "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5453429/",
+      "label": "Active learning for biological experimental design ↗ "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:01122e1289d32732",
+      "href": "https://www.ucl.ac.uk/biosciences/sites/biosciences/files/21waudby_jmr.pdf",
+      "label": "Adaptive NMR experiment design ↗ "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:831bc933f58d3cb6",
+      "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10637738/",
+      "label": "Optimal control pulses for NMR ↗ "
+    },
+    {
+      "source": "url:829218397b3bdd90",
+      "target": "url:4094cdaad9956759",
+      "href": "https://www.nature.com/articles/s41467-025-64856-3",
+      "label": "Real-time adaptive experimentation ↗ "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:6d332b50c413a0f3",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "brix",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "brix",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "brix",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "brix",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "brix",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "brix",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "brix",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "brix",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "brix",
+      "target": "url:e11ae470c72e90a0",
+      "href": "/explore/glisnig/",
+      "label": "04 ǵlísníg Eyewear shaped around the person. "
+    },
+    {
+      "source": "brix",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:86ae16a9094dd052",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:d8c881916ac1be18",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:4443df9c90dfd49e",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr.aí "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:5df03d57b6ef4181",
+      "href": "/research/platforms/pythia/#question",
+      "label": "Enter process ↓ "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:5df03d57b6ef4181",
+      "href": "/research/platforms/pythia/#question",
+      "label": "01 Question "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:83a2a54538280b6d",
+      "href": "/research/platforms/pythia/#knowledge",
+      "label": "02 Knowledge "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:3a57127aeaa645ba",
+      "href": "/research/platforms/pythia/#methods",
+      "label": "03 Methods "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:60df594cf46c8e16",
+      "href": "/research/platforms/pythia/#evidence",
+      "label": "04 Evidence "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:70679fa250642039",
+      "href": "/research/platforms/pythia/#prediction",
+      "label": "05 Prediction "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:62966be8d351dec3",
+      "href": "/research/platforms/pythia/#decision",
+      "label": "06 Decision "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "Explore the method system → "
+    },
+    {
+      "source": "url:a2ba01d5e6cc2667",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Return to platform index "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:299789816381535f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to homepage "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr.aí "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to system "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:d9a81421c827b5fc",
+      "href": "https://doi.org/10.3390/cryst11091147",
+      "label": "DOI 10.3390/cryst11091147 ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:e915bc0d7bdead51",
+      "href": "https://doi.org/10.1021/nn102886y",
+      "label": "DOI 10.1021/nn102886y ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:51e8ee570d71b19e",
+      "href": "https://doi.org/10.1021/nn400263j",
+      "label": "DOI 10.1021/nn400263j ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:b664daceec83b611",
+      "href": "https://doi.org/10.1103/PhysRevLett.87.086103",
+      "label": "DOI 10.1103/PhysRevLett.87.086103 ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:a8a8abb31d3c1cdc",
+      "href": "https://doi.org/10.1128/AEM.04111-14",
+      "label": "DOI 10.1128/AEM.04111-14 ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:6d55a1c16a8e40c9",
+      "href": "https://doi.org/10.1016/0927-7757(95)03190-O",
+      "label": "DOI 10.1016/0927-7757(95)03190-O ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:0d4396e718d594e4",
+      "href": "https://doi.org/10.1017/S0033583524000106",
+      "label": "DOI 10.1017/S0033583524000106 ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:f2a0305236765e84",
+      "href": "https://patents.google.com/patent/WO2014206735A1/en",
+      "label": "Patent family ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:f2a0305236765e84",
+      "href": "https://patents.google.com/patent/WO2014206735A1/en",
+      "label": "Porous Nanomembranes patent family ↗ "
+    },
+    {
+      "source": "url:10fed5aceb526c75",
+      "target": "url:ec31b12f2e751563",
+      "href": "https://boku.ac.at/fileadmin/data/H05000/H13000/Techtrans/TechOffers/TO_Porous_hydrophilic_nanomembranes_20160216.pdf",
+      "label": "Nanomembrane technology offer ↗ "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:3702d7bc17477b18",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "← Pythia Platform "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:94a39d4f65b912c3",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "← Pythia Platform "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:71678ab97d1c29dd",
+      "target": "url:eb1ecf0e204d9bf9",
+      "href": "/research/platforms/pythia/index.html",
+      "label": "Pythia platform ↗ "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "trajectories",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "trajectories",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "trajectories",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "calyr / Applications "
+    },
+    {
+      "source": "trajectories",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Discuss trajectory modelling "
+    },
+    {
+      "source": "trajectories",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "trajectories",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "02 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "trajectories",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "03 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "trajectories",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "url:f7fc7fc5fa202c26",
+      "href": "/research/methods/",
+      "label": "01 Methods "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "url:763ad9f279636cf4",
+      "href": "/research/methods/oracling/",
+      "label": "02 Oracling "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "url:b8522845881b575f",
+      "href": "/research/interfaces/",
+      "label": "03 Interfaces "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "url:327891f7de35a18e",
+      "href": "/research/swiss-code/",
+      "label": "04 Swiss Code "
+    },
+    {
+      "source": "url:327891f7de35a18e",
+      "target": "url:826de08b74767540",
+      "href": "/research/methods/evidence-reading-workflow/",
+      "label": "Open the operational method → "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:2f49248d06afec1f",
+      "target": "url:2f49248d06afec1f",
+      "href": "/research/teaser/",
+      "label": "  →  "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:1dcfd210e6fb2239",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "Back to CALYR.AI "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:017dc815fd8088be",
+      "href": "/parvotec/",
+      "label": "Parvotec evidence "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:7316b364676d9811",
+      "href": "/aorta/",
+      "label": "Aorta evidence "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:e07a44cdc5e0d588",
+      "href": "/biophys/",
+      "label": "Biophysical evidence "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:29e9932042067454",
+      "href": "/oracle/",
+      "label": "Epythia structure "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:e07a44cdc5e0d588",
+      "href": "/biophys/",
+      "label": "SPR · SAXS · Cryo-EM "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:15ae66f7664a07eb",
+      "href": "/brix/",
+      "label": "Surrogate design "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "brix",
+      "href": "/research/platforms/brix/",
+      "label": "Interactive apps "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:15ae66f7664a07eb",
+      "href": "/brix/",
+      "label": "Brix workflow "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Research Journal "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:7a9dd0c65c532d90",
+      "href": "/content/",
+      "label": "Research records "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:017dc815fd8088be",
+      "href": "/parvotec/",
+      "label": "Parvotec interface "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:86ae16a9094dd052",
+      "href": "/research/platforms/core/",
+      "label": "Executive view "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:7a9dd0c65c532d90",
+      "href": "/content/",
+      "label": "Publications records "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "White paper 01 "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:bbb9d441bbc07349",
+      "href": "mailto:rupert.tscheliess@calyrai.ai",
+      "label": "Kontakt "
+    },
+    {
+      "source": "url:fa63b9a1b4520665",
+      "target": "url:00dbdd108d85de3b",
+      "href": "https://github.com/ruperttscheliessnig",
+      "label": "github.com/ruperttscheliessnig "
+    },
+    {
+      "source": "journal",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "journal",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "journal",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "journal",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "journal",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "journal",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "journal",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "journal",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "journal",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "journal",
+      "target": "url:c52173ea6a78df33",
+      "href": "/research-journal/#research-tracks",
+      "label": "Explore research "
+    },
+    {
+      "source": "journal",
+      "target": "url:1ff3f1a438b472bf",
+      "href": "/research-journal/#evidence-stream",
+      "label": "Open evidence stream "
+    },
+    {
+      "source": "journal",
+      "target": "url:017dc815fd8088be",
+      "href": "/parvotec/",
+      "label": " 01 · molecular engineering  Parvotec  Closed-loop AAV capsid engineering: benchmark, inference, uncertainty, constrained nomination and experimental feedback.  Open track  /  "
+    },
+    {
+      "source": "journal",
+      "target": "url:7316b364676d9811",
+      "href": "/aorta/",
+      "label": " 02 · translational medicine  AORTA  Patient- and device-specific haemodynamics, validation, thrombogenicity and accelerated design-space exploration.  Open track  /  "
+    },
+    {
+      "source": "journal",
+      "target": "url:e07a44cdc5e0d588",
+      "href": "/biophys/",
+      "label": " 03 · structural biophysics  SbpA  Analytical SAXS, p4 lattice structure and Stokes hydrodynamics — from molecular architecture to nanoscale transport.  Open biophysics  /  "
+    },
+    {
+      "source": "journal",
+      "target": "spr",
+      "href": "/spr/",
+      "label": " 04 · kinetic inference  SPR  Surface-plasmon-resonance kinetics as a model-selection problem: occupancy, stochastic trajectories, memory kernels and uncertainty.  Open research series  /  "
+    },
+    {
+      "source": "journal",
+      "target": "url:919b254fec622c78",
+      "href": "/research-journal/#model-aware-saxs",
+      "label": " 05 · structural inference  SAXS  Hierarchical domain-spatial learning and model-aware prediction of complete scattering curves with an explicit residual information channel.  Open method record  /  "
+    },
+    {
+      "source": "journal",
+      "target": "url:15ae66f7664a07eb",
+      "href": "/brix/",
+      "label": " 06 · engineering design  BRIX  Geometry, simulation and surrogate feedback for fast human-in-the-loop engineering decisions.  Open track  /  "
+    },
+    {
+      "source": "journal",
+      "target": "url:43714ae09260d6ed",
+      "href": "/spr/#executive",
+      "label": "00 Executive Overview Evidence, model classes and decision logic "
+    },
+    {
+      "source": "journal",
+      "target": "url:b394ecdc585e768e",
+      "href": "/spr/#occupancy",
+      "label": "01 Sequential Occupancy Multi-step adsorption and shared latent states "
+    },
+    {
+      "source": "journal",
+      "target": "url:4c8ae1edd76f7d8e",
+      "href": "/spr/#stochastic",
+      "label": "02 Stochastic Oracle Trajectory ensembles and uncertainty "
+    },
+    {
+      "source": "journal",
+      "target": "url:afbf03faf2bf4bc2",
+      "href": "/spr/#kernels",
+      "label": "03 Kernel Dynamics Erlang, memory and fractional alternatives "
+    },
+    {
+      "source": "journal",
+      "target": "url:502ab2964ac095b3",
+      "href": "/spr/#atlas",
+      "label": "04 Model Atlas Comparative model space and falsification "
+    },
+    {
+      "source": "journal",
+      "target": "url:4c8cf46e4454d303",
+      "href": "/research-journal/#research-operating-system",
+      "label": "Open record  / "
+    },
+    {
+      "source": "journal",
+      "target": "url:919b254fec622c78",
+      "href": "/research-journal/#model-aware-saxs",
+      "label": "Open record  / "
+    },
+    {
+      "source": "journal",
+      "target": "spr",
+      "href": "/spr/",
+      "label": "Open record  / "
+    },
+    {
+      "source": "journal",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "White paper 01 "
+    },
+    {
+      "source": "journal",
+      "target": "url:bbb9d441bbc07349",
+      "href": "mailto:rupert.tscheliess@calyrai.ai",
+      "label": "Kontakt "
+    },
+    {
+      "source": "journal",
+      "target": "url:00dbdd108d85de3b",
+      "href": "https://github.com/ruperttscheliessnig",
+      "label": "github.com/ruperttscheliessnig "
+    },
+    {
+      "source": "journal",
+      "target": "url:9e1801afba636487",
+      "href": "/explore/calyr/",
+      "label": "01 calyr Scientific models. Better decisions. "
+    },
+    {
+      "source": "journal",
+      "target": "url:cf4fd77ec12f604d",
+      "href": "/explore/lithios/",
+      "label": "02 líthíos Make function take form. "
+    },
+    {
+      "source": "journal",
+      "target": "url:b6e2c140b14f060d",
+      "href": "/explore/aorta/",
+      "label": "03 aorta / aflowtex Test the intervention. Predict the flow. "
+    },
+    {
+      "source": "journal",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "04 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "journal",
+      "target": "url:b9863a805e79244c",
+      "href": "/explore/spr/",
+      "label": "05 SPR Research Series Compare mechanisms against measurements. "
+    },
+    {
+      "source": "journal",
+      "target": "url:e9802a84fa1b8046",
+      "href": "/explore/colemak/",
+      "label": "06 Colémak Control shaped around the hand. "
+    },
+    {
+      "source": "journal",
+      "target": "url:c192c4f32ff44cde",
+      "href": "/explore/trajectories/",
+      "label": "01 trajectoríes Explore paths through a process. "
+    },
+    {
+      "source": "journal",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "spr",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "spr",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "spr",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "spr",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "spr",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "spr",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "spr",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "spr",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "spr",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "spr",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Research Journal "
+    },
+    {
+      "source": "spr",
+      "target": "url:e07a44cdc5e0d588",
+      "href": "/biophys/",
+      "label": "Biophysics platform "
+    },
+    {
+      "source": "spr",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "White paper 01 "
+    },
+    {
+      "source": "spr",
+      "target": "url:bbb9d441bbc07349",
+      "href": "mailto:rupert.tscheliess@calyrai.ai",
+      "label": "Kontakt "
+    },
+    {
+      "source": "spr",
+      "target": "url:00dbdd108d85de3b",
+      "href": "https://github.com/ruperttscheliessnig",
+      "label": "github.com/ruperttscheliessnig "
+    },
+    {
+      "source": "spr",
+      "target": "url:e5b50b5f6dede554",
+      "href": "/explore/biophysics/",
+      "label": "01 biophysical inference Find the mechanism. Guide the experiment. "
+    },
+    {
+      "source": "spr",
+      "target": "url:7b26db837e89d1a2",
+      "href": "/explore/journal/",
+      "label": "02 Research Journal Follow the evidence. "
+    },
+    {
+      "source": "spr",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Explore the complete network "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "a í "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr",
+      "href": "/#platform",
+      "label": "Platform "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-method",
+      "href": "/#method",
+      "label": "Method "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-applications",
+      "href": "/#applications",
+      "label": "Applications "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "network",
+      "href": "/explore/",
+      "label": "Network "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "journal",
+      "href": "/research-journal/",
+      "label": "Journal "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "calyr "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "lithios-home",
+      "href": "https://lithios.ai/",
+      "label": "LÍTHÍOS "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-contact",
+      "href": "mailto:hello@calyr.ai",
+      "label": "Get in touch "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "calyr-home",
+      "href": "/",
+      "label": "CALYR home "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:26e040fe01ea3432",
+      "href": "/whitepapers/scientific-ai-evidence/#shadow-reasoning",
+      "label": "Shadow reasoning "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:7ccf97dec102ccf7",
+      "href": "/whitepapers/scientific-ai-evidence/#governance-gap",
+      "label": "The governance gap "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:38c0010dfe8903be",
+      "href": "/whitepapers/scientific-ai-evidence/#evidence",
+      "label": "Evidence, not explanation alone "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:3357619a651e4cd9",
+      "href": "/whitepapers/scientific-ai-evidence/#evidence-graph",
+      "label": "Scientific AI Evidence Graph "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:0ca31ddb81accddd",
+      "href": "/whitepapers/scientific-ai-evidence/#surrogates",
+      "label": "Governed surrogates "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:4cd4048f23d5edc0",
+      "href": "/whitepapers/scientific-ai-evidence/#oracle",
+      "label": "Oracle "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:f74b28d4f2a2be65",
+      "href": "/whitepapers/scientific-ai-evidence/#verification",
+      "label": "Active verification "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:9f1f2c87af379b62",
+      "href": "/whitepapers/scientific-ai-evidence/#human",
+      "label": "Human responsibility "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:e36aa1228f5fe3c1",
+      "href": "/whitepapers/scientific-ai-evidence/#architecture",
+      "label": "Reference architecture "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:38075a03122f7fe5",
+      "href": "/whitepapers/scientific-ai-evidence/#aorta",
+      "label": "Aortic modelling "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:b6a527230ea53e2c",
+      "href": "/whitepapers/scientific-ai-evidence/#engineering",
+      "label": "Engineering design "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:d87bebf1cc91be04",
+      "href": "/whitepapers/scientific-ai-evidence/#assurance",
+      "label": "Regulatory context "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:2a2ce2e66617828a",
+      "href": "/whitepapers/scientific-ai-evidence/#contract",
+      "label": "Minimum evidence contract "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:b37d2232a3fe0f80",
+      "href": "/whitepapers/scientific-ai-evidence/#calyr",
+      "label": "CALYR.AI position "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:39ca54fd17eff5cc",
+      "href": "https://xensam.com/resources/white-papers/out-of-the-shadows-governing-enterprise-ai-handbook/",
+      "label": "Out of the Shadows: Governing Enterprise AI "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:acc5ad4063972046",
+      "href": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "label": "AI Act "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:6b9c978375a917b2",
+      "href": "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act",
+      "label": "Transparency obligations under Article 50 "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:71c6bf63ebcbf1c6",
+      "href": "https://airc.nist.gov/",
+      "label": "AI Resource Center "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:919ea5c2ea32d2e3",
+      "href": "https://www.nist.gov/artificial-intelligence/ai-research/tevv-athlon-framework-evaluating-ai-systems",
+      "label": "TEVV-Athlon Framework "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:1844760601fe8323",
+      "href": "https://www.fda.gov/medical-devices/digital-health-center-excellence/artificial-intelligence-enabled-medical-devices",
+      "label": "Artificial Intelligence-Enabled Medical Devices "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "scientific-ai-whitepaper",
+      "href": "/whitepapers/scientific-ai-evidence/",
+      "label": "White paper 01 "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:bbb9d441bbc07349",
+      "href": "mailto:rupert.tscheliess@calyrai.ai",
+      "label": "Kontakt "
+    },
+    {
+      "source": "scientific-ai-whitepaper",
+      "target": "url:00dbdd108d85de3b",
+      "href": "https://github.com/ruperttscheliessnig",
+      "label": "github.com/ruperttscheliessnig "
+    }
+  ],
+  "routes": {
+    "sites": {
+      "calyrai": "https://calyr.ai",
+      "lithios": "https://lithios.ai"
+    },
+    "routes": {
+      "calyr-home": {
+        "site": "calyrai",
+        "path": "/"
+      },
+      "lithios-home": {
+        "site": "lithios",
+        "path": "/"
+      },
+      "calyr-platform": {
+        "site": "calyrai",
+        "path": "/#platform"
+      },
+      "lithios-platform": {
+        "site": "lithios",
+        "path": "/#platform"
+      },
+      "calyr-method": {
+        "site": "calyrai",
+        "path": "/#method"
+      },
+      "lithios-method": {
+        "site": "lithios",
+        "path": "/#functional-space"
+      },
+      "calyr-applications": {
+        "site": "calyrai",
+        "path": "/#applications"
+      },
+      "lithios-applications": {
+        "site": "lithios",
+        "path": "/#application-space"
+      },
+      "scientific-ai-whitepaper": {
+        "site": "calyrai",
+        "path": "/whitepapers/scientific-ai-evidence/"
+      },
+      "calyr-contact": {
+        "url": "mailto:hello@calyr.ai"
+      },
+      "lithios-contact": {
+        "url": "mailto:lithios@calyr.ai"
+      },
+      "network": {
+        "path": "/explore/"
+      },
+      "main-content": {
+        "path": "#main"
+      }
+    }
+  }
+}
