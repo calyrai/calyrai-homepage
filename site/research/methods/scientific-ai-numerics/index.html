@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="./method.css" />
   <link rel="stylesheet" href="/research/research-system.css" />
 <link rel="stylesheet" href="/shared/subpage-header.css"></head>
-<body><header class="fs-header calyr-global-header"><a class="fs-brand shared-brand" href="/" data-graph-target="calyr-home" aria-label="calyr home">a<em>í</em></a><nav class="fs-nav" aria-label="Main navigation"><a href="/#platform" data-graph-target="calyr-platform">Platform</a><a href="/#method" data-graph-target="calyr-method">Method</a><a href="/#applications" data-graph-target="calyr-applications">Applications</a><a href="/explore/" data-graph-target="network">Network</a><a href="/research-journal/" data-graph-target="journal">Journal</a><a href="/" data-graph-target="calyr-home">calyr</a><a href="https://lithios.ai/" data-graph-target="lithios-home">LÍTHÍOS</a></nav><a class="fs-header-contact" href="mailto:hello@calyr.ai" data-graph-target="calyr-contact">Get in touch</a></header>
-  <nav class="research-chapter-nav" aria-label="Research chapters"><a href="/research/methods/" aria-current="page" data-graph-target="url:f7fc7fc5fa202c26"><span>01</span>Methods</a><a href="/research/methods/oracling/" data-graph-target="url:763ad9f279636cf4"><span>02</span>Oracling</a><a href="/research/interfaces/" data-graph-target="url:b8522845881b575f"><span>03</span>Interfaces</a><a href="/research/swiss-code/" data-graph-target="url:327891f7de35a18e"><span>04</span>Swiss Code</a></nav>
+<body><header class="fs-header calyr-global-header"><a class="fs-brand shared-brand" href="/" aria-label="calyr home">a<em>í</em></a><nav class="fs-nav" aria-label="Main navigation"><a href="/#platform">Platform</a><a href="/#method">Method</a><a href="/#applications">Applications</a><a href="/research-journal/">Journal</a><a href="https://calyr.ai/">calyr</a><a href="https://lithios.ai/">LITHÍOS</a></nav><a class="fs-header-contact" href="mailto:hello@calyr.ai">Get in touch</a></header>
+  <nav class="research-chapter-nav" aria-label="Research chapters"><a href="/research/methods/" aria-current="page"><span>01</span>Methods</a><a href="/research/methods/oracling/"><span>02</span>Oracling</a><a href="/research/interfaces/"><span>03</span>Interfaces</a><a href="/research/swiss-code/"><span>04</span>Swiss Code</a></nav>
   <div class="research-source-bar"><span>YAML source of truth <code>content/books.yaml</code></span><span>Binding <code>method_catalog.CALYR-METHOD-NR-AI-001</code></span><span>Linked source <code>docs/scientific-ai-numerics-reference.md</code></span></div>
   <div class="page-shell">
     <aside class="contents">
       <p class="contents-label">On this page</p>
-      <nav aria-label="Method reference sections"><ol><li><a href="/research/methods/scientific-ai-numerics/#purpose" data-graph-target="url:ae57a63762cf105a">Purpose</a></li><li><a href="/research/methods/scientific-ai-numerics/#quick-start-apply-the-method" data-graph-target="url:7c61b49f5197b47b">Quick start: apply the method</a></li><li><a href="/research/methods/scientific-ai-numerics/#literature-and-data-graph" data-graph-target="url:0f4e8e2009fb7139">Literature and data graph</a></li><li><a href="/research/methods/scientific-ai-numerics/#how-code-should-reference-this-contract" data-graph-target="url:d8b5b2b5e7d734f9">How code should reference this contract</a></li><li><a href="/research/methods/scientific-ai-numerics/#division-of-responsibility" data-graph-target="url:5721c132966c2aed">Division of responsibility</a></li><li><a href="/research/methods/scientific-ai-numerics/#numerical-baseline-before-learned-model" data-graph-target="url:d0eb9d62afbcc400">Numerical baseline before learned model</a></li><li><a href="/research/methods/scientific-ai-numerics/#prediction-contract" data-graph-target="url:8c3284f40aa26e5a">Prediction contract</a></li><li><a href="/research/methods/scientific-ai-numerics/#applicability-domain" data-graph-target="url:29bcadea501bb8f1">Applicability domain</a></li><li><a href="/research/methods/scientific-ai-numerics/#saxs-method-map" data-graph-target="url:a0a8558e7f67c392">SAXS method map</a></li><li><a href="/research/methods/scientific-ai-numerics/#spr-method-map" data-graph-target="url:cc266e3d75679fd3">SPR method map</a></li><li><a href="/research/methods/scientific-ai-numerics/#cryo-em-method-map" data-graph-target="url:04c26984d6e42569">Cryo-EM method map</a></li><li><a href="/research/methods/scientific-ai-numerics/#numerical-recipes-code-policy" data-graph-target="url:a5d2f8b87c8d0bb7">Numerical Recipes code policy</a></li><li><a href="/research/methods/scientific-ai-numerics/#validation-contract" data-graph-target="url:b7b0341032302334">Validation contract</a></li><li><a href="/research/methods/scientific-ai-numerics/#recommended-repository-pattern" data-graph-target="url:7de3f575c0416c61">Recommended repository pattern</a></li><li><a href="/research/methods/scientific-ai-numerics/#sources-and-further-reading" data-graph-target="url:a9be21b1dd5f0d15">Sources and further reading</a></li></ol></nav>
+      <nav aria-label="Method reference sections"><ol><li><a href="#purpose">Purpose</a></li><li><a href="#quick-start-apply-the-method">Quick start: apply the method</a></li><li><a href="#literature-and-data-graph">Literature and data graph</a></li><li><a href="#how-code-should-reference-this-contract">How code should reference this contract</a></li><li><a href="#division-of-responsibility">Division of responsibility</a></li><li><a href="#numerical-baseline-before-learned-model">Numerical baseline before learned model</a></li><li><a href="#prediction-contract">Prediction contract</a></li><li><a href="#applicability-domain">Applicability domain</a></li><li><a href="#saxs-method-map">SAXS method map</a></li><li><a href="#spr-method-map">SPR method map</a></li><li><a href="#cryo-em-method-map">Cryo-EM method map</a></li><li><a href="#numerical-recipes-code-policy">Numerical Recipes code policy</a></li><li><a href="#validation-contract">Validation contract</a></li><li><a href="#recommended-repository-pattern">Recommended repository pattern</a></li><li><a href="#sources-and-further-reading">Sources and further reading</a></li></ol></nav>
     </aside>
     <main class="method-layout"><article><section class="method-hero"><h1 id="scientific-ai-and-numerical-methods-reference">Scientific AI and Numerical Methods Reference</h1>
 <dl class="method-meta"><div><dt>Reference ID</dt><dd><code>CALYR-METHOD-NR-AI-001</code></dd></div><div><dt>Status</dt><dd>Working method contract</dd></div><div><dt>Scope</dt><dd>Pythia surrogate prediction, SAXS, SPR, cryo-EM, and related scientific-AI implementations</dd></div></dl>
@@ -40,9 +40,9 @@
 <li>record the relevant method anchor in code and tests;</li>
 <li>propose the next measurement or simulation when the evidence is insufficient.</li>
 </ol>
-<p>Start with the <a href="/research/methods/scientific-ai-numerics/#prediction-contract" rel="noreferrer" data-graph-target="url:8c3284f40aa26e5a">prediction contract</a>. Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the <a href="/research/methods/scientific-ai-numerics/#validation-contract" rel="noreferrer" data-graph-target="url:b7b0341032302334">validation contract</a>.</p>
+<p>Start with the <a href="#prediction-contract" rel="noreferrer">prediction contract</a>. Then use the relevant domain map for SAXS, SPR, or cryo-EM and finish with the <a href="#validation-contract" rel="noreferrer">validation contract</a>.</p>
 </section><section class="method-section"><h2 id="literature-and-data-graph">Literature and data graph</h2>
-<p>The <a href="/research/methods/scientific-ai-numerics/literature/" rel="noreferrer" data-graph-target="url:0a31f1089e44a980">calibration literature and data graph</a> turns the references, datasets, and reusable ideas around Guo et al. (2017) into a searchable evidence index.</p>
+<p>The <a href="/research/methods/scientific-ai-numerics/literature/" rel="noreferrer">calibration literature and data graph</a> turns the references, datasets, and reusable ideas around Guo et al. (2017) into a searchable evidence index.</p>
 <p>Its YAML records keep four entities distinct:</p>
 <ul>
 <li>papers and their role in the method lineage;</li>
@@ -50,7 +50,7 @@
 <li>extracted ideas with source locations and operational consequences;</li>
 <li>typed relations between evidence records.</li>
 </ul>
-<p>Use the <a href="/generated/literature.index.json" rel="noreferrer" data-graph-target="url:20c4064f31cae8ad">machine-readable JSON index</a> when code, agents, or analytical tools need to scan this evidence. Treat an extracted idea as a traceable interpretation, not as a replacement for reading the primary source.</p>
+<p>Use the <a href="/generated/literature.index.json" rel="noreferrer">machine-readable JSON index</a> when code, agents, or analytical tools need to scan this evidence. Treat an extracted idea as a traceable interpretation, not as a replacement for reading the primary source.</p>
 </section><section class="method-section"><h2 id="how-code-should-reference-this-contract">How code should reference this contract</h2>
 <p>Prefer a short comment next to the relevant interface, model, validation gate, or numerical operator:</p>
 <pre><code>Method: CALYR-METHOD-NR-AI-001
@@ -207,7 +207,7 @@ decision:
 <li>PyMC, NumPyro, BlackJAX, or Stan;</li>
 <li>domain-specific validated libraries.</li>
 </ul>
-<p>Useful routine mappings from the <a href="https://numerical.recipes/routines/" rel="noreferrer" data-graph-target="url:62d84dcdb9ff5bcc">official routine index</a> include:</p>
+<p>Useful routine mappings from the <a href="https://numerical.recipes/routines/" rel="noreferrer">official routine index</a> include:</p>
 <div class="table-wrap"><table><thead><tr><th>Task</th><th>Numerical Recipes reference</th><th>Maintained target</th></tr></thead><tbody><tr><td>SVD</td><td><code>svd.h</code></td><td><code>numpy.linalg.svd</code>, <code>scipy.linalg.svd</code></td></tr><tr><td>Stable linear fit</td><td><code>fitsvd.h</code></td><td><code>numpy.linalg.lstsq</code></td></tr><tr><td>Nonlinear fit</td><td><code>fitmrq.h</code></td><td><code>scipy.optimize.least_squares</code></td></tr><tr><td>MCMC</td><td><code>mcmc.h</code></td><td>NumPyro, PyMC, BlackJAX, Stan</td></tr><tr><td>FFT</td><td><code>fourier.h</code>, <code>fourier_ndim.h</code></td><td><code>numpy.fft</code>, <code>scipy.fft</code>, <code>torch.fft</code></td></tr><tr><td>Convolution</td><td><code>convlv.h</code></td><td><code>scipy.signal</code>, PyTorch/JAX operators</td></tr><tr><td>Correlation</td><td><code>correl.h</code></td><td><code>scipy.signal.correlate</code></td></tr><tr><td>Robust fit</td><td><code>fitmed.h</code></td><td>SciPy/scikit-learn robust methods</td></tr><tr><td>Gaussian mixtures</td><td><code>gaumixmod.h</code></td><td><code>sklearn.mixture.GaussianMixture</code></td></tr><tr><td>k-means</td><td><code>kmeans.h</code></td><td><code>sklearn.cluster.KMeans</code></td></tr><tr><td>Hidden Markov model</td><td><code>hmm.h</code></td><td>Dynamax, Pyro, hmmlearn</td></tr></tbody></table></div>
 <p>When an implementation is inspired by a Numerical Recipes algorithm, record the edition, section, routine name, source URL, license status, maintained replacement, and verification tests.</p>
 </section><section class="method-section"><h2 id="validation-contract">Validation contract</h2>
@@ -243,23 +243,23 @@ src/
 <p>The method above is the operational part. The following links provide the underlying literature, algorithm references, and licensing context.</p>
 <h3 id="numerical-methods">Numerical methods</h3>
 <ul>
-<li><a href="https://numerical.recipes/" rel="noreferrer" data-graph-target="url:e2eafabaf497051c">Numerical Recipes official website</a></li>
-<li><a href="https://numerical.recipes/book.html" rel="noreferrer" data-graph-target="url:54c20a68e1d705e5">Third Edition online book</a></li>
-<li><a href="https://numerical.recipes/routines/" rel="noreferrer" data-graph-target="url:62d84dcdb9ff5bcc">Third Edition routine index</a></li>
-<li><a href="https://numerical.recipes/routines/instc.html" rel="noreferrer" data-graph-target="url:58e7b283a87a8a7b">Official legacy C routines</a></li>
-<li><a href="https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf" rel="noreferrer" data-graph-target="url:8610ee3ae20f27cc">Cambridge front matter and license information</a></li>
+<li><a href="https://numerical.recipes/" rel="noreferrer">Numerical Recipes official website</a></li>
+<li><a href="https://numerical.recipes/book.html" rel="noreferrer">Third Edition online book</a></li>
+<li><a href="https://numerical.recipes/routines/" rel="noreferrer">Third Edition routine index</a></li>
+<li><a href="https://numerical.recipes/routines/instc.html" rel="noreferrer">Official legacy C routines</a></li>
+<li><a href="https://assets.cambridge.org/97805218/80688/frontmatter/9780521880688_frontmatter.pdf" rel="noreferrer">Cambridge front matter and license information</a></li>
 </ul>
 <p>Press, William H.; Teukolsky, Saul A.; Vetterling, William T.; Flannery, Brian P. <em>Numerical Recipes: The Art of Scientific Computing</em>. Third Edition. Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</p>
 <h3 id="neural-representation">Neural representation</h3>
 <ul>
-<li><a href="https://www.bishopbook.com/" rel="noreferrer" data-graph-target="url:5eb413cdb9ed84fc">Bishop and Bishop official book website</a></li>
-<li><a href="https://link.springer.com/book/10.1007/978-3-031-45468-4" rel="noreferrer" data-graph-target="url:5c344ffc5517f578">Springer table of contents</a></li>
+<li><a href="https://www.bishopbook.com/" rel="noreferrer">Bishop and Bishop official book website</a></li>
+<li><a href="https://link.springer.com/book/10.1007/978-3-031-45468-4" rel="noreferrer">Springer table of contents</a></li>
 </ul>
-<p>Bishop, Christopher M.; Bishop, Hugh. <em>Deep Learning: Foundations and Concepts</em>. Springer, 2024. DOI <a href="https://doi.org/10.1007/978-3-031-45468-4" rel="noreferrer" data-graph-target="url:1ff9d274f3c4154c">10.1007/978-3-031-45468-4</a>.</p>
+<p>Bishop, Christopher M.; Bishop, Hugh. <em>Deep Learning: Foundations and Concepts</em>. Springer, 2024. DOI <a href="https://doi.org/10.1007/978-3-031-45468-4" rel="noreferrer">10.1007/978-3-031-45468-4</a>.</p>
 <h3 id="probabilistic-inference">Probabilistic inference</h3>
 <ul>
-<li><a href="https://probml.github.io/book2" rel="noreferrer" data-graph-target="url:c062d8626af591da">Murphy official open-access book page</a></li>
-<li><a href="https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/" rel="noreferrer" data-graph-target="url:3190c3a3e5590cf7">MIT Press book page</a></li>
+<li><a href="https://probml.github.io/book2" rel="noreferrer">Murphy official open-access book page</a></li>
+<li><a href="https://mitpress.mit.edu/9780262048439/probabilistic-machine-learning/" rel="noreferrer">MIT Press book page</a></li>
 </ul>
 <p>Murphy, Kevin P. <em>Probabilistic Machine Learning: Advanced Topics</em>. MIT Press, 2023. ISBN 978-0-262-04843-9.</p></section></article></main>
   </div>

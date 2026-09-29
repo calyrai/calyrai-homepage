@@ -8,5 +8,3 @@ header.calyr-global-header{all:initial;box-sizing:border-box;display:grid;grid-t
 .calyr-global-header a:focus-visible{outline:2px solid #ff20dc;outline-offset:5px}
 @media(max-width:900px){header.calyr-global-header{grid-template-columns:auto 1fr;gap:16px}.calyr-global-header .fs-header-contact{justify-self:end;grid-column:2;grid-row:1}.calyr-global-header .fs-nav{grid-column:1/-1;grid-row:2;justify-content:flex-start;padding-bottom:20px}}
 @media(max-width:600px){header.calyr-global-header{width:calc(100% - 40px);min-height:90px;padding-top:20px}.calyr-global-header .fs-nav{gap:16px}}
-
-.calyr-global-header .shared-brand em{font-style:normal;color:var(--brand-accent,#ff20dc);text-shadow:0 0 5px var(--brand-accent,#ff20dc),0 0 16px var(--brand-accent,#ff20dc),0 0 36px var(--brand-glow,#ff20dc70),0 0 60px var(--brand-glow,#ff20dc70)}
