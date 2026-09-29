@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A CALYR.AI framework for governable scientific AI in engineering and medicine." />
+  <meta name="robots" content="index, follow" />
+  <title>White Paper 01 · From Black Box to Scientific Evidence — calyr.aí</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/shared/subpage-header.css"></head>
+<body><header class="fs-header calyr-global-header"><a class="fs-brand shared-brand" href="/" aria-label="calyr home">aí</a><nav class="fs-nav" aria-label="Main navigation"><a href="/#platform">Platform</a><a href="/#method">Method</a><a href="/#applications">Applications</a><a href="/research-journal/">Journal</a><a href="https://calyr.ai/">calyr</a><a href="https://lithios.ai/">LITHÍOS</a></nav><a class="fs-header-contact" href="mailto:hello@calyr.ai">Get in touch</a></header>
+    
+
+  <main>
+    
+<article class="wp">
+  <header class="wp-hero">
+    <p class="wp-kicker">CALYR.AI · White Paper 01 · September 2026</p>
+    <h1>From Black Box to Scientific Evidence</h1>
+    <p class="wp-deck">A framework for governable AI in engineering and medicine.</p>
+    <p class="wp-thesis">Fast models are useful only when the evidence that makes them trustworthy remains attached.</p>
+    <div class="wp-actions">
+      <a class="btn" href="/">CALYR home</a>
+    </div>
+  </header>
+
+  <div class="wp-body">
+    <aside class="wp-toc" aria-label="Contents">
+      <p class="wp-label">Contents</p>
+      <ol>
+        <li><a href="#shadow-reasoning">Shadow reasoning</a></li>
+        <li><a href="#governance-gap">The governance gap</a></li>
+        <li><a href="#evidence">Evidence, not explanation alone</a></li>
+        <li><a href="#evidence-graph">Scientific AI Evidence Graph</a></li>
+        <li><a href="#surrogates">Governed surrogates</a></li>
+        <li><a href="#oracle">Oracle</a></li>
+        <li><a href="#verification">Active verification</a></li>
+        <li><a href="#human">Human responsibility</a></li>
+        <li><a href="#architecture">Reference architecture</a></li>
+        <li><a href="#aorta">Aortic modelling</a></li>
+        <li><a href="#engineering">Engineering design</a></li>
+        <li><a href="#assurance">Regulatory context</a></li>
+        <li><a href="#contract">Minimum evidence contract</a></li>
+        <li><a href="#calyr">CALYR.AI position</a></li>
+      </ol>
+    </aside>
+
+    <section class="wp-section wp-summary">
+      <p class="wp-label">Executive summary</p>
+      <p class="wp-lead">Enterprise AI governance has largely begun with visibility: which systems are in use, who has access, what data enters them, what they cost, and whether their use is permitted. This is necessary, but insufficient for scientific and engineering AI.</p>
+      <p>A system can be fully inventoried, access-controlled and policy-compliant and still produce a scientifically invalid result.</p>
+      <p>Scientific AI therefore needs a second governance layer: <strong>evidence governance</strong>. The central question is not only whether an AI system can be used. It is also what evidence supports a result, under which assumptions, inside which validity domain, with which uncertainty, and what should happen when those conditions fail.</p>
+      <p>CALYR.AI proposes an architecture in which models, surrogates, simulations, experiments, assumptions, uncertainty estimates, validation results and human decisions are connected as an explicit <strong>Scientific AI Evidence Graph</strong>.</p>
+      <p class="wp-sequence">Evidence · Surrogate · Oracle · Verification · Decision</p>
+    </section>
+
+    <section class="wp-section" id="shadow-reasoning">
+      <p class="wp-label">01 · From Shadow AI to Shadow Reasoning</p>
+      <h2>Knowing the model is not the same as knowing the evidence.</h2>
+      <p>Enterprise governance has a visibility problem. AI tools can be adopted faster than organisations can discover, approve and monitor them. Scientific AI introduces another problem: an organisation may know exactly which model generated a result and still be unable to reconstruct the scientific justification behind it.</p>
+      <div class="wp-question">
+        <p>Which physical assumptions were active?</p>
+        <p>Was the query inside the model's validation domain?</p>
+        <p>What uncertainty belongs to the prediction?</p>
+        <p>Which reference simulation, experiment or measurement validates it?</p>
+        <p>Who accepted the output for the downstream decision?</p>
+      </div>
+      <p>We call this <strong>shadow reasoning</strong>: a result whose computational origin is visible but whose scientific justification is not.</p>
+    </section>
+
+    <section class="wp-section" id="governance-gap">
+      <p class="wp-label">02 · The governance gap</p>
+      <h2>The governed object must be the result, not only the software.</h2>
+      <p>A scientific result depends on a chain: physical or biological system, measurement or simulation data, mathematical representation, learned or reduced model, inference request, uncertainty model, validation evidence, decision rule and human owner. A failure can arise at any link.</p>
+      <p>A surrogate may be accurate globally but unreliable in a local region. A high-fidelity solver may itself use assumptions that are invalid for a new regime. A patient-specific geometry may be segmented correctly while boundary conditions remain weakly constrained.</p>
+      <p class="wp-emphasis">Governance therefore has to operate at the result level.</p>
+    </section>
+
+    <section class="wp-section" id="evidence">
+      <p class="wp-label">03 · Evidence, not explanation alone</p>
+      <h2>An explanation is not a validation.</h2>
+      <p>A scientifically governed result should carry five evidence dimensions.</p>
+      <dl class="wp-defs">
+        <div><dt>Provenance</dt><dd>Model version, training data or simulation campaign, preprocessing, solver versions, parameter sets and transformations.</dd></div>
+        <div><dt>Validity domain</dt><dd>The conditions under which the model has been shown to work.</dd></div>
+        <div><dt>Uncertainty</dt><dd>The uncertainty attached to the prediction, including data, approximation, measurement and model-form uncertainty where possible.</dd></div>
+        <div><dt>Verification and validation</dt><dd>Reference simulations, analytical limits, experiments, held-out cases, prospective measurements and cross-method comparisons.</dd></div>
+        <div><dt>Decision ownership</dt><dd>The person or governed process allowed to act on the result.</dd></div>
+      </dl>
+    </section>
+
+    <section class="wp-section" id="evidence-graph">
+      <p class="wp-label">04 · Scientific AI Evidence Graph</p>
+      <h2>Evidence should be traversable.</h2>
+      <p>CALYR.AI represents the scientific chain as a graph rather than as disconnected documentation. Nodes may include physical systems, geometry, datasets, experiments, simulations, solvers, models, surrogates, assumptions, parameters, inferences, uncertainty estimates, validation results, decisions and versions.</p>
+      <p>Relations such as <em>derived from</em>, <em>trained on</em>, <em>calibrated against</em>, <em>assumes</em>, <em>valid within</em>, <em>evaluated by</em>, <em>contradicts</em>, <em>supersedes</em>, <em>escalated to</em> and <em>approved by</em> connect those objects.</p>
+      <blockquote>What produced me? What supports me? Where am I valid? What could invalidate me? What happens next?</blockquote>
+    </section>
+
+    <section class="wp-section" id="surrogates">
+      <p class="wp-label">05 · Governed surrogates</p>
+      <h2>A surrogate should behave like a scientific instrument.</h2>
+      <p>A governed surrogate should carry an immutable model version, reference model or experimental source, training and validation domains, error distributions, uncertainty estimates, out-of-distribution criteria, known failure modes, retraining history and intended decision context.</p>
+      <p>The most important property is not raw speed. It is <strong>conditional trust</strong>. The surrogate should answer quickly when evidence supports the query and decline, escalate or request new evidence when it does not.</p>
+    </section>
+
+    <section class="wp-section" id="oracle">
+      <p class="wp-label">06 · Oracle</p>
+      <h2>Acceptance is a separate computational task.</h2>
+      <p>In the CALYR.AI architecture, the Oracle is not a second predictive model claiming to know the truth. It is the decision layer that evaluates whether the available evidence is sufficient to accept a surrogate result.</p>
+      <p class="wp-equation">Surrogate prediction + uncertainty + validity + evidence state = acceptance decision</p>
+      <p>The Oracle can accept, accept with qualification, request verification, request new data, escalate to high-fidelity simulation, or reject a case as outside the supported domain.</p>
+    </section>
+
+    <section class="wp-section" id="verification">
+      <p class="wp-label">07 · Active verification</p>
+      <h2>Governance can choose the next experiment.</h2>
+      <p>Scientific AI requires a continuous view of validation. When a model encounters a consequential region of uncertainty, the system should identify the next most valuable verification action: an additional CFD simulation, experiment, structural reconstruction, boundary-condition measurement, clinical measurement or targeted design point.</p>
+      <p>This connects governance to active learning and design of experiments. The question becomes: <strong>which new piece of evidence would reduce the uncertainty that matters for the decision?</strong></p>
+    </section>
+
+    <section class="wp-section" id="human">
+      <p class="wp-label">08 · Human responsibility</p>
+      <h2>Human-in-the-loop must be operational.</h2>
+      <p>A reviewer should see what is being predicted, the uncertainty, whether the case lies inside the supported validity domain, which evidence supports the result, which assumptions dominate, whether contradictory evidence exists and which escalation options are available.</p>
+    </section>
+
+    <section class="wp-section" id="architecture">
+      <p class="wp-label">09 · Reference architecture</p>
+      <h2>Evidence · Surrogate · Oracle · Verification · Decision</h2>
+      <dl class="wp-defs">
+        <div><dt>Evidence</dt><dd>Measurements, experiments, reference simulations, constraints and provenance.</dd></div>
+        <div><dt>Surrogate</dt><dd>Fast reduced or learned models that approximate an expensive physical or computational process.</dd></div>
+        <div><dt>Oracle</dt><dd>Acceptance logic using uncertainty, domain validity, evidence quality and decision context.</dd></div>
+        <div><dt>Verification</dt><dd>High-fidelity simulation, experiment or measurement invoked when the evidence state is insufficient.</dd></div>
+        <div><dt>Decision</dt><dd>A human or governed downstream process uses the result together with its evidence state.</dd></div>
+      </dl>
+      <p>The architecture is cyclic. Verification generates new evidence. New evidence can recalibrate the surrogate, update uncertainty, modify the validity domain and alter future Oracle decisions.</p>
+    </section>
+
+    <section class="wp-section" id="aorta">
+      <p class="wp-label">10 · Patient-specific aortic modelling</p>
+      <h2>Fast inference without detaching from physiology.</h2>
+      <p>A patient-specific workflow can reconstruct anatomy from imaging, define boundary conditions, execute reference CFD or particle-based simulations, train or adapt a fast surrogate, estimate uncertainty, detect whether the query lies inside the supported domain, compare against measurement or experimental evidence, escalate uncertain cases, and present the result with its evidence state for expert review.</p>
+      <p>The surrogate does not replace clinical judgement or high-fidelity modelling. It allocates expensive evidence where it is most informative while routine exploration becomes fast.</p>
+    </section>
+
+    <section class="wp-section" id="engineering">
+      <p class="wp-label">11 · Engineering design</p>
+      <h2>High-fidelity simulation becomes selective evidence.</h2>
+      <p>The same architecture applies to structural and multiphysics design. A governed surrogate can explore geometry, loading or material parameters rapidly while the Oracle tracks where approximation remains trustworthy. Selected states are verified using the reference solver, and the new evidence updates the model.</p>
+    </section>
+
+    <section class="wp-section" id="assurance">
+      <p class="wp-label">12 · Regulatory and assurance context</p>
+      <h2>Evidence architecture complements formal compliance.</h2>
+      <p>The EU AI Act applies progressively. Article 50 transparency obligations apply from 2 August 2026. European Commission guidance for high-risk systems emphasises risk management, data quality, documentation and traceability, human oversight, accuracy, cybersecurity and robustness, with the relevant high-risk provisions applying according to system category.</p>
+      <p>NIST's AI Risk Management Framework and AI Resource Center emphasise testing, evaluation, verification and validation. In 2026, NIST published a draft TEVV-Athlon framework for context-specific AI assessment.</p>
+      <p>For medical devices, the U.S. FDA describes AI-enabled devices through a total-product-lifecycle perspective spanning development, validation, deployment, monitoring, maintenance and modification.</p>
+    </section>
+
+    <section class="wp-section" id="contract">
+      <p class="wp-label">13 · Minimum evidence contract</p>
+      <h2>Attach evidence to every prediction.</h2>
+      <div class="wp-code">
+        prediction<br>
+        model_version<br>
+        input_signature<br>
+        validity_status<br>
+        uncertainty<br>
+        reference_evidence<br>
+        verification_status<br>
+        decision_owner<br>
+        timestamp
+      </div>
+      <p>Mature systems can add assumption sets, data and solver lineage, calibration state, out-of-distribution score, counter-evidence, change history and approval records.</p>
+    </section>
+
+    <section class="wp-section" id="calyr">
+      <p class="wp-label">14 · CALYR.AI</p>
+      <h2>Fast models. Evidence attached.</h2>
+      <p>CALYR.AI develops scientific AI architectures for complex biophysical and engineering systems. The platform combines a Surrogate Engine for fast physics-aware prediction, Scientific AI for model-aware inference and uncertainty, an Oracle for acceptance and escalation, an Evidence Graph for provenance and validation, and interfaces for integration into research and engineering workflows.</p>
+    </section>
+
+    <section class="wp-section wp-conclusion">
+      <p class="wp-label">Conclusion</p>
+      <h2>Every consequential prediction should carry its evidence with it.</h2>
+      <p>The next governance challenge is not only discovering which models organisations use. It is determining whether the reasoning behind a consequential computational result remains supported.</p>
+      <p>A trustworthy scientific AI system should expose where a prediction came from, where it is valid, how uncertain it is, which evidence supports it, what would trigger verification and who owns the resulting decision.</p>
+    </section>
+
+    <section class="wp-section wp-references">
+      <p class="wp-label">References</p>
+      <ol>
+        <li>Xensam. <a href="https://xensam.com/resources/white-papers/out-of-the-shadows-governing-enterprise-ai-handbook/">Out of the Shadows: Governing Enterprise AI</a>.</li>
+        <li>European Commission. <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai">AI Act</a>.</li>
+        <li>European Commission. <a href="https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act">Transparency obligations under Article 50</a>.</li>
+        <li>NIST. <a href="https://airc.nist.gov/">AI Resource Center</a>.</li>
+        <li>NIST. <a href="https://www.nist.gov/artificial-intelligence/ai-research/tevv-athlon-framework-evaluating-ai-systems">TEVV-Athlon Framework</a>.</li>
+        <li>U.S. FDA. <a href="https://www.fda.gov/medical-devices/digital-health-center-excellence/artificial-intelligence-enabled-medical-devices">Artificial Intelligence-Enabled Medical Devices</a>.</li>
+      </ol>
+    </section>
+  </div>
+</article>
+
+  </main>
+
+  <footer>
+    <p>calyr.aí Research · 2026</p>
+    <p>
+      
+      <a href="/whitepapers/scientific-ai-evidence/">White paper 01</a> · 
+      
+      <a href="mailto:rupert.tscheliess@calyrai.ai">Kontakt</a> · 
+      
+      <a href="https://github.com/ruperttscheliessnig">github.com/ruperttscheliessnig</a>
+      
+    </p>
+  </footer>
+
+  
+
+</body>
+</html>

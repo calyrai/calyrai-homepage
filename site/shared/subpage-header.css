@@ -1,0 +1,10 @@
+/* Scoped to the shared site header; research page layouts keep their own styles. */
+header.calyr-global-header{all:initial;box-sizing:border-box;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:30px;min-height:104px;width:calc(100% - 48px);max-width:1392px;margin:0 auto;padding:0;border-bottom:1px solid #ffffff30;background:#050505;color:#f5f5f5;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;position:relative;z-index:10}
+.calyr-global-header a{box-sizing:border-box;text-decoration:none;color:#f5f5f5;background:none;border:0;padding:0;margin:0;text-transform:none;letter-spacing:normal;line-height:1.4;box-shadow:none}
+.calyr-global-header .shared-brand{display:inline-flex;align-items:center;font-size:42px;font-weight:650;letter-spacing:-.065em;line-height:1;color:#fff}
+.calyr-global-header .fs-nav{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:24px;margin:0;padding:0;border:0;width:auto;background:none}
+.calyr-global-header .fs-nav a,.calyr-global-header .fs-header-contact{display:flex;align-items:center;min-height:44px;font-size:12px;font-weight:400}
+.calyr-global-header a:hover{color:#ff20dc}
+.calyr-global-header a:focus-visible{outline:2px solid #ff20dc;outline-offset:5px}
+@media(max-width:900px){header.calyr-global-header{grid-template-columns:auto 1fr;gap:16px}.calyr-global-header .fs-header-contact{justify-self:end;grid-column:2;grid-row:1}.calyr-global-header .fs-nav{grid-column:1/-1;grid-row:2;justify-content:flex-start;padding-bottom:20px}}
+@media(max-width:600px){header.calyr-global-header{width:calc(100% - 40px);min-height:90px;padding-top:20px}.calyr-global-header .fs-nav{gap:16px}}

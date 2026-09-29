@@ -1,0 +1,937 @@
+{
+  "meta": {
+    "id": "CALYR-LIT-001",
+    "title": "Calibration literature and data graph",
+    "route": "/research/methods/scientific-ai-numerics/literature/",
+    "status": "Living evidence index",
+    "scope": "Neural-network calibration, uncertainty, evaluation data, and method lineage extracted from Guo et al. (2017).",
+    "seed_paper": "guo2017-calibration",
+    "source_of_truth": "content/literature.yaml",
+    "generated_index": "/generated/literature.index.json",
+    "extraction_contract": [
+      "Preserve the distinction between a paper's claim and calyr.aí's interpretation.",
+      "Link every extracted idea to a source and a location in that source.",
+      "Represent datasets separately from the papers that introduce or use them.",
+      "Mark inferred, incomplete, or unverified metadata explicitly.",
+      "Treat dataset availability and licensing as fields to verify, never assumptions."
+    ]
+  },
+  "counts": {
+    "papers": 25,
+    "datasets": 9,
+    "dataset_source_citations": 6,
+    "ideas": 8,
+    "relations": 12
+  },
+  "papers": [
+    {
+      "id": "guo2017-calibration",
+      "title": "On Calibration of Modern Neural Networks",
+      "authors": [
+        "Chuan Guo",
+        "Geoff Pleiss",
+        "Yu Sun",
+        "Kilian Q. Weinberger"
+      ],
+      "year": 2017,
+      "venue": "ICML / PMLR 70",
+      "url": "https://proceedings.mlr.press/v70/guo17a.html",
+      "pdf": "https://proceedings.mlr.press/v70/guo17a/guo17a.pdf",
+      "role": "seed",
+      "topics": [
+        "calibration",
+        "temperature scaling",
+        "ECE",
+        "reliability diagrams"
+      ],
+      "extractable_idea": "Modern neural networks can become more accurate yet less calibrated; a validation-set scalar temperature often repairs confidence without changing class predictions.",
+      "verification": "primary-source-verified"
+    },
+    {
+      "id": "degroot1983-forecasters",
+      "title": "The Comparison and Evaluation of Forecasters",
+      "authors": [
+        "Morris H. DeGroot",
+        "Stephen E. Fienberg"
+      ],
+      "year": 1983,
+      "role": "metric-lineage",
+      "topics": [
+        "reliability",
+        "calibration",
+        "forecasting"
+      ],
+      "extractable_idea": "Separate calibration from refinement when evaluating probabilistic forecasts; reliability diagrams operationalize this distinction.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "niculescu2005-probabilities",
+      "title": "Predicting Good Probabilities with Supervised Learning",
+      "authors": [
+        "Alexandru Niculescu-Mizil",
+        "Rich Caruana"
+      ],
+      "year": 2005,
+      "venue": "ICML",
+      "url": "https://www.cs.cornell.edu/~caruana/niculescu.icml05.pdf",
+      "role": "calibration-baseline",
+      "topics": [
+        "probability calibration",
+        "Platt scaling",
+        "isotonic regression"
+      ],
+      "extractable_idea": "Compare classifiers by the quality of their probability estimates and calibrate distorted scores with held-out data.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "naeini2015-bbq",
+      "title": "Obtaining Well Calibrated Probabilities Using Bayesian Binning",
+      "authors": [
+        "Mahdi Pakdaman Naeini",
+        "Gregory F. Cooper",
+        "Milos Hauskrecht"
+      ],
+      "year": 2015,
+      "venue": "AAAI",
+      "url": "https://ojs.aaai.org/index.php/AAAI/article/view/9602",
+      "role": "calibration-method",
+      "topics": [
+        "Bayesian binning",
+        "ECE",
+        "MCE"
+      ],
+      "extractable_idea": "Average over plausible binning schemes instead of committing to one arbitrary discretization; ECE and MCE summarize calibration gaps.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "platt1999-probabilistic",
+      "title": "Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods",
+      "authors": [
+        "John Platt"
+      ],
+      "year": 1999,
+      "role": "calibration-method",
+      "topics": [
+        "Platt scaling",
+        "sigmoid calibration"
+      ],
+      "extractable_idea": "Fit a low-dimensional post-hoc mapping from decision scores to probabilities on held-out data.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "zadrozny2001-calibrated",
+      "title": "Obtaining Calibrated Probability Estimates from Decision Trees and Naive Bayesian Classifiers",
+      "authors": [
+        "Bianca Zadrozny",
+        "Charles Elkan"
+      ],
+      "year": 2001,
+      "venue": "ICML",
+      "role": "calibration-method",
+      "topics": [
+        "histogram binning",
+        "isotonic regression"
+      ],
+      "extractable_idea": "Correct systematic probability distortion through a learned monotone or binned mapping.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "zadrozny2002-multiclass",
+      "title": "Transforming Classifier Scores into Accurate Multiclass Probability Estimates",
+      "authors": [
+        "Bianca Zadrozny",
+        "Charles Elkan"
+      ],
+      "year": 2002,
+      "venue": "KDD",
+      "role": "multiclass-extension",
+      "topics": [
+        "multiclass calibration",
+        "one-vs-all"
+      ],
+      "extractable_idea": "Extend binary calibration to multiclass outputs through classwise calibration and probability normalization.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "denker1990-output-probabilities",
+      "title": "Transforming Neural-Net Output Levels to Probability Distributions",
+      "authors": [
+        "John S. Denker",
+        "Yann LeCun"
+      ],
+      "year": 1990,
+      "venue": "NeurIPS",
+      "role": "neural-calibration-lineage",
+      "topics": [
+        "neural networks",
+        "probability estimation"
+      ],
+      "extractable_idea": "Neural outputs require an explicit transformation and validation before they can be interpreted as probabilities.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "mackay1992-bayesian",
+      "title": "A Practical Bayesian Framework for Backpropagation Networks",
+      "authors": [
+        "David J. C. MacKay"
+      ],
+      "year": 1992,
+      "venue": "Neural Computation",
+      "role": "uncertainty-lineage",
+      "topics": [
+        "Bayesian neural networks",
+        "predictive uncertainty"
+      ],
+      "extractable_idea": "Integrate parameter uncertainty rather than treating one fitted network as the complete predictive distribution.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "gal2016-dropout",
+      "title": "Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning",
+      "authors": [
+        "Yarin Gal",
+        "Zoubin Ghahramani"
+      ],
+      "year": 2016,
+      "venue": "ICML",
+      "url": "https://proceedings.mlr.press/v48/gal16.html",
+      "role": "uncertainty-method",
+      "topics": [
+        "MC dropout",
+        "epistemic uncertainty"
+      ],
+      "extractable_idea": "Repeated stochastic dropout passes approximate Bayesian model averaging and expose predictive uncertainty.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "lakshminarayanan2017-ensembles",
+      "title": "Simple and Scalable Predictive Uncertainty Estimation Using Deep Ensembles",
+      "authors": [
+        "Balaji Lakshminarayanan",
+        "Alexander Pritzel",
+        "Charles Blundell"
+      ],
+      "year": 2017,
+      "venue": "NeurIPS",
+      "url": "https://arxiv.org/abs/1612.01474",
+      "role": "uncertainty-method",
+      "topics": [
+        "deep ensembles",
+        "predictive uncertainty",
+        "calibration"
+      ],
+      "extractable_idea": "Independently trained probabilistic networks provide a strong, scalable uncertainty and calibration baseline.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "pereyra2017-confidence-penalty",
+      "title": "Regularizing Neural Networks by Penalizing Confident Output Distributions",
+      "authors": [
+        "Gabriel Pereyra",
+        "George Tucker",
+        "Jan Chorowski",
+        "Łukasz Kaiser",
+        "Geoffrey Hinton"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1701.06548",
+      "role": "training-method",
+      "topics": [
+        "confidence penalty",
+        "entropy regularization"
+      ],
+      "extractable_idea": "Penalize unjustified certainty during training instead of correcting confidence only after training.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "hendrycks2017-ood",
+      "title": "A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks",
+      "authors": [
+        "Dan Hendrycks",
+        "Kevin Gimpel"
+      ],
+      "year": 2017,
+      "venue": "ICLR",
+      "url": "https://arxiv.org/abs/1610.02136",
+      "role": "applicability-domain",
+      "topics": [
+        "out-of-distribution detection",
+        "confidence"
+      ],
+      "extractable_idea": "Confidence signals can help separate ordinary predictions from likely errors and distribution shift, but require explicit evaluation.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "kuleshov2016-online",
+      "title": "Reliable Confidence Estimation via Online Learning",
+      "authors": [
+        "Volodymyr Kuleshov",
+        "Stefano Ermon"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1607.03594",
+      "role": "calibration-setting",
+      "topics": [
+        "online calibration",
+        "adversarial sequences"
+      ],
+      "extractable_idea": "Calibration can be formulated as an online guarantee when observations arrive sequentially or adversarially.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "kuleshov2015-structured",
+      "title": "Calibrated Structured Prediction",
+      "authors": [
+        "Volodymyr Kuleshov",
+        "Percy Liang"
+      ],
+      "year": 2015,
+      "venue": "NeurIPS",
+      "role": "structured-output",
+      "topics": [
+        "structured prediction",
+        "calibration"
+      ],
+      "extractable_idea": "Calibration must be defined against meaningful events when the output is a structure rather than a single class.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "kendall2017-uncertainties",
+      "title": "What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?",
+      "authors": [
+        "Alex Kendall",
+        "Yarin Gal"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1703.04977",
+      "role": "uncertainty-taxonomy",
+      "topics": [
+        "aleatoric uncertainty",
+        "epistemic uncertainty",
+        "computer vision"
+      ],
+      "extractable_idea": "Keep data uncertainty and model uncertainty distinct because they imply different interventions and failure responses.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "friedman2001-elements",
+      "title": "The Elements of Statistical Learning",
+      "authors": [
+        "Jerome Friedman",
+        "Trevor Hastie",
+        "Robert Tibshirani"
+      ],
+      "year": 2001,
+      "role": "loss-lineage",
+      "topics": [
+        "negative log likelihood",
+        "statistical learning"
+      ],
+      "extractable_idea": "Proper probabilistic losses evaluate the full predictive distribution, not just the winning class.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "jaynes1957-information",
+      "title": "Information Theory and Statistical Mechanics",
+      "authors": [
+        "Edwin T. Jaynes"
+      ],
+      "year": 1957,
+      "venue": "Physical Review",
+      "role": "temperature-lineage",
+      "topics": [
+        "entropy",
+        "temperature",
+        "constrained distributions"
+      ],
+      "extractable_idea": "Temperature controls concentration in exponential-family distributions and connects calibration to constrained maximum entropy.",
+      "verification": "bibliography-verified"
+    },
+    {
+      "id": "hinton2015-distilling",
+      "title": "Distilling the Knowledge in a Neural Network",
+      "authors": [
+        "Geoffrey Hinton",
+        "Oriol Vinyals",
+        "Jeff Dean"
+      ],
+      "year": 2015,
+      "url": "https://arxiv.org/abs/1503.02531",
+      "role": "temperature-lineage",
+      "topics": [
+        "knowledge distillation",
+        "soft targets",
+        "temperature"
+      ],
+      "extractable_idea": "Temperature exposes relative class evidence through softened probability targets; calibration uses the same control for a different objective.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "he2016-resnet",
+      "title": "Deep Residual Learning for Image Recognition",
+      "authors": [
+        "Kaiming He",
+        "Xiangyu Zhang",
+        "Shaoqing Ren",
+        "Jian Sun"
+      ],
+      "year": 2016,
+      "venue": "CVPR",
+      "url": "https://arxiv.org/abs/1512.03385",
+      "role": "evaluated-architecture",
+      "topics": [
+        "ResNet",
+        "depth"
+      ],
+      "extractable_idea": "Residual connections enable much deeper classifiers; Guo et al. use this capacity trend to study calibration degradation.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "huang2016-stochastic-depth",
+      "title": "Deep Networks with Stochastic Depth",
+      "authors": [
+        "Gao Huang",
+        "Yu Sun",
+        "Zhuang Liu",
+        "Daniel Sedra",
+        "Kilian Q. Weinberger"
+      ],
+      "year": 2016,
+      "venue": "ECCV",
+      "url": "https://arxiv.org/abs/1603.09382",
+      "role": "evaluated-architecture",
+      "topics": [
+        "stochastic depth",
+        "ResNet"
+      ],
+      "extractable_idea": "Randomly shortening networks during training regularizes very deep residual models; calibration still needs separate measurement.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "zagoruyko2016-wide-resnet",
+      "title": "Wide Residual Networks",
+      "authors": [
+        "Sergey Zagoruyko",
+        "Nikos Komodakis"
+      ],
+      "year": 2016,
+      "venue": "BMVC",
+      "url": "https://arxiv.org/abs/1605.07146",
+      "role": "evaluated-architecture",
+      "topics": [
+        "model width",
+        "ResNet"
+      ],
+      "extractable_idea": "Width is an independent capacity axis whose accuracy benefit does not guarantee calibrated confidence.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "huang2017-densenet",
+      "title": "Densely Connected Convolutional Networks",
+      "authors": [
+        "Gao Huang",
+        "Zhuang Liu",
+        "Laurens van der Maaten",
+        "Kilian Q. Weinberger"
+      ],
+      "year": 2017,
+      "venue": "CVPR",
+      "url": "https://arxiv.org/abs/1608.06993",
+      "role": "evaluated-architecture",
+      "topics": [
+        "DenseNet",
+        "connectivity"
+      ],
+      "extractable_idea": "Dense feature reuse changes optimization and capacity, while calibration remains a separate empirical property.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "iyyer2015-dan",
+      "title": "Deep Unordered Composition Rivals Syntactic Methods for Text Classification",
+      "authors": [
+        "Mohit Iyyer",
+        "Varun Manjunatha",
+        "Jordan Boyd-Graber",
+        "Hal Daumé III"
+      ],
+      "year": 2015,
+      "venue": "ACL",
+      "url": "https://aclanthology.org/P15-1162/",
+      "role": "evaluated-architecture",
+      "topics": [
+        "Deep Averaging Networks",
+        "document classification"
+      ],
+      "extractable_idea": "Simple averaged text representations provide a useful architecture contrast for calibration experiments.",
+      "verification": "primary-link-present"
+    },
+    {
+      "id": "tai2015-treelstm",
+      "title": "Improved Semantic Representations From Tree-Structured Long Short-Term Memory Networks",
+      "authors": [
+        "Kai Sheng Tai",
+        "Richard Socher",
+        "Christopher D. Manning"
+      ],
+      "year": 2015,
+      "venue": "ACL",
+      "url": "https://aclanthology.org/P15-1150/",
+      "role": "evaluated-architecture",
+      "topics": [
+        "TreeLSTM",
+        "sentiment classification"
+      ],
+      "extractable_idea": "Structured recurrent models make calibration testable on hierarchical NLP outputs, not only images.",
+      "verification": "primary-link-present"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "cub-200-2011",
+      "name": "Caltech-UCSD Birds 200-2011",
+      "domain": "image classification",
+      "source_paper": "welinder2010-cub",
+      "cited_by": "guo2017-calibration",
+      "url": "https://www.vision.caltech.edu/datasets/cub_200_2011/",
+      "classes": 200,
+      "split_reported_by_guo": {
+        "train": 5994,
+        "validation": 2897,
+        "test": 2897
+      },
+      "ideas": [
+        "fine-grained classification",
+        "high-class-count calibration"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse",
+      "provenance_note": "Guo et al. cite Welinder et al. (2010); the current official CUB-200-2011 page requests citation of Wah et al. (2011) and restricts images to non-commercial research and education."
+    },
+    {
+      "id": "stanford-cars",
+      "name": "Stanford Cars",
+      "domain": "image classification",
+      "source_paper": "krause2013-cars",
+      "cited_by": "guo2017-calibration",
+      "url": "https://ai.stanford.edu/~jkrause/",
+      "classes": 196,
+      "split_reported_by_guo": {
+        "train": 8041,
+        "validation": 4020,
+        "test": 4020
+      },
+      "ideas": [
+        "fine-grained classification",
+        "matrix-scaling stress test"
+      ],
+      "availability": "original-download-unavailable",
+      "license_status": "verify-before-reuse",
+      "provenance_note": "The original Stanford dataset URL cited by downstream libraries currently returns 404; use the author archive to verify provenance before selecting a maintained mirror."
+    },
+    {
+      "id": "imagenet-2012",
+      "name": "ImageNet Large Scale Visual Recognition Challenge 2012",
+      "domain": "image classification",
+      "source_paper": "deng2009-imagenet",
+      "cited_by": "guo2017-calibration",
+      "url": "https://www.image-net.org/challenges/LSVRC/2012/",
+      "classes": 1000,
+      "split_reported_by_guo": {
+        "train": 1300000,
+        "validation": 25000,
+        "test": 25000
+      },
+      "ideas": [
+        "large-scale calibration",
+        "transfer learning",
+        "parameter-scaling limit"
+      ],
+      "availability": "registration-required",
+      "license_status": "restricted-terms-check-required"
+    },
+    {
+      "id": "cifar-10",
+      "name": "CIFAR-10",
+      "domain": "image classification",
+      "source_paper": "krizhevsky2009-cifar",
+      "cited_by": "guo2017-calibration",
+      "url": "https://www.cs.toronto.edu/~kriz/cifar.html",
+      "classes": 10,
+      "split_reported_by_guo": {
+        "train": 45000,
+        "validation": 5000,
+        "test": 10000
+      },
+      "ideas": [
+        "controlled architecture comparison",
+        "calibration benchmark"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse"
+    },
+    {
+      "id": "cifar-100",
+      "name": "CIFAR-100",
+      "domain": "image classification",
+      "source_paper": "krizhevsky2009-cifar",
+      "cited_by": "guo2017-calibration",
+      "url": "https://www.cs.toronto.edu/~kriz/cifar.html",
+      "classes": 100,
+      "split_reported_by_guo": {
+        "train": 45000,
+        "validation": 5000,
+        "test": 10000
+      },
+      "ideas": [
+        "reliability diagrams",
+        "capacity-vs-calibration",
+        "temperature scaling"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse"
+    },
+    {
+      "id": "svhn",
+      "name": "Street View House Numbers",
+      "domain": "image classification",
+      "source_paper": "netzer2011-svhn",
+      "cited_by": "guo2017-calibration",
+      "url": "http://ufldl.stanford.edu/housenumbers/",
+      "classes": 10,
+      "split_reported_by_guo": {
+        "train": 604388,
+        "validation": 6000,
+        "test": 26032
+      },
+      "ideas": [
+        "low-error calibration regime",
+        "cropped digit recognition"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse"
+    },
+    {
+      "id": "twenty-newsgroups",
+      "name": "20 Newsgroups",
+      "domain": "document classification",
+      "source_paper": "uncited-dataset-origin",
+      "cited_by": "guo2017-calibration",
+      "url": "http://qwone.com/~jason/20Newsgroups/",
+      "classes": 20,
+      "split_reported_by_guo": {
+        "train": 9034,
+        "validation": 2259,
+        "test": 7528
+      },
+      "ideas": [
+        "document calibration",
+        "Deep Averaging Network evaluation"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse"
+    },
+    {
+      "id": "reuters",
+      "name": "Reuters document classification corpus",
+      "domain": "document classification",
+      "source_paper": "uncited-dataset-origin",
+      "cited_by": "guo2017-calibration",
+      "url": "https://kdd.ics.uci.edu/databases/reuters21578/reuters21578.html",
+      "classes": 8,
+      "split_reported_by_guo": {
+        "train": 4388,
+        "validation": 1097,
+        "test": 2189
+      },
+      "ideas": [
+        "already-calibrated baseline",
+        "post-processing may be unnecessary"
+      ],
+      "availability": "public-download",
+      "license_status": "terms-check-required"
+    },
+    {
+      "id": "sst",
+      "name": "Stanford Sentiment Treebank",
+      "domain": "sentiment classification",
+      "source_paper": "socher2013-sst",
+      "cited_by": "guo2017-calibration",
+      "url": "https://nlp.stanford.edu/sentiment/",
+      "classes": [
+        2,
+        5
+      ],
+      "split_reported_by_guo": {
+        "binary": {
+          "train": 6920,
+          "validation": 872,
+          "test": 1821
+        },
+        "fine_grained": {
+          "train": 544,
+          "validation": 1101,
+          "test": 2210
+        }
+      },
+      "ideas": [
+        "structured sentiment",
+        "binary-vs-multiclass calibration"
+      ],
+      "availability": "public-download",
+      "license_status": "verify-before-reuse"
+    }
+  ],
+  "dataset_source_citations": [
+    {
+      "id": "welinder2010-cub",
+      "title": "Caltech-UCSD Birds 200",
+      "year": 2010,
+      "authors": [
+        "P. Welinder",
+        "S. Branson",
+        "T. Mita",
+        "C. Wah",
+        "F. Schroff",
+        "S. Belongie",
+        "P. Perona"
+      ]
+    },
+    {
+      "id": "krause2013-cars",
+      "title": "3D Object Representations for Fine-Grained Categorization",
+      "year": 2013,
+      "authors": [
+        "Jonathan Krause",
+        "Michael Stark",
+        "Jia Deng",
+        "Li Fei-Fei"
+      ]
+    },
+    {
+      "id": "deng2009-imagenet",
+      "title": "ImageNet: A Large-Scale Hierarchical Image Database",
+      "year": 2009,
+      "authors": [
+        "Jia Deng",
+        "Wei Dong",
+        "Richard Socher",
+        "Li-Jia Li",
+        "Kai Li",
+        "Li Fei-Fei"
+      ]
+    },
+    {
+      "id": "krizhevsky2009-cifar",
+      "title": "Learning Multiple Layers of Features from Tiny Images",
+      "year": 2009,
+      "authors": [
+        "Alex Krizhevsky",
+        "Geoffrey Hinton"
+      ]
+    },
+    {
+      "id": "netzer2011-svhn",
+      "title": "Reading Digits in Natural Images with Unsupervised Feature Learning",
+      "year": 2011,
+      "authors": [
+        "Yuval Netzer",
+        "Tao Wang",
+        "Adam Coates",
+        "Alessandro Bissacco",
+        "Bo Wu",
+        "Andrew Y. Ng"
+      ]
+    },
+    {
+      "id": "socher2013-sst",
+      "title": "Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank",
+      "year": 2013,
+      "authors": [
+        "Richard Socher",
+        "Alex Perelygin",
+        "Jean Wu",
+        "Jason Chuang",
+        "Christopher D. Manning",
+        "Andrew Ng",
+        "Christopher Potts"
+      ]
+    }
+  ],
+  "ideas": [
+    {
+      "id": "idea-calibration-is-separate",
+      "title": "Accuracy and calibration are separate model properties",
+      "source": "guo2017-calibration",
+      "location": "Sections 1 and 3; Figures 1-3",
+      "kind": "finding",
+      "statement": "Lower classification error can coexist with worse probabilistic calibration.",
+      "operationalization": "Evaluate a probabilistic predictor with discrimination metrics and calibration metrics; never substitute one for the other.",
+      "tags": [
+        "accuracy",
+        "calibration",
+        "validation"
+      ]
+    },
+    {
+      "id": "idea-ece-is-an-approximation",
+      "title": "ECE is a finite-bin approximation, not ground truth",
+      "source": "guo2017-calibration",
+      "location": "Section 2, Equations 2-3",
+      "kind": "measurement",
+      "statement": "ECE compresses confidence-accuracy gaps using a chosen binning scheme and can change with that scheme.",
+      "operationalization": "Store binning policy, sample counts, uncertainty, and at least one complementary calibration diagnostic.",
+      "tags": [
+        "ECE",
+        "binning",
+        "measurement uncertainty"
+      ]
+    },
+    {
+      "id": "idea-temperature-scaling",
+      "title": "Temperature scaling is a one-parameter calibration layer",
+      "source": "guo2017-calibration",
+      "location": "Section 4.2, Equation 9",
+      "kind": "method",
+      "statement": "Optimize one positive scalar on validation NLL and divide logits by it before softmax.",
+      "operationalization": "Fit only on held-out validation data; freeze the predictive model; report pre/post NLL, ECE, reliability, and unchanged accuracy.",
+      "tags": [
+        "temperature scaling",
+        "logits",
+        "post-hoc calibration"
+      ]
+    },
+    {
+      "id": "idea-low-dimensional-miscalibration",
+      "title": "Miscalibration can be intrinsically low dimensional",
+      "source": "guo2017-calibration",
+      "location": "Section 5",
+      "kind": "hypothesis",
+      "statement": "A scalar correction can outperform more expressive vector or matrix transformations on the tested networks.",
+      "operationalization": "Start with the lowest-capacity calibrator and increase complexity only under held-out evidence.",
+      "tags": [
+        "model selection",
+        "regularization",
+        "simplicity"
+      ]
+    },
+    {
+      "id": "idea-capacity-regularization",
+      "title": "Capacity and regularization affect confidence quality",
+      "source": "guo2017-calibration",
+      "location": "Section 3, Figure 2",
+      "kind": "finding",
+      "statement": "Depth, width, Batch Normalization, and weight decay correlate with calibration changes in the reported experiments.",
+      "operationalization": "Treat calibration as an architecture- and training-dependent validation target, while preserving the paper's warning that the observations are not causal proof.",
+      "tags": [
+        "capacity",
+        "Batch Normalization",
+        "weight decay",
+        "causality"
+      ]
+    },
+    {
+      "id": "idea-applicability-gate",
+      "title": "Calibration does not establish applicability",
+      "source": "hendrycks2017-ood",
+      "location": "method lineage cited by Guo et al., Section 4.3",
+      "kind": "boundary",
+      "statement": "In-distribution calibration and out-of-distribution detection answer different questions.",
+      "operationalization": "Gate predictions with a separate applicability-domain or shift detector before interpreting calibrated probabilities.",
+      "tags": [
+        "OOD",
+        "applicability domain",
+        "safety"
+      ]
+    },
+    {
+      "id": "idea-uncertainty-components",
+      "title": "Separate aleatoric and epistemic uncertainty",
+      "source": "kendall2017-uncertainties",
+      "location": "related-work lineage cited by Guo et al., Section 4.3",
+      "kind": "taxonomy",
+      "statement": "Data noise and model uncertainty require different measurements and next actions.",
+      "operationalization": "Record uncertainty component, estimator, calibration evidence, and the action triggered by high uncertainty.",
+      "tags": [
+        "aleatoric",
+        "epistemic",
+        "decision"
+      ]
+    },
+    {
+      "id": "idea-dataset-specific-calibration",
+      "title": "Calibration conclusions are dataset-conditional",
+      "source": "guo2017-calibration",
+      "location": "Section 5, Table 1",
+      "kind": "limitation",
+      "statement": "Temperature scaling was broadly effective in the study but Reuters was already well calibrated and showed little benefit.",
+      "operationalization": "Refit and revalidate calibration for each model, dataset, split, and deployment regime; never transfer a temperature blindly.",
+      "tags": [
+        "dataset shift",
+        "validation",
+        "Reuters"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "guo2017-calibration",
+      "type": "builds_on",
+      "to": "platt1999-probabilistic"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "evaluates",
+      "to": "naeini2015-bbq"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "compares_with",
+      "to": "zadrozny2001-calibrated"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "extends_to_multiclass",
+      "to": "zadrozny2002-multiclass"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "uses_metric_lineage",
+      "to": "degroot1983-forecasters"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "uses_metric_lineage",
+      "to": "niculescu2005-probabilities"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "contrasts_with",
+      "to": "gal2016-dropout"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "contrasts_with",
+      "to": "lakshminarayanan2017-ensembles"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "evaluates_architecture",
+      "to": "he2016-resnet"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "evaluates_architecture",
+      "to": "huang2016-stochastic-depth"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "evaluates_architecture",
+      "to": "zagoruyko2016-wide-resnet"
+    },
+    {
+      "from": "guo2017-calibration",
+      "type": "evaluates_architecture",
+      "to": "huang2017-densenet"
+    }
+  ]
+}
